@@ -645,7 +645,9 @@ NativeRdb::ValuesBucket GetParamValuesBucket()
 OHOS::AppExecFwk::Configuration GetParamConfiguration()
 {
     if (GetBoolParam()) {
-        return OHOS::AppExecFwk::Configuration(GetStringParam());
+        OHOS::AppExecFwk::Configuration config;
+        config.AddItem(OHOS::AAFwk::GlobalConfigurationKey::SYSTEM_LANGUAGE, GetStringParam());
+        return config;
     } else {
         return OHOS::AppExecFwk::Configuration();
     }
