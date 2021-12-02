@@ -68,9 +68,9 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
 
     EVENT_LOGD("frozenEventRecords size: %{public}zu", frozenEventRecords.size());
     for (auto record : frozenEventRecords) {
-        EVENT_LOGD("CommonEventRecord size: %{public}zu", record.second.size());
+        EVENT_LOGI("CommonEventRecord size: %{public}zu", record.second.size());
         for (auto vec : record.second) {
-            EVENT_LOGD("subscriber proxy: %{public}p", &(record.first->commonEventListener));
+            EVENT_LOGI("subscriber proxy: %{public}p", &(record.first->commonEventListener));
             std::function<void()> innerCallback =
                 std::bind(&CommonEventControlManager::NotifyFreezeEvents, this, *(record.first), *vec);
             handler_->PostImmediateTask(innerCallback);
@@ -86,10 +86,10 @@ bool CommonEventControlManager::NotifyFreezeEvents(
     EVENT_LOGI("enter");
     EVENT_LOGD("subscriber proxy: %{public}p", &subscriberRecord.commonEventListener);
     EVENT_LOGD("subscriber uid: %{public}d", subscriberRecord.uid);
-    EVENT_LOGD("subscriber isFreeze: %{public}d", subscriberRecord.isFreeze);
-    EVENT_LOGD("subscriber freezeTime: %{public}" PRId64, subscriberRecord.freezeTime);
-    EVENT_LOGD("CommonEvent Action: %{public}s", eventRecord.commonEventData->GetWant().GetAction().c_str());
-    EVENT_LOGD("CommonEvent Type: %{public}s", eventRecord.commonEventData->GetWant().GetType().c_str());
+    EVENT_LOGI("subscriber isFreeze: %{public}d", subscriberRecord.isFreeze);
+    EVENT_LOGI("subscriber freezeTime: %{public}" PRId64, subscriberRecord.freezeTime);
+    EVENT_LOGI("CommonEvent Action: %{public}s", eventRecord.commonEventData->GetWant().GetAction().c_str());
+    EVENT_LOGI("CommonEvent Type: %{public}s", eventRecord.commonEventData->GetWant().GetType().c_str());
 
     sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(subscriberRecord.commonEventListener);
 
@@ -373,7 +373,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         eventRecordPtr->deliveryState[index] = ret;
     } else if (ret == OrderedEventRecord::DELIVERED) {
         if (eventRecordPtr->receivers[index]->isFreeze) {
-            EVENT_LOGD("vec->isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
+            EVENT_LOGI("vec isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
                 eventRecordPtr->receivers[index], *eventRecordPtr);
             eventRecordPtr->deliveryState[index] = OrderedEventRecord::SKIPPED;
