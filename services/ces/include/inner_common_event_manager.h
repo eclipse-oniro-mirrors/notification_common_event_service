@@ -49,7 +49,7 @@ public:
     bool Unfreeze(const uid_t &uid);
 
 private:
-    int64_t GetNowSysTime();
+    bool ProcessStickyEvent(const CommonEventRecord &record);
 
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;

@@ -13,26 +13,21 @@
  * limitations under the License.
  */
 
-#include <time.h>
 #include "common_event_subscriber_manager.h"
 #include "event_log_wrapper.h"
 
 namespace OHOS {
 namespace EventFwk {
 
-#define FREEZE_TIMEOUT_SECOND 120
 const int LENGTH = 80;
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
-    : death_(sptr<IRemoteObject::DeathRecipient>(new SubscriberDeathRecipient())),
-      FREEZE_EVENT_TIMEOUT(FREEZE_TIMEOUT_SECOND)
+    : death_(sptr<IRemoteObject::DeathRecipient>(new SubscriberDeathRecipient()))
 {
-    EVENT_LOGI("CommonEventSubscriberManager instance created");
 }
 
 CommonEventSubscriberManager::~CommonEventSubscriberManager()
 {
-    EVENT_LOGI("CommonEventSubscriberManager instance destoryed");
 }
 
 int CommonEventSubscriberManager::InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
@@ -343,10 +338,7 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
             eventRecordsItem->second.emplace_back(record);
             time_t backRecordTime = mktime(&eventRecordsItem->second.back()->recordTime);
             time_t frontRecordTime = mktime(&eventRecordsItem->second.front()->recordTime);
-            EVENT_LOGD("backRecordTime: %{public}ld", backRecordTime);
-            EVENT_LOGD("frontRecordTime: %{public}ld", frontRecordTime);
             time_t timeDiff = backRecordTime - frontRecordTime;
-            EVENT_LOGD("timeDiff: %{public}ld", timeDiff);
             if (timeDiff > FREEZE_EVENT_TIMEOUT) {
                 eventRecordsItem->second.erase(eventRecordsItem->second.begin());
             }

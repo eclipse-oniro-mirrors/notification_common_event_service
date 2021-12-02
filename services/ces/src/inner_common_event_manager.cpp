@@ -30,7 +30,8 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
     const std::string &bundleName)
 {
-    EVENT_LOGI("enter pid = %{public}d, uid = %{public}d", pid, uid);
+    EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d), event = %{public}s",
+        bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str());
 
     if (data.GetWant().GetAction().empty()) {
         EVENT_LOGE("the commonEventdata action is null");
@@ -50,9 +51,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         if (!isSystemApp) {
             EVENT_LOGE(
                 "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)",
-                bundleName.c_str(),
-                pid,
-                uid);
+                bundleName.c_str(), pid, uid);
             return false;
         }
     }
@@ -67,24 +66,15 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     eventRecord.isSystemEvent = isSystemEvent;
 
     if (publishInfo.IsSticky()) {
-        const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
-        bool ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(bundleName, permission);
-        if (!ret) {
-            EVENT_LOGE(
-                "No permission to send a sticky common event from %{public}s (pid = %{public}d, uid = %{public}d)",
-                bundleName.c_str(),
-                pid,
-                uid);
+        if (!ProcessStickyEvent(eventRecord)) {
             return false;
         }
-        DelayedSingleton<CommonEventStickyManager>::GetInstance()->UpdateStickyEvent(eventRecord);
     }
 
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
         return false;
     }
-
     controlPtr_->PublishCommonEvent(eventRecord, commonEventListener);
 
     return true;
@@ -94,7 +84,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
     const std::string &bundleName)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d)", bundleName.c_str(), pid, uid);
 
     if (subscribeInfo.GetMatchingSkills().CountEvent() == 0) {
         EVENT_LOGE("the subscriber has no event");
@@ -117,7 +107,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(sptr<IRemoteObject> &common
     EVENT_LOGI("enter");
 
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("InnerCommonEventManager::UnsubscribeCommonEvent:commonEventListener == nullptr");
+        EVENT_LOGE("commonEventListener == nullptr");
         return false;
     }
 
@@ -198,8 +188,24 @@ bool InnerCommonEventManager::Unfreeze(const uid_t &uid)
 
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(uid, false);
 
+    if (!controlPtr_) {
+        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        return false;
+    }
     return controlPtr_->PublishFreezeCommonEvent(uid);
 }
 
+bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record)
+{
+    const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
+    bool ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(record.bundleName, permission);
+    if (!ret) {
+        EVENT_LOGE("No permission to send a sticky common event from %{public}s (pid = %{public}d, uid = %{public}d)",
+            record.bundleName.c_str(), record.pid, record.uid);
+        return ret;
+    }
+    DelayedSingleton<CommonEventStickyManager>::GetInstance()->UpdateStickyEvent(record);
+    return ret;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

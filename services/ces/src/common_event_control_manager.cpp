@@ -23,13 +23,11 @@
 
 namespace OHOS {
 namespace EventFwk {
-
-#define TENSECONDS 10000
 const int LENGTH = 80;
 using frozenRecords = std::map<std::shared_ptr<EventSubscriberRecord>, std::vector<std::shared_ptr<CommonEventRecord>>>;
 
 CommonEventControlManager::CommonEventControlManager()
-    : handler_(nullptr), handlerOrdered_(nullptr), pendingTimeoutMessage_(false), scheduled_(false), TIMEOUT(TENSECONDS)
+    : handler_(nullptr), handlerOrdered_(nullptr), pendingTimeoutMessage_(false), scheduled_(false)
 {
     EVENT_LOGD("enter");
 }
@@ -125,10 +123,10 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
 {
     EVENT_LOGI("enter");
     std::lock_guard<std::mutex> lock(unorderedMutex_);
+    EVENT_LOGI("event = %{public}s, receivers size = %{public}zu",
+        eventRecord->commonEventData->GetWant().GetAction().c_str(), eventRecord->receivers.size());
     for (auto vec : eventRecord->receivers) {
         int index = eventRecord->nextReceiver++;
-        EVENT_LOGD("vec->uid: %{public}d", vec->uid);
-        EVENT_LOGD("vec->isFreeze: %{public}d", vec->isFreeze);
         eventRecord->curReceiver = vec->commonEventListener;
         if (vec->isFreeze) {
             eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
@@ -375,7 +373,6 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         eventRecordPtr->deliveryState[index] = ret;
     } else if (ret == OrderedEventRecord::DELIVERED) {
         if (eventRecordPtr->receivers[index]->isFreeze) {
-            EVENT_LOGD("vec->uid: %{public}d", eventRecordPtr->receivers[index]->uid);
             EVENT_LOGD("vec->isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
                 eventRecordPtr->receivers[index], *eventRecordPtr);
@@ -398,7 +395,8 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         }
 
         eventRecordPtr->state = OrderedEventRecord::RECEIVED;
-
+        EVENT_LOGI("NotifyOrderedEvent event = %{public}s",
+            eventRecordPtr->commonEventData->GetWant().GetAction().c_str());
         receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true, eventRecordPtr->publishInfo->IsSticky());
     }
 
@@ -449,7 +447,6 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
                     return;
                 }
                 receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
-
             }
 
             CancelTimeout();
@@ -1147,6 +1144,5 @@ void CommonEventControlManager::DumpHistoryState(const std::string &event, std::
         state.emplace_back(stateInfo);
     }
 }
-
 }  // namespace EventFwk
 }  // namespace OHOS

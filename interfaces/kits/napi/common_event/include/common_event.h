@@ -48,6 +48,7 @@ struct subscriberInstanceInfo {
 
 static napi_ref g_CommonEventSubscriber = nullptr;
 static std::map<std::shared_ptr<SubscriberInstance>, subscriberInstanceInfo> subscriberInstances;
+static std::mutex subscriberInsMutex;
 
 struct AsyncCallbackInfoSubscribe {
     napi_env env = nullptr;
