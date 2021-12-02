@@ -373,7 +373,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         eventRecordPtr->deliveryState[index] = ret;
     } else if (ret == OrderedEventRecord::DELIVERED) {
         if (eventRecordPtr->receivers[index]->isFreeze) {
-            EVENT_LOGD("vec->isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
+            EVENT_LOGI("vec isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
                 eventRecordPtr->receivers[index], *eventRecordPtr);
             eventRecordPtr->deliveryState[index] = OrderedEventRecord::SKIPPED;
