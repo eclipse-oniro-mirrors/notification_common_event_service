@@ -123,10 +123,10 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
 {
     EVENT_LOGI("enter");
     std::lock_guard<std::mutex> lock(unorderedMutex_);
+    EVENT_LOGI("event = %{public}s, receivers size = %{public}zu",
+        eventRecord->commonEventData->GetWant().GetAction().c_str(), eventRecord->receivers.size());
     for (auto vec : eventRecord->receivers) {
         int index = eventRecord->nextReceiver++;
-        EVENT_LOGD("vec->uid: %{public}d", vec->uid);
-        EVENT_LOGD("vec->isFreeze: %{public}d", vec->isFreeze);
         eventRecord->curReceiver = vec->commonEventListener;
         if (vec->isFreeze) {
             eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
@@ -373,8 +373,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         eventRecordPtr->deliveryState[index] = ret;
     } else if (ret == OrderedEventRecord::DELIVERED) {
         if (eventRecordPtr->receivers[index]->isFreeze) {
-            EVENT_LOGD("vec->uid: %{public}d", eventRecordPtr->receivers[index]->uid);
-            EVENT_LOGD("vec->isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
+            EVENT_LOGI("vec isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
                 eventRecordPtr->receivers[index], *eventRecordPtr);
             eventRecordPtr->deliveryState[index] = OrderedEventRecord::SKIPPED;
@@ -396,7 +395,8 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         }
 
         eventRecordPtr->state = OrderedEventRecord::RECEIVED;
-
+        EVENT_LOGI("NotifyOrderedEvent event = %{public}s",
+            eventRecordPtr->commonEventData->GetWant().GetAction().c_str());
         receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true, eventRecordPtr->publishInfo->IsSticky());
     }
 

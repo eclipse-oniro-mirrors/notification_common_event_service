@@ -22,12 +22,10 @@ namespace EventFwk {
 CommonEventSubscribeInfo::CommonEventSubscribeInfo(const MatchingSkills &matchingSkills)
     : matchingSkills_(matchingSkills), priority_(0), threadMode_(CommonEventSubscribeInfo::ASYNC)
 {
-    EVENT_LOGD("constructor used to create a common event subscriber info instance by matcingSkills");
 }
 
 CommonEventSubscribeInfo::CommonEventSubscribeInfo() : priority_(0), threadMode_(CommonEventSubscribeInfo::ASYNC)
 {
-    EVENT_LOGD("constructor used to create a common event subscriber info instance");
 }
 
 CommonEventSubscribeInfo::CommonEventSubscribeInfo(const CommonEventSubscribeInfo &commonEventSubscribeInfo)
@@ -41,7 +39,6 @@ CommonEventSubscribeInfo::CommonEventSubscribeInfo(const CommonEventSubscribeInf
 
 CommonEventSubscribeInfo::~CommonEventSubscribeInfo()
 {
-    EVENT_LOGD("deconstructor used to destroy a common event subscriber info instance");
 }
 
 void CommonEventSubscribeInfo::SetPriority(const int32_t &priority)

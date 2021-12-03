@@ -178,6 +178,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
     EVENT_LOGI("OnReceiveEvent this = %{public}p", this);
 
     if (this->IsOrderedCommonEvent()) {
+        std::lock_guard<std::mutex> lock(subscriberInsMutex);
         for (auto subscriberInstance : subscriberInstances) {
             EVENT_LOGI("OnReceiveEvent get = %{public}p", subscriberInstance.first.get());
             if (subscriberInstance.first.get() == this) {
@@ -187,10 +188,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         }
     }
 
-    int ret = uv_queue_work(loop,
-        work,
-        [](uv_work_t *work) {},
-        UvQueueWorkOnReceiveEvent);
+    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {}, UvQueueWorkOnReceiveEvent);
     if (ret != 0) {
         delete commonEventDataWorker;
         commonEventDataWorker = nullptr;
@@ -260,7 +258,8 @@ void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_val
     results[PARAM0_EVENT] = GetCallbackErrorValue(env, NO_ERROR);
     results[PARAM1_EVENT] = result;
 
-    NAPI_CALL_RETURN_VOID(env, napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout));
+    NAPI_CALL_RETURN_VOID(env,
+        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout));
 }
 
 void SetPromise(const napi_env &env, const napi_deferred &deferred, const napi_value &result)
@@ -584,16 +583,19 @@ void PaddingAsyncCallbackInfoIsOrderedCommonEvent(const napi_env &env, const siz
 std::shared_ptr<AsyncCommonEventResult> GetAsyncResult(const SubscriberInstance *objectInfo)
 {
     EVENT_LOGI("GetAsyncResult start");
-    if (objectInfo) {
-        for (auto subscriberInstance : subscriberInstances) {
-            EVENT_LOGI("GetAsyncResult SubscriberInstance = %{public}p", subscriberInstance.first.get());
-            if (subscriberInstance.first.get() == objectInfo) {
-                EVENT_LOGI("GetAsyncResult Result = %{public}p", subscriberInstance.second.commonEventResult.get());
-                return subscriberInstance.second.commonEventResult;
-            }
+    if (!objectInfo) {
+        EVENT_LOGE("Invalid objectInfo");
+        return nullptr;
+    }
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (auto subscriberInstance : subscriberInstances) {
+        EVENT_LOGI("SubscriberInstance = %{public}p", subscriberInstance.first.get());
+        if (subscriberInstance.first.get() == objectInfo) {
+            EVENT_LOGI("Result = %{public}p", subscriberInstance.second.commonEventResult.get());
+            return subscriberInstance.second.commonEventResult;
         }
     }
-    EVENT_LOGI("GetAsyncResult end");
+    EVENT_LOGI("No found objectInfo");
     return nullptr;
 }
 
@@ -1828,8 +1830,6 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     EVENT_LOGI("Subscribe new asyncCallbackInfo = %{public}p", asyncCallbackInfo);
     asyncCallbackInfo->subscriber = subscriber;
     asyncCallbackInfo->callback = callback;
-    subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.push_back(asyncCallbackInfo);
-    EVENT_LOGI("Subscribe  AsyncCallbackInfoSubscribe * asyncCallbackInfo = %{public}p", asyncCallbackInfo);
 
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "Subscribe", NAPI_AUTO_LENGTH, &resourceName);
@@ -1849,6 +1849,10 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             EVENT_LOGI("Subscribe napi_create_async_work end");
             AsyncCallbackInfoSubscribe *asyncCallbackInfo = (AsyncCallbackInfoSubscribe *)data;
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
+            std::lock_guard<std::mutex> lock(subscriberInsMutex);
+            subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
+            EVENT_LOGI("subscriberInstances[%{public}p] push %{public}p",
+                asyncCallbackInfo->subscriber.get(), asyncCallbackInfo);
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1954,7 +1958,7 @@ napi_value GetSubscriberPermissionsByPublish(
                     memset_s(str, STR_MAX_SIZE, 0, STR_MAX_SIZE);
                     NAPI_CALL(
                         env, napi_get_value_string_utf8(env, nSubscriberPermission, str, STR_MAX_SIZE - 1, &strLen));
-                    subscriberPermissions.push_back(str);
+                    subscriberPermissions.emplace_back(str);
                 }
             }
         }
@@ -2036,7 +2040,7 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     size_t strLen = 0;
     napi_get_value_string_utf8(env, argv[0], str, STR_MAX_SIZE - 1, &strLen);
     event = str;
-
+    EVENT_LOGI("ParseParametersByPublish event = %{public}s", str);
     // argv[1]: CommonEventPublishData
     if (argc == PUBLISH_MAX_PARA_BY_PUBLISHDATA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
@@ -2174,16 +2178,16 @@ napi_value GetSubscriberByUnsubscribe(
 {
     EVENT_LOGI("GetSubscriberByUnsubscribe start");
 
+    isFind = false;
     SubscriberInstance *commonEventSubscriberPtr = nullptr;
     napi_unwrap(env, value, (void **)&commonEventSubscriberPtr);
     if (!commonEventSubscriberPtr) {
-        EVENT_LOGI("GetSubscriberByUnsubscribe commonEventSubscriberPtr is null");
+        EVENT_LOGI("commonEventSubscriberPtr is null");
         return nullptr;
     }
-    EVENT_LOGI("GetSubscriberByUnsubscribe:commonEventSubscriberPtr = %{public}p", commonEventSubscriberPtr);
-
+    EVENT_LOGI("commonEventSubscriberPtr = %{public}p", commonEventSubscriberPtr);
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
     for (auto subscriberInstance : subscriberInstances) {
-        EVENT_LOGI("GetSubscriberByUnsubscribe get = %{public}p", subscriberInstance.first.get());
         if (subscriberInstance.first.get() == commonEventSubscriberPtr) {
             subscriber = subscriberInstance.first;
             isFind = true;
@@ -2224,10 +2228,9 @@ napi_value ParseParametersByUnsubscribe(const napi_env &env, const size_t &argc,
 void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance> &subscriber)
 {
     EVENT_LOGI("NapiDeleteSubscribe start");
-
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
     auto subscribe = subscriberInstances.find(subscriber);
     if (subscribe != subscriberInstances.end()) {
-        EVENT_LOGI("NapiDeleteSubscribe size = %{public}zu", subscribe->second.asyncCallbackInfo.size());
         for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {
             EVENT_LOGI("NapiDeleteSubscribe ptr = %{public}p", asyncCallbackInfoSubscribe);
             if (asyncCallbackInfoSubscribe->callback != nullptr) {
@@ -2322,25 +2325,19 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
 
 napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &argv, std::vector<std::string> &events)
 {
-    EVENT_LOGI("GetEventsByCreateSubscriber start");
+    EVENT_LOGI("enter");
     napi_valuetype valuetype;
     bool hasProperty = false;
     bool isArray = false;
+    napi_value eventsNapi = nullptr;
     size_t strLen = 0;
     uint32_t length = 0;
     // events
     NAPI_CALL(env, napi_has_named_property(env, argv, "events", &hasProperty));
-    if (!hasProperty) {
-        EVENT_LOGE("Property events expected.");
-        return nullptr;
-    }
-    napi_value eventsNapi = nullptr;
+    NAPI_ASSERT(env, hasProperty, "Property events expected.");
     napi_get_named_property(env, argv, "events", &eventsNapi);
     napi_is_array(env, eventsNapi, &isArray);
-    if (!isArray) {
-        EVENT_LOGE("Wrong argument type. Array expected.");
-        return nullptr;
-    }
+    NAPI_ASSERT(env, isArray, "Wrong argument type. Array expected.");
     napi_get_array_length(env, eventsNapi, &length);
     NAPI_ASSERT(env, length > 0, "The array is empty.");
     for (size_t i = 0; i < length; i++) {
@@ -2350,21 +2347,22 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
         NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
         char str[STR_MAX_SIZE] = {0};
         NAPI_CALL(env, napi_get_value_string_utf8(env, event, str, STR_MAX_SIZE - 1, &strLen));
-        EVENT_LOGI("GetEventsByCreateSubscriber str = %{public}s", str);
-        events.push_back(str);
+        EVENT_LOGI("event = %{public}s", str);
+        events.emplace_back(str);
     }
 
     return NapiGetNull(env);
 }
 
 napi_value GetPublisherPermissionByCreateSubscriber(
-    const napi_env &env, const napi_value &argv, std::string &permission, bool &hasProperty)
+    const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGI("GetPublisherPermissionByCreateSubscriber start");
+    EVENT_LOGI("enter");
 
-    napi_valuetype valuetype;
-    size_t strLen = 0;
+    bool hasProperty = false;
     napi_value result = nullptr;
+    napi_valuetype valuetype = napi_undefined;
+    size_t strLen = 0;
     char str[STR_MAX_SIZE] = {0};
 
     // publisherPermission
@@ -2374,20 +2372,21 @@ napi_value GetPublisherPermissionByCreateSubscriber(
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
-        permission = str;
+        info.SetPermission(str);
     }
 
     return NapiGetNull(env);
 }
 
 napi_value GetPublisherDeviceIdByCreateSubscriber(
-    const napi_env &env, const napi_value &argv, std::string &publisherDeviceId, bool &hasProperty)
+    const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGI("GetPublisherDeviceIdByCreateSubscriber start");
+    EVENT_LOGI("enter");
 
-    napi_valuetype valuetype;
-    size_t strLen = 0;
+    bool hasProperty = false;
     napi_value result = nullptr;
+    napi_valuetype valuetype = napi_undefined;
+    size_t strLen = 0;
     char str[STR_MAX_SIZE] = {0};
 
     // publisherDeviceId
@@ -2397,19 +2396,20 @@ napi_value GetPublisherDeviceIdByCreateSubscriber(
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
-        publisherDeviceId = str;
+        info.SetDeviceId(str);
     }
 
     return NapiGetNull(env);
 }
 
-napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &argv, int &priority, bool &hasProperty)
+napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGI("GetPriorityByCreateSubscriber start");
+    EVENT_LOGI("enter");
 
-    napi_valuetype valuetype;
+    bool hasProperty = false;
     napi_value result = nullptr;
-    int32_t value;
+    napi_valuetype valuetype = napi_undefined;
+    int32_t value = 0;
 
     // priority
     NAPI_CALL(env, napi_has_named_property(env, argv, "priority", &hasProperty));
@@ -2418,84 +2418,79 @@ napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
         NAPI_CALL(env, napi_get_value_int32(env, result, &value));
-        priority = value;
+        info.SetPriority(value);
     }
 
     return NapiGetNull(env);
 }
 
-napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info info)
+napi_value ParseParametersConstructor(
+    const napi_env &env, const napi_callback_info &info, napi_value &thisVar, CommonEventSubscribeInfo &params)
 {
-    EVENT_LOGI("CommonEventSubscriberConstructor start");
-
+    EVENT_LOGI("enter");
     size_t argc = 1;
     napi_value argv[1] = {nullptr};
-    napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr));
-
     NAPI_ASSERT(env, argc >= 1, "Wrong number of arguments");
 
-    // argv[0]:CommonEventSubscribeInfo:events
+    // events: Array<string>
     std::vector<std::string> events;
-    if (GetEventsByCreateSubscriber(env, argv[0], events) == nullptr) {
-        return  NapiGetNull(env);
+    if (!GetEventsByCreateSubscriber(env, argv[0], events)) {
+        return nullptr;
     }
-
-    std::string permission;
-    bool hasPermission = false;
-    if (GetPublisherPermissionByCreateSubscriber(env, argv[0], permission, hasPermission) == nullptr) {
-        return  NapiGetNull(env);
-    }
-
-    std::string publisherDeviceId;
-    bool hasPublisherDeviceId = false;
-    if (GetPublisherDeviceIdByCreateSubscriber(env, argv[0], publisherDeviceId, hasPublisherDeviceId) == nullptr) {
-        return  NapiGetNull(env);
-    }
-
-    int priority;
-    bool hasPriority = false;
-    if (GetPriorityByCreateSubscriber(env, argv[0], priority, hasPriority) == nullptr) {
-        return  NapiGetNull(env);
-    }
-
     MatchingSkills matchingSkills;
     for (const auto &event : events) {
         matchingSkills.AddEvent(event);
     }
-
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    if (hasPermission) {
-        subscribeInfo.SetPermission(permission);
+
+    // publisherPermission?: string
+    if (!GetPublisherPermissionByCreateSubscriber(env, argv[0], subscribeInfo)) {
+        return nullptr;
     }
 
-    if (hasPublisherDeviceId) {
-        subscribeInfo.SetDeviceId(publisherDeviceId);
+    // publisherDeviceId?: string
+    if (!GetPublisherDeviceIdByCreateSubscriber(env, argv[0], subscribeInfo)) {
+        return nullptr;
     }
 
-    if (hasPriority) {
-        subscribeInfo.SetPriority(priority);
+    // priority?: number
+    if (!GetPriorityByCreateSubscriber(env, argv[0], subscribeInfo)) {
+        return nullptr;
+    }
+
+    params = subscribeInfo;
+    return NapiGetNull(env);
+}
+
+napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGI("enter");
+    napi_value thisVar = nullptr;
+    CommonEventSubscribeInfo subscribeInfo;
+    if (!ParseParametersConstructor(env, info, thisVar, subscribeInfo)) {
+        return NapiGetNull(env);
     }
 
     SubscriberInstance *objectInfo = new (std::nothrow) SubscriberInstance(subscribeInfo);
     if (objectInfo == nullptr) {
         EVENT_LOGE("objectInfo is null");
-        return  NapiGetNull(env);
+        return NapiGetNull(env);
     }
-    EVENT_LOGI("CommonEventSubscriberConstructor  objectInfo = %{public}p", objectInfo);
+    EVENT_LOGI("Constructor objectInfo = %{public}p", objectInfo);
 
     napi_wrap(env,
         thisVar,
         objectInfo,
         [](napi_env env, void *data, void *hint) {
             SubscriberInstance *objectInfo = (SubscriberInstance *)data;
-            EVENT_LOGI("CommonEventSubscriberConstructor this = %{public}p, destruct", objectInfo);
-
+            EVENT_LOGI("Constructor destroy %{public}p", objectInfo);
+            std::lock_guard<std::mutex> lock(subscriberInsMutex);
             for (auto subscriberInstance : subscriberInstances) {
-                EVENT_LOGI("CommonEventSubscriberConstructor get = %{public}p", subscriberInstance.first.get());
+                EVENT_LOGI("Constructor get = %{public}p", subscriberInstance.first.get());
                 if (subscriberInstance.first.get() == objectInfo) {
                     for (auto asyncCallbackInfo : subscriberInstance.second.asyncCallbackInfo) {
-                        EVENT_LOGI("CommonEventSubscriberConstructor ptr = %{public}p", asyncCallbackInfo);
+                        EVENT_LOGI("Constructor ptr = %{public}p", asyncCallbackInfo);
                         if (asyncCallbackInfo->callback != nullptr) {
                             napi_delete_reference(env, asyncCallbackInfo->callback);
                         }
@@ -2506,7 +2501,6 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
                     break;
                 }
             }
-
             if (objectInfo) {
                 delete objectInfo;
                 objectInfo = nullptr;
@@ -2515,7 +2509,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
         nullptr,
         nullptr);
 
-    EVENT_LOGI("CommonEventSubscriberConstructor end");
+    EVENT_LOGI("end");
     return thisVar;
 }
 
