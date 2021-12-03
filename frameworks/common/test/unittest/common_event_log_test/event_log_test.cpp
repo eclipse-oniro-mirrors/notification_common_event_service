@@ -48,7 +48,7 @@ void EventFwkLogTest::TearDown()
  * EnvConditions: NA
  * CaseDescription: set log print level
  */
-HWTEST_F(EventFwkLogTest, EventLogWrapper_001, TestSize.Level0)
+HWTEST_F(EventFwkLogTest, EventLogWrapper_001, TestSize.Level1)
 {
     EXPECT_EQ(EventLogLevel::DEBUG, EventLogWrapper::GetLogLevel());
     EventLogWrapper::SetLogLevel(EventLogLevel::INFO);
@@ -63,7 +63,7 @@ HWTEST_F(EventFwkLogTest, EventLogWrapper_001, TestSize.Level0)
  * EnvConditions: NA
  * CaseDescription: normal valid filename
  */
-HWTEST_F(EventFwkLogTest, EventLogWrapper_002, TestSize.Level0)
+HWTEST_F(EventFwkLogTest, EventLogWrapper_002, TestSize.Level1)
 {
     std::string fileName = "../function/EventFwk/test.cpp";
     std::string exceptStr = "test.cpp";
@@ -80,7 +80,7 @@ HWTEST_F(EventFwkLogTest, EventLogWrapper_002, TestSize.Level0)
  * EnvConditions: NA
  * CaseDescription: invalid filename
  */
-HWTEST_F(EventFwkLogTest, EventLogWrapper_003, TestSize.Level0)
+HWTEST_F(EventFwkLogTest, EventLogWrapper_003, TestSize.Level1)
 {
     std::string fileName = "test.cpp";
     std::string exceptStr = "";

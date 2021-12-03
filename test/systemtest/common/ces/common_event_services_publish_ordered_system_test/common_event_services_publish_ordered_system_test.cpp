@@ -247,8 +247,7 @@ private:
 
 class SubscriberAnotherTest : public CommonEventSubscriber {
 public:
-    explicit SubscriberAnotherTest(const CommonEventSubscribeInfo &subscribeInfo)
-        : CommonEventSubscriber(subscribeInfo)
+    explicit SubscriberAnotherTest(const CommonEventSubscribeInfo &subscribeInfo) : CommonEventSubscriber(subscribeInfo)
     {}
 
     ~SubscriberAnotherTest()
@@ -409,7 +408,7 @@ bool CESPublishOrderedEventSystmTest::PublishOrderedCommonEventTest(const Common
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify that the ordered common event was published successfully
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0100, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0100, Function | MediumTest | Level0)
 {
     /* Subscribe */
     // make matching skills

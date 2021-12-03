@@ -58,7 +58,7 @@ const int32_t PRIORITY_LOW = 20;
 class CommonEventServicesSystemTest : public CommonEventSubscriber {
 public:
     explicit CommonEventServicesSystemTest(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CommonEventServicesSystemTest() {};
+    virtual ~CommonEventServicesSystemTest(){};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -78,7 +78,7 @@ void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 class CommonEventServicesSystemTestSubscriber : public CommonEventSubscriber {
 public:
     explicit CommonEventServicesSystemTestSubscriber(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CommonEventServicesSystemTestSubscriber() {};
+    virtual ~CommonEventServicesSystemTestSubscriber(){};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -101,7 +101,7 @@ void CommonEventServicesSystemTestSubscriber::OnReceiveEvent(const CommonEventDa
 class CESPublishOrderTimeOutOne : public CommonEventSubscriber {
 public:
     explicit CESPublishOrderTimeOutOne(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CESPublishOrderTimeOutOne() {};
+    virtual ~CESPublishOrderTimeOutOne(){};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -117,7 +117,7 @@ void CESPublishOrderTimeOutOne::OnReceiveEvent(const CommonEventData &data)
 class CESPublishOrderTimeOutTwo : public CommonEventSubscriber {
 public:
     explicit CESPublishOrderTimeOutTwo(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CESPublishOrderTimeOutTwo() {};
+    virtual ~CESPublishOrderTimeOutTwo(){};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -1367,7 +1367,7 @@ HWTEST_F(cesSystemTest, CES_SendEventSetViscosity_1000, TestSize.Level2)
  * @tc.name:OnReceiveEvent
  * @tc.desc: Verify the function when only set action
  */
-HWTEST_F(cesSystemTest, CES_ReceiveEvent_0100, Function | MediumTest | Level1)
+HWTEST_F(cesSystemTest, CES_ReceiveEvent_0100, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_RECEIVE_ACTIONReceiveEvent_0100";
     std::string eventAction = "TESTEVENT_RECEIVE_ACTIONReceiveEvent_0100";
