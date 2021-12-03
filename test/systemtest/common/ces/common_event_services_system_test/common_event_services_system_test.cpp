@@ -58,7 +58,7 @@ const int32_t PRIORITY_LOW = 20;
 class CommonEventServicesSystemTest : public CommonEventSubscriber {
 public:
     explicit CommonEventServicesSystemTest(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CommonEventServicesSystemTest(){};
+    virtual ~CommonEventServicesSystemTest() {};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -78,7 +78,7 @@ void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 class CommonEventServicesSystemTestSubscriber : public CommonEventSubscriber {
 public:
     explicit CommonEventServicesSystemTestSubscriber(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CommonEventServicesSystemTestSubscriber(){};
+    virtual ~CommonEventServicesSystemTestSubscriber() {};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -101,7 +101,7 @@ void CommonEventServicesSystemTestSubscriber::OnReceiveEvent(const CommonEventDa
 class CESPublishOrderTimeOutOne : public CommonEventSubscriber {
 public:
     explicit CESPublishOrderTimeOutOne(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CESPublishOrderTimeOutOne(){};
+    virtual ~CESPublishOrderTimeOutOne() {};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -117,7 +117,7 @@ void CESPublishOrderTimeOutOne::OnReceiveEvent(const CommonEventData &data)
 class CESPublishOrderTimeOutTwo : public CommonEventSubscriber {
 public:
     explicit CESPublishOrderTimeOutTwo(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CESPublishOrderTimeOutTwo(){};
+    virtual ~CESPublishOrderTimeOutTwo() {};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
