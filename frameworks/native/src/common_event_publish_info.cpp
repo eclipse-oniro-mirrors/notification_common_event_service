@@ -21,14 +21,10 @@ namespace OHOS {
 namespace EventFwk {
 CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false)
 {
-    EVENT_LOGD("constructor used to create a common event publish info instance");
 }
 
 CommonEventPublishInfo::CommonEventPublishInfo(const CommonEventPublishInfo &commonEventPublishInfo)
 {
-    EVENT_LOGD(
-        "constructor used to create a common event publish info instance by copying parameters from an existing one.");
-
     sticky_ = commonEventPublishInfo.sticky_;
     ordered_ = commonEventPublishInfo.ordered_;
     subscriberPermissions_ = commonEventPublishInfo.subscriberPermissions_;
@@ -36,7 +32,6 @@ CommonEventPublishInfo::CommonEventPublishInfo(const CommonEventPublishInfo &com
 
 CommonEventPublishInfo::~CommonEventPublishInfo()
 {
-    EVENT_LOGD("deconstructor used to destory a publish info instance");
 }
 
 void CommonEventPublishInfo::SetSticky(bool sticky)

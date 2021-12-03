@@ -23,23 +23,19 @@ namespace OHOS {
 namespace EventFwk {
 CommonEventData::CommonEventData() : code_(0)
 {
-    EVENT_LOGD("constructor used to create a common event data instance");
 }
 
 CommonEventData::CommonEventData(const Want &want) : want_(want), code_(0)
 {
-    EVENT_LOGD("constructor used to create a common event data instance by want");
 }
 
 CommonEventData::CommonEventData(const Want &want, const int &code, const std::string &data)
     : want_(want), code_(code), data_(data)
 {
-    EVENT_LOGD("constructor used to create a common event data instance by want code data.");
 }
 
 CommonEventData::~CommonEventData()
 {
-    EVENT_LOGD("deconstructor used to destory a common event data instance");
 }
 
 void CommonEventData::SetCode(const int &code)
