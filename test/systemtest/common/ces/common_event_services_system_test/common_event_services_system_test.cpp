@@ -1367,7 +1367,7 @@ HWTEST_F(cesSystemTest, CES_SendEventSetViscosity_1000, TestSize.Level2)
  * @tc.name:OnReceiveEvent
  * @tc.desc: Verify the function when only set action
  */
-HWTEST_F(cesSystemTest, CES_ReceiveEvent_0100, Function | MediumTest | Level1)
+HWTEST_F(cesSystemTest, CES_ReceiveEvent_0100, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_RECEIVE_ACTIONReceiveEvent_0100";
     std::string eventAction = "TESTEVENT_RECEIVE_ACTIONReceiveEvent_0100";
