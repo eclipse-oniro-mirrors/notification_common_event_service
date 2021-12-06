@@ -1378,10 +1378,11 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0100, Function | MediumTest | Level1)
     CommonEventData commonEventData(wantTest);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1419,10 +1420,11 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0200, Function | MediumTest | Level1)
     CommonEventData commonEventData(wantTest);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1461,10 +1463,11 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0300, Function | MediumTest | Level1)
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(stickty);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1503,10 +1506,11 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0400, Function | MediumTest | Level1)
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(stickty);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1548,10 +1552,11 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0500, Function | MediumTest | Level1)
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(stickty);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1593,10 +1598,11 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0600, Function | MediumTest | Level1)
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(stickty);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1712,7 +1718,6 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
 {
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
-    bool result = false;
     bool sysResult = false;
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -1722,12 +1727,12 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     CommonEventPublishInfo publishInfo;
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        result = CommonEventManager::PublishCommonEvent(commonEventData, publishInfo);
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
     // The publisher can send normally, but does not have permission to send system events
-    EXPECT_TRUE(result);
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1758,7 +1763,6 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1400, Function | MediumTest | Level1)
 {
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
-    bool result = false;
     bool sysResult = false;
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -1768,12 +1772,12 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     CommonEventPublishInfo publishInfo;
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        result = CommonEventManager::PublishCommonEvent(commonEventData, publishInfo);
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
     // The publisher can send normally, but does not have permission to send system events
-    EXPECT_TRUE(result);
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1804,7 +1808,6 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1500, Function | MediumTest | Level1)
 {
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
-    bool result = false;
     bool sysResult = false;
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -1814,12 +1817,12 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1500, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     CommonEventPublishInfo publishInfo;
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        result = CommonEventManager::PublishCommonEvent(commonEventData, publishInfo);
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
     // The publisher can send normally, but does not have permission to send system events
-    EXPECT_TRUE(result);
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1858,10 +1861,11 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1600, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     CommonEventPublishInfo publishInfo;
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -2120,10 +2124,11 @@ HWTEST_F(cesSystemTest, CES_SetEventAuthority_0800, Function | MediumTest | Leve
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSubscriberPermissions(permissins);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -2222,10 +2227,11 @@ HWTEST_F(cesSystemTest, CES_SetEventAuthority_1200, Function | MediumTest | Leve
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::POST);
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    if (CommonEventManager::SubscribeCommonEvent(subscriberPtr) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData))) {
-        mtx_.lock();
-    }
+
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData), true);
+
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
