@@ -1340,7 +1340,7 @@ void fuzzTestManager::RegisterBundleMgrProxy()
 
     callFunctionMap_["BundleMgrProxyCleanBundleDataFiles"] = []() {
         std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        temp->CleanBundleDataFiles(GetStringParam());
+        temp->CleanBundleDataFiles(GetStringParam(), GetIntParam());
     };
 
     callFunctionMap_["BundleMgrProxyRegisterBundleStatusCallback"] = []() {
