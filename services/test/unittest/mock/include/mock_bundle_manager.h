@@ -591,7 +591,7 @@ public:
         return true;
     }
     /**
-     * @brief Remove cloned bundle. 
+     * @brief Remove cloned bundle.
      * @param bundleName Indicates the bundle name of remove cloned bundle.
      * @param uid Indicates the uid of remove cloned bundle.
      * @return Returns true if this function is successfully called; returns false otherwise.
@@ -637,7 +637,8 @@ public:
      * @param userId Indicates the user id.
      * @return Returns 0 if the bundle has the permission; returns -1 otherwise.
      */
-    virtual int CheckPermissionByUid(const std::string &bundleName, const std::string &permission, const int userId) override
+    virtual int CheckPermissionByUid(
+        const std::string &bundleName, const std::string &permission, const int userId) override
     {
         return 0;
     }
