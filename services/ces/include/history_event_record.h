@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-
 struct HistorySubscriberRecord {
     struct tm recordTime {};
     std::string bundleName;

@@ -18,7 +18,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-
 const int LENGTH = 80;
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
@@ -102,7 +101,6 @@ std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager
 void CommonEventSubscriberManager::DumpDetailed(
     const std::string &title, const SubscriberRecordPtr &record, const std::string format, std::string &dumpInfo)
 {
-
     char systime[LENGTH];
     strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", &record->recordTime);
 
@@ -285,7 +283,6 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(
 void CommonEventSubscriberManager::GetSubscriberRecordsByEvent(
     const std::string &event, std::vector<SubscriberRecordPtr> &records)
 {
-
     if (event.empty()) {
         records = subscribers_;
     } else {

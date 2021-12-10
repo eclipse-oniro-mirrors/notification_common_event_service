@@ -40,7 +40,6 @@ const std::string DEVICEIDTEST2 = "deviceIdtest2";
 const std::string DEVICEIDTEST3 = "deviceIdtest3";
 const std::string DEVICEIDTEST4 = "deviceIdtest4";
 const std::string DEVICEIDTEST5 = "deviceIdtest5";
-
 }  // namespace
 class ActsCESSubscribeInfoTest : public testing::Test {
 public:
@@ -653,6 +652,5 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_GetMatchingSkills_0100, Fun
     }
     EXPECT_TRUE(result);
 }
-
 }  // namespace EventFwk
 }  // namespace OHOS

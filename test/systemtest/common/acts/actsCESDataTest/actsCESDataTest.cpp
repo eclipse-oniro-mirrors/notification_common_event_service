@@ -36,7 +36,7 @@
 #include "want.h"
 
 #include <gtest/gtest.h>
-#include <time.h>
+#include <ctime>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;

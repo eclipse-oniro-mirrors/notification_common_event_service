@@ -1103,7 +1103,8 @@ napi_value GetData(napi_env env, napi_callback_info info)
 }
 
 napi_value ParseParametersBySetData(
-    const napi_env &env, const napi_value (&argv)[SET_DATA_MAX_PARA], size_t argc, std::string &data, napi_ref &callback)
+    const napi_env &env, const napi_value (&argv)[SET_DATA_MAX_PARA], size_t argc,
+    std::string &data, napi_ref &callback)
 {
     napi_valuetype valuetype;
     size_t strLen = 0;
@@ -1223,7 +1224,8 @@ napi_value SetData(napi_env env, napi_callback_info info)
 }
 
 napi_value ParseParametersBySetCodeAndData(
-    const napi_env &env, const napi_value (&argv)[SET_CODE_AND_DATA_MAX_PARA], size_t argc, int &code, std::string &data, napi_ref &callback)
+    const napi_env &env, const napi_value (&argv)[SET_CODE_AND_DATA_MAX_PARA],
+    size_t argc, int &code, std::string &data, napi_ref &callback)
 {
     napi_valuetype valuetype;
     size_t strLen = 0;

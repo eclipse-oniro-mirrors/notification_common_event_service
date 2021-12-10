@@ -21,18 +21,17 @@
 
 #include "common_event_subscribe_info.h"
 
-#include "testConfigParser.h"
 #include <gtest/gtest.h>
+#include "testConfigParser.h"
 
 using namespace testing::ext;
 
 namespace OHOS {
 namespace EventFwk {
-
 class ActsCommonEventServicesSystemTest : public CommonEventSubscriber {
 public:
     explicit ActsCommonEventServicesSystemTest(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~ActsCommonEventServicesSystemTest(){};
+    virtual ~ActsCommonEventServicesSystemTest() {};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -52,7 +51,7 @@ public:
 
     static StressTestLevel stLevel_;
 };
-StressTestLevel ActsCESCESpublishInfoTest::stLevel_{};
+StressTestLevel ActsCESCESpublishInfoTest::stLevel_ {};
 
 void ActsCESCESpublishInfoTest::SetUpTestCase()
 {

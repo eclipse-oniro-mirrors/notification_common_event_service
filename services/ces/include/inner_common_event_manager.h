@@ -25,7 +25,7 @@ class InnerCommonEventManager {
 public:
     InnerCommonEventManager();
 
-    virtual ~InnerCommonEventManager(){};
+    virtual ~InnerCommonEventManager() {};
 
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,

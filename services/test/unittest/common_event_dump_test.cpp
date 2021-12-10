@@ -177,8 +177,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    ~SubscriberTest2(){
-
+    ~SubscriberTest2() {
     };
 
     virtual void OnReceiveEvent(const CommonEventData &data)
@@ -239,8 +238,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    ~SubscriberTestLast(){
-
+    ~SubscriberTestLast() {
     };
 
     virtual void OnReceiveEvent(const CommonEventData &data)
@@ -1395,7 +1393,6 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1800, TestSize.Level1)
  */
 HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
 {
-
     /* Subscribe */
     // make matching skills
     MatchingSkills matchingSkills;

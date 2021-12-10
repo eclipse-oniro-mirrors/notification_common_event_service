@@ -402,7 +402,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_010, TestSize.Level1)
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
-    struct tm curTime{0};
+    struct tm curTime {0};
 
     int result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         nullptr, commonEventListenerPtr, curTime, 0, 0, "");
@@ -428,7 +428,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_011, TestSize.Level1)
     std::shared_ptr<CommonEventSubscribeInfo> commonEventSubscribeInfo =
         std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
-    struct tm curTime{0};
+    struct tm curTime {0};
 
     int result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         commonEventSubscribeInfo, nullptr, curTime, 0, 0, "");
@@ -457,7 +457,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_012, TestSize.Level1)
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerSp(commonEventListener);
 
-    struct tm curTime{0};
+    struct tm curTime {0};
 
     int result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         commonEventSubscribeInfo, commonEventListenerSp, curTime, 0, 0, "");

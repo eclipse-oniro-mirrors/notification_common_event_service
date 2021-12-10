@@ -64,7 +64,7 @@
 #include "values_bucket.h"
 
 #include <unistd.h>
-#include <signal.h>
+#include <csignal>
 
 #undef private
 #undef protected
@@ -2337,7 +2337,7 @@ void fuzzTestManager::RegisterDataAbilityHelper()
     callFunctionMap_.emplace("DataAbilityHelperQuery", []() {
         std::shared_ptr<OHOS::AppExecFwk::DataAbilityHelper> temp = GetParamDataAbilityHelper();
         auto uri = GetParamUri();
-        std::vector<std::string> columns{};
+        std::vector<std::string> columns {};
         temp->Query(uri, columns, GetParamDataAbilityPredicates());
     });
 
@@ -2356,7 +2356,7 @@ void fuzzTestManager::RegisterDataAbilityHelper()
     callFunctionMap_.emplace("DataAbilityHelperBatchInsert", []() {
         std::shared_ptr<OHOS::AppExecFwk::DataAbilityHelper> temp = GetParamDataAbilityHelper();
         auto uri = GetParamUri();
-        std::vector<NativeRdb::ValuesBucket> values{};
+        std::vector<NativeRdb::ValuesBucket> values {};
         temp->BatchInsert(uri, values);
     });
 }
@@ -2419,7 +2419,7 @@ void fuzzTestManager::RegisterAbilityContext()
 
     callFunctionMap_.emplace("AbilityContextGetExternalFilesDir", []() {
         std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
-        std::string t{};
+        std::string t {};
         temp->GetExternalFilesDir(t);
     });
 
@@ -2633,7 +2633,7 @@ void fuzzTestManager::RegisterAbilityContext()
 
     callFunctionMap_.emplace("AbilityContextRequestPermissionsFromUser", []() {
         std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
-        std::vector<std::string> permissions{};
+        std::vector<std::string> permissions {};
         temp->RequestPermissionsFromUser(permissions, GetIntParam());
     });
 

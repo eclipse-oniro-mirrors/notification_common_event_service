@@ -105,6 +105,5 @@ int MockBundleMgrService::CheckPermission(const std::string &bundleName, const s
 
     return -1;
 }
-
 }  // namespace AppExecFwk
 }  // namespace OHOS

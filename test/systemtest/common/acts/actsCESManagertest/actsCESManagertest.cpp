@@ -54,7 +54,7 @@ int SIGNUMTHIRD = 0;
 class CommonEventServicesSystemTest : public CommonEventSubscriber {
 public:
     explicit CommonEventServicesSystemTest(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CommonEventServicesSystemTest(){};
+    virtual ~CommonEventServicesSystemTest() {};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -76,7 +76,7 @@ void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 class CommonEventServicesSystemTestSubscriber : public CommonEventSubscriber {
 public:
     explicit CommonEventServicesSystemTestSubscriber(const CommonEventSubscribeInfo &subscribeInfo);
-    virtual ~CommonEventServicesSystemTestSubscriber(){};
+    virtual ~CommonEventServicesSystemTestSubscriber() {};
     virtual void OnReceiveEvent(const CommonEventData &data);
 };
 
@@ -107,7 +107,7 @@ public:
 
     static StressTestLevel stLevel_;
 };
-StressTestLevel ActsCESManagertest::stLevel_{};
+StressTestLevel ActsCESManagertest::stLevel_ {};
 
 void ActsCESManagertest::SetUpTestCase()
 {
