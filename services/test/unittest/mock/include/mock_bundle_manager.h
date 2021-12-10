@@ -353,7 +353,7 @@ public:
      * @param bundleName Indicates the bundle name of the application whose data is to be cleared.
      * @return Returns true if the data cleared successfully; returns false otherwise.
      */
-    virtual bool CleanBundleDataFiles(const std::string &bundleName) override
+    virtual bool CleanBundleDataFiles(const std::string &bundleName, const int userId) override
     {
         return true;
     }
@@ -586,7 +586,68 @@ public:
      * @return Returns true if this function is successfully called; returns false otherwise.
      */
     virtual bool NotifyActivityLifeStatus(
-        const std::string &bundleName, const std::string &abilityName, const int64_t launchTime) override
+        const std::string &bundleName, const std::string &abilityName, const int64_t launchTime, const int uid) override
+    {
+        return true;
+    }
+    /**
+     * @brief Remove cloned bundle.
+     * @param bundleName Indicates the bundle name of remove cloned bundle.
+     * @param uid Indicates the uid of remove cloned bundle.
+     * @return Returns true if this function is successfully called; returns false otherwise.
+     */
+    virtual bool RemoveClonedBundle(const std::string &bundleName, const int32_t uid) override
+    {
+        return true;
+    }
+    /**
+     * @brief create bundle clone.
+     * @param bundleName Indicates the bundle name of create bundle clone.
+     * @return Returns true if this function is successfully called; returns false otherwise.
+     */
+    virtual bool BundleClone(const std::string &bundleName) override
+    {
+        return true;
+    }
+    /**
+     * @brief Obtains an array of all group IDs associated with the given bundle name and UID.
+     * @param bundleName Indicates the bundle name.
+     * @param uid Indicates the uid.
+     * @param gids Indicates the group IDs associated with the specified bundle.
+     * @return Returns true if the gids is successfully obtained; returns false otherwise.
+     */
+    virtual bool GetBundleGidsByUid(const std::string &bundleName, const int &uid, std::vector<int> &gids) override
+    {
+        return true;
+    }
+    /**
+     * @brief Query the AbilityInfo by ability.uri in config.json.
+     * @param abilityUri Indicates the uri of the ability.
+     * @param abilityInfos Indicates the obtained AbilityInfos object.
+     * @return Returns true if the AbilityInfo is successfully obtained; returns false otherwise.
+     */
+    virtual bool QueryAbilityInfosByUri(const std::string &abilityUri, std::vector<AbilityInfo> &abilityInfos) override
+    {
+        return true;
+    }
+    /**
+     * @brief Checks whether a specified bundle has been granted a specific permission.
+     * @param bundleName Indicates the name of the bundle to check.
+     * @param permission Indicates the permission to check.
+     * @param userId Indicates the user id.
+     * @return Returns 0 if the bundle has the permission; returns -1 otherwise.
+     */
+    virtual int CheckPermissionByUid(
+        const std::string &bundleName, const std::string &permission, const int userId) override
+    {
+        return 0;
+    }
+    /**
+     * @brief Determine whether the application is in the allow list.
+     * @param bundleName Indicates the bundle Names.
+     * @return Returns true if bundle name in the allow list successfully; returns false otherwise.
+     */
+    virtual bool CheckBundleNameInAllowList(const std::string &bundleName) override
     {
         return true;
     }
