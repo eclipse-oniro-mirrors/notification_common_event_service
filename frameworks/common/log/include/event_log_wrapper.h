@@ -16,8 +16,8 @@
 #ifndef FOUNDATION_EVENT_COMMON_LOG_INCLUDE_EVENT_LOG_WRAPPER_H
 #define FOUNDATION_EVENT_COMMON_LOG_INCLUDE_EVENT_LOG_WRAPPER_H
 
-#include "hilog/log.h"
 #include <string>
+#include "hilog/log.h"
 
 namespace OHOS {
 namespace EventFwk {

@@ -15,8 +15,8 @@
 #include "../include/getparam.h"
 #include <functional>
 #include <random>
-#include <limits.h>
-#include <float.h>
+#include <climits>
+#include <cfloat>
 #include <chrono>
 #include "abs_shared_result_set.h"
 #include "data_ability_predicates.h"
@@ -613,7 +613,6 @@ std::shared_ptr<OHOS::AppExecFwk::ComponentContainer> GetParamComponentContainer
 
 // std::shared_ptr<OHOS::AppExecFwk::AbilityInfo> GetParamAbilityInfo()
 // {
-//     return make_shared<OHOS::AppExecFwk::AbilityInfo>();
 // }
 
 std::shared_ptr<OHOS::AppExecFwk::OHOSApplication> GetParamOHOSApplication()
@@ -871,7 +870,6 @@ sptr<OHOS::AppExecFwk::ICleanCacheCallback> GetParamICleanCacheCallback()
 {
     return sptr<TestICleanCacheCallback>();
 }
-
 sptr<OHOS::AppExecFwk::IBundleStatusCallback> GetParamIBundleStatusCallback()
 {
     return sptr<TestIBundleStatusCallback>();

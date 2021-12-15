@@ -26,7 +26,6 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace EventFwk {
-
 class ActsCESMatchingSkillsTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -36,7 +35,7 @@ public:
 
     static StressTestLevel stLevel_;
 };
-StressTestLevel ActsCESMatchingSkillsTest::stLevel_{};
+StressTestLevel ActsCESMatchingSkillsTest::stLevel_ {};
 
 void ActsCESMatchingSkillsTest::SetUpTestCase()
 {
@@ -1154,6 +1153,5 @@ HWTEST_F(ActsCESMatchingSkillsTest, CES_MatchingSkills_Match_0500, Function | Me
     }
     EXPECT_TRUE(result);
 }
-
 }  // namespace EventFwk
 }  // namespace OHOS

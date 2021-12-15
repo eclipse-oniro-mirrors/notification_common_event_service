@@ -22,17 +22,16 @@
 #include "nlohmann/json.hpp"
 
 namespace OHOS {
+const std::string STRESS_TEST_CONFIG_FILE_PATH {"/data/testconfig/stressconfig.json"};
 
-const std::string STRESS_TEST_CONFIG_FILE_PATH{"/data/testconfig/stressconfig.json"};
-
-const std::string STRESS_TEST_AMS_KEY{"AMS"};
-const std::string STRESS_TEST_BMS_KEY{"BMS"};
-const std::string STRESS_TEST_CES_KEY{"CES"};
+const std::string STRESS_TEST_AMS_KEY {"AMS"};
+const std::string STRESS_TEST_BMS_KEY {"BMS"};
+const std::string STRESS_TEST_CES_KEY {"CES"};
 
 struct StressTestLevel {
-    int32_t AMSLevel{1};
-    int32_t BMSLevel{1};
-    int32_t CESLevel{1};
+    int32_t AMSLevel {1};
+    int32_t BMSLevel {1};
+    int32_t CESLevel {1};
 };
 
 class TestConfigParser {
@@ -51,27 +50,26 @@ public:
         const auto &jsonObjEnd = jsonObj.end();
         if (jsonObj.find(STRESS_TEST_AMS_KEY) != jsonObjEnd) {
             jsonObj.at(STRESS_TEST_AMS_KEY).get_to(stlevel.AMSLevel);
-            if (0 == stlevel.AMSLevel) {
+            if (stlevel.AMSLevel == 0) {
                 stlevel.AMSLevel = 1;
             }
         }
 
         if (jsonObj.find(STRESS_TEST_BMS_KEY) != jsonObjEnd) {
             jsonObj.at(STRESS_TEST_BMS_KEY).get_to(stlevel.BMSLevel);
-            if (0 == stlevel.BMSLevel) {
+            if (stlevel.BMSLevel == 0) {
                 stlevel.BMSLevel = 1;
             }
         }
 
         if (jsonObj.find(STRESS_TEST_CES_KEY) != jsonObjEnd) {
             jsonObj.at(STRESS_TEST_CES_KEY).get_to(stlevel.CESLevel);
-            if (0 == stlevel.CESLevel) {
+            if (stlevel.CESLevel == 0) {
                 stlevel.CESLevel = 1;
             }
         }
     }
 };
-
 }  // namespace OHOS
 
 #endif  // TEST_CONFIG_PARSER_H

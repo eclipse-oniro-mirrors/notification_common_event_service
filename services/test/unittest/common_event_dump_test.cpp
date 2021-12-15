@@ -192,8 +192,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    ~SubscriberTest2(){
-
+    ~SubscriberTest2() {
     };
 
     virtual void OnReceiveEvent(const CommonEventData &data)
@@ -255,8 +254,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    ~SubscriberTestLast(){
-
+    ~SubscriberTestLast() {
     };
 
     virtual void OnReceiveEvent(const CommonEventData &data)

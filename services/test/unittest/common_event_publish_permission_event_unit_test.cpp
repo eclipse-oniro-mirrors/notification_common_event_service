@@ -108,7 +108,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     GTEST_LOG_(INFO)
         << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0100, TestSize.Level1";
     InnerCommonEventManager inner;
-    struct tm curTime{0};
+    struct tm curTime {0};
 
     /* subscriber */
     MatchingSkills matchingSkillsObj;
@@ -148,7 +148,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0200, TestSize.Level1";
     /* subscriber */
     InnerCommonEventManager inner;
-    struct tm curTime{0};
+    struct tm curTime {0};
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("1234");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -188,7 +188,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0300, TestSize.Level1";
     /* subscriber */
     InnerCommonEventManager inner;
-    struct tm curTime{0};
+    struct tm curTime {0};
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("1234");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -228,7 +228,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0400, TestSize.Level1";
     /* subscriber */
     InnerCommonEventManager inner;
-    struct tm curTime{0};
+    struct tm curTime {0};
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("1234");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -1016,7 +1016,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case1");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case1");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1062,7 +1061,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case2");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case2");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1108,7 +1106,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case3");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case7");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1154,7 +1151,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case4");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case15");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1198,7 +1194,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case6");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case15");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1242,7 +1237,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case1");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case1");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1286,7 +1280,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case2");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case2");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1330,7 +1323,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case3");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case7");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1374,7 +1366,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case4");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case15");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1418,7 +1409,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
     bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case6");
-    // inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case15");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);

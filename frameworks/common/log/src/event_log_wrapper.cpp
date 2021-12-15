@@ -14,7 +14,6 @@
  */
 
 #include "event_log_wrapper.h"
-#include <iostream>
 
 namespace OHOS {
 namespace EventFwk {

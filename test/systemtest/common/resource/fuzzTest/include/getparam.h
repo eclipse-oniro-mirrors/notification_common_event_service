@@ -15,7 +15,7 @@
 #ifndef GET_PARAM_H
 #define GET_PARAM_H
 #include <memory>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -225,8 +225,8 @@ public:
 
 class TestCommonEventSubscriber : public CommonEventSubscriber {
 public:
-    TestCommonEventSubscriber(){};
-    ~TestCommonEventSubscriber(){};
+    TestCommonEventSubscriber() {};
+    ~TestCommonEventSubscriber() {};
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
         printf("Fuzz Test Reveive Event\n");
@@ -300,7 +300,6 @@ public:
     virtual ~TestIBundleStatusCallback()
     {}
 };
-
 }  // namespace EventFwk
 }  // namespace OHOS
 #endif

@@ -23,7 +23,6 @@
 #include "nlohmann/json.hpp"
 namespace OHOS {
 namespace EventFwk {
-
 class fuzzTestManager {
 public:
     typedef std::shared_ptr<fuzzTestManager> Ptr;
@@ -46,9 +45,9 @@ private:
     fuzzTestManager(fuzzTestManager &) = delete;
     fuzzTestManager &operator=(const fuzzTestManager &) = delete;
     static Ptr instance_;
-    uint16_t cycle_{};
-    std::unordered_map<std::string, int> remainderMap_{};
-    std::unordered_map<std::string, std::function<void()>> callFunctionMap_{};
+    uint16_t cycle_ {};
+    std::unordered_map<std::string, int> remainderMap_ {};
+    std::unordered_map<std::string, std::function<void()>> callFunctionMap_ {};
 
     const int COLOR_R = 100;
     const int COLOR_G = 100;

@@ -216,7 +216,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0300, Functi
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
     // SubscribeCommonEvent
-    struct tm curTime{0};
+    struct tm curTime {0};
     InnerCommonEventManager innerCommonEventManager;
     EXPECT_EQ(
         true, innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, commonEventListenerPtr, curTime, 0, 0, ""));
@@ -242,7 +242,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0400, Functi
 
     // SubscribeCommonEvent
     InnerCommonEventManager innerCommonEventManager;
-    struct tm curTime{0};
+    struct tm curTime {0};
     EXPECT_EQ(
         false, innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, commonEventListenerPtr, curTime, 0, 0, ""));
 }
@@ -290,7 +290,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0600, Functi
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
     // InsertSubscriber
-    struct tm curTime{0};
+    struct tm curTime {0};
     CommonEventSubscriberManager commonEventSubscriberManager;
     int result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListener, curTime, 0, 0, "bundlename");
@@ -320,7 +320,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0700, Functi
 
     // InsertSubscriber
     CommonEventSubscriberManager commonEventSubscriberManager;
-    struct tm curTime{0};
+    struct tm curTime {0};
     int result =
         commonEventSubscriberManager.InsertSubscriber(nullptr, commonEventListenerPtr, curTime, 0, 0, "bundlename");
     EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
@@ -346,7 +346,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0800, Functi
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // InsertSubscriber
-    struct tm curTime{0};
+    struct tm curTime {0};
     CommonEventSubscriberManager commonEventSubscriberManager;
     int result = commonEventSubscriberManager.InsertSubscriber(subscribeInfoPtr, nullptr, curTime, 0, 0, "bundlename");
     EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
@@ -377,7 +377,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Functi
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
     // InsertSubscriber
-    struct tm curTime{0};
+    struct tm curTime {0};
     CommonEventSubscriberManager commonEventSubscriberManager;
     int result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListenerPtr, curTime, 0, 0, "bundlename");
@@ -408,7 +408,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1000, Functi
     std::vector<std::string> events = subscribeInfo.GetMatchingSkills().GetEvents();
 
     // make record
-    struct tm recordTime{0};
+    struct tm recordTime {0};
     auto record = std::make_shared<EventSubscriberRecord>();
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
     record->commonEventListener = commonEventListenerPtr;
@@ -445,7 +445,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1100, Functi
     std::vector<std::string> events = subscribeInfo.GetMatchingSkills().GetEvents();
 
     // make record
-    struct tm recordTime{0};
+    struct tm recordTime {0};
     auto record = std::make_shared<EventSubscriberRecord>();
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
     record->commonEventListener = commonEventListenerPtr;

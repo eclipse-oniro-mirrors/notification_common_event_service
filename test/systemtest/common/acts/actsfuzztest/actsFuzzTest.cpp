@@ -19,7 +19,6 @@
 using namespace testing::ext;
 namespace OHOS {
 namespace EventFwk {
-
 class ActsFuzzTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -46,6 +45,5 @@ HWTEST_F(ActsFuzzTest, ACTS_FuzzTest_0100, Function | MediumTest | Level1)
     fuzzTestManager::GetInstance()->StartFuzzTest();
     std::cout << "fuzztest end" << std::endl;
 }
-
 }  // namespace EventFwk
 }  // namespace OHOS

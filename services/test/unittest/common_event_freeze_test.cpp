@@ -91,8 +91,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    ~SubscriberTest(){
-
+    ~SubscriberTest() {
     };
 
     virtual void OnReceiveEvent(const CommonEventData &data)
@@ -144,8 +143,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    ~SubscriberTest2(){
-
+    ~SubscriberTest2() {
     };
 
     virtual void OnReceiveEvent(const CommonEventData &data)
@@ -207,8 +205,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    ~SubscriberTestLast(){
-
+    ~SubscriberTestLast() {
     };
 
     virtual void OnReceiveEvent(const CommonEventData &data)
@@ -286,7 +283,6 @@ void CommonEventFreezeTest::TearDown(void)
 bool CommonEventFreezeTest::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber,
     uid_t callingUid, OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
 {
-
     OHOS::sptr<IEventReceive> listener = new CommonEventListener(subscriber);
     if (!listener) {
         return false;
@@ -314,7 +310,6 @@ bool CommonEventFreezeTest::SubscribeCommonEvent(const std::shared_ptr<CommonEve
 bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber, OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
 {
-
     if (commonEventListener == nullptr && publishInfo.IsOrdered()) {
         OHOS::sptr<IEventReceive> listener = new CommonEventListener(subscriber);
         if (!listener) {
