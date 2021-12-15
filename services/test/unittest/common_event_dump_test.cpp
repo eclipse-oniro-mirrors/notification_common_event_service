@@ -250,7 +250,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
 
-    SubscriberTestLast(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    explicit SubscriberTestLast(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     };
@@ -552,7 +552,7 @@ static void SubscribeDoubleEvent(
 }
 
 static void PublishUnorderedEvent(
-    const std::string &event, const std::string &type, const int flag,
+    const std::string &event, const std::string &type,
     const int code, const std::string &data, const std::string &permission)
 {
     Want want;
@@ -560,7 +560,6 @@ static void PublishUnorderedEvent(
     want.AddEntity(ENTITY);
     want.AddEntity(ENTITY2);
     want.SetType(type);
-    want.SetFlags(flag);
 
     OHOS::AppExecFwk::ElementName element;
     element.SetBundleName(BUNDLE);
@@ -586,7 +585,7 @@ static void PublishUnorderedEvent(
 }
 
 static void PublishStickyEvent(
-    const std::string &event, const std::string &type, const int flag,
+    const std::string &event, const std::string &type,
     const int code, const std::string &data, const std::string &permission)
 {
     Want want;
@@ -594,7 +593,6 @@ static void PublishStickyEvent(
     want.AddEntity(ENTITY);
     want.AddEntity(ENTITY2);
     want.SetType(type);
-    want.SetFlags(flag);
 
     OHOS::AppExecFwk::ElementName element;
     element.SetBundleName(BUNDLE);
@@ -666,8 +664,8 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0100, Function | MediumTest | 
     EXPECT_NE(nullptr, listener2);
 
     /* Publish */
-    PublishUnorderedEvent(EVENT, TYPE, FLAG, CODE, DATA, PERMISSION);
-    PublishUnorderedEvent(EVENT2, TYPE2, FLAG2, CODE2, DATA2, PERMISSION2);
+    PublishUnorderedEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
+    PublishUnorderedEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
 
     sleep(1);
 
@@ -697,8 +695,8 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0200, Function | MediumTest | 
     EXPECT_NE(nullptr, listener2);
 
     /* Publish */
-    PublishStickyEvent(EVENT, TYPE, FLAG, CODE, DATA, PERMISSION);
-    PublishStickyEvent(EVENT2, TYPE2, FLAG2, CODE2, DATA2, PERMISSION2);
+    PublishStickyEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
+    PublishStickyEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
 
     sleep(1);
 

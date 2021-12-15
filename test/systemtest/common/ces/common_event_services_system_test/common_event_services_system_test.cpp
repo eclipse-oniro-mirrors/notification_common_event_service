@@ -2319,7 +2319,7 @@ HWTEST_F(cesSystemTest, CES_SetEventAuthority_1100, Function | MediumTest | Leve
 
     struct tm doingTime = {0};
     int64_t seconds = 0;
-	while (!mtx_.try_lock()) {
+    while (!mtx_.try_lock()) {
         EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTime), true);
         seconds = OHOS::GetSecondsBetween(startTime, doingTime);
         if (seconds >= TIME_OUT_SECONDS_TWO) {

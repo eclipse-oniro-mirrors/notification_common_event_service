@@ -271,7 +271,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0500, Function | MediumTes
  * @tc.name: Find events of no subscriber info
  * @tc.desc: Get invalid return value.
  */
-HWTEST_F(CommonEventStickyTest, FindStickyEvents_0600, TestSize.Level0)
+HWTEST_F(CommonEventStickyTest, FindStickyEvents_0600, TestSize.Level1)
 {
     // make a vector of records
     std::vector<std::shared_ptr<CommonEventRecord>> records;
@@ -289,7 +289,7 @@ HWTEST_F(CommonEventStickyTest, FindStickyEvents_0600, TestSize.Level0)
  * @tc.name: Fail to find events of subscriber info
  * @tc.desc: No event would be pushed into common event records.
  */
-HWTEST_F(CommonEventStickyTest, FindStickyEvents_0700, TestSize.Level0)
+HWTEST_F(CommonEventStickyTest, FindStickyEvents_0700, TestSize.Level1)
 {
     // make matching skills
     MatchingSkills matchingSkills;
@@ -315,7 +315,7 @@ HWTEST_F(CommonEventStickyTest, FindStickyEvents_0700, TestSize.Level0)
  * @tc.name: Succeed to find events of subscriber info
  * @tc.desc: Found events would be pushed into common event records.
  */
-HWTEST_F(CommonEventStickyTest, FindStickyEvents_0800, TestSize.Level0)
+HWTEST_F(CommonEventStickyTest, FindStickyEvents_0800, TestSize.Level1)
 {
     // make matching skills
     MatchingSkills matchingSkills;
@@ -369,7 +369,7 @@ HWTEST_F(CommonEventStickyTest, FindStickyEvents_0800, TestSize.Level0)
  * @tc.name: Update an unexisting record
  * @tc.desc: A new record would be added.
  */
-HWTEST_F(CommonEventStickyTest, UpdateStickyEvent_0900, TestSize.Level0)
+HWTEST_F(CommonEventStickyTest, UpdateStickyEvent_0900, TestSize.Level1)
 {
     // make a want
     Want want;
@@ -411,7 +411,7 @@ HWTEST_F(CommonEventStickyTest, UpdateStickyEvent_0900, TestSize.Level0)
  * @tc.name: Update an existing record
  * @tc.desc: The existing record would be updated.
  */
-HWTEST_F(CommonEventStickyTest, UpdateStickyEvent_1000, TestSize.Level0)
+HWTEST_F(CommonEventStickyTest, UpdateStickyEvent_1000, TestSize.Level1)
 {
     // get common event sticky manager
     auto stickyManagerPtr = OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance();
