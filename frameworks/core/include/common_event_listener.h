@@ -16,6 +16,8 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_LISTENER_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_LISTENER_H
 
+#include <mutex>
+
 #include "event_handler.h"
 #include "common_event_subscriber.h"
 #include "event_receive_stub.h"
@@ -43,6 +45,7 @@ private:
     void OnReceiveEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky);
 
 private:
+    std::mutex mutex_;
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber_;
     std::shared_ptr<EventRunner> runner_;
     std::shared_ptr<EventHandler> handler_;

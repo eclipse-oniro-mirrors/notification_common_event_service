@@ -35,7 +35,7 @@ public:
 
     bool PublishCommonEvent(const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener);
 
-    std::shared_ptr<OrderedEventRecord> GetMatchingOrderedReceiver(sptr<IRemoteObject> proxy);
+    std::shared_ptr<OrderedEventRecord> GetMatchingOrderedReceiver(const sptr<IRemoteObject> &proxy);
 
     bool FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int &code,
         const std::string &receiverData, const bool &abortEvent);
@@ -95,24 +95,24 @@ private:
 
     void GetUnorderedEventRecords(const std::string &event, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
 
-    void GetHistoryEventRecords(const std::string &event, std::vector<History_event_record> &records);
+    void GetHistoryEventRecords(const std::string &event, std::vector<HistoryEventRecord> &records);
 
     void DumpStateByCommonEventRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 
     void DumpStateBySubscriberRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 
-    void DumpHistoryStateBySubscriberRecord(const History_event_record &record, std::string &dumpInfo);
+    void DumpHistoryStateBySubscriberRecord(const HistoryEventRecord &record, std::string &dumpInfo);
 
-    void DumpHistoryStateByCommonEventRecord(const History_event_record &record, std::string &dumpInfo);
+    void DumpHistoryStateByCommonEventRecord(const HistoryEventRecord &record, std::string &dumpInfo);
 
-    void EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr);
+    void EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr, bool hasLastSubscribe);
 
 private:
     std::shared_ptr<EventHandler> handler_;
     std::shared_ptr<OrderedEventHandler> handlerOrdered_;
     std::vector<std::shared_ptr<OrderedEventRecord>> orderedEventQueue_;
     std::vector<std::shared_ptr<OrderedEventRecord>> unorderedEventQueue_;
-    std::vector<History_event_record> historyEventRecords_;
+    std::vector<HistoryEventRecord> historyEventRecords_;
     bool pendingTimeoutMessage_;
     bool scheduled_;
     const int64_t TIMEOUT = 10000;  // How long we allow a receiver to run before giving up on it. Unit: ms

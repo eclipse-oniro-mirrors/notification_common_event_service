@@ -122,6 +122,10 @@ bool CommonEventControlManager::GetUnorderedEventHandler()
 bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)
 {
     EVENT_LOGI("enter");
+    if (!eventRecord) {
+        EVENT_LOGI("Invalid event record.");
+        return false;
+    }
     std::lock_guard<std::mutex> lock(unorderedMutex_);
     EVENT_LOGI("event = %{public}s, receivers size = %{public}zu",
         eventRecord->commonEventData->GetWant().GetAction().c_str(), eventRecord->receivers.size());
@@ -149,7 +153,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
         }
     }
 
-    EnqueueHistoryEventRecord(eventRecord);
+    EnqueueHistoryEventRecord(eventRecord, false);
 
     auto it = std::find(unorderedEventQueue_.begin(), unorderedEventQueue_.end(), eventRecord);
     if (it != unorderedEventQueue_.end()) {
@@ -198,7 +202,8 @@ bool CommonEventControlManager::ProcessUnorderedEvent(const CommonEventRecord &e
     return ret;
 }
 
-std::shared_ptr<OrderedEventRecord> CommonEventControlManager::GetMatchingOrderedReceiver(sptr<IRemoteObject> proxy)
+std::shared_ptr<OrderedEventRecord> CommonEventControlManager::GetMatchingOrderedReceiver(
+    const sptr<IRemoteObject> &proxy)
 {
     EVENT_LOGI("enter");
 
@@ -290,7 +295,8 @@ bool CommonEventControlManager::EnqueueOrderedRecord(const std::shared_ptr<Order
     return true;
 }
 
-void CommonEventControlManager::EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr)
+void CommonEventControlManager::EnqueueHistoryEventRecord(
+    const std::shared_ptr<OrderedEventRecord> &eventRecordPtr, bool hasLastSubscribe)
 {
     EVENT_LOGI("enter");
 
@@ -299,7 +305,7 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(const std::shared_ptr<
         return;
     }
 
-    History_event_record record;
+    HistoryEventRecord record;
     record.want = eventRecordPtr->commonEventData->GetWant();
     record.code = eventRecordPtr->commonEventData->GetCode();
     record.data = eventRecordPtr->commonEventData->GetData();
@@ -326,7 +332,7 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(const std::shared_ptr<
         record.receivers.emplace_back(receiver);
     }
 
-    record.resultTo = eventRecordPtr->resultTo;
+    record.hasLastSubscribe = hasLastSubscribe;
     record.deliveryState = eventRecordPtr->deliveryState;
     record.dispatchTime = eventRecordPtr->dispatchTime;
     record.receiverTime = eventRecordPtr->receiverTime;
@@ -439,6 +445,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 
         if ((sp->receivers.size() == 0) || (sp->nextReceiver >= numReceivers) || sp->resultAbort || forceReceive) {
             // No more receivers for this ordered common event, then process the final result receiver
+            bool hasLastSubscribe = (sp->resultTo != nullptr) ? true : false;
             if (sp->resultTo != nullptr) {
                 EVENT_LOGI("Process the final subscriber");
                 sptr<IEventReceive> receiver = iface_cast<IEventReceive>(sp->resultTo);
@@ -447,11 +454,12 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
                     return;
                 }
                 receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
+                sp->resultTo = nullptr;
             }
 
             CancelTimeout();
 
-            EnqueueHistoryEventRecord(sp);
+            EnqueueHistoryEventRecord(sp, hasLastSubscribe);
 
             orderedEventQueue_.erase(orderedEventQueue_.begin());
 
@@ -756,7 +764,7 @@ void CommonEventControlManager::GetOrderedEventRecords(
 }
 
 void CommonEventControlManager::GetHistoryEventRecords(
-    const std::string &event, std::vector<History_event_record> &records)
+    const std::string &event, std::vector<HistoryEventRecord> &records)
 {
     EVENT_LOGI("enter");
     if (event.empty()) {
@@ -870,7 +878,7 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
 }
 
 void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
-    const History_event_record &record, std::string &dumpInfo)
+    const HistoryEventRecord &record, std::string &dumpInfo)
 {
     EVENT_LOGI("enter");
 
@@ -940,7 +948,7 @@ void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
     std::string data = "\tData: " + record.data + "\n";
 
     std::string lastSubscriber;
-    if (record.resultTo) {
+    if (record.hasLastSubscribe) {
         lastSubscriber = "\tHasLastSubscriber: true\n";
     } else {
         lastSubscriber = "\tHasLastSubscriber: false\n";
@@ -1014,7 +1022,7 @@ void CommonEventControlManager::DumpStateBySubscriberRecord(
 }
 
 void CommonEventControlManager::DumpHistoryStateBySubscriberRecord(
-    const History_event_record &record, std::string &dumpInfo)
+    const HistoryEventRecord &record, std::string &dumpInfo)
 {
     EVENT_LOGI("enter");
 
@@ -1117,7 +1125,7 @@ void CommonEventControlManager::DumpHistoryState(const std::string &event, std::
 {
     EVENT_LOGI("enter");
 
-    std::vector<History_event_record> records;
+    std::vector<HistoryEventRecord> records;
     std::lock_guard<std::mutex> lock(historyMutex_);
     GetHistoryEventRecords(event, records);
 
