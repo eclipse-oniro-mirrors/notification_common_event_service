@@ -22,13 +22,13 @@
 namespace OHOS {
 namespace EventFwk {
 struct OrderedEventRecord : public CommonEventRecord {
-    enum EventState_ {
+    enum EventState {
         IDLE = 0,
         RECEIVEING,
         RECEIVED,
     };
 
-    enum DeliveryState_ {
+    enum DeliveryState {
         PENDING = 0,
         DELIVERED,
         SKIPPED,

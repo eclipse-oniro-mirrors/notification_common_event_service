@@ -34,13 +34,13 @@ struct HistorySubscriberRecord {
     {}
 };
 
-struct History_event_record {
-    enum EventState_ {
+struct HistoryEventRecord {
+    enum EventState {
         IDLE = 0,
         RECEIVEING,
         RECEIVED,
     };
-    enum DeliveryState_ {
+    enum DeliveryState {
         PENDING = 0,
         DELIVERED,
         SKIPPED,
@@ -62,21 +62,21 @@ struct History_event_record {
     bool isSystemEvent;
 
     std::vector<HistorySubscriberRecord> receivers;
-    sptr<IRemoteObject> resultTo;
+    bool hasLastSubscribe;
     std::vector<int> deliveryState;
     int64_t dispatchTime;
     int64_t receiverTime;
     int state;
     bool resultAbort;
 
-    History_event_record()
+    HistoryEventRecord()
         : code(0),
           sticky(false),
           ordered(false),
           pid(0),
           uid(0),
           isSystemEvent(false),
-          resultTo(nullptr),
+          hasLastSubscribe(false),
           dispatchTime(0),
           receiverTime(0),
           state(0),

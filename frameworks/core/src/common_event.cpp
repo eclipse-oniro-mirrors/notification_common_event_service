@@ -267,7 +267,6 @@ int CommonEvent::CreateCommonEventListener(
         EVENT_LOGW("subscriber has common event listener");
         return ALREADY_SUBSCRIBED;
     } else {
-
         if (eventListeners_.size() == SUBSCRIBER_MAX_SIZE) {
             EVENT_LOGE("the maximum number of subscriptions has been reached");
             return SUBSCRIBE_FAILD;
