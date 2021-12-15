@@ -31,6 +31,7 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
 {
     EVENT_LOGI("enter");
 
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!IsReady()) {
         EVENT_LOGE("not ready");
         return;
@@ -45,6 +46,7 @@ ErrCode CommonEventListener::Init()
 {
     EVENT_LOGD("ready to init");
 
+    std::lock_guard<std::mutex> lock(mutex_);
     if (runner_ == nullptr) {
         if (!commonEventSubscriber_) {
             EVENT_LOGE("Failed to init with CommonEventSubscriber nullptr");
@@ -90,7 +92,9 @@ bool CommonEventListener::IsReady()
 void CommonEventListener::OnReceiveEvent(
     const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
+
+    std::lock_guard<std::mutex> lock(mutex_);
 
     int code = commonEventData.GetCode();
     std::string data = commonEventData.GetData();
@@ -113,10 +117,13 @@ void CommonEventListener::OnReceiveEvent(
     if ((commonEventSubscriber_->GetAsyncCommonEventResult() != nullptr) && ordered) {
         commonEventSubscriber_->GetAsyncCommonEventResult()->FinishCommonEvent();
     }
+    EVENT_LOGI("end");
 }
 
 void CommonEventListener::Stop()
 {
+    EVENT_LOGI("enter");
+    std::lock_guard<std::mutex> lock(mutex_);
     if (handler_) {
         handler_.reset();
     }

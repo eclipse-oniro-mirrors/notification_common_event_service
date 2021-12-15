@@ -32,6 +32,7 @@ using namespace OHOS::EventFwk;
 namespace {
 const int PID = 0;
 const int UID = 1000;  // system app
+const int PUBLISH_SLEEP = 5;
 }  // namespace
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
@@ -105,6 +106,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
     bool publishResult =
         innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, UID, "bundlename");
     EXPECT_EQ(true, publishResult);
+    sleep(PUBLISH_SLEEP);
 }
 
 /*
@@ -133,4 +135,5 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_02
     bool publishResult =
         innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, 0, "bundlename");
     EXPECT_EQ(false, publishResult);
+    sleep(PUBLISH_SLEEP);
 }
