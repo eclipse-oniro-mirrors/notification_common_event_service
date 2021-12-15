@@ -70,7 +70,7 @@ void CommonEventPublishSystemEventTest::TearDown(void)
 
 class SubscriberTest : public CommonEventSubscriber {
 public:
-    SubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    explicit SubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {}
 
     ~SubscriberTest()

@@ -445,7 +445,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 
         if ((sp->receivers.size() == 0) || (sp->nextReceiver >= numReceivers) || sp->resultAbort || forceReceive) {
             // No more receivers for this ordered common event, then process the final result receiver
-            bool hasLastSubscribe = false;
+            bool hasLastSubscribe = (sp->resultTo != nullptr) ? true : false;
             if (sp->resultTo != nullptr) {
                 EVENT_LOGI("Process the final subscriber");
                 sptr<IEventReceive> receiver = iface_cast<IEventReceive>(sp->resultTo);
@@ -455,7 +455,6 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
                 }
                 receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
                 sp->resultTo = nullptr;
-                hasLastSubscribe = true;
             }
 
             CancelTimeout();
