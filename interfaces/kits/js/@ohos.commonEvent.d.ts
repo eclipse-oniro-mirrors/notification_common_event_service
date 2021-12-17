@@ -880,10 +880,73 @@ declare namespace commonEvent {
     COMMON_EVENT_FOUNDATION_READY = "common.event.FOUNDATION_READY",
 
     /**
+     * Indicates the action of a common event that the phone SIM card state has changed.
+     * This is a protected common event that can only be sent by system.
+     * @since 8
+     */
+    COMMON_EVENT_SIM_STATE_CHANGED = "usual.event.SIM.CARD_STATE_CHANGED",
+
+    /**
      * Indicates the common event Action indicating that the airplane mode status of the device changes.
      * Users can register this event to listen to the change of the airplane mode status of the device.
      */
-    COMMON_EVENT_AIRPLANE_MODE_CHANGED = "usual.event.AIRPLANE_MODE"
+    COMMON_EVENT_AIRPLANE_MODE_CHANGED = "usual.event.AIRPLANE_MODE",
+
+    /**
+     * Indicate the action of a common event that a new sms bas been received by the device.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_SMS_RECEIVE_COMPLETED = "usual.event.SMS_RECEIVE_COMPLETED",
+
+    /**
+     * Indicate the action of a common event that a new sms emergency cell broadcast bas been received by the device.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED = "usual.event.SMS_EMERGENCY_CB_RECEIVE_COMPLETED",
+
+    /**
+     * Indicate the action of a common event that a new sms normal cell broadcast bas been received by the device.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_SMS_CB_RECEIVE_COMPLETED = "usual.event.SMS_CB_RECEIVE_COMPLETED",
+
+    /**
+     * Indicate the action of a common event that a STK command has been received by the device.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_STK_COMMAND = "usual.event.STK_COMMAND",
+
+    /**
+     * Indicate the action of a common event that STK session end.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_STK_SESSION_END = "usual.event.STK_SESSION_END",
+
+    /**
+     * Indicate the action of a common event that the STK phone card state has changed.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_STK_CARD_STATE_CHANGED = "usual.event.STK_CARD_STATE_CHANGED",
+
+    /**
+     * Indicate the action of a common event that an alpha string during call control  has been received by the device.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_STK_ALPHA_IDENTIFIER = "usual.event.STK_ALPHA_IDENTIFIER",
+
+    /**
+     * Indicate the action of a common event that the spn display information has been updated.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_SPN_INFO_UPDATED = "usual.event.SPN_INFO_UPDATED"
   }
 }
 
