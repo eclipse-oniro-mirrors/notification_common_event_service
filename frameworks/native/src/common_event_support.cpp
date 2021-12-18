@@ -971,15 +971,65 @@ const std::string CommonEventSupport::COMMON_EVENT_AIRPLANE_MODE_CHANGED = "usua
 
 /**
  * Indicate the action of a common event that a new sms bas been received by the device.
- * This common event can be triggered only by system applications.
+ * This common event can be triggered only by system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED = "usual.event.SMS_RECEIVE_COMPLETED";
 
 /**
+ * Indicate the action of a common event that a new sms emergency cell broadcast bas been received by the device.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED =
+    "usual.event.SMS_EMERGENCY_CB_RECEIVE_COMPLETED";
+
+/**
+ * Indicate the action of a common event that a new sms normal cell broadcast bas been received by the device.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SMS_CB_RECEIVE_COMPLETED = "usual.event.SMS_CB_RECEIVE_COMPLETED";
+
+/**
+ * Indicate the action of a common event that a STK command has been received by the device.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_STK_COMMAND = "usual.event.STK_COMMAND";
+
+/**
+ * Indicate the action of a common event that STK session end.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_STK_SESSION_END = "usual.event.STK_SESSION_END";
+
+/**
+ * Indicate the action of a common event that the STK phone card state has changed.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_STK_CARD_STATE_CHANGED = "usual.event.STK_CARD_STATE_CHANGED";
+
+/**
+ * Indicate the action of a common event that an alpha string during call control  has been received by the device.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_STK_ALPHA_IDENTIFIER = "usual.event.STK_ALPHA_IDENTIFIER";
+
+/**
  * Indicate the action of a common event that the spn display information has been updated.
- * This common event can be triggered only by system applications.
+ * This common event can be triggered only by system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_SPN_INFO_UPDATED = "usual.event.SPN_INFO_UPDATED";
+
+/**
+ * Indicate the action of a common event that the NITZ time has been updated.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_NITZ_TIME_UPDATED = "usual.event.NITZ_TIME_UPDATED";
+
+/**
+ * Indicate the action of a common event that the NITZ time zone has been updated.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_UPDATED =
+    "usual.event.NITZ_TIMEZONE_UPDATED";
 
 /**
  * Only for test case.
@@ -1116,7 +1166,23 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED);
 
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_CB_RECEIVE_COMPLETED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_STK_COMMAND);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_STK_SESSION_END);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_STK_CARD_STATE_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_STK_ALPHA_IDENTIFIER);
+
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPN_INFO_UPDATED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIME_UPDATED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_UPDATED);
 
     return;
 }

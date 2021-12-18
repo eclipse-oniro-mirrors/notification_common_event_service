@@ -421,14 +421,44 @@ napi_value SupportInit(napi_env env, napi_value exports)
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_FOUNDATION_READY, "COMMON_EVENT_FOUNDATION_READY");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SIM_STATE_CHANGED,
+        "COMMON_EVENT_SIM_STATE_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_AIRPLANE_MODE_CHANGED,
         "COMMON_EVENT_AIRPLANE_MODE_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED,
         "COMMON_EVENT_SMS_RECEIVE_COMPLETED");
-    SetNamedPropertyByStr(
-        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_SPN_INFO_UPDATED, "COMMON_EVENT_SPN_INFO_UPDATED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED,
+        "COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SMS_CB_RECEIVE_COMPLETED,
+        "COMMON_EVENT_SMS_CB_RECEIVE_COMPLETED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_STK_COMMAND,
+        "COMMON_EVENT_STK_COMMAND");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_STK_SESSION_END,
+        "COMMON_EVENT_STK_SESSION_END");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_STK_CARD_STATE_CHANGED,
+        "COMMON_EVENT_STK_CARD_STATE_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_STK_ALPHA_IDENTIFIER,
+        "COMMON_EVENT_STK_ALPHA_IDENTIFIER");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SPN_INFO_UPDATED,
+        "COMMON_EVENT_SPN_INFO_UPDATED");
 
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
