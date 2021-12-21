@@ -16,18 +16,10 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 
-#include <string>
-#include <map>
-#include <set>
-#include <vector>
-
-#include "singleton.h"
-#include "refbase.h"
-#include "iremote_object.h"
-#include "want.h"
 #include "common_event_record.h"
 #include "common_event_subscribe_info.h"
-#include "subscriber_death_recipient.h"
+#include "iremote_object.h"
+#include "singleton.h"
 
 namespace OHOS {
 namespace EventFwk {

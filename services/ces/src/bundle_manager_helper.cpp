@@ -15,7 +15,6 @@
 
 #include "bundle_manager_helper.h"
 #include "bundle_constants.h"
-#include "errors.h"
 #include "event_log_wrapper.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"

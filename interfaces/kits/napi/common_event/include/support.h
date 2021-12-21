@@ -16,13 +16,10 @@
 #ifndef BASE_NOTIFICATION_CES_STANDARD_CESFWK_KITS_NAPI_COMMON_EVENT_INCLUDE_SUPPORT_H
 #define BASE_NOTIFICATION_CES_STANDARD_CESFWK_KITS_NAPI_COMMON_EVENT_INCLUDE_SUPPORT_H
 
-#include <string>
 #include "napi/native_api.h"
 
 namespace OHOS {
 namespace EventFwkNapi {
-void SetNamedPropertyByStr(napi_env env, napi_value dstObj, const std::string &objName, const char *propName);
-
 napi_value SupportInit(napi_env env, napi_value exports);
 }  // namespace EventFwkNapi
 }  // namespace OHOS

@@ -14,14 +14,12 @@
  */
 
 #include "common_event.h"
-#include "napi_common.h"
-#include "support.h"
 
 #include <uv.h>
 
-#include "common_event_manager.h"
 #include "event_log_wrapper.h"
-#include "securec.h"
+#include "napi_common.h"
+#include "support.h"
 
 namespace OHOS {
 namespace EventFwkNapi {
