@@ -870,6 +870,7 @@ sptr<OHOS::AppExecFwk::ICleanCacheCallback> GetParamICleanCacheCallback()
 {
     return sptr<TestICleanCacheCallback>();
 }
+
 sptr<OHOS::AppExecFwk::IBundleStatusCallback> GetParamIBundleStatusCallback()
 {
     return sptr<TestIBundleStatusCallback>();
