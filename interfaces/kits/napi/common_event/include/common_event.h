@@ -16,16 +16,7 @@
 #ifndef BASE_NOTIFICATION_CES_STANDARD_CESFWK_KITS_NAPI_COMMON_EVENT_INCLUDE_COMMON_EVENT_H
 #define BASE_NOTIFICATION_CES_STANDARD_CESFWK_KITS_NAPI_COMMON_EVENT_INCLUDE_COMMON_EVENT_H
 
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
-
-#include "common_event_publish_info.h"
-#include "common_event_subscriber.h"
-
-#include "want.h"
-
+#include "common_event_manager.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 

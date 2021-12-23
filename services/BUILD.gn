@@ -42,7 +42,6 @@ config("ces_services_public_config") {
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//utils/native/base/include",
     "//utils/system/safwk/native/include",
   ]
 }

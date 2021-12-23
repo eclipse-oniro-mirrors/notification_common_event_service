@@ -15,6 +15,7 @@
 
 #include "common_event_subscriber_manager.h"
 #include "event_log_wrapper.h"
+#include "subscriber_death_recipient.h"
 
 namespace OHOS {
 namespace EventFwk {

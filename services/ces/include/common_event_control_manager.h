@@ -16,10 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_CONTROL_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_CONTROL_MANAGER_H
 
-#include "common_event_data.h"
 #include "common_event_permission_manager.h"
-#include "common_event_publish_info.h"
-#include "common_event_record.h"
 #include "common_event_subscriber_manager.h"
 #include "history_event_record.h"
 #include "ordered_event_handler.h"
@@ -70,6 +67,8 @@ private:
 
     bool NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, int index);
 
+    void SetTime(int recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage);
+
     bool SetTimeout(int64_t timeoutTime);
 
     bool CancelTimeout();
@@ -79,15 +78,13 @@ private:
 
     int CheckPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
-    bool CheckSubcriberPermission(const Permission &permission, const EventSubscriberRecord &subscriberRecord);
+    bool CheckSubcriberPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
-    void SetTime(int recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage);
+    bool CheckSubscriberRequiredPermission(const std::string &subscriberRequiredPermission,
+        const CommonEventRecord &eventRecord, const EventSubscriberRecord &subscriberRecord);
 
-    void CheckSubscriberRequiredPermission(const std::string &subscriberRequiredPermission,
-        const CommonEventRecord &eventRecord, const EventSubscriberRecord &subscriberRecord, bool &skip);
-
-    void CheckPublisherRequiredPermissions(const std::vector<std::string> &publisherRequiredPermissions,
-        const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord, bool &skip);
+    bool CheckPublisherRequiredPermissions(const std::vector<std::string> &publisherRequiredPermissions,
+        const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
     bool NotifyFreezeEvents(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 

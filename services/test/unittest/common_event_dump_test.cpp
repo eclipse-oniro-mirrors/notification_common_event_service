@@ -190,10 +190,10 @@ public:
     {
         innerCommonEventManager_ = innerCommonEventManager;
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
-    };
+    }
 
-    ~SubscriberTest2() {
-    };
+    ~SubscriberTest2()
+    {}
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
@@ -206,7 +206,7 @@ public:
             GTEST_LOG_(INFO) << "ProcessSubscriberTest2Case3:  start";
         } else {
         }
-    };
+    }
 
 private:
     void ProcessSubscriberTest2Case1(CommonEventData data)
@@ -247,15 +247,15 @@ public:
     SubscriberTestLast() : CommonEventSubscriber()
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
-    };
+    }
 
     explicit SubscriberTestLast(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
-    };
+    }
 
-    ~SubscriberTestLast() {
-    };
+    ~SubscriberTestLast()
+    {}
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
@@ -266,7 +266,7 @@ public:
             ProcessSubscriberTestLastCase2(data);
         } else {
         }
-    };
+    }
 
 private:
     void ProcessSubscriberTestLastCase1(CommonEventData data)

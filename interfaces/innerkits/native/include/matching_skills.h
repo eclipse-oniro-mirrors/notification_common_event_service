@@ -16,9 +16,6 @@
 #ifndef FOUNDATION_EVENT_CESFWK_KITS_NATIVE_INCLUDE_MATCHING_SKILLS_H
 #define FOUNDATION_EVENT_CESFWK_KITS_NATIVE_INCLUDE_MATCHING_SKILLS_H
 
-#include <string>
-#include <vector>
-
 #include "parcel.h"
 #include "want.h"
 

@@ -89,10 +89,10 @@ public:
     SubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
-    };
+    }
 
-    ~SubscriberTest() {
-    };
+    ~SubscriberTest()
+    {}
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
@@ -103,7 +103,7 @@ public:
             ProcessSubscriberTestCase2(data);
         } else {
         }
-    };
+    }
 
 private:
     void ProcessSubscriberTestCase1(CommonEventData data)
@@ -141,10 +141,10 @@ public:
     SubscriberTest2(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
-    };
+    }
 
-    ~SubscriberTest2() {
-    };
+    ~SubscriberTest2()
+    {}
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
@@ -155,7 +155,7 @@ public:
             ProcessSubscriberTest2Case2(data);
         } else {
         }
-    };
+    }
 
 private:
     void ProcessSubscriberTest2Case1(CommonEventData data)
@@ -198,15 +198,15 @@ public:
     SubscriberTestLast() : CommonEventSubscriber()
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
-    };
+    }
 
     SubscriberTestLast(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
-    };
+    }
 
-    ~SubscriberTestLast() {
-    };
+    ~SubscriberTestLast()
+    {}
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
@@ -217,7 +217,7 @@ public:
             ProcessSubscriberTestLastCase2(data);
         } else {
         }
-    };
+    }
 
 private:
     void ProcessSubscriberTestLastCase1(CommonEventData data)
