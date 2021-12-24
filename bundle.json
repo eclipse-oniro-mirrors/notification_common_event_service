@@ -1,10 +1,10 @@
 {
-    "name": "@ohos/telephony_core_service",
+    "name": "@ohos/notification_ces_standard",
     "version": "",
-    "description": "支持蜂窝通话功能（CS&IMS通话）",
+    "description": "为应用程序提供订阅、发布、退订公共事件的能力",
     "homePage": "https://gitee.com/openharmony",
     "license": "Apache V2",
-    "repository": "https://gitee.com/openharmony/telephony_core_service",
+    "repository": "https://gitee.com/openharmony/notification_ces_standard",
     "domain": "os",
     "language": "",
     "publishAs": "code-segment",
@@ -14,9 +14,9 @@
         "base"
     ],
     "keywords": [
-        "telephony",
-        "core",
-        "service"
+        "notification",
+        "ces",
+        "standard"
     ],
     "envs": [],
     "dirs": [],
@@ -33,13 +33,13 @@
         }
     ],
     "segment": {
-        "destPath": "base/telephony/core_service"
+        "destPath": "base/notification/ces_standard"
     },
     "component": {
-        "name": "cellular_call",
-        "subsystem": "telephony",
+        "name": "common_event_service",
+        "subsystem": "notification",
         "syscap": [
-            "SystemCapability.Telephony.CellularCall"
+            "SystemCapability.CommonEventService"
         ],
         "features": [],
         "adapted_system_type": [
