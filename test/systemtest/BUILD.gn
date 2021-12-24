@@ -23,7 +23,7 @@ group("systemtest") {
   testonly = true
 
   deps = [
-    "common/acts:actsCEStest_ces",
-    "common/ces:systemtest_ces",
+    #"common/acts:actsCEStest_ces",
+    #"common/ces:systemtest_ces",
   ]
 }

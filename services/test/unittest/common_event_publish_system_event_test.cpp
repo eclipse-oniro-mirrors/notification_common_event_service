@@ -77,13 +77,18 @@ public:
     {}
 
     virtual void OnReceiveEvent(const CommonEventData &data)
-    {}
+    {
+        GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::Subscriber OnReceiveEvent ";
+        std::string action = data.GetWant().GetAction();
+        std::string event = GetSubscribeInfo().GetMatchingSkills().GetEvent(0);
+        EXPECT_EQ(action, event);
+    }
 };
 
 /*
  * @tc.number: CommonEventPublishSystemEventTest_0100
  * @tc.name: test PublishCommonEvent
- * @tc.desc: Verify Publish Systme CommonEvent success
+ * @tc.desc: Verify Publish System CommonEvent success
  */
 HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0100, Function | MediumTest | Level1)
 {
@@ -112,7 +117,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
 /*
  * @tc.number: CommonEventPublishSystemEventTest_0200
  * @tc.name: test PublishCommonEvent
- * @tc.desc: Verify Publish Systme CommonEvent fail because is not systemapp
+ * @tc.desc: Verify Publish System CommonEvent fail because is not systemapp
  */
 HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0200, Function | MediumTest | Level1)
 {
@@ -136,4 +141,106 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_02
         innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, 0, "bundlename");
     EXPECT_EQ(false, publishResult);
     sleep(PUBLISH_SLEEP);
+}
+
+/*
+ * @tc.number: CommonEventPublishSystemEventTest_0300
+ * @tc.name: test PublishCommonEvent
+ * @tc.desc: Verify Publish mapped System CommonEvent
+ */
+HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0300, Function | MediumTest | Level1)
+{
+    /* Subscribe */
+
+    // make subcriber info
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_TEST_ACTION1);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+
+    // make subscriber
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    // make common event listner
+    OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
+
+    // SubscribeCommonEvent
+    struct tm curTime{0};
+    InnerCommonEventManager innerCommonEventManager;
+    bool subscribeResult = innerCommonEventManager.SubscribeCommonEvent(
+        subscribeInfo, commonEventListenerPtr, curTime, PID, 0, "bundlename");
+    EXPECT_EQ(true, subscribeResult);
+
+    /* Publish */
+
+    // make a want
+    Want want;
+    want.SetAction(CommonEventSupport::COMMON_EVENT_TEST_ACTION2);
+
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetOrdered(false);
+
+    // publish system event
+    bool publishResult =
+        innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, 0, "bundlename");
+    sleep(1);
+    EXPECT_EQ(true, publishResult);
+
+    innerCommonEventManager.UnsubscribeCommonEvent(commonEventListenerPtr);
+}
+
+/*
+ * @tc.number: CommonEventPublishSystemEventTest_0300
+ * @tc.name: test PublishCommonEvent
+ * @tc.desc: Verify Publish mapped System CommonEvent
+ */
+HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0400, Function | MediumTest | Level1)
+{
+    /* Subscribe */
+
+    // make subcriber info
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_TEST_ACTION2);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+
+    // make subscriber
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    // make common event listner
+    OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
+
+    // SubscribeCommonEvent
+    struct tm curTime{0};
+    InnerCommonEventManager innerCommonEventManager;
+    bool subscribeResult = innerCommonEventManager.SubscribeCommonEvent(
+        subscribeInfo, commonEventListenerPtr, curTime, PID, 0, "bundlename");
+    EXPECT_EQ(true, subscribeResult);
+
+    /* Publish */
+
+    // make a want
+    Want want;
+    want.SetAction(CommonEventSupport::COMMON_EVENT_TEST_ACTION1);
+
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetOrdered(false);
+
+    // publish system event
+    bool publishResult =
+        innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, 0, "bundlename");
+    sleep(1);
+    EXPECT_EQ(true, publishResult);
+
+    innerCommonEventManager.UnsubscribeCommonEvent(commonEventListenerPtr);
 }
