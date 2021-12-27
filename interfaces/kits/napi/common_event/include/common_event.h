@@ -37,7 +37,7 @@ struct subscriberInstanceInfo {
     std::shared_ptr<AsyncCommonEventResult> commonEventResult = nullptr;
 };
 
-static napi_ref g_CommonEventSubscriber = nullptr;
+static thread_local napi_ref g_CommonEventSubscriber = nullptr;
 static std::map<std::shared_ptr<SubscriberInstance>, subscriberInstanceInfo> subscriberInstances;
 static std::mutex subscriberInsMutex;
 
