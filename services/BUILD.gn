@@ -55,6 +55,7 @@ ohos_shared_library("cesfwk_services") {
     "${ces_services_path}/src/common_event_permission_manager.cpp",
     "${ces_services_path}/src/common_event_sticky_manager.cpp",
     "${ces_services_path}/src/common_event_subscriber_manager.cpp",
+    "${ces_services_path}/src/common_event_support_mapper.cpp",
     "${ces_services_path}/src/inner_common_event_manager.cpp",
     "${ces_services_path}/src/ordered_event_handler.cpp",
     "${ces_services_path}/src/publish_manager.cpp",

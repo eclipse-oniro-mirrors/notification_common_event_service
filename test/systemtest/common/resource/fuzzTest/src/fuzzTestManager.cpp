@@ -2014,17 +2014,12 @@ void fuzzTestManager::RegisterAbility()
 
     callFunctionMap_.emplace("AbilityOnKeyDown", []() {
         std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        temp->OnKeyDown(1, KeyEvent());
+        temp->OnKeyDown(MMI::KeyEvent::Create());
     });
 
     callFunctionMap_.emplace("AbilityOnKeyUp", []() {
         std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        temp->OnKeyUp(1, KeyEvent());
-    });
-
-    callFunctionMap_.emplace("AbilityOnTouchEvent", []() {
-        std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        temp->OnTouchEvent(TouchEvent());
+        temp->OnKeyUp(MMI::KeyEvent::Create());
     });
 
     callFunctionMap_.emplace("AbilityOnConnect", []() {

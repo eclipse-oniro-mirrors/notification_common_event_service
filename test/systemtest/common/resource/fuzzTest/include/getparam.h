@@ -127,7 +127,6 @@ std::shared_ptr<OHOS::AppExecFwk::AbilityHandler> GetParamAbilityHandler();
 std::shared_ptr<OHOS::AppExecFwk::AbilityStartSetting> GetParamAbilityStartSetting();
 std::shared_ptr<OHOS::AppExecFwk::Ability> GetParamAbility();
 std::shared_ptr<OHOS::AppExecFwk::OHOSApplication> GetParamOHOSApplication();
-std::shared_ptr<OHOS::KeyEvent> GetParamKeyEvent();
 OHOS::Uri GetParamUri();
 
 NativeRdb::ValuesBucket GetParamValuesBucket();

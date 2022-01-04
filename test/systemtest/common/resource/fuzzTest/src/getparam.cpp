@@ -620,11 +620,6 @@ std::shared_ptr<OHOS::AppExecFwk::OHOSApplication> GetParamOHOSApplication()
     return make_shared<OHOS::AppExecFwk::OHOSApplication>();
 }
 
-std::shared_ptr<OHOS::KeyEvent> GetParamKeyEvent()
-{
-    return make_shared<OHOS::KeyEvent>();
-}
-
 OHOS::Uri GetParamUri()
 {
     return OHOS::Uri(GetStringParam());
@@ -870,6 +865,7 @@ sptr<OHOS::AppExecFwk::ICleanCacheCallback> GetParamICleanCacheCallback()
 {
     return sptr<TestICleanCacheCallback>();
 }
+
 sptr<OHOS::AppExecFwk::IBundleStatusCallback> GetParamIBundleStatusCallback()
 {
     return sptr<TestIBundleStatusCallback>();
