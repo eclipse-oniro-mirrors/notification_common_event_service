@@ -16,10 +16,11 @@
 #include "common_event_command.h"
 
 #include <getopt.h>
-#include "common_event_manager.h"
+
 #include "common_event.h"
-#include "singleton.h"
+#include "common_event_manager.h"
 #include "event_log_wrapper.h"
+#include "singleton.h"
 
 using namespace OHOS::AAFwk;
 

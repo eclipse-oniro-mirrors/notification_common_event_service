@@ -247,7 +247,8 @@ private:
 
 class SubscriberAnotherTest : public CommonEventSubscriber {
 public:
-    explicit SubscriberAnotherTest(const CommonEventSubscribeInfo &subscribeInfo) : CommonEventSubscriber(subscribeInfo)
+    explicit SubscriberAnotherTest(const CommonEventSubscribeInfo &subscribeInfo)
+        : CommonEventSubscriber(subscribeInfo)
     {}
 
     ~SubscriberAnotherTest()

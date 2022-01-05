@@ -14,12 +14,15 @@
  */
 
 #include "inner_common_event_manager.h"
+
 #include "bundle_manager_helper.h"
-#include "common_event_support.h"
-#include "common_event_subscriber_manager.h"
 #include "common_event_sticky_manager.h"
+#include "common_event_subscriber_manager.h"
+#include "common_event_support.h"
+#include "common_event_support_mapper.h"
 #include "event_log_wrapper.h"
 #include "system_time.h"
+#include "want.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -76,6 +79,16 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         return false;
     }
     controlPtr_->PublishCommonEvent(eventRecord, commonEventListener);
+
+    std::string mappedSupport = "";
+    if (DelayedSingleton<CommonEventSupportMapper>::GetInstance()->GetMappedSupport(
+        eventRecord.commonEventData->GetWant().GetAction(), mappedSupport)) {
+        Want want = eventRecord.commonEventData->GetWant();
+        want.SetAction(mappedSupport);
+        CommonEventRecord mappedEventRecord = eventRecord;
+        mappedEventRecord.commonEventData->SetWant(want);
+        controlPtr_->PublishCommonEvent(mappedEventRecord, commonEventListener);
+    }
 
     return true;
 }
