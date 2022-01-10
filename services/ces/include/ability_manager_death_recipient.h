@@ -13,22 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef SUBSCRIBER_DEATH_RECIPIENT_H
-#define SUBSCRIBER_DEATH_RECIPIENT_H
+#ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_ABILITY_MANAGER_DEATH_RECIPIENT_H
+#define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_ABILITY_MANAGER_DEATH_RECIPIENT_H
 
 #include "iremote_object.h"
 
 namespace OHOS {
 namespace EventFwk {
-class SubscriberDeathRecipient : public IRemoteObject::DeathRecipient {
+class AbilityManagerDeathRecipient : public IRemoteObject::DeathRecipient {
 public:
-    SubscriberDeathRecipient() = default;
-
-    virtual ~SubscriberDeathRecipient() = default;
-
-    virtual void OnRemoteDied(const wptr<IRemoteObject> &remote);
+    void OnRemoteDied(const wptr<IRemoteObject> &wptrDeath) override;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
 
-#endif  // !defined(SUBSCRIBER_DEATH_RECIPIENT_H)
+#endif  // FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_ABILITY_MANAGER_DEATH_RECIPIENT_H

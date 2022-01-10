@@ -14,6 +14,7 @@
  */
 
 #include "common_event_manager_service.h"
+
 #include "bundle_manager_helper.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
@@ -181,7 +182,8 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
         recordTime,
         pid,
         uid,
-        bundleName);
+        bundleName,
+        this);
     return handler_->PostTask(PublishCommonEventFunc);
 }
 
