@@ -377,7 +377,8 @@ bool CommonEventDumpTest::PublishCommonEvent(const CommonEventData &data, const 
         recordTime,
         callingPid,
         callingUid,
-        bundleName);
+        bundleName,
+        nullptr);
     return handler_->PostTask(PublishCommonEventFunc);
 }
 
