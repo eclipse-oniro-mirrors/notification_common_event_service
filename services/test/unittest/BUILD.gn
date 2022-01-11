@@ -80,6 +80,7 @@ ohos_unittest("common_event_publish_system_event_test") {
     "aafwk_standard:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:libeventhandler",
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -117,6 +118,7 @@ ohos_unittest("common_event_dump_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -152,6 +154,7 @@ ohos_unittest("common_event_freeze_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -187,6 +190,7 @@ ohos_unittest("common_event_sticky_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -222,6 +226,7 @@ ohos_unittest("common_event_subscribe_unit_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -256,6 +261,7 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -291,6 +297,7 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -326,6 +333,7 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -361,6 +369,7 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
   ]
 
   external_deps = [
+    "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
