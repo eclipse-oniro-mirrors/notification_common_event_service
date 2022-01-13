@@ -776,7 +776,7 @@ OHOS::AppExecFwk::ApplicationFlag GetParamApplicationFlag()
     if (GetBoolParam()) {
         return OHOS::AppExecFwk::ApplicationFlag::GET_BASIC_APPLICATION_INFO;
     } else {
-        return OHOS::AppExecFwk::ApplicationFlag::GET_APPLICATION_INFO_WITH_PERMS;
+        return OHOS::AppExecFwk::ApplicationFlag::GET_APPLICATION_INFO_WITH_PERMISSION;
     }
 }
 
