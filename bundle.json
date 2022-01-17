@@ -1,0 +1,136 @@
+{
+    "name": "@ohos/common_event_service",
+    "version": "",
+    "description": "为应用程序提供订阅、发布、退订公共事件的能力",
+    "homePage": "https://gitee.com/openharmony",
+    "license": "Apache V2",
+    "repository": "https://gitee.com/openharmony/notification_ces_standard",
+    "domain": "os",
+    "language": "",
+    "publishAs": "code-segment",
+    "private": false,
+    "scripts": {},
+    "tags": [
+        "base"
+    ],
+    "keywords": [
+        "notification",
+        "ces"
+    ],
+    "envs": [],
+    "dirs": [],
+    "author": {
+        "name": "",
+        "email": "",
+        "url": ""
+    },
+    "contributors": [
+        {
+            "name": "",
+            "email": "",
+            "url": ""
+        }
+    ],
+    "segment": {
+        "destPath": "base/notification/ces_standard"
+    },
+    "component": {
+        "name": "ces_standard",
+        "subsystem": "notification",
+        "syscap": [
+            "SystemCapability.CommonEventService"
+        ],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "aafwk_standard",
+                "appexecfwk_standard",
+                "hiviewdfx_hilog_native",
+                "ipc",
+                "samgr_standard",
+                "dmsfwk_standard",
+                "napi",
+                "permission_standard"
+            ],
+            "third_party": [
+                "libuv",
+                "node",
+                "jsoncpp",
+                "json"
+            ]
+        },
+        "build": {
+            "sub_component": [
+                "//base/notification/ces_standard/frameworks/common:libevent_common",
+                "//base/notification/ces_standard/frameworks/core:cesfwk_core",
+                "//base/notification/ces_standard/frameworks/native:cesfwk_innerkits",
+                "//base/notification/ces_standard/interfaces/kits/napi:napi_packages",
+                "//base/notification/ces_standard/sa_profile:event_sa_profile",
+                "//base/notification/ces_standard/services:cesfwk_services",
+                "//base/notification/ces_standard/tools:tools_target"],
+            "inner_kits": [
+            {
+                "header": {
+                    "header_base" : "//base/notification/ces_standard/frameworks/core/include",
+                    "header_files": [
+                      "common_event_death_recipient.h",
+                      "common_event_listener.h",
+                      "common_event_proxy.h",
+                      "common_event_stub.h",
+                      "common_event.h",
+                      "event_receive_proxy.h",
+                      "event_receive_stub.h",
+                      "icommon_event.h",
+                      "ievent_receive.h"
+                    ]
+                  },
+                  "name":"//base/notification/ces_standard/frameworks/core:cesfwk_core"
+                },
+                {
+                  "header": {
+                    "header_base" : "//base/notification/ces_standard/interfaces/innerkits/native/include",
+                    "header_files": [
+                      "async_common_event_result.h",
+                      "common_event_data.h",
+                      "common_event_manager.h",
+                      "common_event_publish_info.h",
+                      "common_event_subscribe_info.h",
+                      "common_event_subscriber.h",
+                      "common_event_support.h",
+                      "matching_skills.h"
+                    ]
+                  },
+                  "name":"//base/notification/ces_standard/frameworks/native:cesfwk_innerkits"
+                },
+                {
+                  "header": {
+                    "header_base" : "//base/notification/ces_standard/services/ces/include",
+                    "header_files": [
+                      "common_event_control_manager.h",
+                      "common_event_manager_service.h",
+                      "common_event_sticky_manager.h",
+                      "common_event_subscriber_manager.h",
+                      "inner_common_event_manager.h"
+                    ]
+                  },
+                  "name":"//base/notification/ces_standard/services:cesfwk_services"
+                }
+            ],
+            "test": [
+                "//base/notification/ces_standard/frameworks/common/test:unittest",
+                "//base/notification/ces_standard/frameworks/native/test/unittest:unittest",
+                "//base/notification/ces_standard/services/test/moduletest:moduletest",
+                "//base/notification/ces_standard/services/test/unittest:unittest",
+                "//base/notification/ces_standard/test/systemtest:systemtest",
+                "//base/notification/ces_standard/tools:moduletest",
+                "//base/notification/ces_standard/tools:systemtest",
+                "//base/notification/ces_standard/tools:unittest"
+            ]
+        }
+    }
+}
