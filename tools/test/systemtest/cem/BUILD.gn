@@ -16,6 +16,25 @@ import("//build/test.gni")
 
 module_output_path = "ces_standard/tools"
 
+config("tools_cem_test_config") {
+  include_dirs = [
+    "${aafwk_path}/frameworks/kits/ability/native/include",
+    "${aafwk_path}/interfaces/innerkits/ability_manager/include",
+    "${aafwk_path}/interfaces/innerkits/base/include",
+    "${aafwk_path}/interfaces/innerkits/want/include/ohos/aafwk/content",
+    "${aafwk_path}/services/abilitymgr/include",
+    "${aafwk_path}/services/common/include",
+    "${aafwk_path}/tools/aa/include",
+    "${appexecfwk_path}/interfaces/innerkits/appexecfwk_base/include",
+    "${appexecfwk_path}/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
+    "${appexecfwk_path}/interfaces/innerkits/libeventhandler/include",
+    "${appexecfwk_path}/tools/bm/include",
+    "${tools_path}/cem/include",
+    "//foundation/distributedschedule/safwk/services/safwk/include",
+    "//utils/native/base/include",
+  ]
+}
+
 ohos_systemtest("common_event_command_dump_system_test") {
   module_out_path = module_output_path
 
@@ -31,10 +50,7 @@ ohos_systemtest("common_event_command_dump_system_test") {
     "common_event_command_dump_system_test.cpp",
   ]
 
-  configs = [
-    "${appexecfwk_path}/tools/bm:tools_bm_config",
-    "${tools_path}/cem:tools_cem_config",
-  ]
+  configs = [ ":tools_cem_test_config" ]
 
   cflags = []
   if (target_cpu == "arm") {
@@ -73,10 +89,7 @@ ohos_systemtest("common_event_command_publish_system_test") {
     "common_event_command_publish_system_test.cpp",
   ]
 
-  configs = [
-    "${appexecfwk_path}/tools/bm:tools_bm_config",
-    "${tools_path}/cem:tools_cem_config",
-  ]
+  configs = [ ":tools_cem_test_config" ]
 
   cflags = []
   if (target_cpu == "arm") {
