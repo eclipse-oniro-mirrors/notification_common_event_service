@@ -72,15 +72,15 @@ const std::string CommonEventSupport::COMMON_EVENT_POWER_DISCONNECTED = "usual.e
  */
 const std::string CommonEventSupport::COMMON_EVENT_SCREEN_OFF = "usual.event.SCREEN_OFF";
 /**
- * Indicate the action of a common event that the thermal level changed.
- * This common event can only be published by the system.
- */
-const std::string CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED = "usual.event.LEVEL_CHANGED";
-/**
  * Indicate the action of a common event that the device screen is on and the device is interactive.
  * This common event can only be published by the system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_SCREEN_ON = "usual.event.SCREEN_ON";
+/**
+ * Indicate the action of a common event that the thermal level changed.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED = "usual.event.LEVEL_CHANGED";
 /**
  * Indicate the action of a common event that the user unlocks the device.
  * This common event can only be published by the system.
