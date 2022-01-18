@@ -82,6 +82,11 @@ public:
      */
     static const std::string COMMON_EVENT_SCREEN_ON;
     /**
+     * Indicate the action of a common event that the thermal level changed.
+     * This common event can only be published by the system.
+     */
+    static const std::string COMMON_EVENT_THERMAL_LEVEL_CHANGED;
+    /**
      * Indicate the action of a common event that the user unlocks the device.
      * This common event can only be published by the system.
      */
