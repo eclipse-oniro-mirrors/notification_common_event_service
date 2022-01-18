@@ -13,22 +13,31 @@
  * limitations under the License.
  */
 
-#ifndef SUBSCRIBER_DEATH_RECIPIENT_H
-#define SUBSCRIBER_DEATH_RECIPIENT_H
-
-#include "iremote_object.h"
+#include "ability_manager_death_recipient.h"
+#include "ability_manager_helper.h"
+#include "event_log_wrapper.h"
+#include "singleton.h"
 
 namespace OHOS {
 namespace EventFwk {
-class SubscriberDeathRecipient : public IRemoteObject::DeathRecipient {
-public:
-    SubscriberDeathRecipient() = default;
+void AbilityManagerDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &wptrDeath)
+{
+    EVENT_LOGI("ability manager service died, remove the proxy object");
 
-    virtual ~SubscriberDeathRecipient() = default;
+    if (wptrDeath == nullptr) {
+        EVENT_LOGE("wptrDeath is null");
+        return;
+    }
 
-    virtual void OnRemoteDied(const wptr<IRemoteObject> &remote);
-};
+    sptr<IRemoteObject> object = wptrDeath.promote();
+    if (object == nullptr) {
+        EVENT_LOGE("object is null");
+        return;
+    }
+
+    DelayedSingleton<AbilityManagerHelper>::GetInstance()->Clear();
+
+    return;
+}
 }  // namespace EventFwk
 }  // namespace OHOS
-
-#endif  // !defined(SUBSCRIBER_DEATH_RECIPIENT_H)

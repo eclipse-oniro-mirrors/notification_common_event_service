@@ -18,6 +18,7 @@
 
 #include "common_event_control_manager.h"
 #include "icommon_event.h"
+#include "static_subscriber_manager.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -29,7 +30,7 @@ public:
 
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
-        const std::string &bundleName);
+        const std::string &bundleName, const sptr<IRemoteObject> &service = nullptr);
 
     bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
@@ -50,9 +51,11 @@ public:
 
 private:
     bool ProcessStickyEvent(const CommonEventRecord &record);
+    void PublishEventToStaticSubscribers(const CommonEventData &data, const sptr<IRemoteObject> &service);
 
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;
+    std::shared_ptr<StaticSubscriberManager> staticSubscriberManager_;
     DISALLOW_COPY_AND_MOVE(InnerCommonEventManager);
 };
 }  // namespace EventFwk

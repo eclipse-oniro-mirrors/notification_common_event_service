@@ -13,22 +13,25 @@
  * limitations under the License.
  */
 
-#ifndef SUBSCRIBER_DEATH_RECIPIENT_H
-#define SUBSCRIBER_DEATH_RECIPIENT_H
+#include "static_subscriber_connection.h"
 
-#include "iremote_object.h"
+#include "event_log_wrapper.h"
 
 namespace OHOS {
 namespace EventFwk {
-class SubscriberDeathRecipient : public IRemoteObject::DeathRecipient {
-public:
-    SubscriberDeathRecipient() = default;
+void StaticSubscriberConnection::OnAbilityConnectDone(
+    const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
+{
+    EVENT_LOGI("enter");
+    proxy_ = (new (std::nothrow) AppExecFwk::StaticSubscriberProxy(remoteObject));
+    ErrCode ec = proxy_->OnCommonEventTriggered(&event_);
+    EVENT_LOGI("end, errorCode = %d", ec);
+}
 
-    virtual ~SubscriberDeathRecipient() = default;
-
-    virtual void OnRemoteDied(const wptr<IRemoteObject> &remote);
-};
+void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
+{
+    EVENT_LOGI("enter");
+    EVENT_LOGI("end");
+}
 }  // namespace EventFwk
 }  // namespace OHOS
-
-#endif  // !defined(SUBSCRIBER_DEATH_RECIPIENT_H)

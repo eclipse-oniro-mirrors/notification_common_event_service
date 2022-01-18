@@ -36,12 +36,16 @@ config("ces_services_public_config") {
 
   include_dirs = [
     "${ces_services_path}/include",
+    "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native/include",
     "//utils/system/safwk/native/include",
   ]
 }
 
 ohos_shared_library("cesfwk_services") {
   sources = [
+    "${ces_services_path}/src/ability_manager_death_recipient.cpp",
+    "${ces_services_path}/src/ability_manager_helper.cpp",
     "${ces_services_path}/src/bms_death_recipient.cpp",
     "${ces_services_path}/src/bundle_manager_helper.cpp",
     "${ces_services_path}/src/common_event_control_manager.cpp",
@@ -53,6 +57,8 @@ ohos_shared_library("cesfwk_services") {
     "${ces_services_path}/src/inner_common_event_manager.cpp",
     "${ces_services_path}/src/ordered_event_handler.cpp",
     "${ces_services_path}/src/publish_manager.cpp",
+    "${ces_services_path}/src/static_subscriber_connection.cpp",
+    "${ces_services_path}/src/static_subscriber_manager.cpp",
     "${ces_services_path}/src/subscriber_death_recipient.cpp",
     "${ces_services_path}/src/system_time.cpp",
   ]
@@ -62,23 +68,33 @@ ohos_shared_library("cesfwk_services") {
   public_configs = [ ":ces_services_public_config" ]
 
   deps = [
+    ":static_subscriber_config.json",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:static_subscriber_ipc",
     "//utils/native/base:utils",
   ]
 
   external_deps = [
+    "aafwk_standard:ability_manager",
     "aafwk_standard:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
     "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "os_account_standard:os_account_innerkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
   ]
 
+  subsystem_name = "notification"
+  part_name = "ces_standard"
+}
+
+ohos_prebuilt_etc("static_subscriber_config.json") {
+  source = "//base/notification/ces_standard/services/ces/resource/static_subscriber_config.json"
   subsystem_name = "notification"
   part_name = "ces_standard"
 }
