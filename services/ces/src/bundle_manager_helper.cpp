@@ -14,13 +14,19 @@
  */
 
 #include "bundle_manager_helper.h"
+
 #include "bundle_constants.h"
+#include "bundle_mgr_client.h"
 #include "event_log_wrapper.h"
 #include "iservice_registry.h"
+#include "nlohmann/json.hpp"
+#include "os_account_manager.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
 namespace EventFwk {
+const std::string META_NAME_STATIC_SUBSCRIBER = "ohos.extension.staticSubscriber";
+
 using namespace OHOS::AppExecFwk::Constants;
 
 BundleManagerHelper::BundleManagerHelper() : sptrBundleMgr_(nullptr), bmsDeath_(nullptr)
@@ -43,6 +49,54 @@ std::string BundleManagerHelper::GetBundleName(int uid)
     sptrBundleMgr_->GetBundleNameForUid(uid, bundleName);
 
     return bundleName;
+}
+
+bool BundleManagerHelper::QueryExtensionInfos(const AAFwk::Want &want,
+    std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
+{
+    EVENT_LOGI("enter");
+
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    if (!GetBundleMgrProxy()) {
+        return false;
+    }
+    // get first active user account, this might be modified later.
+    std::vector<AccountSA::OsAccountInfo> osAccountInfos;
+    ErrCode ret = AccountSA::OsAccountManager::QueryAllCreatedOsAccounts(osAccountInfos);
+    if (ret != ERR_OK) {
+        EVENT_LOGE("failed to QueryAllCreatedOsAccounts!");
+        return false;
+    }
+    if (osAccountInfos.size() == 0) {
+        EVENT_LOGE("no os account acquired!");
+        return false;
+    }
+    int userId = 100; // 100 : default user id
+    for (auto info : osAccountInfos) {
+        if (info.GetIsActived()) {
+            userId = info.GetLocalId();
+            EVENT_LOGE("active userId = %{public}d", userId);
+            break;
+        }
+    }
+    return sptrBundleMgr_->QueryExtensionAbilityInfos(want, AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
+        0, userId, extensionInfos);
+}
+
+bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension,
+                                           std::vector<std::string> &profileInfos)
+{
+    EVENT_LOGI("enter");
+
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    if (!GetBundleMgrProxy()) {
+        return false;
+    }
+
+    AppExecFwk::BundleMgrClient client;
+    return client.GetResConfigFile(extension, META_NAME_STATIC_SUBSCRIBER, profileInfos);
 }
 
 bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
@@ -110,8 +164,7 @@ bool BundleManagerHelper::GetBundleMgrProxy()
             return false;
         }
         if (!sptrBundleMgr_->AsObject()->AddDeathRecipient(bmsDeath_)) {
-            EVENT_LOGE("Failed to add death recipient");
-            return false;
+            EVENT_LOGW("Failed to add death recipient");
         }
     }
 

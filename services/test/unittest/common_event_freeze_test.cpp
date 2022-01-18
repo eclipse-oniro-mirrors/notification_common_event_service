@@ -336,7 +336,8 @@ bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, cons
         recordTime,
         callingPid,
         callingUid,
-        bundleName);
+        bundleName,
+        nullptr);
     return handler_->PostTask(PublishCommonEventFunc);
 }
 

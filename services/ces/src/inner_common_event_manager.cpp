@@ -15,23 +15,29 @@
 
 #include "inner_common_event_manager.h"
 
+#include "ability_manager_helper.h"
 #include "bundle_manager_helper.h"
 #include "common_event_sticky_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "common_event_support.h"
 #include "common_event_support_mapper.h"
 #include "event_log_wrapper.h"
+#include "nlohmann/json.hpp"
 #include "system_time.h"
 #include "want.h"
 
 namespace OHOS {
 namespace EventFwk {
-InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_shared<CommonEventControlManager>())
+constexpr static char JSON_KEY_COMMON_EVENTS[] = "commonEvents";
+constexpr static char JSON_KEY_EVENTS[] = "events";
+
+InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_shared<CommonEventControlManager>()),
+    staticSubscriberManager_(std::make_shared<StaticSubscriberManager>())
 {}
 
 bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
-    const std::string &bundleName)
+    const std::string &bundleName, const sptr<IRemoteObject> &service)
 {
     EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d), event = %{public}s",
         bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str());
@@ -40,6 +46,8 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         EVENT_LOGE("the commonEventdata action is null");
         return false;
     }
+
+    PublishEventToStaticSubscribers(data, service);
 
     if ((!publishInfo.IsOrdered()) && (commonEventListener != nullptr)) {
         EVENT_LOGE("When publishing unordered events, the subscriber object is not required.");
@@ -91,6 +99,52 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     }
 
     return true;
+}
+
+void InnerCommonEventManager::PublishEventToStaticSubscribers(const CommonEventData &data,
+                                                              const sptr<IRemoteObject> &service)
+{
+    EVENT_LOGI("enter");
+
+    if (staticSubscriberManager_ == nullptr) {
+        EVENT_LOGE("staticSubscriberManager_ == nullptr!");
+        return;
+    }
+
+    Want want;
+    std::vector<AppExecFwk::ExtensionAbilityInfo> extensions;
+    // get all static subscriber type extensions
+    if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(want, extensions)) {
+        EVENT_LOGE("QueryExtensionByWant failed");
+        return;
+    }
+    // filter legel extensions and connect them
+    for (auto extension : extensions) {
+        if (!staticSubscriberManager_->IsStaticSubscriber(extension.bundleName)) {
+            continue;
+        }
+        EVENT_LOGI("find legel extension,bundlename = %{public}s", extension.bundleName.c_str());
+        std::vector<std::string> profileInfos;
+        if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->GetResConfigFile(extension, profileInfos)) {
+            EVENT_LOGE("GetProfile failed");
+            return;
+        }
+
+        for (auto profile : profileInfos) {
+            nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
+            int size = jsonObj[JSON_KEY_COMMON_EVENTS][JSON_KEY_EVENTS].size();
+            for (int i = 0; i < size; i++) {
+                if (jsonObj[JSON_KEY_COMMON_EVENTS][JSON_KEY_EVENTS][i].get<std::string>() ==
+                    data.GetWant().GetAction()) {
+                    want.SetElementName(extension.bundleName, extension.moduleName);
+                    EVENT_LOGI("Ready to connect to extension %{public}s in bundle %{public}s",
+                        extension.moduleName.c_str(), extension.bundleName.c_str());
+                    DelayedSingleton<AbilityManagerHelper>::GetInstance()->ConnectAbility(want, data, service);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,

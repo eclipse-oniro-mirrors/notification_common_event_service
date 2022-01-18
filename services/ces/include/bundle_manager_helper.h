@@ -17,11 +17,15 @@
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_BUNDLE_MANAGER_HELPER_H
 
 #include <string>
+#include <vector>
+
 #include "bms_death_recipient.h"
 #include "bundle_mgr_interface.h"
+#include "extension_ability_info.h"
 #include "iremote_object.h"
 #include "refbase.h"
 #include "singleton.h"
+#include "want.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -36,6 +40,10 @@ public:
     bool CheckIsSystemAppByUid(uid_t uid);
 
     std::string GetBundleName(int uid);
+
+    bool QueryExtensionInfos(const AAFwk::Want &want, std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfo);
+
+    bool GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension, std::vector<std::string> &profileInfos);
 
     bool CheckPermission(const std::string &bundleName, const std::string &permission);
 
