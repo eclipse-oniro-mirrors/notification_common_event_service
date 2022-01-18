@@ -650,6 +650,10 @@ bool CommonEventControlManager::CheckSubcriberPermission(
         return true;
     }
 
+    if (DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(subscriberRecord.uid)) {
+        return true;
+    }
+
     if (permission.names.size() == 1) {
         ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
             subscriberRecord.bundleName, permission.names[0]);
