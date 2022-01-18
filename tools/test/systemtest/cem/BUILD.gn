@@ -18,7 +18,6 @@ module_output_path = "ces_standard/tools"
 
 config("tools_cem_test_config") {
   include_dirs = [
-    "${aafwk_path}/frameworks/kits/ability/native/include",
     "${aafwk_path}/services/abilitymgr/include",
     "${aafwk_path}/services/common/include",
     "${aafwk_path}/tools/aa/include",
