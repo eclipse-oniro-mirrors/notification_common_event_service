@@ -44,8 +44,8 @@
         "adapted_system_type": [
             "standard"
         ],
-        "rom": "",
-        "ram": "",
+        "rom": "2000KB",
+        "ram": "3000KB",
         "deps": {
             "components": [
                 "aafwk_standard",
