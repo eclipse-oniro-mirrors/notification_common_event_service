@@ -111,10 +111,9 @@ void InnerCommonEventManager::PublishEventToStaticSubscribers(const CommonEventD
         return;
     }
 
-    Want want;
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensions;
     // get all static subscriber type extensions
-    if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(want, extensions)) {
+    if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(extensions)) {
         EVENT_LOGE("QueryExtensionByWant failed");
         return;
     }
@@ -130,15 +129,16 @@ void InnerCommonEventManager::PublishEventToStaticSubscribers(const CommonEventD
             return;
         }
 
+        Want want;
         for (auto profile : profileInfos) {
             nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
             int size = jsonObj[JSON_KEY_COMMON_EVENTS][JSON_KEY_EVENTS].size();
             for (int i = 0; i < size; i++) {
                 if (jsonObj[JSON_KEY_COMMON_EVENTS][JSON_KEY_EVENTS][i].get<std::string>() ==
                     data.GetWant().GetAction()) {
-                    want.SetElementName(extension.bundleName, extension.moduleName);
+                    want.SetElementName(extension.bundleName, extension.name);
                     EVENT_LOGI("Ready to connect to extension %{public}s in bundle %{public}s",
-                        extension.moduleName.c_str(), extension.bundleName.c_str());
+                        extension.name.c_str(), extension.bundleName.c_str());
                     DelayedSingleton<AbilityManagerHelper>::GetInstance()->ConnectAbility(want, data, service);
                     break;
                 }

@@ -51,8 +51,7 @@ std::string BundleManagerHelper::GetBundleName(int uid)
     return bundleName;
 }
 
-bool BundleManagerHelper::QueryExtensionInfos(const AAFwk::Want &want,
-    std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
+bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
     EVENT_LOGI("enter");
 
@@ -80,8 +79,8 @@ bool BundleManagerHelper::QueryExtensionInfos(const AAFwk::Want &want,
             break;
         }
     }
-    return sptrBundleMgr_->QueryExtensionAbilityInfos(want, AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
-        0, userId, extensionInfos);
+    return sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
+        userId, extensionInfos);
 }
 
 bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension,
