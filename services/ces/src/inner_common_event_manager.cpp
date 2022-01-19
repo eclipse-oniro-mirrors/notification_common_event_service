@@ -129,13 +129,21 @@ void InnerCommonEventManager::PublishEventToStaticSubscribers(const CommonEventD
             return;
         }
 
-        Want want;
         for (auto profile : profileInfos) {
             nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
-            int size = jsonObj[JSON_KEY_COMMON_EVENTS][JSON_KEY_EVENTS].size();
-            for (int i = 0; i < size; i++) {
-                if (jsonObj[JSON_KEY_COMMON_EVENTS][JSON_KEY_EVENTS][i].get<std::string>() ==
-                    data.GetWant().GetAction()) {
+            nlohmann::json commonEventObj = jsonObj[JSON_KEY_COMMON_EVENTS];
+            if (commonEventObj.empty()) {
+                EVENT_LOGW("invalid common event obj size");
+                continue;
+            }
+            nlohmann::json eventsObj = commonEventObj[0][JSON_KEY_EVENTS];
+            if (eventsObj.empty()) {
+                EVENT_LOGW("invalid event obj size");
+                continue;
+            }
+            for (auto e : eventsObj) {
+                if (e.get<std::string>() == data.GetWant().GetAction()) {
+                    Want want;
                     want.SetElementName(extension.bundleName, extension.name);
                     EVENT_LOGI("Ready to connect to extension %{public}s in bundle %{public}s",
                         extension.name.c_str(), extension.bundleName.c_str());
