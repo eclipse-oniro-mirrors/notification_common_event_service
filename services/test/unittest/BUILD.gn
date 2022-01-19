@@ -77,7 +77,7 @@ ohos_unittest("common_event_publish_system_event_test") {
   ]
 
   external_deps = [
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:libeventhandler",
     "bytrace_standard:bytrace_core",
@@ -106,6 +106,7 @@ ohos_unittest("common_event_dump_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
+    "//foundation/aafwk/standard/interfaces/innerkits/app_manager:app_manager",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
