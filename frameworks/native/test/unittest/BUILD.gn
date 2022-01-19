@@ -55,7 +55,7 @@ ohos_unittest("matching_skills_test") {
   ]
 
   external_deps = [
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "ipc:ipc_core",
   ]
@@ -80,7 +80,8 @@ ohos_unittest("common_event_subscribe_test") {
   ]
 
   external_deps = [
-    "aafwk_standard:want",
+    "ability_runtime:app_manager",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
     "appexecfwk_standard:libeventhandler",
@@ -105,7 +106,7 @@ ohos_unittest("common_event_unsubscribe_test") {
   ]
 
   external_deps = [
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
     "appexecfwk_standard:libeventhandler",

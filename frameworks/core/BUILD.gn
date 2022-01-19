@@ -71,7 +71,7 @@ ohos_shared_library("cesfwk_core") {
   ]
 
   external_deps = [
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",

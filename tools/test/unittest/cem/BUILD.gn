@@ -60,7 +60,7 @@ ohos_unittest("common_event_command_test") {
   ]
 
   external_deps = [
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
