@@ -41,7 +41,7 @@ public:
 
     std::string GetBundleName(int uid);
 
-    bool QueryExtensionInfos(const AAFwk::Want &want, std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfo);
+    bool QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfo);
 
     bool GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension, std::vector<std::string> &profileInfos);
 

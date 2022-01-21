@@ -45,9 +45,8 @@ bool StaticSubscriberManager::Init()
     jfile >> jsonObj;
     jfile.close();
 
-    int size = jsonObj[CONFIG_APPS].size();
-    for (int i = 0; i < size; i++) {
-        subscriberList_.emplace_back(jsonObj[CONFIG_APPS][i].get<std::string>());
+    for (auto j : jsonObj[CONFIG_APPS]) {
+        subscriberList_.emplace_back(j.get<std::string>());
     }
     isInit_ = true;
     return true;
