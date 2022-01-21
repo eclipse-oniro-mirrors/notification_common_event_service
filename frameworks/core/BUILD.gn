@@ -37,8 +37,6 @@ config("cesfwk_core_public_config") {
   include_dirs = [
     "${ces_core_path}/include",
     "${ces_innerkits_path}/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
-    "//foundation/appexecfwk/standard/services/bundlemgr/include",
     "//utils/native/base/include",
     "//utils/system/safwk/native/include",
   ]

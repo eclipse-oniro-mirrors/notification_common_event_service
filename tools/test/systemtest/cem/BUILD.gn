@@ -66,6 +66,7 @@ ohos_systemtest("common_event_command_dump_system_test") {
     "ability_runtime:app_manager",
     "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_core",
+    "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
@@ -106,6 +107,7 @@ ohos_systemtest("common_event_command_publish_system_test") {
     "ability_runtime:app_manager",
     "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_core",
+    "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]

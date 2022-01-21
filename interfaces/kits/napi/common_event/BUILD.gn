@@ -34,7 +34,6 @@ config("native_module_config") {
 ohos_shared_library("commonevent") {
   include_dirs = [
     "${interfaces_path}/kits/napi/common_event/include",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native/include",
     "//foundation/aafwk/standard/interfaces/kits/napi/aafwk/inner/napi_common",
     "//third_party/node/src",
     "//third_party/libuv/include",
@@ -51,8 +50,6 @@ ohos_shared_library("commonevent") {
   deps = [
     "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/aafwk/standard/interfaces/innerkits/dataobs_manager:dataobs_manager",
     "//foundation/aafwk/standard/interfaces/kits/napi/aafwk/inner/napi_common:napi_common",
     "//third_party/libuv:uv_static",
     "//utils/native/base:utils",
@@ -60,6 +57,7 @@ ohos_shared_library("commonevent") {
 
   external_deps = [
     "ability_runtime:ability_manager",
+    "ability_runtime:abilitykit_native",
     "ability_runtime:app_manager",
     "ability_runtime:base",
     "ability_runtime:want",

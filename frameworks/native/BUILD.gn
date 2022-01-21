@@ -37,9 +37,6 @@ config("cesfwk_innerkits_public_config") {
   include_dirs = [
     "${ces_core_path}/include",
     "${ces_innerkits_path}/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/base/include/",
-    "//foundation/aafwk/standard/interfaces/innerkits/base/include/ohos/aafwk/base/",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content/",
     "//utils/native/base/include",
   ]
 }

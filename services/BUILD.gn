@@ -36,8 +36,6 @@ config("ces_services_public_config") {
 
   include_dirs = [
     "${ces_services_path}/include",
-    "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native/include",
     "//utils/system/safwk/native/include",
   ]
 }
