@@ -15,15 +15,14 @@
 
 #include <gtest/gtest.h>
 
+#include <thread>
 #include "datetime_ex.h"
 #include "common_event_command.h"
 #include "common_event_manager.h"
 #include "common_event_subscriber.h"
-#include "tool_system_test.h"
 
 using namespace testing::ext;
 using namespace OHOS;
-using namespace OHOS::AAFwk;
 using namespace OHOS::EventFwk;
 
 namespace {
@@ -35,8 +34,29 @@ const std::string STRING_DATA_TWO = "data_two";
 const std::string STRING_DEVICE_ID_001 = "device_001";
 const std::string STRING_DEVICE_ID_002 = "device_002";
 const std::string STRING_DEVICE_ID_003 = "device_003";
+const int TIME_DELAY_FOR_SERVICES = 2;
 const time_t TIME_OUT_SECONDS_LIMIT = 5;
 std::mutex mtx;
+
+std::string ExecuteCommand(const std::string &command)
+{
+    std::string result = "";
+    FILE *file = popen(command.c_str(), "r");
+
+    // wait for services
+    std::this_thread::sleep_for(std::chrono::seconds(TIME_DELAY_FOR_SERVICES));
+
+    if (file != nullptr) {
+        char commandResult[1024] = {0};
+        while ((fgets(commandResult, sizeof(commandResult), file)) != nullptr) {
+            result.append(commandResult);
+        }
+        pclose(file);
+        file = nullptr;
+    }
+
+    return result;
+}
 }  // namespace
 
 class CemCommandPublishSystemTest : public ::testing::Test {
@@ -128,7 +148,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0100, Funct
 
     // publish a common event
     std::string command = "cem publish -e " + STRING_EVENT;
-    std::string commandResult = ToolSystemTest::ExecuteCommand(command);
+    std::string commandResult = ExecuteCommand(command);
 
     EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 
@@ -188,7 +208,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0200, Funct
 
     // publish a common event with code and data
     std::string command = "cem publish -e " + STRING_EVENT + " -c " + STRING_CODE + " -d " + STRING_DATA;
-    std::string commandResult = ToolSystemTest::ExecuteCommand(command);
+    std::string commandResult = ExecuteCommand(command);
 
     EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 
@@ -248,7 +268,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0300, Funct
 
     // publish a common event with code and data
     std::string command = "cem publish -e " + STRING_EVENT + " -c " + STRING_CODE_TWO;
-    std::string commandResult = ToolSystemTest::ExecuteCommand(command);
+    std::string commandResult = ExecuteCommand(command);
 
     EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 
@@ -308,7 +328,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0400, Funct
 
     // publish a common event with code and data
     std::string command = "cem publish -e " + STRING_EVENT + " -d " + STRING_DATA_TWO;
-    std::string commandResult = ToolSystemTest::ExecuteCommand(command);
+    std::string commandResult = ExecuteCommand(command);
 
     EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 

@@ -66,7 +66,9 @@ struct OrderedEventRecord : public CommonEventRecord {
         recordTime = commonEventRecord.recordTime;
         pid = commonEventRecord.pid;
         uid = commonEventRecord.uid;
+        userId = commonEventRecord.userId;
         bundleName = commonEventRecord.bundleName;
+        isSystemApp = commonEventRecord.isSystemApp;
         isSystemEvent = commonEventRecord.isSystemEvent;
     }
 };

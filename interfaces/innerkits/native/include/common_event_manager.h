@@ -32,6 +32,14 @@ public:
     static bool PublishCommonEvent(const CommonEventData &data);
 
     /**
+     * Publish a standard common event.
+     *
+     * @param data the common event data
+     * @param userId indicates the user ID
+     */
+    static bool PublishCommonEvent(const CommonEventData &data, const int32_t &userId);
+
+    /**
      * Publish an ordered, sticky, or standard common event.
      *
      * @param data the common event data
@@ -44,10 +52,31 @@ public:
      *
      * @param data the common event data
      * @param publishInfo the publish info
+     * @param userId indicates the user ID
+     */
+    static bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const int32_t &userId);
+
+    /**
+     * Publish an ordered, sticky, or standard common event.
+     *
+     * @param data the common event data
+     * @param publishInfo the publish info
      * @param subscriber the common event subscriber
      */
     static bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber);
+
+    /**
+     * Publish an ordered, sticky, or standard common event.
+     *
+     * @param data the common event data
+     * @param publishInfo the publish info
+     * @param subscriber the common event subscriber
+     * @param userId indicates the user ID
+     */
+    static bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId);
 
     /**
      * Subscribe to common events.

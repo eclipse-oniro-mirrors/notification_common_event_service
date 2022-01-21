@@ -14,7 +14,9 @@
  */
 
 #include "common_event_manager.h"
+
 #include "common_event.h"
+#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "singleton.h"
 
@@ -24,22 +26,48 @@ bool CommonEventManager::PublishCommonEvent(const CommonEventData &data)
 {
     CommonEventPublishInfo publishInfo;
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    int32_t userId = UNDEFINED_USER;
 
-    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEvent(data, publishInfo, subscriber);
+    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+}
+
+bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const int32_t &userId)
+{
+    CommonEventPublishInfo publishInfo;
+    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+
+    return PublishCommonEvent(data, publishInfo, subscriber, userId);
 }
 
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo)
 {
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    int32_t userId = UNDEFINED_USER;
 
-    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEvent(data, publishInfo, subscriber);
+    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+}
+
+bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+    const int32_t &userId)
+{
+    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+
+    return PublishCommonEvent(data, publishInfo, subscriber, userId);
 }
 
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
+    int32_t userId = UNDEFINED_USER;
+
+    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+}
+
+bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+    const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
+{
     EVENT_LOGI("enter");
-    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEvent(data, publishInfo, subscriber);
+    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEvent(data, publishInfo, subscriber, userId);
 }
 
 bool CommonEventManager::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)

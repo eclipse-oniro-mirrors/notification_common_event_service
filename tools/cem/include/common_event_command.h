@@ -51,10 +51,10 @@ const std::string STRING_PUBLISH_COMMON_EVENT_NG = "error: failed to publish the
 const std::string STRING_DUMP_COMMON_EVENT_NG = "error: failed to dump the common event(s).";
 }  // namespace
 
-class CommonEventManagerShellCommand : public OHOS::AAFwk::ShellCommand {
+class CommonEventCommand : public OHOS::EventFwk::ShellCommand {
 public:
-    CommonEventManagerShellCommand(int argc, char *argv[]);
-    ~CommonEventManagerShellCommand() override
+    CommonEventCommand(int argc, char *argv[]);
+    ~CommonEventCommand() override
     {}
 
 private:

@@ -18,6 +18,7 @@
 #define protected public
 #include "bundle_manager_helper.h"
 #include "common_event.h"
+#include "common_event_constant.h"
 #include "common_event_manager.h"
 #include "common_event_manager_service.h"
 #undef private
@@ -326,6 +327,7 @@ bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, cons
     }
     pid_t callingPid = 0;
     uid_t callingUid = 0;
+    int32_t userId = UNDEFINED_USER;
     std::string bundleName = "";
 
     std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
@@ -336,6 +338,7 @@ bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, cons
         recordTime,
         callingPid,
         callingUid,
+        userId,
         bundleName,
         nullptr);
     return handler_->PostTask(PublishCommonEventFunc);

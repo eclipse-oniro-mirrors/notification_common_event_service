@@ -28,6 +28,7 @@ using namespace OHOS::EventFwk;
 static const std::int32_t STR_MAX_SIZE = 256;
 static const std::int32_t STR_DATA_MAX_SIZE = 64 * 1024;  // 64KB
 static const std::int32_t PUBLISH_MAX_PARA = 2;
+static const std::int32_t PUBLISH_MAX_PARA_AS_USER = 3;
 static const std::int32_t GETSUBSCREBEINFO_MAX_PARA = 1;
 static const std::int32_t ISORDEREDCOMMONEVENT_MAX_PARA = 1;
 static const std::int32_t ISSTICKYCOMMONEVENT_MAX_PARA = 1;
@@ -428,6 +429,16 @@ void SetPublisherDeviceIdResult(const napi_env &env, const std::string &deviceId
     napi_set_named_property(env, commonEventSubscribeInfo, "publisherDeviceId", value);
 }
 
+void SetPublisherUserIdResult(const napi_env &env, const int32_t &userId, napi_value &commonEventSubscribeInfo)
+{
+    EVENT_LOGI("SetPublisherUserIdResult start");
+
+    napi_value value = nullptr;
+    napi_create_int32(env, userId, &value);
+
+    napi_set_named_property(env, commonEventSubscribeInfo, "userId", value);
+}
+
 void SetPublisherPriorityResult(const napi_env &env, const int32_t &priority, napi_value &commonEventSubscribeInfo)
 {
     EVENT_LOGI("SetPublisherPriorityResult start");
@@ -462,6 +473,7 @@ void PaddingNapiCreateAsyncWorkCallbackInfo(
     asyncCallbackInfo->events = subscriber->GetSubscribeInfo().GetMatchingSkills().GetEvents();
     asyncCallbackInfo->permission = subscriber->GetSubscribeInfo().GetPermission();
     asyncCallbackInfo->deviceId = subscriber->GetSubscribeInfo().GetDeviceId();
+    asyncCallbackInfo->userId = subscriber->GetSubscribeInfo().GetUserId();
     asyncCallbackInfo->priority = subscriber->GetSubscribeInfo().GetPriority();
 }
 
@@ -472,6 +484,7 @@ void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *as
     SetEventsResult(env, asyncCallbackInfo->events, result);
     SetPublisherPermissionResult(env, asyncCallbackInfo->permission, result);
     SetPublisherDeviceIdResult(env, asyncCallbackInfo->deviceId, result);
+    SetPublisherUserIdResult(env, asyncCallbackInfo->userId, result);
     SetPublisherPriorityResult(env, asyncCallbackInfo->priority, result);
 }
 
@@ -2091,7 +2104,7 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
 }
 
 void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asyncCallbackInfo,
-    const CommonEventPublishDataByjs &commonEventPublishDatajs)
+    const CommonEventPublishDataByjs &commonEventPublishDatajs, const int32_t userId)
 {
     EVENT_LOGI("PaddingCallbackInfoPublish start");
 
@@ -2102,6 +2115,7 @@ void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asyncCall
     asyncCallbackInfo->commonEventPublishInfo.SetSubscriberPermissions(commonEventPublishDatajs.subscriberPermissions);
     asyncCallbackInfo->commonEventPublishInfo.SetOrdered(commonEventPublishDatajs.isOrdered);
     asyncCallbackInfo->commonEventPublishInfo.SetSticky(commonEventPublishDatajs.isSticky);
+    asyncCallbackInfo->userId = userId;
 }
 
 napi_value Publish(napi_env env, napi_callback_info info)
@@ -2149,6 +2163,147 @@ napi_value Publish(napi_env env, napi_callback_info info)
             AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;
             CommonEventManager::PublishCommonEvent(
                 asyncCallbackInfo->commonEventData, asyncCallbackInfo->commonEventPublishInfo);
+        },
+        [](napi_env env, napi_status status, void *data) {
+            AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;
+
+            SetCallback(env, asyncCallbackInfo->callback, NapiGetNull(env));
+
+            if (asyncCallbackInfo->callback != nullptr) {
+                napi_delete_reference(env, asyncCallbackInfo->callback);
+            }
+
+            napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
+            if (asyncCallbackInfo) {
+                delete asyncCallbackInfo;
+                asyncCallbackInfo = nullptr;
+            }
+        },
+        (void *)asyncCallbackInfo,
+        &asyncCallbackInfo->asyncWork);
+
+    NAPI_CALL(env, napi_queue_async_work(env, asyncCallbackInfo->asyncWork));
+
+    return NapiGetNull(env);
+}
+
+napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value (&argv)[PUBLISH_MAX_PARA_BY_USERID],
+    const size_t &argc, std::string &event, int32_t userId, CommonEventPublishDataByjs &commonEventPublishData,
+    napi_ref &callback)
+{
+    EVENT_LOGI("ParseParametersByPublishAsUser start");
+
+    napi_valuetype valuetype;
+    // argv[0]: event
+    NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
+    NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+
+    char str[STR_MAX_SIZE] = {0};
+    size_t strLen = 0;
+    napi_get_value_string_utf8(env, argv[0], str, STR_MAX_SIZE - 1, &strLen);
+    event = str;
+    EVENT_LOGI("ParseParametersByPublishAsUser event = %{public}s", str);
+
+    // argv[1]: userId
+    NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
+    NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+    NAPI_CALL(env, napi_get_value_int32(env, argv[1], &userId));
+
+    // argv[2]: CommonEventPublishData
+    if (argc == PUBLISH_MAX_PARA_BY_USERID) {
+        NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
+        NAPI_ASSERT(env, valuetype == napi_object, "Wrong argument type. Object expected.");
+
+        // argv[2]: CommonEventPublishData:bundlename
+        if (GetBundlenameByPublish(env, argv[2], commonEventPublishData.bundleName) == nullptr) {
+            return nullptr;
+        }
+        // argv[2]: CommonEventPublishData:data
+        if (GetDataByPublish(env, argv[2], commonEventPublishData.data) == nullptr) {
+            return nullptr;
+        }
+        // argv[2]: CommonEventPublishData:code
+        if (GetCodeByPublish(env, argv[2], commonEventPublishData.code) == nullptr) {
+            return nullptr;
+        }
+        // argv[2]: CommonEventPublishData:permissions
+        if (GetSubscriberPermissionsByPublish(env, argv[2], commonEventPublishData.subscriberPermissions) == nullptr) {
+            return nullptr;
+        }
+        // argv[2]: CommonEventPublishData:isOrdered
+        if (GetIsOrderedByPublish(env, argv[2], commonEventPublishData.isOrdered) == nullptr) {
+            return nullptr;
+        }
+        // argv[2]: CommonEventPublishData:isSticky
+        if (GetIsStickyByPublish(env, argv[2], commonEventPublishData.isSticky) == nullptr) {
+            return nullptr;
+        }
+        // argv[2]: CommonEventPublishData:parameters
+        if (GetParametersByPublish(env, argv[2], commonEventPublishData.wantParams) == nullptr) {
+            return nullptr;
+        }
+    }
+
+    // argv[3]: callback
+    if (argc == PUBLISH_MAX_PARA_BY_USERID) {
+        NAPI_CALL(env, napi_typeof(env, argv[PUBLISH_MAX_PARA_AS_USER], &valuetype));
+        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        napi_create_reference(env, argv[PUBLISH_MAX_PARA_AS_USER], 1, &callback);
+    } else {
+        NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
+        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        napi_create_reference(env, argv[2], 1, &callback);
+    }
+
+    return NapiGetNull(env);
+}
+
+napi_value PublishAsUser(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGI("Publish start");
+
+    size_t argc = PUBLISH_MAX_PARA_BY_USERID;
+    napi_value argv[PUBLISH_MAX_PARA_BY_USERID] = {nullptr};
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
+    NAPI_ASSERT(env, argc >= PUBLISH_MAX_PARA_AS_USER, "Wrong number of arguments");
+
+    std::string event;
+    int32_t userId = UNDEFINED_USER;
+    CommonEventPublishDataByjs commonEventPublishDatajs;
+    napi_ref callback = nullptr;
+
+    if (ParseParametersByPublishAsUser(env, argv, argc, event, userId, commonEventPublishDatajs, callback) == nullptr) {
+        return NapiGetNull(env);
+    }
+
+    AsyncCallbackInfoPublish *asyncCallbackInfo =
+        new (std::nothrow) AsyncCallbackInfoPublish {.env = env, .asyncWork = nullptr};
+    if (asyncCallbackInfo == nullptr) {
+        EVENT_LOGE("asyncCallbackInfo is null");
+        return NapiGetNull(env);
+    }
+    asyncCallbackInfo->callback = callback;
+
+    // CommonEventData::want->action
+    Want want;
+    want.SetAction(event);
+    if (argc == PUBLISH_MAX_PARA_BY_USERID) {
+        PaddingCallbackInfoPublish(want, asyncCallbackInfo, commonEventPublishDatajs);
+    }
+    asyncCallbackInfo->commonEventData.SetWant(want);
+
+    napi_value resourceName = nullptr;
+    napi_create_string_latin1(env, "Publish", NAPI_AUTO_LENGTH, &resourceName);
+
+    // Asynchronous function call
+    napi_create_async_work(env,
+        nullptr,
+        resourceName,
+        [](napi_env env, void *data) {
+            EVENT_LOGI("Publish napi_create_async_work start");
+            AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;
+            CommonEventManager::PublishCommonEvent(asyncCallbackInfo->commonEventData,
+                asyncCallbackInfo->commonEventPublishInfo, asyncCallbackInfo->userId);
         },
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;
@@ -2402,6 +2557,28 @@ napi_value GetPublisherDeviceIdByCreateSubscriber(
     return NapiGetNull(env);
 }
 
+napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
+{
+    EVENT_LOGI("enter");
+
+    bool hasUserId = false;
+    napi_value result = nullptr;
+    napi_valuetype valuetype = napi_undefined;
+    int32_t value = 0;
+
+    // userId
+    NAPI_CALL(env, napi_has_named_property(env, argv, "userId", &hasUserId));
+    if (hasUserId) {
+        napi_get_named_property(env, argv, "userId", &result);
+        NAPI_CALL(env, napi_typeof(env, result, &valuetype));
+        NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+        NAPI_CALL(env, napi_get_value_int32(env, result, &value));
+        info.SetUserId(value);
+    }
+
+    return NapiGetNull(env);
+}
+
 napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
     EVENT_LOGI("enter");
@@ -2451,6 +2628,11 @@ napi_value ParseParametersConstructor(
 
     // publisherDeviceId?: string
     if (!GetPublisherDeviceIdByCreateSubscriber(env, argv[0], subscribeInfo)) {
+        return nullptr;
+    }
+
+    // userId?: numer
+    if (!GetUserIdByCreateSubscriber(env, argv[0], subscribeInfo)) {
         return nullptr;
     }
 
@@ -2553,6 +2735,7 @@ napi_value CommonEventInit(napi_env env, napi_value exports)
 
     napi_property_descriptor desc[] = {
         DECLARE_NAPI_FUNCTION("publish", Publish),
+        DECLARE_NAPI_FUNCTION("publishAsUser", PublishAsUser),
         DECLARE_NAPI_FUNCTION("createSubscriber", CreateSubscriber),
         DECLARE_NAPI_FUNCTION("subscribe", Subscribe),
         DECLARE_NAPI_FUNCTION("unsubscribe", Unsubscribe),

@@ -32,7 +32,7 @@ CommonEventProxy::~CommonEventProxy()
 }
 
 bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishInfo,
-    const sptr<IRemoteObject> &commonEventListener)
+    const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
 {
     EVENT_LOGD("start");
 
@@ -54,6 +54,11 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
         return false;
     }
 
+    if (!data.WriteInt32(userId)) {
+        EVENT_LOGE("Failed to write parcelable userId");
+        return false;
+    }
+
     bool ret = SendRequest(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT, data, reply);
     if (ret) {
         ret = reply.ReadBool();
@@ -64,7 +69,7 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
 }
 
 bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishInfo,
-    const sptr<IRemoteObject> &commonEventListener, const uid_t &uid)
+    const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId)
 {
     EVENT_LOGD("start");
 
@@ -88,6 +93,11 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
 
     if (!data.WriteInt32(uid)) {
         EVENT_LOGE("Failed to write int uid");
+        return false;
+    }
+
+    if (!data.WriteInt32(userId)) {
+        EVENT_LOGE("Failed to write parcelable userId");
         return false;
     }
 
@@ -172,7 +182,7 @@ bool CommonEventProxy::GetStickyCommonEvent(const std::string &event, CommonEven
     return ret;
 }
 
-bool CommonEventProxy::DumpState(const std::string &event, std::vector<std::string> &state)
+bool CommonEventProxy::DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
     EVENT_LOGD("start");
 
@@ -181,6 +191,11 @@ bool CommonEventProxy::DumpState(const std::string &event, std::vector<std::stri
 
     if (!data.WriteString16(Str8ToStr16(event))) {
         EVENT_LOGE("Failed to write string event");
+        return false;
+    }
+
+    if (!data.WriteInt32(userId)) {
+        EVENT_LOGE("Failed to write parcelable userId");
         return false;
     }
 

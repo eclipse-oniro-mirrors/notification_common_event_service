@@ -67,7 +67,8 @@ int CommonEventStickyManager::UpdateStickyEvent(const CommonEventRecord &eventRe
     return UpdateStickyEventLocked(event, commonEventRecordPtr);
 }
 
-void CommonEventStickyManager::DumpState(const std::string &event, std::vector<std::string> &state)
+void CommonEventStickyManager::DumpState(
+    const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
@@ -75,7 +76,7 @@ void CommonEventStickyManager::DumpState(const std::string &event, std::vector<s
 
     std::lock_guard<std::mutex> lock(mutex_);
 
-    GetStickyCommonEventRecords(event, records);
+    GetStickyCommonEventRecords(event, userId, records);
 
     if (records.size() == 0) {
         state.emplace_back("Sticky Events:\tNo information");
@@ -212,15 +213,20 @@ int CommonEventStickyManager::UpdateStickyEventLocked(const std::string &event, 
 }
 
 void CommonEventStickyManager::GetStickyCommonEventRecords(
-    const std::string &event, std::vector<CommonEventRecordPtr> &records)
+    const std::string &event, const int32_t &userId, std::vector<CommonEventRecordPtr> &records)
 {
     if (event.empty()) {
         for (auto record : commonEventRecords_) {
-            records.emplace_back(record.second);
+            if (userId == ALL_USER || record.second->userId == userId) {
+                records.emplace_back(record.second);
+            }
         }
     } else {
         auto recordItem = commonEventRecords_.find(event);
-        if (recordItem != commonEventRecords_.end()) {
+        if (recordItem == commonEventRecords_.end()) {
+            return;
+        }
+        if (userId == ALL_USER || userId == recordItem->second->userId) {
             records.emplace_back(recordItem->second);
         }
     }

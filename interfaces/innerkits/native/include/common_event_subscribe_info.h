@@ -72,6 +72,20 @@ public:
     int32_t GetPriority() const;
 
     /**
+     * Set the subscriber userId for this CommonEventSubscribeInfo object.
+     *
+     * @param userId indicates the user ID of the subscriber
+     */
+    void SetUserId(const int32_t &userId);
+
+    /**
+     * Obtain the subscriber userId of this CommonEventSubscribeInfo object.
+     *
+     * @return the user ID of the subscriber
+     */
+    int32_t GetUserId() const;
+
+    /**
      * Set the permission that the publisher must have in order to send
      * a common event to this subscriber.
      *
@@ -149,6 +163,7 @@ private:
 private:
     MatchingSkills matchingSkills_;
     int32_t priority_;
+    int32_t userId_;
     std::string permission_;
     std::string deviceId_;
     CommonEventSubscribeInfo::ThreadMode threadMode_;

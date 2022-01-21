@@ -29,12 +29,12 @@ public:
                                      const std::string &receiverData, const bool &abortEvent));
 
     bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener) override;
+        const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
     bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
 
-    bool DumpState(const std::string &event, std::vector<std::string> &state) override;
+    bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
 
 private:
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr;

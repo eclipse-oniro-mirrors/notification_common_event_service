@@ -42,7 +42,7 @@ public:
     void TearDown() override;
 
     void MakeMockObjects();
-    void SetMockObjects(const CommonEventManagerShellCommand &cmd) const;
+    void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "publish";
     sptr<ICommonEvent> proxyPtr_;
@@ -79,7 +79,7 @@ void CemCommandPublishTest::MakeMockObjects()
     commonEventPtr->commonEventProxy_ = proxyPtr_;
 }
 
-void CemCommandPublishTest::SetMockObjects(const CommonEventManagerShellCommand &cmd) const
+void CemCommandPublishTest::SetMockObjects(const CommonEventCommand &cmd) const
 {}
 
 /**
@@ -96,7 +96,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0100, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_OPTION + "\n" + HELP_MSG_PUBLISH);
 }
 
@@ -115,7 +115,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0200, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_OPTION + "\n" + HELP_MSG_PUBLISH);
 }
 
@@ -134,7 +134,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0300, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -153,7 +153,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0400, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -172,7 +172,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0500, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -191,7 +191,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0600, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -210,7 +210,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0700, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_PUBLISH);
 }
 
@@ -229,7 +229,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0800, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_PUBLISH);
 }
 
@@ -248,7 +248,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0900, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -268,7 +268,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1000, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 }
 
@@ -287,7 +287,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1100, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -308,7 +308,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1200, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -328,7 +328,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1300, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_EVENT_OPTION + "\n" + HELP_MSG_PUBLISH);
 }
 
@@ -350,7 +350,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1400, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 }
 
@@ -369,7 +369,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1500, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -390,7 +390,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1600, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
 }
 
@@ -410,7 +410,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1700, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_EVENT_OPTION + "\n" + HELP_MSG_PUBLISH);
 }
 
@@ -432,7 +432,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1800, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 }
 
@@ -456,6 +456,6 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1900, Function | MediumTest 
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 }

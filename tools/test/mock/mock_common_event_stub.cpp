@@ -18,7 +18,7 @@
 using namespace OHOS::EventFwk;
 
 bool MockCommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-    const sptr<IRemoteObject> &commonEventListener)
+    const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
@@ -35,7 +35,7 @@ bool MockCommonEventStub::SubscribeCommonEvent(
     return true;
 }
 
-bool MockCommonEventStub::DumpState(const std::string &event, std::vector<std::string> &state)
+bool MockCommonEventStub::DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 

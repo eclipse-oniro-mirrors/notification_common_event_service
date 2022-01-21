@@ -70,7 +70,7 @@ public:
     {}
 
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const OHOS::sptr<IRemoteObject> &commonEventListener)
+        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
     {
         return false;
     }
@@ -86,7 +86,7 @@ public:
         return false;
     }
 
-    virtual bool DumpState(const std::string &event, std::vector<std::string> &state)
+    virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
     {
         return false;
     }

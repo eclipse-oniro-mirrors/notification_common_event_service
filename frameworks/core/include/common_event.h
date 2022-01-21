@@ -34,9 +34,10 @@ public:
      * @param data the common event data
      * @param publishInfo the publish info
      * @param subscriber the common event subscriber
+     * @param userId indicates the user ID
      */
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-        const std::shared_ptr<CommonEventSubscriber> &subscriber);
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId);
 
     /**
      * Publish an ordered, sticky, or standard common event.
@@ -45,9 +46,10 @@ public:
      * @param publishInfo the publish info
      * @param subscriber the common event subscriber
      * @param uid Uid of application.
+     * @param userId Indicates the user ID
      */
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid);
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &userId);
 
     /**
      * Subscribe to common events.
@@ -87,9 +89,10 @@ public:
      * Dump state of common event service.
      *
      * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
+     * @param userId indicates the user ID
      * @param state the state of common event service
      */
-    bool DumpState(const std::string &event, std::vector<std::string> &state);
+    bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
     /**
      * Reset Common Event Proxy.

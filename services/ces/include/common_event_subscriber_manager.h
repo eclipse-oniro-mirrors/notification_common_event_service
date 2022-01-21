@@ -66,7 +66,8 @@ public:
 
     int RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener);
 
-    std::vector<SubscriberRecordPtr> GetSubscriberRecords(const Want &want);
+    std::vector<SubscriberRecordPtr> GetSubscriberRecords(const Want &want, const bool &isSystemApp,
+        const int32_t &userId);
 
     void UpdateFreezeInfo(const uid_t &uid, const bool &freezeState, const int64_t &freezeTime = 0);
 
@@ -77,16 +78,20 @@ public:
     void DumpDetailed(
         const std::string &title, const SubscriberRecordPtr &record, const std::string format, std::string &dumpInfo);
 
-    void DumpState(const std::string &event, std::vector<std::string> &state);
+    void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
     int InsertSubscriberRecordLocked(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
 
     int RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener);
 
-    void GetSubscriberRecordsByWantLocked(const Want &want, std::vector<SubscriberRecordPtr> &records);
+    bool CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId);
 
-    void GetSubscriberRecordsByEvent(const std::string &event, std::vector<SubscriberRecordPtr> &records);
+    void GetSubscriberRecordsByWantLocked(const Want &want, const bool &isSystemApp, const int32_t &userId,
+        std::vector<SubscriberRecordPtr> &records);
+
+    void GetSubscriberRecordsByEvent(
+        const std::string &event, const int32_t &userId, std::vector<SubscriberRecordPtr> &records);
 
     void RemoveFrozenEventsBySubscriber(const SubscriberRecordPtr &subscriberRecord);
 

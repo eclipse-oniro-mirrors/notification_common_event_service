@@ -16,6 +16,7 @@
 #ifndef BASE_NOTIFICATION_CES_STANDARD_CESFWK_KITS_NAPI_COMMON_EVENT_INCLUDE_COMMON_EVENT_H
 #define BASE_NOTIFICATION_CES_STANDARD_CESFWK_KITS_NAPI_COMMON_EVENT_INCLUDE_COMMON_EVENT_H
 
+#include "common_event_constant.h"
 #include "common_event_manager.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
@@ -28,6 +29,7 @@ static const std::int32_t CREATE_MAX_PARA = 2;
 static const std::int32_t SUBSCRIBE_MAX_PARA = 2;
 static const std::int32_t UNSUBSCRIBE_MAX_PARA = 2;
 static const std::int32_t PUBLISH_MAX_PARA_BY_PUBLISHDATA = 3;
+static const std::int32_t PUBLISH_MAX_PARA_BY_USERID = 4;
 
 class SubscriberInstance;
 struct AsyncCallbackInfoSubscribe;
@@ -65,6 +67,7 @@ struct AsyncCallbackInfoSubscribeInfo {
     std::vector<std::string> events;
     std::string permission;
     std::string deviceId;
+    int32_t userId = UNDEFINED_USER;
     int32_t priority = 0;
     bool isCallback = false;
 };
@@ -193,6 +196,7 @@ struct AsyncCallbackInfoPublish {
     napi_ref callback = nullptr;
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
+    int32_t userId = UNDEFINED_USER;
 };
 
 struct CommonEventPublishDataByjs {
@@ -256,6 +260,8 @@ void SetPublisherPermissionResult(
     const napi_env &env, const std::string &permission, napi_value &commonEventSubscribeInfo);
 
 void SetPublisherDeviceIdResult(const napi_env &env, const std::string &deviceId, napi_value &commonEventSubscribeInfo);
+
+void SetPublisherUserIdResult(const napi_env &env, const int32_t &userId, napi_value &commonEventSubscribeInfo);
 
 void SetPublisherPriorityResult(const napi_env &env, const int32_t &priority, napi_value &commonEventSubscribeInfo);
 
@@ -381,9 +387,15 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     const size_t &argc, std::string &event, CommonEventPublishDataByjs &commonEventPublishData, napi_ref &callback);
 
 void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asynccallbackinfo,
-    const CommonEventPublishDataByjs &commonEventPublishDatajs);
+    const CommonEventPublishDataByjs &commonEventPublishDatajs, const int32_t userId = UNDEFINED_USER);
 
 napi_value Publish(napi_env env, napi_callback_info info);
+
+napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv)[PUBLISH_MAX_PARA_BY_USERID],
+    const size_t &argc, std::string &event, int32_t userId, CommonEventPublishDataByjs &commonEventPublishData,
+    napi_ref &callback);
+
+napi_value PublishAsUser(napi_env env, napi_callback_info info);
 
 napi_value GetSubscriberByUnsubscribe(
     const napi_env &env, const napi_value &value, std::shared_ptr<SubscriberInstance> &subscriber, bool &isFind);
@@ -403,6 +415,8 @@ napi_value GetPublisherPermissionByCreateSubscriber(
 
 napi_value GetPublisherDeviceIdByCreateSubscriber(
     const napi_env &env, const napi_value &argv, std::string &publisherDeviceId, bool &hasProperty);
+
+napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info);
 
 napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &argv, int &priority, bool &hasProperty);
 

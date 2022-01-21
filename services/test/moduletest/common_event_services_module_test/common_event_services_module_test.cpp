@@ -21,6 +21,7 @@
 #define protected public
 #include "bundle_manager_helper.h"
 #include "common_event.h"
+#include "common_event_constant.h"
 #include "common_event_manager_service.h"
 #include "common_event_manager.h"
 #undef private
@@ -481,7 +482,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level1)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener);
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_1500 end");
@@ -514,7 +515,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level1)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener);
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_1600 end");
@@ -536,7 +537,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventName, stateTest)) {
+        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventName, ALL_USER, stateTest)) {
             if (stateTest.size() >= 1) {
                 result = true;
             }
@@ -564,7 +565,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1800, Function | MediumTest | Level2)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventNametest, stateTest)) {
+        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventNametest, ALL_USER, stateTest)) {
             if (stateTest.size() == 1) {
                 result = true;
             } else {
@@ -594,7 +595,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventNameInput, stateTest)) {
+        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventNameInput, ALL_USER, stateTest)) {
             if (stateTest.size() >= 1) {
                 result = true;
             }
@@ -675,7 +676,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2100, Function | MediumTest | Level2)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener);
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
         mtx_.lock();
     }
     EXPECT_TRUE(result);
@@ -962,7 +963,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level1)
 /*
  * @tc.number: CES_TC_ModuleTest_2800
  * @tc.name: GetStickyCommonEvent
- * @tc.desc: set sticky  and get action, publish common event set sticky to true and verify the action of stickyData
+ * @tc.desc: set sticky and get action, publish common event set sticky to true and verify the action of stickyData
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level1)
 {
@@ -998,7 +999,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level1)
 /*
  * @tc.number: CES_TC_ModuleTest_2900
  * @tc.name: GetStickyCommonEvent
- * @tc.desc: set sticky  and get another action, publish common event set sticky to true and verify the action of
+ * @tc.desc: set sticky and get another action, publish common event set sticky to true and verify the action of
  * stickyData
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
@@ -1022,7 +1023,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
         OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener)) {
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER)) {
         result = true;
     }
     EXPECT_TRUE(result);
@@ -1036,8 +1037,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3000
- * @tc.name:  Set Permission
- * @tc.desc: Set permission for common event subscribers and  verify  successfully subscribe to common events
+ * @tc.name: Set Permission
+ * @tc.desc: Set permission for common event subscribers and verify successfully subscribe to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level1)
 {
@@ -1058,8 +1059,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3100
- * @tc.name:  Set Permission and Priority
- * @tc.desc: Set permission and priority for common event subscribers and  verify  successfully subscribe to
+ * @tc.name: Set Permission and Priority
+ * @tc.desc: Set permission and priority for common event subscribers and verify successfully subscribe to
  * common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level1)
@@ -1082,8 +1083,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3200
- * @tc.name:  Set Permission  Priority and DeviceId
- * @tc.desc: Set permission and priority and DeviceId for common event subscribers and  verify  successfully
+ * @tc.name: Set Permission Priority and DeviceId
+ * @tc.desc: Set permission and priority and DeviceId for common event subscribers and verify successfully
  * subscribe to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level1)
@@ -1108,7 +1109,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3300
- * @tc.name:  Set Permission
+ * @tc.name: Set Permission
  * @tc.desc: Set permission for common event subscribers and verify successfully Unsubscribe to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level1)
@@ -1134,7 +1135,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3400
- * @tc.name:  Set Permission and Priority
+ * @tc.name: Set Permission and Priority
  * @tc.desc: Set permission and priority for common event subscribers and verify successfully Unsubscribe to
  * common events
  */
@@ -1162,8 +1163,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3500
- * @tc.name:  Set Permission  Priority and DeviceId
- * @tc.desc: Set permission and priority and DeviceId for common event subscribers and  verify  successfully
+ * @tc.name: Set Permission Priority and DeviceId
+ * @tc.desc: Set permission and priority and DeviceId for common event subscribers and verify successfully
  * Unsubscribe to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level1)
@@ -1192,8 +1193,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3600
- * @tc.name:  Set Subscriber Permissions
- * @tc.desc: Set permission for common event subscribers and  verify  successfully publish common events
+ * @tc.name: Set Subscriber Permissions
+ * @tc.desc: Set permission for common event subscribers and verify successfully publish common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level1)
 {
@@ -1217,7 +1218,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level1)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener);
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_3600 end");
@@ -1225,8 +1226,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3700
- * @tc.name:  Set Subscriber Permissions
- * @tc.desc: Set permission for common event subscribers and  verify  successfully publish common events
+ * @tc.name: Set Subscriber Permissions
+ * @tc.desc: Set permission for common event subscribers and verify successfully publish common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level1)
 {
@@ -1252,7 +1253,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level1)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener);
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_3700 end");
@@ -1260,8 +1261,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3800
- * @tc.name:  Set Subscriber Permissions
- * @tc.desc: Set permission for common event subscribers and  verify  successfully publish common events
+ * @tc.name: Set Subscriber Permissions
+ * @tc.desc: Set permission for common event subscribers and verify successfully publish common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level1)
 {
@@ -1289,7 +1290,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level1)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener);
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_3800 end");
@@ -1297,8 +1298,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_3900
- * @tc.name:  Set ThreadMode
- * @tc.desc: Set ThreadMode for common event subscribers and  verify  successfully subscribe to common events
+ * @tc.name: Set ThreadMode
+ * @tc.desc: Set ThreadMode for common event subscribers and verify successfully subscribe to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level1)
 {
@@ -1319,8 +1320,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_4000
- * @tc.name:  Set ThreadMode
- * @tc.desc: Set ThreadMode for common event subscribers and  verify  successfully Unsubscribe to common events
+ * @tc.name: Set ThreadMode
+ * @tc.desc: Set ThreadMode for common event subscribers and verify successfully Unsubscribe to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level1)
 {
@@ -1345,8 +1346,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_4100
- * @tc.name:  Set ThreadMode
- * @tc.desc: Set ThreadMode for common event subscribers and  verify  successfully publish to common events
+ * @tc.name: Set ThreadMode
+ * @tc.desc: Set ThreadMode for common event subscribers and verify successfully publish to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level1)
 {
@@ -1367,7 +1368,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level1)
     if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-            commonEventData, publishInfo, commonEventListener);
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_4100 end");
@@ -1375,8 +1376,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level1)
 
 /*
  * @tc.number: CES_TC_ModuleTest_4200
- * @tc.name:  Set ThreadMode
- * @tc.desc: Set ThreadMode for common event subscribers and  verify  successfully receive  to common events
+ * @tc.name: Set ThreadMode
+ * @tc.desc: Set ThreadMode for common event subscribers and verify successfully receive to common events
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level1)
 {

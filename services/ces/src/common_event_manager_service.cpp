@@ -125,7 +125,7 @@ bool CommonEventManagerService::IsReady() const
 }
 
 bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
-    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener)
+    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
@@ -136,11 +136,12 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     pid_t callingPid = IPCSkeleton::GetCallingPid();
     uid_t callingUid = IPCSkeleton::GetCallingUid();
 
-    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, callingUid, callingPid);
+    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, callingUid, callingPid, userId);
 }
 
 bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
-    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const uid_t &uid)
+    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const uid_t &uid,
+    const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
@@ -148,12 +149,12 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
-    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, uid, -1);
+    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, uid, -1, userId);
 }
 
 bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData &event,
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const uid_t &uid,
-    const pid_t &pid)
+    const pid_t &pid, const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
@@ -167,10 +168,11 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
 
     if (DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(uid)) {
         EVENT_LOGE("Too many common events have been sent in a short period from %{public}s (pid = %{public}d, uid = "
-                   "%{public}d)",
+                   "%{public}d, userId = %{public}d)",
             bundleName.c_str(),
             pid,
-            uid);
+            uid,
+            userId);
         return false;
     }
 
@@ -182,6 +184,7 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
         recordTime,
         pid,
         uid,
+        userId,
         bundleName,
         this);
     return handler_->PostTask(PublishCommonEventFunc);
@@ -256,7 +259,8 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
     return innerCommonEventManager_->GetStickyCommonEvent(event, eventData);
 }
 
-bool CommonEventManagerService::DumpState(const std::string &event, std::vector<std::string> &state)
+bool CommonEventManagerService::DumpState(const std::string &event, const int32_t &userId,
+    std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
@@ -264,7 +268,7 @@ bool CommonEventManagerService::DumpState(const std::string &event, std::vector<
         return false;
     }
 
-    innerCommonEventManager_->DumpState(event, state);
+    innerCommonEventManager_->DumpState(event, userId, state);
 
     return true;
 }

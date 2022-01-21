@@ -27,14 +27,14 @@ public:
     virtual ~CommonEventProxy() override;
 
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishInfo,
-        const sptr<IRemoteObject> &commonEventListener) override;
+        const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid) override;
+        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId) override;
     virtual bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
     virtual bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
     virtual bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
-    virtual bool DumpState(const std::string &event, std::vector<std::string> &state) override;
+    virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
     virtual bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData,
         const bool &abortEvent) override;
     virtual bool Freeze(const uid_t &uid) override;

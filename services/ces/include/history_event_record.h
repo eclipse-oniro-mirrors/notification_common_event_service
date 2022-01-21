@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_HISTORY_EVENT_RECORD_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_HISTORY_EVENT_RECORD_H
 
+#include "common_event_constant.h"
 #include "want.h"
 
 namespace OHOS {
@@ -24,6 +25,7 @@ struct HistorySubscriberRecord {
     struct tm recordTime {};
     std::string bundleName;
     int32_t priority;
+    int32_t userId;
     std::string permission;
     std::string deviceId;
     bool isFreeze;
@@ -56,7 +58,9 @@ struct HistoryEventRecord {
     struct tm recordTime {};
     pid_t pid;
     uid_t uid;
+    int32_t userId;
     std::string bundleName;
+    bool isSystemApp;
     bool isSystemEvent;
 
     std::vector<HistorySubscriberRecord> receivers;
@@ -73,6 +77,8 @@ struct HistoryEventRecord {
           ordered(false),
           pid(0),
           uid(0),
+          userId(UNDEFINED_USER),
+          isSystemApp(false),
           isSystemEvent(false),
           hasLastSubscribe(false),
           dispatchTime(0),

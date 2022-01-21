@@ -35,10 +35,10 @@ public:
     virtual ~CommonEventManagerService() override;
 
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener) override;
+        const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid) override;
+        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId) override;
 
     virtual bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
@@ -47,7 +47,7 @@ public:
 
     virtual bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
 
-    virtual bool DumpState(const std::string &event, std::vector<std::string> &state) override;
+    virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
 
     virtual bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData,
         const bool &abortEvent) override;
@@ -65,7 +65,7 @@ private:
     bool IsReady() const;
 
     bool PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const pid_t &pid);
+        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const pid_t &pid, const int32_t &userId);
 
 private:
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
