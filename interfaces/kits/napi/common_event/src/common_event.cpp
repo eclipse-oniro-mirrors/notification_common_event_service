@@ -2501,10 +2501,6 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
                     break;
                 }
             }
-            if (objectInfo) {
-                delete objectInfo;
-                objectInfo = nullptr;
-            }
         },
         nullptr,
         nullptr);
