@@ -18,12 +18,7 @@ module_output_path = "ces_standard/tools"
 
 config("tools_cem_test_config") {
   include_dirs = [
-    "${aafwk_path}/services/abilitymgr/include",
-    "${aafwk_path}/services/common/include",
-    "${aafwk_path}/tools/aa/include",
-    "${appexecfwk_path}/tools/bm/include",
     "${tools_path}/cem/include",
-    "//foundation/distributedschedule/safwk/services/safwk/include",
     "//utils/native/base/include",
   ]
 }
@@ -31,14 +26,9 @@ config("tools_cem_test_config") {
 ohos_systemtest("common_event_command_dump_system_test") {
   module_out_path = module_output_path
 
-  include_dirs = [
-    "${aafwk_path}/tools/test/systemtest/aa",
-    "//third_party/jsoncpp/include",
-  ]
+  include_dirs = [ "//third_party/jsoncpp/include" ]
 
   sources = [
-    # "${aafwk_path}/tools/aa/src/shell_command.cpp",
-    "${aafwk_path}/tools/test/systemtest/aa/tool_system_test.cpp",
     "${tools_path}/cem/src/common_event_command.cpp",
     "common_event_command_dump_system_test.cpp",
   ]
@@ -51,19 +41,15 @@ ohos_systemtest("common_event_command_dump_system_test") {
   }
 
   deps = [
-    "${aafwk_path}/services/abilitymgr:abilityms",
-    "${appexecfwk_path}/services/bundlemgr:libbms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "//foundation/aafwk/standard/tools/aa:tools_aa_source_set",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "ability_runtime:app_manager",
     "ability_runtime:want",
     "appexecfwk_standard:libeventhandler",
     "bundle_framework:appexecfwk_core",
@@ -78,8 +64,6 @@ ohos_systemtest("common_event_command_publish_system_test") {
   include_dirs = [ "${aafwk_path}/tools/test/systemtest/aa" ]
 
   sources = [
-    # "${aafwk_path}/tools/aa/src/shell_command.cpp",
-    "${aafwk_path}/tools/test/systemtest/aa/tool_system_test.cpp",
     "${tools_path}/cem/src/common_event_command.cpp",
     "common_event_command_publish_system_test.cpp",
   ]
@@ -92,19 +76,15 @@ ohos_systemtest("common_event_command_publish_system_test") {
   }
 
   deps = [
-    "${aafwk_path}/services/abilitymgr:abilityms",
-    "${appexecfwk_path}/services/bundlemgr:libbms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "//foundation/aafwk/standard/tools/aa:tools_aa_source_set",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "ability_runtime:app_manager",
     "ability_runtime:want",
     "appexecfwk_standard:libeventhandler",
     "bundle_framework:appexecfwk_core",

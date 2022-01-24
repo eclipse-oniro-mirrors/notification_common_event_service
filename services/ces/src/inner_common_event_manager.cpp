@@ -17,12 +17,14 @@
 
 #include "ability_manager_helper.h"
 #include "bundle_manager_helper.h"
+#include "common_event_constant.h"
 #include "common_event_sticky_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "common_event_support.h"
 #include "common_event_support_mapper.h"
 #include "event_log_wrapper.h"
 #include "nlohmann/json.hpp"
+#include "os_account_manager.h"
 #include "system_time.h"
 #include "want.h"
 
@@ -37,7 +39,7 @@ InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_share
 
 bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
-    const std::string &bundleName, const sptr<IRemoteObject> &service)
+    const int32_t &userId, const std::string &bundleName, const sptr<IRemoteObject> &service)
 {
     EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d), event = %{public}s",
         bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str());
@@ -56,13 +58,18 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 
     std::string action = data.GetWant().GetAction();
     bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(action);
-    bool isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
+    int32_t userId_ = userId;
+    bool isSystemApp = false;
+    if (!CheckIsSystemApp(uid, isSystemApp, userId_, bundleName)) {
+        return false;
+    }
     if (isSystemEvent) {
         EVENT_LOGI("System common event");
         if (!isSystemApp) {
             EVENT_LOGE(
-                "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)",
-                bundleName.c_str(), pid, uid);
+                "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
+                ", userId = %{public}d",
+                bundleName.c_str(), pid, uid, userId);
             return false;
         }
     }
@@ -73,7 +80,9 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     eventRecord.recordTime = recordTime;
     eventRecord.pid = pid;
     eventRecord.uid = uid;
+    eventRecord.userId = userId_;
     eventRecord.bundleName = bundleName;
+    eventRecord.isSystemApp = isSystemApp;
     eventRecord.isSystemEvent = isSystemEvent;
 
     if (publishInfo.IsSticky()) {
@@ -159,7 +168,8 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
     const std::string &bundleName)
 {
-    EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d)", bundleName.c_str(), pid, uid);
+    EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
+        bundleName.c_str(), pid, uid, subscribeInfo.GetUserId());
 
     if (subscribeInfo.GetMatchingSkills().CountEvent() == 0) {
         EVENT_LOGE("the subscriber has no event");
@@ -170,7 +180,15 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
         return false;
     }
 
-    std::shared_ptr<CommonEventSubscribeInfo> sp = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
+    CommonEventSubscribeInfo subscribeInfo_(subscribeInfo);
+    int32_t userId = subscribeInfo_.GetUserId();
+    bool isSystemApp = false;
+    if (!CheckIsSystemApp(uid, isSystemApp, userId, bundleName)) {
+        return false;
+    }
+    subscribeInfo_.SetUserId(userId);
+
+    std::shared_ptr<CommonEventSubscribeInfo> sp = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo_);
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, pid, uid, bundleName);
 
@@ -211,21 +229,22 @@ bool InnerCommonEventManager::GetStickyCommonEvent(const std::string &event, Com
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(event, eventData);
 }
 
-void InnerCommonEventManager::DumpState(const std::string &event, std::vector<std::string> &state)
+void InnerCommonEventManager::DumpState(const std::string &event, const int32_t &userId,
+    std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
-    DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->DumpState(event, state);
+    DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->DumpState(event, userId, state);
 
-    DelayedSingleton<CommonEventStickyManager>::GetInstance()->DumpState(event, state);
+    DelayedSingleton<CommonEventStickyManager>::GetInstance()->DumpState(event, userId, state);
 
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
         return;
     }
-    controlPtr_->DumpState(event, state);
+    controlPtr_->DumpState(event, userId, state);
 
-    controlPtr_->DumpHistoryState(event, state);
+    controlPtr_->DumpHistoryState(event, userId, state);
     return;
 }
 
@@ -281,6 +300,42 @@ bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record
     }
     DelayedSingleton<CommonEventStickyManager>::GetInstance()->UpdateStickyEvent(record);
     return ret;
+}
+
+bool InnerCommonEventManager::CheckIsSystemApp(const uid_t &uid, bool &isSystemApp, int32_t &userId,
+    const std::string &bundleName)
+{
+    if (userId < UNDEFINED_USER) {
+        EVENT_LOGE("Invalid User ID %{public}d", userId);
+        return false;
+    }
+
+    isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
+    if (!isSystemApp) {
+        int32_t callingUserId;
+        AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, callingUserId);
+        if (callingUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && callingUserId <= SUBSCRIBE_USER_SYSTEM_END) {
+            isSystemApp = true;
+        }
+    }
+
+    if (isSystemApp) {
+        if (userId == CURRENT_USER) {
+            AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, userId);
+        } else if (userId == UNDEFINED_USER) {
+            userId = ALL_USER;
+        }
+    } else {
+        if (userId == UNDEFINED_USER) {
+            AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, userId);
+        } else {
+            EVENT_LOGE("No permission to subscribe or send a common event to specific user from %{public}s"
+                "(uid = %{public}d)", bundleName.c_str(), uid);
+            return false;
+        }
+    }
+
+    return true;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

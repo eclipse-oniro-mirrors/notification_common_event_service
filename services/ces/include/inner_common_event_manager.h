@@ -30,7 +30,7 @@ public:
 
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
-        const std::string &bundleName, const sptr<IRemoteObject> &service = nullptr);
+        const int32_t &userId, const std::string &bundleName, const sptr<IRemoteObject> &service = nullptr);
 
     bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
@@ -40,7 +40,7 @@ public:
 
     bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
 
-    void DumpState(const std::string &event, std::vector<std::string> &state);
+    void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
     void FinishReceiver(
         const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData, const bool &abortEvent);
@@ -52,6 +52,7 @@ public:
 private:
     bool ProcessStickyEvent(const CommonEventRecord &record);
     void PublishEventToStaticSubscribers(const CommonEventData &data, const sptr<IRemoteObject> &service);
+    bool CheckIsSystemApp(const uid_t &uid, bool &isSystemApp, int32_t &userId, const std::string &bundleName);
 
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;

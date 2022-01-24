@@ -29,14 +29,14 @@ public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.eventfwk.ICommonEvent");
 
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener) = 0;
+        const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) = 0;
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid) = 0;
+        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId) = 0;
     virtual bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) = 0;
     virtual bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) = 0;
     virtual bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) = 0;
-    virtual bool DumpState(const std::string &event, std::vector<std::string> &state) = 0;
+    virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) = 0;
     virtual bool FinishReceiver(
         const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData, const bool &abortEvent) = 0;
     virtual bool Freeze(const uid_t &uid) = 0;

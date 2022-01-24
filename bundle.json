@@ -78,6 +78,7 @@
                 "header": {
                     "header_base" : "//base/notification/ces_standard/frameworks/core/include",
                     "header_files": [
+                      "common_event_constant.h",
                       "common_event_death_recipient.h",
                       "common_event_listener.h",
                       "common_event_proxy.h",

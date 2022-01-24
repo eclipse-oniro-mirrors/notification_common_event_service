@@ -40,7 +40,7 @@ public:
     void TearDown() override;
 
     void MakeMockObjects();
-    void SetMockObjects(const CommonEventManagerShellCommand &cmd) const;
+    void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "dump";
     sptr<ICommonEvent> proxyPtr_;
@@ -77,7 +77,7 @@ void CemCommandDumpTest::MakeMockObjects()
     commonEventPtr->commonEventProxy_ = proxyPtr_;
 }
 
-void CemCommandDumpTest::SetMockObjects(const CommonEventManagerShellCommand &cmd) const
+void CemCommandDumpTest::SetMockObjects(const CommonEventCommand &cmd) const
 {}
 
 class CommonEventSubscriberTest : public CommonEventSubscriber {
@@ -107,7 +107,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0100, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -130,7 +130,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0200, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     // set the mock objects
     SetMockObjects(cmd);
 
@@ -152,7 +152,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0300, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -175,7 +175,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0400, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -198,7 +198,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0500, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -221,7 +221,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0600, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -244,7 +244,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0700, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -267,7 +267,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0800, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -290,7 +290,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0900, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -313,7 +313,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1000, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -350,7 +350,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1100, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -372,7 +372,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1200, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -396,7 +396,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1300, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);
@@ -434,7 +434,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1400, Function | MediumTest | Leve
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
 
     // set the mock objects
     SetMockObjects(cmd);

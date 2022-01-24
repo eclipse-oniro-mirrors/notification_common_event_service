@@ -14,17 +14,21 @@
  */
 
 #include "common_event_subscribe_info.h"
+
+#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "string_ex.h"
 
 namespace OHOS {
 namespace EventFwk {
 CommonEventSubscribeInfo::CommonEventSubscribeInfo(const MatchingSkills &matchingSkills)
-    : matchingSkills_(matchingSkills), priority_(0), threadMode_(CommonEventSubscribeInfo::ASYNC)
+    : matchingSkills_(matchingSkills), priority_(0), userId_(UNDEFINED_USER),
+      threadMode_(CommonEventSubscribeInfo::ASYNC)
 {
 }
 
-CommonEventSubscribeInfo::CommonEventSubscribeInfo() : priority_(0), threadMode_(CommonEventSubscribeInfo::ASYNC)
+CommonEventSubscribeInfo::CommonEventSubscribeInfo()
+    : priority_(0), userId_(UNDEFINED_USER), threadMode_(CommonEventSubscribeInfo::ASYNC)
 {
 }
 
@@ -32,6 +36,7 @@ CommonEventSubscribeInfo::CommonEventSubscribeInfo(const CommonEventSubscribeInf
 {
     matchingSkills_ = commonEventSubscribeInfo.matchingSkills_;
     priority_ = commonEventSubscribeInfo.priority_;
+    userId_ = commonEventSubscribeInfo.userId_;
     permission_ = commonEventSubscribeInfo.permission_;
     deviceId_ = commonEventSubscribeInfo.deviceId_;
     threadMode_ = commonEventSubscribeInfo.threadMode_;
@@ -49,6 +54,16 @@ void CommonEventSubscribeInfo::SetPriority(const int32_t &priority)
 int32_t CommonEventSubscribeInfo::GetPriority() const
 {
     return priority_;
+}
+
+void CommonEventSubscribeInfo::SetUserId(const int32_t &userId)
+{
+    userId_ = userId;
+}
+
+int32_t CommonEventSubscribeInfo::GetUserId() const
+{
+    return userId_;
 }
 
 void CommonEventSubscribeInfo::SetPermission(const std::string &permission)

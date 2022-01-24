@@ -108,8 +108,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
 
     struct tm curTime;
     // publish system event
-    bool publishResult =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, UID, "bundlename");
+    bool publishResult = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, curTime, PID, UID, UNDEFINED_USER, "bundlename");
     EXPECT_EQ(true, publishResult);
     sleep(PUBLISH_SLEEP);
 }
@@ -137,8 +137,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_02
 
     struct tm curTime;
     // publish system event
-    bool publishResult =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, 0, "bundlename");
+    bool publishResult = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, curTime, PID, 0, UNDEFINED_USER, "bundlename");
     EXPECT_EQ(false, publishResult);
     sleep(PUBLISH_SLEEP);
 }
@@ -186,8 +186,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
     publishInfo.SetOrdered(false);
 
     // publish system event
-    bool publishResult =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, 0, "bundlename");
+    bool publishResult = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, curTime, PID, 0, UNDEFINED_USER, "bundlename");
     sleep(1);
     EXPECT_EQ(true, publishResult);
 
@@ -195,7 +195,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
 }
 
 /*
- * @tc.number: CommonEventPublishSystemEventTest_0300
+ * @tc.number: CommonEventPublishSystemEventTest_0400
  * @tc.name: test PublishCommonEvent
  * @tc.desc: Verify Publish mapped System CommonEvent
  */
@@ -237,8 +237,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
     publishInfo.SetOrdered(false);
 
     // publish system event
-    bool publishResult =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, nullptr, curTime, PID, 0, "bundlename");
+    bool publishResult = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, curTime, PID, 0, UNDEFINED_USER, "bundlename");
     sleep(1);
     EXPECT_EQ(true, publishResult);
 

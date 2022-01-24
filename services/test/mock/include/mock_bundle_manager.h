@@ -241,7 +241,7 @@ public:
      * a certain permission.
      * @param bundleName Indicates the name of the bundle to check.
      * @param permission Indicates the permission to check.
-     * @param userId Indicates the user id.
+     * @param userId Indicates the user ID.
      * @return Returns true if the current application does not have the permission and the user does not turn off
      * further requests; returns false if the current application already has the permission, the permission is rejected
      * by the system, or the permission is denied by the user and the user has turned off further requests.
@@ -304,7 +304,7 @@ public:
      * @brief Requests a certain permission from user.
      * @param bundleName Indicates the name of the bundle to request permission.
      * @param permission Indicates the permission to request permission.
-     * @param userId Indicates the user id.
+     * @param userId Indicates the user ID.
      * @return Returns true if the permission request successfully; returns false otherwise.
      */
     virtual bool RequestPermissionFromUser(

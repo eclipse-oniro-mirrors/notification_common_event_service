@@ -32,8 +32,8 @@ ohos_unittest("common_event_command_test") {
   include_dirs = []
 
   sources = [
-    "${aafwk_path}/tools/aa/src/shell_command.cpp",
     "${tools_path}/cem/src/common_event_command.cpp",
+    "${tools_path}/cem/src/shell_command.cpp",
     "common_event_command_test.cpp",
   ]
   sources += tools_cem_mock_sources
@@ -49,8 +49,6 @@ ohos_unittest("common_event_command_test") {
   }
 
   deps = [
-    "${aafwk_path}/services/abilitymgr:abilityms",
-    "${appexecfwk_path}/services/bundlemgr:libbms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
@@ -61,6 +59,7 @@ ohos_unittest("common_event_command_test") {
 
   external_deps = [
     "ability_runtime:want",
+    "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
@@ -72,8 +71,8 @@ ohos_unittest("common_event_command_dump_test") {
   include_dirs = []
 
   sources = [
-    "${aafwk_path}/tools/aa/src/shell_command.cpp",
     "${tools_path}/cem/src/common_event_command.cpp",
+    "${tools_path}/cem/src/shell_command.cpp",
     "common_event_command_dump_test.cpp",
   ]
   sources += tools_cem_mock_sources
@@ -89,9 +88,6 @@ ohos_unittest("common_event_command_dump_test") {
   }
 
   deps = [
-    "${aafwk_path}/interfaces/innerkits/want:want",
-    "${aafwk_path}/services/abilitymgr:abilityms",
-    "${appexecfwk_path}/services/bundlemgr:libbms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
@@ -101,6 +97,8 @@ ohos_unittest("common_event_command_dump_test") {
   ]
 
   external_deps = [
+    "ability_runtime:want",
+    "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
@@ -112,8 +110,8 @@ ohos_unittest("common_event_command_publish_test") {
   include_dirs = []
 
   sources = [
-    "${aafwk_path}/tools/aa/src/shell_command.cpp",
     "${tools_path}/cem/src/common_event_command.cpp",
+    "${tools_path}/cem/src/shell_command.cpp",
     "common_event_command_publish_test.cpp",
   ]
   sources += tools_cem_mock_sources
@@ -129,9 +127,6 @@ ohos_unittest("common_event_command_publish_test") {
   }
 
   deps = [
-    "${aafwk_path}/interfaces/innerkits/want:want",
-    "${aafwk_path}/services/abilitymgr:abilityms",
-    "${appexecfwk_path}/services/bundlemgr:libbms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
@@ -141,6 +136,8 @@ ohos_unittest("common_event_command_publish_test") {
   ]
 
   external_deps = [
+    "ability_runtime:want",
+    "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]

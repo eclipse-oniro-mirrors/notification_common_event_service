@@ -14,6 +14,8 @@
  */
 
 #include "common_event_subscriber_manager.h"
+
+#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "subscriber_death_recipient.h"
 
@@ -88,13 +90,14 @@ int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &co
     return RemoveSubscriberRecordLocked(commonEventListener);
 }
 
-std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager::GetSubscriberRecords(const Want &want)
+std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager::GetSubscriberRecords(
+    const Want &want, const bool &isSystemApp, const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
     auto records = std::vector<SubscriberRecordPtr>();
 
-    GetSubscriberRecordsByWantLocked(want, records);
+    GetSubscriberRecordsByWantLocked(want, isSystemApp, userId, records);
 
     return records;
 }
@@ -110,6 +113,19 @@ void CommonEventSubscriberManager::DumpDetailed(
     std::string uid = format + "UID: " + std::to_string(record->uid) + "\n";
     std::string bundleName = format + "BundleName: " + record->bundleName + "\n";
     std::string priority = format + "Priority: " + std::to_string(record->eventSubscribeInfo->GetPriority()) + "\n";
+    std::string userId;
+    switch (record->eventSubscribeInfo->GetUserId()) {
+        case UNDEFINED_USER:
+            userId = "UNDEFINED_USER";
+            break;
+        case ALL_USER:
+            userId = "ALL_USER";
+            break;
+        default:
+            userId = std::to_string(record->eventSubscribeInfo->GetUserId());
+            break;
+    }
+    userId = format + "USERID: " + userId + "\n";
     std::string permission = format + "Permission: " + record->eventSubscribeInfo->GetPermission() + "\n";
     std::string deviceId = format + "DevicedID: " + record->eventSubscribeInfo->GetDeviceId() + "\n";
 
@@ -159,18 +175,19 @@ void CommonEventSubscriberManager::DumpDetailed(
         freezeTime = format + "FreezeTime: " + std::to_string(record->freezeTime) + "\n";
     }
 
-    dumpInfo = title + recordTime + pid + uid + bundleName + priority + permission + deviceId + matchingSkills +
-               isFreeze + freezeTime;
+    dumpInfo = title + recordTime + pid + uid + bundleName + priority + userId + permission + deviceId +
+               matchingSkills + isFreeze + freezeTime;
 }
 
-void CommonEventSubscriberManager::DumpState(const std::string &event, std::vector<std::string> &state)
+void CommonEventSubscriberManager::DumpState(const std::string &event, const int32_t &userId,
+    std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
     std::vector<SubscriberRecordPtr> records;
 
     std::lock_guard<std::mutex> lock(mutex_);
-    GetSubscriberRecordsByEvent(event, records);
+    GetSubscriberRecordsByEvent(event, userId, records);
 
     if (records.size() == 0) {
         state.emplace_back("Subscribers:\tNo information");
@@ -259,8 +276,31 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
     return ERR_OK;
 }
 
-void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(
-    const Want &want, std::vector<SubscriberRecordPtr> &records)
+bool CommonEventSubscriberManager::CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp,
+    const int32_t &userId)
+{
+    if (subscriberUserId == ALL_USER) {
+        return true;
+    }
+
+    if (isSystemApp && userId == UNDEFINED_USER) {
+        return true;
+    }
+
+    if (!isSystemApp && subscriberUserId == userId) {
+        return true;
+    }
+
+    if (isSystemApp && (subscriberUserId == userId
+        || (subscriberUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && subscriberUserId <= SUBSCRIBE_USER_SYSTEM_END))) {
+        return true;
+    }
+
+    return false;
+}
+
+void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Want &want, const bool &isSystemApp,
+    const int32_t &userId, std::vector<SubscriberRecordPtr> &records)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -276,21 +316,38 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(
     std::multiset<SubscriberRecordPtr> subscriberRecords = recordsItem->second;
     for (auto it = subscriberRecords.begin(); it != subscriberRecords.end(); it++) {
         if ((*it)->eventSubscribeInfo->GetMatchingSkills().Match(want)) {
-            records.emplace_back(*it);
+            if (CheckSubscriberByUserId((*it)->eventSubscribeInfo->GetUserId(), isSystemApp, userId)) {
+                records.emplace_back(*it);
+            }
         }
     }
 }
 
 void CommonEventSubscriberManager::GetSubscriberRecordsByEvent(
-    const std::string &event, std::vector<SubscriberRecordPtr> &records)
+    const std::string &event, const int32_t &userId, std::vector<SubscriberRecordPtr> &records)
 {
-    if (event.empty()) {
+    if (event.empty() && userId == ALL_USER) {
         records = subscribers_;
-    } else {
+    } else if (event.empty()) {
+        for (auto recordPtr : subscribers_) {
+            if (recordPtr->eventSubscribeInfo->GetUserId() == userId) {
+                records.emplace_back(recordPtr);
+            }
+        }
+    } else if (userId == ALL_USER) {
         auto infoItem = eventSubscribers_.find(event);
         if (infoItem != eventSubscribers_.end()) {
             for (auto recordPtr : infoItem->second) {
                 records.emplace_back(recordPtr);
+            }
+        }
+    } else {
+        auto infoItem = eventSubscribers_.find(event);
+        if (infoItem != eventSubscribers_.end()) {
+            for (auto recordPtr : infoItem->second) {
+                if (CheckSubscriberByUserId(recordPtr->eventSubscribeInfo->GetUserId(), true, userId)) {
+                    records.emplace_back(recordPtr);
+                }
             }
         }
     }

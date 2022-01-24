@@ -43,9 +43,9 @@ public:
 
     bool PublishFreezeCommonEvent(const uid_t &uid);
 
-    void DumpState(const std::string &event, std::vector<std::string> &state);
+    void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
-    void DumpHistoryState(const std::string &event, std::vector<std::string> &state);
+    void DumpHistoryState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
     bool ProcessUnorderedEvent(const CommonEventRecord &eventRecord);
@@ -88,11 +88,14 @@ private:
 
     bool NotifyFreezeEvents(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
-    void GetOrderedEventRecords(const std::string &event, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
+    void GetOrderedEventRecords(
+        const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
 
-    void GetUnorderedEventRecords(const std::string &event, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
+    void GetUnorderedEventRecords(
+        const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
 
-    void GetHistoryEventRecords(const std::string &event, std::vector<HistoryEventRecord> &records);
+    void GetHistoryEventRecords(
+        const std::string &event, const int32_t &userId, std::vector<HistoryEventRecord> &records);
 
     void DumpStateByCommonEventRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 

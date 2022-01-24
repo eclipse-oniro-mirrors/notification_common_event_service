@@ -15,19 +15,39 @@
 
 #include <gtest/gtest.h>
 
+#include <thread>
 #include "common_event_command.h"
 #include "common_event_manager.h"
 #include "common_event_subscriber.h"
-#include "tool_system_test.h"
 
 using namespace testing::ext;
 using namespace OHOS;
-using namespace OHOS::AAFwk;
 using namespace OHOS::EventFwk;
 
 namespace {
 const std::string STRING_EVENT = "com.ces.event";
 const std::string STRING_NO_SUBSCRIBERS = "Subscribers:\tNo information\n";
+const int TIME_DELAY_FOR_SERVICES = 2;
+
+std::string ExecuteCommand(const std::string &command)
+{
+    std::string result = "";
+    FILE *file = popen(command.c_str(), "r");
+
+    // wait for services
+    std::this_thread::sleep_for(std::chrono::seconds(TIME_DELAY_FOR_SERVICES));
+
+    if (file != nullptr) {
+        char commandResult[1024] = {0};
+        while ((fgets(commandResult, sizeof(commandResult), file)) != nullptr) {
+            result.append(commandResult);
+        }
+        pclose(file);
+        file = nullptr;
+    }
+
+    return result;
+}
 }  // namespace
 
 class CemCommandDumpSystemTest : public ::testing::Test {
@@ -89,7 +109,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0100, Function | 
 
     // dump all subcribers
     std::string command = "cem dump -a";
-    std::string commandResult = ToolSystemTest::ExecuteCommand(command);
+    std::string commandResult = ExecuteCommand(command);
 
     EXPECT_NE(commandResult, "");
 
@@ -106,7 +126,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0200, Function | 
 {
     // dump all subcribers for an event
     std::string command = "cem dump -e " + STRING_EVENT;
-    std::string commandResult = ToolSystemTest::ExecuteCommand(command);
+    std::string commandResult = ExecuteCommand(command);
 
     EXPECT_EQ(commandResult, STRING_NO_SUBSCRIBERS);
 }
@@ -134,7 +154,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0300, Function | 
 
     // dump all subcribers for an event
     std::string command = "cem dump -e " + STRING_EVENT;
-    std::string commandResult = ToolSystemTest::ExecuteCommand(command);
+    std::string commandResult = ExecuteCommand(command);
 
     EXPECT_NE(commandResult, "");
 

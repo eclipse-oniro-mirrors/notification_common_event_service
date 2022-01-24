@@ -115,7 +115,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0100, Function | MediumTes
     publishInfo.SetSticky(true);
 
     bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr);
+        data, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(true, publishResult);
 
     sleep(1);
@@ -150,7 +150,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0200, Function | MediumTes
     publishInfo.SetSticky(true);
 
     bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr);
+        data, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(true, publishResult);
 
     // make a want
@@ -162,7 +162,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0200, Function | MediumTes
     data2.SetWant(want2);
 
     publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data2, publishInfo, nullptr);
+        data2, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(true, publishResult);
 
     sleep(1);
@@ -197,7 +197,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0300, Function | MediumTes
     publishInfo.SetSticky(true);
 
     bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr);
+        data, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(true, publishResult);
 
     CommonEventData Stickydata;
@@ -227,7 +227,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0400, Function | MediumTes
     publishInfo.SetSticky(true);
 
     bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr);
+        data, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(true, publishResult);
 
     CommonEventData Stickydata;
@@ -257,7 +257,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0500, Function | MediumTes
     publishInfo.SetSticky(false);
 
     bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr);
+        data, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(true, publishResult);
 
     CommonEventData Stickydata;

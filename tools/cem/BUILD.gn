@@ -16,32 +16,18 @@ import("//build/ohos.gni")
 
 config("tools_cem_config") {
   include_dirs = [
-    "${aafwk_path}/frameworks/kits/ability/native/include",
-    "${aafwk_path}/interfaces/innerkits/ability_manager/include",
-    "${aafwk_path}/interfaces/innerkits/base/include",
-    "${aafwk_path}/interfaces/innerkits/want/include/ohos/aafwk/content",
-    "${aafwk_path}/services/abilitymgr/include",
-    "${aafwk_path}/services/common/include",
-    "${aafwk_path}/tools/aa/include",
-    "${appexecfwk_path}/interfaces/innerkits/appexecfwk_base/include",
-    "${appexecfwk_path}/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
-    "${appexecfwk_path}/interfaces/innerkits/libeventhandler/include",
-    "//foundation/distributedschedule/safwk/services/safwk/include",
     "//utils/native/base/include",
     "include",
   ]
 }
 
 ohos_source_set("tools_cem_source_set") {
-  public_configs = [
-    "${aafwk_path}/services/abilitymgr:abilityms_config",
-    ":tools_cem_config",
-  ]
+  public_configs = [ ":tools_cem_config" ]
 
   sources = [
-    "${aafwk_path}/tools/aa/src/shell_command.cpp",
     "src/common_event_command.cpp",
     "src/main.cpp",
+    "src/shell_command.cpp",
   ]
 
   cflags = []
@@ -55,7 +41,6 @@ ohos_source_set("tools_cem_source_set") {
   ]
 
   deps = [
-    "${aafwk_path}/services/abilitymgr:abilityms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
@@ -64,6 +49,7 @@ ohos_source_set("tools_cem_source_set") {
 
   external_deps = [
     "ability_runtime:want",
+    "appexecfwk_standard:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]

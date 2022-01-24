@@ -134,7 +134,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
     bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr);
+        data, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(true, result);
 }
 
@@ -159,7 +159,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
     bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr);
+        data, publishInfo, nullptr, UNDEFINED_USER);
     EXPECT_EQ(false, result);
 }
 
@@ -254,8 +254,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         0
     };
     // publish ordered event
-    bool result =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, commonEventListener, curTime, 0, 0, "bundlename");
+    bool result = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -302,8 +302,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         0
     };
     // publish ordered event
-    bool result =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, commonEventListener, curTime, 0, 0, "bundlename");
+    bool result = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
     EXPECT_EQ(false, result);
 }
 
@@ -692,8 +692,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         0
     };
     // publish ordered event
-    bool result =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, commonEventListener, curTime, 0, 0, "bundlename");
+    bool result = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -748,8 +748,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         0
     };
     // publish ordered event
-    bool result =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, commonEventListener, curTime, 0, 0, "bundlename");
+    bool result = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -804,8 +804,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         0
     };
     // publish ordered event
-    bool result =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, commonEventListener, curTime, 0, 0, "bundlename");
+    bool result = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -860,8 +860,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         0
     };
     // publish ordered event
-    bool result =
-        innerCommonEventManager.PublishCommonEvent(data, publishInfo, commonEventListener, curTime, 0, 0, "bundlename");
+    bool result = innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 

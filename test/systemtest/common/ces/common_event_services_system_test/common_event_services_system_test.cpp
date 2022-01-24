@@ -383,7 +383,7 @@ HWTEST_F(cesSystemTest, CES_SubscriptionEvent_1100, Function | MediumTest | Leve
 /*
  * @tc.number: CES_SubscriptionEvent_1200
  * @tc.name: SubscribeCommonEvent
- * @tc.desc: erify the normal, number and empty input string
+ * @tc.desc: Verify the normal, number and empty input string
  */
 HWTEST_F(cesSystemTest, CES_SubscriptionEvent_1200, Function | MediumTest | Level1)
 {
@@ -726,7 +726,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_0200, Function | MediumTest | Level1)
 /*
  * @tc.number: CES_SendEvent_0300
  * @tc.name: PublishCommonEvent
- * @tc.desc: erify the function when set scheme
+ * @tc.desc: Verify the function when set scheme
  */
 HWTEST_F(cesSystemTest, CES_SendEvent_0300, Function | MediumTest | Level1)
 {

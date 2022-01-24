@@ -35,7 +35,7 @@ public:
 
     int UpdateStickyEvent(const CommonEventRecord &eventRecord);
 
-    void DumpState(const std::string &event, std::vector<std::string> &state);
+    void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
     void FindStickyEventsLocked(
@@ -45,7 +45,8 @@ private:
 
     int UpdateStickyEventLocked(const std::string &event, const CommonEventRecordPtr &record);
 
-    void GetStickyCommonEventRecords(const std::string &event, std::vector<CommonEventRecordPtr> &records);
+    void GetStickyCommonEventRecords(
+        const std::string &event, const int32_t &userId, std::vector<CommonEventRecordPtr> &records);
 
 private:
     std::mutex mutex_;

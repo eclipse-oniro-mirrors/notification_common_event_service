@@ -40,7 +40,7 @@ public:
     void TearDown() override;
 
     void MakeMockObjects();
-    void SetMockObjects(const CommonEventManagerShellCommand &cmd) const;
+    void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "publish";
     sptr<ICommonEvent> proxyPtr_;
@@ -77,7 +77,7 @@ void CemCommandPublishModuleTest::MakeMockObjects()
     commonEventPtr->commonEventProxy_ = proxyPtr_;
 }
 
-void CemCommandPublishModuleTest::SetMockObjects(const CommonEventManagerShellCommand &cmd) const
+void CemCommandPublishModuleTest::SetMockObjects(const CommonEventCommand &cmd) const
 {}
 
 class CommonEventSubscriberTest : public CommonEventSubscriber {
@@ -109,6 +109,6 @@ HWTEST_F(CemCommandPublishModuleTest, Cem_Command_Publish_ModuleTest_0100, Funct
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
 }

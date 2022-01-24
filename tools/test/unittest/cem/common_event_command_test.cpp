@@ -62,7 +62,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0100, Function | MediumTest | Level1)
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG);
 }
 
@@ -80,7 +80,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0200, Function | MediumTest | Level1)
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), "cem: 'xxx' is not a valid cem command. See 'cem help'.\n" + HELP_MSG);
 }
 
@@ -98,7 +98,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0300, Function | MediumTest | Level1)
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), cmd.GetCommandErrorMsg() + HELP_MSG);
 }
 
@@ -116,7 +116,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0400, Function | MediumTest | Level1)
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), cmd.GetCommandErrorMsg() + HELP_MSG);
 }
 
@@ -134,6 +134,6 @@ HWTEST_F(CemCommandTest, Cem_Command_0500, Function | MediumTest | Level1)
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
-    CommonEventManagerShellCommand cmd(argc, argv);
+    CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), HELP_MSG);
 }

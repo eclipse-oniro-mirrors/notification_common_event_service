@@ -22,25 +22,25 @@
 namespace OHOS {
 namespace EventFwk {
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const std::shared_ptr<CommonEventSubscriber> &subscriber)
+    const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
 {
     EVENT_LOGI("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         return false;
     }
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener);
+    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, userId);
 }
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid)
+    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &userId)
 {
     EVENT_LOGI("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         return false;
     }
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid);
+    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, userId);
 }
 
 bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -166,7 +166,7 @@ bool CommonEvent::FinishReceiver(
     return commonEventProxy_->FinishReceiver(proxy, code, data, abortEvent);
 }
 
-bool CommonEvent::DumpState(const std::string &event, std::vector<std::string> &state)
+bool CommonEvent::DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
@@ -175,7 +175,7 @@ bool CommonEvent::DumpState(const std::string &event, std::vector<std::string> &
         return false;
     }
 
-    return commonEventProxy_->DumpState(event, state);
+    return commonEventProxy_->DumpState(event, userId, state);
 }
 
 void CommonEvent::ResetCommonEventProxy()

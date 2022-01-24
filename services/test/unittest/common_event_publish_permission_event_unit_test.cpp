@@ -129,7 +129,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(false);
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "hello");
+    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -169,7 +169,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "hello");
+    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -209,7 +209,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "hello");
+    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -249,7 +249,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "hello");
+    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -644,7 +644,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
     publishInfo.SetSticky(true);
-    bool ret = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "hello");
+    bool ret = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello");
     EXPECT_EQ(true, ret);
 }
 
@@ -669,7 +669,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
     publishInfo.SetSticky(true);
-    bool ret = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "hello world");
+    bool ret = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello world");
     EXPECT_EQ(false, ret);
 }
 
@@ -1015,7 +1015,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case1");
+    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case1");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1060,7 +1060,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case2");
+    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case2");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1105,7 +1105,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case3");
+    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case3");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1150,7 +1150,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case4");
+    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case4");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1193,7 +1193,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, "case6");
+    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case6");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1236,7 +1236,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case1");
+    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case1");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1279,7 +1279,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case2");
+    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case2");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1322,7 +1322,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case3");
+    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case3");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1365,7 +1365,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case4");
+    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case4");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1408,7 +1408,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, "case6");
+    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case6");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);

@@ -20,6 +20,7 @@
 #define protected public
 #include "bundle_manager_helper.h"
 #include "common_event.h"
+#include "common_event_constant.h"
 #include "common_event_manager_service.h"
 #include "common_event_manager.h"
 #undef private
@@ -215,7 +216,7 @@ private:
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
         if (innerCommonEventManager_) {
             std::vector<std::string> state;
-            innerCommonEventManager_->DumpState("", state);
+            innerCommonEventManager_->DumpState("", ALL_USER, state);
             CommonEventDumpTest::dumpInfoCount(state,
                 DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_TWO, DUMP_PENDING_COUNT_ONE, 0);
         }
@@ -367,6 +368,7 @@ bool CommonEventDumpTest::PublishCommonEvent(const CommonEventData &data, const 
     }
     pid_t callingPid = 20;
     uid_t callingUid = 21;
+    int32_t userId = UNDEFINED_USER;
     std::string bundleName = "";
 
     std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
@@ -377,6 +379,7 @@ bool CommonEventDumpTest::PublishCommonEvent(const CommonEventData &data, const 
         recordTime,
         callingPid,
         callingUid,
+        userId,
         bundleName,
         nullptr);
     return handler_->PostTask(PublishCommonEventFunc);
@@ -580,7 +583,7 @@ static void PublishUnorderedEvent(
     publishInfo.SetSubscriberPermissions(permissions);
 
     OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        eventData, publishInfo, nullptr);
+        eventData, publishInfo, nullptr, UNDEFINED_USER);
 }
 
 static void PublishStickyEvent(
@@ -613,7 +616,7 @@ static void PublishStickyEvent(
     publishInfo.SetSubscriberPermissions(permissions);
 
     OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        eventData, publishInfo, nullptr);
+        eventData, publishInfo, nullptr, UNDEFINED_USER);
 }
 
 static void PublishStickyEvent(
@@ -644,7 +647,7 @@ static void PublishStickyEvent(
     publishInfo.SetSubscriberPermissions(permissions);
 
     OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        eventData, publishInfo, nullptr);
+        eventData, publishInfo, nullptr, UNDEFINED_USER);
 }
 
 /*
@@ -669,7 +672,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0100, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, 0, 0, DUMP_HISTORY_COUNT_TWO);
     EXPECT_EQ("Sticky Events:\tNo information", state[STATE_INDEX2]);
@@ -700,7 +703,8 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0200, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true,
+        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_FOUR);
 
@@ -722,7 +726,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0300, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_SIX);
     EXPECT_EQ("Subscribers:\tNo information", state[0]);
@@ -753,7 +757,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0400, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_SIX);
 
@@ -784,7 +788,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0500, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_SIX);
 
@@ -814,7 +818,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0600, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_SIX);
 
@@ -843,7 +847,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0700, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_SIX);
 
@@ -871,7 +875,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0800, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_SIX);
 
@@ -899,7 +903,8 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0900, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(EVENT3, state));
+    EXPECT_EQ(true,
+        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(EVENT3, ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, 0, 0, 0);
     EXPECT_EQ("Subscribers:\tNo information", state[0]);
@@ -930,7 +935,8 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1000, TestSize.Level1)
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(EVENT2, state));
+    EXPECT_EQ(true,
+        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(EVENT2, ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_ONE, 0, DUMP_HISTORY_COUNT_FOUR);
 
@@ -951,7 +957,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1100, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_NINE);
 }
@@ -969,7 +975,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1200, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_TEN);
 }
@@ -987,7 +993,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1300, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ELEVEN);
 }
@@ -1005,7 +1011,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1400, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_TWELVE);
 }
@@ -1023,7 +1029,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1500, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_THIRTEEN);
 }
@@ -1051,12 +1057,13 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1600, Function | MediumTest | 
     permissions.emplace_back(PERMISSION);
     publishInfo.SetSubscriberPermissions(permissions);
 
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(data, publishInfo, nullptr);
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        data, publishInfo, nullptr, UNDEFINED_USER);
 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_FOURTEEN);
 }
@@ -1080,12 +1087,13 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(true);
 
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(data, publishInfo, nullptr);
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        data, publishInfo, nullptr, UNDEFINED_USER);
 
     sleep(1);
 
     std::vector<std::string> state;
-    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", state));
+    EXPECT_EQ(true, OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, state));
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_FIFTEEN);
 }
@@ -1098,7 +1106,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
 HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1800, TestSize.Level1)
 {
     std::vector<std::string> state;
-    getInnerCommonEventManager()->DumpState("", state);
+    getInnerCommonEventManager()->DumpState("", ALL_USER, state);
     dumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, 0);
     EXPECT_EQ("Pending Events:\tNo information", state[STATE_INDEX3]);
 }
@@ -1151,7 +1159,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
     sleep(PUBLISH_SLEEP);
 
     std::vector<std::string> state;
-    getInnerCommonEventManager()->DumpState("", state);
+    getInnerCommonEventManager()->DumpState("", ALL_USER, state);
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
 /*
@@ -1212,7 +1220,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
     sleep(PUBLISH_SLEEP);
 
     std::vector<std::string> state;
-    getInnerCommonEventManager()->DumpState("", state);
+    getInnerCommonEventManager()->DumpState("", ALL_USER, state);
     dumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_FOUR, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_MAX);
 }
 }  // namespace

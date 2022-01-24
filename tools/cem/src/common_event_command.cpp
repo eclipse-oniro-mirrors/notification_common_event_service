@@ -18,16 +18,15 @@
 #include <getopt.h>
 
 #include "common_event.h"
+#include "common_event_constant.h"
 #include "common_event_manager.h"
 #include "event_log_wrapper.h"
 #include "singleton.h"
 
-using namespace OHOS::AAFwk;
-
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string SHORT_OPTIONS = "he:asoc:d:";
+const std::string SHORT_OPTIONS = "he:asoc:du:";
 const struct option LONG_OPTIONS[] = {
     {"help", no_argument, nullptr, 'h'},
     {"all", no_argument, nullptr, 'a'},
@@ -36,10 +35,11 @@ const struct option LONG_OPTIONS[] = {
     {"ordered", no_argument, nullptr, 'o'},
     {"code", required_argument, nullptr, 'c'},
     {"data", required_argument, nullptr, 'd'},
+    {"user-id", required_argument, nullptr, 'u'},
 };
 }  // namespace
 
-CommonEventManagerShellCommand::CommonEventManagerShellCommand(int argc, char *argv[])
+CommonEventCommand::CommonEventCommand(int argc, char *argv[])
     : ShellCommand(argc, argv, TOOL_NAME)
 {
     EVENT_LOGI("enter");
@@ -49,25 +49,25 @@ CommonEventManagerShellCommand::CommonEventManagerShellCommand(int argc, char *a
     }
 }
 
-ErrCode CommonEventManagerShellCommand::CreateCommandMap()
+ErrCode CommonEventCommand::CreateCommandMap()
 {
     commandMap_ = {
-        {"help", std::bind(&CommonEventManagerShellCommand::RunAsHelpCommand, this)},
-        {"publish", std::bind(&CommonEventManagerShellCommand::RunAsPublishCommand, this)},
-        {"dump", std::bind(&CommonEventManagerShellCommand::RunAsDumpCommand, this)},
+        {"help", std::bind(&CommonEventCommand::RunAsHelpCommand, this)},
+        {"publish", std::bind(&CommonEventCommand::RunAsPublishCommand, this)},
+        {"dump", std::bind(&CommonEventCommand::RunAsDumpCommand, this)},
     };
 
     return OHOS::ERR_OK;
 }
 
-ErrCode CommonEventManagerShellCommand::CreateMessageMap()
+ErrCode CommonEventCommand::CreateMessageMap()
 {
     messageMap_ = {};
 
     return OHOS::ERR_OK;
 }
 
-ErrCode CommonEventManagerShellCommand::init()
+ErrCode CommonEventCommand::init()
 {
     EVENT_LOGI("enter");
 
@@ -84,7 +84,7 @@ ErrCode CommonEventManagerShellCommand::init()
     return result;
 }
 
-ErrCode CommonEventManagerShellCommand::RunAsHelpCommand()
+ErrCode CommonEventCommand::RunAsHelpCommand()
 {
     EVENT_LOGI("enter");
 
@@ -93,13 +93,14 @@ ErrCode CommonEventManagerShellCommand::RunAsHelpCommand()
     return OHOS::ERR_OK;
 }
 
-ErrCode CommonEventManagerShellCommand::RunAsPublishCommand()
+ErrCode CommonEventCommand::RunAsPublishCommand()
 {
     EVENT_LOGI("enter");
 
     ErrCode result = OHOS::ERR_OK;
 
     int option = -1;
+    std::int32_t userId = ALL_USER;
     int counter = 0;
 
     bool isSticky = false;
@@ -175,6 +176,16 @@ ErrCode CommonEventManagerShellCommand::RunAsPublishCommand()
                     result = OHOS::ERR_INVALID_VALUE;
                     break;
                 }
+                case 'u':
+                    // 'cem publish -e <name> -u' with no argument: cem publish -e <name> -d
+                    // 'cem publish --event <name> -d' with no argument: cem publish --event -d
+                    EVENT_LOGI("'cem publish -e <name> -u' with no argument.");
+
+                    resultReceiver_.append("error: option ");
+                    resultReceiver_.append("requires a value.\n");
+
+                    result = OHOS::ERR_INVALID_VALUE;
+                    break;
                 case 0: {
                     // 'cem publish' with an unknown option: cem publish --x
                     // 'cem publish' with an unknown option: cem publish --xxx
@@ -240,6 +251,12 @@ ErrCode CommonEventManagerShellCommand::RunAsPublishCommand()
                 data = optarg;
                 break;
             }
+            case 'u': {
+                // 'cem publish -e <name> -u 100'
+                // 'cem publish --event <name> -u 100'
+                userId = atoi(optarg);
+                break;
+            }
             case 0: {
                 break;
             }
@@ -285,7 +302,7 @@ ErrCode CommonEventManagerShellCommand::RunAsPublishCommand()
 
         // publish the common event
         std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-        bool publishResult = commonEventPtr_->PublishCommonEvent(commonEventData, publishInfo, subscriber);
+        bool publishResult = commonEventPtr_->PublishCommonEvent(commonEventData, publishInfo, subscriber, userId);
         if (publishResult) {
             resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_OK + "\n";
         } else {
@@ -296,7 +313,7 @@ ErrCode CommonEventManagerShellCommand::RunAsPublishCommand()
     return result;
 }
 
-ErrCode CommonEventManagerShellCommand::RunAsDumpCommand()
+ErrCode CommonEventCommand::RunAsDumpCommand()
 {
     EVENT_LOGI("enter");
 
@@ -304,6 +321,7 @@ ErrCode CommonEventManagerShellCommand::RunAsDumpCommand()
     std::vector<std::string> dumpResults;
 
     std::string action = "";
+    std::int32_t userId = ALL_USER;
 
     int option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr);
 
@@ -335,6 +353,12 @@ ErrCode CommonEventManagerShellCommand::RunAsDumpCommand()
             action = optarg;
             break;
         }
+        case 'u': {
+            // 'cem dump -e <name> -u 100'
+            // 'cem dump --event <name> -u 100'
+            userId = atoi(optarg);
+            break;
+        }
         case '?': {
             switch (optopt) {
                 case 'e': {
@@ -347,6 +371,15 @@ ErrCode CommonEventManagerShellCommand::RunAsDumpCommand()
                     result = OHOS::ERR_INVALID_VALUE;
                     break;
                 }
+                case 'u':
+                    // 'cem dump -e' with no argument: cem dump -e
+                    // 'cem dump --event' with no argument: cem dump --user-id
+                    EVENT_LOGI("'cem dump -u' with no argument.");
+
+                    resultReceiver_.append("error: option ");
+                    resultReceiver_.append("requires a value.\n");
+                    result = OHOS::ERR_INVALID_VALUE;
+                    break;
                 case 0: {
                     // 'cem dump' with an unknown option: cem dump --x
                     // 'cem dump' with an unknown option: cem dump --xxx
@@ -391,7 +424,7 @@ ErrCode CommonEventManagerShellCommand::RunAsDumpCommand()
         resultReceiver_.append(HELP_MSG_DUMP);
     } else {
         // dump state
-        bool dumpResult = commonEventPtr_->DumpState(action, dumpResults);
+        bool dumpResult = commonEventPtr_->DumpState(action, userId, dumpResults);
         if (dumpResult) {
             for (auto it : dumpResults) {
                 resultReceiver_ += it + "\n";

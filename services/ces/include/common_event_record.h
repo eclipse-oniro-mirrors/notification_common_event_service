@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_RECORD_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_RECORD_H
 
+#include "common_event_constant.h"
 #include "common_event_data.h"
 #include "common_event_publish_info.h"
 
@@ -27,10 +28,19 @@ struct CommonEventRecord {
     struct tm recordTime;
     pid_t pid;
     uid_t uid;
+    int32_t userId;
     std::string bundleName;
+    bool isSystemApp;
     bool isSystemEvent;
 
-    CommonEventRecord() : commonEventData(nullptr), publishInfo(nullptr), pid(0), uid(0), isSystemEvent(false)
+    CommonEventRecord()
+        : commonEventData(nullptr),
+          publishInfo(nullptr),
+          pid(0),
+          uid(0),
+          userId(UNDEFINED_USER),
+          isSystemApp(false),
+          isSystemEvent(false)
     {}
 };
 }  // namespace EventFwk

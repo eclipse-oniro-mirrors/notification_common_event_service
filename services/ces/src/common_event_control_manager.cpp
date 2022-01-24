@@ -18,6 +18,7 @@
 #include <cinttypes>
 
 #include "bundle_manager_helper.h"
+#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "ievent_receive.h"
 #include "system_time.h"
@@ -181,7 +182,8 @@ bool CommonEventControlManager::ProcessUnorderedEvent(const CommonEventRecord &e
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance();
 
     eventRecordPtr->FillCommonEventRecord(eventRecord);
-    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord.commonEventData->GetWant());
+    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord.commonEventData->GetWant(),
+        eventRecord.isSystemApp, eventRecord.userId);
 
     for (auto vec : eventRecordPtr->receivers) {
         eventRecordPtr->deliveryState.emplace_back(OrderedEventRecord::PENDING);
@@ -254,7 +256,8 @@ bool CommonEventControlManager::ProcessOrderedEvent(
     eventRecord->resultTo = commonEventListener;
     eventRecord->state = OrderedEventRecord::IDLE;
     eventRecord->nextReceiver = 0;
-    eventRecord->receivers = spinstance->GetSubscriberRecords(commonEventRecord.commonEventData->GetWant());
+    eventRecord->receivers = spinstance->GetSubscriberRecords(commonEventRecord.commonEventData->GetWant(),
+        commonEventRecord.isSystemApp, commonEventRecord.userId);
     for (auto vec : eventRecord->receivers) {
         eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     }
@@ -316,7 +319,9 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
     record.recordTime = eventRecordPtr->recordTime;
     record.pid = eventRecordPtr->pid;
     record.uid = eventRecordPtr->uid;
+    record.userId = eventRecordPtr->userId;
     record.bundleName = eventRecordPtr->bundleName;
+    record.isSystemApp = eventRecordPtr->isSystemApp;
     record.isSystemEvent = eventRecordPtr->isSystemEvent;
 
     for (auto vec : eventRecordPtr->receivers) {
@@ -324,6 +329,7 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
         receiver.recordTime = vec->recordTime;
         receiver.bundleName = vec->bundleName;
         receiver.priority = vec->eventSubscribeInfo->GetPriority();
+        receiver.userId = vec->eventSubscribeInfo->GetUserId();
         receiver.permission = vec->eventSubscribeInfo->GetPermission();
         receiver.deviceId = vec->eventSubscribeInfo->GetDeviceId();
         receiver.isFreeze = vec->isFreeze;
@@ -710,16 +716,18 @@ bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::str
         eventRecord.bundleName, subscriberRequiredPermission);
     if (!ret) {
         EVENT_LOGW("No permission to send common event %{public}s "
-                    "from %{public}s (pid = %{public}d, uid = %{public}d) "
-                    "to %{public}s (pid = %{public}d, uid = %{public}d), "
+                    "from %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
+                    "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
                     "due to registered subscriber requires the %{public}s permission.",
             eventRecord.commonEventData->GetWant().GetAction().c_str(),
             eventRecord.bundleName.c_str(),
             eventRecord.pid,
             eventRecord.uid,
+            eventRecord.userId,
             subscriberRecord.bundleName.c_str(),
             subscriberRecord.pid,
             subscriberRecord.uid,
+            subscriberRecord.eventSubscribeInfo->GetUserId(),
             subscriberRequiredPermission.c_str());
     }
 
@@ -741,16 +749,18 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
             subscriberRecord.bundleName, publisherRequiredPermission);
         if (!ret) {
             EVENT_LOGW("No permission to receive common event %{public}s "
-                        "to %{public}s (pid = %{public}d, uid = %{public}d), "
-                        "due to publisher %{public}s (pid = %{public}d, uid = %{public}d) requires "
-                        "the %{public}s permission.",
+                        "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
+                        "due to publisher %{public}s (pid = %{public}d, uid = %{public}d),"
+                        " userId = %{public}d requires the %{public}s permission.",
                 eventRecord.commonEventData->GetWant().GetAction().c_str(),
                 subscriberRecord.bundleName.c_str(),
                 subscriberRecord.pid,
                 subscriberRecord.uid,
+                subscriberRecord.eventSubscribeInfo->GetUserId(),
                 eventRecord.bundleName.c_str(),
                 eventRecord.pid,
                 eventRecord.uid,
+                eventRecord.userId,
                 publisherRequiredPermission.c_str());
             break;
         }
@@ -760,14 +770,26 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
 }
 
 void CommonEventControlManager::GetUnorderedEventRecords(
-    const std::string &event, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
+    const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
 {
     EVENT_LOGI("enter");
-    if (event.empty()) {
+    if (event.empty() && userId == ALL_USER) {
         records = unorderedEventQueue_;
-    } else {
+    } else if (event.empty()) {
+        for (auto vec : unorderedEventQueue_) {
+            if (vec->userId == userId) {
+                records.emplace_back(vec);
+            }
+        }
+    } else if (userId == ALL_USER) {
         for (auto vec : unorderedEventQueue_) {
             if (vec->commonEventData->GetWant().GetAction() == event) {
+                records.emplace_back(vec);
+            }
+        }
+    } else {
+        for (auto vec : unorderedEventQueue_) {
+            if (vec->commonEventData->GetWant().GetAction() == event && vec->userId == userId) {
                 records.emplace_back(vec);
             }
         }
@@ -775,14 +797,26 @@ void CommonEventControlManager::GetUnorderedEventRecords(
 }
 
 void CommonEventControlManager::GetOrderedEventRecords(
-    const std::string &event, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
+    const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
 {
     EVENT_LOGI("enter");
-    if (event.empty()) {
+    if (event.empty() && userId == ALL_USER) {
         records = orderedEventQueue_;
-    } else {
+    } else if (event.empty()) {
+        for (auto vec : orderedEventQueue_) {
+            if (vec->userId == userId) {
+                records.emplace_back(vec);
+            }
+        }
+    } else if (userId == ALL_USER) {
         for (auto vec : orderedEventQueue_) {
             if (vec->commonEventData->GetWant().GetAction() == event) {
+                records.emplace_back(vec);
+            }
+        }
+    } else {
+        for (auto vec : orderedEventQueue_) {
+            if (vec->commonEventData->GetWant().GetAction() == event && vec->userId == userId) {
                 records.emplace_back(vec);
             }
         }
@@ -790,14 +824,26 @@ void CommonEventControlManager::GetOrderedEventRecords(
 }
 
 void CommonEventControlManager::GetHistoryEventRecords(
-    const std::string &event, std::vector<HistoryEventRecord> &records)
+    const std::string &event, const int32_t &userId, std::vector<HistoryEventRecord> &records)
 {
     EVENT_LOGI("enter");
-    if (event.empty()) {
+    if (event.empty() && userId == ALL_USER) {
         records = historyEventRecords_;
-    } else {
+    } else if (event.empty()) {
+        for (auto vec : historyEventRecords_) {
+            if (vec.userId == userId) {
+                records.emplace_back(vec);
+            }
+        }
+    } else if (userId == ALL_USER) {
         for (auto vec : historyEventRecords_) {
             if (vec.want.GetAction() == event) {
+                records.emplace_back(vec);
+            }
+        }
+    } else {
+        for (auto vec : historyEventRecords_) {
+            if (vec.want.GetAction() == event && vec.userId == userId) {
                 records.emplace_back(vec);
             }
         }
@@ -815,6 +861,19 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     std::string recordTime = "\tTime: " + std::string(systime) + "\n";
     std::string pid = "\tPID: " + std::to_string(record->pid) + "\n";
     std::string uid = "\tUID: " + std::to_string(record->uid) + "\n";
+    std::string userId;
+    switch (record->userId) {
+        case UNDEFINED_USER:
+            userId = "UNDEFINED_USER";
+            break;
+        case ALL_USER:
+            userId = "ALL_USER";
+            break;
+        default:
+            userId = std::to_string(record->userId);
+            break;
+    }
+    userId = "\tUSERID: " + userId + "\n";
     std::string bundleName = "\tBundleName: " + record->bundleName + "\n";
 
     std::string permission = "\tRequiredPermission: ";
@@ -844,6 +903,8 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     } else {
         isOrdered = "\tIsOrdered: false\n";
     }
+    std::string isSystemApp = record->isSystemApp ? "true" : "false";
+    isSystemApp = "\tIsSystemApp: " + isSystemApp + "\n";
     std::string isSystemEvent = record->isSystemEvent ? "true" : "false";
     isSystemEvent = "\tIsSystemEvent: " + isSystemEvent + "\n";
 
@@ -899,8 +960,8 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     std::string resultAbort = record->resultAbort ? "true" : "false";
     resultAbort = "\tResultAbort: " + resultAbort + "\n";
 
-    dumpInfo = recordTime + pid + uid + bundleName + permission + isSticky + isOrdered + isSystemEvent + want + code +
-               data + lastSubscriber + state + receiverTime + dispatchTime + resultAbort;
+    dumpInfo = recordTime + pid + uid + userId + bundleName + permission + isSticky + isOrdered + isSystemApp +
+               isSystemEvent + want + code + data + lastSubscriber + state + receiverTime + dispatchTime + resultAbort;
 }
 
 void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
@@ -914,6 +975,19 @@ void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
     std::string recordTime = "\tTime: " + std::string(systime) + "\n";
     std::string pid = "\tPID: " + std::to_string(record.pid) + "\n";
     std::string uid = "\tUID: " + std::to_string(record.uid) + "\n";
+    std::string userId;
+    switch (record.userId) {
+        case UNDEFINED_USER:
+            userId = "UNDEFINED_USER";
+            break;
+        case ALL_USER:
+            userId = "ALL_USER";
+            break;
+        default:
+            userId = std::to_string(record.userId);
+            break;
+    }
+    userId = "\tUSERID: " + userId + "\n";
     std::string bundleName = "\tBundleName: " + record.bundleName + "\n";
 
     std::string permission = "\tRequiredPermission: ";
@@ -943,6 +1017,8 @@ void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
     } else {
         isOrdered = "\tIsOrdered: false\n";
     }
+    std::string isSystemApp = record.isSystemApp ? "true" : "false";
+    isSystemApp = "\tIsSystemApp: " + isSystemApp + "\n";
     std::string isSystemEvent = record.isSystemEvent ? "true" : "false";
     isSystemEvent = "\tIsSystemEvent: " + isSystemEvent + "\n";
 
@@ -998,8 +1074,8 @@ void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
     std::string resultAbort = record.resultAbort ? "true" : "false";
     resultAbort = "\tResultAbort: " + resultAbort + "\n";
 
-    dumpInfo = recordTime + pid + uid + bundleName + permission + isSticky + isOrdered + isSystemEvent + want + code +
-               data + lastSubscriber + state + receiverTime + dispatchTime + resultAbort;
+    dumpInfo = recordTime + pid + uid + userId + bundleName + permission + isSticky + isOrdered + isSystemApp +
+               isSystemEvent + want + code + data + lastSubscriber + state + receiverTime + dispatchTime + resultAbort;
 }
 
 void CommonEventControlManager::DumpStateBySubscriberRecord(
@@ -1076,6 +1152,19 @@ void CommonEventControlManager::DumpHistoryStateBySubscriberRecord(
 
         std::string bundleName = format + "BundleName: " + receiver.bundleName + "\n";
         std::string priority = format + "Priority: " + std::to_string(receiver.priority) + "\n";
+        std::string userId;
+        switch (receiver.userId) {
+            case UNDEFINED_USER:
+                userId = "UNDEFINED_USER";
+                break;
+            case ALL_USER:
+                userId = "ALL_USER";
+                break;
+            default:
+                userId = std::to_string(receiver.userId);
+                break;
+        }
+        userId = format + "USERID: " + userId + "\n";
         std::string permission = format + "Permission: " + receiver.permission + "\n";
         std::string deviceId = format + "DevicedID: " + receiver.deviceId + "\n";
 
@@ -1104,12 +1193,13 @@ void CommonEventControlManager::DumpHistoryStateBySubscriberRecord(
                 deliveryState = "\t\tEventState: TIMEOUT\n";
                 break;
         }
-        dumpInfo = dumpInfo + title + recordTime + bundleName + priority + permission + deviceId + isFreeze +
+        dumpInfo = dumpInfo + title + recordTime + bundleName + priority + userId + permission + deviceId + isFreeze +
                    freezeTime + deliveryState;
     }
 }
 
-void CommonEventControlManager::DumpState(const std::string &event, std::vector<std::string> &state)
+void CommonEventControlManager::DumpState(
+    const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
@@ -1118,8 +1208,8 @@ void CommonEventControlManager::DumpState(const std::string &event, std::vector<
     std::vector<std::shared_ptr<OrderedEventRecord>> orderedRecords;
     std::lock_guard<std::mutex> orderedLock(orderedMutex_);
     std::lock_guard<std::mutex> unorderedLock(unorderedMutex_);
-    GetUnorderedEventRecords(event, unorderedRecords);
-    GetOrderedEventRecords(event, orderedRecords);
+    GetUnorderedEventRecords(event, userId, unorderedRecords);
+    GetOrderedEventRecords(event, userId, orderedRecords);
     records.insert(records.end(), unorderedRecords.begin(), unorderedRecords.end());
     records.insert(records.end(), orderedRecords.begin(), orderedRecords.end());
 
@@ -1147,13 +1237,14 @@ void CommonEventControlManager::DumpState(const std::string &event, std::vector<
     }
 }
 
-void CommonEventControlManager::DumpHistoryState(const std::string &event, std::vector<std::string> &state)
+void CommonEventControlManager::DumpHistoryState(
+    const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
     std::vector<HistoryEventRecord> records;
     std::lock_guard<std::mutex> lock(historyMutex_);
-    GetHistoryEventRecords(event, records);
+    GetHistoryEventRecords(event, userId, records);
 
     if (records.size() == 0) {
         state.emplace_back("History Events:\tNo information");
