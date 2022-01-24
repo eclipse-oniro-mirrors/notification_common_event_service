@@ -78,8 +78,8 @@ ohos_unittest("common_event_publish_system_event_test") {
 
   external_deps = [
     "ability_runtime:want",
-    "bundle_framework:appexecfwk_base",
     "appexecfwk_standard:libeventhandler",
+    "bundle_framework:appexecfwk_base",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
