@@ -54,8 +54,8 @@ ohos_shared_library("actscesfwk_kits_test") {
 
   external_deps = [
     "ability_runtime:want",
-    "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:libeventhandler",
+    "bundle_framework:appexecfwk_base",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
