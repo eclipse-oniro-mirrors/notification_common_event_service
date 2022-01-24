@@ -17,6 +17,7 @@
 #define BASE_NOTIFICATION_CES_STANDARD_CESFWK_KITS_NAPI_COMMON_EVENT_INCLUDE_SUPPORT_H
 
 #include "napi/native_api.h"
+#include "napi/native_common.h"
 
 namespace OHOS {
 namespace EventFwkNapi {
