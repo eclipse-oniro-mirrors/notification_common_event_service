@@ -82,9 +82,9 @@ ohos_moduletest("cesModuleTest") {
 
   external_deps = [
     "ability_runtime:want",
-    "appexecfwk_standard:libeventhandler",
     "bundle_framework:appexecfwk_base",
     "bytrace_standard:bytrace_core",
+    "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
