@@ -305,6 +305,8 @@ bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record
 bool InnerCommonEventManager::CheckIsSystemApp(const uid_t &uid, bool &isSystemApp, int32_t &userId,
     const std::string &bundleName)
 {
+    EVENT_LOGI("enter");
+
     if (userId < UNDEFINED_USER) {
         EVENT_LOGE("Invalid User ID %{public}d", userId);
         return false;

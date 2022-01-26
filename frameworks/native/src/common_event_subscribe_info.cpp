@@ -115,6 +115,12 @@ bool CommonEventSubscribeInfo::Marshalling(Parcel &parcel) const
         return false;
     }
 
+    // write userId
+    if (!parcel.WriteInt32(userId_)) {
+        EVENT_LOGE("Failed to write userId");
+        return false;
+    }
+
     // write threadMode
     if (!parcel.WriteUint32(threadMode_)) {
         EVENT_LOGE("Failed to write threadMode");
@@ -143,6 +149,9 @@ bool CommonEventSubscribeInfo::ReadFromParcel(Parcel &parcel)
 
     // read priority
     priority_ = parcel.ReadUint32();
+
+    // read userId
+    userId_ = parcel.ReadInt32();
 
     // read threadMode
     threadMode_ = (CommonEventSubscribeInfo::ThreadMode)parcel.ReadUint32();

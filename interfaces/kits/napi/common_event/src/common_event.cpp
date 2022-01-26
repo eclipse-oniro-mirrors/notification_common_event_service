@@ -2188,7 +2188,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
 }
 
 napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value (&argv)[PUBLISH_MAX_PARA_BY_USERID],
-    const size_t &argc, std::string &event, int32_t userId, CommonEventPublishDataByjs &commonEventPublishData,
+    const size_t &argc, std::string &event, int32_t &userId, CommonEventPublishDataByjs &commonEventPublishData,
     napi_ref &callback)
 {
     EVENT_LOGI("ParseParametersByPublishAsUser start");
@@ -2207,7 +2207,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     // argv[1]: userId
     NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
     NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
-    NAPI_CALL(env, napi_get_value_int32(env, argv[1], &userId));
+    napi_get_value_int32(env, argv[1], &userId);
+    EVENT_LOGI("ParseParametersByPublishAsUser userId = %{public}d", userId);
 
     // argv[2]: CommonEventPublishData
     if (argc == PUBLISH_MAX_PARA_BY_USERID) {
@@ -2288,7 +2289,7 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
     Want want;
     want.SetAction(event);
     if (argc == PUBLISH_MAX_PARA_BY_USERID) {
-        PaddingCallbackInfoPublish(want, asyncCallbackInfo, commonEventPublishDatajs);
+        PaddingCallbackInfoPublish(want, asyncCallbackInfo, commonEventPublishDatajs, userId);
     }
     asyncCallbackInfo->commonEventData.SetWant(want);
 
