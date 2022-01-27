@@ -256,7 +256,11 @@ const std::string CommonEventSupport::COMMON_EVENT_HOME_MODE = "common.event.HOM
  * This is a protected common event, which can be sent only by the system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_OFFICE_MODE = "common.event.OFFICE_MODE";
-
+/**
+ * Indicate the action of a common event that the window mode is split screen.
+ * This is a protected common event, which can be sent only by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN = "common.event.SPLIT_SCREEN";
 /**
  * Indicate the action of a common event that the user has been started.
  */
@@ -1070,6 +1074,7 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_ON);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_PRESENT);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TIME_TICK);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TIME_CHANGED);
