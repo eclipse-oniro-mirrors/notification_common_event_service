@@ -300,7 +300,7 @@ declare namespace commonEvent {
     COMMON_EVENT_HOME_MODE = "common.event.HOME_MODE",
 
     /**
-     * sent by the window manager service when the is split.
+     * sent by the window manager service when the window mode is split.
      */
     COMMON_EVENT_SPLIT_SCREEN = "common.event.SPLIT_SCREEN",
 

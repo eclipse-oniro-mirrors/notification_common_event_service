@@ -330,6 +330,11 @@ void CommonEventPermissionManager::Init()
     per.state = Permission::DEFAULT;
     per.names.emplace_back("ohos.permission.RECEIVER_STARTUP_COMPLETED");
     multimap_.insert(std::make_pair(CommonEventSupport::COMMON_EVENT_FOUNDATION_READY, per));
+
+    per.names.clear();
+    per.state = Permission::DEFAULT;
+    per.names.emplace_back("ohos.permission.RECEIVER_SPLIT_SCREEN");
+    multimap_.insert(std::make_pair(CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN, per));
 }
 
 Permission CommonEventPermissionManager::GetEventPermission(std::string event)
