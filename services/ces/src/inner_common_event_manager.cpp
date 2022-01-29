@@ -291,9 +291,10 @@ bool InnerCommonEventManager::Unfreeze(const uid_t &uid)
 
 bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record)
 {
+    EVENT_LOGI("enter");
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(record.bundleName, permission);
-    if (!ret) {
+    if (!record.isSystemApp && !ret) {
         EVENT_LOGE("No permission to send a sticky common event from %{public}s (pid = %{public}d, uid = %{public}d)",
             record.bundleName.c_str(), record.pid, record.uid);
         return ret;
