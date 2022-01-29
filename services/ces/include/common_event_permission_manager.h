@@ -24,16 +24,19 @@
 
 namespace OHOS {
 namespace EventFwk {
+enum class PermissionState {
+    DEFAULT,
+    AND,
+    OR,
+};
+
 struct Permission {
-    enum permissionState {
-        DEFAULT,
-        AND,
-        OR,
-    } state;
+    PermissionState state;
     std::vector<std::string> names;
-    Permission() : state(DEFAULT)
+    Permission() : state(PermissionState::DEFAULT)
     {}
 };
+
 class CommonEventPermissionManager : public DelayedSingleton<CommonEventPermissionManager> {
 public:
     CommonEventPermissionManager();

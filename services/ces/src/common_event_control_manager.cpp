@@ -665,7 +665,7 @@ bool CommonEventControlManager::CheckSubcriberPermission(
             subscriberRecord.bundleName, permission.names[0]);
         lackPermission = permission.names[0];
     } else {
-        if (permission.state == Permission::AND) {
+        if (permission.state == PermissionState::AND) {
             for (auto vec : permission.names) {
                 ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
                     subscriberRecord.bundleName, vec);
@@ -674,7 +674,7 @@ bool CommonEventControlManager::CheckSubcriberPermission(
                     break;
                 }
             }
-        } else if (permission.state == Permission::OR) {
+        } else if (permission.state == PermissionState::OR) {
             for (auto vec : permission.names) {
                 ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
                     subscriberRecord.bundleName, vec);
