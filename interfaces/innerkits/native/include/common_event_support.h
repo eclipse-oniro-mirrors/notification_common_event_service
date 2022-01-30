@@ -259,6 +259,12 @@ public:
     static const std::string COMMON_EVENT_OFFICE_MODE;
 
     /**
+    * Indicate the action of a common event that the window mode is split screen.
+    * This is a protected common event, which can be sent only by the system.
+    */
+    static const std::string COMMON_EVENT_SPLIT_SCREEN;
+
+    /**
      * Indicate the action of a common event that the user has been started.
      */
     static const std::string COMMON_EVENT_USER_STARTED;

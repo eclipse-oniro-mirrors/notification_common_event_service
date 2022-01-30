@@ -121,6 +121,8 @@ napi_value SupportInit(napi_env env, napi_value exports)
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_HOME_MODE, "COMMON_EVENT_HOME_MODE");
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_OFFICE_MODE, "COMMON_EVENT_OFFICE_MODE");
     SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN, "COMMON_EVENT_SPLIT_SCREEN");
+    SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_STARTED, "COMMON_EVENT_USER_STARTED");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_BACKGROUND, "COMMON_EVENT_USER_BACKGROUND");
