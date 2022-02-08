@@ -948,10 +948,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     Permission per = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
     int ret = per.names.size();
-    int state = per.state;
+    PermissionState state = per.state;
 
     EXPECT_EQ(true, ret > 0);
-    EXPECT_EQ(true, state == 1);
+    EXPECT_EQ(true, state == PermissionState::AND);
 }
 
 /*
@@ -970,10 +970,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     Permission per = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
     int ret = per.names.size();
-    int state = per.state;
+    PermissionState state = per.state;
 
     EXPECT_EQ(true, ret > 0);
-    EXPECT_EQ(true, state == 2);
+    EXPECT_EQ(true, state == PermissionState::OR);
 }
 
 /*
