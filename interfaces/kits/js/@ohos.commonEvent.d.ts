@@ -300,11 +300,6 @@ declare namespace commonEvent {
     COMMON_EVENT_HOME_MODE = "common.event.HOME_MODE",
 
     /**
-     * sent by the window manager service when the window mode is split.
-     */
-    COMMON_EVENT_SPLIT_SCREEN = "common.event.SPLIT_SCREEN",
-
-    /**
      * sent by the smart function when the system in office mode.
      */
     COMMON_EVENT_OFFICE_MODE = "common.event.OFFICE_MODE",
@@ -951,7 +946,13 @@ declare namespace commonEvent {
      * This common event can be triggered only by system.
      * @since 8
      */
-    COMMON_EVENT_SPN_INFO_UPDATED = "usual.event.SPN_INFO_UPDATED"
+    COMMON_EVENT_SPN_INFO_UPDATED = "usual.event.SPN_INFO_UPDATED",
+
+    /**
+     * sent by the window manager service when the window mode is split.
+     * @since 8
+     */
+    COMMON_EVENT_SPLIT_SCREEN = "common.event.SPLIT_SCREEN"
   }
 }
 
