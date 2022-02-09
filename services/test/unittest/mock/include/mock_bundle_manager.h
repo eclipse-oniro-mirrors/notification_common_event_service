@@ -558,9 +558,9 @@ public:
         return true;
     }
     /**
-     * @brief Notify a specified ability for activity.
-     * @param bundleName Indicates the bundle name of the ability to activity.
-     * @param abilityName Indicates the name of the ability to activity.
+     * @brief Notify a specified ability for active status.
+     * @param bundleName Indicates the bundle name of the ability to active status.
+     * @param abilityName Indicates the name of the ability to active status.
      * @param launchTime Indicates the ability launchTime.
      * @return Returns true if this function is successfully called; returns false otherwise.
      */
