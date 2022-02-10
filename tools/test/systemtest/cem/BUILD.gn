@@ -50,7 +50,7 @@ ohos_systemtest("common_event_command_dump_system_test") {
   ]
 
   external_deps = [
-    "ability_runtime:want",
+    "ability_base:want",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
@@ -85,7 +85,7 @@ ohos_systemtest("common_event_command_publish_system_test") {
   ]
 
   external_deps = [
-    "ability_runtime:want",
+    "ability_base:want",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",

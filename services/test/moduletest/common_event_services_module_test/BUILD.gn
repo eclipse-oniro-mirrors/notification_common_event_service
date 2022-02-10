@@ -81,7 +81,7 @@ ohos_moduletest("cesModuleTest") {
   ]
 
   external_deps = [
-    "ability_runtime:want",
+    "ability_base:want",
     "bundle_framework:appexecfwk_base",
     "bytrace_standard:bytrace_core",
     "eventhandler:libeventhandler",
