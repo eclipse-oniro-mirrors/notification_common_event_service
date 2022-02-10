@@ -195,6 +195,21 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_DISK_EJECT,
         {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
     },
+    {CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED,
+        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_VOLUME_UNMOUNTED,
+        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_VOLUME_MOUNTED,
+        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_VOLUME_BAD_REMOVAL,
+        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_VOLUME_EJECT,
+        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+    },
     {CommonEventSupport::COMMON_EVENT_VISIBLE_ACCOUNTS_UPDATED,
             {PermissionState::DEFAULT, {"ohos.permission.GET_APP_ACCOUNTS"}}
     },

@@ -861,6 +861,41 @@ declare namespace commonEvent {
     COMMON_EVENT_DISK_EJECT = "usual.event.data.DISK_EJECT",
 
     /**
+     * The external storage was removed.
+     * This is a protected common event that can only be sent by system.
+     * @since 8
+     */
+    COMMON_EVENT_VOLUME_REMOVED = "usual.event.data.VOLUME_REMOVED",
+
+    /**
+     * The external storage was unmounted.
+     * This is a protected common event that can only be sent by system.
+     * @since 8
+     */
+    COMMON_EVENT_VOLUME_UNMOUNTED = "usual.event.data.VOLUME_UNMOUNTED",
+
+    /**
+     * The external storage was mounted.
+     * This is a protected common event that can only be sent by system.
+     * @since 8
+     */
+    COMMON_EVENT_VOLUME_MOUNTED = "usual.event.data.VOLUME_MOUNTED",
+
+    /**
+     * The external storage was bad removal.
+     * This is a protected common event that can only be sent by system.
+     * @since 8
+     */
+    COMMON_EVENT_VOLUME_BAD_REMOVAL = "usual.event.data.VOLUME_BAD_REMOVAL",
+
+    /**
+     * The external storage was eject.
+     * This is a protected common event that can only be sent by system.
+     * @since 8
+     */
+    COMMON_EVENT_VOLUME_EJECT = "usual.event.data.VOLUME_EJECT",
+
+    /**
      * The visible of account was updated.
      * This is a protected common event that can only be sent by system.
      */
