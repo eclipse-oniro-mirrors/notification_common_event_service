@@ -16,6 +16,7 @@
 /**
  * the data of the commonEvent
  * @name CommonEventData
+ * @syscap SystemCapability.Notification.commonEvent
  * @since 7
  * @permission N/A
  */

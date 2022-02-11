@@ -22,6 +22,7 @@ import { CommonEventPublishData } from './commonEvent/commonEventPublishData';
  * the defination for commonevent
  * @name commonEvent
  * @since 7
+ * @syscap SystemCapability.Notification.CommonEvent
  * @permission N/A
  */
 declare namespace commonEvent {
@@ -29,7 +30,7 @@ declare namespace commonEvent {
    * Publishes an ordered, sticky, or standard common event.
    *
    * @since 7
-   * @param data Indicate the CommonEventPublishData containing the common event content and attributes.
+   * @param event name of the common event.
    * @param callback Specified callback method.
    * @return -
    */
@@ -39,7 +40,8 @@ declare namespace commonEvent {
    * Publishes an ordered, sticky, or standard common event.
    *
    * @since 7
-   * @param data Indicate the CommonEventPublishData containing the common event content and attributes.
+   * @param event name of the common event.
+   * @param options Indicate the CommonEventPublishData containing the common event content and attributes.
    * @param callback Specified callback method.
    * @return -
    */
@@ -61,8 +63,7 @@ declare namespace commonEvent {
    *
    * @since 7
    * @param subscribeInfo Indicate the information of the subscriber.
-   * @param callback Specified callback method.
-   * @return -
+   * @return Returns common event subscriber object
    */
   function createSubscriber(subscribeInfo: CommonEventSubscribeInfo): Promise<CommonEventSubscriber>;
 
