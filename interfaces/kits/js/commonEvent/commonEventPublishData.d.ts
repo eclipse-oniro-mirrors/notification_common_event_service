@@ -17,6 +17,7 @@
  * containing the common event content and attributes
  * @name CommonEventPublishData
  * @since 7
+ * @syscap SystemCapability.Notification.commonEvent
  * @permission N/A
  */
  export interface CommonEventPublishData {
