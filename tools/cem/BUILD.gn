@@ -48,7 +48,7 @@ ohos_source_set("tools_cem_source_set") {
   ]
 
   external_deps = [
-    "ability_runtime:want",
+    "ability_base:want",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
