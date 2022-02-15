@@ -387,12 +387,12 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     const size_t &argc, std::string &event, CommonEventPublishDataByjs &commonEventPublishData, napi_ref &callback);
 
 void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asynccallbackinfo,
-    const CommonEventPublishDataByjs &commonEventPublishDatajs, const int32_t userId = UNDEFINED_USER);
+    const CommonEventPublishDataByjs &commonEventPublishDatajs);
 
 napi_value Publish(napi_env env, napi_callback_info info);
 
-napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv)[PUBLISH_MAX_PARA_BY_USERID],
-    const size_t &argc, std::string &event, int32_t userId, CommonEventPublishDataByjs &commonEventPublishData,
+napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value (&argv)[PUBLISH_MAX_PARA_BY_USERID],
+    const size_t &argc, std::string &event, int32_t &userId, CommonEventPublishDataByjs &commonEventPublishData,
     napi_ref &callback);
 
 napi_value PublishAsUser(napi_env env, napi_callback_info info);
