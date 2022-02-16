@@ -54,7 +54,7 @@ public:
 
 class DreivedSubscriber : public CommonEventSubscriber {
 public:
-    DreivedSubscriber(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    explicit DreivedSubscriber(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {}
 
     ~DreivedSubscriber()
@@ -103,7 +103,7 @@ public:
 
 class SubscriberTest : public CommonEventSubscriber {
 public:
-    SubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    explicit SubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {}
 
     ~SubscriberTest()
