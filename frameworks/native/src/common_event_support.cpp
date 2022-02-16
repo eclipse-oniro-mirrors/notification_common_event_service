@@ -1247,6 +1247,10 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIME_UPDATED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_UPDATED);
+	
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NETMANAGER_NETSTATES_UPDATED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NETMANAGER_NETSTATES_LIMITED);
 
     return;
 }
