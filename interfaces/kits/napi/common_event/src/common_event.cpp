@@ -2104,7 +2104,7 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
 }
 
 void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asyncCallbackInfo,
-    const CommonEventPublishDataByjs &commonEventPublishDatajs, const int32_t userId)
+    const CommonEventPublishDataByjs &commonEventPublishDatajs)
 {
     EVENT_LOGI("PaddingCallbackInfoPublish start");
 
@@ -2115,7 +2115,6 @@ void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asyncCall
     asyncCallbackInfo->commonEventPublishInfo.SetSubscriberPermissions(commonEventPublishDatajs.subscriberPermissions);
     asyncCallbackInfo->commonEventPublishInfo.SetOrdered(commonEventPublishDatajs.isOrdered);
     asyncCallbackInfo->commonEventPublishInfo.SetSticky(commonEventPublishDatajs.isSticky);
-    asyncCallbackInfo->userId = userId;
 }
 
 napi_value Publish(napi_env env, napi_callback_info info)
@@ -2289,9 +2288,10 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
     Want want;
     want.SetAction(event);
     if (argc == PUBLISH_MAX_PARA_BY_USERID) {
-        PaddingCallbackInfoPublish(want, asyncCallbackInfo, commonEventPublishDatajs, userId);
+        PaddingCallbackInfoPublish(want, asyncCallbackInfo, commonEventPublishDatajs);
     }
     asyncCallbackInfo->commonEventData.SetWant(want);
+    asyncCallbackInfo->userId = userId;
 
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "Publish", NAPI_AUTO_LENGTH, &resourceName);
