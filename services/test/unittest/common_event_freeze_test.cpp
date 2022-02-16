@@ -87,7 +87,7 @@ private:
 
 class SubscriberTest : public CommonEventSubscriber {
 public:
-    SubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    explicit SubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     }
@@ -139,7 +139,7 @@ private:
 
 class SubscriberTest2 : public CommonEventSubscriber {
 public:
-    SubscriberTest2(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    explicit SubscriberTest2(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     }
@@ -201,7 +201,7 @@ public:
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     }
 
-    SubscriberTestLast(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    explicit SubscriberTestLast(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
     {
         handler_ = std::make_shared<EventHandler>(EventRunner::Create());
     }
