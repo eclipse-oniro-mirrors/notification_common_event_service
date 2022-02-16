@@ -409,6 +409,18 @@ const std::string CommonEventSupport::COMMON_EVENT_WIFI_P2P_GROUP_STATE_CHANGED 
     "usual.event.wifi.p2p.GROUP_STATE_CHANGED";
 
 /**
+* Indicates that network traffic statistics have been updated.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_NETMANAGER_NETSTATES_UPDATED =
+    "usual.event.netmanager.NETSTATES_UPDATED";
+		
+/**
+* Indicates that the network traffic has exceeded the limit.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_NETMANAGER_NETSTATES_LIMITED =
+    "usual.event.netmanager.NETSTATES_LIMITED";
+
+/**
  * Indicate the action of a common event about the connection state of Bluetooth handsfree communication.
  * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
  */
