@@ -25,7 +25,8 @@
 
 namespace OHOS {
 namespace EventFwk {
-const int LENGTH = 80;
+constexpr int LENGTH = 80;
+constexpr int DOUBLE = 2;
 const std::string CONNECTOR = " or ";
 using frozenRecords = std::map<std::shared_ptr<EventSubscriberRecord>, std::vector<std::shared_ptr<CommonEventRecord>>>;
 
@@ -437,7 +438,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
         int64_t nowSysTime = SystemTime::GetNowSysTime();
 
         if (sp->dispatchTime > 0) {
-            if ((numReceivers > 0) && (nowSysTime > sp->dispatchTime + (2 * TIMEOUT * numReceivers))) {
+            if ((numReceivers > 0) && (nowSysTime > sp->dispatchTime + (DOUBLE * TIMEOUT * numReceivers))) {
                 CurrentOrderedEventTimeout(false);
                 forceReceive = true;
                 sp->state = OrderedEventRecord::IDLE;
