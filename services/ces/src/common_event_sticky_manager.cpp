@@ -19,6 +19,8 @@
 
 namespace OHOS {
 namespace EventFwk {
+constexpr int LENGTH = 80;
+
 int CommonEventStickyManager::FindStickyEvents(
     const SubscribeInfoPtr &subscribeInfo, std::vector<CommonEventRecordPtr> &commonEventRecords)
 {
@@ -94,8 +96,8 @@ void CommonEventStickyManager::DumpState(
             no = "NO " + no + "\n";
         }
 
-        char systime[80];
-        strftime(systime, sizeof(char) * 80, "%Y%m%d %I:%M %p", &record->recordTime);
+        char systime[LENGTH];
+        strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", &record->recordTime);
 
         std::string recordTime = "\tTime: " + std::string(systime) + "\n";
         std::string pid = "\tPID: " + std::to_string(record->pid) + "\n";
