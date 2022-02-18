@@ -43,7 +43,9 @@ const int32_t FLOOD_ATTACK_MAX = 20;
 const int32_t NOT_ATTACK_TIME = 10 + FLOOD_ATTACK_MAX;
 const int32_t TEST_TIMES = 100;
 const int32_t SLEEP_TIME = 1000;
-const pid_t APPUID = 50;
+const pid_t APPUID1 = 50;
+const pid_t APPUID2 = 51;
+const pid_t APPUID3 = 52;
 
 class CommonEventPublishManagerEventUnitTest : public testing::Test {
 public:
@@ -86,7 +88,7 @@ HWTEST_F(CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventU
     bool result = false;
 
     for (int i = 1; i <= TEST_TIMES; ++i) {
-        result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID);
+        result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID1);
         if (result) {
             EXPECT_EQ(true, i > FLOOD_ATTACK_MAX);
         }
@@ -107,7 +109,7 @@ HWTEST_F(CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventU
 
     for (int i = 1; i <= TEST_TIMES; ++i) {
         usleep(SLEEP_TIME);
-        EXPECT_EQ(false, DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID));
+        EXPECT_EQ(false, DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID2));
     }
     GTEST_LOG_(INFO)
         << "CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventUnitTestt_0200, TestSize.Level1 end";
@@ -127,11 +129,11 @@ HWTEST_F(CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventU
 
     for (int i = 1; i <= TEST_TIMES; ++i) {
         if (i <= NOT_ATTACK_TIME) {
-            result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID);
+            result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID3);
             EXPECT_EQ(false, result);
             usleep(SLEEP_TIME);
         } else {
-            result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID);
+            result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID3);
             if (result) {
                 EXPECT_EQ(true, i >= NOT_ATTACK_TIME + FLOOD_ATTACK_MAX + 1);
                 break;
