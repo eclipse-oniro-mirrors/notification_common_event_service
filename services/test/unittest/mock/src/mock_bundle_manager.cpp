@@ -33,7 +33,7 @@ bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
     if (isSystemAppMock_) {
         return isSystemApp_;
     }
-    return (uid < SYSTEM_UID) ? false : true;
+    return (uid > SYSTEM_UID) ? false : true;
 }
 
 int MockBundleMgrService::CheckPermission(const std::string &bundleName, const std::string &permission)
