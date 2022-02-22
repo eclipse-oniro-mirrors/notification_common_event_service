@@ -60,25 +60,18 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     if (!GetBundleMgrProxy()) {
         return false;
     }
-    // get first active user account, this might be modified later.
-    std::vector<AccountSA::OsAccountInfo> osAccountInfos;
-    ErrCode ret = AccountSA::OsAccountManager::QueryAllCreatedOsAccounts(osAccountInfos);
+    std::vector<int> osAccountIds;
+    ErrCode ret = OHOS::AccountSA::OsAccountManager::QueryActiveOsAccountIds(osAccountIds);
     if (ret != ERR_OK) {
-        EVENT_LOGE("failed to QueryAllCreatedOsAccounts!");
+        EVENT_LOGE("failed to QueryActiveOsAccountIds!");
         return false;
     }
-    if (osAccountInfos.size() == 0) {
+    if (osAccountIds.size() == 0) {
         EVENT_LOGE("no os account acquired!");
         return false;
     }
-    int userId = 100; // 100 : default user id
-    for (auto info : osAccountInfos) {
-        if (info.GetIsActived()) {
-            userId = info.GetLocalId();
-            EVENT_LOGE("active userId = %{public}d", userId);
-            break;
-        }
-    }
+    int userId = osAccountIds[0]; // get first active account
+    EVENT_LOGE("active userId = %{public}d", userId);
     return sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
         userId, extensionInfos);
 }
