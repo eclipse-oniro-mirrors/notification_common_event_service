@@ -39,13 +39,14 @@ using namespace OHOS::EventFwk;
 
 namespace {
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
-const int32_t FLOOD_ATTACK_MAX = 20;
-const int32_t NOT_ATTACK_TIME = 10 + FLOOD_ATTACK_MAX;
-const int32_t TEST_TIMES = 100;
-const int32_t SLEEP_TIME = 1000;
-const pid_t APPUID1 = 50;
-const pid_t APPUID2 = 51;
-const pid_t APPUID3 = 52;
+constexpr int32_t FLOOD_ATTACK_MAX = 20;
+constexpr int32_t NOT_ATTACK_TIME = 10 + FLOOD_ATTACK_MAX;
+constexpr int32_t TEST_TIMES = 100;
+constexpr int32_t FLOOD_ATTACK_INTERVAL_MAX = 5;
+constexpr int32_t SLEEP_TIME = 1000 * FLOOD_ATTACK_INTERVAL_MAX;
+constexpr pid_t APPUID1 = 50;
+constexpr pid_t APPUID2 = 51;
+constexpr pid_t APPUID3 = 52;
 
 class CommonEventPublishManagerEventUnitTest : public testing::Test {
 public:
