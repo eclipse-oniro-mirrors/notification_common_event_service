@@ -26,7 +26,7 @@
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string SHORT_OPTIONS = "he:asoc:du:";
+const std::string SHORT_OPTIONS = "he:asoc:d:u:";
 const struct option LONG_OPTIONS[] = {
     {"help", no_argument, nullptr, 'h'},
     {"all", no_argument, nullptr, 'a'},
