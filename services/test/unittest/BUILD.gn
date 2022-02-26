@@ -389,7 +389,8 @@ group("unittest") {
     ":common_event_publish_permission_event_unit_test",
     ":common_event_publish_system_event_test",
     ":common_event_sticky_test",
-    ":common_event_subscribe_unit_test",
+
+    # ":common_event_subscribe_unit_test",
     ":common_event_unsubscribe_unit_test",
   ]
 }

@@ -118,7 +118,7 @@ group("unittest") {
   deps = []
 
   deps += [
-    ":common_event_subscribe_test",
+    # ":common_event_subscribe_test",
     ":common_event_unsubscribe_test",
     ":matching_skills_test",
   ]
