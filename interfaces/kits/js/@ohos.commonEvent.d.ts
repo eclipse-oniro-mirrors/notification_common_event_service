@@ -145,6 +145,12 @@ declare namespace commonEvent {
     COMMON_EVENT_SCREEN_ON = "usual.event.SCREEN_ON",
 
     /**
+     * this commonEvent means when the thermal state level change
+     * @since 8
+     */
+    COMMON_EVENT_THERMAL_LEVEL_CHANGED = "usual.event.THERMAL_LEVEL_CHANGED",
+
+    /**
      * this commonEvent means when the user is present after the device waked up.
      */
     COMMON_EVENT_USER_PRESENT = "usual.event.USER_PRESENT",
