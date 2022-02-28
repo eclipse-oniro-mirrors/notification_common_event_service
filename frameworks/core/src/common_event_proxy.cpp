@@ -39,6 +39,11 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
     MessageParcel data;
     MessageParcel reply;
 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
+
     if (!data.WriteParcelable(&event)) {
         EVENT_LOGE("Failed to write parcelable event");
         return false;
@@ -75,6 +80,11 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
 
     MessageParcel data;
     MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
 
     if (!data.WriteParcelable(&event)) {
         EVENT_LOGE("Failed to write parcelable event");
@@ -118,6 +128,11 @@ bool CommonEventProxy::SubscribeCommonEvent(
     MessageParcel data;
     MessageParcel reply;
 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
+
     if (!data.WriteParcelable(&subscribeInfo)) {
         EVENT_LOGE("Failed to write parcelable subscribeInfo");
         return false;
@@ -143,6 +158,11 @@ bool CommonEventProxy::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonE
     MessageParcel data;
     MessageParcel reply;
 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
+
     if (!data.WriteParcelable(commonEventListener)) {
         EVENT_LOGE("Failed to write parcelable commonEventListener");
         return false;
@@ -163,6 +183,11 @@ bool CommonEventProxy::GetStickyCommonEvent(const std::string &event, CommonEven
 
     MessageParcel data;
     MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
 
     if (!data.WriteString16(Str8ToStr16(event))) {
         EVENT_LOGE("Failed to write string event");
@@ -188,6 +213,11 @@ bool CommonEventProxy::DumpState(const std::string &event, const int32_t &userId
 
     MessageParcel data;
     MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
 
     if (!data.WriteString16(Str8ToStr16(event))) {
         EVENT_LOGE("Failed to write string event");
@@ -219,6 +249,11 @@ bool CommonEventProxy::FinishReceiver(
 
     MessageParcel data;
     MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
 
     if (!data.WriteParcelable(proxy)) {
         EVENT_LOGE("Failed to write parcelable proxy");
@@ -253,6 +288,11 @@ bool CommonEventProxy::Freeze(const uid_t &uid)
     MessageParcel data;
     MessageParcel reply;
 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
+
     if (!data.WriteInt32(uid)) {
         EVENT_LOGE("Failed to write int uid");
         return false;
@@ -273,6 +313,11 @@ bool CommonEventProxy::Unfreeze(const uid_t &uid)
 
     MessageParcel data;
     MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
 
     if (!data.WriteInt32(uid)) {
         EVENT_LOGE("Failed to write int uid");
