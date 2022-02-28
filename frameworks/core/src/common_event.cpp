@@ -14,6 +14,7 @@
  */
 
 #include "common_event.h"
+#include "common_event_constant.h"
 #include "common_event_death_recipient.h"
 #include "event_log_wrapper.h"
 #include "iservice_registry.h"
@@ -22,6 +23,17 @@
 namespace OHOS {
 namespace EventFwk {
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+    const std::shared_ptr<CommonEventSubscriber> &subscriber)
+{
+    EVENT_LOGI("enter");
+    sptr<IRemoteObject> commonEventListener = nullptr;
+    if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
+        return false;
+    }
+    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, UNDEFINED_USER);
+}
+
+bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
 {
     EVENT_LOGI("enter");
@@ -33,6 +45,17 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
 }
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid)
+{
+    EVENT_LOGI("enter");
+    sptr<IRemoteObject> commonEventListener = nullptr;
+    if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
+        return false;
+    }
+    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, UNDEFINED_USER);
+}
+
+bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &userId)
 {
     EVENT_LOGI("enter");

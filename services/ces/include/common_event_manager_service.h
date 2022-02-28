@@ -65,7 +65,7 @@ private:
     bool IsReady() const;
 
     bool PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const pid_t &pid, const int32_t &userId);
+        const sptr<IRemoteObject> &commonEventListener, const pid_t &pid, const uid_t &uid, const int32_t &userId);
 
 private:
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;

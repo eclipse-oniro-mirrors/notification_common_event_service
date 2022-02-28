@@ -133,10 +133,12 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
-    pid_t callingPid = IPCSkeleton::GetCallingPid();
-    uid_t callingUid = IPCSkeleton::GetCallingUid();
-
-    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, callingUid, callingPid, userId);
+    return PublishCommonEventDetailed(event,
+        publishinfo,
+        commonEventListener,
+        IPCSkeleton::GetCallingPid(),
+        IPCSkeleton::GetCallingUid(),
+        userId);
 }
 
 bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
@@ -149,12 +151,12 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
-    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, uid, -1, userId);
+    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, -1, uid, userId);
 }
 
 bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData &event,
-    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const uid_t &uid,
-    const pid_t &pid, const int32_t &userId)
+    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const pid_t &pid,
+    const uid_t &uid, const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
@@ -204,7 +206,6 @@ bool CommonEventManagerService::SubscribeCommonEvent(
         EVENT_LOGE("Failed to GetSystemCurrentTime");
         return false;
     }
-    pid_t callingPid = IPCSkeleton::GetCallingPid();
     uid_t callingUid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
 
@@ -213,7 +214,7 @@ bool CommonEventManagerService::SubscribeCommonEvent(
         subscribeInfo,
         commonEventListener,
         recordTime,
-        callingPid,
+        IPCSkeleton::GetCallingPid(),
         callingUid,
         bundleName);
     return handler_->PostTask(SubscribeCommonEventFunc);

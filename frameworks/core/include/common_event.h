@@ -34,10 +34,31 @@ public:
      * @param data the common event data
      * @param publishInfo the publish info
      * @param subscriber the common event subscriber
-     * @param userId indicates the user ID
      */
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const std::shared_ptr<CommonEventSubscriber> &subscriber);
+
+    /**
+     * Publish an ordered, sticky, or standard common event.
+     *
+     * @param data the common event data
+     * @param publishInfo the publish info
+     * @param subscriber the common event subscriber
+     * @param userId indicates the user ID
+     */
+    bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId);
+
+    /**
+     * Publish an ordered, sticky, or standard common event.
+     *
+     * @param data the common event data
+     * @param publishInfo the publish info
+     * @param subscriber the common event subscriber
+     * @param uid Uid of application.
+     */
+    bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid);
 
     /**
      * Publish an ordered, sticky, or standard common event.
@@ -48,8 +69,9 @@ public:
      * @param uid Uid of application.
      * @param userId Indicates the user ID
      */
-    bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &userId);
+    bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid,
+        const int32_t &userId);
 
     /**
      * Subscribe to common events.
