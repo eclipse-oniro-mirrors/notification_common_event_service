@@ -25,49 +25,54 @@ namespace EventFwk {
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data)
 {
     CommonEventPublishInfo publishInfo;
-    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-    int32_t userId = UNDEFINED_USER;
-
-    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+    return PublishCommonEventAsUser(data, publishInfo, nullptr, UNDEFINED_USER);
 }
 
-bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const int32_t &userId)
+bool CommonEventManager::PublishCommonEventAsUser(const CommonEventData &data, const int32_t &userId)
 {
     CommonEventPublishInfo publishInfo;
-    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-
-    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+    return PublishCommonEventAsUser(data, publishInfo, nullptr, userId);
 }
 
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo)
 {
-    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-    int32_t userId = UNDEFINED_USER;
-
-    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+    return PublishCommonEventAsUser(data, publishInfo, nullptr, UNDEFINED_USER);
 }
 
-bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const int32_t &userId)
+bool CommonEventManager::PublishCommonEventAsUser(const CommonEventData &data,
+    const CommonEventPublishInfo &publishInfo, const int32_t &userId)
 {
-    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-
-    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+    return PublishCommonEventAsUser(data, publishInfo, nullptr, userId);
 }
 
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
-    int32_t userId = UNDEFINED_USER;
+    return PublishCommonEventAsUser(data, publishInfo, subscriber, UNDEFINED_USER);
+}
 
-    return PublishCommonEvent(data, publishInfo, subscriber, userId);
+bool CommonEventManager::PublishCommonEventAsUser(const CommonEventData &data,
+    const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
+    const int32_t &userId)
+{
+    EVENT_LOGI("enter");
+    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber,
+        userId);
 }
 
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
+    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid)
+{
+    return PublishCommonEventAsUser(data, publishInfo, subscriber, uid, UNDEFINED_USER);
+}
+
+bool CommonEventManager::PublishCommonEventAsUser(const CommonEventData &data,
+    const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
+    const uid_t &uid, const int32_t &userId)
 {
     EVENT_LOGI("enter");
-    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEvent(data, publishInfo, subscriber, userId);
+    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber, uid,
+        userId);
 }
 
 bool CommonEventManager::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)

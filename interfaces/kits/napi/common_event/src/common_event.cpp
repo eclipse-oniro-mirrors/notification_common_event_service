@@ -2303,7 +2303,7 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
         [](napi_env env, void *data) {
             EVENT_LOGI("Publish napi_create_async_work start");
             AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;
-            CommonEventManager::PublishCommonEvent(asyncCallbackInfo->commonEventData,
+            CommonEventManager::PublishCommonEventAsUser(asyncCallbackInfo->commonEventData,
                 asyncCallbackInfo->commonEventPublishInfo, asyncCallbackInfo->userId);
         },
         [](napi_env env, napi_status status, void *data) {
