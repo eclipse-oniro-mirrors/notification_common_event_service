@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,7 +25,7 @@ EventReceiveProxy::EventReceiveProxy(const sptr<IRemoteObject> &object) : IRemot
 
 EventReceiveProxy::~EventReceiveProxy()
 {
-    EVENT_LOGD("event receive proxy is destoryed");
+    EVENT_LOGD("event receive proxy is destroyed");
 }
 
 void EventReceiveProxy::NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
@@ -43,7 +43,7 @@ void EventReceiveProxy::NotifyEvent(const CommonEventData &commonEventData, cons
 
     sptr<IRemoteObject> remote = Remote();
     if (remote == nullptr) {
-        EVENT_LOGE("Failed to send cmd to service due to remote objetc is null");
+        EVENT_LOGE("Failed to send cmd to service due to remote object is null");
         return;
     }
 

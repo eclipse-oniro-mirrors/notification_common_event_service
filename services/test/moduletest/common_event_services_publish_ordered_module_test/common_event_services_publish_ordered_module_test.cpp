@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -433,10 +433,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_01
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE1);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
@@ -447,10 +447,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_01
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE1);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfoAnother(matchingSkillsAnother);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberAnotherTest> subscriberTestAnother =
         std::make_shared<SubscriberAnotherTest>(subscribeInfoAnother);
 
@@ -550,11 +550,11 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_02
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE2);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetPriority(LOWPRIORITY);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
@@ -565,11 +565,11 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_02
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE2);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfoAnother(matchingSkillsAnother);
     subscribeInfoAnother.SetPriority(HIGHPRIORITY);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberAnotherTest> subscriberTestAnother =
         std::make_shared<SubscriberAnotherTest>(subscribeInfoAnother);
 
@@ -667,10 +667,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_03
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE3);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
@@ -681,10 +681,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_03
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE3);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfoAnother(matchingSkillsAnother);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberAnotherTest> subscriberTestAnother =
         std::make_shared<SubscriberAnotherTest>(subscribeInfoAnother);
 
@@ -779,7 +779,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_04
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE4);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     // make a subcriber object
@@ -793,10 +793,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_04
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE4);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfoAnother(matchingSkillsAnother);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberAnotherTest> subscriberTestAnother =
         std::make_shared<SubscriberAnotherTest>(subscribeInfoAnother);
 
@@ -892,10 +892,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_05
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE5);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
@@ -906,10 +906,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_05
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE5);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfoAnother(matchingSkillsAnother);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberAnotherTest> subscriberTestAnother =
         std::make_shared<SubscriberAnotherTest>(subscribeInfoAnother);
 
@@ -1006,10 +1006,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_06
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE6);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
@@ -1020,10 +1020,10 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_06
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE6);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfoAnother(matchingSkillsAnother);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberAnotherTest> subscriberTestAnother =
         std::make_shared<SubscriberAnotherTest>(subscribeInfoAnother);
 

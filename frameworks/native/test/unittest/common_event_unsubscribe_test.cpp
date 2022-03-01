@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -322,7 +322,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_011, TestSize.Level1)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberTest);
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->death_ = nullptr;

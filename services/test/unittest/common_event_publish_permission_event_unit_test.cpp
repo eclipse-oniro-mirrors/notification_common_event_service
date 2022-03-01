@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -99,7 +99,7 @@ void CommonEventPublishPermissionEventUnitTest::TearDown(void)
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0100
  * @tc.name: test unordered event permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0100,
@@ -138,7 +138,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0200
  * @tc.name: test ordered event permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0200,
@@ -178,7 +178,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0300
  * @tc.name: test unordered event permission
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0300,
@@ -218,7 +218,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0400
  * @tc.name: test ordered event permission
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0400,
@@ -258,7 +258,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0500
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0500,
@@ -298,7 +298,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0600
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is empty
  *           3. function CheckPermission return OrderedEventRecord::SKIPPED
  */
@@ -339,7 +339,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0700
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is empty
  *           3. function CheckPermission return OrderedEventRecord::DELIVERED
  */
@@ -378,7 +378,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0800
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. function CheckPermission return OrderedEventRecord::DELIVERED
  */
@@ -418,7 +418,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_0900
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. function CheckPermission return OrderedEventRecord::SKIPPED
  */
@@ -458,9 +458,9 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_1000
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is not empty
- *           3. function subcriber CheckPermission return OrderedEventRecord::DELIVERED
+ *           3. function subscriber CheckPermission return OrderedEventRecord::DELIVERED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1000,
     Function | MediumTest | Level1)
@@ -500,9 +500,9 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_1100
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is not empty
- *           3. function subcriber CheckPermission return OrderedEventRecord::SKIPPED
+ *           3. function subscriber CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1100,
     Function | MediumTest | Level1)
@@ -542,9 +542,9 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_1200
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is not empty
- *           3. function subcriber CheckPermission return OrderedEventRecord::SKIPPED
+ *           3. function subscriber CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1200,
     Function | MediumTest | Level1)
@@ -584,9 +584,9 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_1300
  * @tc.name: test  CommonEventControlManager permission
- * @tc.desc: 1. subcriber permisssion is not empty
+ * @tc.desc: 1. subscriber permission is not empty
  *           2. publish permission is not empty
- *           3. function subcriber CheckPermission return OrderedEventRecord::SKIPPED
+ *           3. function subscriber CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1300,
     Function | MediumTest | Level1)
@@ -916,8 +916,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2200
  * @tc.name: test  CommonEventPermissionManager GetEventPermission
- * @tc.desc: 1. subcriber permisssion is not empty and has one permission
- *           2. function subcriber CheckPermission return name size
+ * @tc.desc: 1. subscriber permission is not empty and has one permission
+ *           2. function subscriber CheckPermission return name size
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2200,
     Function | MediumTest | Level1)
@@ -935,8 +935,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2200
  * @tc.name: test  CommonEventPermissionManager GetEventPermission
- * @tc.desc: 1. subcriber permisssion is not empty and has two permission and is Logic and
- *           2. function subcriber CheckPermission return name size
+ * @tc.desc: 1. subscriber permission is not empty and has two permission and is Logic and
+ *           2. function subscriber CheckPermission return name size
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2300,
     Function | MediumTest | Level1)
@@ -957,8 +957,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2200
  * @tc.name: test  CommonEventPermissionManager GetEventPermission
- * @tc.desc: 1. subcriber permisssion is not empty and has two permission and is Logic or
- *           2. function subcriber CheckPermission return name size
+ * @tc.desc: 1. subscriber permission is not empty and has two permission and is Logic or
+ *           2. function subscriber CheckPermission return name size
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2400,
     Function | MediumTest | Level1)
@@ -979,7 +979,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2500
  * @tc.name: test unordered event permission and system send is yes
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has one attribute
  */
@@ -1024,7 +1024,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2600
  * @tc.name: test unordered event permission and system send is no
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has one attribute
  */
@@ -1069,7 +1069,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2700
  * @tc.name: test unordered event permission and system send is no
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has two attribute and logic and
  */
@@ -1114,7 +1114,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2800
  * @tc.name: test unordered event permission and system send is yes
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has two attribute and logic or
  */
@@ -1159,7 +1159,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_2900
  * @tc.name: test unordered event permission and system send is yes
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has no attribute
  */
@@ -1202,7 +1202,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_3000
  * @tc.name: test ordered event permission and system send is yes
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has one attribute
  */
@@ -1245,7 +1245,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_3100
  * @tc.name: test unordered event permission and system send is no
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has one attribute
  */
@@ -1288,7 +1288,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_3200
  * @tc.name: test unordered event permission and system send is no
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has two attribute and logic and
  */
@@ -1331,7 +1331,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_3300
  * @tc.name: test unordered event permission and system send is yes
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has two attribute and logic or
  */
@@ -1374,7 +1374,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 /*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_3400
  * @tc.name: test unordered event permission and system send is yes
- * @tc.desc: 1. subcriber permisssion is empty
+ * @tc.desc: 1. subscriber permission is empty
  *           2. publish permission is not empty
  *           3. event has no attribute
  */

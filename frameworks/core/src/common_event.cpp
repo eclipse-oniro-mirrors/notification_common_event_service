@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -63,7 +63,7 @@ bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const Commo
     }
 
     if (subscriber) {
-        if (CreateCommonEventListener(subscriber, commonEventListener) == SUBSCRIBE_FAILD) {
+        if (CreateCommonEventListener(subscriber, commonEventListener) == SUBSCRIBE_FAILED) {
             return false;
         }
     }
@@ -256,7 +256,7 @@ int CommonEvent::CreateCommonEventListener(
 {
     if (subscriber == nullptr) {
         EVENT_LOGE("subscriber is null");
-        return SUBSCRIBE_FAILD;
+        return SUBSCRIBE_FAILED;
     }
 
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
@@ -269,13 +269,13 @@ int CommonEvent::CreateCommonEventListener(
     } else {
         if (eventListeners_.size() == SUBSCRIBER_MAX_SIZE) {
             EVENT_LOGE("the maximum number of subscriptions has been reached");
-            return SUBSCRIBE_FAILD;
+            return SUBSCRIBE_FAILED;
         }
 
         sptr<CommonEventListener> listener = new CommonEventListener(subscriber);
         if (!listener) {
             EVENT_LOGE("the common event listener is null");
-            return SUBSCRIBE_FAILD;
+            return SUBSCRIBE_FAILED;
         }
         commonEventListener = listener->AsObject();
         eventListeners_[subscriber] = listener;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,7 @@ namespace OHOS {
 namespace EventFwk {
 class CommonEvent {
 public:
-    enum SubscribeState { ALREADY_SUBSCRIBED = 0, INITIAL_SUBSCRIPTION, SUBSCRIBE_FAILD };
+    enum SubscribeState { ALREADY_SUBSCRIBED = 0, INITIAL_SUBSCRIPTION, SUBSCRIBE_FAILED };
 
     /**
      * Publish an ordered, sticky, or standard common event.
@@ -115,9 +115,9 @@ public:
 
 private:
     /**
-     * Get common evnet proxy.
+     * Get common event proxy.
      *
-     * @return Get common evnet proxy success or not
+     * @return Get common event proxy success or not
      */
     bool GetCommonEventProxy();
 
@@ -126,7 +126,7 @@ private:
      *
      * @param  subscriber the subscriber
      * @param  commonEventListener  the common event listener
-     * @return Get common evnet listener success or not
+     * @return Get common event listener success or not
      */
     int CreateCommonEventListener(
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);

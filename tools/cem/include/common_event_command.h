@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,7 +41,7 @@ const std::string HELP_MSG_DUMP = "usage: cem dump [<options>]\n"
                                   "options list:\n"
                                   "  -h, --help                   list available commands\n"
                                   "  -a, --all                    dump the info of all events\n"
-                                  "  -e, --event <name>           dump the info of a specificed event\n";
+                                  "  -e, --event <name>           dump the info of a specified event\n";
 
 const std::string HELP_MSG_NO_EVENT_OPTION = "error: you must specify an event name with '-e' or '--event'.";
 

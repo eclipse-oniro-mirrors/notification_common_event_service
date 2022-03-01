@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -90,7 +90,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0100, Function | Medi
         CommonEventPublishInfo publishInfo;
         publishInfo.SetSticky(sticky);
         if (publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0100 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -123,7 +123,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0200, Function | Medi
         CommonEventPublishInfo publishInfo;
         publishInfo.SetSticky(sticky);
         if (!publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0200 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -155,7 +155,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0300, Function | Medi
         CommonEventPublishInfo publishInfo;
         publishInfo.SetSticky(sticky);
         if (publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0300 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -187,7 +187,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0400, Function | Medi
         CommonEventPublishInfo publishInfo;
         publishInfo.SetSticky(sticky);
         if (!publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0400 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -217,7 +217,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0500, Function | Medi
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         CommonEventPublishInfo publishInfo;
         if (publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0500 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -252,7 +252,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0600, Function | Medi
         sticky = false;
         publishInfo.SetSticky(sticky);
         if (publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0600 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -288,7 +288,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0700, Function | Medi
         sticky = true;
         publishInfo.SetSticky(sticky);
         if (!publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0700 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -324,7 +324,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0800, Function | Medi
         sticky = true;
         publishInfo.SetSticky(sticky);
         if (!publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0800 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0800 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -360,7 +360,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_0900, Function | Medi
         sticky = false;
         publishInfo.SetSticky(sticky);
         if (publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0900 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_0900 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -394,7 +394,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Sticky_1000, Function | Medi
         bool sticky = true;
         publishInfo.SetSticky(sticky);
         if (!publishInfo.IsSticky()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Sticky_1000 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -430,7 +430,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0100, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (!(permissin == testPermissions[0])) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0100 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -468,7 +468,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0200, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (!(permissin2 == testPermissions[1])) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0200 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -508,7 +508,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0300, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (!(permissin3 == testPermissions[2])) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0300 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -545,7 +545,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0400, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (teststr == testPermissions[0]) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0400 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -583,7 +583,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0500, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (permissin1 == testPermissions[1]) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0500 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -623,7 +623,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0600, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (permissin1 == testPermissions[2]) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0600 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -659,7 +659,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0700, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (!(1 == testPermissions.size())) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0700 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -697,7 +697,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0800, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (!(2 == testPermissions.size())) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0800 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0800 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -737,7 +737,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_0900, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (!(3 == testPermissions.size())) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0900 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_0900 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -771,7 +771,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Permissions_1000, Function |
         publishInfo.SetSubscriberPermissions(permissins);
         std::vector<std::string> testPermissions = publishInfo.GetSubscriberPermissions();
         if (!(0 == testPermissions.size())) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Permissions_1000 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -803,7 +803,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0100, Function | Med
         CommonEventPublishInfo publishInfo;
         publishInfo.SetOrdered(order);
         if (publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0100 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -835,7 +835,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0200, Function | Med
         CommonEventPublishInfo publishInfo;
         publishInfo.SetOrdered(order);
         if (!publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0200 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -865,7 +865,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0300, Function | Med
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         CommonEventPublishInfo publishInfo;
         if (publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0300 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -897,7 +897,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0400, Function | Med
         CommonEventPublishInfo publishInfo;
         publishInfo.SetOrdered(order);
         if (publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0400 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -929,7 +929,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0500, Function | Med
         CommonEventPublishInfo publishInfo;
         publishInfo.SetOrdered(order);
         if (!publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0500 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -959,7 +959,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0600, Function | Med
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         CommonEventPublishInfo publishInfo;
         if (publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0600 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -993,7 +993,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0700, Function | Med
         publishInfo.SetOrdered(order);
         publishInfo.SetSticky(sticky);
         if (!publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0700 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -1027,7 +1027,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0800, Function | Med
         publishInfo.SetOrdered(order);
         publishInfo.SetSticky(sticky);
         if (!publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0800 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0800 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -1061,7 +1061,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_0900, Function | Med
         publishInfo.SetOrdered(order);
         publishInfo.SetSticky(sticky);
         if (publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0900 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_0900 failed, frequency: " << i;
             result = false;
             break;
         } else {
@@ -1095,7 +1095,7 @@ HWTEST_F(ActsCESCESpublishInfoTest, CES_PublishInfo_Ordered_1000, Function | Med
         publishInfo.SetOrdered(order);
         publishInfo.SetSticky(sticky);
         if (publishInfo.IsOrdered()) {
-            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_PublishInfo_Ordered_1000 failed, frequency: " << i;
             result = false;
             break;
         } else {
