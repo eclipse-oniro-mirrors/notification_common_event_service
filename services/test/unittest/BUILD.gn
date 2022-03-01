@@ -25,10 +25,8 @@ config("cesfwk_services_config") {
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/services/abilitymgr/include/",
     "//foundation/aafwk/standard/services/common/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
     "//foundation/appexecfwk/standard/services/bundlemgr/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
     "//foundation/communication/ipc/ipc/dnetwork_temp",
     "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits/app_distributeddata/include",
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
@@ -58,8 +56,6 @@ ohos_unittest("common_event_publish_system_event_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_publish_system_event_test.cpp",
   ]
 
@@ -79,6 +75,7 @@ ohos_unittest("common_event_publish_system_event_test") {
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
@@ -94,8 +91,6 @@ ohos_unittest("common_event_dump_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_dump_test.cpp",
   ]
 
@@ -109,8 +104,6 @@ ohos_unittest("common_event_dump_test") {
     "//foundation/aafwk/standard/interfaces/innerkits/app_manager:app_manager",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -119,6 +112,8 @@ ohos_unittest("common_event_dump_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -132,8 +127,6 @@ ohos_unittest("common_event_freeze_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_freeze_test.cpp",
   ]
 
@@ -146,7 +139,6 @@ ohos_unittest("common_event_freeze_test") {
     "${services_path}:cesfwk_services",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -155,6 +147,8 @@ ohos_unittest("common_event_freeze_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -168,8 +162,6 @@ ohos_unittest("common_event_sticky_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_sticky_test.cpp",
   ]
 
@@ -182,7 +174,6 @@ ohos_unittest("common_event_sticky_test") {
     "${services_path}:cesfwk_services",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -191,6 +182,8 @@ ohos_unittest("common_event_sticky_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -204,8 +197,6 @@ ohos_unittest("common_event_subscribe_unit_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_subscribe_unit_test.cpp",
   ]
 
@@ -218,7 +209,6 @@ ohos_unittest("common_event_subscribe_unit_test") {
     "${services_path}:cesfwk_services",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -227,6 +217,8 @@ ohos_unittest("common_event_subscribe_unit_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -239,8 +231,6 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
 
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_unsubscribe_unit_test.cpp",
   ]
 
@@ -253,7 +243,6 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
     "${services_path}:cesfwk_services",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -262,6 +251,8 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -275,8 +266,6 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_publish_ordered_event_unit_test.cpp",
   ]
 
@@ -289,7 +278,6 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
     "${services_path}:cesfwk_services",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -298,6 +286,8 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -311,8 +301,6 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_publish_permission_event_unit_test.cpp",
   ]
 
@@ -325,7 +313,6 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
     "${services_path}:cesfwk_services",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -334,6 +321,8 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -347,8 +336,6 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
   sources = [
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_host.cpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/src/bundlemgr/bundle_mgr_proxy.cpp",
     "common_event_publish_manager_event_unit_test.cpp",
   ]
 
@@ -361,7 +348,6 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
     "${services_path}:cesfwk_services",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -370,6 +356,8 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bytrace_standard:bytrace_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
