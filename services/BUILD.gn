@@ -80,7 +80,6 @@ ohos_shared_library("cesfwk_services") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
-    "hicollie_native:libhicollie",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "os_account_standard:os_account_innerkits",
