@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -624,7 +624,7 @@ int CommonEventControlManager::CheckPermission(
     EVENT_LOGI("enter");
 
     bool ret = false;
-    ret = CheckSubcriberPermission(subscriberRecord, eventRecord);
+    ret = CheckSubscriberPermission(subscriberRecord, eventRecord);
     if (!ret) {
         return OrderedEventRecord::SKIPPED;
     }
@@ -644,7 +644,7 @@ int CommonEventControlManager::CheckPermission(
     return OrderedEventRecord::DELIVERED;
 }
 
-bool CommonEventControlManager::CheckSubcriberPermission(
+bool CommonEventControlManager::CheckSubscriberPermission(
     const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord)
 {
     EVENT_LOGI("enter");

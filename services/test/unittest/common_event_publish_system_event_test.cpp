@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -153,7 +153,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
 {
     /* Subscribe */
 
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_TEST_ACTION1);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -161,7 +161,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -204,7 +204,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
 {
     /* Subscribe */
 
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_TEST_ACTION2);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -212,7 +212,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 

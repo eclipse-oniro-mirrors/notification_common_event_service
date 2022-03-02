@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -85,7 +85,7 @@ HWTEST_F(MatchingSkillsTest, MatchingSkills_Entity_001, TestSize.Level1)
  * SubFunction: NA
  * FunctionPoints: AddEvent/GetEvent/CountEvent/HasEvent/RemoveEvent
  * EnvConditions: NA
- * CaseDescription: Verify the function when after add evnet can get event
+ * CaseDescription: Verify the function when after add event can get event
  * and count event is right,has event and can success remove event
  */
 HWTEST_F(MatchingSkillsTest, MatchingSkills_Event_001, TestSize.Level1)

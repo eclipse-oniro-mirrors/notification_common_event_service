@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -144,7 +144,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0100, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -174,7 +174,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0200, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -204,7 +204,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0300, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0300 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -234,7 +234,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0400, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0400 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -264,7 +264,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0500, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0500 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -295,7 +295,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0600, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0600 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -327,7 +327,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0700, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0700 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -373,7 +373,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0800, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0800 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0800 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -423,7 +423,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0900, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0900 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_0900 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -473,7 +473,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1000, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1000 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -515,7 +515,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1100, Function | MediumTest |
         bool result2 = CommonEventManager::SubscribeCommonEvent(subscriberPtr2);
         if (!result1 || !result2) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -563,7 +563,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1200, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -598,7 +598,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1300, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1300 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -628,7 +628,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1400, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1400 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -658,7 +658,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1500, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1500 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -688,7 +688,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1600, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1600 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -718,7 +718,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1700, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1700 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -772,7 +772,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1800, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1800 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1800 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -818,7 +818,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1900, Function | MediumTest |
 
         if (!result1 || !result2) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1900 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_1900 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -873,7 +873,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_2000, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_2000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_2000 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -929,7 +929,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_2100, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_2100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_2100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -985,7 +985,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_2200, Function | MediumTest |
 
         if (!result1 || !result2 || !result3) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_2200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEvent_2200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1021,7 +1021,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0100, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1059,7 +1059,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0200, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1096,7 +1096,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0300, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0300 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1135,7 +1135,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0400, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0400 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1174,7 +1174,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0500, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0500 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1215,7 +1215,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0600, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0600 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1256,7 +1256,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0700, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0700 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1295,7 +1295,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0800, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0800 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0800 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1335,7 +1335,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0900, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_0900 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_0900 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1375,7 +1375,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1000, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_1000 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1417,7 +1417,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1100, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_1100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_1100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1459,7 +1459,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1200, Function | MediumTest | Level1)
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEvent_1200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEvent_1200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1498,7 +1498,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0100, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1539,7 +1539,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0200, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1580,7 +1580,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0300, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0300 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1619,7 +1619,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0400, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0400 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1659,7 +1659,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0500, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0500 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1699,7 +1699,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0600, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0600 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1741,7 +1741,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0700, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0700 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1783,7 +1783,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0800, Function | MediumTe
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0800 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0800 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1830,7 +1830,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0900, Function | MediumTe
         CommonEventManager::GetStickyCommonEvent(eventAction, stickyData);
         if (eventActionStr == stickyData.GetWant().GetAction()) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0900 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_0900 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -1876,7 +1876,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_1000, Function | MediumTe
         CommonEventData stickyData;
         if (CommonEventManager::GetStickyCommonEvent(actionTest, stickyData)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_1000 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2161,7 +2161,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0100, Function | MediumT
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2194,7 +2194,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0200, Function | MediumT
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2228,7 +2228,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0300, Function | MediumT
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!matchingSkills.Match(wantTest)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0300 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2262,7 +2262,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0400, Function | MediumT
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (matchingSkills.Match(wantTest)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscriptionEventTheme_0400 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2547,7 +2547,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0100, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2580,7 +2580,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0200, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2616,7 +2616,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0300, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2649,7 +2649,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0400, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0400 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2683,7 +2683,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0500, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0500 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2719,7 +2719,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0600, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0600 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0600 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2758,7 +2758,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0700, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0700 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2835,7 +2835,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0900, Function | MediumTest |
         auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
         if (!CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0700 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_0700 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2868,7 +2868,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1000, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::UnSubscribeCommonEvent(subscriberPtr)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_1000 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2903,7 +2903,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1100, Function | MediumTest |
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!CommonEventManager::PublishCommonEvent(commonEventData)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_SetEventAuthority_1000 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SetEventAuthority_1000 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -2977,7 +2977,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0100, Function | MediumTes
         MatchingSkills testMatching = subscribeInfo.GetMatchingSkills();
         if (!(testMatching.GetEvent(0) == eventName)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0100 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0100 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -3010,7 +3010,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0200, Function | MediumTes
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!(matchingSkills.GetEntity(0) == entity)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0200 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0200 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -3043,7 +3043,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0300, Function | MediumTes
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!matchingSkills.HasEntity(entity)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0300 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0300 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -3077,7 +3077,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0400, Function | MediumTes
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (matchingSkills.HasEntity(entity)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0400 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0400 failed, frequency: " << i;
             break;
         } else {
             result = true;
@@ -3110,7 +3110,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0500, Function | MediumTes
         EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberPtr));
         if (!(matchingSkills.CountEntities() >= 1)) {
             result = false;
-            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0500 faild, frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_VerifyMatchingSkills_0500 failed, frequency: " << i;
             break;
         } else {
             result = true;

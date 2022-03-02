@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -334,10 +334,10 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1100, Function | MediumTest | Leve
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscribe info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
@@ -417,10 +417,10 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1400, Function | MediumTest | Leve
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscribe info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);

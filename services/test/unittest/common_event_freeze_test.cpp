@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -394,10 +394,10 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE1);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
@@ -408,10 +408,10 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE1);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfo2(matchingSkillsAnother);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberTest2> subscriberTest2 = std::make_shared<SubscriberTest2>(subscribeInfo2);
 
     // subscribe another event
@@ -459,10 +459,10 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENTCASE2);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
@@ -473,10 +473,10 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
     MatchingSkills matchingSkillsAnother;
     matchingSkillsAnother.AddEvent(EVENTCASE2);
 
-    // make another subcriber info
+    // make another subscriber info
     CommonEventSubscribeInfo subscribeInfo2(matchingSkillsAnother);
 
-    // make another subcriber object
+    // make another subscriber object
     std::shared_ptr<SubscriberTest2> subscriberTest2 = std::make_shared<SubscriberTest2>(subscribeInfo2);
 
     // subscribe another event
