@@ -283,7 +283,7 @@ bool CommonEventSubscriberManager::CheckSubscriberByUserId(const int32_t &subscr
         return true;
     }
 
-    if (isSystemApp && userId == UNDEFINED_USER) {
+    if (isSystemApp && (userId == UNDEFINED_USER || userId == ALL_USER)) {
         return true;
     }
 
