@@ -241,28 +241,6 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_006, TestSize.Level1)
 }
 
 /*
- * Feature: CommonEventStub
- * Function: OnRemoteRequest
- * SubFunction: NA
- * FunctionPoints: exception
- * EnvConditions: system running normally
- * CaseDescription: When the CommonEventListener does not exist, verify IPC return value.
- */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_007, TestSize.Level1)
-{
-    CommonEventStubTest CommonEventStubTest;
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-    sptr<CommonEventListener> commonEventListener = nullptr;
-    data.WriteParcelable(commonEventListener);
-
-    int32_t ret = CommonEventStubTest.OnRemoteRequest(
-        static_cast<int32_t>(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT), data, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, ret);
-}
-
-/*
  * Feature: CommonEventManagerService
  * Function: UnsubscribeCommonEvent
  * SubFunction: IsReady
