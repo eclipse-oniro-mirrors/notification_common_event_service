@@ -58,6 +58,8 @@ ohos_shared_library("cesfwk_kits_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
+  subsystem_name = "notification"
+  part_name = "ces_standard"
 }
 group("systemtest_ces") {
   testonly = true
