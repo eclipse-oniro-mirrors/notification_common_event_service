@@ -39,8 +39,6 @@ ohos_moduletest("CesPublishOrderedEventModuleTest") {
     "//foundation/appexecfwk/standard/services/bundlemgr/include",
     "//foundation/communication/ipc/ipc/dnetwork_temp",
     "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits/app_distributeddata/include",
-    "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
-    "//foundation/distributedschedule/dmsfwk/utils/native/include",
     "//foundation/distributedschedule/safwk/services/safwk/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/samgr/services/lsamgr/include",

@@ -25,7 +25,6 @@ config("kits_natvie_config") {
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/services/abilitymgr/include/",
     "//foundation/appexecfwk/standard/services/bundlemgr/include",
-    "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/safwk/services/safwk/include",
     "//utils/native/base/include",
