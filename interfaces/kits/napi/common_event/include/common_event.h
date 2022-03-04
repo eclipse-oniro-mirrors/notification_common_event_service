@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,11 +25,13 @@ namespace OHOS {
 namespace EventFwkNapi {
 using namespace OHOS::EventFwk;
 
-static const std::int32_t CREATE_MAX_PARA = 2;
-static const std::int32_t SUBSCRIBE_MAX_PARA = 2;
-static const std::int32_t UNSUBSCRIBE_MAX_PARA = 2;
-static const std::int32_t PUBLISH_MAX_PARA_BY_PUBLISHDATA = 3;
-static const std::int32_t PUBLISH_MAX_PARA_BY_USERID = 4;
+static const int32_t CREATE_MAX_PARA = 2;
+static const int32_t SUBSCRIBE_MAX_PARA = 2;
+static const int32_t UNSUBSCRIBE_MAX_PARA = 2;
+static const int32_t PUBLISH_MAX_PARA_BY_PUBLISHDATA = 3;
+static const int32_t PUBLISH_MAX_PARA_BY_USERID = 4;
+static const int8_t NO_ERROR = 0;
+static const int8_t ERR_CES_FAILED = 1;
 
 class SubscriberInstance;
 struct AsyncCallbackInfoSubscribe;
@@ -43,11 +45,19 @@ static thread_local napi_ref g_CommonEventSubscriber = nullptr;
 static std::map<std::shared_ptr<SubscriberInstance>, subscriberInstanceInfo> subscriberInstances;
 static std::mutex subscriberInsMutex;
 
+struct CallbackPromiseInfo {
+    napi_ref callback = nullptr;
+    napi_deferred deferred = nullptr;
+    bool isCallback = false;
+    int8_t errorCode = NO_ERROR;
+};
+
 struct AsyncCallbackInfoSubscribe {
     napi_env env = nullptr;
     napi_async_work asyncWork;
     napi_ref callback = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
+    int8_t errorCode = NO_ERROR;
 };
 
 struct AsyncCallbackInfoUnsubscribe {
@@ -56,137 +66,112 @@ struct AsyncCallbackInfoUnsubscribe {
     napi_ref callback = nullptr;
     size_t argc = 0;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
+    int8_t errorCode = NO_ERROR;
 };
 
 struct AsyncCallbackInfoSubscribeInfo {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     std::vector<std::string> events;
     std::string permission;
     std::string deviceId;
     int32_t userId = UNDEFINED_USER;
     int32_t priority = 0;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoOrderedCommonEvent {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
-    bool isCallback = false;
     bool isOrdered = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoStickyCommonEvent {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     bool isSticky = false;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoGetCode {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     int code = 0;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoSetCode {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     int code = 0;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoGetData {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     std::string data;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoSetData {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     std::string data;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoSetCodeAndData {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     int code = 0;
     std::string data;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoAbort {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoClearAbort {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoGetAbort {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
     bool abortEvent = false;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoFinish {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     SubscriberInstance *objectInfo = nullptr;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoCreate {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    napi_ref callback = nullptr;
-    napi_deferred deferred = nullptr;
     napi_ref subscribeInfo = nullptr;
-    bool isCallback = false;
+    CallbackPromiseInfo info;
     napi_value result = nullptr;
 };
 
@@ -197,6 +182,7 @@ struct AsyncCallbackInfoPublish {
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
     int32_t userId = UNDEFINED_USER;
+    int8_t errorCode = NO_ERROR;
 };
 
 struct CommonEventPublishDataByjs {
@@ -234,17 +220,18 @@ private:
 
 napi_value NapiGetNull(napi_env env);
 
-napi_value GetCallbackErrorValue(napi_env env, int errCode);
+napi_value GetCallbackErrorValue(napi_env env, int8_t errorCode);
 
 napi_value ParseParametersByCreateSubscriber(
     const napi_env &env, const napi_value (&argv)[CREATE_MAX_PARA], const size_t &argc, napi_ref &callback);
 
+void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int8_t &errorCode, const napi_value &result);
+
 void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_value &result);
 
-void SetPromise(const napi_env &env, const napi_deferred &deferred, const napi_value &result);
+void SetPromise(const napi_env &env, const napi_deferred &deferred, const int8_t &errorCode, const napi_value &result);
 
-void ReturnCallbackPromise(const napi_env &env, const bool &isCallback, const napi_ref &callback,
-    const napi_deferred &deferred, const napi_value &result);
+void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info, const napi_value &result);
 
 void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env, const size_t &argc,
     AsyncCallbackInfoCreate *&asynccallbackinfo, const napi_ref &callback, napi_value &promise);
