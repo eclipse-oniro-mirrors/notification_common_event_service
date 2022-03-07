@@ -109,6 +109,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0100, TestSize.Level1";
     InnerCommonEventManager inner;
     struct tm curTime {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     /* subscriber */
     MatchingSkills matchingSkillsObj;
@@ -117,7 +118,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPermission("123");
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "hello");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "hello");
 
     /* Publish */
     Want want;
@@ -129,7 +130,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(false);
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -149,6 +151,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("1234");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -156,7 +160,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "hello");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "hello");
 
     /* Publish */
     Want want;
@@ -169,7 +173,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "hello");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -189,6 +194,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("1234");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -196,7 +203,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "hello");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "hello");
 
     /* Publish */
     Want want;
@@ -209,7 +216,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -229,6 +237,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("1234");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -236,7 +246,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "hello");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "hello");
 
     /* Publish */
     Want want;
@@ -249,7 +259,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "hello");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -273,7 +284,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     commonEventPublishInfo.SetSubscriberPermissions(std::vector<std::string>());
@@ -314,7 +325,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     commonEventPublishInfo.SetSubscriberPermissions(std::vector<std::string>());
@@ -394,7 +405,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -434,7 +445,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello world";
+    eventSubRecord.eventRecordInfo.bundleName = "hello world";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -474,7 +485,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -516,7 +527,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello world";
+    eventSubRecord.eventRecordInfo.bundleName = "hello world";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -558,7 +569,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -600,7 +611,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello world";
+    eventSubRecord.eventRecordInfo.bundleName = "hello world";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -636,6 +647,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     InnerCommonEventManager inner;
     struct tm curTime;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     Want want;
     want.SetAction("1234");
@@ -644,7 +656,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
     publishInfo.SetSticky(true);
-    bool ret = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello");
+    bool ret =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
     EXPECT_EQ(true, ret);
 }
 
@@ -661,6 +674,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     InnerCommonEventManager inner;
     struct tm curTime;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     Want want;
     want.SetAction("1234");
@@ -669,7 +683,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
     publishInfo.SetSticky(true);
-    bool ret = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "hello world");
+    bool ret =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello world");
     EXPECT_EQ(false, ret);
 }
 
@@ -690,7 +705,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -730,7 +745,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -770,7 +785,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -810,7 +825,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -850,7 +865,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -890,7 +905,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.bundleName = "hello";
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -993,6 +1008,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     // matchingSkillsObj.AddEvent("usual.event.BOOT_COMPLETED");
     matchingSkillsObj.AddEvent("usual.event.nfc.action.RF_FIELD_ON_DETECTED");
@@ -1001,7 +1017,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case1");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case1");
 
     /* Publish */
     Want want;
@@ -1015,7 +1031,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case1");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case1");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1038,6 +1055,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     // matchingSkillsObj.AddEvent("usual.event.USER_SWITCHED");
     matchingSkillsObj.AddEvent("usual.event.wifi.mplink.STATE_CHANGE");
@@ -1046,7 +1064,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case2");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case2");
 
     /* Publish */
     Want want;
@@ -1060,7 +1078,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case2");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case2");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1083,6 +1102,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     // matchingSkillsObj.AddEvent("usual.event.wifi.p2p.CONN_STATE_CHANGE");
     matchingSkillsObj.AddEvent("usual.event.bluetooth.remotedevice.DISCOVERED");
@@ -1091,7 +1111,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case3");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case3");
 
     /* Publish */
     Want want;
@@ -1105,7 +1125,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case3");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case3");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1128,6 +1149,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     // matchingSkillsObj.AddEvent("usual.event.data.DISK_REMOVED");
     matchingSkillsObj.AddEvent("usual.event.data.DISK_MOUNTED");
@@ -1136,7 +1158,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case4");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case4");
 
     /* Publish */
     Want want;
@@ -1150,7 +1172,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case4");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case4");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1173,6 +1196,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("common.event.IVI_TEMPERATURE_RECOVERY");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -1180,7 +1204,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case6");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case6");
 
     /* Publish */
     Want want;
@@ -1193,7 +1217,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(false);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, UNDEFINED_USER, "case6");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case6");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1216,6 +1241,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("usual.event.BOOT_COMPLETED");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -1223,7 +1249,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case1");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case1");
 
     /* Publish */
     Want want;
@@ -1236,7 +1262,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case1");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case1");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1259,6 +1286,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("usual.event.USER_SWITCHED");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -1266,7 +1294,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case2");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case2");
 
     /* Publish */
     Want want;
@@ -1279,7 +1307,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case2");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case2");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1302,6 +1331,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("usual.event.wifi.p2p.CONN_STATE_CHANGE");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -1309,7 +1339,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case3");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case3");
 
     /* Publish */
     Want want;
@@ -1322,7 +1352,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case3");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case3");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1345,6 +1376,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("usual.event.data.DISK_REMOVED");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -1352,7 +1384,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case4");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case4");
 
     /* Publish */
     Want want;
@@ -1365,7 +1397,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case4");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case4");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);
@@ -1388,6 +1421,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
     matchingSkillsObj.AddEvent("common.event.IVI_TEMPERATURE_RECOVERY");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
@@ -1395,7 +1429,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     subscribeInfo.SetPriority(1);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     auto listener = sptr<IRemoteObject>(new CommonEventListener(subscriber));
-    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, "case6");
+    inner.SubscribeCommonEvent(subscribeInfo, listener, curTime, 0, 1000, tokenID, "case6");
 
     /* Publish */
     Want want;
@@ -1408,7 +1442,8 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     publishInfo.SetOrdered(true);
     subscriberPermissions.emplace_back("456");
     publishInfo.SetSubscriberPermissions(subscriberPermissions);
-    bool result = inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, UNDEFINED_USER, "case6");
+    bool result =
+        inner.PublishCommonEvent(data, publishInfo, listener, curTime, 0, 1000, tokenID, UNDEFINED_USER, "case6");
     sleep(SLEEPTIEM);
     EXPECT_EQ(true, result);
     inner.UnsubscribeCommonEvent(listener);

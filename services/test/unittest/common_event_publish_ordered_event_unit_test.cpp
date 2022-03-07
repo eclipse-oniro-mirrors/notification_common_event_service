@@ -248,6 +248,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
 
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+
     mtx.lock();
 
     struct tm curTime {
@@ -255,7 +257,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     };
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -301,9 +303,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
     EXPECT_EQ(false, result);
 }
 
@@ -691,9 +694,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -747,9 +751,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -803,9 +808,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -859,9 +865,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,6 @@
 
 #include "common_event_subscriber_manager.h"
 
-#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "subscriber_death_recipient.h"
 
@@ -32,40 +31,38 @@ CommonEventSubscriberManager::~CommonEventSubscriberManager()
 {
 }
 
-int CommonEventSubscriberManager::InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
-    const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
-    const std::string &bundleName)
+bool CommonEventSubscriberManager::InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
+    const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime,
+    const EventRecordInfo &eventRecordInfo)
 {
     EVENT_LOGI("enter");
 
     if (eventSubscribeInfo == nullptr) {
         EVENT_LOGE("eventSubscribeInfo is null");
-        return ERR_INVALID_VALUE;
+        return false;
     }
 
     if (commonEventListener == nullptr) {
         EVENT_LOGE("commonEventListener is null");
-        return ERR_INVALID_VALUE;
+        return false;
     }
 
     std::vector<std::string> events = eventSubscribeInfo->GetMatchingSkills().GetEvents();
     if (events.size() <= 0) {
         EVENT_LOGE("No subscribed events");
-        return ERR_INVALID_VALUE;
+        return false;
     }
 
     auto record = std::make_shared<EventSubscriberRecord>();
     if (record == nullptr) {
         EVENT_LOGE("Failed to create EventSubscriberRecord");
-        return ERR_INVALID_VALUE;
+        return false;
     }
 
     record->eventSubscribeInfo = eventSubscribeInfo;
     record->commonEventListener = commonEventListener;
     record->recordTime = recordTime;
-    record->pid = pid;
-    record->uid = uid;
-    record->bundleName = bundleName;
+    record->eventRecordInfo = eventRecordInfo;
 
     if (death_ != nullptr) {
         commonEventListener->AddDeathRecipient(death_);
@@ -109,9 +106,9 @@ void CommonEventSubscriberManager::DumpDetailed(
     strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", &record->recordTime);
 
     std::string recordTime = format + "Time: " + std::string(systime) + "\n";
-    std::string pid = format + "PID: " + std::to_string(record->pid) + "\n";
-    std::string uid = format + "UID: " + std::to_string(record->uid) + "\n";
-    std::string bundleName = format + "BundleName: " + record->bundleName + "\n";
+    std::string pid = format + "PID: " + std::to_string(record->eventRecordInfo.pid) + "\n";
+    std::string uid = format + "UID: " + std::to_string(record->eventRecordInfo.uid) + "\n";
+    std::string bundleName = format + "BundleName: " + record->eventRecordInfo.bundleName + "\n";
     std::string priority = format + "Priority: " + std::to_string(record->eventSubscribeInfo->GetPriority()) + "\n";
     std::string userId;
     switch (record->eventSubscribeInfo->GetUserId()) {
@@ -209,17 +206,17 @@ void CommonEventSubscriberManager::DumpState(const std::string &event, const int
     }
 }
 
-int CommonEventSubscriberManager::InsertSubscriberRecordLocked(
+bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
     const std::vector<std::string> &events, const SubscriberRecordPtr &record)
 {
     if (events.size() == 0) {
         EVENT_LOGE("No subscribed events");
-        return ERR_INVALID_VALUE;
+        return false;
     }
 
     if (record == nullptr) {
         EVENT_LOGE("record is null");
-        return ERR_INVALID_VALUE;
+        return false;
     }
 
     std::lock_guard<std::mutex> lock(mutex_);
@@ -237,7 +234,7 @@ int CommonEventSubscriberManager::InsertSubscriberRecordLocked(
 
     subscribers_.emplace_back(record);
 
-    return ERR_OK;
+    return true;
 }
 
 int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener)
@@ -361,14 +358,14 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<std::string> events;
     for (auto recordPtr : subscribers_) {
-        if (recordPtr->uid == uid) {
+        if (recordPtr->eventRecordInfo.uid == uid) {
             if (freezeState) {
                 recordPtr->freezeTime = freezeTime;
             } else {
                 recordPtr->freezeTime = 0;
             }
             recordPtr->isFreeze = freezeState;
-            EVENT_LOGI("recordPtr->uid: %{public}d", recordPtr->uid);
+            EVENT_LOGI("recordPtr->uid: %{public}d", recordPtr->eventRecordInfo.uid);
             EVENT_LOGI("recordPtr->isFreeze: %{public}d", recordPtr->isFreeze);
         }
     }
@@ -386,7 +383,7 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
 
     auto record = std::make_shared<CommonEventRecord>(eventRecord);
     std::lock_guard<std::mutex> lock(mutex_);
-    auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->uid);
+    auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {
         auto eventRecordsItem = frozenRecordsItem->second.find(subscriberRecord);
         if (eventRecordsItem != frozenRecordsItem->second.end()) {
@@ -407,7 +404,7 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
         std::vector<EventRecordPtr> EventRecords;
         EventRecords.emplace_back(record);
         frozenRecords[subscriberRecord] = EventRecords;
-        frozenEvents_[subscriberRecord->uid] = frozenRecords;
+        frozenEvents_[subscriberRecord->eventRecordInfo.uid] = frozenRecords;
     }
 }
 
@@ -441,7 +438,7 @@ void CommonEventSubscriberManager::RemoveFrozenEventsBySubscriber(const Subscrib
 {
     EVENT_LOGI("enter");
 
-    auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->uid);
+    auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {
         auto eventRecordsItems = frozenRecordsItem->second.find(subscriberRecord);
         if (eventRecordsItems != frozenRecordsItem->second.end()) {
