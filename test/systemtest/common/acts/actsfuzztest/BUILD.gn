@@ -75,6 +75,7 @@ ohos_systemtest("ActsFuzzTest") {
     "LOG_DOMAIN = 0xD002200",
   ]
   external_deps = [
+    "ability_base:configuration",
     "ability_base:want",
     "ability_base:zuri",
     "bundle_framework:appexecfwk_base",
