@@ -24,7 +24,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
 {
     EVENT_LOGI("enter");
     proxy_ = (new (std::nothrow) AppExecFwk::StaticSubscriberProxy(remoteObject));
-    ErrCode ec = proxy_->OnCommonEventTriggered(&event_);
+    ErrCode ec = proxy_->OnReceiveEvent(&event_);
     EVENT_LOGI("end, errorCode = %d", ec);
 }
 
