@@ -294,6 +294,7 @@ bool CommonEventFreezeTest::SubscribeCommonEvent(const std::shared_ptr<CommonEve
         return false;
     }
     pid_t callingPid = 0;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     std::string bundleName = "";
 
@@ -304,6 +305,7 @@ bool CommonEventFreezeTest::SubscribeCommonEvent(const std::shared_ptr<CommonEve
         recordTime,
         callingPid,
         callingUid,
+        tokenID,
         bundleName);
     return handler_->PostTask(SubscribeCommonEventFunc);
 }
@@ -327,6 +329,7 @@ bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, cons
     }
     pid_t callingPid = 0;
     uid_t callingUid = 0;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     int32_t userId = UNDEFINED_USER;
     std::string bundleName = "";
 
@@ -338,6 +341,7 @@ bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, cons
         recordTime,
         callingPid,
         callingUid,
+        tokenID,
         userId,
         bundleName,
         nullptr);

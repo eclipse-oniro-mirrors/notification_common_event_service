@@ -336,6 +336,7 @@ bool CommonEventDumpTest::SubscribeCommonEvent(const std::shared_ptr<CommonEvent
         return false;
     }
     pid_t callingPid = 10;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     std::string bundleName = "";
     std::function<void()> SubscribeCommonEventFunc = std::bind(&InnerCommonEventManager::SubscribeCommonEvent,
@@ -345,6 +346,7 @@ bool CommonEventDumpTest::SubscribeCommonEvent(const std::shared_ptr<CommonEvent
         recordTime,
         callingPid,
         callingUid,
+        tokenID,
         bundleName);
     return handler_->PostTask(SubscribeCommonEventFunc);
 }
@@ -368,6 +370,7 @@ bool CommonEventDumpTest::PublishCommonEvent(const CommonEventData &data, const 
     }
     pid_t callingPid = 20;
     uid_t callingUid = 21;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     int32_t userId = UNDEFINED_USER;
     std::string bundleName = "";
 
@@ -379,6 +382,7 @@ bool CommonEventDumpTest::PublishCommonEvent(const CommonEventData &data, const 
         recordTime,
         callingPid,
         callingUid,
+        tokenID,
         userId,
         bundleName,
         nullptr);
