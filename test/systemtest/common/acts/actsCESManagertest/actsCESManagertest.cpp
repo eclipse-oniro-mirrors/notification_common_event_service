@@ -2212,7 +2212,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0200, Function | MediumT
 /*
  * @tc.number: CES_SubscriptionEventTheme_0300
  * @tc.name: MatchEvent
- * @tc.desc: Verify match a event theme
+ * @tc.desc: Verify match an event theme
  */
 HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0300, Function | MediumTest | Level1)
 {
