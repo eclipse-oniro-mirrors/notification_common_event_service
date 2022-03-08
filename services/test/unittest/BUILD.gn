@@ -368,7 +368,7 @@ group("unittest") {
   deps = []
 
   deps += [
-    ":common_event_dump_test",
+    # ":common_event_dump_test",
     ":common_event_freeze_test",
     ":common_event_publish_manager_event_unit_test",
     ":common_event_publish_ordered_event_unit_test",
