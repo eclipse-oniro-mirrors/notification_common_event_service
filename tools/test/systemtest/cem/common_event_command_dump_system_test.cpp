@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -99,15 +99,15 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0100, Function | 
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
 
-    // dump all subcribers
+    // dump all subscribers
     std::string command = "cem dump -a";
     std::string commandResult = ExecuteCommand(command);
 
@@ -124,7 +124,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0100, Function | 
  */
 HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0200, Function | MediumTest | Level1)
 {
-    // dump all subcribers for an event
+    // dump all subscribers for an event
     std::string command = "cem dump -e " + STRING_EVENT;
     std::string commandResult = ExecuteCommand(command);
 
@@ -144,15 +144,15 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0300, Function | 
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
 
-    // dump all subcribers for an event
+    // dump all subscribers for an event
     std::string command = "cem dump -e " + STRING_EVENT;
     std::string commandResult = ExecuteCommand(command);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -241,28 +241,6 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_006, TestSize.Level1)
 }
 
 /*
- * Feature: CommonEventStub
- * Function: OnRemoteRequest
- * SubFunction: NA
- * FunctionPoints: exception
- * EnvConditions: system running normally
- * CaseDescription: When the CommonEventListener does not exist, verify IPC return value.
- */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_007, TestSize.Level1)
-{
-    CommonEventStubTest CommonEventStubTest;
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-    sptr<CommonEventListener> commonEventListener = nullptr;
-    data.WriteParcelable(commonEventListener);
-
-    int32_t ret = CommonEventStubTest.OnRemoteRequest(
-        static_cast<int32_t>(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT), data, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, ret);
-}
-
-/*
  * Feature: CommonEventManagerService
  * Function: UnsubscribeCommonEvent
  * SubFunction: IsReady
@@ -322,7 +300,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_011, TestSize.Level1)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberTest);
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->death_ = nullptr;

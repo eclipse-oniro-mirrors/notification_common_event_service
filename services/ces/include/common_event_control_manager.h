@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -78,7 +78,7 @@ private:
 
     int CheckPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
-    bool CheckSubcriberPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
+    bool CheckSubscriberPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
     bool CheckSubscriberRequiredPermission(const std::string &subscriberRequiredPermission,
         const CommonEventRecord &eventRecord, const EventSubscriberRecord &subscriberRecord);

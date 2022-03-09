@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,9 @@
 
 #include "common_event_manager_service.h"
 
+#include "accesstoken_kit.h"
 #include "bundle_manager_helper.h"
+#include "common_event_constant.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
 #include "ipc_skeleton.h"
@@ -151,7 +153,7 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
-    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, -1, uid, userId);
+    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, UNDEFINED_PID, uid, userId);
 }
 
 bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData &event,
@@ -178,6 +180,9 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
         return false;
     }
 
+    Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    EVENT_LOGD("callerToken : %{public}u", callerToken);
+
     std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
         innerCommonEventManager_,
         event,
@@ -186,6 +191,7 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
         recordTime,
         pid,
         uid,
+        callerToken,
         userId,
         bundleName,
         this);
@@ -209,6 +215,9 @@ bool CommonEventManagerService::SubscribeCommonEvent(
     uid_t callingUid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
 
+    Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    EVENT_LOGD("callerToken : %{public}u", callerToken);
+
     std::function<void()> SubscribeCommonEventFunc = std::bind(&InnerCommonEventManager::SubscribeCommonEvent,
         innerCommonEventManager_,
         subscribeInfo,
@@ -216,6 +225,7 @@ bool CommonEventManagerService::SubscribeCommonEvent(
         recordTime,
         IPCSkeleton::GetCallingPid(),
         callingUid,
+        callerToken,
         bundleName);
     return handler_->PostTask(SubscribeCommonEventFunc);
 }

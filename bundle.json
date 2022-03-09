@@ -38,7 +38,7 @@
         "name": "ces_standard",
         "subsystem": "notification",
         "syscap": [
-            "SystemCapability.CommonEventService"
+            "SystemCapability.Notification.CommonEvent"
         ],
         "features": [],
         "adapted_system_type": [

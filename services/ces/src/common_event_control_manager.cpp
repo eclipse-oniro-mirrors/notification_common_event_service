@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -102,7 +102,8 @@ bool CommonEventControlManager::NotifyFreezeEvents(
     EVENT_LOGI("Send common event %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) "
                 "when unfreezed",
         eventRecord.commonEventData->GetWant().GetAction().c_str(),
-        subscriberRecord.bundleName.c_str(), subscriberRecord.pid, subscriberRecord.uid);
+        subscriberRecord.eventRecordInfo.bundleName.c_str(), subscriberRecord.eventRecordInfo.pid,
+        subscriberRecord.eventRecordInfo.uid);
     commonEventListenerProxy->NotifyEvent(*(eventRecord.commonEventData), false, eventRecord.publishInfo->IsSticky());
 
     return true;
@@ -234,7 +235,7 @@ bool CommonEventControlManager::GetOrderedEventHandler()
 }
 
 bool CommonEventControlManager::ProcessOrderedEvent(
-    const CommonEventRecord &commonEventRecord, const sptr<IRemoteObject> &commonEventListener)
+    const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGI("enter");
 
@@ -244,26 +245,26 @@ bool CommonEventControlManager::ProcessOrderedEvent(
         return ret;
     }
 
-    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
-    if (eventRecord == nullptr) {
-        EVENT_LOGE("eventRecord is null");
+    std::shared_ptr<OrderedEventRecord> eventRecordPtr = std::make_shared<OrderedEventRecord>();
+    if (eventRecordPtr == nullptr) {
+        EVENT_LOGE("eventRecordPtr is null");
         return ret;
     }
 
     std::shared_ptr<CommonEventSubscriberManager> spinstance =
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance();
 
-    eventRecord->FillCommonEventRecord(commonEventRecord);
-    eventRecord->resultTo = commonEventListener;
-    eventRecord->state = OrderedEventRecord::IDLE;
-    eventRecord->nextReceiver = 0;
-    eventRecord->receivers = spinstance->GetSubscriberRecords(commonEventRecord.commonEventData->GetWant(),
-        commonEventRecord.isSystemApp, commonEventRecord.userId);
-    for (auto vec : eventRecord->receivers) {
-        eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    eventRecordPtr->FillCommonEventRecord(eventRecord);
+    eventRecordPtr->resultTo = commonEventListener;
+    eventRecordPtr->state = OrderedEventRecord::IDLE;
+    eventRecordPtr->nextReceiver = 0;
+    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord.commonEventData->GetWant(),
+        eventRecord.isSystemApp, eventRecord.userId);
+    for (auto vec : eventRecordPtr->receivers) {
+        eventRecordPtr->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     }
 
-    EnqueueOrderedRecord(eventRecord);
+    EnqueueOrderedRecord(eventRecordPtr);
 
     ret = ScheduleOrderedCommonEvent();
 
@@ -328,7 +329,7 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
     for (auto vec : eventRecordPtr->receivers) {
         HistorySubscriberRecord receiver;
         receiver.recordTime = vec->recordTime;
-        receiver.bundleName = vec->bundleName;
+        receiver.bundleName = vec->eventRecordInfo.bundleName;
         receiver.priority = vec->eventSubscribeInfo->GetPriority();
         receiver.userId = vec->eventSubscribeInfo->GetUserId();
         receiver.permission = vec->eventSubscribeInfo->GetPermission();
@@ -558,9 +559,9 @@ void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
     if (sp->nextReceiver > 0) {
         std::shared_ptr<EventSubscriberRecord> subscriberRecord = sp->receivers[sp->nextReceiver - 1];
         EVENT_LOGW("Timeout: When %{public}s (pid = %{public}d, uid = %{public}d) process common event %{public}s",
-            subscriberRecord->bundleName.c_str(),
-            subscriberRecord->pid,
-            subscriberRecord->uid,
+            subscriberRecord->eventRecordInfo.bundleName.c_str(),
+            subscriberRecord->eventRecordInfo.pid,
+            subscriberRecord->eventRecordInfo.uid,
             sp->commonEventData->GetWant().GetAction().c_str());
 
         sp->deliveryState[sp->nextReceiver - 1] = OrderedEventRecord::TIMEOUT;
@@ -624,7 +625,7 @@ int CommonEventControlManager::CheckPermission(
     EVENT_LOGI("enter");
 
     bool ret = false;
-    ret = CheckSubcriberPermission(subscriberRecord, eventRecord);
+    ret = CheckSubscriberPermission(subscriberRecord, eventRecord);
     if (!ret) {
         return OrderedEventRecord::SKIPPED;
     }
@@ -644,7 +645,7 @@ int CommonEventControlManager::CheckPermission(
     return OrderedEventRecord::DELIVERED;
 }
 
-bool CommonEventControlManager::CheckSubcriberPermission(
+bool CommonEventControlManager::CheckSubscriberPermission(
     const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord)
 {
     EVENT_LOGI("enter");
@@ -657,19 +658,20 @@ bool CommonEventControlManager::CheckSubcriberPermission(
         return true;
     }
 
-    if (DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(subscriberRecord.uid)) {
+    if (!subscriberRecord.eventRecordInfo.isProxy && (subscriberRecord.eventRecordInfo.isSubsystem
+        || subscriberRecord.eventRecordInfo.isSystemApp)) {
         return true;
     }
 
     if (permission.names.size() == 1) {
         ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-            subscriberRecord.bundleName, permission.names[0]);
+            subscriberRecord.eventRecordInfo.bundleName, permission.names[0]);
         lackPermission = permission.names[0];
     } else {
         if (permission.state == PermissionState::AND) {
             for (auto vec : permission.names) {
                 ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-                    subscriberRecord.bundleName, vec);
+                    subscriberRecord.eventRecordInfo.bundleName, vec);
                 if (!ret) {
                     lackPermission = vec;
                     break;
@@ -678,7 +680,7 @@ bool CommonEventControlManager::CheckSubcriberPermission(
         } else if (permission.state == PermissionState::OR) {
             for (auto vec : permission.names) {
                 ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-                    subscriberRecord.bundleName, vec);
+                    subscriberRecord.eventRecordInfo.bundleName, vec);
                 lackPermission += vec + CONNECTOR;
                 if (ret) {
                     break;
@@ -695,9 +697,9 @@ bool CommonEventControlManager::CheckSubcriberPermission(
                     "due to subscriber %{public}s (pid = %{public}d, uid = %{public}d) lacks "
                     "the %{public}s permission.",
             eventRecord.commonEventData->GetWant().GetAction().c_str(),
-            subscriberRecord.bundleName.c_str(),
-            subscriberRecord.pid,
-            subscriberRecord.uid,
+            subscriberRecord.eventRecordInfo.bundleName.c_str(),
+            subscriberRecord.eventRecordInfo.pid,
+            subscriberRecord.eventRecordInfo.uid,
             lackPermission.c_str());
     }
 
@@ -725,9 +727,9 @@ bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::str
             eventRecord.pid,
             eventRecord.uid,
             eventRecord.userId,
-            subscriberRecord.bundleName.c_str(),
-            subscriberRecord.pid,
-            subscriberRecord.uid,
+            subscriberRecord.eventRecordInfo.bundleName.c_str(),
+            subscriberRecord.eventRecordInfo.pid,
+            subscriberRecord.eventRecordInfo.uid,
             subscriberRecord.eventSubscribeInfo->GetUserId(),
             subscriberRequiredPermission.c_str());
     }
@@ -747,16 +749,16 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
 
     for (auto publisherRequiredPermission : publisherRequiredPermissions) {
         ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-            subscriberRecord.bundleName, publisherRequiredPermission);
+            subscriberRecord.eventRecordInfo.bundleName, publisherRequiredPermission);
         if (!ret) {
             EVENT_LOGW("No permission to receive common event %{public}s "
                         "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
                         "due to publisher %{public}s (pid = %{public}d, uid = %{public}d),"
                         " userId = %{public}d requires the %{public}s permission.",
                 eventRecord.commonEventData->GetWant().GetAction().c_str(),
-                subscriberRecord.bundleName.c_str(),
-                subscriberRecord.pid,
-                subscriberRecord.uid,
+                subscriberRecord.eventRecordInfo.bundleName.c_str(),
+                subscriberRecord.eventRecordInfo.pid,
+                subscriberRecord.eventRecordInfo.uid,
                 subscriberRecord.eventSubscribeInfo->GetUserId(),
                 eventRecord.bundleName.c_str(),
                 eventRecord.pid,
