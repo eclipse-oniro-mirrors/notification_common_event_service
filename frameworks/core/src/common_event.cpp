@@ -30,6 +30,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         return false;
     }
+    EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, UNDEFINED_USER);
 }
 
@@ -41,6 +42,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         return false;
     }
+    EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, userId);
 }
 
@@ -52,6 +54,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         return false;
     }
+    EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, UNDEFINED_USER);
 }
 
@@ -63,6 +66,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         return false;
     }
+    EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, userId);
 }
 
@@ -116,6 +120,7 @@ bool CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscrib
     sptr<IRemoteObject> commonEventListener = nullptr;
     int subscribeState_ = CreateCommonEventListener(subscriber, commonEventListener);
     if (subscribeState_ == INITIAL_SUBSCRIPTION) {
+        EVENT_LOGD("before SubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
         return commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
     } else if (subscribeState_ == ALREADY_SUBSCRIBED) {
         return true;
@@ -141,6 +146,7 @@ bool CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscr
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
     auto eventListener = eventListeners_.find(subscriber);
     if (eventListener != eventListeners_.end()) {
+        EVENT_LOGD("before UnsubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
         if (commonEventProxy_->UnsubscribeCommonEvent(eventListener->second->AsObject())) {
             eventListener->second->Stop();
             eventListeners_.erase(eventListener);
@@ -167,7 +173,7 @@ bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData
         EVENT_LOGE("event is empty");
         return false;
     }
-
+    EVENT_LOGD("before GetStickyCommonEvent proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->GetStickyCommonEvent(event, eventData);
 }
 
@@ -185,7 +191,7 @@ bool CommonEvent::FinishReceiver(
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
-
+    EVENT_LOGD("before FinishReceiver proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->FinishReceiver(proxy, code, data, abortEvent);
 }
 
@@ -197,19 +203,18 @@ bool CommonEvent::DumpState(const std::string &event, const int32_t &userId, std
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
-
+    EVENT_LOGD("before DumpState proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->DumpState(event, userId, state);
 }
 
 void CommonEvent::ResetCommonEventProxy()
 {
     EVENT_LOGI("enter");
-
     std::lock_guard<std::mutex> lock(mutex_);
+    isProxyValid_ = false;
     if ((commonEventProxy_ != nullptr) && (commonEventProxy_->AsObject() != nullptr)) {
         commonEventProxy_->AsObject()->RemoveDeathRecipient(recipient_);
     }
-    commonEventProxy_ = nullptr;
 }
 
 bool CommonEvent::Freeze(const uid_t &uid)
@@ -220,7 +225,7 @@ bool CommonEvent::Freeze(const uid_t &uid)
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
-
+    EVENT_LOGD("before Freeze proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->Freeze(uid);
 }
 
@@ -232,7 +237,7 @@ bool CommonEvent::Unfreeze(const uid_t &uid)
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
-
+    EVENT_LOGD("before Unfreeze proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->Unfreeze(uid);
 }
 
@@ -240,9 +245,9 @@ bool CommonEvent::GetCommonEventProxy()
 {
     EVENT_LOGI("enter");
 
-    if (!commonEventProxy_) {
+    if (!commonEventProxy_ || !isProxyValid_) {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (!commonEventProxy_) {
+        if (!commonEventProxy_ || !isProxyValid_) {
             sptr<ISystemAbilityManager> systemAbilityManager =
                 SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
             if (!systemAbilityManager) {
@@ -270,7 +275,7 @@ bool CommonEvent::GetCommonEventProxy()
             commonEventProxy_->AsObject()->AddDeathRecipient(recipient_);
         }
     }
-
+    isProxyValid_ = true;
     return true;
 }
 
