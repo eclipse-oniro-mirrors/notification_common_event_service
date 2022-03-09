@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -141,7 +141,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 /*
  * @tc.number: CommonEventPublishOrderedUnitTest_0200
  * @tc.name: test CommonEventPublishOrderedEventUnitTest
- * @tc.desc: Verify PublishCommonEvent false because servie stop
+ * @tc.desc: Verify PublishCommonEvent false because service stop
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0200, Function | MediumTest | Level1)
 {
@@ -166,7 +166,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 /*
  * @tc.number: CommonEventPublishOrderedUnitTest_0300
  * @tc.name: test FinishReceiver
- * @tc.desc: Verify FinishReceiver return false bacause service stop
+ * @tc.desc: Verify FinishReceiver return false because service stop
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0300, Function | MediumTest | Level1)
 {
@@ -240,13 +240,15 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     MatchingSkills matchingSkills;
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
+
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     mtx.lock();
 
@@ -255,7 +257,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     };
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -289,10 +291,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     MatchingSkills matchingSkills;
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // make commonEventListener
@@ -301,9 +303,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
     EXPECT_EQ(false, result);
 }
 
@@ -335,14 +338,14 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     commonEventRecord.bundleName = "bundleName";
     commonEventRecord.recordTime = {0};
 
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make subcriber
+    // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make commone event listener
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -384,14 +387,14 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     commonEventRecord.uid = 0;
     commonEventRecord.bundleName = "bundleName";
 
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make subcriber
+    // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make commone event listener
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
     mtx.lock();
@@ -677,11 +680,11 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     MatchingSkills matchingSkills;
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
@@ -691,9 +694,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -733,11 +737,11 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     MatchingSkills matchingSkills;
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::POST);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
@@ -747,9 +751,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -789,11 +794,11 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     MatchingSkills matchingSkills;
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::ASYNC);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
@@ -803,9 +808,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 
@@ -845,11 +851,11 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     MatchingSkills matchingSkills;
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::BACKGROUND);
 
-    // make a subcriber object
+    // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
@@ -859,9 +865,10 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     struct tm curTime {
         0
     };
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
 
     EXPECT_EQ(true, result);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -144,7 +144,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0100, Functi
     matchingSkills.AddEntity(ENTITY);
     matchingSkills.AddScheme(SCHEME);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetPriority(PRIORITY);
     subscribeInfo.SetPermission(PERMISSION);
@@ -153,7 +153,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0100, Functi
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     CommonEventListener *listener = new CommonEventListener(subscriber);
 
     // SubscribeCommonEvent
@@ -165,7 +165,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0100, Functi
 /*
  * @tc.number: CommonEventSubscribeUnitTest_0200
  * @tc.name: test SubscribeCommonEvent
- * @tc.desc: Verify SubscribeCommonEvent fail bacause service stop
+ * @tc.desc: Verify SubscribeCommonEvent fail because service stop
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0200, Function | MediumTest | Level1)
 {
@@ -178,7 +178,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0200, Functi
     matchingSkills.AddEntity(ENTITY);
     matchingSkills.AddScheme(SCHEME);
 
-    // make subcriber info
+    // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetPriority(PRIORITY);
     subscribeInfo.SetPermission(PERMISSION);
@@ -187,7 +187,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0200, Functi
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     CommonEventListener *listener = new CommonEventListener(subscriber);
 
     // SubscribeCommonEvent
@@ -203,7 +203,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0200, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0300, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -211,7 +211,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0300, Functi
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -229,14 +229,14 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0300, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0400, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -256,7 +256,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0400, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0500, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -275,7 +275,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0500, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0600, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -285,7 +285,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0600, Functi
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -306,7 +306,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0600, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0700, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -335,14 +335,14 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0700, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0800, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
-    // make subcriber
+    // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // InsertSubscriber
@@ -361,7 +361,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0800, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
@@ -371,7 +371,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Functi
     CommonEventStubTest CommonEventStubTest;
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make commone event listener
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
@@ -391,16 +391,16 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1000, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
     matchingSkills.AddEvent(ENTITY);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make subcriber
+    // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make commone event listener
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -430,14 +430,14 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1000, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1100, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make subcriber
+    // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make commone event listener
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -467,7 +467,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1100, Functi
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1200, Function | MediumTest | Level1)
 {
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 

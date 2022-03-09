@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -85,7 +85,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Priority_0100, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPriority(PRIORITYTEST1);
         if (subscribeInfo.GetPriority() != PRIORITYTEST1) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0100 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0100 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -114,7 +114,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Priority_0200, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPriority(PRIORITYTEST2);
         if (subscribeInfo.GetPriority() != PRIORITYTEST2) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0200 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0200 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -143,7 +143,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Priority_0300, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPriority(PRIORITYTEST3);
         if (subscribeInfo.GetPriority() != PRIORITYTEST3) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0300 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0300 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -172,7 +172,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Priority_0400, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPriority(PRIORITYTEST4);
         if (subscribeInfo.GetPriority() != PRIORITYTEST4) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0400 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0400 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -201,7 +201,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Priority_0500, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPriority(PRIORITYTEST5);
         if (subscribeInfo.GetPriority() != PRIORITYTEST5) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0500 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Priority_0500 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -230,7 +230,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Permission_0100, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPermission(PERMISSIONTEST1);
         if (subscribeInfo.GetPermission() != PERMISSIONTEST1) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0100 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0100 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -260,7 +260,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Permission_0200, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPermission(PERMISSIONTEST2);
         if (subscribeInfo.GetPermission() != PERMISSIONTEST2) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0200 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0200 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -289,7 +289,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Permission_0300, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPermission(PERMISSIONTEST3);
         if (subscribeInfo.GetPermission() != PERMISSIONTEST3) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0300 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0300 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -318,7 +318,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Permission_0400, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPermission(PERMISSIONTEST4);
         if (subscribeInfo.GetPermission() != PERMISSIONTEST4) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0400 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0400 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -347,7 +347,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_Permission_0500, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetPermission(PERMISSIONTEST5);
         if (subscribeInfo.GetPermission() != PERMISSIONTEST5) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0500 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_Permission_0500 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -377,7 +377,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_ThreadMode_0100, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
         if (subscribeInfo.GetThreadMode() != CommonEventSubscribeInfo::ThreadMode::HANDLER) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0100 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0100 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -406,7 +406,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_ThreadMode_0200, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::POST);
         if (subscribeInfo.GetThreadMode() != CommonEventSubscribeInfo::ThreadMode::POST) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0200 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0200 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -436,7 +436,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_ThreadMode_0300, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::ASYNC);
         if (subscribeInfo.GetThreadMode() != CommonEventSubscribeInfo::ThreadMode::ASYNC) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0300 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0300 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -466,7 +466,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_ThreadMode_0400, Function |
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::BACKGROUND);
         if (subscribeInfo.GetThreadMode() != CommonEventSubscribeInfo::ThreadMode::BACKGROUND) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0400 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_ThreadMode_0400 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -495,7 +495,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_DeviceId_0100, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetDeviceId(DEVICEIDTEST1);
         if (subscribeInfo.GetDeviceId() != DEVICEIDTEST1) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0100 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0100 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -524,7 +524,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_DeviceId_0200, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetDeviceId(DEVICEIDTEST2);
         if (subscribeInfo.GetDeviceId() != DEVICEIDTEST2) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0200 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0200 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -553,7 +553,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_DeviceId_0300, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetDeviceId(DEVICEIDTEST3);
         if (subscribeInfo.GetDeviceId() != DEVICEIDTEST3) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0300 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0300 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -582,7 +582,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_DeviceId_0400, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetDeviceId(DEVICEIDTEST4);
         if (subscribeInfo.GetDeviceId() != DEVICEIDTEST4) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0400 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0400 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -611,7 +611,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_DeviceId_0500, Function | M
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         subscribeInfo.SetDeviceId(DEVICEIDTEST5);
         if (subscribeInfo.GetDeviceId() != DEVICEIDTEST5) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0500 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_DeviceId_0500 failed ,frequency: " << i;
             result = false;
             break;
         } else {
@@ -639,7 +639,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_GetMatchingSkills_0100, Fun
         matchingSkills.AddEvent(eventName);
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
         if (subscribeInfo.GetMatchingSkills().HasEvent(eventName) == false) {
-            GTEST_LOG_(INFO) << "CES_SubscribeInfo_GetMatchingSkills_0100 faild ,frequency: " << i;
+            GTEST_LOG_(INFO) << "CES_SubscribeInfo_GetMatchingSkills_0100 failed ,frequency: " << i;
             result = false;
             break;
         } else {

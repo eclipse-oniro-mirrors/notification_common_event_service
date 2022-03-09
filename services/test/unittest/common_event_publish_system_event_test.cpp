@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -94,6 +94,7 @@ public:
 HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0100, Function | MediumTest | Level1)
 {
     /* Publish */
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     // make a want
     Want want;
@@ -110,7 +111,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
     struct tm curTime;
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
     EXPECT_EQ(true, publishResult);
     sleep(PUBLISH_SLEEP);
 }
@@ -123,6 +124,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
 HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0200, Function | MediumTest | Level1)
 {
     /* Publish */
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     // make a want
     Want want;
@@ -139,7 +141,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_02
     struct tm curTime;
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, nullptr, curTime, PID, NON_SYSTEM_APP_UID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, nullptr, curTime, PID, NON_SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
     EXPECT_EQ(false, publishResult);
     sleep(PUBLISH_SLEEP);
 }
@@ -152,8 +154,9 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_02
 HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0300, Function | MediumTest | Level1)
 {
     /* Subscribe */
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_TEST_ACTION1);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -161,7 +164,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -169,7 +172,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
     struct tm curTime{0};
     InnerCommonEventManager innerCommonEventManager;
     bool subscribeResult = innerCommonEventManager.SubscribeCommonEvent(
-        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, "bundlename");
+        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, tokenID, "bundlename");
     EXPECT_EQ(true, subscribeResult);
 
     /* Publish */
@@ -188,7 +191,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
 
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
     sleep(1);
     EXPECT_EQ(true, publishResult);
 
@@ -203,8 +206,9 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
 HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0400, Function | MediumTest | Level1)
 {
     /* Subscribe */
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
-    // make subcriber info
+    // make subscriber info
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_TEST_ACTION2);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -212,7 +216,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
     // make subscriber
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
-    // make common event listner
+    // make common event listener
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
@@ -220,7 +224,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
     struct tm curTime{0};
     InnerCommonEventManager innerCommonEventManager;
     bool subscribeResult = innerCommonEventManager.SubscribeCommonEvent(
-        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, "bundlename");
+        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, tokenID, "bundlename");
     EXPECT_EQ(true, subscribeResult);
 
     /* Publish */
@@ -239,7 +243,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
 
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
     sleep(1);
     EXPECT_EQ(true, publishResult);
 

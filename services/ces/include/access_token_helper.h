@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,22 +13,17 @@
  * limitations under the License.
  */
 
-#ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
-#define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
+#ifndef BASE_NOTIFICATION_CES_STANDARD_SERVICES_CES_INCLUDE_ACCESS_TOKEN_HELPER_H
+#define BASE_NOTIFICATION_CES_STANDARD_SERVICES_CES_INCLUDE_ACCESS_TOKEN_HELPER_H
 
-#include "iremote_object.h"
+#include "accesstoken_kit.h"
 
 namespace OHOS {
 namespace EventFwk {
-class CommonEventDeathRecipient : public IRemoteObject::DeathRecipient {
+class AccessTokenHelper {
 public:
-    CommonEventDeathRecipient() = default;
-
-    virtual ~CommonEventDeathRecipient() = default;
-
-    virtual void OnRemoteDied(const wptr<IRemoteObject> &remote);
+    static bool VerifyNativeToken(const Security::AccessToken::AccessTokenID &callerToken);
 };
 }  // namespace EventFwk
 }  // namespace OHOS
-
-#endif  // FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
+#endif  // BASE_NOTIFICATION_CES_STANDARD_SERVICES_CES_INCLUDE_ACCESS_TOKEN_HELPER_H

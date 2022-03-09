@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 
+#include "common_event_constant.h"
 #include "common_event_record.h"
 #include "common_event_subscribe_info.h"
 #include "iremote_object.h"
@@ -23,18 +24,30 @@
 
 namespace OHOS {
 namespace EventFwk {
-struct EventSubscriberRecord {
-    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo;
-    sptr<IRemoteObject> commonEventListener;
-    struct tm recordTime;
+struct EventRecordInfo {
     pid_t pid;
     uid_t uid;
     std::string bundleName;
+    bool isSubsystem;
+    bool isSystemApp;
+    bool isProxy;
+
+    EventRecordInfo() : pid(0), uid(0), isSubsystem(false), isSystemApp(false), isProxy(false) {}
+};
+
+struct EventSubscriberRecord {
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo;
+    sptr<IRemoteObject> commonEventListener;
+    EventRecordInfo eventRecordInfo;
+    struct tm recordTime;
     bool isFreeze;
     int64_t freezeTime;
 
     EventSubscriberRecord()
-        : eventSubscribeInfo(nullptr), commonEventListener(nullptr), pid(0), uid(0), isFreeze(false), freezeTime(0)
+        : eventSubscribeInfo(nullptr),
+          commonEventListener(nullptr),
+          isFreeze(false),
+          freezeTime(0)
     {}
 };
 
@@ -61,8 +74,8 @@ public:
 
     virtual ~CommonEventSubscriberManager() override;
 
-    int InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo, const sptr<IRemoteObject> &commonEventListener,
-        const struct tm &recordTime, const pid_t &pid, const uid_t &uid, const std::string &bundleName);
+    bool InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo, const sptr<IRemoteObject> &commonEventListener,
+        const struct tm &recordTime, const EventRecordInfo &eventRecordInfo);
 
     int RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener);
 
@@ -81,7 +94,7 @@ public:
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
-    int InsertSubscriberRecordLocked(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
+    bool InsertSubscriberRecordLocked(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
 
     int RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener);
 
@@ -107,5 +120,4 @@ private:
 };
 }  // namespace EventFwk
 }  // namespace OHOS
-
 #endif  // FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H

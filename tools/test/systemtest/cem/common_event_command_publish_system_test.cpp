@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -135,10 +135,10 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0100, Funct
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscribe info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
@@ -192,13 +192,13 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0200, Funct
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscribe info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     // set device id
     subscribeInfo.SetDeviceId(STRING_DEVICE_ID_001);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
@@ -252,13 +252,13 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0300, Funct
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscribe info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     // set device id
     subscribeInfo.SetDeviceId(STRING_DEVICE_ID_002);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
@@ -312,13 +312,13 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0400, Funct
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(STRING_EVENT);
 
-    // make subcribe info
+    // make subscribe info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     // set device id
     subscribeInfo.SetDeviceId(STRING_DEVICE_ID_003);
 
-    // make a subcriber object
+    // make a subscriber object
     auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
     // subscribe a common event
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);

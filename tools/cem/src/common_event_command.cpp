@@ -302,7 +302,8 @@ ErrCode CommonEventCommand::RunAsPublishCommand()
 
         // publish the common event
         std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-        bool publishResult = commonEventPtr_->PublishCommonEvent(commonEventData, publishInfo, subscriber, userId);
+        bool publishResult = commonEventPtr_->PublishCommonEventAsUser(
+            commonEventData, publishInfo, subscriber, userId);
         if (publishResult) {
             resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_OK + "\n";
         } else {
