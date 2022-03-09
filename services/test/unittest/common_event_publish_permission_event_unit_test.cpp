@@ -1010,7 +1010,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     };
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
-    // matchingSkillsObj.AddEvent("usual.event.BOOT_COMPLETED");
     matchingSkillsObj.AddEvent("usual.event.nfc.action.RF_FIELD_ON_DETECTED");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
     subscribeInfo.SetPermission("123");
@@ -1057,7 +1056,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     };
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
-    // matchingSkillsObj.AddEvent("usual.event.USER_SWITCHED");
     matchingSkillsObj.AddEvent("usual.event.wifi.mplink.STATE_CHANGE");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
     subscribeInfo.SetPermission("");
@@ -1104,7 +1102,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     };
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
-    // matchingSkillsObj.AddEvent("usual.event.wifi.p2p.CONN_STATE_CHANGE");
     matchingSkillsObj.AddEvent("usual.event.bluetooth.remotedevice.DISCOVERED");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
     subscribeInfo.SetPermission("");
