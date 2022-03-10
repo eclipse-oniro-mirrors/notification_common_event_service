@@ -54,6 +54,9 @@ public:
 private:
     bool ProcessStickyEvent(const CommonEventRecord &record);
     void PublishEventToStaticSubscribers(const CommonEventData &data, const sptr<IRemoteObject> &service);
+
+    bool PublishStickyEvent(const std::shared_ptr<CommonEventSubscribeInfo> &sp,
+        const std::shared_ptr<EventSubscriberRecord> &subscriberRecord);
     bool CheckUserId(const pid_t &pid, const uid_t &uid, const Security::AccessToken::AccessTokenID &callerToken,
         bool &isSubsystem, bool &isSystemApp, bool &isProxy, int32_t &userId);
 

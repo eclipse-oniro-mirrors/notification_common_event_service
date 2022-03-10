@@ -18,6 +18,7 @@
 #include "ability_manager_helper.h"
 #include "bundle_manager_helper.h"
 #include "common_event_constant.h"
+#include "common_event_record.h"
 #include "common_event_sticky_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "common_event_support.h"
@@ -207,8 +208,10 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     eventRecordInfo.isSystemApp = isSystemApp;
     eventRecordInfo.isProxy = isProxy;
 
-    DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
+    auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
+
+    PublishStickyEvent(sp, record);
 
     return true;
 };
@@ -353,6 +356,44 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
             EVENT_LOGE("No permission to subscribe or send a common event to another user from uid = %{public}d", uid);
             return false;
         }
+    }
+
+    return true;
+}
+
+bool InnerCommonEventManager::PublishStickyEvent(
+    const std::shared_ptr<CommonEventSubscribeInfo> &sp, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
+{
+    EVENT_LOGI("enter");
+
+    if (!sp) {
+        EVENT_LOGI("sp is null");
+        return false;
+    }
+
+    if (!subscriberRecord) {
+        EVENT_LOGI("subscriberRecord is null");
+        return false;
+    }
+
+    std::vector<std::shared_ptr<CommonEventRecord>> commonEventRecords;
+    if (DelayedSingleton<CommonEventStickyManager>::GetInstance()->FindStickyEvents(sp, commonEventRecords)) {
+        return false;
+    }
+
+    for (auto commonEventRecord : commonEventRecords) {
+        if (!commonEventRecord) {
+            EVENT_LOGW("commonEventRecord is nullptr and get next");
+            continue;
+        }
+        EVENT_LOGI("publish sticky event : %{public}s",
+            commonEventRecord->commonEventData->GetWant().GetAction().c_str());
+        commonEventRecord->publishInfo->SetOrdered(false);
+        if (!controlPtr_) {
+            EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+            return false;
+        }
+        controlPtr_->PublishStickyCommonEvent(*commonEventRecord, subscriberRecord);
     }
 
     return true;

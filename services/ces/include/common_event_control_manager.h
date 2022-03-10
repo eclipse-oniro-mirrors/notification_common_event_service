@@ -32,6 +32,9 @@ public:
 
     bool PublishCommonEvent(const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener);
 
+    bool PublishStickyCommonEvent(
+        const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord);
+
     std::shared_ptr<OrderedEventRecord> GetMatchingOrderedReceiver(const sptr<IRemoteObject> &proxy);
 
     bool FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int &code,
@@ -48,7 +51,8 @@ public:
     void DumpHistoryState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
-    bool ProcessUnorderedEvent(const CommonEventRecord &eventRecord);
+    bool ProcessUnorderedEvent(
+        const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord = nullptr);
 
     bool GetUnorderedEventHandler();
 

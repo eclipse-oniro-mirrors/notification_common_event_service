@@ -74,8 +74,9 @@ public:
 
     virtual ~CommonEventSubscriberManager() override;
 
-    bool InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo, const sptr<IRemoteObject> &commonEventListener,
-        const struct tm &recordTime, const EventRecordInfo &eventRecordInfo);
+    std::shared_ptr<EventSubscriberRecord> InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
+        const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime,
+        const EventRecordInfo &eventRecordInfo);
 
     int RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener);
 
