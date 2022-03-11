@@ -127,6 +127,7 @@
                 "//base/notification/ces_standard/frameworks/native/test/unittest:unittest",
                 "//base/notification/ces_standard/services/test/moduletest:moduletest",
                 "//base/notification/ces_standard/services/test/unittest:unittest",
+                "//base/notification/ces_standard/test/fuzztest:fuzztest",
                 "//base/notification/ces_standard/test/systemtest:systemtest",
                 "//base/notification/ces_standard/tools:moduletest",
                 "//base/notification/ces_standard/tools:systemtest",
