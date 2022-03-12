@@ -83,7 +83,6 @@ ohos_systemtest("ActsFuzzTest") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "multimodalinput_base:libmmi-client",
     "native_appdatamgr:native_appdatafwk",
     "native_appdatamgr:native_dataability",
     "native_appdatamgr:native_rdb",
