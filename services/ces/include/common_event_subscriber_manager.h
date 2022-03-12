@@ -79,8 +79,7 @@ public:
 
     int RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener);
 
-    std::vector<SubscriberRecordPtr> GetSubscriberRecords(const Want &want, const bool &isSystemApp,
-        const int32_t &userId);
+    std::vector<SubscriberRecordPtr> GetSubscriberRecords(const CommonEventRecord &eventRecord);
 
     void UpdateFreezeInfo(const uid_t &uid, const bool &freezeState, const int64_t &freezeTime = 0);
 
@@ -100,7 +99,7 @@ private:
 
     bool CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId);
 
-    void GetSubscriberRecordsByWantLocked(const Want &want, const bool &isSystemApp, const int32_t &userId,
+    void GetSubscriberRecordsByWantLocked(const CommonEventRecord &eventRecord,
         std::vector<SubscriberRecordPtr> &records);
 
     void GetSubscriberRecordsByEvent(

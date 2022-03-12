@@ -88,13 +88,13 @@ int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &co
 }
 
 std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager::GetSubscriberRecords(
-    const Want &want, const bool &isSystemApp, const int32_t &userId)
+    const CommonEventRecord &eventRecord)
 {
     EVENT_LOGI("enter");
 
     auto records = std::vector<SubscriberRecordPtr>();
 
-    GetSubscriberRecordsByWantLocked(want, isSystemApp, userId, records);
+    GetSubscriberRecordsByWantLocked(eventRecord, records);
 
     return records;
 }
@@ -296,8 +296,8 @@ bool CommonEventSubscriberManager::CheckSubscriberByUserId(const int32_t &subscr
     return false;
 }
 
-void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Want &want, const bool &isSystemApp,
-    const int32_t &userId, std::vector<SubscriberRecordPtr> &records)
+void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const CommonEventRecord &eventRecord,
+    std::vector<SubscriberRecordPtr> &records)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -305,17 +305,24 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Want &
         return;
     }
 
-    auto recordsItem = eventSubscribers_.find(want.GetAction());
+    auto recordsItem = eventSubscribers_.find(eventRecord.commonEventData->GetWant().GetAction());
     if (recordsItem == eventSubscribers_.end()) {
         return;
     }
 
+    bool isSystemApp = (eventRecord.isSystemApp || eventRecord.isSubsystem) && !eventRecord.isProxy;
+
     std::multiset<SubscriberRecordPtr> subscriberRecords = recordsItem->second;
     for (auto it = subscriberRecords.begin(); it != subscriberRecords.end(); it++) {
-        if ((*it)->eventSubscribeInfo->GetMatchingSkills().Match(want)) {
-            if (CheckSubscriberByUserId((*it)->eventSubscribeInfo->GetUserId(), isSystemApp, userId)) {
-                records.emplace_back(*it);
-            }
+        if (!(*it)->eventSubscribeInfo->GetMatchingSkills().Match(eventRecord.commonEventData->GetWant())) {
+            continue;
+        }
+        if (eventRecord.commonEventData->GetWant().GetBundle() != ""
+            && (*it)->eventRecordInfo.bundleName != eventRecord.commonEventData->GetWant().GetBundle()) {
+            continue;
+        }
+        if (CheckSubscriberByUserId((*it)->eventSubscribeInfo->GetUserId(), isSystemApp, eventRecord.userId)) {
+            records.emplace_back(*it);
         }
     }
 }

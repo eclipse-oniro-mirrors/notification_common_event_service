@@ -184,8 +184,7 @@ bool CommonEventControlManager::ProcessUnorderedEvent(const CommonEventRecord &e
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance();
 
     eventRecordPtr->FillCommonEventRecord(eventRecord);
-    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord.commonEventData->GetWant(),
-        eventRecord.isSystemApp, eventRecord.userId);
+    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord);
 
     for (auto vec : eventRecordPtr->receivers) {
         eventRecordPtr->deliveryState.emplace_back(OrderedEventRecord::PENDING);
@@ -258,8 +257,7 @@ bool CommonEventControlManager::ProcessOrderedEvent(
     eventRecordPtr->resultTo = commonEventListener;
     eventRecordPtr->state = OrderedEventRecord::IDLE;
     eventRecordPtr->nextReceiver = 0;
-    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord.commonEventData->GetWant(),
-        eventRecord.isSystemApp, eventRecord.userId);
+    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord);
     for (auto vec : eventRecordPtr->receivers) {
         eventRecordPtr->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     }
