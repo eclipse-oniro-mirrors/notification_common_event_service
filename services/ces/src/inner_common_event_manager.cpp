@@ -93,7 +93,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     eventRecord.isSystemEvent = isSystemEvent;
 
     if (publishInfo.IsSticky()) {
-        if (!ProcessStickyEvent(eventRecord)) {
+        if (!ProcessStickyEvent(eventRecord, callerToken)) {
             return false;
         }
     }
@@ -310,20 +310,21 @@ bool InnerCommonEventManager::Unfreeze(const uid_t &uid)
     return controlPtr_->PublishFreezeCommonEvent(uid);
 }
 
-bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record)
+bool InnerCommonEventManager::ProcessStickyEvent(
+    const CommonEventRecord &record, const Security::AccessToken::AccessTokenID &callerToken)
 {
     EVENT_LOGI("enter");
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
-    bool ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(record.bundleName, permission);
+    ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission);
     // Only subsystems and system apps with permissions can publish sticky common events
-    if ((ret && record.isSystemApp) || (!record.isProxy && record.isSubsystem)) {
+    if ((!result && record.isSystemApp) || (!record.isProxy && record.isSubsystem)) {
         DelayedSingleton<CommonEventStickyManager>::GetInstance()->UpdateStickyEvent(record);
-        ret = true;
+        return true;
     } else {
         EVENT_LOGE("No permission to send a sticky common event from %{public}s (pid = %{public}d, uid = %{public}d)",
             record.bundleName.c_str(), record.pid, record.uid);
+        return false;
     }
-    return ret;
 }
 
 bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
