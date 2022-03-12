@@ -1379,11 +1379,6 @@ void fuzzTestManager::RegisterBundleMgrProxy()
         temp->GetBundleInstaller();
     };
 
-    callFunctionMap_["BundleMgrProxyCanRequestPermission"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        temp->CanRequestPermission(GetStringParam(), GetStringParam(), GetIntParam());
-    };
-
     callFunctionMap_["BundleMgrProxyRequestPermissionFromUser"] = []() {
         std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
         temp->RequestPermissionFromUser(GetStringParam(), GetStringParam(), GetIntParam());
@@ -2604,21 +2599,6 @@ void fuzzTestManager::RegisterAbilityContext()
     callFunctionMap_.emplace("AbilityContextVerifySelfPermission", []() {
         std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
         temp->VerifySelfPermission(GetStringParam());
-    });
-
-    callFunctionMap_.emplace("AbilityContextVerifyCallingPermission", []() {
-        std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
-        temp->VerifyCallingPermission(GetStringParam());
-    });
-
-    callFunctionMap_.emplace("AbilityContextCanRequestPermission", []() {
-        std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
-        temp->CanRequestPermission(GetStringParam());
-    });
-
-    callFunctionMap_.emplace("AbilityContextVerifyCallingOrSelfPermission", []() {
-        std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
-        temp->VerifyCallingOrSelfPermission(GetStringParam());
     });
 
     callFunctionMap_.emplace("AbilityContextVerifyPermission", []() {
