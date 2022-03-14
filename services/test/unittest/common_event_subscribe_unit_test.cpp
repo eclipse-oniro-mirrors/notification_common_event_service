@@ -292,9 +292,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0600, Functi
     // InsertSubscriber
     struct tm curTime {0};
     CommonEventSubscriberManager commonEventSubscriberManager;
-    int result = commonEventSubscriberManager.InsertSubscriber(
+    auto result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListener, curTime, 0, 0, "bundlename");
-    EXPECT_EQ(OHOS::ERR_OK, result);
+    EXPECT_NE(nullptr, result);
 }
 
 /*
@@ -321,9 +321,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0700, Functi
     // InsertSubscriber
     CommonEventSubscriberManager commonEventSubscriberManager;
     struct tm curTime {0};
-    int result =
+    auto result =
         commonEventSubscriberManager.InsertSubscriber(nullptr, commonEventListenerPtr, curTime, 0, 0, "bundlename");
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_EQ(nullptr, result);
 }
 
 /*
@@ -348,8 +348,8 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0800, Functi
     // InsertSubscriber
     struct tm curTime {0};
     CommonEventSubscriberManager commonEventSubscriberManager;
-    int result = commonEventSubscriberManager.InsertSubscriber(subscribeInfoPtr, nullptr, curTime, 0, 0, "bundlename");
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    auto result = commonEventSubscriberManager.InsertSubscriber(subscribeInfoPtr, nullptr, curTime, 0, 0, "bundlename");
+    EXPECT_EQ(nullptr, result);
 }
 
 /*
@@ -379,9 +379,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Functi
     // InsertSubscriber
     struct tm curTime {0};
     CommonEventSubscriberManager commonEventSubscriberManager;
-    int result = commonEventSubscriberManager.InsertSubscriber(
+    auto result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListenerPtr, curTime, 0, 0, "bundlename");
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_EQ(nullptr, result);
 }
 
 /*
