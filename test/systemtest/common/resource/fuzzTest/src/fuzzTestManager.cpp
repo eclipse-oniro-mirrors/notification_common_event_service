@@ -2609,7 +2609,8 @@ void fuzzTestManager::RegisterAbilityContext()
     callFunctionMap_.emplace("AbilityContextRequestPermissionsFromUser", []() {
         std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
         std::vector<std::string> permissions {};
-        temp->RequestPermissionsFromUser(permissions, GetIntParam());
+        std::vector<int> permissionsState(permissions.size(), -1);
+        temp->RequestPermissionsFromUser(permissions, permissionsState, GetIntParam());
     });
 
     callFunctionMap_.emplace("AbilityContextDeleteFile", []() {
