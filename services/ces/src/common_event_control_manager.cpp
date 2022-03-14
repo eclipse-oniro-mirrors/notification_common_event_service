@@ -57,6 +57,18 @@ bool CommonEventControlManager::PublishCommonEvent(
     return ret;
 }
 
+bool CommonEventControlManager::PublishStickyCommonEvent(
+    const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
+{
+    EVENT_LOGI("enter");
+
+    if (!subscriberRecord) {
+        EVENT_LOGE("subscriberRecord is null");
+        return false;
+    }
+    return ProcessUnorderedEvent(eventRecord, subscriberRecord);
+}
+
 bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
 {
     EVENT_LOGI("enter");
@@ -164,7 +176,8 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
     return true;
 }
 
-bool CommonEventControlManager::ProcessUnorderedEvent(const CommonEventRecord &eventRecord)
+bool CommonEventControlManager::ProcessUnorderedEvent(
+    const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
     EVENT_LOGI("enter");
 
@@ -184,7 +197,11 @@ bool CommonEventControlManager::ProcessUnorderedEvent(const CommonEventRecord &e
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance();
 
     eventRecordPtr->FillCommonEventRecord(eventRecord);
-    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord);
+    if (subscriberRecord) {
+        eventRecordPtr->receivers.emplace_back(subscriberRecord);
+    } else {
+        eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord);
+    }
 
     for (auto vec : eventRecordPtr->receivers) {
         eventRecordPtr->deliveryState.emplace_back(OrderedEventRecord::PENDING);

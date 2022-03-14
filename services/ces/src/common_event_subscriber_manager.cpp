@@ -31,32 +31,32 @@ CommonEventSubscriberManager::~CommonEventSubscriberManager()
 {
 }
 
-bool CommonEventSubscriberManager::InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
-    const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime,
-    const EventRecordInfo &eventRecordInfo)
+std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubscriber(
+    const SubscribeInfoPtr &eventSubscribeInfo, const sptr<IRemoteObject> &commonEventListener,
+    const struct tm &recordTime, const EventRecordInfo &eventRecordInfo)
 {
     EVENT_LOGI("enter");
 
     if (eventSubscribeInfo == nullptr) {
         EVENT_LOGE("eventSubscribeInfo is null");
-        return false;
+        return nullptr;
     }
 
     if (commonEventListener == nullptr) {
         EVENT_LOGE("commonEventListener is null");
-        return false;
+        return nullptr;
     }
 
     std::vector<std::string> events = eventSubscribeInfo->GetMatchingSkills().GetEvents();
     if (events.size() <= 0) {
         EVENT_LOGE("No subscribed events");
-        return false;
+        return nullptr;
     }
 
     auto record = std::make_shared<EventSubscriberRecord>();
     if (record == nullptr) {
         EVENT_LOGE("Failed to create EventSubscriberRecord");
-        return false;
+        return nullptr;
     }
 
     record->eventSubscribeInfo = eventSubscribeInfo;
@@ -68,7 +68,11 @@ bool CommonEventSubscriberManager::InsertSubscriber(const SubscribeInfoPtr &even
         commonEventListener->AddDeathRecipient(death_);
     }
 
-    return InsertSubscriberRecordLocked(events, record);
+    if (!InsertSubscriberRecordLocked(events, record)) {
+        return nullptr;
+    }
+
+    return record;
 }
 
 int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener)
