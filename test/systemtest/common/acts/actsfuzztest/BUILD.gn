@@ -87,6 +87,10 @@ ohos_systemtest("ActsFuzzTest") {
     "native_appdatamgr:native_dataability",
     "native_appdatamgr:native_rdb",
   ]
+
+  if (ces_standard_with_graphics) {
+    external_deps += [ "multimodalinput_base:libmmi-client" ]
+  }
 }
 
 group("fuzzTest") {

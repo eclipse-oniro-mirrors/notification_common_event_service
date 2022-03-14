@@ -40,7 +40,7 @@
         "syscap": [
             "SystemCapability.Notification.CommonEvent"
         ],
-        "features": [],
+        "features": ["ces_standard_with_graphics"],
         "adapted_system_type": [
             "standard"
         ],
