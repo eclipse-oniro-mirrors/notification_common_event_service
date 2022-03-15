@@ -679,14 +679,16 @@ bool CommonEventControlManager::CheckSubscriberPermission(
     }
 
     if (permission.names.size() == 1) {
-        ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-            subscriberRecord.eventRecordInfo.bundleName, permission.names[0]);
+        ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(
+            subscriberRecord.eventRecordInfo.callerToken, permission.names[0]);
+        ret = (result == Security::AccessToken::PermissionState::PERMISSION_GRANTED) ? true : false;
         lackPermission = permission.names[0];
     } else {
         if (permission.state == PermissionState::AND) {
             for (auto vec : permission.names) {
-                ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-                    subscriberRecord.eventRecordInfo.bundleName, vec);
+                ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(
+                    subscriberRecord.eventRecordInfo.callerToken, vec);
+                ret = (result == Security::AccessToken::PermissionState::PERMISSION_GRANTED) ? true : false;
                 if (!ret) {
                     lackPermission = vec;
                     break;
@@ -694,8 +696,9 @@ bool CommonEventControlManager::CheckSubscriberPermission(
             }
         } else if (permission.state == PermissionState::OR) {
             for (auto vec : permission.names) {
-                ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-                    subscriberRecord.eventRecordInfo.bundleName, vec);
+                ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(
+                    subscriberRecord.eventRecordInfo.callerToken, vec);
+                ret = (result == Security::AccessToken::PermissionState::PERMISSION_GRANTED) ? true : false;
                 lackPermission += vec + CONNECTOR;
                 if (ret) {
                     break;
@@ -730,8 +733,9 @@ bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::str
         return true;
     }
 
-    ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-        eventRecord.bundleName, subscriberRequiredPermission);
+    ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(
+        eventRecord.callerToken, subscriberRequiredPermission);
+    ret = (result == Security::AccessToken::PermissionState::PERMISSION_GRANTED) ? true : false;
     if (!ret) {
         EVENT_LOGW("No permission to send common event %{public}s "
                     "from %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
@@ -763,8 +767,9 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
     }
 
     for (auto publisherRequiredPermission : publisherRequiredPermissions) {
-        ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-            subscriberRecord.eventRecordInfo.bundleName, publisherRequiredPermission);
+        ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(
+            subscriberRecord.eventRecordInfo.callerToken, publisherRequiredPermission);
+        ret = (result == Security::AccessToken::PermissionState::PERMISSION_GRANTED) ? true : false;
         if (!ret) {
             EVENT_LOGW("No permission to receive common event %{public}s "
                         "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
