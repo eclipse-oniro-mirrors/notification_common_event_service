@@ -404,10 +404,10 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_010, TestSize.Level1)
 
     struct tm curTime {0};
 
-    int result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
+    auto result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         nullptr, commonEventListenerPtr, curTime, 0, 0, "");
 
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_EQ(nullptr, result);
 }
 
 /*
@@ -430,10 +430,10 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_011, TestSize.Level1)
 
     struct tm curTime {0};
 
-    int result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
+    auto result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         commonEventSubscribeInfo, nullptr, curTime, 0, 0, "");
 
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_EQ(nullptr, result);
 }
 
 /*
@@ -459,10 +459,10 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_012, TestSize.Level1)
 
     struct tm curTime {0};
 
-    int result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
+    auto result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         commonEventSubscribeInfo, commonEventListenerSp, curTime, 0, 0, "");
 
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_EQ(nullptr, result);
 }
 
 /*
