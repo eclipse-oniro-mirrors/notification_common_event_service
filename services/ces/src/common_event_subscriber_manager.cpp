@@ -288,8 +288,8 @@ bool CommonEventSubscriberManager::CheckSubscriberByUserId(const int32_t &subscr
         return true;
     }
 
-    if (isSystemApp && (subscriberUserId == userId
-        || (subscriberUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && subscriberUserId <= SUBSCRIBE_USER_SYSTEM_END))) {
+    if (isSystemApp && (subscriberUserId == userId ||
+        (subscriberUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && subscriberUserId <= SUBSCRIBE_USER_SYSTEM_END))) {
         return true;
     }
 

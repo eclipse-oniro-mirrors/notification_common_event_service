@@ -36,8 +36,6 @@ void BMSDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &wptrDeath)
     }
 
     DelayedSingleton<BundleManagerHelper>::GetInstance()->ClearBundleManagerHelper();
-
-    return;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

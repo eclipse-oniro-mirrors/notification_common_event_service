@@ -219,7 +219,7 @@ void CommonEventStickyManager::GetStickyCommonEventRecords(
 {
     if (event.empty()) {
         for (auto record : commonEventRecords_) {
-            if (userId == ALL_USER || record.second->userId == userId) {
+            if ((userId == ALL_USER) || (record.second->userId == userId)) {
                 records.emplace_back(record.second);
             }
         }
@@ -228,7 +228,7 @@ void CommonEventStickyManager::GetStickyCommonEventRecords(
         if (recordItem == commonEventRecords_.end()) {
             return;
         }
-        if (userId == ALL_USER || userId == recordItem->second->userId) {
+        if ((userId == ALL_USER) || (userId == recordItem->second->userId)) {
             records.emplace_back(recordItem->second);
         }
     }

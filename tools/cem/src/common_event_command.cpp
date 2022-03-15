@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -117,7 +117,7 @@ ErrCode CommonEventCommand::RunAsPublishCommand()
 
         EVENT_LOGI("option: %{public}d, optopt: %{public}d, optind: %{public}d", option, optopt, optind);
 
-        if (optind < 0 || optind > argc_) {
+        if ((optind < 0) || (optind > argc_)) {
             return OHOS::ERR_INVALID_VALUE;
         }
 
@@ -267,7 +267,7 @@ ErrCode CommonEventCommand::RunAsPublishCommand()
     }
 
     if (result == OHOS::ERR_OK) {
-        if (resultReceiver_ == "" && action.size() == 0) {
+        if ((resultReceiver_ == "") && (action.size() == 0)) {
             // 'cem publish ...' with no event option
             EVENT_LOGI("'cem publish' with no event option.");
 
@@ -328,7 +328,7 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
 
     EVENT_LOGI("option: %{public}d, optopt: %{public}d, optind: %{public}d", option, optopt, optind);
 
-    if (optind < 0 || optind > argc_) {
+    if ((optind < 0) || (optind > argc_)) {
         return OHOS::ERR_INVALID_VALUE;
     }
 
