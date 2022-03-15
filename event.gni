@@ -34,3 +34,6 @@ ces_innerkits_path = "${interfaces_path}/innerkits/native"
 ces_native_path = "${frameworks_path}/native"
 
 ces_services_path = "${services_path}/ces"
+declare_args() {
+  ces_standard_with_graphics = true
+}
