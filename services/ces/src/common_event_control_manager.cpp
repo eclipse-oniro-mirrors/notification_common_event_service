@@ -200,8 +200,7 @@ bool CommonEventControlManager::ProcessUnorderedEvent(
     if (subscriberRecord) {
         eventRecordPtr->receivers.emplace_back(subscriberRecord);
     } else {
-        eventRecordPtr->receivers = spinstance->GetSubscriberRecords(
-            eventRecord.commonEventData->GetWant(), eventRecord.isSystemApp, eventRecord.userId);
+        eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord);
     }
 
     for (auto vec : eventRecordPtr->receivers) {
@@ -275,8 +274,7 @@ bool CommonEventControlManager::ProcessOrderedEvent(
     eventRecordPtr->resultTo = commonEventListener;
     eventRecordPtr->state = OrderedEventRecord::IDLE;
     eventRecordPtr->nextReceiver = 0;
-    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord.commonEventData->GetWant(),
-        eventRecord.isSystemApp, eventRecord.userId);
+    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord);
     for (auto vec : eventRecordPtr->receivers) {
         eventRecordPtr->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     }
