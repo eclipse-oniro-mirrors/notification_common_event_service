@@ -36,6 +36,7 @@ config("ces_services_public_config") {
 
   include_dirs = [
     "${ces_services_path}/include",
+    "//base/security/access_token/interfaces/innerkits/accesstoken/include",
     "//utils/system/safwk/native/include",
   ]
 }

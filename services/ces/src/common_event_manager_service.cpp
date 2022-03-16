@@ -258,9 +258,10 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
 
     uid_t callingUid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
+    Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
-    bool ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(bundleName, permission);
-    if (!ret) {
+    ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission);
+    if (result) {
         EVENT_LOGE("No permission to get a sticky common event from %{public}s (uid = %{public}d)",
             bundleName.c_str(),
             callingUid);

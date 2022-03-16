@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 
+#include "accesstoken_kit.h"
 #include "common_event_constant.h"
 #include "common_event_record.h"
 #include "common_event_subscribe_info.h"
@@ -31,8 +32,10 @@ struct EventRecordInfo {
     bool isSubsystem;
     bool isSystemApp;
     bool isProxy;
+    Security::AccessToken::AccessTokenID callerToken;
 
-    EventRecordInfo() : pid(0), uid(0), isSubsystem(false), isSystemApp(false), isProxy(false) {}
+    EventRecordInfo() : pid(0), uid(0), isSubsystem(false), isSystemApp(false), isProxy(false), callerToken(0)
+    {}
 };
 
 struct EventSubscriberRecord {
