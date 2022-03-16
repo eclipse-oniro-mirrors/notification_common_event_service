@@ -321,10 +321,6 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         if (!(*it)->eventSubscribeInfo->GetMatchingSkills().Match(eventRecord.commonEventData->GetWant())) {
             continue;
         }
-        if (eventRecord.commonEventData->GetWant().GetBundle() != ""
-            && (*it)->eventRecordInfo.bundleName != eventRecord.commonEventData->GetWant().GetBundle()) {
-            continue;
-        }
         if (CheckSubscriberByUserId((*it)->eventSubscribeInfo->GetUserId(), isSystemApp, eventRecord.userId)) {
             records.emplace_back(*it);
         }
