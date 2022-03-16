@@ -74,6 +74,7 @@ void CemCommandDumpModuleTest::MakeMockObjects()
 
     // set the mock proxy
     auto commonEventPtr = DelayedSingleton<CommonEvent>::GetInstance();
+    commonEventPtr->isProxyValid_ = true;
     commonEventPtr->commonEventProxy_ = proxyPtr_;
 }
 
