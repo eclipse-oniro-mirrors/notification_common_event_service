@@ -55,8 +55,7 @@
                 "ipc",
                 "samgr_standard",
                 "dmsfwk_standard",
-                "napi",
-                "permission_standard"
+                "napi"
             ],
             "third_party": [
                 "libuv",

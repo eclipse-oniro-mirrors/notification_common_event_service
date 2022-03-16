@@ -59,7 +59,6 @@ ohos_systemtest("ActsFuzzTest") {
   deps = [
     "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
-    "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
