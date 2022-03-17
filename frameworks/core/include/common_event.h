@@ -164,6 +164,7 @@ private:
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
 private:
+    bool isProxyValid_ = false;
     std::mutex mutex_;
     std::mutex eventListenersMutex_;
     sptr<ICommonEvent> commonEventProxy_;
