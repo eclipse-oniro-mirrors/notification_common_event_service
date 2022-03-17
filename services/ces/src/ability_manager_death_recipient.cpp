@@ -36,8 +36,6 @@ void AbilityManagerDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &wptrD
     }
 
     DelayedSingleton<AbilityManagerHelper>::GetInstance()->Clear();
-
-    return;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

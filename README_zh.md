@@ -571,7 +571,7 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 
 事件通知子系统
 
-**[notification_ces_standard](https://gitee.com/openharmony/docs/blob/master/zh-cn/readme/%E4%BA%8B%E4%BB%B6%E9%80%9A%E7%9F%A5%E5%AD%90%E7%B3%BB%E7%BB%9F.md )**
+**[notification_ces_standard](https://gitee.com/openharmony/notification_ces_standard/blob/master/README_zh.md)**
 
 [ans部件仓](https://gitee.com/openharmony/notification_ans_standard/blob/master/README_zh.md )
 

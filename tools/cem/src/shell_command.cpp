@@ -93,7 +93,7 @@ std::string ShellCommand::GetUnknownOptionMsg(std::string &unknownOption) const
 {
     std::string result = "";
 
-    if (optind < 0 || optind > argc_) {
+    if ((optind < 0) || (optind > argc_)) {
         return result;
     }
 

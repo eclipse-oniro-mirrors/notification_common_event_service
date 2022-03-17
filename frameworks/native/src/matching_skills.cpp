@@ -35,7 +35,7 @@ MatchingSkills::~MatchingSkills()
 std::string MatchingSkills::GetEntity(int index) const
 {
     std::string entity;
-    if (0 <= index && index < static_cast<int>(entities_.size())) {
+    if ((index >= 0) && (index < static_cast<int>(entities_.size()))) {
         entity = entities_[index];
     }
     return entity;
@@ -110,7 +110,7 @@ bool MatchingSkills::HasEvent(const std::string &event) const
 std::string MatchingSkills::GetScheme(int index) const
 {
     std::string schemes;
-    if (0 <= index && index < static_cast<int>(schemes_.size())) {
+    if ((index >= 0) && (index < static_cast<int>(schemes_.size()))) {
         schemes = schemes_[index];
     }
     return schemes;
