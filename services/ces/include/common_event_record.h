@@ -16,7 +16,6 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_RECORD_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_RECORD_H
 
-#include "accesstoken_kit.h"
 #include "common_event_constant.h"
 #include "common_event_data.h"
 #include "common_event_publish_info.h"
@@ -35,7 +34,6 @@ struct CommonEventRecord {
     bool isSystemApp;
     bool isProxy;
     bool isSystemEvent;
-    Security::AccessToken::AccessTokenID callerToken;
 
     CommonEventRecord()
         : commonEventData(nullptr),
@@ -46,8 +44,7 @@ struct CommonEventRecord {
           isSubsystem(false),
           isSystemApp(false),
           isProxy(false),
-          isSystemEvent(false),
-          callerToken(0)
+          isSystemEvent(false)
     {}
 };
 }  // namespace EventFwk

@@ -52,7 +52,7 @@ public:
     bool Unfreeze(const uid_t &uid);
 
 private:
-    bool ProcessStickyEvent(const CommonEventRecord &record);
+    bool ProcessStickyEvent(const CommonEventRecord &record, const Security::AccessToken::AccessTokenID &callerToken);
     void PublishEventToStaticSubscribers(const CommonEventData &data, const sptr<IRemoteObject> &service);
 
     bool PublishStickyEvent(const std::shared_ptr<CommonEventSubscribeInfo> &sp,
