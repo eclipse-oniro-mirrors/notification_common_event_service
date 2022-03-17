@@ -88,7 +88,7 @@ ohos_systemtest("ActsFuzzTest") {
   ]
 
   if (ces_standard_with_graphics) {
-    external_deps += [ "multimodalinput_base:libmmi-client" ]
+    external_deps += [ "input:libmmi-client" ]
   }
 }
 
