@@ -635,33 +635,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 }
 
 /*
- * @tc.number: CommonEventPublishPermissionEventUnitTest_1400
- * @tc.name: test  InnerCommonEventManager permission
- * @tc.desc:  function CheckPermission return true
- */
-HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1400,
-    Function | MediumTest | Level1)
-{
-    GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1400, TestSize.Level1";
-
-    InnerCommonEventManager inner;
-    struct tm curTime;
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
-
-    Want want;
-    want.SetAction("1234");
-    CommonEventData data;
-    data.SetWant(want);
-    CommonEventPublishInfo publishInfo;
-    publishInfo.SetOrdered(true);
-    publishInfo.SetSticky(true);
-    bool ret =
-        inner.PublishCommonEvent(data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
-    EXPECT_EQ(true, ret);
-}
-
-/*
  * @tc.number: CommonEventPublishPermissionEventUnitTest_1500
  * @tc.name: test  InnerCommonEventManager permission
  * @tc.desc: function CheckPermission return false
