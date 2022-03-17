@@ -91,9 +91,9 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     eventRecord.isSystemApp = isSystemApp;
     eventRecord.isProxy = isProxy;
     eventRecord.isSystemEvent = isSystemEvent;
-    eventRecord.callerToken = callerToken;
+
     if (publishInfo.IsSticky()) {
-        if (!ProcessStickyEvent(eventRecord)) {
+        if (!ProcessStickyEvent(eventRecord, callerToken)) {
             return false;
         }
     }
@@ -207,7 +207,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     eventRecordInfo.isSubsystem = isSubsystem;
     eventRecordInfo.isSystemApp = isSystemApp;
     eventRecordInfo.isProxy = isProxy;
-    eventRecordInfo.callerToken = callerToken;
+
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
 
@@ -310,11 +310,12 @@ bool InnerCommonEventManager::Unfreeze(const uid_t &uid)
     return controlPtr_->PublishFreezeCommonEvent(uid);
 }
 
-bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record)
+bool InnerCommonEventManager::ProcessStickyEvent(
+    const CommonEventRecord &record, const Security::AccessToken::AccessTokenID &callerToken)
 {
     EVENT_LOGI("enter");
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
-    ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(record.callerToken, permission);
+    ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission);
     // Only subsystems and system apps with permissions can publish sticky common events
     if ((!result && record.isSystemApp) || (!record.isProxy && record.isSubsystem)) {
         DelayedSingleton<CommonEventStickyManager>::GetInstance()->UpdateStickyEvent(record);

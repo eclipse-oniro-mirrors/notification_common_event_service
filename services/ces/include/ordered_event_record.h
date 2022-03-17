@@ -70,7 +70,6 @@ struct OrderedEventRecord : public CommonEventRecord {
         bundleName = commonEventRecord.bundleName;
         isSystemApp = commonEventRecord.isSystemApp;
         isSystemEvent = commonEventRecord.isSystemEvent;
-        callerToken = commonEventRecord.callerToken;
     }
 };
 }  // namespace EventFwk
