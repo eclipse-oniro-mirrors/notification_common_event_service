@@ -110,7 +110,7 @@ bool CommonEventSubscribeInfo::Marshalling(Parcel &parcel) const
     }
 
     // write priority
-    if (!parcel.WriteUint32(priority_)) {
+    if (!parcel.WriteInt32(priority_)) {
         EVENT_LOGE("Failed to write priority");
         return false;
     }
@@ -148,7 +148,7 @@ bool CommonEventSubscribeInfo::ReadFromParcel(Parcel &parcel)
     permission_ = Str16ToStr8(parcel.ReadString16());
 
     // read priority
-    priority_ = parcel.ReadUint32();
+    priority_ = parcel.ReadInt32();
 
     // read userId
     userId_ = parcel.ReadInt32();
