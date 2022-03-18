@@ -674,18 +674,14 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("IsOrderedCommonEvent napi_create_async_work end");
             AsyncCallbackInfoOrderedCommonEvent *asyncCallbackInfo = (AsyncCallbackInfoOrderedCommonEvent *)data;
-
-            napi_value result = nullptr;
-            napi_get_boolean(env, asyncCallbackInfo->isOrdered, &result);
-
-            ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
-
-            if (asyncCallbackInfo->info.callback != nullptr) {
-                napi_delete_reference(env, asyncCallbackInfo->info.callback);
-            }
-
-            napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
             if (asyncCallbackInfo) {
+                napi_value result = nullptr;
+                napi_get_boolean(env, asyncCallbackInfo->isOrdered, &result);
+                ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
+                if (asyncCallbackInfo->info.callback != nullptr) {
+                    napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                }
+                napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
@@ -1098,17 +1094,14 @@ napi_value GetData(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("GetData napi_create_async_work end");
             AsyncCallbackInfoGetData *asyncCallbackInfo = (AsyncCallbackInfoGetData *)data;
-
-            napi_value result = nullptr;
-            napi_create_string_utf8(env, asyncCallbackInfo->data.c_str(), NAPI_AUTO_LENGTH, &result);
-            ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
-
-            if (asyncCallbackInfo->info.callback != nullptr) {
-                napi_delete_reference(env, asyncCallbackInfo->info.callback);
-            }
-
-            napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
             if (asyncCallbackInfo) {
+                napi_value result = nullptr;
+                napi_create_string_utf8(env, asyncCallbackInfo->data.c_str(), NAPI_AUTO_LENGTH, &result);
+                ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
+                if (asyncCallbackInfo->info.callback != nullptr) {
+                    napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                }
+                napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }

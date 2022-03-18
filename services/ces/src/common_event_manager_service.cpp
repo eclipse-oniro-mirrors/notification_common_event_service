@@ -212,7 +212,7 @@ bool CommonEventManagerService::SubscribeCommonEvent(
         EVENT_LOGE("Failed to GetSystemCurrentTime");
         return false;
     }
-    uid_t callingUid = IPCSkeleton::GetCallingUid();
+    auto callingUid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
 
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
@@ -256,7 +256,7 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
         return false;
     }
 
-    uid_t callingUid = IPCSkeleton::GetCallingUid();
+    auto callingUid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(bundleName, permission);
