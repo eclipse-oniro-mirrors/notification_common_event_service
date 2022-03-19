@@ -30,7 +30,7 @@ struct HistorySubscriberRecord {
     std::string deviceId;
     bool isFreeze;
     int64_t freezeTime;
-    HistorySubscriberRecord() : priority(0), isFreeze(false), freezeTime(0)
+    HistorySubscriberRecord() : priority(0), userId(UNDEFINED_USER), isFreeze(false), freezeTime(0)
     {}
 };
 

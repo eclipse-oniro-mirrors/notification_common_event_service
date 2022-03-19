@@ -25,7 +25,7 @@ namespace EventFwk {
 struct CommonEventRecord {
     std::shared_ptr<CommonEventData> commonEventData;
     std::shared_ptr<CommonEventPublishInfo> publishInfo;
-    struct tm recordTime;
+    struct tm recordTime {};
     pid_t pid;
     uid_t uid;
     int32_t userId;
