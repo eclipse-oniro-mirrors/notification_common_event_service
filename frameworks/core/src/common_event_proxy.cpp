@@ -54,9 +54,20 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
         return false;
     }
 
-    if (!data.WriteRemoteObject(commonEventListener)) {
-        EVENT_LOGE("Failed to write parcelable commonEventListener");
-        return false;
+    if (commonEventListener) {
+        if (!data.WriteBool(true)) {
+            EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
+            return false;
+        }
+        if (!data.WriteRemoteObject(commonEventListener)) {
+            EVENT_LOGE("Failed to write parcelable commonEventListener");
+            return false;
+        }
+    } else {
+        if (!data.WriteBool(false)) {
+            EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
+            return false;
+        }
     }
 
     if (!data.WriteInt32(userId)) {
@@ -96,9 +107,20 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
         return false;
     }
 
-    if (!data.WriteRemoteObject(commonEventListener)) {
-        EVENT_LOGE("Failed to write parcelable commonEventListener");
-        return false;
+    if (commonEventListener) {
+        if (!data.WriteBool(true)) {
+            EVENT_LOGE("Failed to write parcelable hasLastSubscriber");
+            return false;
+        }
+        if (!data.WriteRemoteObject(commonEventListener)) {
+            EVENT_LOGE("Failed to write parcelable commonEventListener");
+            return false;
+        }
+    } else {
+        if (!data.WriteBool(false)) {
+            EVENT_LOGE("Failed to write parcelable hasLastSubscriber");
+            return false;
+        }
     }
 
     if (!data.WriteInt32(uid)) {

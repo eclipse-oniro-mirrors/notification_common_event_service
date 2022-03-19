@@ -37,7 +37,11 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         case static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT): {
             std::unique_ptr<CommonEventData> event(data.ReadParcelable<CommonEventData>());
             std::unique_ptr<CommonEventPublishInfo> publishinfo(data.ReadParcelable<CommonEventPublishInfo>());
-            sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
+            sptr<IRemoteObject> commonEventListener = nullptr;
+            bool hasLastSubscriber = data.ReadBool();
+            if (hasLastSubscriber) {
+                sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
+            }
             int32_t userId = data.ReadInt32();
             if (!event) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventData>");
@@ -58,7 +62,11 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         case static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT2): {
             std::unique_ptr<CommonEventData> event(data.ReadParcelable<CommonEventData>());
             std::unique_ptr<CommonEventPublishInfo> publishinfo(data.ReadParcelable<CommonEventPublishInfo>());
-            sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
+            sptr<IRemoteObject> commonEventListener = nullptr;
+            bool hasLastSubscriber = data.ReadBool();
+            if (hasLastSubscriber) {
+                sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
+            }
             int uid = data.ReadInt32();
             int32_t userId = data.ReadInt32();
             if (!event) {
