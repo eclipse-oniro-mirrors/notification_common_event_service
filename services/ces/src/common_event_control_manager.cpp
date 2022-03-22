@@ -390,7 +390,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         return false;
     }
 
-    auto receiverNum = eventRecordPtr->receivers.size();
+    int receiverNum = static_cast<int>(eventRecordPtr->receivers.size());
     if ((index < 0) || (index >= receiverNum)) {
         EVENT_LOGE("Invalid index (= %{public}d)", index);
         return false;
@@ -450,7 +450,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 
         sp = orderedEventQueue_.front();
         bool forceReceive = false;
-        auto numReceivers = sp->receivers.size();
+        int numReceivers = static_cast<int>(sp->receivers.size());
         int64_t nowSysTime = SystemTime::GetNowSysTime();
 
         if (sp->dispatchTime > 0) {
