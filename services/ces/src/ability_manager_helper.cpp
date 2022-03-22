@@ -63,6 +63,7 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
         deathRecipient_ = (new (std::nothrow) AbilityManagerDeathRecipient());
         if (deathRecipient_ == nullptr) {
             EVENT_LOGE("Failed to create AbilityManagerDeathRecipient");
+            return false;
         }
         if (!abilityMgr_->AsObject()->AddDeathRecipient(deathRecipient_)) {
             EVENT_LOGW("Failed to add AbilityManagerDeathRecipient");

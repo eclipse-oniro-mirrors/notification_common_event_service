@@ -372,10 +372,8 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
                 napi_delete_reference(env, asyncCallbackInfo->subscribeInfo);
             }
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -562,10 +560,8 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -788,10 +784,8 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -891,10 +885,8 @@ napi_value GetCode(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1000,10 +992,8 @@ napi_value SetCode(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1219,10 +1209,8 @@ napi_value SetData(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1342,10 +1330,8 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1442,10 +1428,8 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1543,10 +1527,8 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1647,10 +1629,8 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1747,10 +1727,8 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -2172,10 +2150,8 @@ napi_value Publish(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -2316,10 +2292,8 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
             }
 
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
-            if (asyncCallbackInfo) {
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -2467,11 +2441,9 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
 
             NapiDeleteSubscribe(env, asyncCallbackInfo->subscriber);
 
-            if (asyncCallbackInfo) {
-                EVENT_LOGI("delete asyncCallbackInfo");
-                delete asyncCallbackInfo;
-                asyncCallbackInfo = nullptr;
-            }
+            EVENT_LOGI("delete asyncCallbackInfo");
+            delete asyncCallbackInfo;
+            asyncCallbackInfo = nullptr;
         },
         (void *)asynccallback,
         &asynccallback->asyncWork);

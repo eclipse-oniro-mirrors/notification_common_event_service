@@ -14,6 +14,7 @@
  */
 
 #include "common_event_proxy.h"
+#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "string_ex.h"
 
@@ -232,6 +233,7 @@ bool CommonEventProxy::DumpState(const std::string &event, const int32_t &userId
     bool ret = SendRequest(ICommonEvent::Message::CES_DUMP_STATE, data, reply);
     if (ret) {
         int32_t stackNum = reply.ReadInt32();
+        stackNum = stackNum > MAX_HISTORY_SIZE ? MAX_HISTORY_SIZE : stackNum;
         for (int i = 0; i < stackNum; i++) {
             std::string stack = Str16ToStr8(reply.ReadString16());
             state.emplace_back(stack);
