@@ -24,7 +24,6 @@
 #include "ability_event_interface.h"
 #include "ability_info.h"
 #include "ability_handler.h"
-#include "ability_handler.h"
 #include "ability_manager.h"
 #include "ability_manager_interface.h"
 #include "async_common_event_result.h"
