@@ -352,6 +352,10 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("CreateSubscriber napi_create_async_work end");
             AsyncCallbackInfoCreate *asyncCallbackInfo = (AsyncCallbackInfoCreate *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             napi_value constructor = nullptr;
             napi_value subscribeInfoRefValue = nullptr;
@@ -550,6 +554,10 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("GetSubscribeInfo napi_create_async_work end");
             AsyncCallbackInfoSubscribeInfo *asyncCallbackInfo = (AsyncCallbackInfoSubscribeInfo *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             napi_value result = nullptr;
             napi_create_object(env, &result);
@@ -776,6 +784,10 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("isStickyCommonEvent napi_create_async_work end");
             AsyncCallbackInfoStickyCommonEvent *asyncCallbackInfo = (AsyncCallbackInfoStickyCommonEvent *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             napi_value result = nullptr;
             napi_get_boolean(env, asyncCallbackInfo->isSticky, &result);
@@ -877,6 +889,10 @@ napi_value GetCode(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("GetCode napi_create_async_work end");
             AsyncCallbackInfoGetCode *asyncCallbackInfo = (AsyncCallbackInfoGetCode *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             napi_value result = nullptr;
             napi_create_int32(env, asyncCallbackInfo->code, &result);
@@ -986,6 +1002,10 @@ napi_value SetCode(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("SetCode napi_create_async_work end");
             AsyncCallbackInfoSetCode *asyncCallbackInfo = (AsyncCallbackInfoSetCode *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
 
@@ -1203,6 +1223,10 @@ napi_value SetData(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("SetData napi_create_async_work end");
             AsyncCallbackInfoSetData *asyncCallbackInfo = (AsyncCallbackInfoSetData *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
 
@@ -1324,6 +1348,10 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("SetCodeAndData napi_create_async_work end");
             AsyncCallbackInfoSetCodeAndData *asyncCallbackInfo = (AsyncCallbackInfoSetCodeAndData *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
 
@@ -1422,6 +1450,10 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("Abort napi_create_async_work end");
             AsyncCallbackInfoAbort *asyncCallbackInfo = (AsyncCallbackInfoAbort *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
 
@@ -1521,6 +1553,10 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("ClearAbort napi_create_async_work end");
             AsyncCallbackInfoClearAbort *asyncCallbackInfo = (AsyncCallbackInfoClearAbort *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
 
@@ -1621,6 +1657,10 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("GetAbort napi_create_async_work end");
             AsyncCallbackInfoGetAbort *asyncCallbackInfo = (AsyncCallbackInfoGetAbort *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             napi_value result = nullptr;
             napi_get_boolean(env, asyncCallbackInfo->abortEvent, &result);
@@ -1721,6 +1761,10 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("Finish napi_create_async_work end");
             AsyncCallbackInfoFinish *asyncCallbackInfo = (AsyncCallbackInfoFinish *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
 
@@ -1828,6 +1872,10 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("Subscribe napi_create_async_work end");
             AsyncCallbackInfoSubscribe *asyncCallbackInfo = (AsyncCallbackInfoSubscribe *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
             if (asyncCallbackInfo->errorCode == NO_ERROR) {
                 std::lock_guard<std::mutex> lock(subscriberInsMutex);
@@ -2144,6 +2192,10 @@ napi_value Publish(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
 
@@ -2286,6 +2338,10 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
 
@@ -2428,6 +2484,10 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("Unsubscribe napi_create_async_work end");
             AsyncCallbackInfoUnsubscribe *asyncCallbackInfo = (AsyncCallbackInfoUnsubscribe *)data;
+            if (!asyncCallbackInfo) {
+                EVENT_LOGE("asyncCallbackInfo is null");
+                return;
+            }
 
             if (asyncCallbackInfo->argc >= UNSUBSCRIBE_MAX_PARA) {
                 napi_value result = nullptr;
