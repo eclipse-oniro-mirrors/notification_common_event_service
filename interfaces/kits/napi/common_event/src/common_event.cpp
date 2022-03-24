@@ -106,7 +106,8 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
         return;
     }
     CommonEventDataWorker *commonEventDataWorkerData = (CommonEventDataWorker *)work->data;
-    if (commonEventDataWorkerData == nullptr) {
+    if (commonEventDataWorkerData == nullptr || commonEventDataWorkerData->ref == nullptr) {
+        EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData or ref is null");
         delete work;
         work = nullptr;
         return;
@@ -127,6 +128,7 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
 
     napi_value callback = nullptr;
     napi_value resultout = nullptr;
+    EVENT_LOGI("OnReceiveEvent ref = %{public}p", commonEventDataWorkerData->ref);
     napi_get_reference_value(commonEventDataWorkerData->env, commonEventDataWorkerData->ref, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
