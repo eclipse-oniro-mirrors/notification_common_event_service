@@ -26,7 +26,6 @@
 #include "common_event_manager_service.h"
 #undef private
 #undef protected
-#include "common_event_manager.h"
 #include "datetime_ex.h"
 #include "mock_bundle_manager.h"
 #include "singleton.h"
