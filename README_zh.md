@@ -441,6 +441,8 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_TIMEZONE_CHANGED                                | usual.event.TIMEZONE_CHANGED                                | 无                                             |
 | COMMON_EVENT_CLOSE_SYSTEM_DIALOGS                            | usual.event.CLOSE_SYSTEM_DIALOGS                            | 无                                             |
 | COMMON_EVENT_PACKAGE_ADDED                                   | usual.event.PACKAGE_ADDED                                   | 无                                             |
+| COMMON_EVENT_SANDBOX_PACKAGE_ADDED                           | usual.event.SANDBOX_PACKAGE_ADDED                           | 无                                             |
+| COMMON_EVENT_SANDBOX_PACKAGE_REMOVED                         | usual.event.SANDBOX_PACKAGE_REMOVED                         | 无                                             |
 | COMMON_EVENT_PACKAGE_REPLACED                                | usual.event.PACKAGE_REPLACED                                | 无                                             |
 | COMMON_EVENT_MY_PACKAGE_REPLACED                             | usual.event.MY_PACKAGE_REPLACED                             | 无                                             |
 | COMMON_EVENT_PACKAGE_REMOVED                                 | usual.event.PACKAGE_REMOVED                                 | 无                                             |

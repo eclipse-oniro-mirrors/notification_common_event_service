@@ -242,6 +242,17 @@ const std::string CommonEventSupport::COMMON_EVENT_LOCALE_CHANGED = "usual.event
 const std::string CommonEventSupport::COMMON_EVENT_MANAGE_PACKAGE_STORAGE = "usual.event.MANAGE_PACKAGE_STORAGE";
 
 /**
+ * Indicate the action of a common event that one sandbox packag is installed.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SANDBOX_PACKAGE_ADDED = "usual.event.SANDBOX_PACKAGE_ADDED";
+
+/**
+ * Indicate the action of a common event that one sandbox packag is uninstalled.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SANDBOX_PACKAGE_REMOVED = "usual.event.SANDBOX_PACKAGE_REMOVED";
+/**
  * Indicate the action of a common event that the system is in driving mode.
  * This is a protected common event, which can be sent only by the system.
  */
