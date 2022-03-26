@@ -2637,6 +2637,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
                         delete asyncCallbackInfo;
                         asyncCallbackInfo = nullptr;
                     }
+                    CommonEventManager::UnSubscribeCommonEvent(subscriberInstance.first);
                     subscriberInstances.erase(subscriberInstance.first);
                     break;
                 }
