@@ -17,10 +17,10 @@ group("fuzztest") {
   testonly = true
 
   deps = [
-    "GetStickyCommonEvent_fuzzer:GetStickyCommonEventFuzzTest",
-    "PublishCommonEventAsUser_fuzzer:PublishCommonEventAsUserFuzzTest",
-    "PublishCommonEvent_fuzzer:PublishCommonEventFuzzTest",
-    "SubscribeCommonEvent_fuzzer:SubscribeCommonEventFuzzTest",
-    "UnSubscribeCommonEvent_fuzzer:UnSubscribeCommonEventFuzzTest",
+    # "GetStickyCommonEvent_fuzzer:GetStickyCommonEventFuzzTest",
+    # "PublishCommonEventAsUser_fuzzer:PublishCommonEventAsUserFuzzTest",
+    # "PublishCommonEvent_fuzzer:PublishCommonEventFuzzTest",
+    # "SubscribeCommonEvent_fuzzer:SubscribeCommonEventFuzzTest",
+    # "UnSubscribeCommonEvent_fuzzer:UnSubscribeCommonEventFuzzTest",
   ]
 }
