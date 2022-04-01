@@ -423,7 +423,7 @@ void CommonEventDumpTest::dumpInfoCount(const std::vector<std::string> &state, i
                 continue;
             }
         }
-        if (isPending == false && isHistory == false) {
+        if (!isPending && !isHistory) {
             auto pos = vec.find("Subscribers:");
             if (pos != string::npos) {
                 isSubscribers = true;

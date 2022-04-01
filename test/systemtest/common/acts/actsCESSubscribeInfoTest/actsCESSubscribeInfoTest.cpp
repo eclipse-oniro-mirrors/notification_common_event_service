@@ -638,7 +638,7 @@ HWTEST_F(ActsCESSubscribeInfoTest, CES_SubscribeInfo_GetMatchingSkills_0100, Fun
     for (int i = 1; i <= stLevel_.CESLevel; i++) {
         matchingSkills.AddEvent(eventName);
         CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-        if (subscribeInfo.GetMatchingSkills().HasEvent(eventName) == false) {
+        if (!subscribeInfo.GetMatchingSkills().HasEvent(eventName)) {
             GTEST_LOG_(INFO) << "CES_SubscribeInfo_GetMatchingSkills_0100 failed ,frequency: " << i;
             result = false;
             break;

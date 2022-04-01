@@ -26,8 +26,6 @@ namespace OHOS {
 namespace EventFwk {
 class CommonEvent {
 public:
-    enum SubscribeState { ALREADY_SUBSCRIBED = 0, INITIAL_SUBSCRIPTION, SUBSCRIBE_FAILED };
-
     /**
      * Publish an ordered, sticky, or standard common event.
      *
@@ -150,7 +148,7 @@ private:
      * @param  commonEventListener  the common event listener
      * @return Get common event listener success or not
      */
-    int CreateCommonEventListener(
+    uint8_t CreateCommonEventListener(
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
     /**
@@ -171,6 +169,9 @@ private:
     std::map<std::shared_ptr<CommonEventSubscriber>, sptr<CommonEventListener>> eventListeners_;
     sptr<IRemoteObject::DeathRecipient> recipient_;
     const unsigned int SUBSCRIBER_MAX_SIZE = 200;
+    static const uint8_t ALREADY_SUBSCRIBED = 0;
+    static const uint8_t INITIAL_SUBSCRIPTION = 1;
+    static const uint8_t SUBSCRIBE_FAILED = 2;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -79,7 +79,7 @@ bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const Commo
         return false;
     }
 
-    if ((publishInfo.IsOrdered() == false) && (subscriber != nullptr)) {
+    if (!publishInfo.IsOrdered() && (subscriber != nullptr)) {
         EVENT_LOGE("When publishing unordered events, the subscriber object is not required.");
         return false;
     }
@@ -118,11 +118,11 @@ bool CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscrib
     }
 
     sptr<IRemoteObject> commonEventListener = nullptr;
-    int subscribeState_ = CreateCommonEventListener(subscriber, commonEventListener);
-    if (subscribeState_ == INITIAL_SUBSCRIPTION) {
+    uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
+    if (subscribeState == INITIAL_SUBSCRIPTION) {
         EVENT_LOGD("before SubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
         return commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
-    } else if (subscribeState_ == ALREADY_SUBSCRIBED) {
+    } else if (subscribeState == ALREADY_SUBSCRIBED) {
         return true;
     } else {
         return false;
@@ -279,7 +279,7 @@ bool CommonEvent::GetCommonEventProxy()
     return true;
 }
 
-int CommonEvent::CreateCommonEventListener(
+uint8_t CommonEvent::CreateCommonEventListener(
     const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener)
 {
     if (subscriber == nullptr) {
