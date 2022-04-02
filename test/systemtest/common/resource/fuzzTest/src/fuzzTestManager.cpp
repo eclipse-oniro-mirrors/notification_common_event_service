@@ -1101,47 +1101,6 @@ void fuzzTestManager::RegisterEventRunnerNativeImplement()
     };
 }
 
-// RegisterAbilityManager
-void fuzzTestManager::RegisterAbilityManager()
-{
-    callFunctionMap_["AbilityManagerStartAbility"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->StartAbility(*(GetParamWant().get()), GetIntParam());
-    };
-    callFunctionMap_["AbilityManagerMoveMissionToTop"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->MoveMissionToTop(GetIntParam());
-    };
-    callFunctionMap_["AbilityManagerGetAllStackInfo"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->GetAllStackInfo();
-    };
-    callFunctionMap_["AbilityManagerQueryRecentAbilityMissionInfo"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->QueryRecentAbilityMissionInfo(GetIntParam(), GetIntParam());
-    };
-    callFunctionMap_["AbilityManagerQueryRunningAbilityMissionInfo"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->QueryRunningAbilityMissionInfo(GetIntParam());
-    };
-    callFunctionMap_["AbilityManagerQueryRunningAbilityMissionInfo2"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->QueryRunningAbilityMissionInfo(GetIntParam());
-    };
-    callFunctionMap_["AbilityManagerRemoveMissions"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->RemoveMissions(GetIntVectorParam());
-    };
-    callFunctionMap_["AbilityManagerClearUpApplicationData"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->ClearUpApplicationData(GetStringParam());
-    };
-    callFunctionMap_["AbilityManagerGetAllRunningProcesses"] = []() {
-        std::shared_ptr<AppExecFwk::AbilityManager> temp = GetParamAbilityManager();
-        temp->GetAllRunningProcesses();
-    };
-}
-
 // RegisterWantParams
 void fuzzTestManager::RegisterWantParams()
 {
@@ -2680,7 +2639,6 @@ fuzzTestManager::fuzzTestManager()
     RegisterFileDescriptorListener();
     RegisterInnerEvent();
     RegisterEventRunnerNativeImplement();
-    RegisterAbilityManager();
     RegisterWantParams();
     RegisterWant();
     RegisterElementName();
