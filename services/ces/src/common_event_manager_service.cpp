@@ -181,7 +181,6 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
     }
 
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
-    EVENT_LOGD("callerToken : %{public}u", callerToken);
 
     std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
         innerCommonEventManager_,
@@ -216,7 +215,6 @@ bool CommonEventManagerService::SubscribeCommonEvent(
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
 
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
-    EVENT_LOGD("callerToken : %{public}u", callerToken);
 
     std::function<void()> SubscribeCommonEventFunc = std::bind(&InnerCommonEventManager::SubscribeCommonEvent,
         innerCommonEventManager_,
