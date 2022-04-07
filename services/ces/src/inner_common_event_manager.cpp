@@ -15,8 +15,6 @@
 
 #include "inner_common_event_manager.h"
 
-#include "ability_manager_helper.h"
-#include "bundle_manager_helper.h"
 #include "common_event_constant.h"
 #include "common_event_record.h"
 #include "common_event_sticky_manager.h"
@@ -32,9 +30,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-constexpr static char JSON_KEY_COMMON_EVENTS[] = "commonEvents";
-constexpr static char JSON_KEY_EVENTS[] = "events";
-
 InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_shared<CommonEventControlManager>()),
     staticSubscriberManager_(std::make_shared<StaticSubscriberManager>())
 {}
@@ -127,48 +122,7 @@ void InnerCommonEventManager::PublishEventToStaticSubscribers(const CommonEventD
         return;
     }
 
-    std::vector<AppExecFwk::ExtensionAbilityInfo> extensions;
-    // get all static subscriber type extensions
-    if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(extensions)) {
-        EVENT_LOGE("QueryExtensionByWant failed");
-        return;
-    }
-    // filter legel extensions and connect them
-    for (auto extension : extensions) {
-        if (!staticSubscriberManager_->IsStaticSubscriber(extension.bundleName)) {
-            continue;
-        }
-        EVENT_LOGI("find legel extension,bundlename = %{public}s", extension.bundleName.c_str());
-        std::vector<std::string> profileInfos;
-        if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->GetResConfigFile(extension, profileInfos)) {
-            EVENT_LOGE("GetProfile failed");
-            return;
-        }
-
-        for (auto profile : profileInfos) {
-            nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
-            nlohmann::json commonEventObj = jsonObj[JSON_KEY_COMMON_EVENTS];
-            if (commonEventObj.empty()) {
-                EVENT_LOGW("invalid common event obj size");
-                continue;
-            }
-            nlohmann::json eventsObj = commonEventObj[0][JSON_KEY_EVENTS];
-            if (eventsObj.empty()) {
-                EVENT_LOGW("invalid event obj size");
-                continue;
-            }
-            for (auto e : eventsObj) {
-                if (e.get<std::string>() == data.GetWant().GetAction()) {
-                    Want want;
-                    want.SetElementName(extension.bundleName, extension.name);
-                    EVENT_LOGI("Ready to connect to extension %{public}s in bundle %{public}s",
-                        extension.name.c_str(), extension.bundleName.c_str());
-                    DelayedSingleton<AbilityManagerHelper>::GetInstance()->ConnectAbility(want, data, service);
-                    break;
-                }
-            }
-        }
-    }
+    staticSubscriberManager_->PublishCommonEvent(data, service);
 }
 
 bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
