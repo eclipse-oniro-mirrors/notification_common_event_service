@@ -28,6 +28,11 @@ CommonEventStub::~CommonEventStub()
 
 int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
+    if (data.ReadInterfaceToken() != GetDescriptor()) {
+        EVENT_LOGE("local descriptor is not equal to remote");
+        return ERR_TRANSACTION_FAILED;
+    }
+
     switch (code) {
         case static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT): {
             std::unique_ptr<CommonEventData> event(data.ReadParcelable<CommonEventData>());
