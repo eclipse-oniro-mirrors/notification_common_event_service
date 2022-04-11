@@ -16,9 +16,14 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_STATIC_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_STATIC_SUBSCRIBER_MANAGER_H
 
+#include <map>
 #include <string>
 #include <vector>
 
+#include "nlohmann/json.hpp"
+
+#include "bundle_manager_helper.h"
+#include "common_event_data.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -27,20 +32,25 @@ class StaticSubscriberManager : public DelayedSingleton<StaticSubscriberManager>
 public:
     StaticSubscriberManager();
 
-    virtual ~StaticSubscriberManager() override;
+    virtual ~StaticSubscriberManager();
 
-    /**
-     * Check whether the app is static subscriber.
-     * @param bundleName the bundleName of a app.
-     * @return whether the app is static subscriber or not.
-     */
-    bool IsStaticSubscriber(const std::string &bundleName);
+    void PublishCommonEvent(const CommonEventData &data, const sptr<IRemoteObject> &service);
 
 private:
-    bool Init();
+    bool InitAllowList();
+    bool InitValidSubscribers();
+    void UpdateSubscriber(const CommonEventData &data);
+    nlohmann::json ParseEvents(const std::string &profile);
+    void AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension);
+    void AddToValidSubscribers(const std::string &eventName, const AppExecFwk::ExtensionAbilityInfo &extension);
+    void AddSubscriberWithBundleName(const std::string &bundleName);
+    void RemoveSubscriberWithBundleName(const std::string &bundleName);
 
     std::vector<std::string> subscriberList_;
-    bool isInit_ = false;
+    std::map<std::string, std::vector<AppExecFwk::ExtensionAbilityInfo>> validSubscribers_;
+    bool hasInitAllowList_ = false;
+    bool hasInitValidSubscribers_ = false;
+    std::mutex subscriberMutex_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
