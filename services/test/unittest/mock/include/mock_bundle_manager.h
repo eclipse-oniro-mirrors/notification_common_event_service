@@ -692,13 +692,12 @@ public:
     /**
      * @brief Obtains the DistributedBundleInfo based on a given bundle name and networkId.
      * @param networkId Indicates the networkId of remote device.
-     * @param userId Indicates the user ID.
      * @param bundleName Indicates the application bundle name to be queried.
      * @param distributedBundleInfo Indicates the obtained DistributedBundleInfo object.
      * @return Returns true if the DistributedBundleInfo is successfully obtained; returns false otherwise.
      */
     virtual bool GetDistributedBundleInfo(
-        const std::string &networkId, int32_t userId, const std::string &bundleName,
+        const std::string &networkId, const std::string &bundleName,
         DistributedBundleInfo &distributedBundleInfo) override
     {
         return true;
