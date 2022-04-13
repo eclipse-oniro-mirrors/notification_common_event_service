@@ -51,6 +51,21 @@ std::string BundleManagerHelper::GetBundleName(int uid)
     return bundleName;
 }
 
+bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos,
+    const int32_t &userId)
+{
+    EVENT_LOGI("enter");
+
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    if (!GetBundleMgrProxy()) {
+        return false;
+    }
+
+    return sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
+        userId, extensionInfos);
+}
+
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
     EVENT_LOGI("enter");
@@ -61,7 +76,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
         return false;
     }
     std::vector<int> osAccountIds;
-    ErrCode ret = OHOS::AccountSA::OsAccountManager::QueryActiveOsAccountIds(osAccountIds);
+    ErrCode ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(osAccountIds);
     if (ret != ERR_OK) {
         EVENT_LOGE("failed to QueryActiveOsAccountIds!");
         return false;
@@ -70,10 +85,12 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
         EVENT_LOGE("no os account acquired!");
         return false;
     }
-    int userId = osAccountIds[0]; // get first active account
-    EVENT_LOGE("active userId = %{public}d", userId);
-    return sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
-        userId, extensionInfos);
+    for (auto userId : osAccountIds) {
+        EVENT_LOGI("active userId = %{public}d", userId);
+        sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
+            userId, extensionInfos);
+    }
+    return true;
 }
 
 bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension,

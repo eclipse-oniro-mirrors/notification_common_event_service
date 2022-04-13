@@ -22,8 +22,10 @@
 
 #include "nlohmann/json.hpp"
 
+#include "accesstoken_kit.h"
 #include "bundle_manager_helper.h"
 #include "common_event_data.h"
+#include "common_event_publish_info.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -34,20 +36,40 @@ public:
 
     virtual ~StaticSubscriberManager();
 
-    void PublishCommonEvent(const CommonEventData &data, const sptr<IRemoteObject> &service);
+    void PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId,
+        const sptr<IRemoteObject> &service);
 
 private:
+    struct StaticSubscriberInfo {
+        std::string name;
+        std::string bundleName;
+        int32_t userId = -1;
+        std::string permission;
+
+        bool operator==(const StaticSubscriberInfo &that) const
+        {
+            return (name == that.name) && (bundleName == that.bundleName) && (userId == that.userId) &&
+                (permission == that.permission);
+        }
+    };
+
     bool InitAllowList();
     bool InitValidSubscribers();
     void UpdateSubscriber(const CommonEventData &data);
-    nlohmann::json ParseEvents(const std::string &profile);
+    void ParseEvents(const std::string &extensionName, const std::string &extensionBundleName,
+        const int32_t &extensionUid, const std::string &profile);
     void AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension);
-    void AddToValidSubscribers(const std::string &eventName, const AppExecFwk::ExtensionAbilityInfo &extension);
-    void AddSubscriberWithBundleName(const std::string &bundleName);
-    void RemoveSubscriberWithBundleName(const std::string &bundleName);
+    void AddToValidSubscribers(const std::string &eventName, const StaticSubscriberInfo &extension);
+    void AddSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId);
+    void RemoveSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId);
+    bool VerifySubscriberPermission(const std::string &bundleName, const int32_t &userId,
+        const std::vector<std::string> &permissions);
+    bool VerifyPublisherPermission(const Security::AccessToken::AccessTokenID &callerToken,
+        const std::string &permission);
 
     std::vector<std::string> subscriberList_;
-    std::map<std::string, std::vector<AppExecFwk::ExtensionAbilityInfo>> validSubscribers_;
+    std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
     bool hasInitAllowList_ = false;
     bool hasInitValidSubscribers_ = false;
     std::mutex subscriberMutex_;

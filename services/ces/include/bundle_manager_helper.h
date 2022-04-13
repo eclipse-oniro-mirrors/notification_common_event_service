@@ -43,6 +43,8 @@ public:
 
     bool QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfo);
 
+    bool QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos, const int32_t &userId);
+
     bool GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension, std::vector<std::string> &profileInfos);
 
     bool CheckPermission(const std::string &bundleName, const std::string &permission);
