@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace EventFwk {
 int AbilityManagerHelper::ConnectAbility(
-    const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken)
+    const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
     EVENT_LOGI("enter, target bundle = %{public}s", want.GetBundle().c_str());
     std::lock_guard<std::mutex> lock(mutex_);
@@ -34,7 +34,7 @@ int AbilityManagerHelper::ConnectAbility(
     }
 
     sptr<StaticSubscriberConnection> connection(new (std::nothrow) StaticSubscriberConnection(event));
-    return abilityMgr_->ConnectAbility(want, connection, callerToken);
+    return abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
 }
 
 bool AbilityManagerHelper::GetAbilityMgrProxy()

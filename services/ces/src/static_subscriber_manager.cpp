@@ -20,8 +20,10 @@
 
 #include "ability_manager_helper.h"
 #include "bundle_manager_helper.h"
+#include "common_event_constant.h"
 #include "common_event_support.h"
 #include "event_log_wrapper.h"
+#include "os_account_manager.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -29,6 +31,8 @@ namespace {
 const std::string STATIC_SUBSCRIBER_CONFIG_FILE = "/system/etc/static_subscriber_config.json";
 const std::string CONFIG_APPS = "apps";
 constexpr static char JSON_KEY_COMMON_EVENTS[] = "commonEvents";
+constexpr static char JSON_KEY_NAME[] = "name";
+constexpr static char JSON_KEY_PERMISSION[] = "permission";
 constexpr static char JSON_KEY_EVENTS[] = "events";
 }
 
@@ -61,13 +65,16 @@ bool StaticSubscriberManager::InitValidSubscribers()
 {
     EVENT_LOGI("enter");
 
+    if (!validSubscribers_.empty()) {
+        validSubscribers_.clear();
+    }
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensions;
     // get all static subscriber type extensions
     if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(extensions)) {
         EVENT_LOGE("QueryExtensionInfos failed");
         return false;
     }
-    // filter legel extensions and connect them
+    // filter legel extensions and add them to valid map
     for (auto extension : extensions) {
         if (find(subscriberList_.begin(), subscriberList_.end(), extension.bundleName) == subscriberList_.end()) {
             continue;
@@ -79,9 +86,11 @@ bool StaticSubscriberManager::InitValidSubscribers()
     return true;
 }
 
-void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data, const sptr<IRemoteObject> &service)
+void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
+    const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
+    const int32_t &userId, const sptr<IRemoteObject> &service)
 {
-    EVENT_LOGI("enter, event = %{public}s", data.GetWant().GetAction().c_str());
+    EVENT_LOGI("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
     if (!hasInitAllowList_ && !InitAllowList()) {
@@ -91,7 +100,10 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data, co
 
     if ((!hasInitValidSubscribers_ ||
         data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED) &&
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_SWITCHED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_UID_REMOVED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_STARTED) &&
         !InitValidSubscribers()) {
         EVENT_LOGE("failed to init Init valid subscribers map!");
         return;
@@ -99,35 +111,119 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data, co
 
     UpdateSubscriber(data);
 
-    auto targetExtensions = validSubscribers_.find(data.GetWant().GetAction());
-    if (targetExtensions != validSubscribers_.end()) {
-        for (auto extension : targetExtensions->second) {
+    auto targetSubscribers = validSubscribers_.find(data.GetWant().GetAction());
+    if (targetSubscribers != validSubscribers_.end()) {
+        for (auto subscriber : targetSubscribers->second) {
+            EVENT_LOGW("subscriber.userId = %{public}d, userId = %{public}d", subscriber.userId, userId);
+            if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
+                EVENT_LOGW("subscriber userId is invalid, subscriber.userId = %{public}d", subscriber.userId);
+                continue;
+            }
+            if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
+                && (subscriber.userId != userId)) {
+                EVENT_LOGW("subscriber userId is not match, subscriber.userId = %{public}d, userId = %{public}d",
+                    subscriber.userId, userId);
+                continue;
+            }
+            if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
+                EVENT_LOGW("publisher does not have requiered permission %{public}s", subscriber.permission.c_str());
+                continue;
+            }
+            if (!VerifySubscriberPermission(subscriber.bundleName, subscriber.userId,
+                publishInfo.GetSubscriberPermissions())) {
+                EVENT_LOGW("subscriber does not have requiered permissions");
+                continue;
+            }
             AAFwk::Want want;
-            want.SetElementName(extension.bundleName, extension.name);
-            EVENT_LOGI("Ready to connect to extension %{public}s in bundle %{public}s",
-                extension.name.c_str(), extension.bundleName.c_str());
-            DelayedSingleton<AbilityManagerHelper>::GetInstance()->ConnectAbility(want, data, service);
+            want.SetElementName(subscriber.bundleName, subscriber.name);
+            EVENT_LOGI("Ready to connect to subscriber %{public}s in bundle %{public}s",
+                subscriber.name.c_str(), subscriber.bundleName.c_str());
+            DelayedSingleton<AbilityManagerHelper>::GetInstance()->
+                ConnectAbility(want, data, service, subscriber.userId);
         }
     }
 }
 
-nlohmann::json StaticSubscriberManager::ParseEvents(const std::string &profile)
+bool StaticSubscriberManager::VerifyPublisherPermission(const Security::AccessToken::AccessTokenID &callerToken,
+    const std::string &permission)
 {
     EVENT_LOGI("enter");
+    if (permission.empty()) {
+        EVENT_LOGI("no need permission");
+        return true;
+    }
+    return Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission) ==
+        Security::AccessToken::PermissionState::PERMISSION_GRANTED;
+}
 
-    nlohmann::json ret;
+bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bundleName, const int32_t &userId,
+    const std::vector<std::string> &permissions)
+{
+    // get hap tokenid with default instindex(0), this should be modified later.
+    Security::AccessToken::AccessTokenID tokenId =
+        Security::AccessToken::AccessTokenKit::GetHapTokenID(userId, bundleName, 0);
+    for (auto permission : permissions) {
+        if (permission.empty()) {
+            continue;
+        }
+        if (Security::AccessToken::AccessTokenKit::VerifyAccessToken(tokenId, permission) !=
+            Security::AccessToken::PermissionState::PERMISSION_GRANTED) {
+            EVENT_LOGW("subscriber does not have requiered permission : %{public}s", permission.c_str());
+            return false;
+        }
+    }
+    return true;
+}
+
+void StaticSubscriberManager::ParseEvents(const std::string &extensionName, const std::string &extensionBundleName,
+    const int32_t &extensionUserId, const std::string &profile)
+{
+    EVENT_LOGI("enter, subscriber name = %{public}s, bundle name = %{public}s, userId = %{public}d",
+        extensionName.c_str(), extensionBundleName.c_str(), extensionUserId);
+
     nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
     if (jsonObj.is_null() || jsonObj.empty()) {
         EVENT_LOGE("invalid jsonObj");
-        return ret;
+        return;
     }
-    nlohmann::json commonEventObj = jsonObj[JSON_KEY_COMMON_EVENTS];
-    if (commonEventObj.is_null() || commonEventObj.empty()) {
+    nlohmann::json commonEventsObj = jsonObj[JSON_KEY_COMMON_EVENTS];
+    if (commonEventsObj.is_null() || !commonEventsObj.is_array() || commonEventsObj.empty()) {
         EVENT_LOGE("invalid common event obj size");
-        return ret;
+        return;
     }
-    ret = commonEventObj[0][JSON_KEY_EVENTS];
-    return ret;
+    for (auto commonEventObj : commonEventsObj) {
+        if (commonEventObj.is_null() || !commonEventObj.is_object()) {
+            EVENT_LOGW("invalid common event obj");
+            continue;
+        }
+        if (commonEventObj[JSON_KEY_NAME].is_null() || !commonEventObj[JSON_KEY_NAME].is_string()) {
+            EVENT_LOGW("invalid common event ability name obj");
+            continue;
+        }
+        if (commonEventObj[JSON_KEY_NAME].get<std::string>() != extensionName) {
+            EVENT_LOGW("extensionName is not match");
+            continue;
+        }
+        if (commonEventObj[JSON_KEY_PERMISSION].is_null() || !commonEventObj[JSON_KEY_PERMISSION].is_string()) {
+            EVENT_LOGW("invalid permission obj");
+            continue;
+        }
+        if (commonEventObj[JSON_KEY_EVENTS].is_null() || !commonEventObj[JSON_KEY_EVENTS].is_array() ||
+            commonEventObj[JSON_KEY_EVENTS].empty()) {
+            EVENT_LOGW("invalid events obj");
+            continue;
+        }
+        
+        for (auto e : commonEventObj[JSON_KEY_EVENTS]) {
+            if (e.is_null() || !e.is_string()) {
+                EVENT_LOGW("invalid event obj");
+                continue;
+            }
+            StaticSubscriberInfo subscriber = { .name = extensionName, .bundleName = extensionBundleName,
+                .userId = extensionUserId, .permission = commonEventObj[JSON_KEY_PERMISSION].get<std::string>() };
+            AddToValidSubscribers(e.get<std::string>(), subscriber);
+        }
+    }
 }
 
 void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension)
@@ -140,39 +236,39 @@ void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityIn
         return;
     }
     for (auto profile : profileInfos) {
-        nlohmann::json eventsObj = ParseEvents(profile);
-        if (eventsObj.is_null()) {
-            continue;
+        int32_t userId = -1;
+        if (AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(extension.applicationInfo.uid, userId) != ERR_OK) {
+            EVENT_LOGE("GetOsAccountLocalIdFromUid failed, uid = %{public}d", extension.applicationInfo.uid);
+            return;
         }
-        for (auto e : eventsObj) {
-            AddToValidSubscribers(e.get<std::string>(), extension);
-        }
+        ParseEvents(extension.name, extension.bundleName, userId, profile);
     }
 }
 
 void StaticSubscriberManager::AddToValidSubscribers(const std::string &eventName,
-    const AppExecFwk::ExtensionAbilityInfo &extension)
+    const StaticSubscriberInfo &subscriber)
 {
     if (validSubscribers_.find(eventName) != validSubscribers_.end()) {
-        for (auto ext : validSubscribers_[eventName]) {
-            if ((ext.bundleName == extension.bundleName) && (ext.name == extension.name)) {
-                EVENT_LOGI("subscriber already exist, event = %{public}s, bundlename = %{public}s, name = %{public}s",
-                    eventName.c_str(), extension.bundleName.c_str(), extension.name.c_str());
+        for (auto sub : validSubscribers_[eventName]) {
+            if (sub == subscriber) {
+                EVENT_LOGI("subscriber already exist, event = %{public}s, bundlename = %{public}s, name = %{public}s,"
+                    "userId = %{public}d", eventName.c_str(), subscriber.bundleName.c_str(), subscriber.name.c_str(),
+                    subscriber.userId);
                 return;
             }
         }
     }
-    validSubscribers_[eventName].emplace_back(extension);
-    EVENT_LOGI("validSubscribers_ added subscriber, event = %{public}s, bundlename = %{public}s, name = %{public}s",
-        eventName.c_str(), extension.bundleName.c_str(), extension.name.c_str());
+    validSubscribers_[eventName].emplace_back(subscriber);
+    EVENT_LOGI("subscriber added, event = %{public}s, bundlename = %{public}s, name = %{public}s, userId = %{public}d",
+        eventName.c_str(), subscriber.bundleName.c_str(), subscriber.name.c_str(), subscriber.userId);
 }
 
-void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bundleName)
+void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensions;
-    if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(extensions)) {
+    if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(extensions, userId)) {
         EVENT_LOGE("QueryExtensionInfos failed");
         return;
     }
@@ -184,23 +280,21 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
     }
 }
 
-void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &bundleName)
+void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
 
-    auto it = validSubscribers_.begin();
-    while (it != validSubscribers_.end()) {
-        auto extensionIt = it->second.begin();
-        while (extensionIt != it->second.end()) {
-            if (extensionIt->bundleName == bundleName) {
-                EVENT_LOGI("validSubscribers_ remove subscriber, event = %{public}s, bundlename = %{public}s",
-                    it->first.c_str(), bundleName.c_str());
-                extensionIt = it->second.erase(extensionIt);
+    for (auto it = validSubscribers_.begin(); it != validSubscribers_.end(); it++) {
+        auto subIt = it->second.begin();
+        while (subIt != it->second.end()) {
+            if ((subIt->bundleName == bundleName) && (subIt->userId == userId)) {
+                EVENT_LOGI("remove subscriber, event = %{public}s, bundlename = %{public}s, userId = %{public}d",
+                    it->first.c_str(), bundleName.c_str(), userId);
+                subIt = it->second.erase(subIt);
             } else {
-                extensionIt++;
+                subIt++;
             }
         }
-        it++;
     }
 }
 
@@ -216,17 +310,32 @@ void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
     }
 
     std::string bundleName = data.GetWant().GetElement().GetBundleName();
-
+    int32_t uid = data.GetWant().GetIntParam(AppExecFwk::Constants::UID, -1);
+    int32_t userId = -1;
+    if (AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, userId) != ERR_OK) {
+        EVENT_LOGW("GetOsAccountLocalIdFromUid failed, uid = %{public}d", uid);
+        return;
+    }
+    std::vector<int> osAccountIds;
+    if (AccountSA::OsAccountManager::QueryActiveOsAccountIds(osAccountIds) != ERR_OK) {
+        EVENT_LOGW("failed to QueryActiveOsAccountIds!");
+        return;
+    }
+    if (find(osAccountIds.begin(), osAccountIds.end(), userId) == osAccountIds.end()) {
+        EVENT_LOGW("userId is not active, no need to update.");
+        return;
+    }
+    EVENT_LOGI("active uid = %{public}d, userId = %{public}d", uid, userId);
     if (data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED) {
         EVENT_LOGI("UpdateSubscribersMap bundle %{public}s ready to add", bundleName.c_str());
-        AddSubscriberWithBundleName(bundleName);
+        AddSubscriberWithBundleName(bundleName, userId);
     } else if (data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED) {
         EVENT_LOGI("UpdateSubscribersMap bundle %{public}s ready to remove", bundleName.c_str());
-        RemoveSubscriberWithBundleName(bundleName);
+        RemoveSubscriberWithBundleName(bundleName, userId);
     } else {
         EVENT_LOGI("UpdateSubscribersMap bundle %{public}s ready to update", bundleName.c_str());
-        RemoveSubscriberWithBundleName(bundleName);
-        AddSubscriberWithBundleName(bundleName);
+        RemoveSubscriberWithBundleName(bundleName, userId);
+        AddSubscriberWithBundleName(bundleName, userId);
     }
 }
 }  // namespace EventFwk

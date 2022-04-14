@@ -47,8 +47,6 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         return false;
     }
 
-    PublishEventToStaticSubscribers(data, service);
-
     if ((!publishInfo.IsOrdered()) && (commonEventListener != nullptr)) {
         EVENT_LOGE("When publishing unordered events, the subscriber object is not required.");
         return false;
@@ -56,13 +54,14 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 
     std::string action = data.GetWant().GetAction();
     bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(action);
-    int32_t userId_ = userId;
+    int32_t user = userId;
     bool isSubsystem = false;
     bool isSystemApp = false;
     bool isProxy = false;
-    if (!CheckUserId(pid, uid, callerToken, isSubsystem, isSystemApp, isProxy, userId_)) {
+    if (!CheckUserId(pid, uid, callerToken, isSubsystem, isSystemApp, isProxy, user)) {
         return false;
     }
+
     if (isSystemEvent) {
         EVENT_LOGI("System common event");
         if (!isSystemApp && !isSubsystem) {
@@ -74,13 +73,17 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         }
     }
 
+    if (staticSubscriberManager_ != nullptr) {
+        staticSubscriberManager_->PublishCommonEvent(data, publishInfo, callerToken, user, service);
+    }
+
     CommonEventRecord eventRecord;
     eventRecord.commonEventData = std::make_shared<CommonEventData>(data);
     eventRecord.publishInfo = std::make_shared<CommonEventPublishInfo>(publishInfo);
     eventRecord.recordTime = recordTime;
     eventRecord.pid = pid;
     eventRecord.uid = uid;
-    eventRecord.userId = userId_;
+    eventRecord.userId = user;
     eventRecord.bundleName = bundleName;
     eventRecord.isSubsystem = isSubsystem;
     eventRecord.isSystemApp = isSystemApp;
@@ -110,19 +113,6 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     }
 
     return true;
-}
-
-void InnerCommonEventManager::PublishEventToStaticSubscribers(const CommonEventData &data,
-                                                              const sptr<IRemoteObject> &service)
-{
-    EVENT_LOGI("enter");
-
-    if (staticSubscriberManager_ == nullptr) {
-        EVENT_LOGE("staticSubscriberManager_ == nullptr!");
-        return;
-    }
-
-    staticSubscriberManager_->PublishCommonEvent(data, service);
 }
 
 bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,

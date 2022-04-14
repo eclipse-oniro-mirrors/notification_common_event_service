@@ -30,7 +30,8 @@ public:
 
     virtual ~AbilityManagerHelper() {}
 
-    int ConnectAbility(const AAFwk::Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken);
+    int ConnectAbility(const AAFwk::Want &want, const CommonEventData &event,
+        const sptr<IRemoteObject> &callerToken, const int32_t &userId);
 
     void Clear();
 private:
