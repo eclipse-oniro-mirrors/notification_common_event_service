@@ -24,7 +24,7 @@
 #include "event_log_wrapper.h"
 #include "ipc_skeleton.h"
 #include "nlohmann/json.hpp"
-#include "os_account_manager.h"
+#include "os_account_manager_helper.h"
 #include "system_time.h"
 #include "want.h"
 
@@ -290,13 +290,13 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     isProxy = pid == UNDEFINED_PID;
     if ((isSystemApp || isSubsystem) && !isProxy) {
         if (userId == CURRENT_USER) {
-            AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, userId);
+            DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
         } else if (userId == UNDEFINED_USER) {
             userId = ALL_USER;
         }
     } else {
         if (userId == UNDEFINED_USER) {
-            AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, userId);
+            DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
         } else {
             EVENT_LOGE("No permission to subscribe or send a common event to another user from uid = %{public}d", uid);
             return false;

@@ -23,7 +23,7 @@
 #include "common_event_constant.h"
 #include "common_event_support.h"
 #include "event_log_wrapper.h"
-#include "os_account_manager.h"
+#include "os_account_manager_helper.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -237,7 +237,8 @@ void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityIn
     }
     for (auto profile : profileInfos) {
         int32_t userId = -1;
-        if (AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(extension.applicationInfo.uid, userId) != ERR_OK) {
+        if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(
+            extension.applicationInfo.uid, userId) != ERR_OK) {
             EVENT_LOGE("GetOsAccountLocalIdFromUid failed, uid = %{public}d", extension.applicationInfo.uid);
             return;
         }
@@ -312,12 +313,12 @@ void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
     std::string bundleName = data.GetWant().GetElement().GetBundleName();
     int32_t uid = data.GetWant().GetIntParam(AppExecFwk::Constants::UID, -1);
     int32_t userId = -1;
-    if (AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, userId) != ERR_OK) {
+    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId) != ERR_OK) {
         EVENT_LOGW("GetOsAccountLocalIdFromUid failed, uid = %{public}d", uid);
         return;
     }
     std::vector<int> osAccountIds;
-    if (AccountSA::OsAccountManager::QueryActiveOsAccountIds(osAccountIds) != ERR_OK) {
+    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(osAccountIds) != ERR_OK) {
         EVENT_LOGW("failed to QueryActiveOsAccountIds!");
         return;
     }

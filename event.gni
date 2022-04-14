@@ -36,4 +36,11 @@ ces_native_path = "${frameworks_path}/native"
 ces_services_path = "${services_path}/ces"
 declare_args() {
   ces_standard_with_graphics = true
+
+  if (!defined(global_parts_info) ||
+      defined(global_parts_info.account_os_account_standard)) {
+    has_os_account_part = true
+  } else {
+    has_os_account_part = false
+  }
 }

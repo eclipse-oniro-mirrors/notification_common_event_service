@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,7 @@
 #include "event_log_wrapper.h"
 #include "iservice_registry.h"
 #include "nlohmann/json.hpp"
-#include "os_account_manager.h"
+#include "os_account_manager_helper.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
@@ -76,8 +76,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
         return false;
     }
     std::vector<int> osAccountIds;
-    ErrCode ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(osAccountIds);
-    if (ret != ERR_OK) {
+    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(osAccountIds) != ERR_OK) {
         EVENT_LOGE("failed to QueryActiveOsAccountIds!");
         return false;
     }

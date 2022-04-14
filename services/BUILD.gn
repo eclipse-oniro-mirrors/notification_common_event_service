@@ -41,6 +41,7 @@ config("ces_services_public_config") {
 }
 
 ohos_shared_library("cesfwk_services") {
+  cflags_cc = []
   sources = [
     "${ces_services_path}/src/ability_manager_death_recipient.cpp",
     "${ces_services_path}/src/ability_manager_helper.cpp",
@@ -55,6 +56,7 @@ ohos_shared_library("cesfwk_services") {
     "${ces_services_path}/src/common_event_support_mapper.cpp",
     "${ces_services_path}/src/inner_common_event_manager.cpp",
     "${ces_services_path}/src/ordered_event_handler.cpp",
+    "${ces_services_path}/src/os_account_manager_helper.cpp",
     "${ces_services_path}/src/publish_manager.cpp",
     "${ces_services_path}/src/static_subscriber_connection.cpp",
     "${ces_services_path}/src/static_subscriber_manager.cpp",
@@ -84,10 +86,14 @@ ohos_shared_library("cesfwk_services") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "os_account_standard:os_account_innerkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
   ]
+
+  if (has_os_account_part) {
+    cflags_cc += [ "-DHAS_OS_ACCOUNT_PART" ]
+    external_deps += [ "os_account_standard:os_account_innerkits" ]
+  }
 
   subsystem_name = "notification"
   part_name = "ces_standard"
