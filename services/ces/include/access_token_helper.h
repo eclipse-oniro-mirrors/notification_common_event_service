@@ -23,6 +23,8 @@ namespace EventFwk {
 class AccessTokenHelper {
 public:
     static bool VerifyNativeToken(const Security::AccessToken::AccessTokenID &callerToken);
+    static int VerifyAccessToken(const Security::AccessToken::AccessTokenID &callerToken,
+        const std::string &permission);
 };
 }  // namespace EventFwk
 }  // namespace OHOS
