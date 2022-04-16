@@ -116,6 +116,12 @@ const std::string CommonEventSupport::COMMON_EVENT_TIMEZONE_CHANGED = "usual.eve
 const std::string CommonEventSupport::COMMON_EVENT_CLOSE_SYSTEM_DIALOGS = "usual.event.CLOSE_SYSTEM_DIALOGS";
 
 /**
+ * Indicate the action of a common event that bundle scan has finished.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED = "usual.event.BUNDLE_SCAN_FINISHED";
+
+/**
  * Indicate the action of a common event that a new application package has been installed on the device.
  * This common event can only be published by the system.
  */
@@ -1135,6 +1141,7 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CLOSE_SYSTEM_DIALOGS);
 
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MY_PACKAGE_REPLACED);

@@ -120,6 +120,11 @@ public:
     static const std::string COMMON_EVENT_CLOSE_SYSTEM_DIALOGS;
 
     /**
+     * Indicate the action of a common event that bundle scan has finished.
+     * This common event can only be published by the system.
+     */
+    static const std::string COMMON_EVENT_BUNDLE_SCAN_FINISHED;
+    /**
      * Indicate the action of a common event that a new application package has been installed on the device.
      * This common event can only be published by the system.
      */
