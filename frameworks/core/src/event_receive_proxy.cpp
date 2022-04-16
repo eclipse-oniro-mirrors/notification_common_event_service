@@ -36,6 +36,11 @@ void EventReceiveProxy::NotifyEvent(const CommonEventData &commonEventData, cons
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return;
+    }
+
     sptr<IRemoteObject> remote = Remote();
     if (remote == nullptr) {
         EVENT_LOGE("Failed to send cmd to service due to remote objetc is null");
