@@ -248,6 +248,14 @@ public:
     static const std::string COMMON_EVENT_MANAGE_PACKAGE_STORAGE;
 
     /**
+     * Indicate the action of a common event that one sandbox packag is installed.
+     */
+    static const std::string COMMON_EVENT_SANDBOX_PACKAGE_ADDED;
+    /**
+     * Indicate the action of a common event that one sandbox packag is uninstalled.
+     */
+    static const std::string COMMON_EVENT_SANDBOX_PACKAGE_REMOVED;
+    /**
      * Indicate the action of a common event that the system is in driving mode.
      * This is a protected common event, which can be sent only by the system.
      */
