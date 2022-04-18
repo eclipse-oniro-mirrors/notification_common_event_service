@@ -22,6 +22,7 @@
 #include "event_log_wrapper.h"
 #include "ievent_receive.h"
 #include "system_time.h"
+#include "xcollie/watchdog.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -128,6 +129,13 @@ bool CommonEventControlManager::GetUnorderedEventHandler()
         if (!handler_) {
             EVENT_LOGE("Failed to create UnorderedEventHandler");
             return false;
+        }
+    }
+    if (handler_->GetEventRunner() != nullptr) {
+        std::string threadName = handler_->GetEventRunner()->GetRunnerThreadName();
+        static unsigned int timeval = 5000;
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_, timeval) != 0) {
+            EVENT_LOGE("Failed to Add handler Thread");
         }
     }
     return true;
@@ -245,6 +253,13 @@ bool CommonEventControlManager::GetOrderedEventHandler()
         if (!handlerOrdered_) {
             EVENT_LOGE("Failed to create OrderedEventHandler");
             return false;
+        }
+    }
+    if (handlerOrdered_->GetEventRunner() != nullptr) {
+        std::string threadName = handlerOrdered_->GetEventRunner()->GetRunnerThreadName();
+        static unsigned int timeval = 5000;
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handlerOrdered_, timeval) != 0) {
+            EVENT_LOGE("Failed to Add Ordered Thread");
         }
     }
     return true;
