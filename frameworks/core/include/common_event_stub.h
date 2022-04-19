@@ -27,8 +27,6 @@ public:
     CommonEventStub();
     virtual ~CommonEventStub() override;
 
-    DECLARE_INTERFACE_DESCRIPTOR(u"ICommonEvent");
-
     virtual int OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
