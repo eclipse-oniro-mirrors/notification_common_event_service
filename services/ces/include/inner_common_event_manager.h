@@ -38,7 +38,7 @@ public:
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
         const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName);
 
-    bool UnsubscribeCommonEvent(sptr<IRemoteObject> &commonEventListener);
+    bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener);
 
     bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
 

@@ -160,7 +160,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     return true;
 };
 
-bool InnerCommonEventManager::UnsubscribeCommonEvent(sptr<IRemoteObject> &commonEventListener)
+bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGI("enter");
 
@@ -259,7 +259,7 @@ bool InnerCommonEventManager::ProcessStickyEvent(
 {
     EVENT_LOGI("enter");
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
-    ErrCode result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission);
+    ErrCode result = AccessTokenHelper::VerifyAccessToken(callerToken, permission);
     // Only subsystems and system apps with permissions can publish sticky common events
     if ((!result && record.isSystemApp) || (!record.isProxy && record.isSubsystem)) {
         DelayedSingleton<CommonEventStickyManager>::GetInstance()->UpdateStickyEvent(record);

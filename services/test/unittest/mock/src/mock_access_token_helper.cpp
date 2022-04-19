@@ -19,9 +19,16 @@ namespace OHOS {
 namespace EventFwk {
 using namespace OHOS::Security;
 
+constexpr unsigned int PERMISSION_GRANTED = 1;
+
 bool AccessTokenHelper::VerifyNativeToken(const AccessToken::AccessTokenID &callerToken)
 {
-    return false;
+    return callerToken == PERMISSION_GRANTED;
+}
+
+int AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &callerToken, const std::string &permission)
+{
+    return callerToken == PERMISSION_GRANTED;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

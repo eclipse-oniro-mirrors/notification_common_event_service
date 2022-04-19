@@ -88,6 +88,7 @@ ohos_unittest("common_event_dump_test") {
   module_out_path = module_output_path
 
   sources = [
+    "${services_path}/test/unittest/mock/src/mock_access_token_helper.cpp",
     "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
     "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
     "common_event_dump_test.cpp",
@@ -376,7 +377,7 @@ group("unittest") {
   deps = []
 
   deps += [
-    # ":common_event_dump_test",
+    ":common_event_dump_test",
     ":common_event_freeze_test",
     ":common_event_publish_manager_event_unit_test",
     ":common_event_publish_ordered_event_unit_test",

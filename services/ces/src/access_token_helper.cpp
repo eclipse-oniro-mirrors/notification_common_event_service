@@ -17,12 +17,17 @@
 
 namespace OHOS {
 namespace EventFwk {
-using namespace OHOS::Security;
+using namespace OHOS::Security::AccessToken;
 
-bool AccessTokenHelper::VerifyNativeToken(const AccessToken::AccessTokenID &callerToken)
+bool AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
 {
-    AccessToken::ATokenTypeEnum tokenType = AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
-    return tokenType == AccessToken::ATokenTypeEnum::TOKEN_NATIVE;
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    return tokenType == ATokenTypeEnum::TOKEN_NATIVE;
+}
+
+int AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken, const std::string &permission)
+{
+    return AccessTokenKit::VerifyAccessToken(callerToken, permission);
 }
 }  // namespace Notification
 }  // namespace OHOS
