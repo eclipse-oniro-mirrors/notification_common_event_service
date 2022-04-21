@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/notification/ces_standard/event.gni")
+import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
 
-module_output_path = "ces_standard/tools"
+module_output_path = "common_event_service/tools"
 
 config("tools_cem_test_config") {
   include_dirs = [

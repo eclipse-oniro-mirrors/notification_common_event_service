@@ -11,20 +11,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/notification/ces_standard/event.gni")
+import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
 
-module_output_path = "ces_standard/systemtest"
+module_output_path = "common_event_service/systemtest"
 
 ohos_systemtest("ActsCESManagertest") {
   module_out_path = module_output_path
-  resource_config_file = "${ces_standard_path}/test/systemtest/common/resource/testconfig/ohos_test.xml"
+  resource_config_file = "${common_event_service_path}/test/systemtest/common/resource/testconfig/ohos_test.xml"
 
   sources = [ "actsCESManagertest.cpp" ]
 
   configs = [
     "//foundation/appexecfwk/standard/libs/libeventhandler:libeventhandler_config",
-    "${ces_standard_path}/test/systemtest/common/ces:cesfwk_kits_test_config",
+    "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config",
   ]
 
   include_dirs = [
@@ -33,7 +33,7 @@ ohos_systemtest("ActsCESManagertest") {
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
-    "${ces_standard_path}/test/systemtest/common/resource",
+    "${common_event_service_path}/test/systemtest/common/resource",
     "//third_party/json/single_include",
   ]
 

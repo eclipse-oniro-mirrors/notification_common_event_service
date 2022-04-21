@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/notification/ces_standard/event.gni")
+import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
 
-module_output_path = "ces_standard/systemtest"
+module_output_path = "common_event_service/systemtest"
 
 ohos_systemtest("cesSystemTest") {
   module_out_path = module_output_path
@@ -23,7 +23,7 @@ ohos_systemtest("cesSystemTest") {
 
   configs = [
     "//foundation/appexecfwk/standard/libs/libeventhandler:libeventhandler_config",
-    "${ces_standard_path}/test/systemtest/common/ces:cesfwk_kits_test_config",
+    "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config",
   ]
 
   include_dirs = [

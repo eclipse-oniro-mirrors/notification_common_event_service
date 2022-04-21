@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/notification/ces_standard/event.gni")
+import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
 cflags = []
@@ -96,11 +96,11 @@ ohos_shared_library("cesfwk_services") {
   }
 
   subsystem_name = "notification"
-  part_name = "ces_standard"
+  part_name = "common_event_service"
 }
 
 ohos_prebuilt_etc("static_subscriber_config.json") {
-  source = "//base/notification/ces_standard/services/ces/resource/static_subscriber_config.json"
+  source = "//base/notification/common_event_service/services/resource/static_subscriber_config.json"
   subsystem_name = "notification"
-  part_name = "ces_standard"
+  part_name = "common_event_service"
 }

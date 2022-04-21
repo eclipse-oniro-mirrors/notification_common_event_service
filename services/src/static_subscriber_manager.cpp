@@ -15,7 +15,6 @@
 
 #include "static_subscriber_manager.h"
 
-#include <iostream>
 #include <fstream>
 
 #include "ability_manager_helper.h"

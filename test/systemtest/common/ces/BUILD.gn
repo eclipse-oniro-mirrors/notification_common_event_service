@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/notification/ces_standard/event.gni")
+import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
 config("cesfwk_kits_test_config") {
@@ -58,7 +58,7 @@ ohos_shared_library("cesfwk_kits_test") {
     "ipc:ipc_core",
   ]
   subsystem_name = "notification"
-  part_name = "ces_standard"
+  part_name = "common_event_service"
 }
 group("systemtest_ces") {
   testonly = true

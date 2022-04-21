@@ -12,10 +12,10 @@
 # limitations under the License.
 
 #####################hydra-fuzz###################
-import("//base/notification/ces_standard/event.gni")
+import("//base/notification/common_event_service/event.gni")
 import("//build/config/features.gni")
 import("//build/test.gni")
-module_output_path = "ces_standard/fuzztest"
+module_output_path = "common_event_service/fuzztest"
 
 ##############################fuzztest##########################################
 ohos_fuzztest("SubscribeCommonEventFuzzTest") {

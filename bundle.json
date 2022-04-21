@@ -32,15 +32,15 @@
         }
     ],
     "segment": {
-        "destPath": "base/notification/ces_standard"
+        "destPath": "base/notification/common_event_service"
     },
     "component": {
-        "name": "ces_standard",
+        "name": "common_event_service",
         "subsystem": "notification",
         "syscap": [
             "SystemCapability.Notification.CommonEvent"
         ],
-        "features": ["ces_standard_with_graphics"],
+        "features": ["common_event_service_with_graphics"],
         "adapted_system_type": [
             "standard"
         ],
@@ -66,17 +66,17 @@
         },
         "build": {
             "sub_component": [
-                "//base/notification/ces_standard/frameworks/common:libevent_common",
-                "//base/notification/ces_standard/frameworks/core:cesfwk_core",
-                "//base/notification/ces_standard/frameworks/native:cesfwk_innerkits",
-                "//base/notification/ces_standard/interfaces/kits/napi:napi_packages",
-                "//base/notification/ces_standard/sa_profile:event_sa_profile",
-                "//base/notification/ces_standard/services:cesfwk_services",
-                "//base/notification/ces_standard/tools:tools_target"],
+                "//base/notification/common_event_service/frameworks/common:libevent_common",
+                "//base/notification/common_event_service/frameworks/core:cesfwk_core",
+                "//base/notification/common_event_service/frameworks/native:cesfwk_innerkits",
+                "//base/notification/common_event_service/interfaces/kits/napi:napi_packages",
+                "//base/notification/common_event_service/sa_profile:event_sa_profile",
+                "//base/notification/common_event_service/services:cesfwk_services",
+                "//base/notification/common_event_service/tools:tools_target"],
             "inner_kits": [
             {
                 "header": {
-                    "header_base" : "//base/notification/ces_standard/frameworks/core/include",
+                    "header_base" : "//base/notification/common_event_service/frameworks/core/include",
                     "header_files": [
                       "common_event_constant.h",
                       "common_event_death_recipient.h",
@@ -90,11 +90,11 @@
                       "ievent_receive.h"
                     ]
                   },
-                  "name":"//base/notification/ces_standard/frameworks/core:cesfwk_core"
+                  "name":"//base/notification/common_event_service/frameworks/core:cesfwk_core"
                 },
                 {
                   "header": {
-                    "header_base" : "//base/notification/ces_standard/interfaces/innerkits/native/include",
+                    "header_base" : "//base/notification/common_event_service/interfaces/innerkits/native/include",
                     "header_files": [
                       "async_common_event_result.h",
                       "common_event_data.h",
@@ -106,11 +106,11 @@
                       "matching_skills.h"
                     ]
                   },
-                  "name":"//base/notification/ces_standard/frameworks/native:cesfwk_innerkits"
+                  "name":"//base/notification/common_event_service/frameworks/native:cesfwk_innerkits"
                 },
                 {
                   "header": {
-                    "header_base" : "//base/notification/ces_standard/services/ces/include",
+                    "header_base" : "//base/notification/common_event_service/services/include",
                     "header_files": [
                       "common_event_control_manager.h",
                       "common_event_manager_service.h",
@@ -119,19 +119,19 @@
                       "inner_common_event_manager.h"
                     ]
                   },
-                  "name":"//base/notification/ces_standard/services:cesfwk_services"
+                  "name":"//base/notification/common_event_service/services:cesfwk_services"
                 }
             ],
             "test": [
-                "//base/notification/ces_standard/frameworks/common/test:unittest",
-                "//base/notification/ces_standard/frameworks/native/test/unittest:unittest",
-                "//base/notification/ces_standard/services/test/moduletest:moduletest",
-                "//base/notification/ces_standard/services/test/unittest:unittest",
-                "//base/notification/ces_standard/test/fuzztest:fuzztest",
-                "//base/notification/ces_standard/test/systemtest:systemtest",
-                "//base/notification/ces_standard/tools:moduletest",
-                "//base/notification/ces_standard/tools:systemtest",
-                "//base/notification/ces_standard/tools:unittest"
+                "//base/notification/common_event_service/frameworks/common/test:unittest",
+                "//base/notification/common_event_service/frameworks/native/test/unittest:unittest",
+                "//base/notification/common_event_service/services/test/moduletest:moduletest",
+                "//base/notification/common_event_service/services/test/unittest:unittest",
+                "//base/notification/common_event_service/test/fuzztest:fuzztest",
+                "//base/notification/common_event_service/test/systemtest:systemtest",
+                "//base/notification/common_event_service/tools:moduletest",
+                "//base/notification/common_event_service/tools:systemtest",
+                "//base/notification/common_event_service/tools:unittest"
             ]
         }
     }
