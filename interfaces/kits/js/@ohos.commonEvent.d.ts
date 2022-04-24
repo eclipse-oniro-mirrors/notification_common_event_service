@@ -926,7 +926,7 @@ declare namespace commonEvent {
      * This is a protected common event that can only be sent by system.
      * @since 8
      */
-    COMMON_EVENT_SIM_STATE_CHANGED = "usual.event.SIM.CARD_STATE_CHANGED",
+    COMMON_EVENT_SIM_STATE_CHANGED = "usual.event.SIM_STATE_CHANGED",
 
     /**
      * Indicates the common event Action indicating that the airplane mode status of the device changes.
@@ -946,7 +946,7 @@ declare namespace commonEvent {
      * This common event can be triggered only by system.
      * @since 8
      */
-    COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED = "usual.event.SMS_EMERGENCY_CB_RECEIVE_COMPLETED",
+    COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED = "usual.event.SMS_EMERGENCY_CB_RECEIVE_COMPLETED",
 
     /**
      * Indicate the action of a common event that a new sms normal cell broadcast bas been received by the device.
@@ -988,13 +988,27 @@ declare namespace commonEvent {
      * This common event can be triggered only by system.
      * @since 8
      */
-    COMMON_EVENT_SPN_INFO_UPDATED = "usual.event.SPN_INFO_UPDATED",
+    COMMON_EVENT_SPN_INFO_CHANGED = "usual.event.SPN_INFO_CHANGED",
 
     /**
      * sent by the window manager service when the window mode is split.
      * @since 8
      */
-    COMMON_EVENT_SPLIT_SCREEN = "common.event.SPLIT_SCREEN"
+    COMMON_EVENT_SPLIT_SCREEN = "common.event.SPLIT_SCREEN",
+
+    /**
+     * Indicate the action of a common event that a new sms wappush has been received by the device.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED = "usual.event.SMS_WAPPUSH_RECEIVE_COMPLETED",
+
+    /**
+     * Indicate the action of a common event that the operator config has been updated.
+     * This common event can be triggered only by system.
+     * @since 8
+     */
+    COMMON_EVENT_OPERATOR_CONFIG_CHANGED = "usual.event.OPERATOR_CONFIG_CHANGED",
   }
 }
 
