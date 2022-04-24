@@ -13,18 +13,16 @@
  * limitations under the License.
  */
 
-#include <iostream>
 #include <gtest/gtest.h>
 
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
-#include "common_event.h"
-#include "common_event_constant.h"
-#include "common_event_manager.h"
 #undef private
 #undef protected
 
+#include "common_event_constant.h"
+#include "common_event_listener.h"
 #include "datetime_ex.h"
 #include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
@@ -41,9 +39,9 @@ const std::string DEVICEDID = "deviceId";
 const std::string TYPE = "type";
 const std::string BUNDLE = "BundleName";
 const std::string ABILITY = "AbilityName";
-const int PRIORITY = 1;
-const int FLAG = 1;
-const int CODE = 1;
+constexpr uint8_t PRIORITY = 1;
+constexpr uint8_t FLAG = 1;
+constexpr uint8_t CODE = 1;
 const std::string DATA = "DATA";
 
 const std::string EVENT2 = "com.ces.test.event2";
@@ -52,38 +50,41 @@ const std::string SCHEME2 = "com.ces.test.scheme2";
 const std::string PERMISSION2 = "com.ces.test.permission2";
 const std::string DEVICEDID2 = "deviceId2";
 const std::string TYPE2 = "type2";
-const int PRIORITY2 = 2;
-const int FLAG2 = 2;
-const int CODE2 = 2;
+constexpr uint8_t PRIORITY2 = 2;
+constexpr uint8_t FLAG2 = 2;
+constexpr uint8_t CODE2 = 2;
 const std::string DATA2 = "DATA2";
 
 const std::string EVENT3 = "com.ces.test.event3";
-const int INNITCODE = 0;
-const int CHANGECODE = 1;
-const int CHANGECODE2 = 2;
+constexpr uint8_t INNITCODE = 0;
+constexpr uint8_t CHANGECODE = 1;
+constexpr uint8_t CHANGECODE2 = 2;
 const std::string EVENTCASE1 = "com.ces.test.event.case1";
 const std::string EVENTCASE2 = "com.ces.test.event.case2";
 const std::string EVENTCASE3 = "com.ces.test.event.case3";
 const std::string INNITDATA = "com.ces.test.initdata";
 const std::string CHANGEDATA = "com.ces.test.changedata";
 const std::string CHANGEDATA2 = "com.ces.test.changedata2";
-const int PUBLISH_SLEEP = 10;
-const uid_t UID = 10;
-const uid_t UID2 = 11;
-const int STATE_INDEX1 = 1;
-const int STATE_INDEX2 = 2;
-const int STATE_INDEX3 = 3;
-const int PUBLISH_COUNT = 60;
-const int DUMP_SUBSCRIBER_COUNT_ONE = 1;
-const int DUMP_SUBSCRIBER_COUNT_TWO = 2;
-const int DUMP_SUBSCRIBER_COUNT_FOUR = 4;
-const int DUMP_STICKY_COUNT_ONE = 1;
-const int DUMP_STICKY_COUNT_TWO = 2;
-const int DUMP_PENDING_COUNT_ONE = 1;
-const int DUMP_HISTORY_COUNT_ONE = 1;
-const int DUMP_HISTORY_COUNT_TWO = 2;
-const int DUMP_HISTORY_COUNT_THREE = 3;
-const int DUMP_HISTORY_COUNT_MAX = 100;
+constexpr uint8_t PUBLISH_SLEEP = 10;
+constexpr uid_t UID = 10;
+constexpr uid_t UID2 = 11;
+constexpr uint8_t STATE_INDEX1 = 1;
+constexpr uint8_t STATE_INDEX2 = 2;
+constexpr uint8_t STATE_INDEX3 = 3;
+constexpr uint8_t PUBLISH_COUNT = 60;
+constexpr uint8_t DUMP_SUBSCRIBER_COUNT_ONE = 1;
+constexpr uint8_t DUMP_SUBSCRIBER_COUNT_TWO = 2;
+constexpr uint8_t DUMP_SUBSCRIBER_COUNT_FOUR = 4;
+constexpr uint8_t DUMP_STICKY_COUNT_ONE = 1;
+constexpr uint8_t DUMP_STICKY_COUNT_TWO = 2;
+constexpr uint8_t DUMP_PENDING_COUNT_ONE = 1;
+constexpr uint8_t DUMP_HISTORY_COUNT_ONE = 1;
+constexpr uint8_t DUMP_HISTORY_COUNT_TWO = 2;
+constexpr uint8_t DUMP_HISTORY_COUNT_THREE = 3;
+constexpr uint8_t DUMP_HISTORY_COUNT_MAX = 100;
+
+constexpr uint8_t PID = 0;
+constexpr uint16_t SYSTEM_UID = 1000;
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
 OHOS::sptr<OHOS::IRemoteObject> commonEventListener;
@@ -174,9 +175,7 @@ private:
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
     {
-        bool finishReceiverResult =
-            CommonEventDumpTest::FinishReceiver(commonEventListener, CHANGECODE, CHANGEDATA, false);
-        EXPECT_EQ(true, finishReceiverResult);
+        EXPECT_TRUE(CommonEventDumpTest::FinishReceiver(commonEventListener, CHANGECODE, CHANGEDATA, false));
     }
 
 private:
@@ -234,9 +233,7 @@ private:
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
     {
-        bool finishReceiverResult =
-            CommonEventDumpTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false);
-        EXPECT_EQ(true, finishReceiverResult);
+        EXPECT_TRUE(CommonEventDumpTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false));
     }
 
 private:
@@ -286,9 +283,7 @@ private:
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
     {
-        bool finishReceiverResult =
-            CommonEventDumpTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false);
-        EXPECT_EQ(true, finishReceiverResult);
+        EXPECT_TRUE(CommonEventDumpTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false));
     }
 
 private:
@@ -300,14 +295,13 @@ std::shared_ptr<InnerCommonEventManager> CommonEventDumpTest::innerCommonEventMa
 
 void CommonEventDumpTest::SetUpTestCase(void)
 {
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
 }
 
 void CommonEventDumpTest::TearDownTestCase(void)
-{
-}
+{}
 
 void CommonEventDumpTest::SetUp(void)
 {
@@ -554,10 +548,8 @@ void CommonEventDumpTest::SubscribeDoubleEvent(
 
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
-    const int pid = 0;
-    const int uid = 1000;
     innerCommonEventManager_->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject(), curTime,  pid, uid, tokenID, "hello");
+        subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 }
 
 void CommonEventDumpTest::PublishUnorderedEvent(
@@ -591,11 +583,8 @@ void CommonEventDumpTest::PublishUnorderedEvent(
 
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
-    const int pid = 0;
-    const int uid = 1000;
-
     innerCommonEventManager_->PublishCommonEvent(
-        eventData, publishInfo, nullptr, curTime, pid, uid, tokenID, UNDEFINED_USER, "hello");
+        eventData, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 }
 
 void CommonEventDumpTest::PublishStickyEvent(
@@ -629,11 +618,8 @@ void CommonEventDumpTest::PublishStickyEvent(
 
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
-    const int pid = 0;
-    const int uid = 1000;
-
     innerCommonEventManager_->PublishCommonEvent(
-        eventData, publishInfo, nullptr, curTime, pid, uid, tokenID, UNDEFINED_USER, "hello");
+        eventData, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 }
 
 void CommonEventDumpTest::PublishStickyEvent(
@@ -665,11 +651,8 @@ void CommonEventDumpTest::PublishStickyEvent(
 
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
-    const int pid = 0;
-    const int uid = 1000;
-
     innerCommonEventManager_->PublishCommonEvent(
-        eventData, publishInfo, nullptr, curTime, pid, uid, tokenID, UNDEFINED_USER, "hello");
+        eventData, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 }
 
 /*
@@ -778,7 +761,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0400, Function | MediumTest | 
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     CommonEventListener *listener = new CommonEventListener(subscriber);
     GetInnerCommonEventManager()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject(), curTime,  0, 1000, tokenID, "hello");
+        subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
     sleep(1);
 
@@ -812,7 +795,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0500, Function | MediumTest | 
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     CommonEventListener *listener = new CommonEventListener(subscriber);
     GetInnerCommonEventManager()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject(), curTime,  0, 1000, tokenID, "hello");
+        subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
     sleep(1);
 
@@ -845,7 +828,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0600, Function | MediumTest | 
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     CommonEventListener *listener = new CommonEventListener(subscriber);
     GetInnerCommonEventManager()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject(), curTime,  0, 1000, tokenID, "hello");
+        subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
     sleep(1);
 
@@ -877,7 +860,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0700, Function | MediumTest | 
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     CommonEventListener *listener = new CommonEventListener(subscriber);
     GetInnerCommonEventManager()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject(), curTime,  0, 1000, tokenID, "hello");
+        subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
     sleep(1);
 
@@ -908,7 +891,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0800, Function | MediumTest | 
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     CommonEventListener *listener = new CommonEventListener(subscriber);
     GetInnerCommonEventManager()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject(), curTime, 0, 1000, tokenID, "hello");
+        subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
     sleep(1);
 
@@ -939,7 +922,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0900, Function | MediumTest | 
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
     CommonEventListener *listener = new CommonEventListener(subscriber);
     GetInnerCommonEventManager()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject(), curTime, 0, 1000, tokenID, "hello");
+        subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
     sleep(1);
 
@@ -1101,7 +1084,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1600, Function | MediumTest | 
     OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
 
     GetInnerCommonEventManager()->PublishCommonEvent(
-        data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
+        data, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 
     sleep(1);
 
@@ -1134,7 +1117,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
     OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
 
     GetInnerCommonEventManager()->PublishCommonEvent(
-        data, publishInfo, nullptr, curTime, 0, 1000, tokenID, UNDEFINED_USER, "hello");
+        data, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 
     sleep(1);
 
@@ -1179,7 +1162,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
     std::shared_ptr<SubscriberTest> subscriberTest =
         std::make_shared<SubscriberTest>(subscribeInfo, GetInnerCommonEventManager());
     // subscribe a common event
-    EXPECT_EQ(true, SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
     sleep(1);
 
     // make another subscriber info
@@ -1190,7 +1173,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
     std::shared_ptr<SubscriberTest2> subscriberTest2 =
         std::make_shared<SubscriberTest2>(subscribeInfo2, GetInnerCommonEventManager());
     // subscribe another event
-    EXPECT_EQ(true, SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
     sleep(1);
 
     std::shared_ptr<SubscriberTestLast> subscriber = std::make_shared<SubscriberTestLast>();
@@ -1201,7 +1184,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
     SetPublishDataByOrdered(data, publishInfo);
 
     // publish order event
-    EXPECT_EQ(true, PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
+    EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
 
     sleep(PUBLISH_SLEEP);
 
@@ -1231,7 +1214,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
     std::shared_ptr<SubscriberTest> subscriberTest =
         std::make_shared<SubscriberTest>(subscribeInfo, GetInnerCommonEventManager());
     // subscribe a common event
-    EXPECT_EQ(true, SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
     sleep(1);
 
     // make another subscriber info
@@ -1242,7 +1225,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
     std::shared_ptr<SubscriberTest2> subscriberTest2 =
         std::make_shared<SubscriberTest2>(subscribeInfo2, GetInnerCommonEventManager());
     // subscribe another event
-    EXPECT_EQ(true, SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
     sleep(1);
 
     std::shared_ptr<SubscriberTestLast> subscriber = std::make_shared<SubscriberTestLast>();
@@ -1255,12 +1238,12 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
     while (count < PUBLISH_COUNT) {
         // publish order event
         SetPublishDataByOrdered2(data, publishInfo);
-        EXPECT_EQ(true, PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
+        EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
         sleep(1);
 
         // publish unorder event
         SetPublishDataByUnordered(data, publishInfo);
-        EXPECT_EQ(true, PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
+        EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
         sleep(1);
         count++;
     }

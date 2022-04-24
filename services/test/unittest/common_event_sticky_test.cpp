@@ -15,21 +15,18 @@
 
 #define UNIT_TEST
 
+#include <gtest/gtest.h>
+
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
-#include "common_event.h"
-#include "common_event_manager.h"
-#include "common_event_manager_service.h"
 #include "common_event_sticky_manager.h"
 #undef private
 #undef protected
 
-#include "errors.h"
+#include "common_event_subscriber.h"
 #include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
-
-#include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -46,6 +43,8 @@ const std::string TYPE2 = "com.ces.test.type2";
 const std::string PERMISSION = "com.ces.test.permission";
 const std::string STRING_EVENT = "com.ces.event";
 const std::string STRING_DATA = "data";
+constexpr uint8_t PID = 0;
+constexpr uint16_t SYSTEM_UID = 1000;
 }  // namespace
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
@@ -76,7 +75,7 @@ public:
 
 void CommonEventStickyTest::SetUpTestCase(void)
 {
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
 }
@@ -85,14 +84,10 @@ void CommonEventStickyTest::TearDownTestCase(void)
 {}
 
 void CommonEventStickyTest::SetUp(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
-}
+{}
 
 void CommonEventStickyTest::TearDown(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-}
+{}
 
 /*
  * @tc.number: CommonEventStickyTest_0100
@@ -114,16 +109,18 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0100, Function | MediumTes
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(true);
 
-    bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(true, publishResult);
+    struct tm recordTime = {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, recordTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello"));
 
     sleep(1);
 
     CommonEventData Stickydata;
-    bool StickyResult =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->GetStickyCommonEvent(EVENT, Stickydata);
-    EXPECT_EQ(true, StickyResult);
+    EXPECT_TRUE(
+        OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT, Stickydata));
     EXPECT_EQ(EVENT, Stickydata.GetWant().GetAction());
     EXPECT_EQ(TYPE, Stickydata.GetWant().GetType());
 }
@@ -149,9 +146,12 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0200, Function | MediumTes
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(true);
 
-    bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(true, publishResult);
+    struct tm recordTime = {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, recordTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello"));
 
     // make a want
     Want want2;
@@ -161,16 +161,14 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0200, Function | MediumTes
     CommonEventData data2;
     data2.SetWant(want2);
 
-    publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data2, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(true, publishResult);
+    EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
+        data2, publishInfo, nullptr, recordTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello"));
 
     sleep(1);
 
     CommonEventData Stickydata;
-    bool StickyResult =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->GetStickyCommonEvent(EVENT2, Stickydata);
-    EXPECT_EQ(true, StickyResult);
+    EXPECT_TRUE(
+        OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT2, Stickydata));
     EXPECT_EQ(EVENT2, Stickydata.GetWant().GetAction());
     EXPECT_EQ(TYPE2, Stickydata.GetWant().GetType());
 }
@@ -196,14 +194,16 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0300, Function | MediumTes
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(true);
 
-    bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(true, publishResult);
+    struct tm recordTime = {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, recordTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello"));
 
     CommonEventData Stickydata;
-    bool StickyResult =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->GetStickyCommonEvent("", Stickydata);
-    EXPECT_EQ(false, StickyResult);
+    EXPECT_FALSE(
+        OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent("", Stickydata));
 }
 
 /*
@@ -226,14 +226,16 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0400, Function | MediumTes
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(true);
 
-    bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(true, publishResult);
+    struct tm recordTime = {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, recordTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello"));
 
     CommonEventData Stickydata;
-    bool StickyResult =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->GetStickyCommonEvent(EVENT6, Stickydata);
-    EXPECT_EQ(false, StickyResult);
+    EXPECT_FALSE(
+        OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT6, Stickydata));
 }
 
 /*
@@ -256,14 +258,16 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0500, Function | MediumTes
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(false);
 
-    bool publishResult = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(true, publishResult);
+    struct tm recordTime = {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, recordTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello"));
 
     CommonEventData Stickydata;
-    bool StickyResult =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->GetStickyCommonEvent(EVENT5, Stickydata);
-    EXPECT_EQ(false, StickyResult);
+    EXPECT_FALSE(
+        OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT5, Stickydata));
 }
 
 /*

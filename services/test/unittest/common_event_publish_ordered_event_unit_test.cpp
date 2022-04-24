@@ -13,31 +13,32 @@
  * limitations under the License.
  */
 
-#include "common_event.h"
+#include <gtest/gtest.h>
 
 // redefine private and protected since testcase need to invoke and test private function
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
 #include "common_event_control_manager.h"
-#include "common_event_manager_service.h"
 #undef private
 #undef protected
 
+#include "common_event_listener.h"
+#include "common_event_subscriber.h"
+#include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
-
-#include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
 
 namespace {
+constexpr uint8_t PID = 0;
+constexpr uint16_t SYSTEM_UID = 1000;
 const std::string EVENT = "com.ces.test.event";
 const std::string ENTITY = "com.ces.test.entity";
 const std::string ACTION = "acion";
 std::mutex mtx;
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
-CommonEventManagerService commonEventManagerService;
 InnerCommonEventManager innerCommonEventManager;
 std::shared_ptr<CommonEventControlManager> commonEventControlManager = std::make_shared<CommonEventControlManager>();
 std::shared_ptr<EventHandler> handler_;
@@ -70,31 +71,15 @@ public:
     }
 };
 
-class LoggerTest : public OHOS::AppExecFwk::Logger {
-public:
-    /**
-     * Processes the content of a specified string.
-     * @param message the content of a specified string.
-     */
-    void Log(const std::string &line)
-    {
-        GTEST_LOG_(INFO) << line;
-    }
-    virtual ~LoggerTest()
-    {}
-};
-
 void CommonEventPublishOrderedEventUnitTest::SetUpTestCase(void)
 {
     handler_ = std::make_shared<EventHandler>(EventRunner::Create(true));
     auto task = []() {
-        std::shared_ptr<LoggerTest> logtest = std::make_shared<LoggerTest>();
-        EventRunner::GetMainEventRunner()->SetLogger(logtest);
         EventRunner::GetMainEventRunner()->Run();
     };
     handler_->PostTask(task);
 
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
 }
@@ -105,119 +90,10 @@ void CommonEventPublishOrderedEventUnitTest::TearDownTestCase(void)
 }
 
 void CommonEventPublishOrderedEventUnitTest::SetUp(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
-}
+{}
 
 void CommonEventPublishOrderedEventUnitTest::TearDown(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-}
-
-/*
- * @tc.number: CommonEventPublishOrderedUnitTest_0100
- * @tc.name: test CommonEventPublishOrderedEventUnitTest
- * @tc.desc: system run normally CaseDescription: Verify PublishCommonEvent success
- */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0100, Function | MediumTest | Level1)
-{
-    /* Publish */
-    // make a want
-    Want want;
-    want.SetAction(EVENT);
-    want.AddEntity(ENTITY);
-    // make common event data
-    CommonEventData data;
-    data.SetWant(want);
-
-    // make publish infoPRIORITY
-    CommonEventPublishInfo publishInfo;
-    publishInfo.SetOrdered(true);
-    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(true, result);
-}
-
-/*
- * @tc.number: CommonEventPublishOrderedUnitTest_0200
- * @tc.name: test CommonEventPublishOrderedEventUnitTest
- * @tc.desc: Verify PublishCommonEvent false because service stop
- */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0200, Function | MediumTest | Level1)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-    /* Publish */
-    // make a want
-    Want want;
-    want.SetAction(EVENT);
-    want.AddEntity(ENTITY);
-    // make common event data
-    CommonEventData data;
-    data.SetWant(want);
-
-    // make publish infoPRIORITY
-    CommonEventPublishInfo publishInfo;
-    publishInfo.SetOrdered(true);
-    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
-        data, publishInfo, nullptr, UNDEFINED_USER);
-    EXPECT_EQ(false, result);
-}
-
-/*
- * @tc.number: CommonEventPublishOrderedUnitTest_0300
- * @tc.name: test FinishReceiver
- * @tc.desc: Verify FinishReceiver return false because service stop
- */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0300, Function | MediumTest | Level1)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-
-    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
-    CommonEventListener *proxy = new CommonEventListener(subscriber);
-    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->FinishReceiver(
-        proxy, 0, "receiverdata", true);
-    EXPECT_EQ(false, result);
-}
-
-/*
- * @tc.number: CommonEventPublishOrderedUnitTest_0400
- * @tc.name: test Init
- * @tc.desc: Verify Init fail because innerCommonEventManager_ is null
- */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0400, Function | MediumTest | Level1)
-{
-    commonEventManagerService.innerCommonEventManager_ = nullptr;
-    OHOS::ErrCode code = commonEventManagerService.Init();
-    EXPECT_EQ(OHOS::ERR_INVALID_OPERATION, code);
-}
-
-/*
- * @tc.number: CommonEventPublishOrderedUnitTest_0500
- * @tc.name: test IsReady
- * @tc.desc: Verify IsReady fail because innerCommonEventManager_ is null
- */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0500, Function | MediumTest | Level1)
-{
-    commonEventManagerService.innerCommonEventManager_ = nullptr;
-    bool result = commonEventManagerService.IsReady();
-    EXPECT_EQ(false, result);
-}
-
-/*
- * @tc.number: CommonEventPublishOrderedUnitTest_0600
- * @tc.name: test IsReady
- * @tc.desc: Verify IsReady fail because handler_ is null
- */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0600, Function | MediumTest | Level1)
-{
-    commonEventManagerService.handler_ = nullptr;
-    bool result = commonEventManagerService.IsReady();
-    EXPECT_EQ(false, result);
-}
+{}
 
 /*
  * @tc.number: CommonEventPublishOrderedUnitTest_0700
@@ -257,9 +133,9 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     };
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "bundlename");
 
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 
     int count = 0;
     while (!mtx.try_lock()) {
@@ -306,8 +182,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
-    EXPECT_EQ(false, result);
+        data, publishInfo, commonEventListener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "bundlename");
+    EXPECT_FALSE(result);
 }
 
 /*
@@ -353,7 +229,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     bool result = false;
     result = commonEventControlManager->PublishCommonEvent(commonEventRecord, commonEventListenerPtr);
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 
     int count = 0;
     while (!mtx.try_lock()) {
@@ -399,7 +275,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
     mtx.lock();
     bool result = commonEventControlManager->ProcessOrderedEvent(commonEventRecord, commonEventListenerPtr);
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 
     int count = 0;
     while (!mtx.try_lock()) {
@@ -422,7 +298,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1100, Function | MediumTest | Level1)
 {
     bool result = commonEventControlManager->EnqueueOrderedRecord(nullptr);
-    EXPECT_EQ(false, result);
+    EXPECT_FALSE(result);
 }
 
 /*
@@ -445,7 +321,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->nextReceiver = 0;
 
     bool result = commonEventControlManager->EnqueueOrderedRecord(eventRecord);
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 }
 
 /*
@@ -457,7 +333,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 {
     commonEventControlManager->scheduled_ = true;
     bool result = commonEventControlManager->ScheduleOrderedCommonEvent();
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 }
 
 /*
@@ -470,7 +346,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     commonEventControlManager->scheduled_ = false;
 
     bool result = commonEventControlManager->ScheduleOrderedCommonEvent();
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
     GTEST_LOG_(INFO) << "Testcase finished";
 }
 
@@ -495,7 +371,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     std::string receiverData = "receiverData";
     bool result = commonEventControlManager->FinishReceiver(eventRecord, 0, receiverData, false);
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 }
 
 /*
@@ -519,7 +395,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     std::string receiverData = "receiverData";
     bool result = commonEventControlManager->FinishReceiver(eventRecord, 0, receiverData, false);
-    EXPECT_EQ(false, result);
+    EXPECT_FALSE(result);
 }
 
 /*
@@ -531,7 +407,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 {
     std::string receiverData = "receiverData";
     bool result = commonEventControlManager->FinishReceiver(nullptr, 0, receiverData, false);
-    EXPECT_EQ(false, result);
+    EXPECT_FALSE(result);
 }
 
 /*
@@ -544,7 +420,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     commonEventControlManager->handlerOrdered_ =
         std::make_shared<OrderedEventHandler>(EventRunner::Create(), commonEventControlManager);
     bool result = commonEventControlManager->GetOrderedEventHandler();
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 }
 
 /*
@@ -561,7 +437,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     if (commonEventControlManager->orderedEventQueue_.size() == 0) {
         result = true;
     }
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
     commonEventControlManager->orderedEventQueue_.clear();
 }
 
@@ -593,7 +469,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     if (commonEventControlManager->orderedEventQueue_.size() > 0) {
         result = true;
     }
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
     commonEventControlManager->orderedEventQueue_.clear();
 }
 
@@ -621,7 +497,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     commonEventControlManager->scheduled_ = true;
     bool ret = commonEventControlManager->EnqueueOrderedRecord(eventRecord);
-    EXPECT_EQ(true, ret);
+    EXPECT_TRUE(ret);
     commonEventControlManager->CurrentOrderedEventTimeout(true);
 
     bool result = false;
@@ -629,7 +505,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         GTEST_LOG_(INFO) << std::to_string(commonEventControlManager->orderedEventQueue_.front()->nextReceiver);
         result = true;
     }
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
     commonEventControlManager->orderedEventQueue_.clear();
 }
 
@@ -642,7 +518,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 {
     commonEventControlManager->pendingTimeoutMessage_ = true;
     bool result = commonEventControlManager->CancelTimeout();
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 }
 
 /*
@@ -655,7 +531,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     bool result = false;
     commonEventControlManager->pendingTimeoutMessage_ = false;
     result = commonEventControlManager->CancelTimeout();
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 }
 
 /*
@@ -697,9 +573,9 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "bundlename");
 
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 
     int count = 0;
     while (!mtx.try_lock()) {
@@ -754,9 +630,9 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "bundlename");
 
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 
     int count = 0;
     while (!mtx.try_lock()) {
@@ -811,9 +687,9 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "bundlename");
 
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 
     int count = 0;
     while (!mtx.try_lock()) {
@@ -868,9 +744,9 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     // publish ordered event
     bool result = innerCommonEventManager.PublishCommonEvent(
-        data, publishInfo, commonEventListener, curTime, 0, 0, tokenID, UNDEFINED_USER, "bundlename");
+        data, publishInfo, commonEventListener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "bundlename");
 
-    EXPECT_EQ(true, result);
+    EXPECT_TRUE(result);
 
     int count = 0;
     while (!mtx.try_lock()) {

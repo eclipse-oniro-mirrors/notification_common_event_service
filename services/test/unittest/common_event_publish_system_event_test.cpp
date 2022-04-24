@@ -13,27 +13,28 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
+
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
 #undef private
 #undef protected
 
-#include "common_event.h"
+#include "common_event_listener.h"
+#include "common_event_subscriber.h"
 #include "common_event_support.h"
 #include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
-
-#include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
 
 namespace {
-const int PID = 0;
-const int SYSTEM_APP_UID = 1000;  // system app
-constexpr int NON_SYSTEM_APP_UID = 20010099;  // third party app
-const int PUBLISH_SLEEP = 5;
+constexpr uint8_t PID = 0;
+constexpr uint16_t SYSTEM_APP_UID = 1000;  // system app
+constexpr uint32_t NON_SYSTEM_APP_UID = 20010099;  // third party app
+constexpr uint8_t PUBLISH_SLEEP = 1;
 }  // namespace
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
@@ -55,7 +56,7 @@ public:
 
 void CommonEventPublishSystemEventTest::SetUpTestCase(void)
 {
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
 }
@@ -112,8 +113,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
-    EXPECT_EQ(true, publishResult);
     sleep(PUBLISH_SLEEP);
+    EXPECT_TRUE(publishResult);
 }
 
 /*
@@ -142,8 +143,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_02
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, NON_SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
-    EXPECT_EQ(false, publishResult);
     sleep(PUBLISH_SLEEP);
+    EXPECT_FALSE(publishResult);
 }
 
 /*
@@ -171,9 +172,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
     // SubscribeCommonEvent
     struct tm curTime{0};
     InnerCommonEventManager innerCommonEventManager;
-    bool subscribeResult = innerCommonEventManager.SubscribeCommonEvent(
-        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, tokenID, "bundlename");
-    EXPECT_EQ(true, subscribeResult);
+    EXPECT_TRUE(innerCommonEventManager.SubscribeCommonEvent(
+        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, tokenID, "bundlename"));
 
     /* Publish */
 
@@ -192,8 +192,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_03
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
-    sleep(1);
-    EXPECT_EQ(true, publishResult);
+    sleep(PUBLISH_SLEEP);
+    EXPECT_TRUE(publishResult);
 
     innerCommonEventManager.UnsubscribeCommonEvent(commonEventListenerPtr);
 }
@@ -223,9 +223,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
     // SubscribeCommonEvent
     struct tm curTime{0};
     InnerCommonEventManager innerCommonEventManager;
-    bool subscribeResult = innerCommonEventManager.SubscribeCommonEvent(
-        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, tokenID, "bundlename");
-    EXPECT_EQ(true, subscribeResult);
+    EXPECT_TRUE(innerCommonEventManager.SubscribeCommonEvent(
+        subscribeInfo, commonEventListenerPtr, curTime, PID, SYSTEM_APP_UID, tokenID, "bundlename"));
 
     /* Publish */
 
@@ -244,8 +243,8 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_04
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
-    sleep(1);
-    EXPECT_EQ(true, publishResult);
+    sleep(PUBLISH_SLEEP);
+    EXPECT_TRUE(publishResult);
 
     innerCommonEventManager.UnsubscribeCommonEvent(commonEventListenerPtr);
 }

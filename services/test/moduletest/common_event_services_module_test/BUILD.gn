@@ -43,7 +43,7 @@ ohos_moduletest("cesModuleTest") {
     "//foundation/distributedschedule/samgr/services/samgr/native/include",
     "//foundation/distributedschedule/samgr/utils/native/include",
     "${services_path}/include",
-    "${services_path}/test/unittest/mock/include",
+    "${services_path}/test/mock/include",
     "//third_party/json/include",
     "//utils/native/base/include",
     "//utils/system/safwk/native/include",

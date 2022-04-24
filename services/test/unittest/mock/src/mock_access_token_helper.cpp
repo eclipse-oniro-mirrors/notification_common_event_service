@@ -14,6 +14,7 @@
  */
 
 #include "access_token_helper.h"
+#include "event_log_wrapper.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -23,12 +24,14 @@ constexpr unsigned int PERMISSION_GRANTED = 1;
 
 bool AccessTokenHelper::VerifyNativeToken(const AccessToken::AccessTokenID &callerToken)
 {
+    EVENT_LOGD("MockAccessTokenHelper::VerifyNativeToken");
     return callerToken == PERMISSION_GRANTED;
 }
 
 int AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &callerToken, const std::string &permission)
 {
-    return callerToken == PERMISSION_GRANTED;
+    EVENT_LOGD("MockAccessTokenHelper::VerifyAccessToken");
+    return callerToken != PERMISSION_GRANTED;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

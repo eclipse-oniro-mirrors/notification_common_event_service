@@ -14,19 +14,16 @@
  */
 
 #include <gtest/gtest.h>
+
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
-#include "common_event.h"
-#include "common_event_constant.h"
-#include "common_event_manager.h"
-#include "common_event_manager_service.h"
 #undef private
 #undef protected
 #define UNIT_TEST
-#include "common_event_sticky_manager.h"
+#include "common_event_constant.h"
+#include "common_event_listener.h"
 #include "datetime_ex.h"
-#include "errors.h"
 #include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
 
@@ -43,14 +40,16 @@ const std::string EVENTCASE7 = "com.ces.test.event.case7";
 const std::string INNITDATA = "com.ces.test.initdata";
 const std::string CHANGEDATA = "com.ces.test.changedata";
 const std::string CHANGEDATA2 = "com.ces.test.changedata2";
-const int INNITCODE = 0;
-const int CHANGECODE = 1;
-const int CHANGECODE2 = 2;
-const uid_t UID = 1;
-const uid_t UID2 = 2;
-const int PUBLISH_SLEEP = 1;
-const int FREEZE_SLEEP = 10;
-const int FREEZE_SLEEP2 = 120;
+constexpr uint8_t INNITCODE = 0;
+constexpr uint8_t CHANGECODE = 1;
+constexpr uint8_t CHANGECODE2 = 2;
+constexpr uint8_t PID = 0;
+constexpr uint16_t SYSTEM_UID = 1000;
+constexpr uid_t UID = 1;
+constexpr uid_t UID2 = 2;
+constexpr uint8_t PUBLISH_SLEEP = 1;
+constexpr uint8_t FREEZE_SLEEP = 10;
+constexpr uint8_t FREEZE_SLEEP2 = 120;
 bool isFreeze_uid = false;
 bool isFreeze_uid2 = false;
 std::mutex mtx;
@@ -128,9 +127,7 @@ private:
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
     {
-        bool finishReceiverResult =
-            CommonEventFreezeTest::FinishReceiver(commonEventListener, CHANGECODE, CHANGEDATA, false);
-        EXPECT_EQ(true, finishReceiverResult);
+        EXPECT_TRUE(CommonEventFreezeTest::FinishReceiver(commonEventListener, CHANGECODE, CHANGEDATA, false));
     }
 
 private:
@@ -185,9 +182,7 @@ private:
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
     {
-        bool finishReceiverResult =
-            CommonEventFreezeTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false);
-        EXPECT_EQ(true, finishReceiverResult);
+        EXPECT_TRUE(CommonEventFreezeTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false));
     }
 
 private:
@@ -246,9 +241,7 @@ private:
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
     {
-        bool finishReceiverResult =
-            CommonEventFreezeTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false);
-        EXPECT_EQ(true, finishReceiverResult);
+        EXPECT_TRUE(CommonEventFreezeTest::FinishReceiver(commonEventListener, CHANGECODE2, CHANGEDATA2, false));
     }
 
 private:
@@ -260,7 +253,7 @@ std::shared_ptr<InnerCommonEventManager> CommonEventFreezeTest::innerCommonEvent
 
 void CommonEventFreezeTest::SetUpTestCase(void)
 {
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
 }
@@ -327,8 +320,6 @@ bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, cons
     if (!OHOS::GetSystemCurrentTime(&recordTime)) {
         return false;
     }
-    pid_t callingPid = 0;
-    uid_t callingUid = 0;
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     int32_t userId = UNDEFINED_USER;
     std::string bundleName = "";
@@ -339,8 +330,8 @@ bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, cons
         publishInfo,
         commonEventListener,
         recordTime,
-        callingPid,
-        callingUid,
+        PID,
+        SYSTEM_UID,
         tokenID,
         userId,
         bundleName,
@@ -405,8 +396,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
-    bool subscribeResult = SubscribeCommonEvent(subscriberTest, UID, commonEventListener);
-    EXPECT_EQ(true, subscribeResult);
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
 
     // make another matching skills
     MatchingSkills matchingSkillsAnother;
@@ -419,8 +409,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
     std::shared_ptr<SubscriberTest2> subscriberTest2 = std::make_shared<SubscriberTest2>(subscribeInfo2);
 
     // subscribe another event
-    bool subscribeResult2 = SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2);
-    EXPECT_EQ(true, subscribeResult2);
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
 
     mtx.lock();
     auto handler = std::make_shared<EventHandler>(EventRunner::Create());
@@ -448,8 +437,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
         sleep(PUBLISH_SLEEP);
 
         // publish order event
-        bool publishResult = PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3);
-        EXPECT_EQ(true, publishResult);
+        EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
     }
 
     sleep(PUBLISH_SLEEP);
@@ -470,8 +458,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // subscribe a common event
-    bool subscribeResult = SubscribeCommonEvent(subscriberTest, UID, commonEventListener);
-    EXPECT_EQ(true, subscribeResult);
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
 
     // make another matching skills
     MatchingSkills matchingSkillsAnother;
@@ -484,8 +471,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
     std::shared_ptr<SubscriberTest2> subscriberTest2 = std::make_shared<SubscriberTest2>(subscribeInfo2);
 
     // subscribe another event
-    bool subscribeResult2 = SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2);
-    EXPECT_EQ(true, subscribeResult2);
+    EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
 
     mtx.lock();
     auto handler = std::make_shared<EventHandler>(EventRunner::Create());
@@ -511,8 +497,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
         sleep(PUBLISH_SLEEP);
 
         // publish order event
-        bool publishResult = PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3);
-        EXPECT_EQ(true, publishResult);
+        EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
     }
 
     sleep(PUBLISH_SLEEP);

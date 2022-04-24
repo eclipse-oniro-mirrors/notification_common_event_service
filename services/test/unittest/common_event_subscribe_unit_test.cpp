@@ -13,17 +13,20 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
+
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
-#include "common_event.h"
-#include "common_event_manager_service.h"
+#include "common_event_subscriber_manager.h"
 #undef private
 #undef protected
 
+#include "common_event_listener.h"
+#include "common_event_stub.h"
+#include "common_event_subscriber.h"
+#include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
-
-#include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -34,7 +37,6 @@ const std::string ENTITY = "com.ces.test.entity";
 const std::string SCHEME = "com.ces.test.scheme";
 const std::string PERMISSION = "com.ces.test.permission";
 const std::string DEVICEDID = "deviceId";
-const int PRIORITY = 1;
 }  // namespace
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
@@ -68,18 +70,18 @@ public:
     {}
 
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
+        const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener, const int32_t &userId)
     {
         return false;
     }
 
     virtual bool SubscribeCommonEvent(
-        const CommonEventSubscribeInfo &subscribeInfo, const OHOS::sptr<IRemoteObject> &commonEventListener)
+        const CommonEventSubscribeInfo &subscribeInfo, const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
     {
         return false;
     }
 
-    virtual bool UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject> &commonEventListener)
+    virtual bool UnsubscribeCommonEvent(const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
     {
         return false;
     }
@@ -92,7 +94,7 @@ public:
     virtual ~CommonEventStubTest()
     {}
 
-    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int &code,
+    virtual bool FinishReceiver(const OHOS::sptr<OHOS::IRemoteObject> &proxy, const int &code,
         const std::string &receiverData, const bool &abortEvent)
     {
         return false;
@@ -113,7 +115,7 @@ public:
 
 void CommonEventSubscribeUnitTest::SetUpTestCase(void)
 {
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
 }
@@ -122,79 +124,10 @@ void CommonEventSubscribeUnitTest::TearDownTestCase(void)
 {}
 
 void CommonEventSubscribeUnitTest::SetUp(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
-}
+{}
 
 void CommonEventSubscribeUnitTest::TearDown(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-}
-
-/*
- * @tc.number: CommonEventSubscribeUnitTest_0100
- * @tc.name: test SubscribeCommonEvent
- * @tc.desc: Verify SubscribeCommonEvent success
- */
-HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0100, Function | MediumTest | Level1)
-{
-    // make matching skills
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-    matchingSkills.AddEntity(ENTITY);
-    matchingSkills.AddScheme(SCHEME);
-
-    // make subscriber info
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscribeInfo.SetPriority(PRIORITY);
-    subscribeInfo.SetPermission(PERMISSION);
-    subscribeInfo.SetDeviceId(DEVICEDID);
-
-    // make subscriber
-    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
-
-    // make common event listener
-    CommonEventListener *listener = new CommonEventListener(subscriber);
-
-    // SubscribeCommonEvent
-    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject());
-    EXPECT_EQ(true, result);
-}
-
-/*
- * @tc.number: CommonEventSubscribeUnitTest_0200
- * @tc.name: test SubscribeCommonEvent
- * @tc.desc: Verify SubscribeCommonEvent fail because service stop
- */
-HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0200, Function | MediumTest | Level1)
-{
-    // OnStop
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-
-    // make matching skills
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-    matchingSkills.AddEntity(ENTITY);
-    matchingSkills.AddScheme(SCHEME);
-
-    // make subscriber info
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscribeInfo.SetPriority(PRIORITY);
-    subscribeInfo.SetPermission(PERMISSION);
-    subscribeInfo.SetDeviceId(DEVICEDID);
-
-    // make subscriber
-    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
-
-    // make common event listener
-    CommonEventListener *listener = new CommonEventListener(subscriber);
-
-    // SubscribeCommonEvent
-    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
-        subscribeInfo, listener->AsObject());
-    EXPECT_EQ(false, result);
-}
+{}
 
 /*
  * @tc.number: CommonEventSubscribeUnitTest_0300
@@ -217,9 +150,10 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0300, Functi
 
     // SubscribeCommonEvent
     struct tm curTime {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     InnerCommonEventManager innerCommonEventManager;
-    EXPECT_EQ(
-        true, innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, commonEventListenerPtr, curTime, 0, 0, ""));
+    EXPECT_TRUE(innerCommonEventManager.SubscribeCommonEvent(
+        subscribeInfo, commonEventListenerPtr, curTime, 0, 0, tokenID, ""));
 }
 
 /*
@@ -241,10 +175,11 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0400, Functi
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
     // SubscribeCommonEvent
-    InnerCommonEventManager innerCommonEventManager;
     struct tm curTime {0};
-    EXPECT_EQ(
-        false, innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, commonEventListenerPtr, curTime, 0, 0, ""));
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_FALSE(innerCommonEventManager.SubscribeCommonEvent(
+        subscribeInfo, commonEventListenerPtr, curTime, 0, 0, tokenID, ""));
 }
 
 /*
@@ -262,10 +197,11 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0500, Functi
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     // SubscribeCommonEvent
-    InnerCommonEventManager innerCommonEventManager;
     OHOS::sptr<OHOS::IRemoteObject> sp(nullptr);
     struct tm curTime;
-    EXPECT_EQ(false, innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, sp, curTime, 0, 0, ""));
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_FALSE(innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, sp, curTime, 0, 0, tokenID, ""));
 }
 
 /*
@@ -291,9 +227,13 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0600, Functi
 
     // InsertSubscriber
     struct tm curTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
     CommonEventSubscriberManager commonEventSubscriberManager;
     auto result = commonEventSubscriberManager.InsertSubscriber(
-        subscribeInfoPtr, commonEventListener, curTime, 0, 0, "bundlename");
+        subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo);
     EXPECT_NE(nullptr, result);
 }
 
@@ -319,10 +259,14 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0700, Functi
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
     // InsertSubscriber
-    CommonEventSubscriberManager commonEventSubscriberManager;
     struct tm curTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
+    CommonEventSubscriberManager commonEventSubscriberManager;
     auto result =
-        commonEventSubscriberManager.InsertSubscriber(nullptr, commonEventListenerPtr, curTime, 0, 0, "bundlename");
+        commonEventSubscriberManager.InsertSubscriber(nullptr, commonEventListenerPtr, curTime, eventRecordInfo);
     EXPECT_EQ(nullptr, result);
 }
 
@@ -347,8 +291,12 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0800, Functi
 
     // InsertSubscriber
     struct tm curTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
     CommonEventSubscriberManager commonEventSubscriberManager;
-    auto result = commonEventSubscriberManager.InsertSubscriber(subscribeInfoPtr, nullptr, curTime, 0, 0, "bundlename");
+    auto result = commonEventSubscriberManager.InsertSubscriber(subscribeInfoPtr, nullptr, curTime, eventRecordInfo);
     EXPECT_EQ(nullptr, result);
 }
 
@@ -378,9 +326,13 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Functi
 
     // InsertSubscriber
     struct tm curTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
     CommonEventSubscriberManager commonEventSubscriberManager;
     auto result = commonEventSubscriberManager.InsertSubscriber(
-        subscribeInfoPtr, commonEventListenerPtr, curTime, 0, 0, "bundlename");
+        subscribeInfoPtr, commonEventListenerPtr, curTime, eventRecordInfo);
     EXPECT_EQ(nullptr, result);
 }
 
@@ -413,14 +365,13 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1000, Functi
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
     record->commonEventListener = commonEventListenerPtr;
     record->recordTime = recordTime;
-    record->pid = 0;
-    record->uid = 0;
-    record->bundleName = "bundleName";
+    record->eventRecordInfo.pid = 0;
+    record->eventRecordInfo.uid = 0;
+    record->eventRecordInfo.bundleName = "bundleName";
 
     // InsertSubscriberRecordLocked
     CommonEventSubscriberManager commonEventSubscriberManager;
-    int result = commonEventSubscriberManager.InsertSubscriberRecordLocked(events, record);
-    EXPECT_EQ(OHOS::ERR_OK, result);
+    EXPECT_TRUE(commonEventSubscriberManager.InsertSubscriberRecordLocked(events, record));
 }
 
 /*
@@ -450,14 +401,13 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1100, Functi
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
     record->commonEventListener = commonEventListenerPtr;
     record->recordTime = recordTime;
-    record->pid = 0;
-    record->uid = 0;
-    record->bundleName = "bundleName";
+    record->eventRecordInfo.pid = 0;
+    record->eventRecordInfo.uid = 0;
+    record->eventRecordInfo.bundleName = "bundleName";
 
     // InsertSubscriberRecordLocked
     CommonEventSubscriberManager commonEventSubscriberManager;
-    int result = commonEventSubscriberManager.InsertSubscriberRecordLocked(events, record);
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_FALSE(commonEventSubscriberManager.InsertSubscriberRecordLocked(events, record));
 }
 
 /*
@@ -476,6 +426,5 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1200, Functi
     CommonEventSubscriberManager commonEventSubscriberManager;
 
     // InsertSubscriberRecordLocked
-    int result = commonEventSubscriberManager.InsertSubscriberRecordLocked(events, nullptr);
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_FALSE(commonEventSubscriberManager.InsertSubscriberRecordLocked(events, nullptr));
 }

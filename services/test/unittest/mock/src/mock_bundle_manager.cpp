@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,8 +18,8 @@
 #include "mock_bundle_manager.h"
 
 namespace OHOS {
-namespace AppExecFwk {
-constexpr int SYSTEM_UID = 1000;
+namespace EventFwk {
+constexpr uint16_t SYSTEM_UID = 1000;
 
 void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
 {
@@ -29,7 +29,7 @@ void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
 
 bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
 {
-    HILOG_ERROR("MockBundleMgrService::CheckIsSystemAppByUid beagin**********");
+    EVENT_LOGD("MockBundleMgrService::CheckIsSystemAppByUid");
     if (isSystemAppMock_) {
         return isSystemApp_;
     }
@@ -38,6 +38,7 @@ bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
 
 int MockBundleMgrService::CheckPermission(const std::string &bundleName, const std::string &permission)
 {
+    EVENT_LOGD("MockBundleMgrService::CheckPermission");
     static int num1 = 0;
     static int num2 = 0;
 
@@ -107,5 +108,5 @@ int MockBundleMgrService::CheckPermission(const std::string &bundleName, const s
 
     return -1;
 }
-}  // namespace AppExecFwk
+}  // namespace EventFwk
 }  // namespace OHOS
