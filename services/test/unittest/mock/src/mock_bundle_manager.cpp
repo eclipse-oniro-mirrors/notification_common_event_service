@@ -18,7 +18,7 @@
 #include "mock_bundle_manager.h"
 
 namespace OHOS {
-namespace EventFwk {
+namespace AppExecFwk {
 constexpr uint16_t SYSTEM_UID = 1000;
 
 void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
@@ -29,7 +29,6 @@ void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
 
 bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
 {
-    EVENT_LOGD("MockBundleMgrService::CheckIsSystemAppByUid");
     if (isSystemAppMock_) {
         return isSystemApp_;
     }
@@ -38,7 +37,6 @@ bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
 
 int MockBundleMgrService::CheckPermission(const std::string &bundleName, const std::string &permission)
 {
-    EVENT_LOGD("MockBundleMgrService::CheckPermission");
     static int num1 = 0;
     static int num2 = 0;
 
