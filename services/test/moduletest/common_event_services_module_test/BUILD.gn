@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/notification/ces_standard/event.gni")
+import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
 
-module_output_path = "ces_standard/mouduletest"
+module_output_path = "common_event_service/mouduletest"
 
 ohos_moduletest("cesModuleTest") {
   module_out_path = module_output_path
@@ -25,9 +25,7 @@ ohos_moduletest("cesModuleTest") {
     "common_event_services_module_test.cpp",
   ]
 
-  configs = [
-    "${ces_standard_path}/test/systemtest/common/ces:cesfwk_kits_test_config",
-  ]
+  configs = [ "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config" ]
 
   include_dirs = [
     "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",

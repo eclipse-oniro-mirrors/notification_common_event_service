@@ -15,15 +15,15 @@ aafwk_path = "//foundation/aafwk/standard"
 
 appexecfwk_path = "//foundation/appexecfwk/standard"
 
-ces_standard_path = "//base/notification/ces_standard"
+common_event_service_path = "//base/notification/common_event_service"
 
-frameworks_path = "${ces_standard_path}/frameworks"
+frameworks_path = "${common_event_service_path}/frameworks"
 
-interfaces_path = "${ces_standard_path}/interfaces"
+interfaces_path = "${common_event_service_path}/interfaces"
 
-services_path = "${ces_standard_path}/services"
+services_path = "${common_event_service_path}/services"
 
-tools_path = "${ces_standard_path}/tools"
+tools_path = "${common_event_service_path}/tools"
 
 ces_common_path = "${frameworks_path}/common"
 
@@ -33,9 +33,9 @@ ces_innerkits_path = "${interfaces_path}/innerkits/native"
 
 ces_native_path = "${frameworks_path}/native"
 
-ces_services_path = "${services_path}/ces"
+ces_services_path = "${services_path}"
 declare_args() {
-  ces_standard_with_graphics = true
+  common_event_service_with_graphics = true
 
   if (!defined(global_parts_info) ||
       defined(global_parts_info.account_os_account_standard)) {

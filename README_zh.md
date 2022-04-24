@@ -19,7 +19,7 @@ OpenHarmony通过CES（Common Event Service，公共事件服务）为应用程�
 ## 目录
 
 ```
-/base/notification/ces_standard/
+/base/notification/common_event_service/
 │── frameworks      # 组件目录
 │   |── common/log  # 日志组件目录
 │   |── core        # 组件native接口内部实现
@@ -574,7 +574,7 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 
 事件通知子系统
 
-**[notification_ces_standard](https://gitee.com/openharmony/notification_ces_standard/blob/master/README_zh.md)**
+**[notification_common_event_service](https://gitee.com/openharmony/notification_ces_standard/blob/master/README_zh.md)**
 
 [ans部件仓](https://gitee.com/openharmony/notification_ans_standard/blob/master/README_zh.md )
 
