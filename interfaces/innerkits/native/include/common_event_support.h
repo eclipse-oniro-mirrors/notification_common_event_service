@@ -1004,7 +1004,7 @@ public:
      * Indicate the action of a common event that a new sms emergency cell broadcast bas been received by the device.
      * This common event can be triggered only by system.
      */
-    static const std::string COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED;
+    static const std::string COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED;
 
     /**
      * Indicate the action of a common event that a new sms normal cell broadcast bas been received by the device.
@@ -1040,19 +1040,31 @@ public:
      * Indicate the action of a common event that the spn display information has been updated.
      * This common event can be triggered only by system.
      */
-    static const std::string COMMON_EVENT_SPN_INFO_UPDATED;
+    static const std::string COMMON_EVENT_SPN_INFO_CHANGED;
 
     /**
      * Indicate the action of a common event that the NITZ time has been updated.
      * This is a protected common event that can only be sent by system.
      */
-    static const std::string COMMON_EVENT_NITZ_TIME_UPDATED;
+    static const std::string COMMON_EVENT_NITZ_TIME_CHANGED;
 
     /**
      * Indicate the action of a common event that the NITZ time zone has been updated.
      * This is a protected common event that can only be sent by system.
      */
-    static const std::string COMMON_EVENT_NITZ_TIMEZONE_UPDATED;
+    static const std::string COMMON_EVENT_NITZ_TIMEZONE_CHANGED;
+
+    /**
+     * Indicate the action of a common event that a new sms wappush has been received by the device.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED;
+
+    /**
+     * Indicate the action of a common event that the operator config has been updated.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_OPERATOR_CONFIG_CHANGED;
 
     /**
      * Only for test case.

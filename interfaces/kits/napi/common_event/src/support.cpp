@@ -447,8 +447,8 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_SMS_RECEIVE_COMPLETED");
     SetNamedPropertyByStr(env,
         obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED,
-        "COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED");
+        EventFwk::CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED,
+        "COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SMS_CB_RECEIVE_COMPLETED,
@@ -471,8 +471,16 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_STK_ALPHA_IDENTIFIER");
     SetNamedPropertyByStr(env,
         obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_SPN_INFO_UPDATED,
-        "COMMON_EVENT_SPN_INFO_UPDATED");
+        EventFwk::CommonEventSupport::COMMON_EVENT_SPN_INFO_CHANGED,
+        "COMMON_EVENT_SPN_INFO_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED,
+        "COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_OPERATOR_CONFIG_CHANGED,
+        "COMMON_EVENT_OPERATOR_CONFIG_CHANGED");
 
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);

@@ -1040,7 +1040,7 @@ const std::string CommonEventSupport::COMMON_EVENT_SIM_CARD_DEFAULT_VOICE_SUBSCR
  * Indicates the action of a common event that the phone SIM card state has changed.
  * This is a protected common event that can only be sent by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_SIM_STATE_CHANGED = "usual.event.SIM.CARD_STATE_CHANGED";
+const std::string CommonEventSupport::COMMON_EVENT_SIM_STATE_CHANGED = "usual.event.SIM_STATE_CHANGED";
 
 /**
  * Indicate the action of a common event that the airplane mode of the device has changed.
@@ -1058,7 +1058,7 @@ const std::string CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED = "usua
  * Indicate the action of a common event that a new sms emergency cell broadcast bas been received by the device.
  * This common event can be triggered only by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED =
+const std::string CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED =
     "usual.event.SMS_EMERGENCY_CB_RECEIVE_COMPLETED";
 
 /**
@@ -1095,20 +1095,34 @@ const std::string CommonEventSupport::COMMON_EVENT_STK_ALPHA_IDENTIFIER = "usual
  * Indicate the action of a common event that the spn display information has been updated.
  * This common event can be triggered only by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_SPN_INFO_UPDATED = "usual.event.SPN_INFO_UPDATED";
+const std::string CommonEventSupport::COMMON_EVENT_SPN_INFO_CHANGED = "usual.event.SPN_INFO_CHANGED";
 
 /**
  * Indicate the action of a common event that the NITZ time has been updated.
  * This is a protected common event that can only be sent by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_NITZ_TIME_UPDATED = "usual.event.NITZ_TIME_UPDATED";
+const std::string CommonEventSupport::COMMON_EVENT_NITZ_TIME_CHANGED = "usual.event.NITZ_TIME_CHANGED";
 
 /**
  * Indicate the action of a common event that the NITZ time zone has been updated.
  * This is a protected common event that can only be sent by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_UPDATED =
-    "usual.event.NITZ_TIMEZONE_UPDATED";
+const std::string CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_CHANGED =
+    "usual.event.NITZ_TIMEZONE_CHANGED";
+
+/**
+ * Indicate the action of a common event that a new sms wappush has been received by the device.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED =
+    "usual.event.SMS_WAPPUSH_RECEIVE_COMPLETED";
+
+/**
+ * Indicate the action of a common event that the operator config has been updated.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_OPERATOR_CONFIG_CHANGED =
+    "usual.event.OPERATOR_CONFIG_CHANGED";
 
 /**
  * Only for test case.
@@ -1248,7 +1262,7 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED);
 
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_COMPLETED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_CB_RECEIVE_COMPLETED);
 
@@ -1260,15 +1274,19 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_STK_ALPHA_IDENTIFIER);
 
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPN_INFO_UPDATED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPN_INFO_CHANGED);
 
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIME_UPDATED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIME_CHANGED);
 
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_UPDATED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_CHANGED);
 	
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NETMANAGER_NETSTATES_UPDATED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NETMANAGER_NETSTATES_LIMITED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_OPERATOR_CONFIG_CHANGED);
 
     return;
 }
