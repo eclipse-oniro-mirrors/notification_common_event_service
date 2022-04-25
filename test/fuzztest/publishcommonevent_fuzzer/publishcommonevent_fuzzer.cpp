@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "PublishCommonEvent_fuzzer.h"
+#include "publishcommonevent_fuzzer.h"
 
 #include "common_event_manager.h"
 #include "common_event_support.h"

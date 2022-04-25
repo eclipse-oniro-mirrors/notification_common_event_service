@@ -18,8 +18,9 @@ import("//build/test.gni")
 module_output_path = "common_event_service/fuzztest"
 
 ##############################fuzztest##########################################
-ohos_fuzztest("PublishCommonEventFuzzTest") {
+ohos_fuzztest("UnSubscribeCommonEventFuzzTest") {
   module_out_path = module_output_path
+  fuzz_config_file = "//base/notification/common_event_service/test/fuzztest/unsubscribecommonevent_fuzzer"
 
   include_dirs = []
   cflags = [
@@ -28,7 +29,7 @@ ohos_fuzztest("PublishCommonEventFuzzTest") {
     "-Wno-unused-variable",
     "-fno-omit-frame-pointer",
   ]
-  sources = [ "PublishCommonEvent_fuzzer.cpp" ]
+  sources = [ "unsubscribecommonevent_fuzzer.cpp" ]
 
   deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
@@ -42,6 +43,6 @@ ohos_fuzztest("PublishCommonEventFuzzTest") {
 group("fuzztest") {
   testonly = true
   deps = []
-  deps += [ ":PublishCommonEventFuzzTest" ]
+  deps += [ ":UnSubscribeCommonEventFuzzTest" ]
 }
 ###############################################################################

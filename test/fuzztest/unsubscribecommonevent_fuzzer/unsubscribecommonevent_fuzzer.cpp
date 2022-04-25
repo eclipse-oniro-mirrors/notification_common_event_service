@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "SubscribeCommonEvent_fuzzer.h"
+#include "unsubscribecommonevent_fuzzer.h"
 
 #include "common_event_manager.h"
 
@@ -49,7 +49,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     std::shared_ptr<EventFwk::TestSubscriber> subscriber =
         std::make_shared<EventFwk::TestSubscriber>(subscribeInfo);
-    return EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber);
+    return EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber);
 }
 }  // namespace OHOS
 

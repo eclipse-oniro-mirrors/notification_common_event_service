@@ -13,17 +13,27 @@
  * limitations under the License.
  */
 
-#ifndef TEST_FUZZTEST_PUBLISHCOMMONEVENTASUSER_FUZZER_PUBLISHCOMMONEVENTASUSER_FUZZER_H
-#define TEST_FUZZTEST_PUBLISHCOMMONEVENTASUSER_FUZZER_PUBLISHCOMMONEVENTASUSER_FUZZER_H
+#include "getstickycommonevent_fuzzer.h"
 
-#define FUZZ_PROJECT_NAME "PublishCommonEventAsUser_fuzzer"
-
+#include <cstddef>
 #include <cstdint>
 
-uint32_t U32_AT(const uint8_t *ptr)
-{
-    // convert fuzz input data to an integer
-    return (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | ptr[3];
+#include "common_event_manager.h"
+
+namespace OHOS {
+    bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
+    {
+        std::string event = reinterpret_cast<const char*>(data);
+        EventFwk::CommonEventData commonEventData;
+
+        return EventFwk::CommonEventManager::GetStickyCommonEvent(event, commonEventData);
+    }
 }
 
-#endif // TEST_FUZZTEST_PUBLISHCOMMONEVENTASUSER_FUZZER_PUBLISHCOMMONEVENTASUSER_FUZZER_H
+/* Fuzzer entry point */
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
+{
+    /* Run your code on data */
+    OHOS::DoSomethingInterestingWithMyAPI(data, size);
+    return 0;
+}

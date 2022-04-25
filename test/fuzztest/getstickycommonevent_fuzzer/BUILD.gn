@@ -20,6 +20,7 @@ module_output_path = "common_event_service/fuzztest"
 ##############################fuzztest##########################################
 ohos_fuzztest("GetStickyCommonEventFuzzTest") {
   module_out_path = module_output_path
+  fuzz_config_file = "//base/notification/common_event_service/test/fuzztest/getstickycommonevent_fuzzer"
 
   include_dirs = []
   cflags = [
@@ -28,7 +29,7 @@ ohos_fuzztest("GetStickyCommonEventFuzzTest") {
     "-Wno-unused-variable",
     "-fno-omit-frame-pointer",
   ]
-  sources = [ "GetStickyCommonEvent_fuzzer.cpp" ]
+  sources = [ "getstickycommonevent_fuzzer.cpp" ]
 
   deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
