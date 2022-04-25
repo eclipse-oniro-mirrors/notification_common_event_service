@@ -40,7 +40,7 @@ namespace EventFwk {
 namespace {
 std::mutex mtx_;
 const time_t TIME_OUT_SECONDS_LIMIT = 3;
-static OHOS::sptr<OHOS::AppExecFwk::MockBundleMgrService> bundleObject = nullptr;
+static OHOS::sptr<OHOS::EventFwk::MockBundleMgrService> bundleObject = nullptr;
 std::shared_ptr<EventHandler> handlerPtr;
 }  // namespace
 
@@ -76,7 +76,7 @@ void cesModuleTest::SetUpTestCase()
     auto task = []() { EventRunner::GetMainEventRunner()->Run(); };
     handlerPtr->PostTask(task);
 
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new OHOS::EventFwk::MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
     OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();

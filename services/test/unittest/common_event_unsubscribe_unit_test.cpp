@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-#include "common_event.h"
+#include <gtest/gtest.h>
 
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
-#include "common_event_manager_service.h"
 #include "common_event_subscriber_manager.h"
 #undef private
 #undef protected
 
+#include "common_event_listener.h"
+#include "common_event_subscriber.h"
+#include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
-
-#include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -67,7 +67,7 @@ public:
 
 void CommonEventUnSubscribeUnitTest::SetUpTestCase(void)
 {
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
 }
@@ -76,78 +76,10 @@ void CommonEventUnSubscribeUnitTest::TearDownTestCase(void)
 {}
 
 void CommonEventUnSubscribeUnitTest::SetUp(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
-}
+{}
 
 void CommonEventUnSubscribeUnitTest::TearDown(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-}
-
-/*
- * @tc.number: CommonEventUnSubscribeUnitTest_0100
- * @tc.name: test SubscribeCommonEvent
- * @tc.desc: Verify UnSubscribeCommonEvent success
- */
-HWTEST_F(CommonEventUnSubscribeUnitTest, CommonEventUnSubscribeUnitTest_0100, Function | MediumTest | Level1)
-{
-    // make matching skills
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-    matchingSkills.AddEntity(ENTITY);
-    matchingSkills.AddScheme(SCHEME);
-
-    // make subscriber info
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscribeInfo.SetPriority(PRIORITY);
-    subscribeInfo.SetPermission(PERMISSION);
-    subscribeInfo.SetDeviceId(DEVICEDID);
-
-    // make subscriber
-    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
-
-    // make common event listener
-    CommonEventListener *listener = new CommonEventListener(subscriber);
-
-    // UnsubscribeCommonEvent
-    bool result =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(listener->AsObject());
-    EXPECT_EQ(true, result);
-}
-
-/*
- * @tc.number: CommonEventUnSubscribeUnitTest_0200
- * @tc.name: test SubscribeCommonEvent
- * @tc.desc: Verify UnSubscribeCommonEvent fail because service stop
- */
-HWTEST_F(CommonEventUnSubscribeUnitTest, CommonEventUnSubscribeUnitTest_0200, Function | MediumTest | Level1)
-{
-    // stop
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-
-    // make matching skills
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-    matchingSkills.AddEntity(ENTITY);
-    matchingSkills.AddScheme(SCHEME);
-
-    // make subscriber info
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscribeInfo.SetPriority(PRIORITY);
-    subscribeInfo.SetPermission(PERMISSION);
-    subscribeInfo.SetDeviceId(DEVICEDID);
-
-    // make subscriber
-    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
-
-    // make common event listener
-    CommonEventListener *listener = new CommonEventListener(subscriber);
-
-    bool result =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(listener->AsObject());
-    EXPECT_EQ(false, result);
-}
+{}
 
 /*
  * @tc.number: CommonEventUnSubscribeUnitTest_0300
@@ -170,7 +102,7 @@ HWTEST_F(CommonEventUnSubscribeUnitTest, CommonEventUnSubscribeUnitTest_0300, Fu
 
     // UnsubscribeCommonEvent
     InnerCommonEventManager innerCommonEventManager;
-    EXPECT_EQ(true, innerCommonEventManager.UnsubscribeCommonEvent(commonEventListenerPtr));
+    EXPECT_TRUE(innerCommonEventManager.UnsubscribeCommonEvent(commonEventListenerPtr));
 }
 
 /*
@@ -183,7 +115,7 @@ HWTEST_F(CommonEventUnSubscribeUnitTest, CommonEventUnSubscribeUnitTest_0400, Fu
 {
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     OHOS::sptr<OHOS::IRemoteObject> sp(nullptr);
-    EXPECT_EQ(false, innerCommonEventManager->UnsubscribeCommonEvent(sp));
+    EXPECT_FALSE(innerCommonEventManager->UnsubscribeCommonEvent(sp));
 }
 
 /*

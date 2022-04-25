@@ -40,7 +40,7 @@ using namespace OHOS::EventFwk;
 using OHOS::Parcel;
 
 namespace {
-static OHOS::sptr<OHOS::AppExecFwk::MockBundleMgrService> p_bundleObject = nullptr;
+static OHOS::sptr<OHOS::EventFwk::MockBundleMgrService> p_bundleObject = nullptr;
 const std::string EVENTCASE1 = "com.ces.test.event.case1";
 const std::string EVENTCASE2 = "com.ces.test.event.case2";
 const std::string EVENTCASE3 = "com.ces.test.event.case3";
@@ -386,7 +386,7 @@ private:
 
 void CesPublishOrderedEventModuleTest::SetUpTestCase(void)
 {
-    p_bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
+    p_bundleObject = new OHOS::EventFwk::MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(p_bundleObject);
     OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();

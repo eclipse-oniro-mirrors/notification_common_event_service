@@ -22,19 +22,24 @@
 #include "application_info.h"
 #include "bundle_mgr_host.h"
 #include "bundle_mgr_interface.h"
-#include "hilog_wrapper.h"
-#include "ohos/aafwk/content/want.h"
+#include "event_log_wrapper.h"
 #include "iremote_proxy.h"
 #include "iremote_stub.h"
+#include "want.h"
 
 namespace OHOS {
-namespace AppExecFwk {
+namespace EventFwk {
+using namespace OHOS::AppExecFwk;
+
 class MockBundleMgrService : public BundleMgrHost {
 public:
     MockBundleMgrService()
     {
-        HILOG_ERROR("BundleMgrService::BundleMgrService");
+        EVENT_LOGD("BundleMgrService::BundleMgrService");
     }
+
+    ~MockBundleMgrService()
+    {}
 
     /**
      * @brief Obtains the ApplicationInfo based on a given bundle name.
@@ -279,6 +284,7 @@ public:
      * @return Returns 0 if the bundle has the permission; returns -1 otherwise.
      */
     virtual int CheckPermission(const std::string &bundleName, const std::string &permission) override;
+
     /**
      * @brief Obtains detailed information about a specified permission.
      * @param permissionName Indicates the name of the ohos permission.
@@ -359,7 +365,7 @@ public:
      * @param bundleName Indicates the bundle name of the application whose data is to be cleared.
      * @return Returns true if the data cleared successfully; returns false otherwise.
      */
-    virtual bool CleanBundleDataFiles(const std::string &bundleName) override
+    virtual bool CleanBundleDataFiles(const std::string &bundleName, const int userId) override
     {
         return true;
     }
@@ -559,7 +565,7 @@ public:
     }
 
     /**
-     * @brief Obtains the CommonEventInfo objects provided by an event key on the device.
+     * @brief Obtains the CommonEventInfo objects provided by a event key on the device.
      * @param eventKey Indicates the event of the subscribe.
      * @param commonEventInfos List of CommonEventInfo objects if obtained.
      * @return Returns true if this function is successfully called; returns false otherwise.
@@ -570,6 +576,7 @@ public:
         return true;
     }
 
+    void MockSetIsSystemApp(bool isSystemApp);
     /**
      * @brief Get module usage record list in descending order of lastLaunchTime.
      * @param maxNum the return size of the records, must be in range of 1 to 1000.
@@ -590,18 +597,97 @@ public:
      * @return Returns true if this function is successfully called; returns false otherwise.
      */
     virtual bool NotifyAbilityLifeStatus(
-        const std::string &bundleName, const std::string &abilityName, const int64_t launchTime) override
+        const std::string &bundleName, const std::string &abilityName, const int64_t launchTime, const int uid) override
     {
         return true;
     }
 
-    void MockSetIsSystemApp(bool isSystemApp);
+    /**
+     * @brief Remove cloned bundle.
+     * @param bundleName Indicates the bundle name of remove cloned bundle.
+     * @param uid Indicates the uid of remove cloned bundle.
+     * @return Returns true if this function is successfully called; returns false otherwise.
+     */
+    virtual bool RemoveClonedBundle(const std::string &bundleName, const int32_t uid) override
+    {
+        return true;
+    }
+
+    /**
+     * @brief create bundle clone.
+     * @param bundleName Indicates the bundle name of create bundle clone.
+     * @return Returns true if this function is successfully called; returns false otherwise.
+     */
+    virtual bool BundleClone(const std::string &bundleName) override
+    {
+        return true;
+    }
+
+    /**
+     * @brief Obtains an array of all group IDs associated with the given bundle name and UID.
+     * @param bundleName Indicates the bundle name.
+     * @param uid Indicates the uid.
+     * @param gids Indicates the group IDs associated with the specified bundle.
+     * @return Returns true if the gids is successfully obtained; returns false otherwise.
+     */
+    virtual bool GetBundleGidsByUid(const std::string &bundleName, const int &uid, std::vector<int> &gids) override
+    {
+        return true;
+    }
+
+    /**
+     * @brief Query the AbilityInfo by ability.uri in config.json.
+     * @param abilityUri Indicates the uri of the ability.
+     * @param abilityInfos Indicates the obtained AbilityInfos object.
+     * @return Returns true if the AbilityInfo is successfully obtained; returns false otherwise.
+     */
+    virtual bool QueryAbilityInfosByUri(const std::string &abilityUri, std::vector<AbilityInfo> &abilityInfos) override
+    {
+        return true;
+    }
+
+    /**
+     * @brief Checks whether a specified bundle has been granted a specific permission.
+     * @param bundleName Indicates the name of the bundle to check.
+     * @param permission Indicates the permission to check.
+     * @param userId Indicates the user ID.
+     * @return Returns 0 if the bundle has the permission; returns -1 otherwise.
+     */
+    virtual int CheckPermissionByUid(
+        const std::string &bundleName, const std::string &permission, const int userId) override
+    {
+        return 0;
+    }
+
+    /**
+     * @brief Determine whether the application is in the allow list.
+     * @param bundleName Indicates the bundle Names.
+     * @return Returns true if bundle name in the allow list successfully; returns false otherwise.
+     */
+    virtual bool CheckBundleNameInAllowList(const std::string &bundleName) override
+    {
+        return true;
+    }
+
+    /**
+     * @brief Obtains the DistributedBundleInfo based on a given bundle name and networkId.
+     * @param networkId Indicates the networkId of remote device.
+     * @param bundleName Indicates the application bundle name to be queried.
+     * @param distributedBundleInfo Indicates the obtained DistributedBundleInfo object.
+     * @return Returns true if the DistributedBundleInfo is successfully obtained; returns false otherwise.
+     */
+    virtual bool GetDistributedBundleInfo(
+        const std::string &networkId, const std::string &bundleName,
+        DistributedBundleInfo &distributedBundleInfo) override
+    {
+        return true;
+    }
 
 private:
     bool isSystemApp_ = false;
     bool isSystemAppMock_ = false;
 };
-}  // namespace AppExecFwk
+}  // namespace EventFwk
 }  // namespace OHOS
 
 #endif  // FOUNDATION_EVENT_CESFWK_SERVICES_TEST_UNITTEST_MOCK_INCLUDE_MOCK_BUNDLE_MANAGER_H

@@ -13,32 +13,16 @@
  * limitations under the License.
  */
 
-#include "common_event.h"
+#include <gtest/gtest.h>
 
-// redefine private and protected since testcase need to invoke and test private function
-#define private public
-#define protected public
-#include "bundle_manager_helper.h"
-#include "common_event_control_manager.h"
-#include "common_event_manager_service.h"
-#undef private
-#undef protected
-
-#include "common_event_manager.h"
-#include "common_event_record.h"
-#include "common_event_support.h"
-#include "mock_bundle_manager.h"
 #include "publish_manager.h"
 #include "system_time.h"
-
-#include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::EventFwk;
 
 namespace {
-static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
 constexpr int32_t FLOOD_ATTACK_MAX = 20;
 constexpr int32_t NOT_ATTACK_TIME = 10 + FLOOD_ATTACK_MAX;
 constexpr int32_t TEST_TIMES = 100;
@@ -61,11 +45,7 @@ public:
 };
 
 void CommonEventPublishManagerEventUnitTest::SetUpTestCase(void)
-{
-    bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
-    OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
-        OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
-}
+{}
 
 void CommonEventPublishManagerEventUnitTest::TearDownTestCase(void)
 {}
@@ -91,7 +71,7 @@ HWTEST_F(CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventU
     for (int i = 1; i <= TEST_TIMES; ++i) {
         result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID1);
         if (result) {
-            EXPECT_EQ(true, i > FLOOD_ATTACK_MAX);
+            EXPECT_TRUE(i > FLOOD_ATTACK_MAX);
         }
     }
     GTEST_LOG_(INFO)
@@ -110,7 +90,7 @@ HWTEST_F(CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventU
 
     for (int i = 1; i <= TEST_TIMES; ++i) {
         usleep(SLEEP_TIME);
-        EXPECT_EQ(false, DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID2));
+        EXPECT_FALSE(DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID2));
     }
     GTEST_LOG_(INFO)
         << "CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventUnitTestt_0200, TestSize.Level1 end";
@@ -130,13 +110,12 @@ HWTEST_F(CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventU
 
     for (int i = 1; i <= TEST_TIMES; ++i) {
         if (i <= NOT_ATTACK_TIME) {
-            result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID3);
-            EXPECT_EQ(false, result);
+            EXPECT_FALSE(DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID3));
             usleep(SLEEP_TIME);
         } else {
             result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID3);
             if (result) {
-                EXPECT_EQ(true, i >= NOT_ATTACK_TIME + FLOOD_ATTACK_MAX + 1);
+                EXPECT_TRUE(i >= NOT_ATTACK_TIME + FLOOD_ATTACK_MAX + 1);
                 break;
             }
         }
