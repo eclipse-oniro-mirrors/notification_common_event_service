@@ -14,5 +14,8 @@
 import("//build/ohos.gni")
 
 group("napi_packages") {
-  deps = [ "//base/notification/common_event_service/interfaces/kits/napi/common_event:commonevent" ]
+  deps = []
+  if (support_jsapi) {
+    deps += [ "//base/notification/common_event_service/interfaces/kits/napi/common_event:commonevent" ]
+  }
 }
