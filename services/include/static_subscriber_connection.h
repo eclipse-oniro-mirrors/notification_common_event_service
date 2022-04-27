@@ -24,10 +24,28 @@ namespace OHOS {
 namespace EventFwk {
 class StaticSubscriberConnection : public AAFwk::AbilityConnectionStub {
 public:
+    /**
+     * Constructor.
+     *
+     * @param event, Indicates the common event data.
+     */
     explicit StaticSubscriberConnection(const CommonEventData& event) : event_(event) {}
+    /**
+     * OnAbilityConnectDone, Ability Manager Service notify caller ability the result of connect.
+     *
+     * @param element, Indicates elementName of service ability.
+     * @param remoteObject, Indicates the session proxy of service ability.
+     * @param resultCode, Returns ERR_OK on success, others on failure.
+     */
     void OnAbilityConnectDone(
         const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode) override;
 
+    /**
+     * OnAbilityDisconnectDone, Ability Manager Service notify caller ability the result of disconnect.
+     *
+     * @param element, Indicates elementName of service ability.
+     * @param resultCode, Returns ERR_OK on success, others on failure.
+     */
     void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode) override;
 private:
     sptr<AppExecFwk::StaticSubscriberProxy> proxy_ = nullptr;

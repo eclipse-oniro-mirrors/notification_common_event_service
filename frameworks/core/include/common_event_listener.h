@@ -29,12 +29,28 @@ public:
     using EventHandler = OHOS::AppExecFwk::EventHandler;
     using EventRunner = OHOS::AppExecFwk::EventRunner;
 
+    /**
+     * Constructor.
+     *
+     * @param commonEventSubscriber the CommonEventSubscriber object
+     */
     explicit CommonEventListener(const std::shared_ptr<CommonEventSubscriber> &commonEventSubscriber);
 
     virtual ~CommonEventListener() override;
 
-    virtual void NotifyEvent(const CommonEventData &CommonEventData, const bool &ordered, const bool &sticky) override;
+    /**
+     * Notifies event.
+     *
+     * @param data Indicates the common event data.
+     * @param ordered Indicates whether it is an ordered common event.
+     * @param sticky Indicates whether it is a sticky common event.
+     */
+    virtual void NotifyEvent(const CommonEventData &data, const bool &ordered, const bool &sticky) override;
 
+    /**
+     * Stops to receive events.
+     *
+     */
     void Stop();
 
 private:

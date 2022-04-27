@@ -26,14 +26,14 @@ public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.eventfwk.IEventReceive");
 
     /**
-     * Notify event.
+     * Notifies event.
      *
-     * @param commonEventData  the common event data
-     * @param ordered          whether it is an ordered common event
-     * @param sticky               whether it is a sticky common event
+     * @param data Indicates the common event data.
+     * @param ordered Indicates whether it is an ordered common event.
+     * @param sticky Indicates whether it is a sticky common event.
      *
      */
-    virtual void NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky) = 0;
+    virtual void NotifyEvent(const CommonEventData &data, const bool &ordered, const bool &sticky) = 0;
 
     enum class Message {
         CES_NOTIFY_COMMON_EVENT = 1,

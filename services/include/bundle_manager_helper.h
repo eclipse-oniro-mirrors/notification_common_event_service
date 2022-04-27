@@ -37,18 +37,61 @@ public:
 
     virtual ~BundleManagerHelper();
 
+    /**
+     * Checks whether it is system application.
+     *
+     * @param uid Indicates the uid of the application.
+     * @return Returns true if successful; false otherwise.
+     */
     bool CheckIsSystemAppByUid(uid_t uid);
 
+    /**
+     * Gets bundle name.
+     *
+     * @param uid Indicates the uid of the application.
+     * @return Returns the bundle name.
+     */
     std::string GetBundleName(int uid);
 
+    /**
+     * Queries extension information.
+     *
+     * @param extensionInfo Indicates the extension information.
+     * @return Returns true if successful; false otherwise.
+     */
     bool QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfo);
 
+    /**
+     * Queries extension information by user.
+     *
+     * @param extensionInfos Indicates the extension information.
+     * @param userId Indicates the ID of user.
+     * @return Returns true if successful; false otherwise.
+     */
     bool QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos, const int32_t &userId);
 
+    /**
+     * Gets res config file.
+     *
+     * @param extension Indicates the extension information.
+     * @param profileInfos Indicates the profile information.
+     * @return Returns true if successful; false otherwise.
+     */
     bool GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension, std::vector<std::string> &profileInfos);
 
+    /**
+     * Checks permission.
+     *
+     * @param bundleName Indicates the bundle name.
+     * @param permission Indicates the permission name.
+     * @return Returns true if successful; false otherwise.
+     */
     bool CheckPermission(const std::string &bundleName, const std::string &permission);
 
+    /**
+     * Clears bundle manager helper.
+     *
+     */
     void ClearBundleManagerHelper();
 
 private:

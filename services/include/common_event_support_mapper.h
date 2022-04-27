@@ -28,8 +28,19 @@ public:
 
     ~CommonEventSupportMapper() = default;
 
+    /**
+     * Inits mapper.
+     *
+     */
     void Init();
 
+    /**
+     * Gets mapped support.
+     *
+     * @param support the input event name
+     * @param mappedSupport the output event name
+     * @return Returns true if successful; false otherwise.
+     */
     bool GetMappedSupport(const std::string &support, std::string &mappedSupport);
 private:
     std::map<std::string, std::string> map_;

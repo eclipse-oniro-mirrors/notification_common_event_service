@@ -22,20 +22,18 @@
 #include "application_info.h"
 #include "bundle_mgr_host.h"
 #include "bundle_mgr_interface.h"
-#include "event_log_wrapper.h"
+#include "hilog_wrapper.h"
+#include "ohos/aafwk/content/want.h"
 #include "iremote_proxy.h"
 #include "iremote_stub.h"
-#include "want.h"
 
 namespace OHOS {
-namespace EventFwk {
-using namespace OHOS::AppExecFwk;
-
+namespace AppExecFwk {
 class MockBundleMgrService : public BundleMgrHost {
 public:
     MockBundleMgrService()
     {
-        EVENT_LOGD("BundleMgrService::BundleMgrService");
+        HILOG_ERROR("BundleMgrService::BundleMgrService");
     }
 
     ~MockBundleMgrService()
@@ -603,7 +601,7 @@ public:
     }
 
     /**
-     * @brief Remove cloned bundle.
+     * @brief Removes cloned bundle.
      * @param bundleName Indicates the bundle name of remove cloned bundle.
      * @param uid Indicates the uid of remove cloned bundle.
      * @return Returns true if this function is successfully called; returns false otherwise.
@@ -614,7 +612,7 @@ public:
     }
 
     /**
-     * @brief create bundle clone.
+     * @brief Creates bundle clone.
      * @param bundleName Indicates the bundle name of create bundle clone.
      * @return Returns true if this function is successfully called; returns false otherwise.
      */
@@ -636,7 +634,7 @@ public:
     }
 
     /**
-     * @brief Query the AbilityInfo by ability.uri in config.json.
+     * @brief Queries the AbilityInfo by ability.uri in config.json.
      * @param abilityUri Indicates the uri of the ability.
      * @param abilityInfos Indicates the obtained AbilityInfos object.
      * @return Returns true if the AbilityInfo is successfully obtained; returns false otherwise.
@@ -660,7 +658,7 @@ public:
     }
 
     /**
-     * @brief Determine whether the application is in the allow list.
+     * @brief Determines whether the application is in the allow list.
      * @param bundleName Indicates the bundle Names.
      * @return Returns true if bundle name in the allow list successfully; returns false otherwise.
      */
@@ -687,7 +685,7 @@ private:
     bool isSystemApp_ = false;
     bool isSystemAppMock_ = false;
 };
-}  // namespace EventFwk
+}  // namespace AppExecFwk
 }  // namespace OHOS
 
 #endif  // FOUNDATION_EVENT_CESFWK_SERVICES_TEST_UNITTEST_MOCK_INCLUDE_MOCK_BUNDLE_MANAGER_H

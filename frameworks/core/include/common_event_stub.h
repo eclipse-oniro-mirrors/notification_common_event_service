@@ -25,21 +25,97 @@ namespace EventFwk {
 class CommonEventStub : public IRemoteStub<ICommonEvent> {
 public:
     CommonEventStub();
+
     virtual ~CommonEventStub() override;
 
+    /**
+     * Processes the remote Request.
+     *
+     * @param code Indicates the code to send.
+     * @param data Indicates the message to send.
+     * @param reply Indicates the message to reply.
+     * @param option Indicates the message option.
+     * @return Returns ERR_NONE if success, otherwise ERR_CODE.
+     */
     virtual int OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
+    /**
+     * Publishes a common event.
+     *
+     * @param event Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param commonEventListener Indicates the last subscriber to receive the event.
+     * @param userId Indicates the user ID.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
+
+    /**
+     * Publishes a common event.
+     *
+     * @param event Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param commonEventListener Indicates the last subscriber to receive the event.
+     * @param uid Indicates the uid.
+     * @param userId Indicates the user ID.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId) override;
+
+    /**
+     * Subscribes to common events.
+     *
+     * @param subscribeInfo Indicates the subscribe information.
+     * @param commonEventListener Indicates the subscriber object.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
+
+    /**
+     * Unsubscribes from common events.
+     *
+     * @param commonEventListener Indicates the subscriber object.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
+
+    /**
+     * Gets the current sticky common event.
+     *
+     * @param event Indicates the common event.
+     * @param eventData Indicates the common event data.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
+
+    /**
+     * Dumps the state for common event service.
+     *
+     * @param event Indicates the specified event.
+     * @param userId Indicates the user id.
+     * @param state Indicates the output result.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
+
+    /**
+     * Freezes the specified process.
+     *
+     * @param uid Indicates the uid of frozen process.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool Freeze(const uid_t &uid) override;
+
+    /**
+     * Unfreezes the specified process.
+     *
+     * @param uid Indicates the uid of unfrozen process.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool Unfreeze(const uid_t &uid) override;
 
 private:

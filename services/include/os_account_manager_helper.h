@@ -27,7 +27,22 @@ class OsAccountManagerHelper : public DelayedSingleton<OsAccountManagerHelper> {
 public:
     OsAccountManagerHelper() {}
     virtual ~OsAccountManagerHelper() {}
+
+    /**
+     * Queries active operating system account IDs.
+     *
+     * @param ids Indicates the account IDs.
+     * @return Returns result code.
+     */
     ErrCode QueryActiveOsAccountIds(std::vector<int32_t>& ids);
+
+    /**
+     * Gets operating system account local ID from uid.
+     *
+     * @param uid Indicates the uid.
+     * @param ids Indicates the account ID.
+     * @return Returns result code.
+     */
     ErrCode GetOsAccountLocalIdFromUid(const int32_t uid, int32_t &id);
 };
 }  // namespace EventFwk

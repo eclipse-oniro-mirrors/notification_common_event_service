@@ -74,23 +74,78 @@ public:
 
     virtual ~CommonEventSubscriberManager() override;
 
+    /**
+     * Inserts a specific subscriber.
+     *
+     * @param eventSubscribeInfo Indicates the subscribe information.
+     * @param commonEventListener Indicates the subscriber object.
+     * @param recordTime Indicates the time of record.
+     * @param eventRecordInfo Indicates the information of event record.
+     * @return Returns the subscribe record.
+     */
     std::shared_ptr<EventSubscriberRecord> InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime,
         const EventRecordInfo &eventRecordInfo);
 
+    /**
+     * Removes subscriber.
+     *
+     * @param commonEventListener Indicates the subscriber object.
+     * @return Returns the result code.
+     */
     int RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener);
 
+    /**
+     * Gets subscriber records.
+     *
+     * @param eventRecord Indicates the event record.
+     * @return Returns the subscriber records.
+     */
     std::vector<SubscriberRecordPtr> GetSubscriberRecords(const CommonEventRecord &eventRecord);
 
+    /**
+     * Updates freeze information.
+     *
+     * @param uid Indicates the uid of the apolication.
+     * @param freezeState Indicates the freeze state.
+     * @param freezeTime Indicates the freeze time.
+     */
     void UpdateFreezeInfo(const uid_t &uid, const bool &freezeState, const int64_t &freezeTime = 0);
 
+    /**
+     * Inserts freeze events.
+     *
+     * @param eventListener Indicates the subscriber object.
+     * @param eventRecord Indicates the event record.
+     */
     void InsertFrozenEvents(const SubscriberRecordPtr &eventListener, const CommonEventRecord &eventRecord);
 
+    /**
+     * Gets the frozen events.
+     *
+     * @param uid Indicates the uid of the apolication.
+     * @return Returns the frozen events.
+     */
     std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> GetFrozenEvents(const uid_t &uid);
 
+    /**
+     * Dumps detailed information for specific subscriber record info.
+     *
+     * @param title Indicates the log tag.
+     * @param record Indicates the subscriber record.
+     * @param format Indicates the log format.
+     * @param dumpInfo Indicates the output information.
+     */
     void DumpDetailed(
         const std::string &title, const SubscriberRecordPtr &record, const std::string format, std::string &dumpInfo);
 
+    /**
+     * Dumps state information.
+     *
+     * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
+     * @param userId Indicates the user ID.
+     * @param state Indicates the output information.
+     */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:

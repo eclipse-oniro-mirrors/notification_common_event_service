@@ -30,9 +30,22 @@ public:
 
     virtual ~AbilityManagerHelper() {}
 
+    /**
+     * Connects ability.
+     *
+     * @param want Indicates ability inofmation.
+     * @param event Indicates the common event
+     * @param callerToken Indicates the token of caller.
+     * @param userId Indicates the ID of user.
+     * @return Returns result code.
+     */
     int ConnectAbility(const AAFwk::Want &want, const CommonEventData &event,
         const sptr<IRemoteObject> &callerToken, const int32_t &userId);
 
+    /**
+     * Clears ability manager service remote object.
+     *
+     */
     void Clear();
 private:
     bool GetAbilityMgrProxy();

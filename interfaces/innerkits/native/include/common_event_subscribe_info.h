@@ -33,90 +33,82 @@ public:
      * A constructor used to create a CommonEventSubscribeInfo instance
      * with the matchingSkills parameters passed.
      *
-     * @param matchingSkills the matching skills
+     * @param matchingSkills Indicates the matching skills.
      */
     explicit CommonEventSubscribeInfo(const MatchingSkills &matchingSkills);
 
-    /**
-     * A constructor used to create a CommonEventSubscribeInfo instance
-     *
-     */
     CommonEventSubscribeInfo();
 
     /**
      * A constructor used to create a CommonEventSubscribeInfo instance by
      * copying parameters from an existing one.
      *
-     *  @param commonEventSubscribeInfo the commonEventSubscribeInfo
+     *  @param commonEventSubscribeInfo Indicates the commonEventSubscribeInfo.
      */
     explicit CommonEventSubscribeInfo(const CommonEventSubscribeInfo &commonEventSubscribeInfo);
 
-    /**
-     * A deconstructor used to deconstruct
-     *
-     */
     ~CommonEventSubscribeInfo();
 
     /**
-     * Set the subscriber priority for this CommonEventSubscribeInfo object.
+     * Sets the subscriber priority for this CommonEventSubscribeInfo object.
      *
-     * @param priority the subscriber priority
+     * @param priority Indicates the subscriber priority.
      */
     void SetPriority(const int32_t &priority);
 
     /**
-     * Obtain the subscriber priority of this CommonEventSubscribeInfo object.
+     * Obtains the subscriber priority of this CommonEventSubscribeInfo object.
      *
-     * @return the subscriber priority
+     * @return Returns the subscriber priority.
      */
     int32_t GetPriority() const;
 
     /**
-     * Set the subscriber userId for this CommonEventSubscribeInfo object.
+     * Sets the subscriber userId for this CommonEventSubscribeInfo object.
      *
-     * @param userId indicates the user ID of the subscriber
+     * @param userId Indicates the user ID of the subscriber.
      */
     void SetUserId(const int32_t &userId);
 
     /**
-     * Obtain the subscriber userId of this CommonEventSubscribeInfo object.
+     * Obtains the subscriber userId of this CommonEventSubscribeInfo object.
      *
-     * @return the user ID of the subscriber
+     * @return Returns the user ID of the subscriber.
      */
     int32_t GetUserId() const;
 
     /**
-     * Set the permission that the publisher must have in order to send
+     * Sets the permission that the publisher must have in order to send
      * a common event to this subscriber.
      *
-     * @param permission the subscriber permission
+     * @param permission Indicates the subscriber permission.
      */
     void SetPermission(const std::string &permission);
 
     /**
-     * Obtain the publisher permission of this CommonEventSubscribeInfo object.
+     * Obtains the publisher permission of this CommonEventSubscribeInfo object.
      *
-     * @return the subscriber permission
+     * @return Returns the subscriber permission.
      */
     std::string GetPermission() const;
 
     /**
-     * Obtain the thread mode of this CommonEventSubscribeInfo object.
+     * Obtains the thread mode of this CommonEventSubscribeInfo object.
      *
-     * @return the thread mode
+     * @return Returns the thread mode.
      */
     CommonEventSubscribeInfo::ThreadMode GetThreadMode() const;
 
     /**
-     * Set the thread mode of this CommonEventSubscribeInfo object.
+     * Sets the thread mode of this CommonEventSubscribeInfo object.
      *
-     * @param threadMode the thread mode to be set, which is specified in ThreadMode. Currently, only the HANDLER mode
-     * is supported.
+     * @param threadMode Indicates the thread mode to be set, which is specified in ThreadMode. Currently, only the
+     * HANDLER mode is supported.
      */
     void SetThreadMode(CommonEventSubscribeInfo::ThreadMode threadMode);
 
     /**
-     * Set the device ID for this CommonEventSubscribeInfo object.
+     * Sets the device ID for this CommonEventSubscribeInfo object.
      * Your application will only receive common events sent from the specified device.
      *
      * @param deviceId Indicates the device ID. The value must be an existing device ID on the same ohos network.
@@ -125,30 +117,31 @@ public:
     void SetDeviceId(const std::string &deviceId);
 
     /**
-     * Obtain the device ID in this CommonEventSubscribeInfo object.
+     * Obtains the device ID in this CommonEventSubscribeInfo object.
      *
-     * @return the device ID.
+     * @return Returns the device ID.
      */
     std::string GetDeviceId() const;
 
     /**
-     * Obtain the MatchingSkills object carried in this CommonEventSubscribeInfo object.
+     * Obtains the MatchingSkills object carried in this CommonEventSubscribeInfo object.
      *
-     * @return the matchingSkills
+     * @return Returns the matchingSkills object.
      */
     const MatchingSkills &GetMatchingSkills() const;
 
     /**
-     * Marshal a subscriber info object into a Parcel.
+     * Marshals a subscriber info object into a Parcel.
      *
-     * @param parcel the common event data into the parcel
+     * @param parcel Indicates specified Parcel object.
+     * @return Returns true if success; false otherwise.
      */
     virtual bool Marshalling(Parcel &parcel) const override;
 
     /**
-     * Unmarshal a Parcel object into a subscriber info.
+     * Unmarshals a Parcel object into a subscriber info.
      *
-     * @return subscriber info.
+     * @return Returns the subscriber info.
      */
     static CommonEventSubscribeInfo *Unmarshalling(Parcel &parcel);
 
@@ -156,7 +149,8 @@ private:
     /**
      * Read a subscriber object from a Parcel.
      *
-     * @param parcel the parcel
+     * @param parcel Indicates specified Parcel object.
+     * @return Returns true if success; false otherwise.
      */
     bool ReadFromParcel(Parcel &parcel);
 

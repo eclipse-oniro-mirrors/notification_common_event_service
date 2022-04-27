@@ -26,6 +26,11 @@ public:
 
     virtual ~SubscriberDeathRecipient() = default;
 
+    /**
+     * Called back when the remote object is died.
+     *
+     * @param remote Indicates the died object.
+     */
     virtual void OnRemoteDied(const wptr<IRemoteObject> &remote);
 };
 }  // namespace EventFwk

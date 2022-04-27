@@ -28,11 +28,22 @@ class CommonEventControlManager;
 
 class OrderedEventHandler : public EventHandler {
 public:
+    /**
+     * Constructor.
+     *
+     * @param runner Indicates the EventRunner object
+     * @param controlManager Indicates the CommonEventControlManager object
+     */
     OrderedEventHandler(
         const std::shared_ptr<EventRunner> &runner, const std::shared_ptr<CommonEventControlManager> &controlManager);
 
     virtual ~OrderedEventHandler() override;
 
+    /**
+     * Processes the event.
+     *
+     * @param event Indicates the event to be handled.
+     */
     virtual void ProcessEvent(const InnerEvent::Pointer &event) override;
 
     enum {

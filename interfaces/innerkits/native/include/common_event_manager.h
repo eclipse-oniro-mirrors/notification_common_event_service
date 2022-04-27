@@ -25,103 +25,114 @@ namespace EventFwk {
 class CommonEventManager {
 public:
     /**
-     * Publish a standard common event.
+     * Publishes a standard common event.
      *
-     * @param data the common event data
+     * @param data Indicates the common event data.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEvent(const CommonEventData &data);
 
     /**
-     * Publish a standard common event.
+     * Publishes a standard common event.
      *
-     * @param data the common event data
-     * @param userId indicates the user ID
+     * @param data Indicates the common event data.
+     * @param userId Indicates the user ID.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEventAsUser(const CommonEventData &data, const int32_t &userId);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param userId indicates the user ID
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param userId Indicates the user ID.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const int32_t &userId);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
-     * @param userId indicates the user ID
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @param userId Indicates the user ID.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
-     * @param uid Uid of application.
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @param uid Indicates the uid of application.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
-     * @param uid Uid of application.
-     * @param userId indicates the user ID
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @param uid Indicates the Uid of application.
+     * @param userId Indicates the user ID.
+     * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &userId);
 
     /**
-     * Subscribe to common events.
+     * Subscribes to common events.
      *
-     * @param subscriber the common event subscriber
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if success; false otherwise.
      */
     static bool SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
-     * Unsubscribe from common events.
+     * Unsubscribes from common events.
      *
-     * @param subscriber the common event subscriber
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if success; false otherwise.
      */
     static bool UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
      * Gets the current sticky common event
      *
-     * @param event the common event
-     * @param commonEventData the common event data
+     * @param event Indicates the common event.
+     * @param data Indicates the common event data.
+     * @return Returns true if success; false otherwise.
      */
-    static bool GetStickyCommonEvent(const std::string &event, CommonEventData &commonEventData);
+    static bool GetStickyCommonEvent(const std::string &event, CommonEventData &data);
 };
 }  // namespace EventFwk
 }  // namespace OHOS

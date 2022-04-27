@@ -29,6 +29,12 @@ public:
 
     ~PublishManager();
 
+    /**
+     * Checks for flood attacks.
+     *
+     * @param appUid Indicates the uid of the event sender.
+     * @return Returns true if success; false otherwise.
+     */
     bool CheckIsFloodAttack(pid_t appUid);
 
 private:

@@ -34,30 +34,100 @@ public:
 
     virtual ~CommonEventManagerService() override;
 
+    /**
+     * Publishes a common event.
+     *
+     * @param event Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param commonEventListener Indicates the common event subscriber object.
+     * @param userId Indicates the user ID.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
+    /**
+     * Publishes a common event.
+     *
+     * @param event Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param commonEventListener Indicates the common event subscriber.
+     * @param uid Indicates the uid of application.
+     * @param userId Indicates the user ID.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId) override;
 
+    /**
+     * Subscribes to common events.
+     *
+     * @param subscribeInfo Indicates the subscribe info.
+     * @param commonEventListener Indicates the common event subscriber.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
 
+    /**
+     * Unsubscribes from common events.
+     *
+     * @param commonEventListener Indicates the common event subscriber.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
 
+    /**
+     * Gets the current sticky common event
+     *
+     * @param event Indicates the common event.
+     * @param eventData Indicates the common event data.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
 
+    /**
+     * Dumps state of common event service.
+     *
+     * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
+     * @param userId Indicates the user ID.
+     * @param state Indicates the state of common event service.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
 
+    /**
+     * Finishes Receiver.
+     *
+     * @param proxy Indicates the receiver proxy.
+     * @param code Indicates the code of a common event.
+     * @param data Indicates the data of a common event.
+     * @param abortEvent Indicates Whether to cancel the current common event.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData,
         const bool &abortEvent) override;
+
+    /**
+     * Freezes application.
+     *
+     * @param uid Indicates the uid of application.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool Freeze(const uid_t &uid) override;
+
+    /**
+     * Unfreezes application.
+     *
+     * @param uid Indicates the Uid of application.
+     * @return Returns true if successful; false otherwise.
+     */
     virtual bool Unfreeze(const uid_t &uid) override;
 
 private:
     ErrCode Init();
 
-    // the function that overrided from SystemAbility
+    // The function that overrided from SystemAbility
     virtual void OnStart() override;
 
     virtual void OnStop() override;

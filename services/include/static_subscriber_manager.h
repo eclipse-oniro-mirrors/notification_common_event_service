@@ -36,6 +36,14 @@ public:
 
     virtual ~StaticSubscriberManager();
 
+    /**
+     * Publishes common event to the static subscriber.
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish informattion.
+     * @param callerToken Indicates the caller token.
+     * @param userId Indicates the ID of user.
+     * @param service Indicates the service.
+     */
     void PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId,
         const sptr<IRemoteObject> &service);

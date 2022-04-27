@@ -29,12 +29,39 @@ public:
     using CommonEventPublishInfoPtr = std::shared_ptr<CommonEventPublishInfo>;
     using SubscribeInfoPtr = std::shared_ptr<CommonEventSubscribeInfo>;
 
+    /**
+     * Finds the sticky events.
+     *
+     * @param subscribeInfo Indicates the subscribe infomation.
+     * @param commonEventRecords Indicates the records of sticky common event.
+     * @return Returns result code.
+     */
     int FindStickyEvents(const SubscribeInfoPtr &subscribeInfo, std::vector<CommonEventRecordPtr> &commonEventRecords);
 
+    /**
+     * Gets the sticky event.
+     *
+     * @param event Indicates the event name.
+     * @param eventData Indicates the common event data.
+     * @return Returns true if successful; false otherwise.
+     */
     bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
 
+    /**
+     * Updates the sticky events.
+     *
+     * @param eventRecord Indicates the record of sticky common event.
+     * @return Returns result code.
+     */
     int UpdateStickyEvent(const CommonEventRecord &eventRecord);
 
+    /**
+     * Dumps the state of the sticky events.
+     *
+     * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
+     * @param userId Indicates the user ID.
+     * @param state Indicates the state of common event service.
+     */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:

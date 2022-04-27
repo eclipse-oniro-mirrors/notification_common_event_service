@@ -30,24 +30,83 @@ public:
 
     ~CommonEventControlManager();
 
+    /**
+     * Publishes the common event.
+     *
+     * @param eventRecord Indicates the event record.
+     * @param commonEventListener Indicates the last subscriber object.
+     * @return Returns true if success; false otherwise.
+     */
     bool PublishCommonEvent(const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener);
 
+    /**
+     * Publishes the sticky common event.
+     *
+     * @param eventRecord Indicates the event record.
+     * @param subscriberRecord Indicates the subscriber object.
+     * @return Returns true if success; false otherwise.
+     */
     bool PublishStickyCommonEvent(
         const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord);
 
+    /**
+     * Gets the matching ordered receiver.
+     *
+     * @param proxy Indicates the current ordered receiver.
+     * @return Returns the ordered event record.
+     */
     std::shared_ptr<OrderedEventRecord> GetMatchingOrderedReceiver(const sptr<IRemoteObject> &proxy);
 
+    /**
+     * Finishes the action of the current receiver.
+     *
+     * @param recordPtr Indicates the ordered event record.
+     * @param code Indicates the result code.
+     * @param receiverData Indicates the result data.
+     * @param abortEvent Indicates whether to cancel the current common event.
+     * @return Returns true if success; false otherwise.
+     */
     bool FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int &code,
         const std::string &receiverData, const bool &abortEvent);
 
+    /**
+     * Processes the current ordered event when it is timeout.
+     *
+     * @param isFromMsg Indicates whether triggered by message.
+     */
     void CurrentOrderedEventTimeout(bool isFromMsg);
 
+    /**
+     * Processes the next ordered event.
+     *
+     * @param isSendMsg Indicates whether triggered by message.
+     */
     void ProcessNextOrderedEvent(bool isSendMsg);
 
+    /**
+     * Publishes freeze common event.
+     *
+     * @param uid Indicates the uid of unfreeze application.
+     * @return Returns true if success; false otherwise.
+     */
     bool PublishFreezeCommonEvent(const uid_t &uid);
 
+    /**
+     * Dumps state of common event service.
+     *
+     * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
+     * @param userId Indicates the user ID.
+     * @param state Indicates the state of common event service.
+     */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
+    /**
+     * Dumps state of history common event.
+     *
+     * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
+     * @param userId Indicates the user ID.
+     * @param state Indicates the state of common event service.
+     */
     void DumpHistoryState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
