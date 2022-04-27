@@ -36,6 +36,12 @@ struct StressTestLevel {
 
 class TestConfigParser {
 public:
+    /**
+     * Loads the fuzz test configuration file.
+     *
+     * @param path the path of configuration file
+     * @param stlevel test frequency
+     */
     void ParseFromFile4StressTest(const std::string &path, StressTestLevel &stlevel)
     {
         std::ifstream jf(path);

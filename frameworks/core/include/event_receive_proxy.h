@@ -24,8 +24,23 @@ namespace OHOS {
 namespace EventFwk {
 class EventReceiveProxy : public IRemoteProxy<IEventReceive> {
 public:
+    /**
+     * Constructor.
+     *
+     * @param object Indicates the remote object.
+     */
     explicit EventReceiveProxy(const sptr<IRemoteObject> &object);
+
     virtual ~EventReceiveProxy() override;
+
+    /**
+     * Notifies event.
+     *
+     * @param commonEventData Indicates the common event data.
+     * @param ordered Indicates whether it is an ordered common event.
+     * @param sticky Indicates whether it is a sticky common event.
+     *
+     */
     virtual void NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky) override;
 
 private:

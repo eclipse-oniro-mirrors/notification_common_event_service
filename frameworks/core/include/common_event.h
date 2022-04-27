@@ -27,136 +27,147 @@ namespace EventFwk {
 class CommonEvent {
 public:
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if successful; false otherwise.
      */
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
-     * @param userId indicates the user ID
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @param userId Indicates the user ID.
+     * @return Returns true if successful; false otherwise.
      */
     bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
-     * @param uid Uid of application.
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @param uid Indicates the uid of application.
+     * @return Returns true if successful; false otherwise.
      */
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid);
 
     /**
-     * Publish an ordered, sticky, or standard common event.
+     * Publishes a common event.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
-     * @param uid Uid of application.
-     * @param userId Indicates the user ID
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @param uid Indicates the uid of application.
+     * @param userId Indicates the user ID.
+     * @return Returns true if successful; false otherwise.
      */
     bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid,
         const int32_t &userId);
 
     /**
-     * Subscribe to common events.
+     * Subscribes to common events.
      *
-     * @param subscriber the common event subscriber
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if successful; false otherwise.
      */
     bool SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
-     * Unsubscribe from common events.
+     * Unsubscribes from common events.
      *
-     * @param subscriber the common event subscriber
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if successful; false otherwise.
      */
     bool UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
-     * Gets the current sticky common event
+     * Gets the current sticky common event.
      *
-     * @param event the common event
-     * @param eventData the common event data
+     * @param event Indicates the common event.
+     * @param eventData Indicates the common event data.
+     * @return Returns true if successful; false otherwise.
      */
     bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
 
     /**
-     * Finish Receiver.
+     * Finishes Receiver.
      *
-     * @param proxy Receiver proxy.
-     * @param code the code of a common event.
-     * @param data the data of a common event.
-     * @param abortEvent Cancel the current common event.
-     * @return Finish Receiver success or not.
+     * @param proxy Indicates the receiver proxy.
+     * @param code Indicates the code of a common event.
+     * @param data Indicates the data of a common event.
+     * @param abortEvent Indicates whether to cancel the current common event.
+     * @return Returns true if successful; false otherwise.
      */
     bool FinishReceiver(
         const sptr<IRemoteObject> &proxy, const int &code, const std::string &data, const bool &abortEvent);
 
     /**
-     * Dump state of common event service.
+     * Dumps state of common event service.
      *
      * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
-     * @param userId indicates the user ID
-     * @param state the state of common event service
+     * @param userId Indicates the user ID.
+     * @param state Indicates the state of common event service.
+     * @return Returns true if successful; false otherwise.
      */
     bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
     /**
-     * Reset Common Event Proxy.
+     * Resets Common Event Proxy.
      */
     void ResetCommonEventProxy();
 
     /**
-     * Freeze application.
+     * Freezes application.
      *
-     * @param uid Uid of application.
+     * @param uid Indicates the uid of application.
+     * @return Returns true if successful; false otherwise.
      */
     bool Freeze(const uid_t &uid);
 
     /**
-     * Unfreeze application.
+     * Unfreezes application.
      *
-     * @param uid Uid of application.
+     * @param uid Indicates the uid of application.
+     * @return Returns true if successful; false otherwise.
      */
     bool Unfreeze(const uid_t &uid);
 
 private:
     /**
-     * Get common event proxy.
+     * Gets common event proxy.
      *
-     * @return Get common event proxy success or not
+     * @return Returns get common event proxy success or not.
      */
     bool GetCommonEventProxy();
 
     /**
-     * Get common evenet listener.
+     * Gets common evenet listener.
      *
-     * @param  subscriber the subscriber
-     * @param  commonEventListener  the common event listener
-     * @return Get common event listener success or not
+     * @param  subscriber Indicates the subscriber.
+     * @param  commonEventListener Indicates the common event listener.
+     * @return Returns get common event listener success or not.
      */
     uint8_t CreateCommonEventListener(
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
     /**
-     * Parameter checking for publishing public events
+     * Parameter checking for publishing public events.
      *
-     * @param data the common event data
-     * @param publishInfo the publish info
-     * @param subscriber the common event subscriber
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if successful; false otherwise.
      */
     bool PublishParameterCheck(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);

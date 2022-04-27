@@ -22,6 +22,11 @@ namespace OHOS {
 namespace EventFwk {
 class AbilityManagerDeathRecipient : public IRemoteObject::DeathRecipient {
 public:
+    /**
+     * Called back when the remote object is died.
+     *
+     * @param wptrDeath Indicates the died object.
+     */
     void OnRemoteDied(const wptr<IRemoteObject> &wptrDeath) override;
 };
 }  // namespace EventFwk

@@ -166,54 +166,91 @@ sptr<OHOS::AppExecFwk::IBundleStatusCallback> GetParamIBundleStatusCallback();
 
 class TestRemoteObject : public IRemoteObject {
 public:
+    /**
+     * Default constructor used to construct.
+     */
     TestRemoteObject();
+
+    /**
+     * Default deconstructor used to deconstruct.
+     */
     ~TestRemoteObject();
 
+    /**
+     * Override GetObjectRefCount
+     */
     int32_t GetObjectRefCount() override
     {
         return 0;
     }
 
+    /**
+     * Override SendRequest
+     */
     int SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override
     {
         return 0;
     }
 
+    /**
+     * Override IsProxyObject
+     */
     bool IsProxyObject() const override
     {
         return true;
     }
 
+    /**
+     * Override CheckObjectLegality
+     */
     bool CheckObjectLegality() const override
     {
         return true;
     }
 
+    /**
+     * Override AddDeathRecipient
+     */
     bool AddDeathRecipient(const sptr<DeathRecipient> &recipient) override
     {
         return true;
     }
 
+    /**
+     * Override RemoveDeathRecipient
+     */
     bool RemoveDeathRecipient(const sptr<DeathRecipient> &recipient) override
     {
         return true;
     }
 
+    /**
+     * Override Marshalling
+     */
     bool Marshalling(Parcel &parcel) const override
     {
         return true;
     }
 
+    /**
+     * Override AsInterface
+     */
     sptr<IRemoteBroker> AsInterface() override
     {
         return nullptr;
     }
 
+    /**
+     * Override Dump
+     */
     int Dump(int fd, const std::vector<std::u16string> &args) override
     {
         return 0;
     }
 
+    /**
+     * Override GetObjectDescriptor
+     */
     std::u16string GetObjectDescriptor() const
     {
         std::u16string descriptor = std::u16string();
@@ -223,8 +260,19 @@ public:
 
 class TestCommonEventSubscriber : public CommonEventSubscriber {
 public:
+    /**
+    * Default constructor used to create subscriber.
+    */
     TestCommonEventSubscriber() {};
+
+    /**
+     * Default deconstructor used to deconstruct.
+     */
     ~TestCommonEventSubscriber() {};
+
+    /**
+     * Override OnReceiveEvent.
+     */
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
         printf("Fuzz Test Receive Event\n");
@@ -233,10 +281,17 @@ public:
 
 class TestDumper : public OHOS::AppExecFwk::Dumper {
 public:
+    /**
+     * Override Dump.
+     */
     void Dump(const std::string &message)
     {
         return;
     }
+
+    /**
+     * Override GetTag.
+     */
     std::string GetTag()
     {
         return GetStringParam();
@@ -245,25 +300,46 @@ public:
 
 class TestFileDescriptorListener : public OHOS::AppExecFwk::FileDescriptorListener {
 public:
+    /**
+     * Default constructor used to construct.
+     */
     TestFileDescriptorListener()
     {}
+
+    /**
+     * Default deconstructor used to deconstruct.
+     */
     ~TestFileDescriptorListener()
     {}
 };
 
 class TestIAbilityConnection : public OHOS::AAFwk::IAbilityConnection {
 public:
+    /**
+     * Override OnAbilityConnectDone.
+     */
     void OnAbilityConnectDone(
         const OHOS::AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode) override
     {}
+
+    /**
+     * Override OnAbilityDisconnectDone.
+     */
     void OnAbilityDisconnectDone(const OHOS::AppExecFwk::ElementName &element, int resultCode) override
     {}
+
+    /**
+     * Default deconstructor used to deconstruct.
+     */
     virtual ~TestIAbilityConnection()
     {}
 };
 
 class TestAbilityEvent : public OHOS::AppExecFwk::IAbilityEvent {
 public:
+    /**
+     * Override OnBackPressed.
+     */
     virtual void OnBackPressed()
     {
         printf("Fuzz Test Back Pressed.");
@@ -272,29 +348,58 @@ public:
 
 class TestLogger : public OHOS::AppExecFwk::Logger {
 public:
+    /**
+     * Override Log.
+     */
     void Log(const std::string &line)
     {}
+
+    /**
+     * Default deconstructor used to deconstruct.
+     */
     virtual ~TestLogger()
     {}
 };
 
 class TestICleanCacheCallback : public OHOS::AppExecFwk::ICleanCacheCallback {
 public:
+    /**
+     * Default constructor used to construct.
+     */
     TestICleanCacheCallback()
     {}
+
+    /**
+     * Override OnCleanCacheFinished.
+     */
     void OnCleanCacheFinished(bool succeeded) override
     {}
+
+    /**
+     * Default deconstructor used to deconstruct.
+     */
     virtual ~TestICleanCacheCallback()
     {}
 };
 
 class TestIBundleStatusCallback : public OHOS::AppExecFwk::IBundleStatusCallback {
 public:
+    /**
+     * Default constructor used to construct.
+     */
     TestIBundleStatusCallback()
     {}
+
+    /**
+     * Override OnBundleStateChanged.
+     */
     void OnBundleStateChanged(const uint8_t installType, const int32_t resultCode, const std::string &resultMsg,
         const std::string &bundleName) override
     {}
+
+    /**
+     * Default deconstructor used to deconstruct.
+     */
     virtual ~TestIBundleStatusCallback()
     {}
 };

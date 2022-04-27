@@ -53,7 +53,14 @@ const std::string STRING_DUMP_COMMON_EVENT_NG = "error: failed to dump the commo
 
 class CommonEventCommand : public OHOS::EventFwk::ShellCommand {
 public:
+    /**
+     * Constructor.
+     *
+     * @param argc Indicates the argument count.
+     * @param argv Indicates the argument values.
+     */
     CommonEventCommand(int argc, char *argv[]);
+
     ~CommonEventCommand() override
     {}
 

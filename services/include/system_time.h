@@ -22,6 +22,11 @@ namespace OHOS {
 namespace EventFwk {
 class SystemTime {
 public:
+    /**
+     * Gets the now time of system.
+     *
+     * @return Returns he now time of system.
+     */
     static int64_t GetNowSysTime();
 };
 }  // namespace EventFwk

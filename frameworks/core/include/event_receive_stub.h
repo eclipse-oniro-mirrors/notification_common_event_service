@@ -24,7 +24,18 @@ namespace EventFwk {
 class EventReceiveStub : public IRemoteStub<IEventReceive> {
 public:
     EventReceiveStub();
+
     virtual ~EventReceiveStub() override;
+
+    /**
+     * Processes the remote Request.
+     *
+     * @param code Indicates the code to send.
+     * @param data Indicates the message to send.
+     * @param reply Indicates the message to reply.
+     * @param option Indicates the message option.
+     * @return Returns ERR_NONE if success, otherwise ERR_CODE.
+     */
     virtual int OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 };

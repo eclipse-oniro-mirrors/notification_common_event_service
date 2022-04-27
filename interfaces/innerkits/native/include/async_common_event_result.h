@@ -23,91 +23,104 @@ namespace EventFwk {
 class AsyncCommonEventResult {
 public:
     /**
-     * Create a AsyncCommonEventResult instance based on the parameters.
+     * Creates a AsyncCommonEventResult instance based on the parameters.
      *
-     * @param resultCode the result code of the current ordered common event
-     * @param resultData the result data of the current ordered common event
-     * @param ordered the type of the current ordered common event is ordered or not
-     * @param sticky the type of the current sticky common event is sticky or not
-     * @param token the remote object of the current ordered common event
+     * @param resultCode Indicates the result code of the current ordered common event.
+     * @param resultData Indicates the result data of the current ordered common event.
+     * @param ordered Indicates the type of the current ordered common event is ordered or not.
+     * @param sticky Indicates the type of the current sticky common event is sticky or not.
+     * @param token Indicates the remote object of the current ordered common event.
      */
     AsyncCommonEventResult(const int &resultCode, const std::string &resultData, const bool &ordered,
         const bool &sticky, const sptr<IRemoteObject> &token);
 
-    /**
-     * Default deconstructor used to deconstruct.
-     *
-     */
     ~AsyncCommonEventResult();
 
     /**
-     * Set the result code of the current ordered common event.
+     * Sets the result code of the current ordered common event.
      *
-     * @param code the result code of the current ordered common event
+     * @param code Indicates the result code of the current ordered common event
+     * @return Returns true if successful; false otherwise.
      */
     bool SetCode(const int &code);
 
     /**
-     * Obtain the result code of the current ordered common event.
+     * Obtains the result code of the current ordered common event.
      *
-     * @return the result code of the current ordered common event
+     * @return Returns the result code of the current ordered common event
      */
     int GetCode() const;
 
     /**
-     * Set the result data of the current ordered common event.
+     * Sets the result data of the current ordered common event.
      *
-     * @param data the result data of the current ordered common event.
+     * @param data Indicates the result data of the current ordered common event.
+     * @return Returns true if successful; false otherwise.
      */
     bool SetData(const std::string &data);
 
     /**
-     * Obtain the result data of the current ordered common event.
+     * Obtains the result data of the current ordered common event.
      *
-     * @return the result data of the current ordered common event
+     * @return Returns the result data of the current ordered common event
      */
     std::string GetData() const;
 
     /**
-     * Set the result of the current ordered common event.
+     * Sets the result of the current ordered common event.
      *
-     * @param code the result code of the current ordered common event.
-     * @param data the result data of the current ordered common event.
+     * @param code Indicates the result code of the current ordered common event.
+     * @param data Indicates the result data of the current ordered common event.
+     * @return Returns true if successful; false otherwise.
      */
     bool SetCodeAndData(const int &code, const std::string &data);
 
     /**
-     * Cancel the current ordered common event.
+     * Cancels the current ordered common event.
+     *
+     * @return Returns true if successful; false otherwise.
      */
     bool AbortCommonEvent();
 
     /**
-     * Clear the abort state of the current ordered common event.
+     * Clears the abort state of the current ordered common event.
+     *
+     * @return Returns true if successful; false otherwise.
      */
     bool ClearAbortCommonEvent();
 
     /**
-     * Check whether the current ordered common event should be aborted.
+     * Checks whether the current ordered common event should be aborted.
+     *
+     * @return Returns true common event should be aborted; false otherwise.
      */
     bool GetAbortCommonEvent() const;
 
     /**
-     * Finishe processing the current ordered common event.
+     * Finishes processing the current ordered common event.
+     *
+     * @return Returns true if finishes processing the current ordered common event; false otherwise.
      */
     bool FinishCommonEvent();
 
     /**
-     * Check whether the current common event is an ordered common event.
+     * Checks whether the current common event is an ordered common event.
+     *
+     * @return Returns true if the current common event is an ordered common event; false otherwise.
      */
     bool IsOrderedCommonEvent() const;
 
     /**
-     * Check whether the current common event is a sticky common event.
+     * Checks whether the current common event is a sticky common event.
+     *
+     * @return Returns true if the current common event is a sticky common event; false otherwise.
      */
     bool IsStickyCommonEvent() const;
 
     /**
-     * Check whether the current common event is ordered.
+     * Checks whether the current common event is ordered.
+     *
+     * @return Returns true if the current common event is ordered; false otherwise.
      */
     bool CheckSynchronous() const;
 

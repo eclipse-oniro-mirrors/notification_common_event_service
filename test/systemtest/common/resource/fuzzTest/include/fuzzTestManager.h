@@ -26,8 +26,15 @@ namespace EventFwk {
 class fuzzTestManager {
 public:
     typedef std::shared_ptr<fuzzTestManager> Ptr;
+
     ~fuzzTestManager()
     {}
+
+    /**
+     * Obtains the instance of the fuzz test.
+     *
+     * @return the instance of the fuzz test
+     */
     static Ptr GetInstance()
     {
         if (instance_ == nullptr) {
@@ -36,6 +43,9 @@ public:
         return instance_;
     }
 
+    /**
+     * Starts the fuzz test.
+     */
     void StartFuzzTest();
 
 private:

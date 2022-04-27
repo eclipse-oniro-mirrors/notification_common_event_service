@@ -25,96 +25,91 @@ using Want = OHOS::AAFwk::Want;
 
 class CommonEventData : public Parcelable {
 public:
-    /**
-     * Default constructor used to create an empty CommonEventData instance.
-     */
     CommonEventData();
 
     /**
-     * Create a CommonEventData instance based on the want parameter to set
+     * Creates a CommonEventData instance based on the want parameter to set
      * the content of a common want.
      *
-     * @param want the want of a common event
+     * @param want Indicates the want of a common event.
      */
     explicit CommonEventData(const Want &want);
 
     /**
-     * Create a CommonEventData instance based on the parameters want, code,
+     * Creates a CommonEventData instance based on the parameters want, code,
      * and data to set the content of the common event.
      *
-     * @param want the want of a common event
-     * @param code the code of a common event
-     * @param data the data of a common event
+     * @param want Indicates the want of a common event.
+     * @param code Indicates the code of a common event.
+     * @param data Indicates the data of a common event.
      */
     CommonEventData(const Want &want, const int &code, const std::string &data);
 
-    /**
-     * Default deconstructor used to deconstruct.
-     *
-     */
     ~CommonEventData();
 
     /**
-     * Set the want attribute of a common event.
+     * Sets the want attribute of a common event.
      *
-     * @param want the want of a common event
+     * @param want Indicates the want of a common event.
      */
     void SetWant(const Want &want);
 
     /**
-     * Obtain the Want attribute of a common event.
+     * Obtains the Want attribute of a common event.
      *
-     * @return the want of a common event
+     * @return Returns the want of a common event.
      */
     const Want &GetWant() const;
 
     /**
-     * Set the result code of the common event.
+     * Sets the result code of the common event.
      *
-     * @param code the code of a common event
+     * @param code Indicates the code of a common event.
      */
     void SetCode(const int &code);
 
     /**
-     * Obtain the result code of a common event.
+     * Obtains the result code of a common event.
      *
-     * @return the code of a common event
+     * @return Returns the code of a common event.
      */
     int GetCode() const;
 
     /**
-     * Set the result data of a common event.
+     * Sets the result data of a common event.
      *
-     * @param data the data of a common event
+     * @param data Indicates the data of a common event.
      */
     void SetData(const std::string &data);
 
     /**
-     * Obtain the result data of a common event, which is set by
+     * Obtains the result data of a common event, which is set by
      * setData(java.lang.String).
      *
-     * @return the data of a common event
+     * @return Returns the data of a common event.
      */
     std::string GetData() const;
 
     /**
-     * Marshal a common event data object into a Parcel.
+     * Marshals a common event data object into a Parcel.
      *
-     * @param parcel the common event data into the parcel
+     * @param parcel Indicates specified Parcel object.
+     * @return Returns true if success; false otherwise.
      */
     virtual bool Marshalling(Parcel &parcel) const override;
 
     /**
-     * Unmarshal this common event data object from a Parcel.
-     * @return the common event data
+     * Unmarshals this common event data object from a Parcel.
+     * @return Returns the common event data.
      */
     static CommonEventData *Unmarshalling(Parcel &parcel);
 
 private:
     /**
-     * Read a CommonEventData object from a Parcel.
+     * Reads a CommonEventData object from a Parcel.
      *
-     * @param parcel the parcel
+     * @param parcel Indicates specified Parcel object.
+     * @return Returns true if success; false otherwise.
      */
     bool ReadFromParcel(Parcel &parcel);
 

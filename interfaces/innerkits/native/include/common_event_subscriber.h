@@ -24,119 +24,131 @@ namespace OHOS {
 namespace EventFwk {
 class CommonEventSubscriber {
 public:
-    /**
-     * A constructor used to create a CommonEventSubscriber instance
-     *
-     */
     CommonEventSubscriber();
 
     /**
      * A constructor used to create a CommonEventSubscriber instance with the
      * subscribeInfo parameter passed.
      *
-     * @param subscribeInfo the subscribeInfo
+     * @param subscribeInfo Indicates the subscribeInfo
      */
     explicit CommonEventSubscriber(const CommonEventSubscribeInfo &subscribeInfo);
 
-    /**
-     * A deconstructor used to deconstruct
-     *
-     */
     virtual ~CommonEventSubscriber();
 
     /**
-     * Call back when the application receives a new common event.
+     * Calls back when the application receives a new common event.
      *
-     * @param data the common event data
+     * @param data Indicates the common event data.
      */
     virtual void OnReceiveEvent(const CommonEventData &data) = 0;
 
     /**
-     * Get common event subscriber info
+     * Gets common event subscriber info
      *
-     * @return common event subscriber info
+     * @return Returns common event subscriber info
      */
     const CommonEventSubscribeInfo &GetSubscribeInfo() const;
 
     /**
-     * Set the result code of the current ordered common event.
+     * Sets the result code of the current ordered common event.
      *
-     * @param code the result code of the current ordered common event
+     * @param code Indicates the result code of the current ordered common event
+     * @return Returns true if success; false otherwise.
      */
     bool SetCode(const int &code);
 
     /**
-     * Obtain the result code of the current ordered common event.
+     * Obtains the result code of the current ordered common event.
      *
-     * @return the result code of the current ordered common event
+     * @return Returns the result code of the current ordered common event.
      */
     int GetCode() const;
 
     /**
-     * Set the result data of the current ordered common event.
+     * Sets the result data of the current ordered common event.
      *
-     * @param data the result data of the current ordered common event.
+     * @param data Indicates the result data of the current ordered common event.
+     * @return Returns true if success; false otherwise.
      */
     bool SetData(const std::string &data);
 
     /**
-     * Obtain the result data of the current ordered common event.
+     * Obtains the result data of the current ordered common event.
      *
-     * @return the result data of the current ordered common event
+     * @return Returns the result data of the current ordered common event
      */
     std::string GetData() const;
 
     /**
-     * Set the result of the current ordered common event.
+     * Sets the result of the current ordered common event.
      *
-     * @param code the result code of the current ordered common event.
-     * @param data the result data of the current ordered common event.
+     * @param code Indicates the result code of the current ordered common event.
+     * @param data Indicates the result data of the current ordered common event.
+     * @return Returns true if success; false otherwise.
      */
     bool SetCodeAndData(const int &code, const std::string &data);
 
     /**
-     * Cancel the current ordered common event.
+     * Cancels the current ordered common event.
+     *
+     * @return Returns true if success; false otherwise.
      */
     bool AbortCommonEvent();
 
     /**
-     * Clear the abort state of the current ordered common event.
+     * Clears the abort state of the current ordered common event.
+     *
+     * @return Returns true if success; false otherwise.
      */
     bool ClearAbortCommonEvent();
 
     /**
-     * Check whether the current ordered common event should be aborted.
+     * Checks whether the current ordered common event should be aborted.
+     *
+     * @return Returns true if success; false otherwise.
      */
     bool GetAbortCommonEvent() const;
 
     /**
-     * Enable asynchronous processing for the current ordered common event.
+     * Enables asynchronous processing for the current ordered common event.
+     * @return Returns async common event result.
      */
     std::shared_ptr<AsyncCommonEventResult> GoAsyncCommonEvent();
 
     /**
-     * Check whether the current common event is an ordered common event.
+     * Checks whether the current common event is an ordered common event.
+
+     * @return Returns true if success; false otherwise.
      */
     bool IsOrderedCommonEvent() const;
 
     /**
-     * Check whether the current common event is a sticky common event.
+     * Checks whether the current common event is a sticky common event.
+     *
+     * @return Returns true if success; false otherwise.
      */
     bool IsStickyCommonEvent() const;
 
 private:
     /**
-     * Set AsyncCommonEventResult for init before perform onReceiveEvent.
+     * Sets AsyncCommonEventResult for init before perform onReceiveEvent.
+     *
+     * @return Returns true if success; false otherwise.
      */
     bool SetAsyncCommonEventResult(const std::shared_ptr<AsyncCommonEventResult> &result);
 
     /**
-     * Get AsyncCommonEventResult for check after perform onReceiveEvent.
+     * Gets AsyncCommonEventResult for check after perform onReceiveEvent.
+     *
+     * @return Returns async common event result.
      */
     std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult();
 
     /**
-     * Check whether the current common event is ordered.
+     * Checks whether the current common event is ordered.
+     *
+     * @return Returns true if success; false otherwise.
      */
     bool CheckSynchronous() const;
 

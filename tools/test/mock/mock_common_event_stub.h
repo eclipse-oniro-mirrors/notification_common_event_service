@@ -28,12 +28,36 @@ public:
     MOCK_METHOD4(FinishReceiver, bool(const sptr<IRemoteObject> &proxy, const int &code,
                                      const std::string &receiverData, const bool &abortEvent));
 
+    /**
+     * Publishes a common event.
+     *
+     * @param event Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param commonEventListener Indicates the last subscriber to receive the ordered common event.
+     * @param userId Indicates the user ID.
+     * @return Returns true if success; false otherwise.
+     */
     bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
+    /**
+     * Subscribes to common events.
+     *
+     * @param subscribeInfo the subscribe information.
+     * @param commonEventListener the subscriber object.
+     * @return Returns true if success; false otherwise.
+     */
     bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
 
+    /**
+     * Dumps the state for common event service.
+     *
+     * @param event the specified event.
+     * @param userId the user id.
+     * @param state the output result.
+     * @return Returns true if success; false otherwise.
+     */
     bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
 
 private:

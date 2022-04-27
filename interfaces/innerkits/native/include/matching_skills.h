@@ -25,193 +25,188 @@ using Want = OHOS::AAFwk::Want;
 
 class MatchingSkills : public Parcelable {
 public:
-    /**
-     * A constructor used to create an empty MatchingSkills instance.
-     */
     MatchingSkills();
 
     /**
-     * A constructor used to create a MatchingSkills instance by using the parameters of an existing MatchingSkills
-     * object.
+     * A constructor used to create a MatchingSkills object instance by using the parameters of an existing
+     * MatchingSkills object.
      */
     MatchingSkills(const MatchingSkills &matchingSkills);
 
-    /**
-     * A deconstructor used to deconstruct
-     */
     ~MatchingSkills();
 
     /**
-     * Obtain an entity.
+     * Obtains an entity.
      *
-     * @return entity
+     * @param index Indicates the entity index.
+     * @return Returns entity.
      */
     std::string GetEntity(int index) const;
 
     /**
-     * Add an event to this MatchingSkills object.
+     * Adds an entity to this MatchingSkills object.
      *
-     * @param entity the entity
+     * @param entity Indicates the entity.
      */
     void AddEntity(const std::string &entity);
 
     /**
-     * Has entity.
+     * Checks whether the entity is in this MatchingSkills object.
      *
-     * @param event  the entity in MatchingSkills
-     * @return whether the entity in MatchingSkills or not
+     * @param event Indicates specified entity in MatchingSkills object.
+     * @return Returns whether the entity is in MatchingSkills object or not.
      */
     bool HasEntity(const std::string &entity) const;
 
     /**
-     * Remove entity.
+     * Removes entity.
      *
-     * @param event  the entity in MatchingSkills
-     * @return remove entity success or not
+     * @param event Indicates specified entity in MatchingSkills object.
      */
     void RemoveEntity(const std::string &entity);
 
     /**
      * Gets entity count.
      *
-     * @return entity count
+     * @return Returns entity count.
      */
     int CountEntities() const;
 
     /**
      * Adds an event to this MatchingSkills object.
      *
-     * @param event the event
+     * @param event Indicates the event.
      */
     void AddEvent(const std::string &event);
 
     /**
-     * Get event count.
+     * Gets event count.
      *
-     * @return the event count in MatchingSkills
+     * @return Indicates the event count in MatchingSkills object.
      */
     int CountEvent() const;
 
     /**
-     * Get event.
+     * Gets event.
      *
-     * @return the event in MatchingSkills
+     * @param index Indicates the scheme index.
+     * @return Returns the event in MatchingSkills object.
      */
     std::string GetEvent(int index) const;
 
     /**
-     * Get events.
+     * Gets events.
      *
-     * @return the events in MatchingSkills
+     * @return Returns the events in MatchingSkills object.
      */
     std::vector<std::string> GetEvents() const;
 
     /**
-     * Remove events.
+     * Removes events.
      *
-     * @return event the event in MatchingSkills
+     * @return Indicates the event in MatchingSkills object.
      */
     void RemoveEvent(const std::string &event);
 
     /**
-     * Has event.
+     * Checks whether the event is in this MatchingSkills object.
      *
-     * @param event the event in MatchingSkills
-     * @return whether the event in MatchingSkills or not
+     * @param event Indicates specified event in MatchingSkills object
+     * @return Retruns whether the event in MatchingSkills object or not.
      */
     bool HasEvent(const std::string &event) const;
 
     /**
-     * obtain an Scheme.
+     * Obtains an Scheme.
      *
-     * @return Scheme
+     * @param index Indicates the scheme index.
+     * @return Retruns scheme.
      */
     std::string GetScheme(int index) const;
 
     /**
-     * Add scheme to this MatchingSkills object.
+     * Adds scheme to this MatchingSkills object.
      *
-     * @param scheme the scheme
+     * @param scheme Indicates the scheme.
      */
     void AddScheme(const std::string &scheme);
 
     /**
-     * Has scheme.
+     * Checks whether the scheme is in this MatchingSkills object.
      *
-     * @param event  the scheme in MatchingSkills
-     * @return whether the scheme in MatchingSkills or not
+     * @param scheme Indicates specified scheme in MatchingSkills object.
+     * @return Returns whether the scheme in MatchingSkills object or not.
      */
     bool HasScheme(const std::string &scheme) const;
 
     /**
-     * Remove entity.
+     * Removes entity.
      *
-     * @param event  the entity in MatchingSkills
-     * @return remove entity success or not
+     * @param event Indicates the entity in MatchingSkills object.
      */
     void RemoveScheme(const std::string &scheme);
 
     /**
-     * Get scheme count.
+     * Gets scheme count.
      *
-     * @return scheme count
+     * @return Retruns scheme count.
      */
     int CountSchemes() const;
 
     /**
-     * Match want.
+     * Matches want.
      *
-     * @param want the want in MatchingSkills
-     * @return match the want result
+     * @param want Indicates the want in MatchingSkills object.
+     * @return Returns the match want result.
      */
     bool Match(const Want &want) const;
 
     /**
-     * Marshal this MatchingSkills object into a Parcel.
+     * Marshals this MatchingSkills object into a Parcel.
      *
-     * @param parcel  parcel
-     * @return marshalling result
+     * @param parcel Indicates specified Parcel object.
+     * @return Returns the marshalling result.
      */
     virtual bool Marshalling(Parcel &parcel) const override;
 
     /**
-     * Unmarshal this MatchingSkills object from a Parcel.
+     * Unmarshals this MatchingSkills object from a Parcel.
      *
-     * @param parcel  parcel
-     * @return MatchingSkills
+     * @param parcel Indicates the parcel.
+     * @return Returns the MatchingSkills.
      */
     static MatchingSkills *Unmarshalling(Parcel &parcel);
 
 private:
     /**
-     * Read MatchingSkills object from a Parcel.
+     * Reads MatchingSkills object from a Parcel.
      *
-     * @param parcel the parcel
-     * @return read from parcel success or fail
+     * @param parcel Indicates specified Parcel object.
+     * @return Returns read from parcel success or fail.
      */
     bool ReadFromParcel(Parcel &parcel);
 
     /**
-     * Match event.
+     * Matches event.
      *
-     * @param parcel the event in want
-     * @return match event success or fail
+     * @param parcel Indicates the event in want.
+     * @return Returns match event success or fail.
      */
     bool MatchEvent(const std::string &event) const;
 
     /**
-     * Match entity.
+     * Matches entity.
      *
-     * @param parcel the entity in want
-     * @return match entity success or fail
+     * @param parcel Indicates the entity in want.
+     * @return Returns match entity success or fail.
      */
     bool MatchEntity(const std::vector<std::string> &entities) const;
 
     /**
-     * Match scheme.
+     * Matches scheme.
      *
-     * @param parcel the scheme in want
-     * @return match scheme success or fail
+     * @param parcel Indicates the scheme in want.
+     * @return Returns match scheme success or fail.
      */
     bool MatchScheme(const std::string &scheme) const;
 

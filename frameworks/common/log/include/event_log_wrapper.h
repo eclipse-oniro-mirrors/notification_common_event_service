@@ -34,18 +34,40 @@ static constexpr OHOS::HiviewDFX::HiLogLabel Event_LABEL = {LOG_CORE, LOG_DOMAIN
 
 class EventLogWrapper {
 public:
+    /**
+     * Judges the level of the log.
+     *
+     * @param level Indicates the level of the log.
+     * @return Returns true if success; false otherwise.
+     */
     static bool JudgeLevel(const EventLogLevel &level);
 
+    /**
+     * Sets the level of the log.
+     *
+     * @param level Indicates the level of the log.
+     */
     static void SetLogLevel(const EventLogLevel &level)
     {
         level_ = level;
     }
 
+    /**
+     * Gets the level of the log.
+     *
+     * @return Returns the level of the log.
+     */
     static const EventLogLevel &GetLogLevel()
     {
         return level_;
     }
 
+    /**
+     * Gets the brief name of the file.
+     *
+     * @param str Indicates the full name of the file.
+     * @return Returns the full name of the file.
+     */
     static std::string GetBriefFileName(const char *str);
 
 private:

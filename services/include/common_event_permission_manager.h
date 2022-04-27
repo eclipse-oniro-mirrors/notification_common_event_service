@@ -43,8 +43,17 @@ public:
 
     ~CommonEventPermissionManager() = default;
 
+    /**
+     * Inits.
+     *
+     */
     void Init();
 
+    /**
+     * Gets the permission of event.
+     *
+     * @param event Indicates the event name
+     */
     Permission GetEventPermission(std::string event);
 
 private:

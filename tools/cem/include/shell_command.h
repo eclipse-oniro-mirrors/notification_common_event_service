@@ -33,17 +33,73 @@ const int OFFSET_REQUIRED_ARGUMENT = 2;
 
 class ShellCommand {
 public:
+    /**
+     * Constructor.
+     *
+     * @param argc Indicates the argument count.
+     * @param argv Indicates the argument values.
+     * @param name Indicates the tool name.
+     */
     ShellCommand(int argc, char *argv[], std::string name);
+
     virtual ~ShellCommand();
 
+    /**
+     * Processes the command.
+     *
+     * @return Returns result code.
+     */
     ErrCode OnCommand();
+
+    /**
+     * Executes the command.
+     *
+     * @return Returns result.
+     */
     std::string ExecCommand();
+
+    /**
+     * Gets the error message of the command.
+     *
+     * @return Returns the error message of the command.
+     */
     std::string GetCommandErrorMsg() const;
+
+    /**
+     * Gets the error message of the unknown option.
+     *
+     * @param unknownOption Indicates the unknown option.
+     * @return Returns the unknown option.
+     */
     std::string GetUnknownOptionMsg(std::string &unknownOption) const;
+
+    /**
+     * Gets the message from the code.
+     *
+     * @param code Indicates the code.
+     * @return Returns the message from the code.
+     */
     std::string GetMessageFromCode(const int32_t code) const;
 
+    /**
+     * Creates the command map.
+     *
+     * @return Returns result code.
+     */
     virtual ErrCode CreateCommandMap() = 0;
+
+    /**
+     * Creates the message map.
+     *
+     * @return Returns result code.
+     */
     virtual ErrCode CreateMessageMap() = 0;
+
+    /**
+     * Inits.
+     *
+     * @return Returns result code.
+     */
     virtual ErrCode init() = 0;
 
 protected:

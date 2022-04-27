@@ -22,6 +22,12 @@ namespace OHOS {
 namespace EventFwk {
 class AccessTokenHelper {
 public:
+    /**
+     * Verifies native token.
+     *
+     * @param callerToken Indicates the token of caller.
+     * @return Returns true if successful; false otherwise.
+     */
     static bool VerifyNativeToken(const Security::AccessToken::AccessTokenID &callerToken);
     static int VerifyAccessToken(const Security::AccessToken::AccessTokenID &callerToken,
         const std::string &permission);
