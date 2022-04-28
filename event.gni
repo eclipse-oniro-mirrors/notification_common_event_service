@@ -29,7 +29,7 @@ ces_common_path = "${frameworks_path}/common"
 
 ces_core_path = "${frameworks_path}/core"
 
-ces_innerkits_path = "${interfaces_path}/innerkits/native"
+ces_innerkits_path = "${interfaces_path}/inner_api"
 
 ces_native_path = "${frameworks_path}/native"
 
