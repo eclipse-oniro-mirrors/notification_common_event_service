@@ -40,7 +40,6 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
-    "//foundation/appexecfwk/standard/services/bundlemgr:libbms",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
   ]

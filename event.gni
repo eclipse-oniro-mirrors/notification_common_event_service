@@ -13,8 +13,6 @@
 
 aafwk_path = "//foundation/aafwk/standard"
 
-appexecfwk_path = "//foundation/appexecfwk/standard"
-
 common_event_service_path = "//base/notification/common_event_service"
 
 frameworks_path = "${common_event_service_path}/frameworks"
