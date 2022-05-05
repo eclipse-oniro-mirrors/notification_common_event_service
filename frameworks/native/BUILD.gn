@@ -36,7 +36,7 @@ config("cesfwk_innerkits_public_config") {
 
   include_dirs = [
     "${ces_core_path}/include",
-    "${ces_innerkits_path}/include",
+    "${ces_innerkits_path}",
     "//utils/native/base/include",
   ]
 }
