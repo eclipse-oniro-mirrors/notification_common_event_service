@@ -31,7 +31,6 @@
 #include "message_parcel.h"
 #include "singleton.h"
 #include "system_ability.h"
-#include "system_ability_helper.h"
 #include "want.h"
 
 #include <gtest/gtest.h>

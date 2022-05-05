@@ -21,15 +21,10 @@ ohos_systemtest("cesSystemTest") {
 
   sources = [ "common_event_services_system_test.cpp" ]
 
-  configs = [
-    "//foundation/appexecfwk/standard/libs/libeventhandler:libeventhandler_config",
-    "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config",
-  ]
+  configs = [ "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config" ]
 
   include_dirs = [
     "//utils/native/base/include",
-    "//foundation/appexecfwk/standard/common/log/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
     "${services_path}/include",
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
