@@ -1155,18 +1155,25 @@ const std::string CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_CHANGED =
     "usual.event.NITZ_TIMEZONE_CHANGED";
 
 /**
- * Indicate the action of a common event that a new sms wappush has been received by the device.
+ * Indicates the action of a common event that a new sms wappush has been received by the device.
  * This is a protected common event that can only be sent by system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED =
     "usual.event.SMS_WAPPUSH_RECEIVE_COMPLETED";
 
 /**
- * Indicate the action of a common event that the operator config has been updated.
+ * Indicates the action of a common event that the operator config has been updated.
  * This is a protected common event that can only be sent by system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_OPERATOR_CONFIG_CHANGED =
     "usual.event.OPERATOR_CONFIG_CHANGED";
+
+/**
+ * Indicates the action of a common event that the notification slot has been updated.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SLOT_CHANGE =
+    "usual.event.SLOT_CHANGE";
 
 /**
  * Only for test case.
@@ -1331,6 +1338,8 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_OPERATOR_CONFIG_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SLOT_CHANGE);
 
     return;
 }

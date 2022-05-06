@@ -482,6 +482,11 @@ napi_value SupportInit(napi_env env, napi_value exports)
         EventFwk::CommonEventSupport::COMMON_EVENT_OPERATOR_CONFIG_CHANGED,
         "COMMON_EVENT_OPERATOR_CONFIG_CHANGED");
 
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SLOT_CHANGE,
+        "COMMON_EVENT_SLOT_CHANGE");
+
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 
