@@ -20,7 +20,7 @@ ohos_moduletest("cesModuleTest") {
   module_out_path = module_output_path
 
   sources = [
-    "${services_path}/test/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "${services_path}/test/mock/src/mock_ipc.cpp",
     "common_event_services_module_test.cpp",
   ]
@@ -41,7 +41,7 @@ ohos_moduletest("cesModuleTest") {
     "//foundation/distributedschedule/samgr/services/samgr/native/include",
     "//foundation/distributedschedule/samgr/utils/native/include",
     "${services_path}/include",
-    "${services_path}/test/mock/include",
+    "${common_event_service_path}/test/mock/include",
     "//third_party/json/include",
     "//utils/native/base/include",
     "//utils/system/safwk/native/include",

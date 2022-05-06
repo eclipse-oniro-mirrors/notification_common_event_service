@@ -30,6 +30,7 @@
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
+using namespace OHOS::AppExecFwk;
 
 namespace {
 const std::string EVENT = "com.ces.test.event";

@@ -22,7 +22,6 @@
 #include "application_info.h"
 #include "bundle_mgr_host.h"
 #include "bundle_mgr_interface.h"
-#include "hilog_wrapper.h"
 #include "ohos/aafwk/content/want.h"
 #include "iremote_proxy.h"
 #include "iremote_stub.h"
@@ -32,9 +31,7 @@ namespace AppExecFwk {
 class MockBundleMgrService : public BundleMgrHost {
 public:
     MockBundleMgrService()
-    {
-        HILOG_ERROR("BundleMgrService::BundleMgrService");
-    }
+    {}
 
     ~MockBundleMgrService()
     {}

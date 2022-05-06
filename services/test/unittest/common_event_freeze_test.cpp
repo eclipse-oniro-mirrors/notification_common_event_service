@@ -29,6 +29,7 @@
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
+using namespace OHOS::AppExecFwk;
 namespace {
 const std::string EVENTCASE1 = "com.ces.test.event.case1";
 const std::string EVENTCASE2 = "com.ces.test.event.case2";
