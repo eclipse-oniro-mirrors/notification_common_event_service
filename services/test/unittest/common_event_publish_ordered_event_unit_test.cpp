@@ -210,9 +210,9 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     CommonEventRecord commonEventRecord;
     commonEventRecord.commonEventData = commonEventData;
     commonEventRecord.publishInfo = publishInfo;
-    commonEventRecord.pid = 0;
-    commonEventRecord.uid = 0;
-    commonEventRecord.bundleName = "bundleName";
+    commonEventRecord.eventRecordInfo.pid = 0;
+    commonEventRecord.eventRecordInfo.uid = 0;
+    commonEventRecord.eventRecordInfo.bundleName = "bundleName";
     commonEventRecord.recordTime = {0};
 
     // make subscriber info
@@ -260,9 +260,9 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     CommonEventRecord commonEventRecord;
     commonEventRecord.commonEventData = commonEventData;
     commonEventRecord.publishInfo = publishInfo;
-    commonEventRecord.pid = 0;
-    commonEventRecord.uid = 0;
-    commonEventRecord.bundleName = "bundleName";
+    commonEventRecord.eventRecordInfo.pid = 0;
+    commonEventRecord.eventRecordInfo.uid = 0;
+    commonEventRecord.eventRecordInfo.bundleName = "bundleName";
 
     // make subscriber info
     MatchingSkills matchingSkills;

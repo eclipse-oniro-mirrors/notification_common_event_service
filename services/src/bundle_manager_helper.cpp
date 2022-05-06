@@ -124,24 +124,6 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
     return isSystemApp;
 }
 
-bool BundleManagerHelper::CheckPermission(const std::string &bundleName, const std::string &permission)
-{
-    EVENT_LOGI("enter");
-
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    if (!GetBundleMgrProxy()) {
-        return false;
-    }
-
-    int ret = sptrBundleMgr_->CheckPermission(bundleName, permission);
-    if (ret != PERMISSION_GRANTED) {
-        return false;
-    }
-
-    return true;
-}
-
 bool BundleManagerHelper::GetBundleMgrProxy()
 {
     EVENT_LOGD("enter");

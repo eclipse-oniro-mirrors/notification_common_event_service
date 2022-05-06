@@ -100,9 +100,9 @@ void CommonEventStickyManager::DumpState(
         strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", &record->recordTime);
 
         std::string recordTime = "\tTime: " + std::string(systime) + "\n";
-        std::string pid = "\tPID: " + std::to_string(record->pid) + "\n";
-        std::string uid = "\tUID: " + std::to_string(record->uid) + "\n";
-        std::string bundleName = "\tBundleName: " + record->bundleName + "\n";
+        std::string pid = "\tPID: " + std::to_string(record->eventRecordInfo.pid) + "\n";
+        std::string uid = "\tUID: " + std::to_string(record->eventRecordInfo.uid) + "\n";
+        std::string bundleName = "\tBundleName: " + record->eventRecordInfo.bundleName + "\n";
 
         std::string permission = "\tRequiredPermission: ";
         std::string separator;

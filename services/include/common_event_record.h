@@ -16,34 +16,37 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_RECORD_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_RECORD_H
 
+#include "accesstoken_kit.h"
 #include "common_event_constant.h"
 #include "common_event_data.h"
 #include "common_event_publish_info.h"
 
 namespace OHOS {
 namespace EventFwk {
-struct CommonEventRecord {
-    std::shared_ptr<CommonEventData> commonEventData;
-    std::shared_ptr<CommonEventPublishInfo> publishInfo;
-    struct tm recordTime {};
+struct EventRecordInfo {
     pid_t pid;
     uid_t uid;
-    int32_t userId;
+    Security::AccessToken::AccessTokenID callerToken;
     std::string bundleName;
     bool isSubsystem;
     bool isSystemApp;
     bool isProxy;
+
+    EventRecordInfo() : pid(0), uid(0), callerToken(0), isSubsystem(false), isSystemApp(false), isProxy(false) {}
+};
+
+struct CommonEventRecord {
+    std::shared_ptr<CommonEventData> commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo;
+    struct tm recordTime {};
+    EventRecordInfo eventRecordInfo;
+    int32_t userId;
     bool isSystemEvent;
 
     CommonEventRecord()
         : commonEventData(nullptr),
           publishInfo(nullptr),
-          pid(0),
-          uid(0),
           userId(UNDEFINED_USER),
-          isSubsystem(false),
-          isSystemApp(false),
-          isProxy(false),
           isSystemEvent(false)
     {}
 };

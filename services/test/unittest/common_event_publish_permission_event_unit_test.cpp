@@ -298,7 +298,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.bundleName = "hello";
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -339,7 +339,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello world";
+    commonEventRecord.eventRecordInfo.bundleName = "hello world";
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -378,7 +378,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -405,7 +405,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -485,7 +485,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -500,7 +500,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -542,7 +542,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.bundleName = "hello";
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -584,7 +584,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello world";
+    commonEventRecord.eventRecordInfo.bundleName = "hello world";
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -626,7 +626,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello world";
+    commonEventRecord.eventRecordInfo.bundleName = "hello world";
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -677,7 +677,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -692,7 +692,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -717,7 +717,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -732,7 +732,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -757,7 +757,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -772,7 +772,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -797,7 +797,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -812,7 +812,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -837,7 +837,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -852,7 +852,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;
@@ -877,7 +877,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         std::make_shared<CommonEventSubscribeInfo>(commonEventSubscribeInfo);
     EventSubscriberRecord eventSubRecord;
     eventSubRecord.eventSubscribeInfo = commonEventSubscribeInfoSptr;
-    eventSubRecord.eventRecordInfo.bundleName = "hello";
+    eventSubRecord.eventRecordInfo.callerToken = 1;
 
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> vecstr;
@@ -892,7 +892,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     spCommonEventData->SetWant(want);
     CommonEventRecord commonEventRecord;
     commonEventRecord.publishInfo = commonEventPublishInfoSptr;
-    commonEventRecord.bundleName = "hello";
+    commonEventRecord.eventRecordInfo.callerToken = 1;
     commonEventRecord.commonEventData = spCommonEventData;
 
     CommonEventControlManager commonEventControlManager;

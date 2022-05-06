@@ -121,7 +121,7 @@ public:
     bool Unfreeze(const uid_t &uid);
 
 private:
-    bool ProcessStickyEvent(const CommonEventRecord &record, const Security::AccessToken::AccessTokenID &callerToken);
+    bool ProcessStickyEvent(const CommonEventRecord &record);
     bool PublishStickyEvent(const std::shared_ptr<CommonEventSubscribeInfo> &sp,
         const std::shared_ptr<EventSubscriberRecord> &subscriberRecord);
     bool CheckUserId(const pid_t &pid, const uid_t &uid, const Security::AccessToken::AccessTokenID &callerToken,
