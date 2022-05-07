@@ -1055,16 +1055,22 @@ public:
     static const std::string COMMON_EVENT_NITZ_TIMEZONE_CHANGED;
 
     /**
-     * Indicate the action of a common event that a new sms wappush has been received by the device.
+     * Indicates the action of a common event that a new sms wappush has been received by the device.
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED;
 
     /**
-     * Indicate the action of a common event that the operator config has been updated.
+     * Indicates the action of a common event that the operator config has been updated.
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_OPERATOR_CONFIG_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the notification slot has been updated.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SLOT_CHANGE;
 
     /**
      * Only for test case.
