@@ -120,7 +120,7 @@ public:
     virtual ~CommonEventStubTest()
     {}
 
-    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int &code,
+    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int32_t &code,
         const std::string &receiverData, const bool &abortEvent)
     {
         return false;
@@ -502,7 +502,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_014, TestSize.Level1)
     CommonEventListener commonEventListener(subscriber);
     commonEventListener.runner_ = nullptr;
 
-    int result = commonEventListener.IsReady();
+    bool result = commonEventListener.IsReady();
 
     EXPECT_EQ(false, result);
 }
@@ -525,7 +525,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_015, TestSize.Level1)
     CommonEventListener commonEventListener(subscriber);
     commonEventListener.handler_ = nullptr;
 
-    int result = commonEventListener.IsReady();
+    bool result = commonEventListener.IsReady();
 
     EXPECT_EQ(false, result);
 }

@@ -68,7 +68,7 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
 {
     EVENT_LOGD("enter");
 
-    // write subscriberpermissions
+    // write subscriber permissions
     std::vector<std::u16string> permissionVec_;
     for (std::vector<std::string>::size_type i = 0; i < subscriberPermissions_.size(); ++i) {
         permissionVec_.emplace_back(Str8ToStr16(subscriberPermissions_[i]));
@@ -97,7 +97,7 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
 {
     EVENT_LOGD("enter");
 
-    // read subscriberpermissions
+    // read subscriber permissions
     std::vector<std::u16string> permissionVec_;
     if (!parcel.ReadString16Vector(&permissionVec_)) {
         EVENT_LOGE("ReadFromParcel read permission error");

@@ -39,12 +39,12 @@ struct OrderedEventRecord : public CommonEventRecord {
     sptr<IRemoteObject> resultTo;
     sptr<IRemoteObject> curReceiver;
     std::vector<int> deliveryState;
-    int enqueueClockTime;
+    int32_t enqueueClockTime;
     int64_t dispatchTime;
     int64_t receiverTime;
     int64_t finishTime;
-    int nextReceiver;
-    int state;
+    size_t nextReceiver;
+    int8_t state;
     bool resultAbort;
 
     OrderedEventRecord()

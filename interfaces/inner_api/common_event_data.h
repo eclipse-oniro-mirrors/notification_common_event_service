@@ -43,7 +43,7 @@ public:
      * @param code Indicates the code of a common event.
      * @param data Indicates the data of a common event.
      */
-    CommonEventData(const Want &want, const int &code, const std::string &data);
+    CommonEventData(const Want &want, const int32_t &code, const std::string &data);
 
     ~CommonEventData();
 
@@ -66,14 +66,14 @@ public:
      *
      * @param code Indicates the code of a common event.
      */
-    void SetCode(const int &code);
+    void SetCode(const int32_t &code);
 
     /**
      * Obtains the result code of a common event.
      *
      * @return Returns the code of a common event.
      */
-    int GetCode() const;
+    int32_t GetCode() const;
 
     /**
      * Sets the result data of a common event.
@@ -115,7 +115,7 @@ private:
 
 private:
     Want want_;
-    int code_;
+    int32_t code_;
     std::string data_;
 };
 }  // namespace EventFwk

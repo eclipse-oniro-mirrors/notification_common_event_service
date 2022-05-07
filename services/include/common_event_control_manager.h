@@ -66,7 +66,7 @@ public:
      * @param abortEvent Indicates whether to cancel the current common event.
      * @return Returns true if success; false otherwise.
      */
-    bool FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int &code,
+    bool FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
         const std::string &receiverData, const bool &abortEvent);
 
     /**
@@ -128,18 +128,18 @@ private:
 
     bool ScheduleOrderedCommonEvent();
 
-    bool NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, int index);
+    bool NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index);
 
-    void SetTime(int recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage);
+    void SetTime(size_t recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage);
 
     bool SetTimeout(int64_t timeoutTime);
 
     bool CancelTimeout();
 
-    bool FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int &code, const std::string &receiverData,
-        const bool &abortEvent);
+    bool FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
+        const std::string &receiverData, const bool &abortEvent);
 
-    int CheckPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
+    int8_t CheckPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
     bool CheckSubscriberPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
@@ -182,7 +182,7 @@ private:
     std::mutex orderedMutex_;
     std::mutex unorderedMutex_;
     std::mutex historyMutex_;
-    const unsigned int HISTORY_MAX_SIZE = 100;
+    const size_t HISTORY_MAX_SIZE = 100;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

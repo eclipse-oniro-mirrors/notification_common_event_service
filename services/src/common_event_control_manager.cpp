@@ -27,8 +27,9 @@
 
 namespace OHOS {
 namespace EventFwk {
-constexpr int LENGTH = 80;
-constexpr int DOUBLE = 2;
+constexpr int32_t LENGTH = 80;
+constexpr int32_t DOUBLE = 2;
+constexpr unsigned int TIMEVAL = 5000;
 const std::string CONNECTOR = " or ";
 using frozenRecords = std::map<std::shared_ptr<EventSubscriberRecord>, std::vector<std::shared_ptr<CommonEventRecord>>>;
 
@@ -107,7 +108,7 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         return false;
     }
 
-    int ret = CheckPermission(subscriberRecord, eventRecord);
+    int8_t ret = CheckPermission(subscriberRecord, eventRecord);
     if (ret != OrderedEventRecord::DELIVERED) {
         EVENT_LOGE("check permission is failed");
         return false;
@@ -134,8 +135,7 @@ bool CommonEventControlManager::GetUnorderedEventHandler()
     }
     if (handler_->GetEventRunner() != nullptr) {
         std::string threadName = handler_->GetEventRunner()->GetRunnerThreadName();
-        static unsigned int timeval = 5000;
-        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_, timeval) != 0) {
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_, TIMEVAL) != 0) {
             EVENT_LOGE("Failed to Add handler Thread");
         }
     }
@@ -153,7 +153,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
     EVENT_LOGI("event = %{public}s, receivers size = %{public}zu",
         eventRecord->commonEventData->GetWant().GetAction().c_str(), eventRecord->receivers.size());
     for (auto vec : eventRecord->receivers) {
-        int index = eventRecord->nextReceiver++;
+        size_t index = eventRecord->nextReceiver++;
         eventRecord->curReceiver = vec->commonEventListener;
         if (vec->isFreeze) {
             eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
@@ -165,7 +165,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
                 EVENT_LOGE("Failed to get IEventReceive proxy");
                 continue;
             }
-            int ret = CheckPermission(*vec, *eventRecord);
+            int8_t ret = CheckPermission(*vec, *eventRecord);
             eventRecord->deliveryState[index] = ret;
             if (ret == OrderedEventRecord::DELIVERED) {
                 eventRecord->state = OrderedEventRecord::RECEIVEING;
@@ -258,8 +258,7 @@ bool CommonEventControlManager::GetOrderedEventHandler()
     }
     if (handlerOrdered_->GetEventRunner() != nullptr) {
         std::string threadName = handlerOrdered_->GetEventRunner()->GetRunnerThreadName();
-        static unsigned int timeval = 5000;
-        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handlerOrdered_, timeval) != 0) {
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handlerOrdered_, TIMEVAL) != 0) {
             EVENT_LOGE("Failed to Add Ordered Thread");
         }
     }
@@ -397,22 +396,22 @@ bool CommonEventControlManager::ScheduleOrderedCommonEvent()
     return handlerOrdered_->SendEvent(InnerEvent::Get(OrderedEventHandler::ORDERED_EVENT_START));
 }
 
-bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, int index)
+bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index)
 {
-    EVENT_LOGI("enter with index %{public}d", index);
+    EVENT_LOGI("enter with index %{public}zu", index);
 
     if (eventRecordPtr == nullptr) {
         EVENT_LOGE("eventRecordPtr = nullptr");
         return false;
     }
 
-    int receiverNum = static_cast<int>(eventRecordPtr->receivers.size());
+    size_t receiverNum = eventRecordPtr->receivers.size();
     if ((index < 0) || (index >= receiverNum)) {
-        EVENT_LOGE("Invalid index (= %{public}d)", index);
+        EVENT_LOGE("Invalid index (= %{public}zu)", index);
         return false;
     }
 
-    int ret = CheckPermission(*(eventRecordPtr->receivers[index]), *eventRecordPtr);
+    int8_t ret = CheckPermission(*(eventRecordPtr->receivers[index]), *eventRecordPtr);
     if (ret == OrderedEventRecord::SKIPPED) {
         eventRecordPtr->deliveryState[index] = ret;
     } else if (ret == OrderedEventRecord::DELIVERED) {
@@ -466,7 +465,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 
         sp = orderedEventQueue_.front();
         bool forceReceive = false;
-        int numReceivers = static_cast<int>(sp->receivers.size());
+        size_t numReceivers = sp->receivers.size();
         int64_t nowSysTime = SystemTime::GetNowSysTime();
 
         if (sp->dispatchTime > 0) {
@@ -505,7 +504,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
         }
     } while (sp == nullptr);
 
-    int recIdx = sp->nextReceiver++;
+    size_t recIdx = sp->nextReceiver++;
     SetTime(recIdx, sp, pendingTimeoutMessage_);
 
     NotifyOrderedEvent(sp, recIdx);
@@ -517,7 +516,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
     return;
 }
 
-void CommonEventControlManager::SetTime(int recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage)
+void CommonEventControlManager::SetTime(size_t recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage)
 {
     EVENT_LOGI("enter");
 
@@ -599,7 +598,7 @@ void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
     }
 
     // Forced to finish the current receiver to process the next receiver
-    int code = sp->commonEventData->GetCode();
+    int32_t code = sp->commonEventData->GetCode();
     const std::string &strRef = sp->commonEventData->GetData();
     bool abort = sp->resultAbort;
     FinishReceiver(sp, code, strRef, abort);
@@ -609,7 +608,7 @@ void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
     return;
 }
 
-bool CommonEventControlManager::FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int &code,
+bool CommonEventControlManager::FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
     const std::string &receiverData, const bool &abortEvent)
 {
     EVENT_LOGI("enter");
@@ -621,7 +620,7 @@ bool CommonEventControlManager::FinishReceiver(std::shared_ptr<OrderedEventRecor
 
     EVENT_LOGI("enter recordPtr->state=%{public}d", recordPtr->state);
 
-    int state = recordPtr->state;
+    int8_t state = recordPtr->state;
     recordPtr->state = OrderedEventRecord::IDLE;
     recordPtr->curReceiver = nullptr;
     recordPtr->commonEventData->SetCode(code);
@@ -631,7 +630,7 @@ bool CommonEventControlManager::FinishReceiver(std::shared_ptr<OrderedEventRecor
     return state == OrderedEventRecord::RECEIVED;
 }
 
-bool CommonEventControlManager::FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int &code,
+bool CommonEventControlManager::FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
     const std::string &receiverData, const bool &abortEvent)
 {
     EVENT_LOGI("enter");
@@ -650,7 +649,7 @@ bool CommonEventControlManager::FinishReceiverAction(std::shared_ptr<OrderedEven
     return true;
 }
 
-int CommonEventControlManager::CheckPermission(
+int8_t CommonEventControlManager::CheckPermission(
     const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord)
 {
     EVENT_LOGI("enter");
@@ -908,7 +907,7 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
 
     std::string permission = "\tRequiredPermission: ";
     std::string separator;
-    int permissionNum = 0;
+    size_t permissionNum = 0;
     for (auto permissionVec : record->publishInfo->GetSubscriberPermissions()) {
         if (permissionNum == 0) {
             separator = "";
@@ -941,7 +940,7 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     std::string action = "\t\tAction: " + record->commonEventData->GetWant().GetAction() + "\n";
 
     std::string entities = "\t\tEntity: ";
-    int entityNum = 0;
+    size_t entityNum = 0;
     for (auto entitiesVec : record->commonEventData->GetWant().GetEntities()) {
         if (entityNum == 0) {
             separator = "";
@@ -1022,7 +1021,7 @@ void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
 
     std::string permission = "\tRequiredPermission: ";
     std::string separator;
-    int permissionNum = 0;
+    size_t permissionNum = 0;
     for (auto permissionVec : record.subscriberPermissions) {
         if (permissionNum == 0) {
             separator = "";
@@ -1055,7 +1054,7 @@ void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
     std::string action = "\t\tAction: " + record.want.GetAction() + "\n";
 
     std::string entities = "\t\tEntity: ";
-    int entityNum = 0;
+    size_t entityNum = 0;
     for (auto entitiesVec : record.want.GetEntities()) {
         if (entityNum == 0) {
             separator = "";
@@ -1118,7 +1117,7 @@ void CommonEventControlManager::DumpStateBySubscriberRecord(
         return;
     }
 
-    int num = 0;
+    size_t num = 0;
     for (auto receiver : record->receivers) {
         num++;
 
@@ -1163,7 +1162,7 @@ void CommonEventControlManager::DumpHistoryStateBySubscriberRecord(
         return;
     }
 
-    int num = 0;
+    size_t num = 0;
     for (auto receiver : record.receivers) {
         num++;
 
@@ -1248,7 +1247,7 @@ void CommonEventControlManager::DumpState(
         return;
     }
 
-    int num = 0;
+    size_t num = 0;
     for (auto record : records) {
         num++;
 
@@ -1281,7 +1280,7 @@ void CommonEventControlManager::DumpHistoryState(
         return;
     }
 
-    int num = 0;
+    size_t num = 0;
     for (auto record : records) {
         num++;
 

@@ -16,6 +16,8 @@
 #include "shell_command.h"
 
 #include <getopt.h>
+
+#include <utility>
 #include "event_log_wrapper.h"
 
 namespace OHOS {
@@ -33,12 +35,11 @@ ShellCommand::ShellCommand(int argc, char *argv[], std::string name)
     }
     cmd_ = argv[1];
     for (int i = 2; i < argc; i++) {
-        argList_.push_back(argv[i]);
+        argList_.emplace_back(argv[i]);
     }
 }
 
-ShellCommand::~ShellCommand()
-{}
+ShellCommand::~ShellCommand() = default;
 
 ErrCode ShellCommand::OnCommand()
 {
@@ -103,7 +104,7 @@ std::string ShellCommand::GetUnknownOptionMsg(std::string &unknownOption) const
     return result;
 }
 
-std::string ShellCommand::GetMessageFromCode(const int32_t code) const
+std::string ShellCommand::GetMessageFromCode(int32_t code) const
 {
     EVENT_LOGI("[%{public}s(%{public}s)] enter", __FILE__, __FUNCTION__);
     EVENT_LOGI("code = %{public}d", code);
@@ -111,7 +112,7 @@ std::string ShellCommand::GetMessageFromCode(const int32_t code) const
     std::string result = "";
     if (messageMap_.find(code) != messageMap_.end()) {
         std::string message = messageMap_.at(code);
-        if (message.size() != 0) {
+        if (!message.empty()) {
             result.append(message + "\n");
         }
     }

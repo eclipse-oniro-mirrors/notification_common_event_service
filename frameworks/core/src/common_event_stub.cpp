@@ -67,7 +67,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             if (hasLastSubscriber) {
                 sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             }
-            int uid = data.ReadInt32();
+            int32_t uid = data.ReadInt32();
             int32_t userId = data.ReadInt32();
             if (!event) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventData>");
@@ -151,7 +151,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
                 EVENT_LOGE("Failed to ReadRemoteObject");
                 return ERR_INVALID_VALUE;
             }
-            int receiverCode = data.ReadInt32();
+            int32_t receiverCode = data.ReadInt32();
             std::string receiverData = Str16ToStr8(data.ReadString16());
             bool abortEvent = data.ReadBool();
             bool ret = FinishReceiver(proxy, receiverCode, receiverData, abortEvent);
@@ -163,7 +163,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         }
 
         case static_cast<uint32_t>(ICommonEvent::Message::CES_FREEZE): {
-            int uid = data.ReadInt32();
+            int32_t uid = data.ReadInt32();
             bool ret = Freeze(uid);
             if (!reply.WriteBool(ret)) {
                 EVENT_LOGE("Failed to write reply");
@@ -173,7 +173,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         }
 
         case static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE): {
-            int uid = data.ReadInt32();
+            int32_t uid = data.ReadInt32();
             bool ret = Unfreeze(uid);
             if (!reply.WriteBool(ret)) {
                 EVENT_LOGE("Failed to write reply");

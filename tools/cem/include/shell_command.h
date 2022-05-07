@@ -27,8 +27,6 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 const std::string HELP_MSG_NO_OPTION = "error: you must specify an option at least.";
-
-const int OFFSET_REQUIRED_ARGUMENT = 2;
 }  // namespace
 
 class ShellCommand {
@@ -79,7 +77,7 @@ public:
      * @param code Indicates the code.
      * @return Returns the message from the code.
      */
-    std::string GetMessageFromCode(const int32_t code) const;
+    std::string GetMessageFromCode(int32_t code) const;
 
     /**
      * Creates the command map.

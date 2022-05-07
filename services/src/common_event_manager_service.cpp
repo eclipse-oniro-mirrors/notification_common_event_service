@@ -284,7 +284,7 @@ bool CommonEventManagerService::DumpState(const std::string &event, const int32_
 }
 
 bool CommonEventManagerService::FinishReceiver(
-    const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData, const bool &abortEvent)
+    const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent)
 {
     EVENT_LOGI("enter");
 

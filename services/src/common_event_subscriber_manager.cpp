@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-const int LENGTH = 80;
+constexpr int32_t LENGTH = 80;
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
     : death_(sptr<IRemoteObject::DeathRecipient>(new SubscriberDeathRecipient()))
@@ -106,6 +106,10 @@ std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager
 void CommonEventSubscriberManager::DumpDetailed(
     const std::string &title, const SubscriberRecordPtr &record, const std::string format, std::string &dumpInfo)
 {
+    if (record == nullptr || record->eventSubscribeInfo == nullptr) {
+        EVENT_LOGE("record or eventSubscribeInfo is null");
+        return;
+    }
     char systime[LENGTH];
     strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", &record->recordTime);
 
@@ -132,7 +136,8 @@ void CommonEventSubscriberManager::DumpDetailed(
 
     std::string events = format + "\tEvent: ";
     std::string separator;
-    for (int eventNum = 0; eventNum < record->eventSubscribeInfo->GetMatchingSkills().CountEvent(); ++eventNum) {
+    size_t countSize = record->eventSubscribeInfo->GetMatchingSkills().CountEvent();
+    for (auto eventNum = 0; eventNum < countSize; ++eventNum) {
         if (eventNum == 0) {
             separator = "";
         } else {
@@ -143,7 +148,8 @@ void CommonEventSubscriberManager::DumpDetailed(
     events = events + "\n";
 
     std::string entities = format + "\tEntity: ";
-    for (int entityNum = 0; entityNum < record->eventSubscribeInfo->GetMatchingSkills().CountEntities(); ++entityNum) {
+    size_t entitySize = record->eventSubscribeInfo->GetMatchingSkills().CountEntities();
+    for (size_t entityNum = 0; entityNum < entitySize; ++entityNum) {
         if (entityNum == 0) {
             separator = "";
         } else {
@@ -154,7 +160,8 @@ void CommonEventSubscriberManager::DumpDetailed(
     entities = entities + "\n";
 
     std::string scheme = format + "\tScheme: ";
-    for (int schemeNum = 0; schemeNum < record->eventSubscribeInfo->GetMatchingSkills().CountSchemes(); ++schemeNum) {
+    size_t schemeSize = record->eventSubscribeInfo->GetMatchingSkills().CountSchemes();
+    for (size_t schemeNum = 0; schemeNum < schemeSize; ++schemeNum) {
         if (schemeNum == 0) {
             separator = "";
         } else {
@@ -195,7 +202,7 @@ void CommonEventSubscriberManager::DumpState(const std::string &event, const int
         return;
     }
 
-    int num = 0;
+    size_t num = 0;
     for (auto record : records) {
         num++;
         std::string title = std::to_string(num);

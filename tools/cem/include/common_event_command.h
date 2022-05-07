@@ -61,8 +61,7 @@ public:
      */
     CommonEventCommand(int argc, char *argv[]);
 
-    ~CommonEventCommand() override
-    {}
+    ~CommonEventCommand() override = default;
 
 private:
     ErrCode CreateCommandMap() override;

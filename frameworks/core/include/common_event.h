@@ -110,7 +110,7 @@ public:
      * @return Returns true if successful; false otherwise.
      */
     bool FinishReceiver(
-        const sptr<IRemoteObject> &proxy, const int &code, const std::string &data, const bool &abortEvent);
+        const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &data, const bool &abortEvent);
 
     /**
      * Dumps state of common event service.
@@ -179,7 +179,7 @@ private:
     sptr<ICommonEvent> commonEventProxy_;
     std::map<std::shared_ptr<CommonEventSubscriber>, sptr<CommonEventListener>> eventListeners_;
     sptr<IRemoteObject::DeathRecipient> recipient_;
-    const unsigned int SUBSCRIBER_MAX_SIZE = 200;
+    const size_t SUBSCRIBER_MAX_SIZE = 200;
     static const uint8_t ALREADY_SUBSCRIBED = 0;
     static const uint8_t INITIAL_SUBSCRIPTION = 1;
     static const uint8_t SUBSCRIBE_FAILED = 2;

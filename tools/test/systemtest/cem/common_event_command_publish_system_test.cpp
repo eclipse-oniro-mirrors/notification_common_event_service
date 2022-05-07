@@ -34,7 +34,7 @@ const std::string STRING_DATA_TWO = "data_two";
 const std::string STRING_DEVICE_ID_001 = "device_001";
 const std::string STRING_DEVICE_ID_002 = "device_002";
 const std::string STRING_DEVICE_ID_003 = "device_003";
-const int TIME_DELAY_FOR_SERVICES = 2;
+const int32_t TIME_DELAY_FOR_SERVICES = 2;
 const time_t TIME_OUT_SECONDS_LIMIT = 5;
 std::mutex mtx;
 
@@ -98,7 +98,7 @@ public:
         std::string deviceId = GetSubscribeInfo().GetDeviceId();
         GTEST_LOG_(INFO) << "deviceId = " << deviceId;
 
-        int code = commonEventData.GetCode();
+        int32_t code = commonEventData.GetCode();
         GTEST_LOG_(INFO) << "code = " << code;
 
         std::string data = commonEventData.GetData();

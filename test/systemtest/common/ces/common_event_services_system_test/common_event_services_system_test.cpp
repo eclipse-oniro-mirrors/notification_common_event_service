@@ -43,8 +43,8 @@ const time_t TIME_OUT_SECONDS_TWO = 2;
 const time_t TIME_OUT_SECONDS_ = 3;
 const time_t TIME_OUT_SECONDS_TEN = 10;
 const time_t TIME_OUT_SECONDS_TWENTY = 20;
-const unsigned int SUBSCRIBER_MAX_SIZE = 200;
-const unsigned int SUBSCRIBER_MAX_SIZE_PLUS = 201;
+const size_t SUBSCRIBER_MAX_SIZE = 200;
+const size_t SUBSCRIBER_MAX_SIZE_PLUS = 201;
 
 const std::string CompareStr = "cesComparesStrForCase";
 const std::string CompareStrFalse = "cesComparesStrForCaseFalse";

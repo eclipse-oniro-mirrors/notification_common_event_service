@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "common_event_data.h"
 
 #include "event_log_wrapper.h"
@@ -29,7 +28,7 @@ CommonEventData::CommonEventData(const Want &want) : want_(want), code_(0)
 {
 }
 
-CommonEventData::CommonEventData(const Want &want, const int &code, const std::string &data)
+CommonEventData::CommonEventData(const Want &want, const int32_t &code, const std::string &data)
     : want_(want), code_(code), data_(data)
 {
 }
@@ -38,12 +37,12 @@ CommonEventData::~CommonEventData()
 {
 }
 
-void CommonEventData::SetCode(const int &code)
+void CommonEventData::SetCode(const int32_t &code)
 {
     code_ = code;
 }
 
-int CommonEventData::GetCode() const
+int32_t CommonEventData::GetCode() const
 {
     return code_;
 }
@@ -75,7 +74,7 @@ bool CommonEventData::Marshalling(Parcel &parcel) const
         EVENT_LOGE("Type conversion failed");
         return false;
     }
-    if (!messageParcel->WriteUint32(data_.size() + 1)) {
+    if (!messageParcel->WriteUint64(data_.size() + 1)) {
         EVENT_LOGE("Failed to write data size");
         return false;
     }
@@ -105,14 +104,14 @@ bool CommonEventData::ReadFromParcel(Parcel &parcel)
         EVENT_LOGE("Type conversion failed");
         return false;
     }
-    uint32_t length = messageParcel->ReadUint32();
+    uint64_t length = messageParcel->ReadUint64();
     if (length == 0) {
         EVENT_LOGE("Invalid data length");
         return false;
     }
     const char *data = reinterpret_cast<const char *>(messageParcel->ReadRawData(length));
     if (!data) {
-        EVENT_LOGE("Fail to read raw data, length = %{public}u", length);
+        EVENT_LOGE("Fail to read raw data, length = %{public}" PRIu64 "", length);
         return false;
     }
     data_ = data;

@@ -35,7 +35,7 @@ BundleManagerHelper::BundleManagerHelper() : sptrBundleMgr_(nullptr), bmsDeath_(
 BundleManagerHelper::~BundleManagerHelper()
 {}
 
-std::string BundleManagerHelper::GetBundleName(int uid)
+std::string BundleManagerHelper::GetBundleName(uid_t uid)
 {
     EVENT_LOGI("enter");
 

@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-AsyncCommonEventResult::AsyncCommonEventResult(const int &resultCode, const std::string &resultData,
+AsyncCommonEventResult::AsyncCommonEventResult(const int32_t &resultCode, const std::string &resultData,
     const bool &ordered, const bool &sticky, const sptr<IRemoteObject> &token)
     : abortEvent_(false), finished_(false)
 {
@@ -34,7 +34,7 @@ AsyncCommonEventResult::AsyncCommonEventResult(const int &resultCode, const std:
 AsyncCommonEventResult::~AsyncCommonEventResult()
 {}
 
-bool AsyncCommonEventResult::SetCode(const int &code)
+bool AsyncCommonEventResult::SetCode(const int32_t &code)
 {
     if (!CheckSynchronous()) {
         return false;
@@ -45,7 +45,7 @@ bool AsyncCommonEventResult::SetCode(const int &code)
     return true;
 }
 
-int AsyncCommonEventResult::GetCode() const
+int32_t AsyncCommonEventResult::GetCode() const
 {
     return resultCode_;
 }
@@ -66,7 +66,7 @@ std::string AsyncCommonEventResult::GetData() const
     return resultData_;
 }
 
-bool AsyncCommonEventResult::SetCodeAndData(const int &code, const std::string &data)
+bool AsyncCommonEventResult::SetCodeAndData(const int32_t &code, const std::string &data)
 {
     if (!CheckSynchronous()) {
         return false;

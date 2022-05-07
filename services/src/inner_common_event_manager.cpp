@@ -179,7 +179,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &
     std::shared_ptr<OrderedEventRecord> sp = controlPtr_->GetMatchingOrderedReceiver(commonEventListener);
     if (sp) {
         EVENT_LOGI("Unsubscribe the subscriber who is waiting to receive finish feedback");
-        int code = sp->commonEventData->GetCode();
+        int32_t code = sp->commonEventData->GetCode();
         std::string data = sp->commonEventData->GetData();
         controlPtr_->FinishReceiverAction(sp, code, data, sp->resultAbort);
     }
@@ -216,7 +216,7 @@ void InnerCommonEventManager::DumpState(const std::string &event, const int32_t 
 }
 
 void InnerCommonEventManager::FinishReceiver(
-    const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData, const bool &abortEvent)
+    const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent)
 {
     EVENT_LOGI("enter");
 

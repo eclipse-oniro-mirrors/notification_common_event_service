@@ -33,7 +33,7 @@ const CommonEventSubscribeInfo &CommonEventSubscriber::GetSubscribeInfo() const
     return subscribeInfo_;
 }
 
-bool CommonEventSubscriber::SetCode(const int &code)
+bool CommonEventSubscriber::SetCode(const int32_t &code)
 {
     if (!CheckSynchronous()) {
         return false;
@@ -42,7 +42,7 @@ bool CommonEventSubscriber::SetCode(const int &code)
     return result_->SetCode(code);
 }
 
-int CommonEventSubscriber::GetCode() const
+int32_t CommonEventSubscriber::GetCode() const
 {
     if (!CheckSynchronous()) {
         return 0;
@@ -69,7 +69,7 @@ std::string CommonEventSubscriber::GetData() const
     return result_->GetData();
 }
 
-bool CommonEventSubscriber::SetCodeAndData(const int &code, const std::string &data)
+bool CommonEventSubscriber::SetCodeAndData(const int32_t &code, const std::string &data)
 {
     if (!CheckSynchronous()) {
         return false;

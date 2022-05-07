@@ -96,7 +96,7 @@ void CommonEventListener::OnReceiveEvent(
 
     std::lock_guard<std::mutex> lock(mutex_);
 
-    int code = commonEventData.GetCode();
+    int32_t code = commonEventData.GetCode();
     std::string data = commonEventData.GetData();
 
     std::shared_ptr<AsyncCommonEventResult> result =

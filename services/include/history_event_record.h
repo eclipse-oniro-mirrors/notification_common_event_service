@@ -48,7 +48,7 @@ struct HistoryEventRecord {
     };
 
     Want want;
-    int code;
+    int32_t code;
     std::string data;
 
     bool sticky;
@@ -68,7 +68,7 @@ struct HistoryEventRecord {
     std::vector<int> deliveryState;
     int64_t dispatchTime;
     int64_t receiverTime;
-    int state;
+    int8_t state;
     bool resultAbort;
 
     HistoryEventRecord()

@@ -897,7 +897,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
 }
 
 napi_value ParseParametersBySetCode(
-    const napi_env &env, const napi_value (&argv)[SET_CODE_MAX_PARA], size_t argc, int &code, napi_ref &callback)
+    const napi_env &env, const napi_value (&argv)[SET_CODE_MAX_PARA], size_t argc, int32_t &code, napi_ref &callback)
 {
     napi_valuetype valuetype;
 
@@ -942,7 +942,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
 
     napi_ref callback = nullptr;
-    int code = 0;
+    int32_t code = 0;
     if (ParseParametersBySetCode(env, argv, argc, code, callback) == nullptr) {
         return NapiGetNull(env);
     }
@@ -1220,7 +1220,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
 
 napi_value ParseParametersBySetCodeAndData(
     const napi_env &env, const napi_value (&argv)[SET_CODE_AND_DATA_MAX_PARA],
-    size_t argc, int &code, std::string &data, napi_ref &callback)
+    size_t argc, int32_t &code, std::string &data, napi_ref &callback)
 {
     napi_valuetype valuetype;
     size_t strLen = 0;
@@ -1279,7 +1279,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
 
     napi_ref callback = nullptr;
-    int code = 0;
+    int32_t code = 0;
     std::string data;
     if (ParseParametersBySetCodeAndData(env, argv, argc, code, data, callback) == nullptr) {
         return NapiGetNull(env);
@@ -1889,7 +1889,7 @@ napi_value GetDataByPublish(const napi_env &env, const napi_value &value, std::s
     return NapiGetNull(env);
 }
 
-napi_value GetCodeByPublish(const napi_env &env, const napi_value &value, int &code)
+napi_value GetCodeByPublish(const napi_env &env, const napi_value &value, int32_t &code)
 {
     EVENT_LOGI("GetCodeByPublish start");
 

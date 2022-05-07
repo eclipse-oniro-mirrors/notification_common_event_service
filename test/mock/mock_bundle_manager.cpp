@@ -28,7 +28,7 @@ void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
     isSystemApp_ = isSystemApp;
 }
 
-bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
+bool MockBundleMgrService::CheckIsSystemAppByUid(const int32_t uid)
 {
     if (isSystemAppMock_) {
         return isSystemApp_;

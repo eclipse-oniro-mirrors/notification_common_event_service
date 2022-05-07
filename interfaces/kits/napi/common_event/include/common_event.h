@@ -101,7 +101,7 @@ struct AsyncCallbackInfoGetCode {
     napi_env env = nullptr;
     napi_async_work asyncWork;
     SubscriberInstance *objectInfo = nullptr;
-    int code = 0;
+    int32_t code = 0;
     CallbackPromiseInfo info;
 };
 
@@ -109,7 +109,7 @@ struct AsyncCallbackInfoSetCode {
     napi_env env = nullptr;
     napi_async_work asyncWork;
     SubscriberInstance *objectInfo = nullptr;
-    int code = 0;
+    int32_t code = 0;
     CallbackPromiseInfo info;
 };
 
@@ -133,7 +133,7 @@ struct AsyncCallbackInfoSetCodeAndData {
     napi_env env = nullptr;
     napi_async_work asyncWork;
     SubscriberInstance *objectInfo = nullptr;
-    int code = 0;
+    int32_t code = 0;
     std::string data;
     CallbackPromiseInfo info;
 };
@@ -188,7 +188,7 @@ struct AsyncCallbackInfoPublish {
 struct CommonEventPublishDataByjs {
     std::string bundleName;
     std::string data;
-    int code = 0;
+    int32_t code = 0;
     std::vector<std::string> subscriberPermissions;
     bool isOrdered = false;
     bool isSticky = false;
@@ -199,7 +199,7 @@ struct CommonEventDataWorker {
     napi_env env = nullptr;
     napi_ref ref = nullptr;
     Want want;
-    int code = 0;
+    int32_t code = 0;
     std::string data;
 };
 
@@ -288,7 +288,7 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncResult(const SubscriberInstance 
 napi_value GetCode(napi_env env, napi_callback_info info);
 
 napi_value ParseParametersBySetCode(
-    const napi_env &env, const napi_value (&argv)[2], size_t argc, int &code, napi_ref &callback);
+    const napi_env &env, const napi_value (&argv)[2], size_t argc, int32_t &code, napi_ref &callback);
 
 void PaddingAsyncCallbackInfoSetCode(const napi_env &env, const size_t &argc,
     AsyncCallbackInfoSetCode *&asynccallbackinfo, const napi_ref &callback, napi_value &promise);
@@ -310,8 +310,8 @@ void PaddingAsyncCallbackInfoSetData(const napi_env &env, const size_t &argc,
 
 napi_value SetData(napi_env env, napi_callback_info info);
 
-napi_value ParseParametersBySetCodeAndData(
-    const napi_env &env, const napi_value (&argv)[3], size_t argc, int &code, std::string &data, napi_ref &callback);
+napi_value ParseParametersBySetCodeAndData(const napi_env &env, const napi_value (&argv)[3],
+    size_t argc, int32_t &code, std::string &data, napi_ref &callback);
 
 void PaddingAsyncCallbackInfoSetCodeAndData(const napi_env &env, const size_t &argc,
     AsyncCallbackInfoSetCodeAndData *&asynccallbackinfo, const napi_ref &callback, napi_value &promise);
@@ -359,7 +359,7 @@ napi_value GetBundlenameByPublish(const napi_env &env, const napi_value &value, 
 
 napi_value GetDataByPublish(const napi_env &env, const napi_value &value, std::string &data);
 
-napi_value GetCodeByPublish(const napi_env &env, const napi_value &value, int &code);
+napi_value GetCodeByPublish(const napi_env &env, const napi_value &value, int32_t &code);
 
 napi_value GetSubscriberPermissionsByPublish(
     const napi_env &env, const napi_value &value, std::vector<std::string> &subscriberPermissions);

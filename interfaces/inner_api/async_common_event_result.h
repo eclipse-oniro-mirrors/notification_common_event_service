@@ -31,7 +31,7 @@ public:
      * @param sticky Indicates the type of the current sticky common event is sticky or not.
      * @param token Indicates the remote object of the current ordered common event.
      */
-    AsyncCommonEventResult(const int &resultCode, const std::string &resultData, const bool &ordered,
+    AsyncCommonEventResult(const int32_t &resultCode, const std::string &resultData, const bool &ordered,
         const bool &sticky, const sptr<IRemoteObject> &token);
 
     ~AsyncCommonEventResult();
@@ -42,14 +42,14 @@ public:
      * @param code Indicates the result code of the current ordered common event
      * @return Returns true if successful; false otherwise.
      */
-    bool SetCode(const int &code);
+    bool SetCode(const int32_t &code);
 
     /**
      * Obtains the result code of the current ordered common event.
      *
      * @return Returns the result code of the current ordered common event
      */
-    int GetCode() const;
+    int32_t GetCode() const;
 
     /**
      * Sets the result data of the current ordered common event.
@@ -73,7 +73,7 @@ public:
      * @param data Indicates the result data of the current ordered common event.
      * @return Returns true if successful; false otherwise.
      */
-    bool SetCodeAndData(const int &code, const std::string &data);
+    bool SetCodeAndData(const int32_t &code, const std::string &data);
 
     /**
      * Cancels the current ordered common event.
@@ -125,7 +125,7 @@ public:
     bool CheckSynchronous() const;
 
 private:
-    int resultCode_;
+    int32_t resultCode_;
     std::string resultData_;
     bool ordered_;
     bool sticky_;
