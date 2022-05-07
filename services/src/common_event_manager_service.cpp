@@ -15,6 +15,7 @@
 
 #include "common_event_manager_service.h"
 
+#include "access_token_helper.h"
 #include "accesstoken_kit.h"
 #include "bundle_manager_helper.h"
 #include "common_event_constant.h"
@@ -257,7 +258,7 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
     auto callingUid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
-    bool ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(bundleName, permission);
+    bool ret = AccessTokenHelper::VerifyAccessToken(IPCSkeleton::GetCallingTokenID(), permission);
     if (!ret) {
         EVENT_LOGE("No permission to get a sticky common event from %{public}s (uid = %{public}d)",
             bundleName.c_str(),

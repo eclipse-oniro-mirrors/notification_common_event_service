@@ -17,6 +17,7 @@
 
 #include <cinttypes>
 
+#include "access_token_helper.h"
 #include "bundle_manager_helper.h"
 #include "common_event_constant.h"
 #include "event_log_wrapper.h"
@@ -349,11 +350,11 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
     record.subscriberPermissions = eventRecordPtr->publishInfo->GetSubscriberPermissions();
 
     record.recordTime = eventRecordPtr->recordTime;
-    record.pid = eventRecordPtr->pid;
-    record.uid = eventRecordPtr->uid;
+    record.pid = eventRecordPtr->eventRecordInfo.pid;
+    record.uid = eventRecordPtr->eventRecordInfo.uid;
     record.userId = eventRecordPtr->userId;
-    record.bundleName = eventRecordPtr->bundleName;
-    record.isSystemApp = eventRecordPtr->isSystemApp;
+    record.bundleName = eventRecordPtr->eventRecordInfo.bundleName;
+    record.isSystemApp = eventRecordPtr->eventRecordInfo.isSystemApp;
     record.isSystemEvent = eventRecordPtr->isSystemEvent;
 
     for (auto vec : eventRecordPtr->receivers) {
@@ -694,14 +695,12 @@ bool CommonEventControlManager::CheckSubscriberPermission(
     }
 
     if (permission.names.size() == 1) {
-        ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-            subscriberRecord.eventRecordInfo.bundleName, permission.names[0]);
+        ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, permission.names[0]);
         lackPermission = permission.names[0];
     } else {
         if (permission.state == PermissionState::AND) {
             for (auto vec : permission.names) {
-                ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-                    subscriberRecord.eventRecordInfo.bundleName, vec);
+                ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
                 if (!ret) {
                     lackPermission = vec;
                     break;
@@ -709,8 +708,7 @@ bool CommonEventControlManager::CheckSubscriberPermission(
             }
         } else if (permission.state == PermissionState::OR) {
             for (auto vec : permission.names) {
-                ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-                    subscriberRecord.eventRecordInfo.bundleName, vec);
+                ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
                 lackPermission += vec + CONNECTOR;
                 if (ret) {
                     break;
@@ -745,17 +743,16 @@ bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::str
         return true;
     }
 
-    ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-        eventRecord.bundleName, subscriberRequiredPermission);
+    ret = AccessTokenHelper::VerifyAccessToken(eventRecord.eventRecordInfo.callerToken, subscriberRequiredPermission);
     if (!ret) {
         EVENT_LOGW("No permission to send common event %{public}s "
                     "from %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
                     "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
                     "due to registered subscriber requires the %{public}s permission.",
             eventRecord.commonEventData->GetWant().GetAction().c_str(),
-            eventRecord.bundleName.c_str(),
-            eventRecord.pid,
-            eventRecord.uid,
+            eventRecord.eventRecordInfo.bundleName.c_str(),
+            eventRecord.eventRecordInfo.pid,
+            eventRecord.eventRecordInfo.uid,
             eventRecord.userId,
             subscriberRecord.eventRecordInfo.bundleName.c_str(),
             subscriberRecord.eventRecordInfo.pid,
@@ -778,8 +775,8 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
     }
 
     for (auto publisherRequiredPermission : publisherRequiredPermissions) {
-        ret = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckPermission(
-            subscriberRecord.eventRecordInfo.bundleName, publisherRequiredPermission);
+        ret = AccessTokenHelper::VerifyAccessToken(
+            subscriberRecord.eventRecordInfo.callerToken, publisherRequiredPermission);
         if (!ret) {
             EVENT_LOGW("No permission to receive common event %{public}s "
                         "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
@@ -790,9 +787,9 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
                 subscriberRecord.eventRecordInfo.pid,
                 subscriberRecord.eventRecordInfo.uid,
                 subscriberRecord.eventSubscribeInfo->GetUserId(),
-                eventRecord.bundleName.c_str(),
-                eventRecord.pid,
-                eventRecord.uid,
+                eventRecord.eventRecordInfo.bundleName.c_str(),
+                eventRecord.eventRecordInfo.pid,
+                eventRecord.eventRecordInfo.uid,
                 eventRecord.userId,
                 publisherRequiredPermission.c_str());
             break;
@@ -892,8 +889,8 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", &record->recordTime);
 
     std::string recordTime = "\tTime: " + std::string(systime) + "\n";
-    std::string pid = "\tPID: " + std::to_string(record->pid) + "\n";
-    std::string uid = "\tUID: " + std::to_string(record->uid) + "\n";
+    std::string pid = "\tPID: " + std::to_string(record->eventRecordInfo.pid) + "\n";
+    std::string uid = "\tUID: " + std::to_string(record->eventRecordInfo.uid) + "\n";
     std::string userId;
     switch (record->userId) {
         case UNDEFINED_USER:
@@ -907,7 +904,7 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
             break;
     }
     userId = "\tUSERID: " + userId + "\n";
-    std::string bundleName = "\tBundleName: " + record->bundleName + "\n";
+    std::string bundleName = "\tBundleName: " + record->eventRecordInfo.bundleName + "\n";
 
     std::string permission = "\tRequiredPermission: ";
     std::string separator;
@@ -936,7 +933,7 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     } else {
         isOrdered = "\tIsOrdered: false\n";
     }
-    std::string isSystemApp = record->isSystemApp ? "true" : "false";
+    std::string isSystemApp = record->eventRecordInfo.isSystemApp ? "true" : "false";
     isSystemApp = "\tIsSystemApp: " + isSystemApp + "\n";
     std::string isSystemEvent = record->isSystemEvent ? "true" : "false";
     isSystemEvent = "\tIsSystemEvent: " + isSystemEvent + "\n";

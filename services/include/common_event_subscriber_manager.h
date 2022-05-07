@@ -24,17 +24,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-struct EventRecordInfo {
-    pid_t pid;
-    uid_t uid;
-    std::string bundleName;
-    bool isSubsystem;
-    bool isSystemApp;
-    bool isProxy;
-
-    EventRecordInfo() : pid(0), uid(0), isSubsystem(false), isSystemApp(false), isProxy(false) {}
-};
-
 struct EventSubscriberRecord {
     std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo;
     sptr<IRemoteObject> commonEventListener;

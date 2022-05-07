@@ -25,9 +25,9 @@ bool AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
     return tokenType == ATokenTypeEnum::TOKEN_NATIVE;
 }
 
-int AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken, const std::string &permission)
+bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken, const std::string &permission)
 {
-    return AccessTokenKit::VerifyAccessToken(callerToken, permission);
+    return AccessTokenKit::VerifyAccessToken(callerToken, permission) == PermissionState::PERMISSION_GRANTED;
 }
-}  // namespace Notification
+}  // namespace EventFwk
 }  // namespace OHOS

@@ -71,6 +71,7 @@ ohos_systemtest("ActsFuzzTest") {
     "ability_base:configuration",
     "ability_base:want",
     "ability_base:zuri",
+    "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",

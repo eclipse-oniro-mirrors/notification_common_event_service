@@ -51,6 +51,7 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
 
   external_deps = [
     "ability_base:want",
+    "access_token:libaccesstoken_sdk",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",

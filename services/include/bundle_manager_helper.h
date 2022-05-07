@@ -80,15 +80,6 @@ public:
     bool GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension, std::vector<std::string> &profileInfos);
 
     /**
-     * Checks permission.
-     *
-     * @param bundleName Indicates the bundle name.
-     * @param permission Indicates the permission name.
-     * @return Returns true if successful; false otherwise.
-     */
-    bool CheckPermission(const std::string &bundleName, const std::string &permission);
-
-    /**
      * Clears bundle manager helper.
      *
      */

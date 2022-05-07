@@ -14,12 +14,13 @@
  */
 
 #include "mock_bundle_manager.h"
+
 #include "ability_info.h"
 #include "application_info.h"
 
 namespace OHOS {
 namespace AppExecFwk {
-constexpr int SYSTEM_UID = 1000;
+constexpr uint16_t SYSTEM_UID = 1000;
 
 void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
 {
@@ -33,15 +34,6 @@ bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
         return isSystemApp_;
     }
     return (uid > SYSTEM_UID) ? false : true;
-}
-
-int MockBundleMgrService::CheckPermission(const std::string &bundleName, const std::string &permission)
-{
-    if (!bundleName.compare("hello")) {
-        return 0;
-    } else {
-        return -1;
-    }
 }
 }  // namespace AppExecFwk
 }  // namespace OHOS

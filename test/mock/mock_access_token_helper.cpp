@@ -26,7 +26,7 @@ bool AccessTokenHelper::VerifyNativeToken(const AccessToken::AccessTokenID &call
     return callerToken == PERMISSION_GRANTED;
 }
 
-int AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &callerToken, const std::string &permission)
+bool AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &callerToken, const std::string &permission)
 {
     return callerToken == PERMISSION_GRANTED;
 }

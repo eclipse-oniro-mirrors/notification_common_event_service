@@ -29,7 +29,7 @@ public:
      * @return Returns true if successful; false otherwise.
      */
     static bool VerifyNativeToken(const Security::AccessToken::AccessTokenID &callerToken);
-    static int VerifyAccessToken(const Security::AccessToken::AccessTokenID &callerToken,
+    static bool VerifyAccessToken(const Security::AccessToken::AccessTokenID &callerToken,
         const std::string &permission);
 };
 }  // namespace EventFwk
