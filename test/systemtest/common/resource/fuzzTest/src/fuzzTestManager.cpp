@@ -1258,26 +1258,10 @@ void fuzzTestManager::RegisterBundleMgrProxy()
         temp->CheckPublicKeys(GetStringParam(), GetStringParam());
     };
 
-    callFunctionMap_["BundleMgrProxyCheckPermission"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        temp->CheckPermission(GetStringParam(), GetStringParam());
-    };
-
     callFunctionMap_["BundleMgrProxyGetPermissionDef"] = []() {
         std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
         PermissionDef a;
         temp->GetPermissionDef(GetStringParam(), a);
-    };
-    callFunctionMap_["BundleMgrProxyGetAllPermissionGroupDefs"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        std::vector<PermissionDef> a;
-        temp->GetAllPermissionGroupDefs(a);
-    };
-
-    callFunctionMap_["BundleMgrProxyGetAppsGrantedPermissions"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        std::vector<std::string> a;
-        temp->GetAppsGrantedPermissions(GetStringVectorParam(), a);
     };
 
     callFunctionMap_["BundleMgrProxyGetSystemAvailableCapabilities"] = []() {
@@ -1335,11 +1319,6 @@ void fuzzTestManager::RegisterBundleMgrProxy()
     callFunctionMap_["BundleMgrProxyGetBundleInstaller"] = []() {
         std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
         temp->GetBundleInstaller();
-    };
-
-    callFunctionMap_["BundleMgrProxyRequestPermissionFromUser"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        temp->RequestPermissionFromUser(GetStringParam(), GetStringParam(), GetIntParam());
     };
 }
 
