@@ -256,7 +256,7 @@ bool CommonEventProxy::DumpState(const std::string &event, const int32_t &userId
     if (ret) {
         int32_t stackNum = reply.ReadInt32();
         stackNum = stackNum > MAX_HISTORY_SIZE ? MAX_HISTORY_SIZE : stackNum;
-        for (int i = 0; i < stackNum; i++) {
+        for (int32_t i = 0; i < stackNum; i++) {
             std::string stack = Str16ToStr8(reply.ReadString16());
             state.emplace_back(stack);
         }
@@ -267,7 +267,7 @@ bool CommonEventProxy::DumpState(const std::string &event, const int32_t &userId
 }
 
 bool CommonEventProxy::FinishReceiver(
-    const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData, const bool &abortEvent)
+    const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent)
 {
     EVENT_LOGD("start");
 

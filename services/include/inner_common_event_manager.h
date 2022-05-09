@@ -102,7 +102,7 @@ public:
      * @return Returns true if successful; false otherwise.
      */
     void FinishReceiver(
-        const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData, const bool &abortEvent);
+        const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent);
 
     /**
      * Freezes application.

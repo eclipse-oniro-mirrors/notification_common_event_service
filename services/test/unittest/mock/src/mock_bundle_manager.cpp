@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace AppExecFwk {
-constexpr uint16_t SYSTEM_UID = 1000;
+constexpr int SYSTEM_UID = 1000;
 
 void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
 {
@@ -28,12 +28,12 @@ void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
     isSystemApp_ = isSystemApp;
 }
 
-bool MockBundleMgrService::CheckIsSystemAppByUid(const int uid)
+bool MockBundleMgrService::CheckIsSystemAppByUid(const int32_t uid)
 {
     if (isSystemAppMock_) {
         return isSystemApp_;
     }
-    return (uid > SYSTEM_UID) ? false : true;
+    return uid <= SYSTEM_UID;
 }
 }  // namespace AppExecFwk
 }  // namespace OHOS

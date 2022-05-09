@@ -25,8 +25,8 @@ using namespace testing::ext;
 using namespace OHOS::EventFwk;
 using OHOS::Parcel;
 
-static const int SET_COUNT = 1;
-static const int MAX_COUNT = 100;
+static const size_t SET_COUNT = 1;
+static const size_t MAX_COUNT = 100;
 
 class MatchingSkillsTest : public testing::Test {
 public:

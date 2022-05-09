@@ -41,7 +41,7 @@ public:
      * @param index Indicates the entity index.
      * @return Returns entity.
      */
-    std::string GetEntity(int index) const;
+    std::string GetEntity(size_t index) const;
 
     /**
      * Adds an entity to this MatchingSkills object.
@@ -70,7 +70,7 @@ public:
      *
      * @return Returns entity count.
      */
-    int CountEntities() const;
+    size_t CountEntities() const;
 
     /**
      * Adds an event to this MatchingSkills object.
@@ -84,7 +84,7 @@ public:
      *
      * @return Indicates the event count in MatchingSkills object.
      */
-    int CountEvent() const;
+    size_t CountEvent() const;
 
     /**
      * Gets event.
@@ -92,7 +92,7 @@ public:
      * @param index Indicates the scheme index.
      * @return Returns the event in MatchingSkills object.
      */
-    std::string GetEvent(int index) const;
+    std::string GetEvent(size_t index) const;
 
     /**
      * Gets events.
@@ -122,7 +122,7 @@ public:
      * @param index Indicates the scheme index.
      * @return Retruns scheme.
      */
-    std::string GetScheme(int index) const;
+    std::string GetScheme(size_t index) const;
 
     /**
      * Adds scheme to this MatchingSkills object.
@@ -151,7 +151,7 @@ public:
      *
      * @return Retruns scheme count.
      */
-    int CountSchemes() const;
+    size_t CountSchemes() const;
 
     /**
      * Matches want.

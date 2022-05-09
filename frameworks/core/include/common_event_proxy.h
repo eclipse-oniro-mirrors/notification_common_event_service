@@ -103,7 +103,7 @@ public:
      * @param abortEvent Indicates whether the current ordered common event should be aborted.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int &code, const std::string &receiverData,
+    virtual bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData,
         const bool &abortEvent) override;
 
     /**

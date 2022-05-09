@@ -24,7 +24,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-const int REVERSE = 3;
+constexpr size_t REVERSE = 3;
 
 static const std::unordered_map<std::string, std::pair<PermissionState, std::vector<std::string>>> COMMON_EVENT_MAP {
     {CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED,

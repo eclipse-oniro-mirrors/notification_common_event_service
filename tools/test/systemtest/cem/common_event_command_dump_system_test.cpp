@@ -27,7 +27,7 @@ using namespace OHOS::EventFwk;
 namespace {
 const std::string STRING_EVENT = "com.ces.event";
 const std::string STRING_NO_SUBSCRIBERS = "Subscribers:\tNo information\n";
-const int TIME_DELAY_FOR_SERVICES = 2;
+const int32_t TIME_DELAY_FOR_SERVICES = 2;
 
 std::string ExecuteCommand(const std::string &command)
 {

@@ -25,7 +25,7 @@ namespace OHOS {
 namespace EventFwk {
 class MockCommonEventStub : public CommonEventStub {
 public:
-    MOCK_METHOD4(FinishReceiver, bool(const sptr<IRemoteObject> &proxy, const int &code,
+    MOCK_METHOD4(FinishReceiver, bool(const sptr<IRemoteObject> &proxy, const int32_t &code,
                                      const std::string &receiverData, const bool &abortEvent));
 
     /**

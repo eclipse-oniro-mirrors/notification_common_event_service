@@ -178,7 +178,7 @@ bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData
 }
 
 bool CommonEvent::FinishReceiver(
-    const sptr<IRemoteObject> &proxy, const int &code, const std::string &data, const bool &abortEvent)
+    const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &data, const bool &abortEvent)
 {
     EVENT_LOGI("enter");
 

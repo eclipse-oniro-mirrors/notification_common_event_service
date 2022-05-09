@@ -48,10 +48,10 @@ std::mutex g_mtx;
 std::mutex g_mtxAnother;
 const time_t TIME_OUT_SECONDS_LIMIT = 5;
 const time_t TIME_OUT_SECONDS_MIDDLE = 15;
-const int INITCODE = 0;
-const int CHANGECODE = 1;
-const int LOWPRIORITY = 0;
-const int HIGHPRIORITY = 100;
+const int32_t INITCODE = 0;
+const int32_t CHANGECODE = 1;
+const int32_t LOWPRIORITY = 0;
+const int32_t HIGHPRIORITY = 100;
 }  // namespace
 
 class CESPublishOrderedEventSystmTest : public testing::Test {

@@ -51,7 +51,7 @@ public:
      * @param uid Indicates the uid of the application.
      * @return Returns the bundle name.
      */
-    std::string GetBundleName(int uid);
+    std::string GetBundleName(uid_t uid);
 
     /**
      * Queries extension information.

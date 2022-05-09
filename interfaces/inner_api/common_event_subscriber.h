@@ -56,14 +56,14 @@ public:
      * @param code Indicates the result code of the current ordered common event
      * @return Returns true if success; false otherwise.
      */
-    bool SetCode(const int &code);
+    bool SetCode(const int32_t &code);
 
     /**
      * Obtains the result code of the current ordered common event.
      *
      * @return Returns the result code of the current ordered common event.
      */
-    int GetCode() const;
+    int32_t GetCode() const;
 
     /**
      * Sets the result data of the current ordered common event.
@@ -87,7 +87,7 @@ public:
      * @param data Indicates the result data of the current ordered common event.
      * @return Returns true if success; false otherwise.
      */
-    bool SetCodeAndData(const int &code, const std::string &data);
+    bool SetCodeAndData(const int32_t &code, const std::string &data);
 
     /**
      * Cancels the current ordered common event.

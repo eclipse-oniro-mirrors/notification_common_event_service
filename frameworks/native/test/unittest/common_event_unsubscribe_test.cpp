@@ -94,7 +94,7 @@ public:
     virtual ~CommonEventStubTest()
     {}
 
-    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int &code,
+    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int32_t &code,
         const std::string &receiverData, const bool &abortEvent)
     {
         return false;

@@ -32,10 +32,10 @@ MatchingSkills::MatchingSkills(const MatchingSkills &matchingSkills)
 MatchingSkills::~MatchingSkills()
 {}
 
-std::string MatchingSkills::GetEntity(int index) const
+std::string MatchingSkills::GetEntity(size_t index) const
 {
     std::string entity;
-    if ((index >= 0) && (index < static_cast<int>(entities_.size()))) {
+    if ((index >= 0) && (index < entities_.size())) {
         entity = entities_[index];
     }
     return entity;
@@ -62,7 +62,7 @@ void MatchingSkills::RemoveEntity(const std::string &entity)
     }
 }
 
-int MatchingSkills::CountEntities() const
+size_t MatchingSkills::CountEntities() const
 {
     return entities_.size();
 }
@@ -75,15 +75,15 @@ void MatchingSkills::AddEvent(const std::string &event)
     }
 }
 
-int MatchingSkills::CountEvent() const
+size_t MatchingSkills::CountEvent() const
 {
     return events_.size();
 }
 
-std::string MatchingSkills::GetEvent(int index) const
+std::string MatchingSkills::GetEvent(size_t index) const
 {
     std::string event;
-    if (index >= 0 && index < static_cast<int>(events_.size())) {
+    if (index >= 0 && index < events_.size()) {
         event = events_[index];
     }
     return event;
@@ -107,10 +107,10 @@ bool MatchingSkills::HasEvent(const std::string &event) const
     return std::find(events_.cbegin(), events_.cend(), event) != events_.cend();
 }
 
-std::string MatchingSkills::GetScheme(int index) const
+std::string MatchingSkills::GetScheme(size_t index) const
 {
     std::string schemes;
-    if ((index >= 0) && (index < static_cast<int>(schemes_.size()))) {
+    if ((index >= 0) && (index < schemes_.size())) {
         schemes = schemes_[index];
     }
     return schemes;
@@ -137,7 +137,7 @@ void MatchingSkills::RemoveScheme(const std::string &scheme)
     }
 }
 
-int MatchingSkills::CountSchemes() const
+size_t MatchingSkills::CountSchemes() const
 {
     return schemes_.size();
 }

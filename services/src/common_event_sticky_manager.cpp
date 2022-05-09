@@ -19,7 +19,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-constexpr int LENGTH = 80;
+constexpr int32_t LENGTH = 80;
 
 int CommonEventStickyManager::FindStickyEvents(
     const SubscribeInfoPtr &subscribeInfo, std::vector<CommonEventRecordPtr> &commonEventRecords)
@@ -85,7 +85,7 @@ void CommonEventStickyManager::DumpState(
         return;
     }
 
-    int num = 0;
+    size_t num = 0;
     for (auto record : records) {
         num++;
 
@@ -106,7 +106,7 @@ void CommonEventStickyManager::DumpState(
 
         std::string permission = "\tRequiredPermission: ";
         std::string separator;
-        int permissionNum = 0;
+        size_t permissionNum = 0;
         for (auto permissionVec : record->publishInfo->GetSubscriberPermissions()) {
             if (permissionNum == 0) {
                 separator = "";
@@ -137,7 +137,7 @@ void CommonEventStickyManager::DumpState(
         std::string action = "\t\tAction: " + record->commonEventData->GetWant().GetAction() + "\n";
 
         std::string entities = "\t\tEntity: ";
-        int entityNum = 0;
+        size_t entityNum = 0;
         for (auto entitiesVec : record->commonEventData->GetWant().GetEntities()) {
             if (entityNum == 0) {
                 separator = "";
