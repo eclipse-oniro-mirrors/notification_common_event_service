@@ -30,14 +30,11 @@ ohos_systemtest("ActsFuzzTest") {
 
   include_dirs = [
     "//utils/native/base/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/base/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "${common_event_service_path}/test/systemtest/common/resource",
     "//third_party/json/single_include",
     "${services_path}/include",
     "//foundation/aafwk/standard/frameworks/kits/appkit/app/include",
     "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/frameworks/kits/ability/native/include",
     "//foundation/aafwk/standard/services/abilitymgr/include",
     "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
@@ -57,7 +54,6 @@ ohos_systemtest("ActsFuzzTest") {
     "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
     "//foundation/aafwk/standard/interfaces/innerkits/app_manager:app_manager",
-    "//foundation/aafwk/standard/interfaces/innerkits/base:base",
     "//foundation/aafwk/standard/services/abilitymgr:abilityms",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
