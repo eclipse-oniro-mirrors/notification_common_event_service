@@ -26,7 +26,6 @@ ohos_systemtest("ActsCESSubscribeInfoTest") {
 
   include_dirs = [
     "//utils/native/base/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "${common_event_service_path}/test/systemtest/common/resource",
     "//third_party/json/single_include",
   ]

@@ -52,7 +52,7 @@
 
 // aafwk/bundle
 #include "bundle_mgr_proxy.h"
-#include "ohos/aafwk/base/short_wrapper.h"
+#include "short_wrapper.h"
 #include "../include/getparam.h"
 #include "../include/fuzzTestManager.h"
 
