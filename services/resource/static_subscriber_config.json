@@ -2,6 +2,7 @@
     "apps": [
         "com.ohos.launcher",
         "com.ohos.systemui",
-        "com.example.staticsubscriberapplication"
+        "com.example.staticsubscriberapplication",
+        "com.ohos.medialibrary.medialibrarydata"
     ]
 }
