@@ -137,7 +137,7 @@ void CommonEventSubscriberManager::DumpDetailed(
     std::string events = format + "\tEvent: ";
     std::string separator;
     size_t countSize = record->eventSubscribeInfo->GetMatchingSkills().CountEvent();
-    for (auto eventNum = 0; eventNum < countSize; ++eventNum) {
+    for (size_t eventNum = 0; eventNum < countSize; ++eventNum) {
         if (eventNum == 0) {
             separator = "";
         } else {
