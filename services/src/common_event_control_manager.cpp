@@ -466,7 +466,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
         sp = orderedEventQueue_.front();
         bool forceReceive = false;
         size_t numReceivers = sp->receivers.size();
-        uint64_t nowSysTime = SystemTime::GetNowSysTime();
+        uint64_t nowSysTime = static_cast<uint64_t>(SystemTime::GetNowSysTime());
 
         if (sp->dispatchTime > 0) {
             if ((numReceivers > 0) && (nowSysTime > static_cast<uint64_t>(sp->dispatchTime) +
