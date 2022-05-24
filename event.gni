@@ -13,6 +13,12 @@
 
 aafwk_path = "//foundation/aafwk/standard"
 
+aafwk_inner_api_path = "//foundation/aafwk/standard/interfaces/innerkits"
+
+aafwk_services_path = "//foundation/aafwk/standard/services"
+
+aafwk_kits_path = "//foundation/aafwk/standard/frameworks/kits"
+
 common_event_service_path = "//base/notification/common_event_service"
 
 frameworks_path = "${common_event_service_path}/frameworks"
