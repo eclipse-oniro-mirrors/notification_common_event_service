@@ -218,8 +218,16 @@ bool CommonEventControlManager::ProcessUnorderedEvent(
 
     EnqueueUnorderedRecord(eventRecordPtr);
 
-    std::function<void()> innerCallback =
-        std::bind(&CommonEventControlManager::NotifyUnorderedEvent, this, eventRecordPtr);
+    std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
+    auto innerCallback = [weak, eventRecordPtr]() {
+        auto manager = weak.lock();
+        if (manager == nullptr) {
+            EVENT_LOGE("CommonEventControlManager is null");
+            return;
+        }
+        std::shared_ptr<OrderedEventRecord> ordered = eventRecordPtr;
+        manager->NotifyUnorderedEvent(ordered);
+    };
 
     if (eventRecord.isSystemEvent) {
         ret = handler_->PostImmediateTask(innerCallback);
