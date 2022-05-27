@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,18 +31,15 @@ PublishManager::~PublishManager()
 bool PublishManager::CheckIsFloodAttack(pid_t appUid)
 {
     EVENT_LOGI("enter");
-
+    std::lock_guard<std::mutex> lock(mutex_);
     bool isAttacked = false;
-
     int64_t now = SystemTime::GetNowSysTime();
     EVENT_LOGI("dispatch common event by app (uid = %{publish}d) at now = %{public}" PRId64, appUid, now);
-
     auto iter = floodAttackAppStatistics_.find(appUid);
     if (iter == floodAttackAppStatistics_.end()) {
         floodAttackAppStatistics_[appUid].emplace_back(now);
         return isAttacked;
     }
-
     // Remove expired record
     auto iterVec = iter->second.begin();
     while (iterVec != iter->second.end()) {
@@ -52,13 +49,11 @@ bool PublishManager::CheckIsFloodAttack(pid_t appUid)
             break;
         }
     }
-
     if (iter->second.size() + 1 > FLOOD_ATTACK_NUMBER_MAX) {
         EVENT_LOGW("CES was maliciously attacked by app (uid = %{publish}d)", appUid);
         isAttacked = true;
     }
     iter->second.emplace_back(now);
-
     return isAttacked;
 }
 }  // namespace EventFwk
