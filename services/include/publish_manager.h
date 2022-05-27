@@ -17,6 +17,7 @@
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_PUBLIC_MANAGER_H
 
 #include <map>
+#include <mutex>
 #include <vector>
 #include <stdint.h>
 #include "singleton.h"
@@ -38,6 +39,7 @@ public:
     bool CheckIsFloodAttack(pid_t appUid);
 
 private:
+    std::mutex mutex_;
     std::map<pid_t, std::vector<int64_t>> floodAttackAppStatistics_;
     const uint32_t FLOOD_ATTACK_NUMBER_MAX = 20;  // Frequency of decision
     const int64_t FLOOD_ATTACK_INTERVAL_MAX = 5;  // Period of decision (unit: millisecond)
