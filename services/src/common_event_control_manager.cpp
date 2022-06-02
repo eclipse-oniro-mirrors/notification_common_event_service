@@ -88,8 +88,19 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
             if (!record.first || !vec) {
                 continue;
             }
-            std::function<void()> innerCallback =
-                std::bind(&CommonEventControlManager::NotifyFreezeEvents, this, *(record.first), *vec);
+
+            EventSubscriberRecord subscriberRecord = *(record.first);
+            CommonEventRecord eventRecord = *vec;
+            std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
+            auto innerCallback = [weak, subscriberRecord, eventRecord]() {
+                auto control = weak.lock();
+                if (control == nullptr) {
+                    EVENT_LOGE("CommonEventControlManager is null");
+                    return;
+                }
+                control->NotifyFreezeEvents(subscriberRecord, eventRecord);
+            };
+
             handler_->PostImmediateTask(innerCallback);
         }
     }
@@ -218,9 +229,17 @@ bool CommonEventControlManager::ProcessUnorderedEvent(
 
     EnqueueUnorderedRecord(eventRecordPtr);
 
-    std::function<void()> innerCallback =
-        std::bind(&CommonEventControlManager::NotifyUnorderedEvent, this, eventRecordPtr);
-
+    std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
+    auto innerCallback = [weak, eventRecordPtr]() {
+        auto manager = weak.lock();
+        if (manager == nullptr) {
+            EVENT_LOGE("CommonEventControlManager is null");
+            return;
+        }
+        std::shared_ptr<OrderedEventRecord> ordered = eventRecordPtr;
+        manager->NotifyUnorderedEvent(ordered);
+    };
+    
     if (eventRecord.isSystemEvent) {
         ret = handler_->PostImmediateTask(innerCallback);
     } else {
