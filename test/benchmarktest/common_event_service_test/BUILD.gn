@@ -62,6 +62,6 @@ group("benchmarktest") {
 
   deps += [
     # deps file
-    ":Common_Event_Manager_Service_Test",
+    #":Common_Event_Manager_Service_Test",
   ]
 }
