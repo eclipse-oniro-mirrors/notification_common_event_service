@@ -171,17 +171,6 @@ public:
     }
 
     /**
-     * @brief Query the AbilityInfo of list for clone by the given Want.
-     * @param want Indicates the information of the ability.
-     * @param abilityInfos Indicates the obtained AbilityInfos object.
-     * @return Returns true if the AbilityInfos is successfully obtained; returns false otherwise.
-     */
-    virtual bool QueryAbilityInfosForClone(const Want &want, std::vector<AbilityInfo> &abilityInfos) override
-    {
-        return true;
-    }
-
-    /**
      * @brief Query the AbilityInfo by ability.uri in config.json.
      * @param abilityUri Indicates the uri of the ability.
      * @param abilityInfo Indicates the obtained AbilityInfo object.
@@ -470,31 +459,6 @@ public:
      */
     virtual bool GetAllCommonEventInfo(const std::string &eventKey,
         std::vector<CommonEventInfo> &commonEventInfos) override
-    {
-        return true;
-    }
-
-    /**
-     * @brief Get module usage record list in descending order of lastLaunchTime.
-     * @param maxNum the return size of the records, must be in range of 1 to 1000.
-     * @param moduleUsageRecords List of ModuleUsageRecord objects if obtained.
-     * @return Returns true if this function is successfully called; returns false otherwise.
-     */
-    virtual bool GetModuleUsageRecords(
-        const int32_t number, std::vector<ModuleUsageRecord> &moduleUsageRecords) override
-    {
-        return true;
-    }
-
-    /**
-     * @brief Notify a specified ability for ability.
-     * @param bundleName Indicates the bundle name of the ability to ability.
-     * @param abilityName Indicates the name of the ability to ability.
-     * @param launchTime Indicates the ability launchTime.
-     * @return Returns true if this function is successfully called; returns false otherwise.
-     */
-    virtual bool NotifyAbilityLifeStatus(const std::string &bundleName,
-        const std::string &abilityName, const int64_t launchTime, const int uid) override
     {
         return true;
     }
