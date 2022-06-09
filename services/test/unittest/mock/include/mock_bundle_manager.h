@@ -177,17 +177,6 @@ public:
     }
 
     /**
-     * @brief Queries the AbilityInfo of list for clone by the given Want.
-     * @param want Indicates the information of the ability.
-     * @param abilityInfos Indicates the obtained AbilityInfos object.
-     * @return Returns true if the AbilityInfos is successfully obtained; returns false otherwise.
-     */
-    virtual bool QueryAbilityInfosForClone(const Want &want, std::vector<AbilityInfo> &abilityInfos) override
-    {
-        return true;
-    }
-
-    /**
      * @brief Queries the AbilityInfo by ability.uri in config.json.
      * @param abilityUri Indicates the uri of the ability.
      * @param abilityInfo Indicates the obtained AbilityInfo object.
@@ -470,51 +459,6 @@ public:
     }
 
     void MockSetIsSystemApp(bool isSystemApp);
-    /**
-     * @brief Gets module usage record list in descending order of lastLaunchTime.
-     * @param maxNum the return size of the records, must be in range of 1 to 1000.
-     * @param moduleUsageRecords List of ModuleUsageRecord objects if obtained.
-     * @return Returns true if this function is successfully called; returns false otherwise.
-     */
-    virtual bool GetModuleUsageRecords(
-        const int32_t number, std::vector<ModuleUsageRecord> &moduleUsageRecords) override
-    {
-        return true;
-    }
-
-    /**
-     * @brief Notifies a specified ability for ability.
-     * @param bundleName Indicates the bundle name of the ability to ability.
-     * @param abilityName Indicates the name of the ability to ability.
-     * @param launchTime Indicates the ability launchTime.
-     * @return Returns true if this function is successfully called; returns false otherwise.
-     */
-    virtual bool NotifyAbilityLifeStatus(
-        const std::string &bundleName, const std::string &abilityName, const int64_t launchTime, const int uid) override
-    {
-        return true;
-    }
-
-    /**
-     * @brief Removes cloned bundle.
-     * @param bundleName Indicates the bundle name of remove cloned bundle.
-     * @param uid Indicates the uid of remove cloned bundle.
-     * @return Returns true if this function is successfully called; returns false otherwise.
-     */
-    virtual bool RemoveClonedBundle(const std::string &bundleName, const int32_t uid) override
-    {
-        return true;
-    }
-
-    /**
-     * @brief Creates bundle clone.
-     * @param bundleName Indicates the bundle name of create bundle clone.
-     * @return Returns true if this function is successfully called; returns false otherwise.
-     */
-    virtual bool BundleClone(const std::string &bundleName) override
-    {
-        return true;
-    }
 
     /**
      * @brief Obtains an array of all group IDs associated with the given bundle name and UID.
@@ -535,16 +479,6 @@ public:
      * @return Returns true if the AbilityInfo is successfully obtained; returns false otherwise.
      */
     virtual bool QueryAbilityInfosByUri(const std::string &abilityUri, std::vector<AbilityInfo> &abilityInfos) override
-    {
-        return true;
-    }
-
-    /**
-     * @brief Determines whether the application is in the allow list.
-     * @param bundleName Indicates the bundle Names.
-     * @return Returns true if bundle name in the allow list successfully; returns false otherwise.
-     */
-    virtual bool CheckBundleNameInAllowList(const std::string &bundleName) override
     {
         return true;
     }
