@@ -46,10 +46,14 @@ static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;
 
 SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
-{}
+{
+    valid_ = std::make_shared<bool>(false);
+}
 
 SubscriberInstance::~SubscriberInstance()
-{}
+{
+    *valid_ = false;
+}
 
 napi_value SetCommonEventData(const CommonEventDataWorker *commonEventDataWorkerData, napi_value &result)
 {
@@ -112,6 +116,12 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
         work = nullptr;
         return;
     }
+    if ((commonEventDataWorkerData->valid == nullptr) || *(commonEventDataWorkerData->valid) == false) {
+        EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData or ref is invalid which may be freed before");
+        delete work;
+        work = nullptr;
+        return;
+    }
 
     napi_value result = nullptr;
     napi_create_object(commonEventDataWorkerData->env, &result);
@@ -146,7 +156,6 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
 void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 {
     EVENT_LOGI("OnReceiveEvent start");
-
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
     if (loop == nullptr) {
@@ -172,6 +181,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
     commonEventDataWorker->data = data.GetData();
     commonEventDataWorker->env = env_;
     commonEventDataWorker->ref = ref_;
+    commonEventDataWorker->valid = valid_;
 
     work->data = (void *)commonEventDataWorker;
 
@@ -206,6 +216,7 @@ void SubscriberInstance::SetEnv(const napi_env &env)
 void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
     ref_ = ref;
+    *valid_ = ref_ != nullptr ? true : false;
 }
 
 napi_value NapiGetNull(napi_env env)
@@ -2356,6 +2367,7 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
             delete asyncCallbackInfoSubscribe;
             asyncCallbackInfoSubscribe = nullptr;
         }
+        subscriber->SetCallbackRef(nullptr);
         subscriberInstances.erase(subscribe);
     }
 }
@@ -2637,6 +2649,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
                         delete asyncCallbackInfo;
                         asyncCallbackInfo = nullptr;
                     }
+                    objectInfo->SetCallbackRef(nullptr);
                     CommonEventManager::UnSubscribeCommonEvent(subscriberInstance.first);
                     subscriberInstances.erase(subscriberInstance.first);
                     break;

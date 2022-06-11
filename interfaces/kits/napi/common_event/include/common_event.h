@@ -198,6 +198,7 @@ struct CommonEventPublishDataByjs {
 struct CommonEventDataWorker {
     napi_env env = nullptr;
     napi_ref ref = nullptr;
+    std::shared_ptr<bool> valid;
     Want want;
     int32_t code = 0;
     std::string data;
@@ -216,6 +217,7 @@ public:
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
+    std::shared_ptr<bool> valid_;
 };
 
 napi_value NapiGetNull(napi_env env);
