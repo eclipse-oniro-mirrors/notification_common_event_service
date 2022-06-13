@@ -18,7 +18,6 @@
 #include <getopt.h>
 
 #include "common_event.h"
-#include "common_event_constant.h"
 #include "common_event_manager.h"
 #include "event_log_wrapper.h"
 #include "singleton.h"
@@ -39,16 +38,6 @@ const struct option LONG_OPTIONS[] = {
 };
 }  // namespace
 
-CommonEventCommand::CommonEventCommand(int argc, char *argv[])
-    : ShellCommand(argc, argv, TOOL_NAME)
-{
-    EVENT_LOGI("enter");
-
-    for (int i = 0; i < argc_; i++) {
-        EVENT_LOGI("argv_[%{public}d]: %{public}s", i, argv_[i]);
-    }
-}
-
 ErrCode CommonEventCommand::CreateCommandMap()
 {
     commandMap_ = {
@@ -56,386 +45,200 @@ ErrCode CommonEventCommand::CreateCommandMap()
         {"publish", std::bind(&CommonEventCommand::RunAsPublishCommand, this)},
         {"dump", std::bind(&CommonEventCommand::RunAsDumpCommand, this)},
     };
-
-    return OHOS::ERR_OK;
+    return ERR_OK;
 }
 
-ErrCode CommonEventCommand::CreateMessageMap()
-{
-    messageMap_ = {};
-
-    return OHOS::ERR_OK;
-}
-
-ErrCode CommonEventCommand::init()
+ErrCode CommonEventCommand::Init()
 {
     EVENT_LOGI("enter");
-
-    ErrCode result = OHOS::ERR_OK;
-
     if (!commonEventPtr_) {
         commonEventPtr_ = DelayedSingleton<CommonEvent>::GetInstance();
     }
-
     if (!commonEventPtr_) {
-        result = OHOS::ERR_INVALID_VALUE;
+        return ERR_INVALID_VALUE;
     }
-
-    return result;
+    return ERR_OK;
 }
 
 ErrCode CommonEventCommand::RunAsHelpCommand()
 {
     EVENT_LOGI("enter");
-
     resultReceiver_.append(HELP_MSG);
-
-    return OHOS::ERR_OK;
+    return ERR_OK;
 }
 
 ErrCode CommonEventCommand::RunAsPublishCommand()
 {
     EVENT_LOGI("enter");
-
-    ErrCode result = OHOS::ERR_OK;
-
-    int option = -1;
-    std::int32_t userId = ALL_USER;
-    int counter = 0;
-
-    bool isSticky = false;
-    bool isOrdered = false;
-
-    std::string action = "";
-    int code = 0;
-    std::string data = "";
-
-    while (true) {
-        counter++;
-
-        option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr);
-
-        EVENT_LOGI("option: %{public}d, optopt: %{public}d, optind: %{public}d", option, optopt, optind);
-
-        if ((optind < 0) || (optind > argc_)) {
-            return OHOS::ERR_INVALID_VALUE;
-        }
-
-        for (int i = 0; i < argc_; i++) {
-            EVENT_LOGI("argv_[%{public}d]: %{public}s", i, argv_[i]);
-        }
-
-        if (option == -1) {
-            if (counter == 1) {
-                // When scanning the first argument
-                if (strcmp(argv_[optind], cmd_.c_str()) == 0) {
-                    // 'cem publish' with no option: cem publish
-                    // 'cem publish' with a wrong argument: cem publish xxx
-                    EVENT_LOGI("'cem publish' with no option.");
-
-                    resultReceiver_.append(HELP_MSG_NO_OPTION + "\n");
-
-                    result = OHOS::ERR_INVALID_VALUE;
-                }
-            }
-            break;
-        }
-
-        if (option == '?') {
-            switch (optopt) {
-                case 'e': {
-                    // 'cem publish -e' with no argument: cem publish -e
-                    // 'cem publish --event' with no argument: cem publish --event
-                    EVENT_LOGI("'cem publish -e' with no argument.");
-
-                    resultReceiver_.append("error: option ");
-                    resultReceiver_.append("requires a value.\n");
-
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-                case 'c': {
-                    // 'cem publish -e <name> -c' with no argument: cem publish -e <name> -c
-                    // 'cem publish --event <name> -c' with no argument: cem publish --event -c
-                    EVENT_LOGI("'cem publish -e <name> -c' with no argument.");
-
-                    resultReceiver_.append("error: option ");
-                    resultReceiver_.append("requires a value.\n");
-
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-                case 'd': {
-                    // 'cem publish -e <name> -d' with no argument: cem publish -e <name> -d
-                    // 'cem publish --event <name> -d' with no argument: cem publish --event -d
-                    EVENT_LOGI("'cem publish -e <name> -d' with no argument.");
-
-                    resultReceiver_.append("error: option ");
-                    resultReceiver_.append("requires a value.\n");
-
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-                case 'u':
-                    // 'cem publish -e <name> -u' with no argument: cem publish -e <name> -d
-                    // 'cem publish --event <name> -d' with no argument: cem publish --event -d
-                    EVENT_LOGI("'cem publish -e <name> -u' with no argument.");
-
-                    resultReceiver_.append("error: option ");
-                    resultReceiver_.append("requires a value.\n");
-
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                case 0: {
-                    // 'cem publish' with an unknown option: cem publish --x
-                    // 'cem publish' with an unknown option: cem publish --xxx
-                    std::string unknownOption = "";
-                    std::string unknownOptionMsg = GetUnknownOptionMsg(unknownOption);
-
-                    EVENT_LOGI("'cem publish' with an unknown option.");
-
-                    resultReceiver_.append(unknownOptionMsg);
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-                default: {
-                    // 'cem publish' with an unknown option: cem publish -x
-                    // 'cem publish' with an unknown option: cem publish -xxx
-                    std::string unknownOption = "";
-                    std::string unknownOptionMsg = GetUnknownOptionMsg(unknownOption);
-
-                    EVENT_LOGI("'cem publish' with an unknown option.");
-
-                    resultReceiver_.append(unknownOptionMsg);
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-            }
-            break;
-        }
-
-        switch (option) {
-            case 'h': {
-                // 'cem publish -h'
-                // 'cem publish --help'
-                result = OHOS::ERR_INVALID_VALUE;
-                break;
-            }
-            case 'e': {
-                // 'cem publish -e <name>'
-                // 'cem publish --event <name>'
-                action = optarg;
-                break;
-            }
-            case 's': {
-                // 'cem publish -e <name> -s '
-                // 'cem publish -e <name> --sticky'
-                isSticky = true;
-                break;
-            }
-            case 'o': {
-                // 'cem publish -e <name> -o '
-                // 'cem publish -e <name> --ordered'
-                isOrdered = true;
-                break;
-            }
-            case 'c': {
-                // 'cem publish -e <name> -c 1024 '
-                // 'cem publish -e <name> --code 1024'
-                code = atoi(optarg);
-                break;
-            }
-            case 'd': {
-                // 'cem publish -e <name> -d 1024 '
-                // 'cem publish -e <name> --data 1024'
-                data = optarg;
-                break;
-            }
-            case 'u': {
-                // 'cem publish -e <name> -u 100'
-                // 'cem publish --event <name> -u 100'
-                userId = atoi(optarg);
-                break;
-            }
-            case 0: {
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-    }
-
-    if (result == OHOS::ERR_OK) {
-        if ((resultReceiver_ == "") && (action.size() == 0)) {
-            // 'cem publish ...' with no event option
-            EVENT_LOGI("'cem publish' with no event option.");
-
-            resultReceiver_.append(HELP_MSG_NO_EVENT_OPTION + "\n");
-            result = OHOS::ERR_INVALID_VALUE;
-        }
-    }
-
-    if (result != OHOS::ERR_OK) {
+    ErrCode result = ERR_OK;
+    PublishCmdInfo cmdInfo;
+    bool hasOption = false;
+    SetPublishCmdInfo(cmdInfo, result, hasOption);
+    if (!hasOption) {
+        resultReceiver_.append(HELP_MSG_NO_OPTION);
         resultReceiver_.append(HELP_MSG_PUBLISH);
-    } else {
-        /* Publish */
-
-        // make a want
+        return ERR_INVALID_VALUE;
+    }
+    if (result == ERR_OK && resultReceiver_.empty() && cmdInfo.action.empty()) {
+        resultReceiver_.append(HELP_MSG_NO_EVENT_OPTION);
+        result = ERR_INVALID_VALUE;
+    }
+    if (result == ERR_OK) {
         Want want;
-        want.SetAction(action);
-
-        // make common event data
+        want.SetAction(cmdInfo.action);
         CommonEventData commonEventData;
         commonEventData.SetWant(want);
-
-        // set code
-        commonEventData.SetCode(code);
-
-        // set data
-        commonEventData.SetData(data);
-
-        // make publish info
+        commonEventData.SetCode(cmdInfo.code);
+        commonEventData.SetData(cmdInfo.data);
         CommonEventPublishInfo publishInfo;
-        publishInfo.SetSticky(isSticky);
-        publishInfo.SetOrdered(isOrdered);
-
+        publishInfo.SetSticky(cmdInfo.isSticky);
+        publishInfo.SetOrdered(cmdInfo.isOrdered);
         // publish the common event
-        std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-        bool publishResult = commonEventPtr_->PublishCommonEventAsUser(
-            commonEventData, publishInfo, subscriber, userId);
+        bool publishResult = commonEventPtr_->PublishCommonEventAsUser(commonEventData, publishInfo, nullptr,
+            cmdInfo.userId);
         if (publishResult) {
-            resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_OK + "\n";
+            resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_OK;
         } else {
-            resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_NG + "\n";
+            resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_NG;
+        }
+    } else {
+        resultReceiver_.append(HELP_MSG_PUBLISH);
+    }
+    return result;
+}
+
+void CommonEventCommand::SetPublishCmdInfo(PublishCmdInfo &cmdInfo, ErrCode &result, bool &hasOption)
+{
+    int option;
+    while ((option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr)) != -1) {
+        hasOption = true;
+        if (option == '?') {
+            CheckPublishOpt();
+            result = ERR_INVALID_VALUE;
+            return;
+        }
+        switch (option) {
+            case 'h':
+                result = ERR_INVALID_VALUE;
+                break;
+            case 'e':
+                cmdInfo.action = optarg;
+                break;
+            case 's':
+                cmdInfo.isSticky = true;
+                break;
+            case 'o':
+                cmdInfo.isOrdered = true;
+                break;
+            case 'c':
+                cmdInfo.code = atoi(optarg);
+                break;
+            case 'd':
+                cmdInfo.data = optarg;
+                break;
+            case 'u':
+                cmdInfo.userId = atoi(optarg);
+                break;
+            default:
+                break;
         }
     }
+}
 
-    return result;
+void CommonEventCommand::CheckPublishOpt()
+{
+    switch (optopt) {
+        case 'e': {
+            resultReceiver_.append("error: option 'e' requires a value.\n");
+            break;
+        }
+        case 'c': {
+            resultReceiver_.append("error: option 'c' requires a value.\n");
+            break;
+        }
+        case 'd': {
+            resultReceiver_.append("error: option 'd' requires a value.\n");
+            break;
+        }
+        case 'u': {
+            resultReceiver_.append("error: option 'u' requires a value.\n");
+            break;
+        }
+        default: {
+            resultReceiver_.append("error: unknown option.\n");
+            break;
+        }
+    }
 }
 
 ErrCode CommonEventCommand::RunAsDumpCommand()
 {
     EVENT_LOGI("enter");
-
-    ErrCode result = OHOS::ERR_OK;
-    std::vector<std::string> dumpResults;
-
-    std::string action = "";
-    std::int32_t userId = ALL_USER;
-
-    int option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr);
-
-    EVENT_LOGI("option: %{public}d, optopt: %{public}d, optind: %{public}d", option, optopt, optind);
-
-    if ((optind < 0) || (optind > argc_)) {
-        return OHOS::ERR_INVALID_VALUE;
-    }
-
-    for (int i = 0; i < argc_; i++) {
-        EVENT_LOGI("argv_[%{public}d]: %{public}s", i, argv_[i]);
-    }
-
-    switch (option) {
-        case 'h': {
-            // 'cem dump -h'
-            // 'cem dump --help'
-            result = OHOS::ERR_INVALID_VALUE;
-            break;
-        }
-        case 'a': {
-            // 'cem dump -a'
-            // 'cem dump --all'
-            break;
-        }
-        case 'e': {
-            // 'cem dump -e <name>'
-            // 'cem dump --event <name>'
-            action = optarg;
-            break;
-        }
-        case 'u': {
-            // 'cem dump -e <name> -u 100'
-            // 'cem dump --event <name> -u 100'
-            userId = atoi(optarg);
-            break;
-        }
-        case '?': {
-            switch (optopt) {
-                case 'e': {
-                    // 'cem dump -e' with no argument: cem dump -e
-                    // 'cem dump --event' with no argument: cem dump --event
-                    EVENT_LOGI("'cem dump -s' with no argument.");
-
-                    resultReceiver_.append("error: option ");
-                    resultReceiver_.append("requires a value.\n");
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-                case 'u':
-                    // 'cem dump -e' with no argument: cem dump -e
-                    // 'cem dump --event' with no argument: cem dump --user-id
-                    EVENT_LOGI("'cem dump -u' with no argument.");
-
-                    resultReceiver_.append("error: option ");
-                    resultReceiver_.append("requires a value.\n");
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                case 0: {
-                    // 'cem dump' with an unknown option: cem dump --x
-                    // 'cem dump' with an unknown option: cem dump --xxx
-                    std::string unknownOption = "";
-                    std::string unknownOptionMsg = GetUnknownOptionMsg(unknownOption);
-
-                    EVENT_LOGI("'cem dump' with an unknown option.");
-
-                    resultReceiver_.append(unknownOptionMsg);
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-                default: {
-                    // 'cem dump' with an unknown option: cem dump -x
-                    // 'cem dump' with an unknown option: cem dump -xxx
-                    std::string unknownOption = "";
-                    std::string unknownOptionMsg = GetUnknownOptionMsg(unknownOption);
-
-                    EVENT_LOGI("'cem dump' with an unknown option.");
-
-                    resultReceiver_.append(unknownOptionMsg);
-                    result = OHOS::ERR_INVALID_VALUE;
-                    break;
-                }
-            }
-            break;
-        }
-        default: {
-            if (strcmp(argv_[optind], cmd_.c_str()) == 0) {
-                // 'cem dump' with no option: cem dump
-                // 'cem dump' with a wrong argument: cem dump xxx
-                EVENT_LOGI("'cem dump' with no option.");
-
-                resultReceiver_.append(HELP_MSG_NO_OPTION + "\n");
-                result = OHOS::ERR_INVALID_VALUE;
-            }
-            break;
-        }
-    }
-
-    if (result != OHOS::ERR_OK) {
+    ErrCode result = ERR_OK;
+    std::string action;
+    int32_t userId = ALL_USER;
+    bool hasOption = false;
+    SetDumpCmdInfo(action, userId, result, hasOption);
+    if (!hasOption) {
+        resultReceiver_.append(HELP_MSG_NO_OPTION);
         resultReceiver_.append(HELP_MSG_DUMP);
-    } else {
-        // dump state
+        return ERR_INVALID_VALUE;
+    }
+    if (result == ERR_OK) {
+        std::vector<std::string> dumpResults;
         bool dumpResult = commonEventPtr_->DumpState(action, userId, dumpResults);
         if (dumpResult) {
-            for (auto it : dumpResults) {
-                resultReceiver_ += it + "\n";
+            for (const auto &it : dumpResults) {
+                resultReceiver_.append(it + "\n");
             }
         } else {
-            resultReceiver_ = STRING_DUMP_COMMON_EVENT_NG + "\n";
+            resultReceiver_ = STRING_DUMP_COMMON_EVENT_NG;
+        }
+    } else {
+        resultReceiver_.append(HELP_MSG_DUMP);
+    }
+    return result;
+}
+
+void CommonEventCommand::SetDumpCmdInfo(std::string &action, int32_t &userId, ErrCode &result, bool &hasOption)
+{
+    int option;
+    while ((option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr)) != -1) {
+        hasOption = true;
+        if (option == '?') {
+            CheckDumpOpt();
+            result = ERR_INVALID_VALUE;
+            return;
+        }
+        switch (option) {
+            case 'h':
+                result = ERR_INVALID_VALUE;
+                break;
+            case 'e':
+                action = optarg;
+                break;
+            case 'u':
+                userId = atoi(optarg);
+                break;
+            default:
+                break;
         }
     }
+}
 
-    return result;
+void CommonEventCommand::CheckDumpOpt()
+{
+    switch (optopt) {
+        case 'e':
+            resultReceiver_.append("error: option 'e' requires a value.\n");
+            break;
+        case 'u':
+            resultReceiver_.append("error: option 'u' requires a value.\n");
+            break;
+        default:
+            resultReceiver_.append("error: unknown option.\n");
+            break;
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -26,12 +26,19 @@ using namespace OHOS;
 using namespace OHOS::AAFwk;
 using namespace OHOS::EventFwk;
 
+static std::string Concatenate(const std::string &first,  const std::string &second)
+{
+    return first + second;
+}
+
 class CemCommandTest : public testing::Test {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
     void SetUp() override;
     void TearDown() override;
+
+    std::string toolName_ = TOOL_NAME;
 };
 
 void CemCommandTest::SetUpTestCase()
@@ -57,7 +64,7 @@ void CemCommandTest::TearDown()
 HWTEST_F(CemCommandTest, Cem_Command_0100, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)"",
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
@@ -74,14 +81,14 @@ HWTEST_F(CemCommandTest, Cem_Command_0100, Function | MediumTest | Level1)
 HWTEST_F(CemCommandTest, Cem_Command_0200, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)"xxx",
         (char *)"",
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "cem: 'xxx' is not a valid cem command. See 'cem help'.\n" + HELP_MSG);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("cem: 'xxx' is not a valid cem command. See 'cem help'.\n", HELP_MSG));
 }
 
 /**
@@ -92,7 +99,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0200, Function | MediumTest | Level1)
 HWTEST_F(CemCommandTest, Cem_Command_0300, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)"-x",
         (char *)"",
     };
@@ -110,14 +117,14 @@ HWTEST_F(CemCommandTest, Cem_Command_0300, Function | MediumTest | Level1)
 HWTEST_F(CemCommandTest, Cem_Command_0400, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)"-xxx",
         (char *)"",
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), cmd.GetCommandErrorMsg() + HELP_MSG);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate(cmd.GetCommandErrorMsg(), HELP_MSG));
 }
 
 /**
@@ -128,7 +135,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0400, Function | MediumTest | Level1)
 HWTEST_F(CemCommandTest, Cem_Command_0500, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)"help",
         (char *)"",
     };

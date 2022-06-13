@@ -16,9 +16,9 @@
 #ifndef BASE_NOTIFICATION_CES_STANDARD_CESFWK_TOOLS_CEM_INCLUDE_SHELL_COMMAND_H
 #define BASE_NOTIFICATION_CES_STANDARD_CESFWK_TOOLS_CEM_INCLUDE_SHELL_COMMAND_H
 
+#include <functional>
 #include <map>
 #include <string>
-#include <functional>
 #include <vector>
 
 #include "utils/native/base/include/errors.h"
@@ -26,7 +26,8 @@
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string HELP_MSG_NO_OPTION = "error: you must specify an option at least.";
+constexpr char HELP_MSG_NO_OPTION[] = "error: you must specify an option at least.\n";
+constexpr int MIN_ARGUMENT_NUMBER = 2;
 }  // namespace
 
 class ShellCommand {
@@ -64,22 +65,6 @@ public:
     std::string GetCommandErrorMsg() const;
 
     /**
-     * Gets the error message of the unknown option.
-     *
-     * @param unknownOption Indicates the unknown option.
-     * @return Returns the unknown option.
-     */
-    std::string GetUnknownOptionMsg(std::string &unknownOption) const;
-
-    /**
-     * Gets the message from the code.
-     *
-     * @param code Indicates the code.
-     * @return Returns the message from the code.
-     */
-    std::string GetMessageFromCode(int32_t code) const;
-
-    /**
      * Creates the command map.
      *
      * @return Returns result code.
@@ -87,33 +72,20 @@ public:
     virtual ErrCode CreateCommandMap() = 0;
 
     /**
-     * Creates the message map.
-     *
-     * @return Returns result code.
-     */
-    virtual ErrCode CreateMessageMap() = 0;
-
-    /**
      * Inits.
      *
      * @return Returns result code.
      */
-    virtual ErrCode init() = 0;
+    virtual ErrCode Init() = 0;
 
 protected:
-    static constexpr int MIN_ARGUMENT_NUMBER = 2;
-
     int argc_;
     char **argv_;
-
     std::string cmd_;
     std::vector<std::string> argList_;
-
     std::string name_;
     std::map<std::string, std::function<int()>> commandMap_;
-    std::map<int32_t, std::string> messageMap_;
-
-    std::string resultReceiver_ = "";
+    std::string resultReceiver_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

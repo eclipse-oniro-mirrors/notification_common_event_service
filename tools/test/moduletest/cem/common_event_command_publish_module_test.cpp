@@ -43,6 +43,7 @@ public:
     void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "publish";
+    std::string toolName_ = TOOL_NAME;
     sptr<ICommonEvent> proxyPtr_;
 };
 
@@ -102,7 +103,7 @@ public:
 HWTEST_F(CemCommandPublishModuleTest, Cem_Command_Publish_ModuleTest_0100, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -111,5 +112,5 @@ HWTEST_F(CemCommandPublishModuleTest, Cem_Command_Publish_ModuleTest_0100, Funct
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
 }

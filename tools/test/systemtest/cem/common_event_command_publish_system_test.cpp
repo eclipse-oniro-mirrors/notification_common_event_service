@@ -150,7 +150,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0100, Funct
     std::string command = "cem publish -e " + STRING_EVENT;
     std::string commandResult = ExecuteCommand(command);
 
-    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK);
 
     // record start time of publishing
     struct tm startTime = {0};
@@ -210,7 +210,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0200, Funct
     std::string command = "cem publish -e " + STRING_EVENT + " -c " + STRING_CODE + " -d " + STRING_DATA;
     std::string commandResult = ExecuteCommand(command);
 
-    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK);
 
     // record start time of publishing
     struct tm startTime = {0};
@@ -270,7 +270,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0300, Funct
     std::string command = "cem publish -e " + STRING_EVENT + " -c " + STRING_CODE_TWO;
     std::string commandResult = ExecuteCommand(command);
 
-    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK);
 
     // record start time of publishing
     struct tm startTime = {0};
@@ -330,7 +330,7 @@ HWTEST_F(CemCommandPublishSystemTest, Cem_Command_Publish_SystemTest_0400, Funct
     std::string command = "cem publish -e " + STRING_EVENT + " -d " + STRING_DATA_TWO;
     std::string commandResult = ExecuteCommand(command);
 
-    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(commandResult, STRING_PUBLISH_COMMON_EVENT_OK);
 
     // record start time of publishing
     struct tm startTime = {0};

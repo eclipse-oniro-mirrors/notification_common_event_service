@@ -16,63 +16,67 @@
 #ifndef BASE_NOTIFICATION_CES_STANDARD_CESFWK_TOOLS_CEM_INCLUDE_COMMON_EVENT_COMMAND_H
 #define BASE_NOTIFICATION_CES_STANDARD_CESFWK_TOOLS_CEM_INCLUDE_COMMON_EVENT_COMMAND_H
 
-#include "shell_command.h"
 #include "common_event.h"
+#include "common_event_constant.h"
+#include "shell_command.h"
 
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string TOOL_NAME = "cem";
+constexpr char TOOL_NAME[] = "cem";
+constexpr char HELP_MSG[] =
+    "usage: cem <command> [<options>]\n"
+    "These are common cem commands list:\n"
+    "  help                         list available commands\n"
+    "  publish                      publish a common event with options\n"
+    "  dump                         dump the info of events\n";
 
-const std::string HELP_MSG = "usage: cem <command> [<options>]\n"
-                             "These are common cem commands list:\n"
-                             "  help                         list available commands\n"
-                             "  publish                      publish a common event with options\n"
-                             "  dump                         dump the info of events\n";
-
-const std::string HELP_MSG_PUBLISH =
+constexpr char HELP_MSG_PUBLISH[] =
     "usage: cem publish [<options>]\n"
     "options list:\n"
     "  -h, --help                                       list available commands\n"
     "  -e, --event <name> [-s, --sticky] [-o, --ordered] [-c, --code <code>] [-d, --data <data>]\n"
     "                                                   publish a common event\n";
 
-const std::string HELP_MSG_DUMP = "usage: cem dump [<options>]\n"
-                                  "options list:\n"
-                                  "  -h, --help                   list available commands\n"
-                                  "  -a, --all                    dump the info of all events\n"
-                                  "  -e, --event <name>           dump the info of a specified event\n";
+constexpr char HELP_MSG_DUMP[] =
+    "usage: cem dump [<options>]\n"
+    "options list:\n"
+    "  -h, --help                   list available commands\n"
+    "  -a, --all                    dump the info of all events\n"
+    "  -e, --event <name>           dump the info of a specified event\n";
 
-const std::string HELP_MSG_NO_EVENT_OPTION = "error: you must specify an event name with '-e' or '--event'.";
-
-const std::string STRING_PUBLISH_COMMON_EVENT_OK = "publish the common event successfully.";
-const std::string STRING_PUBLISH_COMMON_EVENT_NG = "error: failed to publish the common event.";
-
-const std::string STRING_DUMP_COMMON_EVENT_NG = "error: failed to dump the common event(s).";
+constexpr char HELP_MSG_NO_EVENT_OPTION[] = "error: you must specify an event name with '-e' or '--event'.\n";
+constexpr char STRING_PUBLISH_COMMON_EVENT_OK[] = "publish the common event successfully.\n";
+constexpr char STRING_PUBLISH_COMMON_EVENT_NG[] = "error: failed to publish the common event.\n";
+constexpr char STRING_DUMP_COMMON_EVENT_NG[] = "error: failed to dump the common event(s).\n";
 }  // namespace
+
+struct PublishCmdInfo {
+    bool isSticky = false;
+    bool isOrdered = false;
+    int32_t code = 0;
+    int32_t userId = ALL_USER;
+    std::string action;
+    std::string data;
+};
 
 class CommonEventCommand : public OHOS::EventFwk::ShellCommand {
 public:
-    /**
-     * Constructor.
-     *
-     * @param argc Indicates the argument count.
-     * @param argv Indicates the argument values.
-     */
-    CommonEventCommand(int argc, char *argv[]);
-
+    CommonEventCommand(int argc, char *argv[]) : ShellCommand(argc, argv, TOOL_NAME) {}
     ~CommonEventCommand() override = default;
 
 private:
     ErrCode CreateCommandMap() override;
-    ErrCode CreateMessageMap() override;
-    ErrCode init() override;
-
+    ErrCode Init() override;
     ErrCode RunAsHelpCommand();
     ErrCode RunAsPublishCommand();
     ErrCode RunAsDumpCommand();
+    void CheckPublishOpt();
+    void SetPublishCmdInfo(PublishCmdInfo &cmdInfo, ErrCode &result, bool &hasOption);
+    void CheckDumpOpt();
+    void SetDumpCmdInfo(std::string &action, int32_t &userId, ErrCode &result, bool &hasOption);
 
-    std::shared_ptr<CommonEvent> commonEventPtr_;
+    std::shared_ptr<CommonEvent> commonEventPtr_ = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
