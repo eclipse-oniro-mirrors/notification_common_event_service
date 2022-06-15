@@ -41,6 +41,9 @@
             "SystemCapability.Notification.CommonEvent"
         ],
         "features": ["common_event_service_with_graphics"],
+        "hisysevent_config": [
+            "//base/notification/common_event_service/hisysevent.yaml"
+        ],
         "adapted_system_type": [
             "standard"
         ],

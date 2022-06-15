@@ -21,6 +21,8 @@
 #include "bundle_manager_helper.h"
 #include "common_event_constant.h"
 #include "event_log_wrapper.h"
+#include "event_report.h"
+#include "hitrace_meter.h"
 #include "ievent_receive.h"
 #include "system_time.h"
 #include "xcollie/watchdog.h"
@@ -46,6 +48,7 @@ CommonEventControlManager::~CommonEventControlManager()
 bool CommonEventControlManager::PublishCommonEvent(
     const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     bool ret = false;
@@ -62,6 +65,7 @@ bool CommonEventControlManager::PublishCommonEvent(
 bool CommonEventControlManager::PublishStickyCommonEvent(
     const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (!subscriberRecord) {
@@ -73,6 +77,7 @@ bool CommonEventControlManager::PublishStickyCommonEvent(
 
 bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (!GetUnorderedEventHandler()) {
@@ -170,6 +175,7 @@ bool CommonEventControlManager::GetUnorderedEventHandler()
 
 bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
     if (!eventRecord) {
         EVENT_LOGI("Invalid event record.");
@@ -214,6 +220,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
 bool CommonEventControlManager::ProcessUnorderedEvent(
     const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     bool ret = false;
@@ -254,7 +261,7 @@ bool CommonEventControlManager::ProcessUnorderedEvent(
         std::shared_ptr<OrderedEventRecord> ordered = eventRecordPtr;
         manager->NotifyUnorderedEvent(ordered);
     };
-    
+
     if (eventRecord.isSystemEvent) {
         ret = handler_->PostImmediateTask(innerCallback);
     } else {
@@ -302,6 +309,7 @@ bool CommonEventControlManager::GetOrderedEventHandler()
 bool CommonEventControlManager::ProcessOrderedEvent(
     const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     bool ret = false;
@@ -432,6 +440,7 @@ bool CommonEventControlManager::ScheduleOrderedCommonEvent()
 
 bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter with index %{public}zu", index);
 
     if (eventRecordPtr == nullptr) {
@@ -482,6 +491,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
 
 void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (isSendMsg) {
@@ -628,6 +638,7 @@ void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
             subscriberRecord->eventRecordInfo.pid,
             subscriberRecord->eventRecordInfo.uid,
             sp->commonEventData->GetWant().GetAction().c_str());
+        SendOrderedEventProcTimeoutHiSysEvent(subscriberRecord, sp->commonEventData->GetWant().GetAction());
 
         sp->deliveryState[sp->nextReceiver - 1] = OrderedEventRecord::TIMEOUT;
     }
@@ -1332,6 +1343,24 @@ void CommonEventControlManager::DumpHistoryState(
         std::string stateInfo = no + commonEventRecord + subscriberRecord;
         state.emplace_back(stateInfo);
     }
+}
+
+void CommonEventControlManager::SendOrderedEventProcTimeoutHiSysEvent(
+    const std::shared_ptr<EventSubscriberRecord> &subscriberRecord, const std::string &eventName)
+{
+    if (subscriberRecord == nullptr) {
+        return;
+    }
+
+    EventInfo eventInfo;
+    if (subscriberRecord->eventSubscribeInfo != nullptr) {
+        eventInfo.userId = subscriberRecord->eventSubscribeInfo->GetUserId();
+    }
+    eventInfo.subscriberName = subscriberRecord->eventRecordInfo.bundleName;
+    eventInfo.pid = subscriberRecord->eventRecordInfo.pid;
+    eventInfo.uid = subscriberRecord->eventRecordInfo.uid;
+    eventInfo.eventName = eventName;
+    EventReport::SendHiSysEvent(ORDERED_EVENT_PROC_TIMEOUT, eventInfo);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

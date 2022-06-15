@@ -134,6 +134,11 @@ private:
         const std::shared_ptr<EventSubscriberRecord> &subscriberRecord);
     bool CheckUserId(const pid_t &pid, const uid_t &uid, const Security::AccessToken::AccessTokenID &callerToken,
         bool &isSubsystem, bool &isSystemApp, bool &isProxy, int32_t &userId);
+    void SendSubscribeHiSysEvent(int32_t userId, const std::string &subscriberName, int32_t pid, int32_t uid,
+        const std::vector<std::string> &events);
+    void SendUnSubscribeHiSysEvent(const sptr<IRemoteObject> &commonEventListener);
+    void SendPublishHiSysEvent(int32_t userId, const std::string &publisherName, int32_t pid, int32_t uid,
+        const std::string &events, bool succeed);
 
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;

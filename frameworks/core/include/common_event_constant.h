@@ -27,6 +27,7 @@ constexpr int8_t SUBSCRIBE_USER_SYSTEM_BEGIN = 0;
 constexpr int8_t SUBSCRIBE_USER_SYSTEM_END = 99;
 constexpr int8_t UNDEFINED_PID = -1;
 constexpr int8_t MAX_HISTORY_SIZE = 100;
+constexpr int16_t MAX_SUBSCRIBER_NUM_PER_EVENT = 255;
 }  // namespace EventFwk
 }  // namespace OHOS
 #endif  // FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_CONSTANT_H

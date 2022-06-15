@@ -94,6 +94,14 @@ public:
     std::vector<SubscriberRecordPtr> GetSubscriberRecords(const CommonEventRecord &eventRecord);
 
     /**
+     * @brief Get the subscribe record by subscriber object.
+     *
+     * @param commonEventListener Indicates the subscriber object.
+     * @return std::shared_ptr<EventSubscriberRecord>
+     */
+    std::shared_ptr<EventSubscriberRecord> GetSubscriberRecord(const sptr<IRemoteObject> &commonEventListener);
+
+    /**
      * Updates freeze information.
      *
      * @param uid Indicates the uid of the application.
@@ -169,6 +177,8 @@ private:
     void RemoveFrozenEventsBySubscriber(const SubscriberRecordPtr &subscriberRecord);
 
     void RemoveFrozenEvents(const uid_t &uid);
+
+    void SendSubscriberExceedMaximumHiSysEvent(int32_t userId, const std::string &eventName, uint32_t subscriberNum);
 
 private:
     std::mutex mutex_;

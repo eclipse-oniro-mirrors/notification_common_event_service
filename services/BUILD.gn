@@ -54,6 +54,7 @@ ohos_shared_library("cesfwk_services") {
     "${ces_services_path}/src/common_event_sticky_manager.cpp",
     "${ces_services_path}/src/common_event_subscriber_manager.cpp",
     "${ces_services_path}/src/common_event_support_mapper.cpp",
+    "${ces_services_path}/src/event_report.cpp",
     "${ces_services_path}/src/inner_common_event_manager.cpp",
     "${ces_services_path}/src/ordered_event_handler.cpp",
     "${ces_services_path}/src/os_account_manager_helper.cpp",
@@ -85,6 +86,7 @@ ohos_shared_library("cesfwk_services") {
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
     "hicollie_native:libhicollie",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
@@ -94,6 +96,11 @@ ohos_shared_library("cesfwk_services") {
   if (has_os_account_part) {
     cflags_cc += [ "-DHAS_OS_ACCOUNT_PART" ]
     external_deps += [ "os_account:os_account_innerkits" ]
+  }
+
+  if (has_hisysevent_part) {
+    cflags_cc += [ "-DHAS_HISYSEVENT_PART" ]
+    external_deps += [ "hisysevent_native:libhisysevent" ]
   }
 
   subsystem_name = "notification"
