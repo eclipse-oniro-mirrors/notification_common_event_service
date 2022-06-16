@@ -228,6 +228,11 @@ declare namespace commonEvent {
     COMMON_EVENT_PACKAGE_DATA_CLEARED = "usual.event.PACKAGE_DATA_CLEARED",
 
     /**
+     * this commonEvent means the user has cleared the package cache.
+     */
+    COMMON_EVENT_PACKAGE_CACHE_CLEARED = "usual.event.PACKAGE_CACHE_CLEARED",
+
+    /**
      * this commonEvent means the packages have been suspended.
      */
     COMMON_EVENT_PACKAGES_SUSPENDED = "usual.event.PACKAGES_SUSPENDED",

@@ -452,6 +452,7 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_PACKAGE_CHANGED                                 | usual.event.PACKAGE_CHANGED                                 | 无                                             |
 | COMMON_EVENT_PACKAGE_RESTARTED                               | usual.event.PACKAGE_RESTARTED                               | 无                                             |
 | COMMON_EVENT_PACKAGE_DATA_CLEARED                            | usual.event.PACKAGE_DATA_CLEARED                            | 无                                             |
+| COMMON_EVENT_PACKAGE_CACHE_CLEARED                           | usual.event.PACKAGE_CACHE_CLEARED                           | 无                                             |
 | COMMON_EVENT_PACKAGES_SUSPENDED                              | usual.event.PACKAGES_SUSPENDED                              | 无                                             |
 | COMMON_EVENT_PACKAGES_UNSUSPENDED                            | usual.event.PACKAGES_UNSUSPENDED                            | 无                                             |
 | COMMON_EVENT_MY_PACKAGE_SUSPENDED                            | usual.event.MY_PACKAGE_SUSPENDED                            | 无                                             |

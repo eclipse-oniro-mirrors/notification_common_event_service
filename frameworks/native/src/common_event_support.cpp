@@ -196,6 +196,12 @@ const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_RESTARTED = "usual.ev
 const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_DATA_CLEARED = "usual.event.PACKAGE_DATA_CLEARED";
 
 /**
+ * Indicates the action of a common event that the user has cleared the application package cache.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_CACHE_CLEARED = "usual.event.PACKAGE_CACHE_CLEARED";
+
+/**
  * Indicates the action of a common event that application packages have been suspended.
  * This common event can only be published by the system.
  */
@@ -1227,6 +1233,7 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_RESTARTED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_DATA_CLEARED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_CACHE_CLEARED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGES_SUSPENDED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGES_UNSUSPENDED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MY_PACKAGE_SUSPENDED);
