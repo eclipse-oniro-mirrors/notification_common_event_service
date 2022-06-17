@@ -34,6 +34,11 @@ const std::string STRING_CODE = "1024";
 const std::string STRING_DATA = "data";
 }  // namespace
 
+static std::string Concatenate(const std::string &first,  const std::string &second)
+{
+    return first + second;
+}
+
 class CemCommandPublishTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -45,6 +50,7 @@ public:
     void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "publish";
+    std::string toolName_ = TOOL_NAME;
     sptr<ICommonEvent> proxyPtr_;
 };
 
@@ -91,14 +97,14 @@ void CemCommandPublishTest::SetMockObjects(const CommonEventCommand &cmd) const
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0100, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"",
     };
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_OPTION + "\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate(HELP_MSG_NO_OPTION, HELP_MSG_PUBLISH));
 }
 
 /**
@@ -109,7 +115,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0100, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0200, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"xxx",
         (char *)"",
@@ -117,7 +123,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0200, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_OPTION + "\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate(HELP_MSG_NO_OPTION, HELP_MSG_PUBLISH));
 }
 
 /**
@@ -128,7 +134,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0200, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0300, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-x",
         (char *)"",
@@ -136,7 +142,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0300, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -147,7 +153,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0300, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0400, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-xxx",
         (char *)"",
@@ -155,7 +161,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0400, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -166,7 +172,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0400, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0500, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"--x",
         (char *)"",
@@ -174,7 +180,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0500, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -185,7 +191,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0500, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0600, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"--xxx",
         (char *)"",
@@ -193,7 +199,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0600, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -204,7 +210,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0600, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0700, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-h",
         (char *)"",
@@ -223,7 +229,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0700, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0800, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"--help",
         (char *)"",
@@ -242,7 +248,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0800, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0900, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)"",
@@ -250,7 +256,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0900, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'e' requires a value.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -261,7 +267,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0900, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1000, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -270,7 +276,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1000, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
 }
 
 /**
@@ -281,7 +287,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1000, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1100, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-c",
         (char *)"",
@@ -289,7 +295,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1100, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'c' requires a value.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -300,7 +306,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1100, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1200, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -310,7 +316,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1200, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'c' requires a value.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -321,7 +327,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1200, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1300, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-c",
         (char *)STRING_CODE.c_str(),
@@ -330,7 +336,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1300, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_EVENT_OPTION + "\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate(HELP_MSG_NO_EVENT_OPTION, HELP_MSG_PUBLISH));
 }
 
 /**
@@ -341,7 +347,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1300, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1400, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -352,7 +358,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1400, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
 }
 
 /**
@@ -363,7 +369,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1400, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1500, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-d",
         (char *)"",
@@ -371,7 +377,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1500, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'd' requires a value.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -382,7 +388,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1500, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1600, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -392,7 +398,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1600, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'd' requires a value.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -403,7 +409,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1600, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1700, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-d",
         (char *)STRING_DATA.c_str(),
@@ -412,7 +418,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1700, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_EVENT_OPTION + "\n" + HELP_MSG_PUBLISH);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate(HELP_MSG_NO_EVENT_OPTION, HELP_MSG_PUBLISH));
 }
 
 /**
@@ -423,7 +429,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1700, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1800, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -434,7 +440,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1800, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
 }
 
 /**
@@ -445,7 +451,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1800, Function | MediumTest 
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1900, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -458,5 +464,69 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1900, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK + "\n");
+    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
+}
+
+/**
+ * @tc.number: Cem_Command_Publish_2000
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem publish -u" command.
+ */
+HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2000, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-d",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'd' requires a value.\n", HELP_MSG_PUBLISH));
+}
+
+/**
+ * @tc.number: Cem_Command_Publish_2100
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem publish -e <name> -u <user-id>" command.
+ */
+HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2100, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-u",
+        (char *)"100",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
+}
+
+/**
+ * @tc.number: Cem_Command_Publish_2200
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem publish -e <name> -c <code> -d <data> -u <user-id>" command.
+ */
+HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2200, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-c",
+        (char *)STRING_CODE.c_str(),
+        (char *)"-d",
+        (char *)STRING_DATA.c_str(),
+        (char *)"-u",
+        (char *)"100",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
 }

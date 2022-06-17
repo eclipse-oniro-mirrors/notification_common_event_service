@@ -43,6 +43,7 @@ public:
     void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "dump";
+    std::string toolName_ = TOOL_NAME;
     sptr<ICommonEvent> proxyPtr_;
 };
 
@@ -102,7 +103,7 @@ public:
 HWTEST_F(CemCommandDumpModuleTest, Cem_Command_Dump_ModuleTest_0100, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -140,7 +141,7 @@ HWTEST_F(CemCommandDumpModuleTest, Cem_Command_Dump_ModuleTest_0200, Function | 
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
 
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),

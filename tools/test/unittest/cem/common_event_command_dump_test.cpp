@@ -32,6 +32,11 @@ namespace {
 const std::string STRING_EVENT = "com.ces.event";
 }  // namespace
 
+static std::string Concatenate(const std::string &first,  const std::string &second)
+{
+    return first + second;
+}
+
 class CemCommandDumpTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -43,6 +48,7 @@ public:
     void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "dump";
+    std::string toolName_ = TOOL_NAME;
     sptr<ICommonEvent> proxyPtr_;
 };
 
@@ -102,7 +108,7 @@ public:
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0100, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"",
     };
@@ -113,7 +119,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0100, Function | MediumTest | Leve
     // set the mock objects
     SetMockObjects(cmd);
 
-    EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_OPTION + "\n" + HELP_MSG_DUMP);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate(HELP_MSG_NO_OPTION, HELP_MSG_DUMP));
 }
 
 /**
@@ -124,7 +130,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0100, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0200, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"xxx",
         (char *)"",
@@ -135,7 +141,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0200, Function | MediumTest | Leve
     // set the mock objects
     SetMockObjects(cmd);
 
-    EXPECT_EQ(cmd.ExecCommand(), HELP_MSG_NO_OPTION + "\n" + HELP_MSG_DUMP);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate(HELP_MSG_NO_OPTION, HELP_MSG_DUMP));
 }
 
 /**
@@ -146,7 +152,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0200, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0300, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-x",
         (char *)"",
@@ -158,7 +164,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0300, Function | MediumTest | Leve
     // set the mock objects
     SetMockObjects(cmd);
 
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_DUMP);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
 }
 
 /**
@@ -169,7 +175,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0300, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0400, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-xxx",
         (char *)"",
@@ -181,7 +187,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0400, Function | MediumTest | Leve
     // set the mock objects
     SetMockObjects(cmd);
 
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_DUMP);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
 }
 
 /**
@@ -192,7 +198,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0400, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0500, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"--x",
         (char *)"",
@@ -204,7 +210,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0500, Function | MediumTest | Leve
     // set the mock objects
     SetMockObjects(cmd);
 
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_DUMP);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
 }
 
 /**
@@ -215,7 +221,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0500, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0600, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"--xxx",
         (char *)"",
@@ -227,7 +233,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0600, Function | MediumTest | Leve
     // set the mock objects
     SetMockObjects(cmd);
 
-    EXPECT_EQ(cmd.ExecCommand(), "error: unknown option.\n" + HELP_MSG_DUMP);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
 }
 
 /**
@@ -238,7 +244,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0600, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0700, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-h",
         (char *)"",
@@ -261,7 +267,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0700, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0800, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"--help",
         (char *)"",
@@ -284,7 +290,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0800, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0900, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-a",
         (char *)"",
@@ -307,7 +313,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0900, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1000, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"--all",
         (char *)"",
@@ -344,7 +350,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1100, Function | MediumTest | Leve
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
 
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-a",
         (char *)"",
@@ -366,7 +372,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1100, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1200, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)"",
@@ -378,7 +384,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1200, Function | MediumTest | Leve
     // set the mock objects
     SetMockObjects(cmd);
 
-    EXPECT_EQ(cmd.ExecCommand(), "error: option requires a value.\n" + HELP_MSG_DUMP);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'e' requires a value.\n", HELP_MSG_DUMP));
 }
 
 /**
@@ -389,7 +395,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1200, Function | MediumTest | Leve
 HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1300, Function | MediumTest | Level1)
 {
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -427,7 +433,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1400, Function | MediumTest | Leve
     CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
 
     char *argv[] = {
-        (char *)TOOL_NAME.c_str(),
+        (char *)toolName_.c_str(),
         (char *)cmd_.c_str(),
         (char *)"-e",
         (char *)STRING_EVENT.c_str(),
@@ -441,3 +447,100 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1400, Function | MediumTest | Leve
     SetMockObjects(cmd);
     EXPECT_EQ(cmd.ExecCommand(), STRING_EVENT + "\n");
 }
+
+/**
+ * @tc.number: Cem_Command_Dump_1500
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem dump -u" command.
+ */
+HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1500, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-u",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    // set the mock objects
+    SetMockObjects(cmd);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'u' requires a value.\n", HELP_MSG_DUMP));
+}
+
+/**
+ * @tc.number: Cem_Command_Dump_1600
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem dump -u <user-id>" command with no subscriber.
+ */
+HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1600, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-u",
+        (char *)"100",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    // set the mock objects
+    SetMockObjects(cmd);
+    EXPECT_EQ(cmd.ExecCommand(), "");
+}
+
+/**
+ * @tc.number: Cem_Command_Dump_1700
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem dump -e <name> -u <user-id>" command with no subscriber.
+ */
+HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1700, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-u",
+        (char *)"100",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    // set the mock objects
+    SetMockObjects(cmd);
+    EXPECT_EQ(cmd.ExecCommand(), "");
+}
+
+/**
+ * @tc.number: Cem_Command_Dump_1800
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem dump -e <name> -u <user-id>" command with a subscriber.
+ */
+HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1800, Function | MediumTest | Level1)
+{
+    // make matching skills
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(STRING_EVENT);
+    // make subscribe info
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    // make a subscriber object
+    auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
+    // subscribe a common event
+    CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-u",
+        (char *)"100",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    // set the mock objects
+    SetMockObjects(cmd);
+    EXPECT_EQ(cmd.ExecCommand(), STRING_EVENT + "\n");
+}
+

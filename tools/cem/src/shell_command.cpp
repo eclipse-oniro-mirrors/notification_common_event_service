@@ -16,8 +16,8 @@
 #include "shell_command.h"
 
 #include <getopt.h>
-
 #include <utility>
+
 #include "event_log_wrapper.h"
 
 namespace OHOS {
@@ -44,19 +44,16 @@ ShellCommand::~ShellCommand() = default;
 ErrCode ShellCommand::OnCommand()
 {
     int result = OHOS::ERR_OK;
-
     auto respond = commandMap_[cmd_];
     if (respond == nullptr) {
         resultReceiver_.append(GetCommandErrorMsg());
         respond = commandMap_["help"];
     }
-
-    if (init() == OHOS::ERR_OK) {
+    if (Init() == OHOS::ERR_OK) {
         respond();
     } else {
         result = OHOS::ERR_INVALID_VALUE;
     }
-
     return result;
 }
 
@@ -66,60 +63,17 @@ std::string ShellCommand::ExecCommand()
     if (result != OHOS::ERR_OK) {
         EVENT_LOGE("failed to create command map.\n");
     }
-
-    result = CreateMessageMap();
-    if (result != OHOS::ERR_OK) {
-        EVENT_LOGE("failed to create message map.\n");
-    }
-
     result = OnCommand();
     if (result != OHOS::ERR_OK) {
         EVENT_LOGE("failed to execute your command.\n");
-
         resultReceiver_ = "error: failed to execute your command.\n";
     }
-
     return resultReceiver_;
 }
 
 std::string ShellCommand::GetCommandErrorMsg() const
 {
-    std::string commandErrorMsg =
-        name_ + ": '" + cmd_ + "' is not a valid " + name_ + " command. See '" + name_ + " help'.\n";
-
-    return commandErrorMsg;
-}
-
-std::string ShellCommand::GetUnknownOptionMsg(std::string &unknownOption) const
-{
-    std::string result = "";
-
-    if ((optind < 0) || (optind > argc_)) {
-        return result;
-    }
-
-    result.append("error: unknown option");
-    result.append(".\n");
-
-    return result;
-}
-
-std::string ShellCommand::GetMessageFromCode(int32_t code) const
-{
-    EVENT_LOGI("[%{public}s(%{public}s)] enter", __FILE__, __FUNCTION__);
-    EVENT_LOGI("code = %{public}d", code);
-
-    std::string result = "";
-    if (messageMap_.find(code) != messageMap_.end()) {
-        std::string message = messageMap_.at(code);
-        if (!message.empty()) {
-            result.append(message + "\n");
-        }
-    }
-
-    EVENT_LOGI("result = %{public}s", result.c_str());
-
-    return result;
+    return name_ + ": '" + cmd_ + "' is not a valid " + name_ + " command. See '" + name_ + " help'.\n";
 }
 }  // namespace EventFwk
 }  // namespace OHOS
