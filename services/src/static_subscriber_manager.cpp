@@ -133,6 +133,11 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
                 EVENT_LOGW("subscriber does not have requiered permissions");
                 continue;
             }
+            if (!publishInfo.GetBundleName().empty() && subscriber.bundleName != publishInfo.GetBundleName()) {
+                EVENT_LOGW("subscriber bundleName is not match, subscriber.bundleName = %{public}s, "
+                    "bundleName = %{public}s", subscriber.bundleName.c_str(), publishInfo.GetBundleName().c_str());
+                continue;
+            }
             AAFwk::Want want;
             want.SetElementName(subscriber.bundleName, subscriber.name);
             EVENT_LOGI("Ready to connect to subscriber %{public}s in bundle %{public}s",

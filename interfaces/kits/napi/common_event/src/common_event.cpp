@@ -2072,14 +2072,13 @@ void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asyncCall
     const CommonEventPublishDataByjs &commonEventPublishDatajs)
 {
     EVENT_LOGI("PaddingCallbackInfoPublish start");
-
-    want.SetBundle(commonEventPublishDatajs.bundleName);
     want.SetParams(commonEventPublishDatajs.wantParams);
     asyncCallbackInfo->commonEventData.SetCode(commonEventPublishDatajs.code);
     asyncCallbackInfo->commonEventData.SetData(commonEventPublishDatajs.data);
     asyncCallbackInfo->commonEventPublishInfo.SetSubscriberPermissions(commonEventPublishDatajs.subscriberPermissions);
     asyncCallbackInfo->commonEventPublishInfo.SetOrdered(commonEventPublishDatajs.isOrdered);
     asyncCallbackInfo->commonEventPublishInfo.SetSticky(commonEventPublishDatajs.isSticky);
+    asyncCallbackInfo->commonEventPublishInfo.SetBundleName(commonEventPublishDatajs.bundleName);
 }
 
 napi_value Publish(napi_env env, napi_callback_info info)
