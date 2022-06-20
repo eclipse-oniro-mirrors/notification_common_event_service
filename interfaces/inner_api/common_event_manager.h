@@ -133,6 +133,29 @@ public:
      * @return Returns true if success; false otherwise.
      */
     static bool GetStickyCommonEvent(const std::string &event, CommonEventData &data);
+
+    /**
+     * Freezes application.
+     *
+     * @param uid Indicates the uid of application.
+     * @return Returns true if successful; false otherwise.
+     */
+    static bool Freeze(const uid_t &uid);
+
+    /**
+     * Unfreezes application.
+     *
+     * @param uid Indicates the uid of application.
+     * @return Returns true if successful; false otherwise.
+     */
+    static bool Unfreeze(const uid_t &uid);
+
+    /**
+     * Unfreezes all frozen applications.
+     *
+     * @return Returns true if successful; false otherwise.
+     */
+    static bool UnfreezeAll();
 };
 }  // namespace EventFwk
 }  // namespace OHOS

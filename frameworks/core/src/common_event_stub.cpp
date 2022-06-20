@@ -58,7 +58,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT2): {
             std::unique_ptr<CommonEventData> event(data.ReadParcelable<CommonEventData>());
             std::unique_ptr<CommonEventPublishInfo> publishinfo(data.ReadParcelable<CommonEventPublishInfo>());
@@ -84,7 +83,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT): {
             std::unique_ptr<CommonEventSubscribeInfo> subscribeInfo(data.ReadParcelable<CommonEventSubscribeInfo>());
             sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
@@ -103,7 +101,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT): {
             sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             if (commonEventListener == nullptr) {
@@ -117,7 +114,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_GET_STICKY_COMMON_EVENT): {
             std::string event = Str16ToStr8(data.ReadString16());
             CommonEventData eventData;
@@ -132,7 +128,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_DUMP_STATE): {
             std::vector<std::string> result;
             std::string event = Str16ToStr8(data.ReadString16());
@@ -144,7 +139,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_FINISH_RECEIVER): {
             sptr<IRemoteObject> proxy = data.ReadRemoteObject();
             if (proxy == nullptr) {
@@ -161,7 +155,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_FREEZE): {
             int32_t uid = data.ReadInt32();
             bool ret = Freeze(uid);
@@ -171,7 +164,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
         case static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE): {
             int32_t uid = data.ReadInt32();
             bool ret = Unfreeze(uid);
@@ -181,7 +173,14 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-
+        case static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE_ALL): {
+            bool ret = UnfreezeAll();
+            if (!reply.WriteBool(ret)) {
+                EVENT_LOGE("Failed to write reply");
+                return ERR_INVALID_VALUE;
+            }
+            break;
+        }
         default:
             EVENT_LOGW("unknown, code = %{public}u, flags= %{public}u", code, option.GetFlags());
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -243,6 +242,13 @@ bool CommonEventStub::Freeze(const uid_t &uid)
 }
 
 bool CommonEventStub::Unfreeze(const uid_t &uid)
+{
+    EVENT_LOGD("called");
+
+    return true;
+}
+
+bool CommonEventStub::UnfreezeAll()
 {
     EVENT_LOGD("called");
 

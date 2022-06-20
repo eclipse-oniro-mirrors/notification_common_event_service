@@ -233,27 +233,33 @@ void InnerCommonEventManager::FinishReceiver(
     return;
 }
 
-bool InnerCommonEventManager::Freeze(const uid_t &uid)
+void InnerCommonEventManager::Freeze(const uid_t &uid)
 {
     EVENT_LOGI("enter");
-
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(
         uid, true, SystemTime::GetNowSysTime());
-
-    return true;
 }
 
-bool InnerCommonEventManager::Unfreeze(const uid_t &uid)
+void InnerCommonEventManager::Unfreeze(const uid_t &uid)
 {
     EVENT_LOGI("enter");
-
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(uid, false);
-
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
-        return false;
+        return;
     }
-    return controlPtr_->PublishFreezeCommonEvent(uid);
+    controlPtr_->PublishFreezeCommonEvent(uid);
+}
+
+void InnerCommonEventManager::UnfreezeAll()
+{
+    EVENT_LOGI("enter");
+    DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateAllFreezeInfos(false);
+    if (!controlPtr_) {
+        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        return;
+    }
+    controlPtr_->PublishAllFreezeCommonEvents();
 }
 
 bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record)

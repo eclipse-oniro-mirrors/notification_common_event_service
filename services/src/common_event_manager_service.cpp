@@ -320,5 +320,17 @@ bool CommonEventManagerService::Unfreeze(const uid_t &uid)
     std::function<void()> UnfreezeFunc = std::bind(&InnerCommonEventManager::Unfreeze, innerCommonEventManager_, uid);
     return handler_->PostImmediateTask(UnfreezeFunc);
 }
+
+bool CommonEventManagerService::UnfreezeAll()
+{
+    EVENT_LOGI("enter");
+
+    if (!IsReady()) {
+        return false;
+    }
+
+    std::function<void()> UnfreezeAllFunc = std::bind(&InnerCommonEventManager::UnfreezeAll, innerCommonEventManager_);
+    return handler_->PostImmediateTask(UnfreezeAllFunc);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

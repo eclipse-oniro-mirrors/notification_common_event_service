@@ -31,7 +31,6 @@ constexpr int32_t LENGTH = 80;
 constexpr int32_t DOUBLE = 2;
 constexpr unsigned int TIMEVAL = 5000;
 const std::string CONNECTOR = " or ";
-using frozenRecords = std::map<std::shared_ptr<EventSubscriberRecord>, std::vector<std::shared_ptr<CommonEventRecord>>>;
 
 CommonEventControlManager::CommonEventControlManager()
     : handler_(nullptr), handlerOrdered_(nullptr), pendingTimeoutMessage_(false), scheduled_(false)
@@ -79,11 +78,29 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
     if (!GetUnorderedEventHandler()) {
         return false;
     }
+    PublishFrozenEventsInner(DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetFrozenEvents(uid));
+    return true;
+}
 
-    std::shared_ptr<CommonEventSubscriberManager> spinstance =
-        DelayedSingleton<CommonEventSubscriberManager>::GetInstance();
-    frozenRecords frozenEventRecords = spinstance->GetFrozenEvents(uid);
+bool CommonEventControlManager::PublishAllFreezeCommonEvents()
+{
+    EVENT_LOGI("enter");
+
+    if (!GetUnorderedEventHandler()) {
+        return false;
+    }
+
+    std::map<uid_t, FrozenRecords> frozenEventRecords =
+        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetAllFrozenEvents();
     for (auto record : frozenEventRecords) {
+        PublishFrozenEventsInner(record.second);
+    }
+    return true;
+}
+
+void CommonEventControlManager::PublishFrozenEventsInner(const FrozenRecords &frozenRecords)
+{
+    for (auto record : frozenRecords) {
         for (auto vec : record.second) {
             if (!record.first || !vec) {
                 continue;
@@ -104,8 +121,6 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
             handler_->PostImmediateTask(innerCallback);
         }
     }
-
-    return true;
 }
 
 bool CommonEventControlManager::NotifyFreezeEvents(
@@ -179,7 +194,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
             int8_t ret = CheckPermission(*vec, *eventRecord);
             eventRecord->deliveryState[index] = ret;
             if (ret == OrderedEventRecord::DELIVERED) {
-                eventRecord->state = OrderedEventRecord::RECEIVEING;
+                eventRecord->state = OrderedEventRecord::RECEIVING;
                 commonEventListenerProxy->NotifyEvent(
                     *(eventRecord->commonEventData), false, eventRecord->publishInfo->IsSticky());
                 eventRecord->state = OrderedEventRecord::RECEIVED;
@@ -447,7 +462,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
 
         eventRecordPtr->curReceiver = eventRecordPtr->receivers[index]->commonEventListener;
 
-        eventRecordPtr->state = OrderedEventRecord::RECEIVEING;
+        eventRecordPtr->state = OrderedEventRecord::RECEIVING;
 
         sptr<IEventReceive> receiver = iface_cast<IEventReceive>(eventRecordPtr->curReceiver);
         if (!receiver) {
@@ -996,8 +1011,8 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
         case OrderedEventRecord::IDLE:
             state = "\tEventState: IDLE\n";
             break;
-        case OrderedEventRecord::RECEIVEING:
-            state = "\tEventState: RECEIVEING\n";
+        case OrderedEventRecord::RECEIVING:
+            state = "\tEventState: RECEIVING\n";
             break;
         case OrderedEventRecord::RECEIVED:
             state = "\tEventState: RECEIVED\n";
@@ -1110,8 +1125,8 @@ void CommonEventControlManager::DumpHistoryStateByCommonEventRecord(
         case OrderedEventRecord::IDLE:
             state = "\tEventState: IDLE\n";
             break;
-        case OrderedEventRecord::RECEIVEING:
-            state = "\tEventState: RECEIVEING\n";
+        case OrderedEventRecord::RECEIVING:
+            state = "\tEventState: RECEIVING\n";
             break;
         case OrderedEventRecord::RECEIVED:
             state = "\tEventState: RECEIVED\n";

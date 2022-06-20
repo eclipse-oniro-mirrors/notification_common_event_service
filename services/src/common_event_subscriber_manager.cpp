@@ -371,7 +371,6 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
     EVENT_LOGI("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
-    std::vector<std::string> events;
     for (auto recordPtr : subscribers_) {
         if (recordPtr->eventRecordInfo.uid == uid) {
             if (freezeState) {
@@ -384,6 +383,22 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
             EVENT_LOGI("recordPtr->isFreeze: %{public}d", recordPtr->isFreeze);
         }
     }
+}
+
+void CommonEventSubscriberManager::UpdateAllFreezeInfos(const bool &freezeState, const int64_t &freezeTime)
+{
+    EVENT_LOGI("enter");
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto recordPtr : subscribers_) {
+        if (freezeState) {
+            recordPtr->freezeTime = freezeTime;
+        } else {
+            recordPtr->freezeTime = 0;
+        }
+        recordPtr->isFreeze = freezeState;
+    }
+    EVENT_LOGI("all subscribers update freeze state to %{public}d", freezeState);
 }
 
 void CommonEventSubscriberManager::InsertFrozenEvents(
@@ -438,6 +453,13 @@ std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> CommonEventSubscriber
     RemoveFrozenEvents(uid);
 
     return frozenEvents;
+}
+
+std::map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEvents()
+{
+    EVENT_LOGI("enter");
+    std::lock_guard<std::mutex> lock(mutex_);
+    return std::move(frozenEvents_);
 }
 
 void CommonEventSubscriberManager::RemoveFrozenEvents(const uid_t &uid)

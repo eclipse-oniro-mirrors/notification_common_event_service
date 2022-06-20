@@ -26,7 +26,7 @@ class CommonEventStub : public IRemoteStub<ICommonEvent> {
 public:
     CommonEventStub();
 
-    virtual ~CommonEventStub() override;
+    virtual ~CommonEventStub();
 
     /**
      * Processes the remote Request.
@@ -37,7 +37,7 @@ public:
      * @param option Indicates the message option.
      * @return Returns ERR_NONE if success, otherwise ERR_CODE.
      */
-    virtual int OnRemoteRequest(
+    int OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
     /**
@@ -49,7 +49,7 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
     /**
@@ -62,7 +62,7 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId) override;
 
     /**
@@ -72,7 +72,7 @@ public:
      * @param commonEventListener Indicates the subscriber object.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool SubscribeCommonEvent(
+    bool SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
@@ -81,7 +81,7 @@ public:
      * @param commonEventListener Indicates the subscriber object.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
+    bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
      * Gets the current sticky common event.
@@ -90,7 +90,7 @@ public:
      * @param eventData Indicates the common event data.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
+    bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
 
     /**
      * Dumps the state for common event service.
@@ -100,7 +100,7 @@ public:
      * @param state Indicates the output result.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
+    bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
 
     /**
      * Freezes the specified process.
@@ -108,7 +108,7 @@ public:
      * @param uid Indicates the uid of frozen process.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool Freeze(const uid_t &uid) override;
+    bool Freeze(const uid_t &uid) override;
 
     /**
      * Unfreezes the specified process.
@@ -116,7 +116,14 @@ public:
      * @param uid Indicates the uid of unfrozen process.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool Unfreeze(const uid_t &uid) override;
+    bool Unfreeze(const uid_t &uid) override;
+
+    /**
+     * Unfreezes all frozen applications.
+     *
+     * @return Returns true if successful; false otherwise.
+     */
+    bool UnfreezeAll() override;
 
 private:
     DISALLOW_COPY_AND_MOVE(CommonEventStub);

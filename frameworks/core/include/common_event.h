@@ -143,6 +143,12 @@ public:
      */
     bool Unfreeze(const uid_t &uid);
 
+    /**
+     * Unfreezes all frozen applications.
+     *
+     * @return Returns true if successful; false otherwise.
+     */
+    bool UnfreezeAll();
 private:
     /**
      * Gets common event proxy.
