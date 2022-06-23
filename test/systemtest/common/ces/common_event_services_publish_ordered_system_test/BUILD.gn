@@ -26,7 +26,7 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
   include_dirs = [
     "//utils/native/base/include",
     "${services_path}/include",
-    "${aafwk_services_path}/abilitymgr/include/",
+    "${ability_runtime_services_path}/abilitymgr/include/",
   ]
 
   cflags = []

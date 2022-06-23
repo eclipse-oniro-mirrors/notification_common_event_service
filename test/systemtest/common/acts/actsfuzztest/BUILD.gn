@@ -33,10 +33,10 @@ ohos_systemtest("ActsFuzzTest") {
     "${common_event_service_path}/test/systemtest/common/resource",
     "//third_party/json/single_include",
     "${services_path}/include",
-    "${aafwk_kits_path}/appkit/app/include",
-    "${aafwk_inner_api_path}/ability_manager/include",
-    "${aafwk_kits_path}/ability/native/include",
-    "${aafwk_services_path}/abilitymgr/include",
+    "${ability_runtime_kits_path}/appkit/app/include",
+    "${ability_runtime_innerkits_path}/ability_manager/include",
+    "${ability_runtime_kits_path}/ability/native/include",
+    "${ability_runtime_services_path}/abilitymgr/include",
     "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
     "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
   ]
@@ -48,11 +48,11 @@ ohos_systemtest("ActsFuzzTest") {
   }
 
   deps = [
-    "${aafwk_inner_api_path}/ability_manager:ability_manager",
-    "${aafwk_inner_api_path}/app_manager:app_manager",
-    "${aafwk_kits_path}/ability/native:abilitykit_native",
-    "${aafwk_kits_path}/appkit:appkit_native",
-    "${aafwk_services_path}/abilitymgr:abilityms",
+    "${ability_runtime_innerkits_path}/ability_manager:ability_manager",
+    "${ability_runtime_innerkits_path}/app_manager:app_manager",
+    "${ability_runtime_kits_path}/ability/native:abilitykit_native",
+    "${ability_runtime_kits_path}/appkit:appkit_native",
+    "${ability_runtime_services_path}/abilitymgr:abilityms",
     "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",

@@ -20,8 +20,8 @@ config("kits_natvie_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "${aafwk_inner_api_path}/ability_manager/include",
-    "${aafwk_services_path}/abilitymgr/include/",
+    "${ability_runtime_innerkits_path}/ability_manager/include",
+    "${ability_runtime_services_path}/abilitymgr/include/",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/safwk/services/safwk/include",
     "//utils/native/base/include",
@@ -65,7 +65,7 @@ ohos_unittest("common_event_subscribe_test") {
   configs = [ ":kits_natvie_config" ]
 
   deps = [
-    "${aafwk_services_path}/abilitymgr:abilityms",
+    "${ability_runtime_services_path}/abilitymgr:abilityms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
@@ -92,7 +92,7 @@ ohos_unittest("common_event_unsubscribe_test") {
   configs = [ ":kits_natvie_config" ]
 
   deps = [
-    "${aafwk_services_path}/abilitymgr:abilityms",
+    "${ability_runtime_services_path}/abilitymgr:abilityms",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
