@@ -28,7 +28,7 @@ struct EventSubscriberRecord {
     std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo;
     sptr<IRemoteObject> commonEventListener;
     EventRecordInfo eventRecordInfo;
-    struct tm recordTime;
+    struct tm recordTime {0};
     bool isFreeze;
     int64_t freezeTime;
 

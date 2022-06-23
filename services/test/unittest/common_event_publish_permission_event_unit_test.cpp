@@ -646,7 +646,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
         << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1500, TestSize.Level1";
 
     InnerCommonEventManager inner;
-    struct tm curTime;
+    struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     Want want;

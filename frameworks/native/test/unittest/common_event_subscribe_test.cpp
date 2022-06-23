@@ -377,7 +377,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_009, TestSize.Level1)
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     OHOS::sptr<OHOS::IRemoteObject> sp(nullptr);
 
-    struct tm curTime;
+    struct tm curTime {0};
 
     EXPECT_EQ(false, innerCommonEventManager->SubscribeCommonEvent(subscribeInfo, sp, curTime, 0, 0, ""));
 }
