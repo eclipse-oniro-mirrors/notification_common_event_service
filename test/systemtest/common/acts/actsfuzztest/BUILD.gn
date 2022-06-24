@@ -51,6 +51,7 @@ ohos_systemtest("ActsFuzzTest") {
     "${aafwk_inner_api_path}/ability_manager:ability_manager",
     "${aafwk_inner_api_path}/app_manager:app_manager",
     "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${aafwk_path}/frameworks/native/ability/native:data_ability_helper",
     "${aafwk_path}/frameworks/native/appkit:appkit_native",
     "${aafwk_services_path}/abilitymgr:abilityms",
     "${ces_common_path}:libevent_common",
