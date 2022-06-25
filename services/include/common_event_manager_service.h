@@ -131,6 +131,8 @@ public:
      */
     bool UnfreezeAll() override;
 
+    int Dump(int fd, const std::vector<std::u16string> &args) override;
+
 private:
     ErrCode Init();
 
@@ -144,6 +146,7 @@ private:
     bool PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const pid_t &pid, const uid_t &uid, const int32_t &userId);
 
+    void GetHidumpInfo(const std::vector<std::u16string> &args, std::string &result);
 private:
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
     ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;

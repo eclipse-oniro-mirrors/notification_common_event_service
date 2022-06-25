@@ -332,5 +332,21 @@ bool CommonEventManagerService::UnfreezeAll()
     std::function<void()> UnfreezeAllFunc = std::bind(&InnerCommonEventManager::UnfreezeAll, innerCommonEventManager_);
     return handler_->PostImmediateTask(UnfreezeAllFunc);
 }
+
+int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &args)
+{
+    EVENT_LOGI("enter");
+    if (!IsReady()) {
+        return ERR_INVALID_VALUE;
+    }
+    std::string result;
+    innerCommonEventManager_->HiDump(args, result);
+    int ret = dprintf(fd, "%s\n", result.c_str());
+    if (ret < 0) {
+        EVENT_LOGE("dprintf error");
+        return ERR_INVALID_VALUE;
+    }
+    return ERR_OK;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

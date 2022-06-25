@@ -120,6 +120,14 @@ public:
      * Unfreezes all frozen applications.
      */
     void UnfreezeAll();
+
+    /**
+     * dump event for hidumper.
+     *
+     * @param args Indicates the dump options.
+     * @param result the result of dump
+     */
+    void HiDump(const std::vector<std::u16string> &args, std::string &result);
 private:
     bool ProcessStickyEvent(const CommonEventRecord &record);
     bool PublishStickyEvent(const std::shared_ptr<CommonEventSubscribeInfo> &sp,

@@ -34,6 +34,24 @@ InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_share
     staticSubscriberManager_(std::make_shared<StaticSubscriberManager>())
 {}
 
+constexpr char HIDUMPER_HELP_MSG[] =
+    "Usage:dump <command> [options]\n"
+    "Description:\n"
+    "  -h, --help                   list available commands\n"
+    "  -a, --all                    dump the info of all events\n"
+    "  -e, --event <name>           dump the info of a specified event\n";
+
+const std::unordered_map<std::string, char> HIDUMPER_CMD_MAP = {
+    { "--help", 'h'},
+    { "--all", 'a'},
+    { "--event", 'e'},
+    { "-h", 'h' },
+    { "-a", 'a' },
+    { "-e", 'e' },
+};
+
+constexpr size_t HIDUMP_OPTION_MAX_SIZE = 2;
+
 bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId, const std::string &bundleName,
@@ -350,6 +368,45 @@ bool InnerCommonEventManager::PublishStickyEvent(
     }
 
     return true;
+}
+
+void InnerCommonEventManager::HiDump(const std::vector<std::u16string> &args, std::string &result)
+{
+    if (args.size() == 0 || args.size() > HIDUMP_OPTION_MAX_SIZE) {
+        result = "error: unknown option.";
+        return;
+    }
+    std::string cmd = Str16ToStr8(args[0]);
+    if (HIDUMPER_CMD_MAP.find(cmd) == HIDUMPER_CMD_MAP.end()) {
+        result = "error: unknown option.";
+        return;
+    }
+    std::string event;
+    if (args.size() == HIDUMP_OPTION_MAX_SIZE) {
+        event = Str16ToStr8(args[1]);
+    }
+    char cmdValue = HIDUMPER_CMD_MAP.find(cmd)->second;
+    switch (cmdValue) {
+        case 'h' :
+            result = HIDUMPER_HELP_MSG;
+            return;
+        case 'a' :
+            event = "";
+            break;
+        case 'e' :
+            if (event.empty()) {
+                result = "error: request a event value.";
+                return;
+            }
+            break;
+        default:
+            break;
+    }
+    std::vector<std::string> records;
+    DumpState(event, ALL_USER, records);
+    for (const auto &record : records) {
+        result.append(record).append("\n");
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS
