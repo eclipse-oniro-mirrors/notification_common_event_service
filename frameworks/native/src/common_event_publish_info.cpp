@@ -27,6 +27,7 @@ CommonEventPublishInfo::CommonEventPublishInfo(const CommonEventPublishInfo &com
 {
     sticky_ = commonEventPublishInfo.sticky_;
     ordered_ = commonEventPublishInfo.ordered_;
+    bundleName_ = commonEventPublishInfo.bundleName_;
     subscriberPermissions_ = commonEventPublishInfo.subscriberPermissions_;
 }
 
@@ -64,6 +65,16 @@ bool CommonEventPublishInfo::IsOrdered() const
     return ordered_;
 }
 
+void CommonEventPublishInfo::SetBundleName(const std::string &bundleName)
+{
+    bundleName_ = bundleName;
+}
+
+std::string CommonEventPublishInfo::GetBundleName() const
+{
+    return bundleName_;
+}
+
 bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
 {
     EVENT_LOGD("enter");
@@ -89,7 +100,11 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
         EVENT_LOGE("common event Publish Info write sticky failed");
         return false;
     }
-
+    // write bundleName
+    if (!parcel.WriteString(bundleName_)) {
+        EVENT_LOGE("common event Publish Info  write bundleName failed");
+        return false;
+    }
     return true;
 }
 
@@ -107,13 +122,15 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
     for (std::vector<std::u16string>::size_type i = 0; i < permissionVec_.size(); i++) {
         subscriberPermissions_.emplace_back(Str16ToStr8(permissionVec_[i]));
     }
-
     // read ordered
     ordered_ = parcel.ReadBool();
-
     // read sticky
     sticky_ = parcel.ReadBool();
 
+    if (!parcel.ReadString(bundleName_)) {
+        EVENT_LOGE("Fail to read bundleName");
+        return false;
+    }
     return true;
 }
 

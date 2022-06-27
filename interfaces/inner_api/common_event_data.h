@@ -83,8 +83,7 @@ public:
     void SetData(const std::string &data);
 
     /**
-     * Obtains the result data of a common event, which is set by
-     * setData(java.lang.String).
+     * Obtains the result data of a common event
      *
      * @return Returns the data of a common event.
      */

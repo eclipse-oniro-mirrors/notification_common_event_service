@@ -81,6 +81,20 @@ public:
     bool IsOrdered() const;
 
     /**
+     * Sets the bundleName.
+     *
+     * @param bundleName Indicates the bundleName of a common event.
+     */
+    void SetBundleName(const std::string &bundleName);
+
+    /**
+     * Obtains the bundleName of a common event
+     *
+     * @return Returns the bundleName of a common event.
+     */
+    std::string GetBundleName() const;
+
+    /**
      * Marshals a CommonEventData object into a Parcel.
      *
      * @param parcel Indicates specified Parcel object.
@@ -106,6 +120,7 @@ private:
 private:
     bool sticky_;
     bool ordered_;
+    std::string bundleName_;
     std::vector<std::string> subscriberPermissions_;
 };
 }  // namespace EventFwk
