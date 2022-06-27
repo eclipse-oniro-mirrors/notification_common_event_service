@@ -241,6 +241,18 @@ bool CommonEvent::Unfreeze(const uid_t &uid)
     return commonEventProxy_->Unfreeze(uid);
 }
 
+bool CommonEvent::UnfreezeAll()
+{
+    EVENT_LOGI("enter");
+
+    if (!GetCommonEventProxy()) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return false;
+    }
+    EVENT_LOGD("before UnfreezeAll proxy valid state is %{public}d", isProxyValid_);
+    return commonEventProxy_->UnfreezeAll();
+}
+
 bool CommonEvent::GetCommonEventProxy()
 {
     EVENT_LOGI("enter");

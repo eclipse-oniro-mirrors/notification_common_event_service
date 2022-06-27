@@ -110,7 +110,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(false);
 
-    struct tm curTime;
+    struct tm curTime {0};
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");
@@ -140,7 +140,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_02
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(false);
 
-    struct tm curTime;
+    struct tm curTime {0};
     // publish system event
     bool publishResult = innerCommonEventManager.PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, NON_SYSTEM_APP_UID, tokenID, UNDEFINED_USER, "bundlename");

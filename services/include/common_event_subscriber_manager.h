@@ -28,7 +28,7 @@ struct EventSubscriberRecord {
     std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo;
     sptr<IRemoteObject> commonEventListener;
     EventRecordInfo eventRecordInfo;
-    struct tm recordTime;
+    struct tm recordTime {0};
     bool isFreeze;
     int64_t freezeTime;
 
@@ -56,6 +56,7 @@ inline bool operator<(const std::shared_ptr<EventSubscriberRecord> &a, const std
 using SubscriberRecordPtr = std::shared_ptr<EventSubscriberRecord>;
 using SubscribeInfoPtr = std::shared_ptr<CommonEventSubscribeInfo>;
 using EventRecordPtr = std::shared_ptr<CommonEventRecord>;
+using FrozenRecords = std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>>;
 
 class CommonEventSubscriberManager : public DelayedSingleton<CommonEventSubscriberManager> {
 public:
@@ -95,11 +96,19 @@ public:
     /**
      * Updates freeze information.
      *
-     * @param uid Indicates the uid of the apolication.
+     * @param uid Indicates the uid of the application.
      * @param freezeState Indicates the freeze state.
      * @param freezeTime Indicates the freeze time.
      */
     void UpdateFreezeInfo(const uid_t &uid, const bool &freezeState, const int64_t &freezeTime = 0);
+
+    /**
+     * Updates freeze information of all applications.
+     *
+     * @param freezeState Indicates the freeze state.
+     * @param freezeTime Indicates the freeze time.
+     */
+    void UpdateAllFreezeInfos(const bool &freezeState, const int64_t &freezeTime = 0);
 
     /**
      * Inserts freeze events.
@@ -112,10 +121,17 @@ public:
     /**
      * Gets the frozen events.
      *
-     * @param uid Indicates the uid of the apolication.
+     * @param uid Indicates the uid of the application.
      * @return Returns the frozen events.
      */
-    std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> GetFrozenEvents(const uid_t &uid);
+    FrozenRecords GetFrozenEvents(const uid_t &uid);
+
+    /**
+     * Gets all frozen events.
+     *
+     * @return Returns all frozen events.
+     */
+    std::map<uid_t, FrozenRecords> GetAllFrozenEvents();
 
     /**
      * Dumps detailed information for specific subscriber record info.
@@ -159,8 +175,8 @@ private:
     sptr<IRemoteObject::DeathRecipient> death_;
     std::map<std::string, std::multiset<SubscriberRecordPtr>> eventSubscribers_;
     std::vector<SubscriberRecordPtr> subscribers_;
-    std::map<uid_t, std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>>> frozenEvents_;
-    const time_t FREEZE_EVENT_TIMEOUT = 120; // How long we keep records. Unit: second
+    std::map<uid_t, FrozenRecords> frozenEvents_;
+    const time_t FREEZE_EVENT_TIMEOUT = 30; // How long we keep records. Unit: second
 };
 }  // namespace EventFwk
 }  // namespace OHOS

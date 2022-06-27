@@ -118,6 +118,13 @@ public:
      */
     virtual bool Unfreeze(const uid_t &uid) = 0;
 
+    /**
+     * Unfreezes all frozen applications.
+     *
+     * @return Returns true if successful; false otherwise.
+     */
+    virtual bool UnfreezeAll() = 0;
+
     enum class Message {
         CES_PUBLISH_COMMON_EVENT = 0,
         CES_PUBLISH_COMMON_EVENT2,
@@ -127,6 +134,7 @@ public:
         CES_FINISH_RECEIVER,
         CES_FREEZE,
         CES_UNFREEZE,
+        CES_UNFREEZE_ALL,
         // ipc id 2001-3000 for tools
         // ipc id for dumping Subscribe State (2001)
         CES_DUMP_STATE = 2001,

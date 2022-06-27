@@ -92,6 +92,13 @@ public:
     bool PublishFreezeCommonEvent(const uid_t &uid);
 
     /**
+     * Publishes all freeze common events.
+     *
+     * @return Returns true if success; false otherwise.
+     */
+    bool PublishAllFreezeCommonEvents();
+
+    /**
      * Dumps state of common event service.
      *
      * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
@@ -170,6 +177,7 @@ private:
 
     void EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr, bool hasLastSubscribe);
 
+    void PublishFrozenEventsInner(const FrozenRecords &frozenEventRecords);
 private:
     std::shared_ptr<EventHandler> handler_;
     std::shared_ptr<OrderedEventHandler> handlerOrdered_;

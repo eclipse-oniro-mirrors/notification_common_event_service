@@ -37,7 +37,7 @@ struct HistorySubscriberRecord {
 struct HistoryEventRecord {
     enum EventState {
         IDLE = 0,
-        RECEIVEING,
+        RECEIVING,
         RECEIVED,
     };
     enum DeliveryState {

@@ -24,7 +24,7 @@ namespace EventFwk {
 struct OrderedEventRecord : public CommonEventRecord {
     enum EventState {
         IDLE = 0,
-        RECEIVEING,
+        RECEIVING,
         RECEIVED,
     };
 

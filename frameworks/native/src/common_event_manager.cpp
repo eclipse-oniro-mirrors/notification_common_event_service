@@ -89,5 +89,20 @@ bool CommonEventManager::GetStickyCommonEvent(const std::string &event, CommonEv
 {
     return DelayedSingleton<CommonEvent>::GetInstance()->GetStickyCommonEvent(event, commonEventData);
 }
+
+bool CommonEventManager::Freeze(const uid_t &uid)
+{
+    return DelayedSingleton<CommonEvent>::GetInstance()->Freeze(uid);
+}
+
+bool CommonEventManager::Unfreeze(const uid_t &uid)
+{
+    return DelayedSingleton<CommonEvent>::GetInstance()->Unfreeze(uid);
+}
+
+bool CommonEventManager::UnfreezeAll()
+{
+    return DelayedSingleton<CommonEvent>::GetInstance()->UnfreezeAll();
+}
 }  // namespace EventFwk
 }  // namespace OHOS

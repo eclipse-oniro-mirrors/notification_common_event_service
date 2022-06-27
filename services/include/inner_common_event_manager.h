@@ -88,7 +88,6 @@ public:
      * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
      * @param userId Indicates the user ID.
      * @param state Indicates the state of common event service.
-     * @return Returns true if successful; false otherwise.
      */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
@@ -99,7 +98,6 @@ public:
      * @param code Indicates the code of a common event.
      * @param data Indicates the data of a common event.
      * @param abortEvent Indicates Whether to cancel the current common event.
-     * @return Returns true if successful; false otherwise.
      */
     void FinishReceiver(
         const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent);
@@ -108,18 +106,20 @@ public:
      * Freezes application.
      *
      * @param uid Indicates the uid of application.
-     * @return Returns true if successful; false otherwise.
      */
-    bool Freeze(const uid_t &uid);
+    void Freeze(const uid_t &uid);
 
     /**
      * Unfreezes application.
      *
      * @param uid Indicates the uid of application.
-     * @return Returns true if successful; false otherwise.
      */
-    bool Unfreeze(const uid_t &uid);
+    void Unfreeze(const uid_t &uid);
 
+    /**
+     * Unfreezes all frozen applications.
+     */
+    void UnfreezeAll();
 private:
     bool ProcessStickyEvent(const CommonEventRecord &record);
     bool PublishStickyEvent(const std::shared_ptr<CommonEventSubscribeInfo> &sp,

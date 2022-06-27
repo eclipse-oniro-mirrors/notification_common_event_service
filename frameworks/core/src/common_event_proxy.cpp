@@ -357,6 +357,27 @@ bool CommonEventProxy::Unfreeze(const uid_t &uid)
     return ret;
 }
 
+bool CommonEventProxy::UnfreezeAll()
+{
+    EVENT_LOGD("start");
+
+    MessageParcel data;
+    MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
+
+    bool ret = SendRequest(ICommonEvent::Message::CES_UNFREEZE_ALL, data, reply);
+    if (ret) {
+        ret = reply.ReadBool();
+    }
+
+    EVENT_LOGD("end");
+    return ret;
+}
+
 bool CommonEventProxy::SendRequest(ICommonEvent::Message code, MessageParcel &data, MessageParcel &reply)
 {
     EVENT_LOGD("start");

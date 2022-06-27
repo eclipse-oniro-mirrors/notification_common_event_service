@@ -199,7 +199,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0500, Functi
 
     // SubscribeCommonEvent
     OHOS::sptr<OHOS::IRemoteObject> sp(nullptr);
-    struct tm curTime;
+    struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     InnerCommonEventManager innerCommonEventManager;
     EXPECT_FALSE(innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, sp, curTime, 0, 0, tokenID, ""));
