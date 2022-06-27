@@ -178,6 +178,9 @@ private:
     void EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr, bool hasLastSubscribe);
 
     void PublishFrozenEventsInner(const FrozenRecords &frozenEventRecords);
+
+    void SendOrderedEventProcTimeoutHiSysEvent(const std::shared_ptr<EventSubscriberRecord> &subscriberRecord,
+        const std::string &eventName);
 private:
     std::shared_ptr<EventHandler> handler_;
     std::shared_ptr<OrderedEventHandler> handlerOrdered_;

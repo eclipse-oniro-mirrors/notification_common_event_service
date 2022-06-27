@@ -46,7 +46,7 @@ public:
      */
     void PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId,
-        const sptr<IRemoteObject> &service);
+        const sptr<IRemoteObject> &service, const std::string &bundleName);
 
 private:
     struct StaticSubscriberInfo {
@@ -75,6 +75,8 @@ private:
         const std::vector<std::string> &permissions);
     bool VerifyPublisherPermission(const Security::AccessToken::AccessTokenID &callerToken,
         const std::string &permission);
+    void SendStaticEventProcErrHiSysEvent(int32_t userId, const std::string &publisherName,
+        const std::string &subscriberName, const std::string &eventName);
 
     std::vector<std::string> subscriberList_;
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;

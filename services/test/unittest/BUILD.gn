@@ -324,6 +324,22 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
   external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
 }
 
+ohos_unittest("common_event_hisysevent_test") {
+  module_out_path = module_output_path
+
+  sources = [ "common_event_hisysevent_test.cpp" ]
+
+  configs = [ ":cesfwk_services_config" ]
+
+  deps = [
+    "${services_path}:cesfwk_services",
+    "//third_party/googletest:gtest_main",
+    "//utils/native/base:utils",
+  ]
+
+  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+}
+
 group("unittest") {
   testonly = true
   deps = []
@@ -332,6 +348,7 @@ group("unittest") {
     ":common_event_dump_test",
     ":common_event_freeze_test",
     ":common_event_freeze_unit_test",
+    ":common_event_hisysevent_test",
     ":common_event_publish_manager_event_unit_test",
     ":common_event_publish_ordered_event_unit_test",
     ":common_event_publish_permission_event_unit_test",

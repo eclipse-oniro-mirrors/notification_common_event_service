@@ -21,6 +21,7 @@
 #include "common_event_constant.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
+#include "hitrace_meter.h"
 #include "ipc_skeleton.h"
 #include "publish_manager.h"
 #include "system_ability_definition.h"
@@ -161,6 +162,7 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const pid_t &pid,
     const uid_t &uid, const int32_t &userId)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     struct tm recordTime = {0};
@@ -201,6 +203,7 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
 bool CommonEventManagerService::SubscribeCommonEvent(
     const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
@@ -231,6 +234,7 @@ bool CommonEventManagerService::SubscribeCommonEvent(
 
 bool CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (!IsReady()) {

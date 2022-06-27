@@ -72,6 +72,7 @@ ohos_shared_library("cesfwk_core") {
     "ability_base:want",
     "bundle_framework:appexecfwk_base",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "samgr_standard:samgr_proxy",

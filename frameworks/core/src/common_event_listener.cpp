@@ -15,6 +15,7 @@
 
 #include "common_event_listener.h"
 #include "event_log_wrapper.h"
+#include "hitrace_meter.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -29,6 +30,7 @@ CommonEventListener::~CommonEventListener()
 
 void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
@@ -92,6 +94,7 @@ bool CommonEventListener::IsReady()
 void CommonEventListener::OnReceiveEvent(
     const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
 
     std::lock_guard<std::mutex> lock(mutex_);

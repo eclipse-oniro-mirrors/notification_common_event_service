@@ -16,6 +16,8 @@
 #include "common_event_subscriber_manager.h"
 
 #include "event_log_wrapper.h"
+#include "event_report.h"
+#include "hitrace_meter.h"
 #include "subscriber_death_recipient.h"
 
 namespace OHOS {
@@ -35,6 +37,7 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
     const SubscribeInfoPtr &eventSubscribeInfo, const sptr<IRemoteObject> &commonEventListener,
     const struct tm &recordTime, const EventRecordInfo &eventRecordInfo)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (eventSubscribeInfo == nullptr) {
@@ -77,6 +80,7 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
 
 int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (commonEventListener == nullptr) {
@@ -101,6 +105,20 @@ std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager
     GetSubscriberRecordsByWantLocked(eventRecord, records);
 
     return records;
+}
+
+std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::GetSubscriberRecord(
+    const sptr<IRemoteObject> &commonEventListener)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    for (auto it = subscribers_.begin(); it != subscribers_.end(); ++it) {
+        if (commonEventListener == (*it)->commonEventListener) {
+            return *it;
+        }
+    }
+
+    return nullptr;
 }
 
 void CommonEventSubscriberManager::DumpDetailed(
@@ -236,6 +254,11 @@ bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
         auto infoItem = eventSubscribers_.find(event);
         if (infoItem != eventSubscribers_.end()) {
             infoItem->second.insert(record);
+
+            if (infoItem->second.size() > MAX_SUBSCRIBER_NUM_PER_EVENT && record->eventSubscribeInfo != nullptr) {
+                SendSubscriberExceedMaximumHiSysEvent(record->eventSubscribeInfo->GetUserId(), event,
+                    infoItem->second.size());
+            }
         } else {
             std::multiset<SubscriberRecordPtr> EventSubscribersPtr;
             EventSubscribersPtr.insert(record);
@@ -488,6 +511,16 @@ void CommonEventSubscriberManager::RemoveFrozenEventsBySubscriber(const Subscrib
             frozenRecordsItem->second.erase(subscriberRecord);
         }
     }
+}
+
+void CommonEventSubscriberManager::SendSubscriberExceedMaximumHiSysEvent(int32_t userId, const std::string &eventName,
+    uint32_t subscriberNum)
+{
+    EventInfo eventInfo;
+    eventInfo.userId = userId;
+    eventInfo.eventName = eventName;
+    eventInfo.subscriberNum = subscriberNum;
+    EventReport::SendHiSysEvent(SUBSCRIBER_EXCEED_MAXIMUM, eventInfo);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

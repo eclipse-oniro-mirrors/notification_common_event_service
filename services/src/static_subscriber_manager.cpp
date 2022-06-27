@@ -22,6 +22,8 @@
 #include "common_event_constant.h"
 #include "common_event_support.h"
 #include "event_log_wrapper.h"
+#include "event_report.h"
+#include "hitrace_meter.h"
 #include "os_account_manager_helper.h"
 
 namespace OHOS {
@@ -87,8 +89,9 @@ bool StaticSubscriberManager::InitValidSubscribers()
 
 void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
-    const int32_t &userId, const sptr<IRemoteObject> &service)
+    const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
@@ -116,21 +119,25 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
             EVENT_LOGW("subscriber.userId = %{public}d, userId = %{public}d", subscriber.userId, userId);
             if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
                 EVENT_LOGW("subscriber userId is invalid, subscriber.userId = %{public}d", subscriber.userId);
+                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
             if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
                 && (subscriber.userId != userId)) {
                 EVENT_LOGW("subscriber userId is not match, subscriber.userId = %{public}d, userId = %{public}d",
                     subscriber.userId, userId);
+                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
             if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
                 EVENT_LOGW("publisher does not have requiered permission %{public}s", subscriber.permission.c_str());
+                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
             if (!VerifySubscriberPermission(subscriber.bundleName, subscriber.userId,
                 publishInfo.GetSubscriberPermissions())) {
                 EVENT_LOGW("subscriber does not have requiered permissions");
+                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
             if (!publishInfo.GetBundleName().empty() && subscriber.bundleName != publishInfo.GetBundleName()) {
@@ -217,7 +224,7 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
             EVENT_LOGW("invalid events obj");
             continue;
         }
-        
+
         for (auto e : commonEventObj[JSON_KEY_EVENTS]) {
             if (e.is_null() || !e.is_string()) {
                 EVENT_LOGW("invalid event obj");
@@ -305,6 +312,7 @@ void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &
 
 void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if ((data.GetWant().GetAction() != CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED) &&
@@ -342,6 +350,17 @@ void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
         RemoveSubscriberWithBundleName(bundleName, userId);
         AddSubscriberWithBundleName(bundleName, userId);
     }
+}
+
+void StaticSubscriberManager::SendStaticEventProcErrHiSysEvent(int32_t userId, const std::string &publisherName,
+    const std::string &subscriberName, const std::string &eventName)
+{
+    EventInfo eventInfo;
+    eventInfo.userId = userId;
+    eventInfo.publisherName = publisherName;
+    eventInfo.subscriberName = subscriberName;
+    eventInfo.eventName = eventName;
+    EventReport::SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

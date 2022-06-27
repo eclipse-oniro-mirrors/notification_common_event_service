@@ -16,6 +16,7 @@
 #include "ability_manager_helper.h"
 
 #include "event_log_wrapper.h"
+#include "hitrace_meter.h"
 #include "iservice_registry.h"
 #include "static_subscriber_connection.h"
 #include "system_ability_definition.h"
@@ -25,6 +26,7 @@ namespace EventFwk {
 int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter, target bundle = %{public}s", want.GetBundle().c_str());
     std::lock_guard<std::mutex> lock(mutex_);
 
