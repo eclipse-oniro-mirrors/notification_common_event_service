@@ -1131,7 +1131,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
 /*
  * @tc.number: CommonEventDumpTest_1800
  * @tc.name: test dump
- * @tc.desc: Verify dump information when the peding ordered event is empty
+ * @tc.desc: Verify dump information when the pending ordered event is empty
  */
 HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1800, TestSize.Level1)
 {

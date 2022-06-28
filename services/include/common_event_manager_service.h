@@ -136,7 +136,7 @@ public:
 private:
     ErrCode Init();
 
-    // The function that overrided from SystemAbility
+    // The function that overridden from SystemAbility
     virtual void OnStart() override;
 
     virtual void OnStop() override;

@@ -32,7 +32,7 @@ public:
     /**
      * Finds the sticky events.
      *
-     * @param subscribeInfo Indicates the subscribe infomation.
+     * @param subscribeInfo Indicates the subscribe information.
      * @param commonEventRecords Indicates the records of sticky common event.
      * @return Returns result code.
      */

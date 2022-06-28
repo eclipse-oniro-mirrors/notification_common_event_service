@@ -609,7 +609,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level1)
 /*
  * @tc.number: CES_TC_ModuleTest_2000
  * @tc.name: OnReceiveEvent
- * @tc.desc: Verify receive comon event
+ * @tc.desc: Verify receive common event
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level1)
 {

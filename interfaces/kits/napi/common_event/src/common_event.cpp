@@ -2600,7 +2600,7 @@ napi_value ParseParametersConstructor(
         return nullptr;
     }
 
-    // userId?: numer
+    // userId?: number
     if (!GetUserIdByCreateSubscriber(env, argv[0], subscribeInfo)) {
         return nullptr;
     }

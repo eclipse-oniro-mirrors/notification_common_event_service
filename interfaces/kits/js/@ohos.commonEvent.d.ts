@@ -19,7 +19,7 @@ import { CommonEventSubscribeInfo } from './commonEvent/commonEventSubscribeInfo
 import { CommonEventPublishData } from './commonEvent/commonEventPublishData';
 
 /**
- * the defintion for commonevent
+ * the definition for commonevent
  * @name commonEvent
  * @since 7
  * @syscap SystemCapability.Notification.CommonEvent

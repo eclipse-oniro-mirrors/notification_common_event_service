@@ -112,7 +112,7 @@ public:
      * Checks whether the event is in this MatchingSkills object.
      *
      * @param event Indicates specified event in MatchingSkills object
-     * @return Retruns whether the event in MatchingSkills object or not.
+     * @return Returns whether the event in MatchingSkills object or not.
      */
     bool HasEvent(const std::string &event) const;
 
@@ -120,7 +120,7 @@ public:
      * Obtains an Scheme.
      *
      * @param index Indicates the scheme index.
-     * @return Retruns scheme.
+     * @return Returns scheme.
      */
     std::string GetScheme(size_t index) const;
 
@@ -149,7 +149,7 @@ public:
     /**
      * Gets scheme count.
      *
-     * @return Retruns scheme count.
+     * @return Returns scheme count.
      */
     size_t CountSchemes() const;
 
