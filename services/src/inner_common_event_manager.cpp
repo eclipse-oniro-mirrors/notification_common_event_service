@@ -80,6 +80,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     bool isSystemApp = false;
     bool isProxy = false;
     if (!CheckUserId(pid, uid, callerToken, isSubsystem, isSystemApp, isProxy, user)) {
+        SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
         return false;
     }
 
@@ -115,12 +116,14 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 
     if (publishInfo.IsSticky()) {
         if (!ProcessStickyEvent(eventRecord)) {
+            SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
             return false;
         }
     }
 
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
         return false;
     }
     controlPtr_->PublishCommonEvent(eventRecord, commonEventListener);
