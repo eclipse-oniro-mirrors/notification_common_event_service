@@ -71,7 +71,7 @@ ohos_shared_library("cesfwk_services") {
 
   deps = [
     ":static_subscriber_config.json",
-    "${aafwk_path}/frameworks/native/ability/native:static_subscriber_ipc",
+    "${ability_runtime_path}/frameworks/native/ability/native:static_subscriber_ipc",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",

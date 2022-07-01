@@ -47,7 +47,7 @@ ohos_shared_library("commonevent") {
   ]
 
   deps = [
-    "${aafwk_path}/frameworks/js/napi/aafwk/inner/napi_common:napi_common",
+    "${ability_runtime_path}/frameworks/js/napi/aafwk/inner/napi_common:napi_common",
     "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/libuv:uv_static",

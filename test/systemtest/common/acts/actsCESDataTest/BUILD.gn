@@ -32,7 +32,7 @@ ohos_systemtest("ActsCESDateTest") {
   }
 
   deps = [
-    "${aafwk_services_path}/abilitymgr:abilityms",
+    "${ability_runtime_services_path}/abilitymgr:abilityms",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
