@@ -43,7 +43,8 @@ constexpr char HELP_MSG_DUMP[] =
     "options list:\n"
     "  -h, --help                   list available commands\n"
     "  -a, --all                    dump the info of all events\n"
-    "  -e, --event <name>           dump the info of a specified event\n";
+    "  -e, --event <name>           dump the info filter by the specified event\n"
+    "  -u, --user-id <userId>       dump the info filter by the specified userId\n";
 
 constexpr char HELP_MSG_NO_EVENT_OPTION[] = "error: you must specify an event name with '-e' or '--event'.\n";
 constexpr char STRING_PUBLISH_COMMON_EVENT_OK[] = "publish the common event successfully.\n";
