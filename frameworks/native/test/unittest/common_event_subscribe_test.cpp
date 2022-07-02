@@ -23,18 +23,13 @@
 #define protected public
 #include "common_event.h"
 #include "common_event_manager.h"
-#include "common_event_manager_service.h"
+#include "common_event_stub.h"
+#include "common_event_subscriber_manager.h"
+#include "inner_common_event_manager.h"
 #undef private
 #undef protected
 
 #include "datetime_ex.h"
-#include "iremote_object.h"
-#include "message_parcel.h"
-#include "sa_mgr_client.h"
-#include "singleton.h"
-#include "system_ability.h"
-#include "system_ability_definition.h"
-#include "want.h"
 
 #include <gtest/gtest.h>
 
@@ -59,7 +54,6 @@ public:
 
 public:
     static constexpr int TEST_WAIT_TIME = 100000;
-    std::shared_ptr<CommonEventManagerService> commonEventMs_;
     CommonEventManager commonEventManager;
     MatchingSkills matchingSkills;
 };
@@ -289,78 +283,6 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_005, TestSize.Level1)
 
 /*
  * Feature: CommonEventSubscribeTest
- * Function: CommonEventProxy  SubscribeCommonEvent CommonEventStub OnRemoteRequest
- * SubFunction: Subscribe common event
- * FunctionPoints: test subscribe event
- * EnvConditions: system run normally
- * CaseDescription:  1. subscribe common event
- *                   2. fail subscribe common event kit proxy subscriber info is null to do
- */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_006, TestSize.Level1)
-{
-    CommonEventStubTest CommonEventStubTest;
-    OHOS::MessageParcel data, reply;
-    OHOS::MessageOption option;
-
-    int subscribeResult = CommonEventStubTest.OnRemoteRequest(
-        static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT), data, reply, option);
-
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, subscribeResult);
-}
-
-/*
- * Feature: CommonEventSubscribeTest
- * Function: CommonEventProxy  SubscribeCommonEvent CommonEventStub OnRemoteRequest
- * SubFunction: Subscribe common event
- * FunctionPoints: test subscribe event
- * EnvConditions: system run normally
- * CaseDescription:  1. subscribe common event
- *                   2. fail subscribe common event kit proxy common event listener is null
- */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_007, TestSize.Level1)
-{
-    CommonEventStubTest CommonEventStubTest;
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
-    OHOS::MessageParcel data, reply;
-    OHOS::MessageOption option;
-    data.WriteParcelable(&subscribeInfo);
-
-    int subscribeResult = CommonEventStubTest.OnRemoteRequest(
-        static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT), data, reply, option);
-
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, subscribeResult);
-}
-
-/*
- * Feature: CommonEventSubscribeTest
- * Function: CommonEventProxy  SubscribeCommonEvent CommonEventStub OnRemoteRequest
- * SubFunction: Subscribe common event
- * FunctionPoints: test subscribe event
- * EnvConditions: system run normally
- * CaseDescription:  1. subscribe common event
- *                   2. fail subscribe common event code is error
- */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_008, TestSize.Level1)
-{
-    CommonEventStubTest CommonEventStubTest;
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
-    OHOS::MessageParcel data, reply;
-    OHOS::MessageOption option;
-    data.WriteParcelable(&subscribeInfo);
-
-    int subscribeResult = CommonEventStubTest.OnRemoteRequest(static_cast<uint32_t>(-1), data, reply, option);
-
-    EXPECT_EQ(OHOS::IPC_STUB_UNKNOW_TRANS_ERR, subscribeResult);
-}
-
-/*
- * Feature: CommonEventSubscribeTest
  * Function: InnerCommonEventManager SubscribeCommonEvent
  * SubFunction: Subscribe common event
  * FunctionPoints: test subscribe event
@@ -378,8 +300,9 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_009, TestSize.Level1)
     OHOS::sptr<OHOS::IRemoteObject> sp(nullptr);
 
     struct tm curTime {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
 
-    EXPECT_EQ(false, innerCommonEventManager->SubscribeCommonEvent(subscribeInfo, sp, curTime, 0, 0, ""));
+    EXPECT_EQ(false, innerCommonEventManager->SubscribeCommonEvent(subscribeInfo, sp, curTime, 0, 0, tokenID, ""));
 }
 
 /*
@@ -403,9 +326,13 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_010, TestSize.Level1)
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerPtr(commonEventListener);
 
     struct tm curTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
 
     auto result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
-        nullptr, commonEventListenerPtr, curTime, 0, 0, "");
+        nullptr, commonEventListenerPtr, curTime, eventRecordInfo);
 
     EXPECT_EQ(nullptr, result);
 }
@@ -429,9 +356,13 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_011, TestSize.Level1)
         std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
     struct tm curTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
 
     auto result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
-        commonEventSubscribeInfo, nullptr, curTime, 0, 0, "");
+        commonEventSubscribeInfo, nullptr, curTime, eventRecordInfo);
 
     EXPECT_EQ(nullptr, result);
 }
@@ -458,30 +389,15 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_012, TestSize.Level1)
     OHOS::sptr<OHOS::IRemoteObject> commonEventListenerSp(commonEventListener);
 
     struct tm curTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
 
     auto result = OHOS::DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
-        commonEventSubscribeInfo, commonEventListenerSp, curTime, 0, 0, "");
+        commonEventSubscribeInfo, nullptr, curTime, eventRecordInfo);
 
     EXPECT_EQ(nullptr, result);
-}
-
-/*
- * Feature: CommonEventSubscribeTest
- * Function: EventReceiveStub OnRemoteRequest
- * SubFunction: EventReceiveStub OnRemoteRequest
- * FunctionPoints: test on Remote request
- * EnvConditions: system run normally
- * CaseDescription:  1. event receive fail
- */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_013, TestSize.Level1)
-{
-    EventReceiveStubTest eventReceiveStub;
-    OHOS::MessageParcel data, reply;
-    OHOS::MessageOption option;
-
-    int result = eventReceiveStub.OnRemoteRequest(0, data, reply, option);
-
-    EXPECT_EQ(OHOS::IPC_STUB_UNKNOW_TRANS_ERR, result);
 }
 
 /*

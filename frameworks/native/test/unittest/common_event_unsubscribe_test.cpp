@@ -18,14 +18,11 @@
 #define protected public
 #include "common_event.h"
 #include "common_event_manager.h"
-#include "common_event_manager_service.h"
+#include "common_event_stub.h"
+#include "common_event_subscriber_manager.h"
+#include "inner_common_event_manager.h"
 #undef private
 #undef protected
-
-#include "errors.h"
-#include "sa_mgr_client.h"
-#include "system_ability.h"
-#include "system_ability_definition.h"
 
 #include <gtest/gtest.h>
 
@@ -238,22 +235,6 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_006, TestSize.Level1)
 {
     std::shared_ptr<DreivedSubscriber> subscriber = nullptr;
     EXPECT_EQ(false, DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber));
-}
-
-/*
- * Feature: CommonEventManagerService
- * Function: UnsubscribeCommonEvent
- * SubFunction: IsReady
- * FunctionPoints: exception
- * EnvConditions: system running normally
- * CaseDescription: When the CommonEventManagerService is not ready,
- *                  verify UnsubscribeCommonEvent function return value.
- */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_008, TestSize.Level1)
-{
-    DelayedSingleton<CommonEventManagerService>::GetInstance()->innerCommonEventManager_ = nullptr;
-    sptr<IRemoteObject> sp;
-    EXPECT_EQ(false, DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(sp));
 }
 
 /*
