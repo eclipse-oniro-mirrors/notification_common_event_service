@@ -248,11 +248,11 @@ public:
     static const std::string COMMON_EVENT_MANAGE_PACKAGE_STORAGE;
 
     /**
-     * Indicates the action of a common event that one sandbox packag is installed.
+     * Indicates the action of a common event that one sandbox package is installed.
      */
     static const std::string COMMON_EVENT_SANDBOX_PACKAGE_ADDED;
     /**
-     * Indicates the action of a common event that one sandbox packag is uninstalled.
+     * Indicates the action of a common event that one sandbox package is uninstalled.
      */
     static const std::string COMMON_EVENT_SANDBOX_PACKAGE_REMOVED;
     /**
@@ -1090,7 +1090,7 @@ public:
     /**
      * Checks whether the current common event is a system common event.
      * @param str Indicates the action of a common event.
-     * @return Retruns whether the current common event is a system common event or not.
+     * @return Returns whether the current common event is a system common event or not.
      */
     bool IsSystemEvent(std::string &str);
 

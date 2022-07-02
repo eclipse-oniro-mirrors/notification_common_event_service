@@ -314,7 +314,7 @@ public:
     }
 
     /**
-     * @brief Dumps the bundle informations with specific flags.
+     * @brief Dumps the bundle information with specific flags.
      * @param flag Indicates the information contained in the dump result.
      * @param bundleName Indicates the bundle name if needed.
      * @param userId Indicates the user ID.

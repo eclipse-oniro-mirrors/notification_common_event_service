@@ -75,12 +75,12 @@ bool StaticSubscriberManager::InitValidSubscribers()
         EVENT_LOGE("QueryExtensionInfos failed");
         return false;
     }
-    // filter legel extensions and add them to valid map
+    // filter legal extensions and add them to valid map
     for (auto extension : extensions) {
         if (find(subscriberList_.begin(), subscriberList_.end(), extension.bundleName) == subscriberList_.end()) {
             continue;
         }
-        EVENT_LOGI("find legel extension, bundlename = %{public}s", extension.bundleName.c_str());
+        EVENT_LOGI("find legal extension, bundlename = %{public}s", extension.bundleName.c_str());
         AddSubscriber(extension);
     }
     hasInitValidSubscribers_ = true;
@@ -130,13 +130,13 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
                 continue;
             }
             if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
-                EVENT_LOGW("publisher does not have requiered permission %{public}s", subscriber.permission.c_str());
+                EVENT_LOGW("publisher does not have required permission %{public}s", subscriber.permission.c_str());
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
             if (!VerifySubscriberPermission(subscriber.bundleName, subscriber.userId,
                 publishInfo.GetSubscriberPermissions())) {
-                EVENT_LOGW("subscriber does not have requiered permissions");
+                EVENT_LOGW("subscriber does not have required permissions");
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
@@ -179,7 +179,7 @@ bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bund
         }
         if (Security::AccessToken::AccessTokenKit::VerifyAccessToken(tokenId, permission) !=
             Security::AccessToken::PermissionState::PERMISSION_GRANTED) {
-            EVENT_LOGW("subscriber does not have requiered permission : %{public}s", permission.c_str());
+            EVENT_LOGW("subscriber does not have required permission : %{public}s", permission.c_str());
             return false;
         }
     }
