@@ -87,6 +87,12 @@ public:
      */
     static const std::string COMMON_EVENT_THERMAL_LEVEL_CHANGED;
     /**
+     * Indicates the action of a common event that the device is idle and charging,
+     * services can do some business on the background.
+     * This common event can only be published by the system.
+     */
+    static const std::string COMMON_EVENT_CHARGE_IDLE;
+    /**
      * Indicates the action of a common event that the user unlocks the device.
      * This common event can only be published by the system.
      */
