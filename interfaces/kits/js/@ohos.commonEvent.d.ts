@@ -229,6 +229,7 @@ declare namespace commonEvent {
 
     /**
      * this commonEvent means the user has cleared the package cache.
+     * since 9
      */
     COMMON_EVENT_PACKAGE_CACHE_CLEARED = "usual.event.PACKAGE_CACHE_CLEARED",
 
