@@ -57,7 +57,7 @@ ErrCode CommonEventListener::Init()
         if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
             runner_ = EventRunner::GetMainEventRunner();
         } else {
-            runner_ = EventRunner::Create(true);
+            runner_ = EventRunner::Create("CesFwkListener");
         }
         if (!runner_) {
             EVENT_LOGE("Failed to init due to create runner error");

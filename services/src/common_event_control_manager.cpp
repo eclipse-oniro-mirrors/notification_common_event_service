@@ -158,7 +158,7 @@ bool CommonEventControlManager::NotifyFreezeEvents(
 bool CommonEventControlManager::GetUnorderedEventHandler()
 {
     if (!handler_) {
-        handler_ = std::make_shared<EventHandler>(EventRunner::Create());
+        handler_ = std::make_shared<EventHandler>(EventRunner::Create("CesSrvUnorderEventHandler"));
         if (!handler_) {
             EVENT_LOGE("Failed to create UnorderedEventHandler");
             return false;
@@ -291,7 +291,8 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::GetMatchingOrdere
 bool CommonEventControlManager::GetOrderedEventHandler()
 {
     if (!handlerOrdered_) {
-        handlerOrdered_ = std::make_shared<OrderedEventHandler>(EventRunner::Create(), shared_from_this());
+        handlerOrdered_ = std::make_shared<OrderedEventHandler>(
+            EventRunner::Create("CesSrvOrderEventHandler"), shared_from_this());
         if (!handlerOrdered_) {
             EVENT_LOGE("Failed to create OrderedEventHandler");
             return false;

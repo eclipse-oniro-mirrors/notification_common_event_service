@@ -92,7 +92,7 @@ ErrCode CommonEventManagerService::Init()
         return ERR_INVALID_OPERATION;
     }
 
-    runner_ = EventRunner::Create(true);
+    runner_ = EventRunner::Create("CesSrvMain");
     if (!runner_) {
         EVENT_LOGE("Failed to init due to create runner error");
         return ERR_INVALID_OPERATION;
