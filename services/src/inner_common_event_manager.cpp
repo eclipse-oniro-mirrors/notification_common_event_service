@@ -454,7 +454,7 @@ void InnerCommonEventManager::SendUnSubscribeHiSysEvent(const sptr<IRemoteObject
     }
     eventInfo.subscriberName = subscriberRecord->eventRecordInfo.bundleName;
     eventInfo.pid = subscriberRecord->eventRecordInfo.pid;
-    eventInfo.uid = subscriberRecord->eventRecordInfo.uid;
+    eventInfo.uid = static_cast<int32_t>(subscriberRecord->eventRecordInfo.uid);
     EventReport::SendHiSysEvent(UNSUBSCRIBE, eventInfo);
 }
 
