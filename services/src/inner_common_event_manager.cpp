@@ -349,12 +349,12 @@ bool InnerCommonEventManager::PublishStickyEvent(
     EVENT_LOGI("enter");
 
     if (!sp) {
-        EVENT_LOGI("sp is null");
+        EVENT_LOGE("sp is null");
         return false;
     }
 
     if (!subscriberRecord) {
-        EVENT_LOGI("subscriberRecord is null");
+        EVENT_LOGE("subscriberRecord is null");
         return false;
     }
 
