@@ -83,6 +83,9 @@ napi_value SupportInit(napi_env env, napi_value exports)
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_DATA_CLEARED, "COMMON_EVENT_PACKAGE_DATA_CLEARED");
     SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_CACHE_CLEARED,
+        "COMMON_EVENT_PACKAGE_CACHE_CLEARED");
+    SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGES_SUSPENDED, "COMMON_EVENT_PACKAGES_SUSPENDED");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGES_UNSUSPENDED, "COMMON_EVENT_PACKAGES_UNSUSPENDED");
