@@ -87,12 +87,14 @@ public:
     /**
      * Dumps the state for common event service.
      *
+     * @param dumpType Indicates the dump type.
      * @param event Indicates the specified event.
      * @param userId Indicates the user id.
      * @param state Indicates the output result.
      * @return Returns true if successful; false otherwise.
      */
-    bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state) override;
+    bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+        std::vector<std::string> &state) override;
 
     /**
      * Finishes the receiver for the ordered common event.

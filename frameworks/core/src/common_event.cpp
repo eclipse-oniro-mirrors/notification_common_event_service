@@ -202,7 +202,8 @@ bool CommonEvent::FinishReceiver(
     return commonEventProxy_->FinishReceiver(proxy, code, data, abortEvent);
 }
 
-bool CommonEvent::DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
+bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+    std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
@@ -211,7 +212,7 @@ bool CommonEvent::DumpState(const std::string &event, const int32_t &userId, std
         return false;
     }
     EVENT_LOGD("before DumpState proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->DumpState(event, userId, state);
+    return commonEventProxy_->DumpState(dumpType, event, userId, state);
 }
 
 void CommonEvent::ResetCommonEventProxy()

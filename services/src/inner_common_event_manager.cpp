@@ -223,23 +223,46 @@ bool InnerCommonEventManager::GetStickyCommonEvent(const std::string &event, Com
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(event, eventData);
 }
 
-void InnerCommonEventManager::DumpState(const std::string &event, const int32_t &userId,
+void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
 
-    DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->DumpState(event, userId, state);
-
-    DelayedSingleton<CommonEventStickyManager>::GetInstance()->DumpState(event, userId, state);
+    switch (dumpType) {
+        case DumpEventType::SUBSCRIBER: {
+            DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->DumpState(event, userId, state);
+            break;
+        }
+        case DumpEventType::STICKY: {
+            DelayedSingleton<CommonEventStickyManager>::GetInstance()->DumpState(event, userId, state);
+            break;
+        }
+        case DumpEventType::PENDING: {
+            if (controlPtr_) {
+                controlPtr_->DumpState(event, userId, state);
+            }
+            break;
+        }
+        case DumpEventType::HISTORY: {
+            if (controlPtr_) {
+                controlPtr_->DumpHistoryState(event, userId, state);
+            }
+            break;
+        }
+        default: {
+            DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->DumpState(event, userId, state);
+            DelayedSingleton<CommonEventStickyManager>::GetInstance()->DumpState(event, userId, state);
+            if (controlPtr_) {
+                controlPtr_->DumpState(event, userId, state);
+                controlPtr_->DumpHistoryState(event, userId, state);
+            }
+            break;
+        }
+    }
 
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
-        return;
     }
-    controlPtr_->DumpState(event, userId, state);
-
-    controlPtr_->DumpHistoryState(event, userId, state);
-    return;
 }
 
 void InnerCommonEventManager::FinishReceiver(
@@ -414,7 +437,7 @@ void InnerCommonEventManager::HiDump(const std::vector<std::u16string> &args, st
             break;
     }
     std::vector<std::string> records;
-    DumpState(event, ALL_USER, records);
+    DumpState(DumpEventType::ALL, event, ALL_USER, records);
     for (const auto &record : records) {
         result.append(record).append("\n");
     }

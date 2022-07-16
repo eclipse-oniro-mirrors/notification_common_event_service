@@ -19,7 +19,10 @@ module_output_path = "common_event_service/services"
 config("cesfwk_services_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${services_path}/test/unittest/mock/include" ]
+  include_dirs = [
+    "${tools_path}/cem/include",
+    "${services_path}/test/unittest/mock/include",
+  ]
 
   cflags = []
 

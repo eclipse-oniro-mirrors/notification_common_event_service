@@ -106,7 +106,8 @@ public:
         return false;
     }
 
-    virtual bool DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
+    virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+        std::vector<std::string> &state)
     {
         return false;
     }
