@@ -1418,5 +1418,37 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level1)
     mtx_.unlock();
     EVENT_LOGE("CES_TC_ModuleTest_4200 end");
 }
+
+/**
+ * @tc.name: CES_TC_ModuleTest_4300
+ * @tc.desc: subscriber exceed maximum.
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
+{
+    EVENT_LOGE("CES_TC_ModuleTest_4300 start");
+
+    // add maximum subscriber, the last subscriber trigger "SUBSCRIBER_EXCEED_MAXIMUM" hisysevent
+    std::set<sptr<CommonEventListener>> cesListenerSet;
+
+    for (uint32_t i = 0; i <= MAX_SUBSCRIBER_NUM_PER_EVENT + 1; i++) {
+        std::string eventName = "SUBSCRIBEEVENT_SUBSCRIBENUMTEST";
+        MatchingSkills matchingSkills;
+        matchingSkills.AddEvent(eventName);
+        CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+        auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
+        sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
+        cesListenerSet.insert(commonEventListener);
+        EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener));
+    }
+
+    for (auto it = cesListenerSet.begin(); it != cesListenerSet.end(); ++it) {
+        EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(*it));
+    }
+
+    EVENT_LOGE("CES_TC_ModuleTest_4300 end");
+}
 }  // namespace EventFwk
 }  // namespace OHOS
