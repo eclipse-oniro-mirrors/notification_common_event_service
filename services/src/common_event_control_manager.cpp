@@ -144,14 +144,14 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         EVENT_LOGE("check permission is failed");
         return false;
     }
-
     EVENT_LOGI("Send common event %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) "
                 "when unfreezed",
         eventRecord.commonEventData->GetWant().GetAction().c_str(),
         subscriberRecord.eventRecordInfo.bundleName.c_str(), subscriberRecord.eventRecordInfo.pid,
         subscriberRecord.eventRecordInfo.uid);
     commonEventListenerProxy->NotifyEvent(*(eventRecord.commonEventData), false, eventRecord.publishInfo->IsSticky());
-
+    AccessTokenHelper::RecordSensitivePermissionUsage(subscriberRecord.eventRecordInfo.callerToken,
+        eventRecord.commonEventData->GetWant().GetAction());
     return true;
 }
 
@@ -204,6 +204,8 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
                 commonEventListenerProxy->NotifyEvent(
                     *(eventRecord->commonEventData), false, eventRecord->publishInfo->IsSticky());
                 eventRecord->state = OrderedEventRecord::RECEIVED;
+                AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
+                    eventRecord->commonEventData->GetWant().GetAction());
             }
         }
     }
@@ -443,22 +445,21 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter with index %{public}zu", index);
-
     if (eventRecordPtr == nullptr) {
         EVENT_LOGE("eventRecordPtr = nullptr");
         return false;
     }
-
     size_t receiverNum = eventRecordPtr->receivers.size();
     if ((index < 0) || (index >= receiverNum)) {
         EVENT_LOGE("Invalid index (= %{public}zu)", index);
         return false;
     }
-
     int8_t ret = CheckPermission(*(eventRecordPtr->receivers[index]), *eventRecordPtr);
     if (ret == OrderedEventRecord::SKIPPED) {
         eventRecordPtr->deliveryState[index] = ret;
-    } else if (ret == OrderedEventRecord::DELIVERED) {
+        return true;
+    }
+    if (ret == OrderedEventRecord::DELIVERED) {
         if (eventRecordPtr->receivers[index]->isFreeze) {
             EVENT_LOGI("vec isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
@@ -467,26 +468,23 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
             eventRecordPtr->curReceiver = nullptr;
             return true;
         }
-
         eventRecordPtr->deliveryState[index] = ret;
-
         eventRecordPtr->curReceiver = eventRecordPtr->receivers[index]->commonEventListener;
-
         eventRecordPtr->state = OrderedEventRecord::RECEIVING;
-
         sptr<IEventReceive> receiver = iface_cast<IEventReceive>(eventRecordPtr->curReceiver);
         if (!receiver) {
             EVENT_LOGE("Failed to get IEventReceive proxy");
             eventRecordPtr->curReceiver = nullptr;
             return false;
         }
-
         eventRecordPtr->state = OrderedEventRecord::RECEIVED;
         EVENT_LOGI("NotifyOrderedEvent event = %{public}s",
             eventRecordPtr->commonEventData->GetWant().GetAction().c_str());
         receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true, eventRecordPtr->publishInfo->IsSticky());
+        AccessTokenHelper::RecordSensitivePermissionUsage(
+            eventRecordPtr->receivers[index]->eventRecordInfo.callerToken,
+            eventRecordPtr->commonEventData->GetWant().GetAction());
     }
-
     return true;
 }
 

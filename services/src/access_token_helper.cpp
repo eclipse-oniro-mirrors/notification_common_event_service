@@ -15,19 +15,40 @@
 
 #include "access_token_helper.h"
 
+#include "common_event_permission_manager.h"
+#include "event_log_wrapper.h"
+#include "privacy_kit.h"
+
 namespace OHOS {
 namespace EventFwk {
-using namespace OHOS::Security::AccessToken;
-
-bool AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
+bool AccessTokenHelper::VerifyNativeToken(const AccessToken::AccessTokenID &callerToken)
 {
-    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
-    return tokenType == ATokenTypeEnum::TOKEN_NATIVE;
+    AccessToken::ATokenTypeEnum tokenType = AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
+    return tokenType == AccessToken::ATokenTypeEnum::TOKEN_NATIVE;
 }
 
-bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken, const std::string &permission)
+bool AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &callerToken,
+    const std::string &permission)
 {
-    return AccessTokenKit::VerifyAccessToken(callerToken, permission) == PermissionState::PERMISSION_GRANTED;
+    return (AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission) ==
+        AccessToken::PermissionState::PERMISSION_GRANTED);
+}
+
+void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessToken::AccessTokenID &callerToken,
+    const std::string &event)
+{
+    EVENT_LOGI("enter");
+    AccessToken::ATokenTypeEnum tokenType = AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType != AccessToken::ATokenTypeEnum::TOKEN_HAP) {
+        return;
+    }
+    Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
+    if (!permission.isSensitive || permission.names.empty()) {
+        return;
+    }
+    for (const auto &permissionName : permission.names) {
+        AccessToken::PrivacyKit::AddPermissionUsedRecord(callerToken, permissionName, 1, 0);
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS

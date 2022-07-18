@@ -20,6 +20,7 @@
 
 namespace OHOS {
 namespace EventFwk {
+using namespace OHOS::Security;
 class AccessTokenHelper {
 public:
     /**
@@ -28,9 +29,11 @@ public:
      * @param callerToken Indicates the token of caller.
      * @return Returns true if successful; false otherwise.
      */
-    static bool VerifyNativeToken(const Security::AccessToken::AccessTokenID &callerToken);
-    static bool VerifyAccessToken(const Security::AccessToken::AccessTokenID &callerToken,
+    static bool VerifyNativeToken(const AccessToken::AccessTokenID &callerToken);
+    static bool VerifyAccessToken(const AccessToken::AccessTokenID &callerToken,
         const std::string &permission);
+    static void RecordSensitivePermissionUsage(const AccessToken::AccessTokenID &callerToken,
+        const std::string &event);
 };
 }  // namespace EventFwk
 }  // namespace OHOS
