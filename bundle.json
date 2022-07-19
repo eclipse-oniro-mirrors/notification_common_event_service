@@ -57,7 +57,7 @@
                 "hiviewdfx_hilog_native",
                 "ipc",
                 "samgr_standard",
-                "dmsfwk_standard",
+                "dmsfwk",
                 "napi"
             ],
             "third_party": [
