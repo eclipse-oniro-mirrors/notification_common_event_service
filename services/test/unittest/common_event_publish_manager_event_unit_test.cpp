@@ -115,7 +115,7 @@ HWTEST_F(CommonEventPublishManagerEventUnitTest, CommonEventPublishManagerEventU
         } else {
             result = DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(APPUID3);
             if (result) {
-                EXPECT_GE(i, NOT_ATTACK_TIME + FLOOD_ATTACK_MAX + 1);
+                EXPECT_GE(i, NOT_ATTACK_TIME + FLOOD_ATTACK_MAX);
                 break;
             }
         }
