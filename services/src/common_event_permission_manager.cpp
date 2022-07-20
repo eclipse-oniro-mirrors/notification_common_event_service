@@ -15,6 +15,7 @@
 
 #include "common_event_permission_manager.h"
 
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -95,9 +96,6 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     },
     {CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_UPDATE,
         {PermissionState::DEFAULT, {"ohos.permission.USE_BLUETOOTH"}}
-    },
-    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED,
-        {PermissionState::AND, {"ohos.permission.USE_BLUETOOTH", "ohos.permission.LOCATION"}}
     },
     {CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED,
         {PermissionState::AND, {"ohos.permission.USE_BLUETOOTH", "ohos.permission.LOCATION"}}
@@ -224,7 +222,14 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     },
     {CommonEventSupport::COMMON_EVENT_SLOT_CHANGE,
         {PermissionState::DEFAULT, {"ohos.permission.NOTIFICATION_CONTROLLER"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED,
+        {PermissionState::DEFAULT, {"ohos.permission.RECEIVE_SMS"}}
     }
+};
+
+static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {
+    CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED
 };
 
 CommonEventPermissionManager::CommonEventPermissionManager()
@@ -243,28 +248,28 @@ void CommonEventPermissionManager::Init()
         for (auto &permissionName : permissions.second) {
             per.names.emplace_back(permissionName);
         }
-        multimap_.insert(std::make_pair(eventName, per));
+        if (IsSensitiveEvent(eventName)) {
+            per.isSensitive = true;
+        }
+        eventMap_.insert(std::make_pair(eventName, per));
         per.names.clear();
     }
 }
 
-Permission CommonEventPermissionManager::GetEventPermission(std::string event)
+Permission CommonEventPermissionManager::GetEventPermission(const std::string &event)
 {
     EVENT_LOGI("enter");
+    if (eventMap_.find(event) != eventMap_.end()) {
+        return eventMap_.find(event)->second;
+    }
     Permission per;
+    return per;
+}
 
-    auto iter = multimap_.begin();
-    for (; iter != multimap_.end(); ++iter) {
-        if (!event.compare(iter->first)) {
-            break;
-        }
-    }
-
-    if (iter == multimap_.end()) {
-        return per;
-    }
-
-    return iter->second;
+bool CommonEventPermissionManager::IsSensitiveEvent(const std::string &event)
+{
+    auto it = find(SENSITIVE_COMMON_EVENTS.begin(), SENSITIVE_COMMON_EVENTS.end(), event);
+    return it != SENSITIVE_COMMON_EVENTS.end();
 }
 }  // namespace EventFwk
 }  // namespace OHOS

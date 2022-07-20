@@ -30,5 +30,9 @@ bool AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &call
 {
     return callerToken == PERMISSION_GRANTED;
 }
+
+void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessToken::AccessTokenID &callerToken,
+    const std::string &event)
+{}
 }  // namespace EventFwk
 }  // namespace OHOS

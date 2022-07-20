@@ -16,8 +16,8 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MATCH_PERMISSION_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MATCH_PERMISSION_H
 
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "singleton.h"
@@ -33,6 +33,7 @@ enum class PermissionState {
 struct Permission {
     PermissionState state;
     std::vector<std::string> names;
+    bool isSensitive = false;
     Permission() : state(PermissionState::DEFAULT)
     {}
 };
@@ -54,10 +55,11 @@ public:
      *
      * @param event Indicates the event name
      */
-    Permission GetEventPermission(std::string event);
+    Permission GetEventPermission(const std::string &event);
 
 private:
-    std::multimap<std::string, Permission> multimap_;
+    static bool IsSensitiveEvent(const std::string &event);
+    std::unordered_map<std::string, Permission> eventMap_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
