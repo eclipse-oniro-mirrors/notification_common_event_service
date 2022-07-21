@@ -16,7 +16,7 @@ import("//build/ohos.gni")
 
 config("tools_cem_config") {
   include_dirs = [
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
     "include",
   ]
 }
@@ -44,11 +44,11 @@ ohos_source_set("tools_cem_source_set") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:want",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",

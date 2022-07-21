@@ -45,7 +45,6 @@ ohos_unittest("common_event_publish_system_event_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -53,6 +52,7 @@ ohos_unittest("common_event_publish_system_event_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -76,7 +76,6 @@ ohos_unittest("common_event_dump_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -84,6 +83,7 @@ ohos_unittest("common_event_dump_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -107,7 +107,6 @@ ohos_unittest("common_event_freeze_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -115,6 +114,7 @@ ohos_unittest("common_event_freeze_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -138,7 +138,6 @@ ohos_unittest("common_event_freeze_unit_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -146,6 +145,7 @@ ohos_unittest("common_event_freeze_unit_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -169,7 +169,6 @@ ohos_unittest("common_event_sticky_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -177,6 +176,7 @@ ohos_unittest("common_event_sticky_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -201,7 +201,6 @@ ohos_unittest("common_event_subscribe_unit_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -209,6 +208,7 @@ ohos_unittest("common_event_subscribe_unit_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -232,7 +232,6 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -240,6 +239,7 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -263,7 +263,6 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -271,6 +270,7 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -294,7 +294,6 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -302,6 +301,7 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -318,10 +318,12 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
   deps = [
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
-  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  external_deps = [
+    "c_utils:utils",
+    "hiviewdfx_hilog_native:libhilog",
+  ]
 }
 
 ohos_unittest("common_event_hisysevent_test") {
@@ -334,10 +336,12 @@ ohos_unittest("common_event_hisysevent_test") {
   deps = [
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
-  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  external_deps = [
+    "c_utils:utils",
+    "hiviewdfx_hilog_native:libhilog",
+  ]
 }
 
 group("unittest") {

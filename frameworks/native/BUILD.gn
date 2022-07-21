@@ -37,7 +37,7 @@ config("cesfwk_innerkits_public_config") {
   include_dirs = [
     "${ces_core_path}/include",
     "${ces_innerkits_path}",
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
   ]
 }
 
@@ -60,12 +60,12 @@ ohos_shared_library("cesfwk_innerkits") {
   deps = [
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_base",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",

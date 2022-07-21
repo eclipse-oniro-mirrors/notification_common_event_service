@@ -47,11 +47,11 @@ ohos_moduletest("common_event_command_dump_module_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:want",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -86,11 +86,11 @@ ohos_moduletest("common_event_command_publish_module_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:want",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",

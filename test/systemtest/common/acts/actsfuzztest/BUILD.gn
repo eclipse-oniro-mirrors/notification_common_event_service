@@ -29,7 +29,7 @@ ohos_systemtest("ActsFuzzTest") {
   configs = [ "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config" ]
 
   include_dirs = [
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
     "${common_event_service_path}/test/systemtest/common/resource",
     "//third_party/json/single_include",
     "${services_path}/include",
@@ -57,7 +57,6 @@ ohos_systemtest("ActsFuzzTest") {
     "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   defines = [
@@ -71,6 +70,7 @@ ohos_systemtest("ActsFuzzTest") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",

@@ -20,7 +20,7 @@ config("kits_natvie_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
     "//utils/system/safwk/native/include",
   ]
 
@@ -54,7 +54,6 @@ ohos_unittest("common_event_subscribe_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -62,6 +61,7 @@ ohos_unittest("common_event_subscribe_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "ipc:ipc_core",
   ]
@@ -78,7 +78,6 @@ ohos_unittest("common_event_unsubscribe_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -86,6 +85,7 @@ ohos_unittest("common_event_unsubscribe_test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "ipc:ipc_core",
   ]

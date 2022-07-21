@@ -19,7 +19,7 @@ module_output_path = "common_event_service/tools"
 config("tools_cem_test_config") {
   include_dirs = [
     "${tools_path}/cem/include",
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
   ]
 }
 
@@ -43,12 +43,12 @@ ohos_systemtest("common_event_command_dump_system_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -77,12 +77,12 @@ ohos_systemtest("common_event_command_publish_system_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
