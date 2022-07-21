@@ -470,7 +470,7 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_1900, Function | MediumTest 
 /**
  * @tc.number: Cem_Command_Publish_2000
  * @tc.name: ExecCommand
- * @tc.desc: Verify the "cem publish -u" command.
+ * @tc.desc: Verify the "cem publish -d" command.
  */
 HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2000, Function | MediumTest | Level1)
 {
