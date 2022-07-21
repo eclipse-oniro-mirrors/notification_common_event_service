@@ -30,7 +30,6 @@ using namespace OHOS::EventFwk;
 
 namespace {
 const std::string STRING_EVENT = "com.ces.event";
-}  // namespace
 
 static std::string Concatenate(const std::string &first,  const std::string &second)
 {
@@ -543,4 +542,4 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1800, Function | MediumTest | Leve
     SetMockObjects(cmd);
     EXPECT_EQ(cmd.ExecCommand(), STRING_EVENT + "\n");
 }
-
+}  // namespace
