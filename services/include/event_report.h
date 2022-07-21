@@ -26,13 +26,13 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 // event name
-const std::string ORDERED_EVENT_PROC_TIMEOUT = "ORDERED_EVENT_PROC_TIMEOUT";
-const std::string STATIC_EVENT_PROC_ERROR = "STATIC_EVENT_PROC_ERROR";
-const std::string SUBSCRIBER_EXCEED_MAXIMUM = "SUBSCRIBER_EXCEED_MAXIMUM";
-const std::string PUBLISH_ERROR = "PUBLISH_ERROR";
-const std::string SUBSCRIBE = "SUBSCRIBE";
-const std::string UNSUBSCRIBE = "UNSUBSCRIBE";
-const std::string PUBLISH = "PUBLISH";
+constexpr char ORDERED_EVENT_PROC_TIMEOUT[] = "ORDERED_EVENT_PROC_TIMEOUT";
+constexpr char STATIC_EVENT_PROC_ERROR[] = "STATIC_EVENT_PROC_ERROR";
+constexpr char SUBSCRIBER_EXCEED_MAXIMUM[] = "SUBSCRIBER_EXCEED_MAXIMUM";
+constexpr char PUBLISH_ERROR[] = "PUBLISH_ERROR";
+constexpr char SUBSCRIBE[] = "SUBSCRIBE";
+constexpr char UNSUBSCRIBE[] = "UNSUBSCRIBE";
+constexpr char PUBLISH[] = "PUBLISH";
 } // namespace
 
 struct EventInfo {
