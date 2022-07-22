@@ -56,7 +56,7 @@
                 "appexecfwk_standard",
                 "hiviewdfx_hilog_native",
                 "ipc",
-                "samgr_standard",
+                "samgr",
                 "dmsfwk",
                 "napi"
             ],
