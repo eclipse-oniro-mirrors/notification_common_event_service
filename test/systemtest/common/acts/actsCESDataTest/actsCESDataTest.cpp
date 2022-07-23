@@ -23,6 +23,7 @@
 #define private public
 #define protected public
 #include "common_event_control_manager.h"
+#include "common_event_manager_service.h"
 #undef private
 #undef protected
 
@@ -40,6 +41,8 @@ using namespace testing::ext;
 using namespace OHOS::EventFwk;
 using OHOS::Parcel;
 
+namespace OHOS {
+namespace EventFwk {
 namespace {
 const std::string EVENTCASE1 = "com.common.event.data.case1";
 const std::string EVENTCASE2 = "com.common.event.data.case2";
@@ -147,11 +150,11 @@ void Delay(int sec)
 }
 }  // namespace
 
-class ActsCESDateTest : public testing::Test {
+class ActsCESDataTest : public testing::Test {
 public:
-    ActsCESDateTest()
+    ActsCESDataTest()
     {}
-    ~ActsCESDateTest()
+    ~ActsCESDataTest()
     {}
 
     static void SetUpTestCase(void);
@@ -170,7 +173,7 @@ public:
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent ";
         std::string action = data.GetWant().GetAction();
         if (action == EVENTCASE1) {
             SubscriberFirstTestCase1();
@@ -219,14 +222,14 @@ public:
         } else if (action == EVENTCASE23) {
             SubscriberFirstTestCase23();
         } else {
-            GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest  OnReceiveEvent do nothing";
+            GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest  OnReceiveEvent do nothing";
         }
     }
 
 private:
     void SubscriberFirstTestCase1()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase1 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase1 ";
 
         EXPECT_EQ(GetCode() == CODECASE1, true);
         EXPECT_EQ(GetData() == DATACASE1, true);
@@ -234,7 +237,7 @@ private:
 
     void SubscriberFirstTestCase2()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase2 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase2 ";
 
         EXPECT_EQ(GetCode() == CODECASE2, true);
         EXPECT_EQ(GetData() == DATACASE2, true);
@@ -242,7 +245,7 @@ private:
 
     void SubscriberFirstTestCase3()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase3 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase3 ";
 
         EXPECT_EQ(GetCode() == CODECASE3, true);
         EXPECT_EQ(GetData() == DATACASE3, true);
@@ -250,7 +253,7 @@ private:
 
     void SubscriberFirstTestCase4()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase4 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase4 ";
 
         EXPECT_EQ(GetCode() == CODECASE4, true);
         EXPECT_EQ(GetData() == DATACASE4, true);
@@ -258,7 +261,7 @@ private:
 
     void SubscriberFirstTestCase5()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase5 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase5 ";
 
         EXPECT_EQ(GetCode() == CODECASE5, true);
         EXPECT_EQ(GetData() == DATACASE5, true);
@@ -266,7 +269,7 @@ private:
 
     void SubscriberFirstTestCase6()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase6 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase6 ";
 
         EXPECT_EQ(GetCode() == CODECASE6, true);
         EXPECT_EQ(GetData() == DATACASE6, true);
@@ -274,7 +277,7 @@ private:
 
     void SubscriberFirstTestCase7()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase7 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase7 ";
 
         EXPECT_EQ(GetCode() == CODECASE7, true);
         EXPECT_EQ(GetData() == DATACASE7, true);
@@ -282,7 +285,7 @@ private:
 
     void SubscriberFirstTestCaseEight()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase8_12 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase8_12 ";
         EXPECT_TRUE(AbortCommonEvent());
         EXPECT_TRUE(GetAbortCommonEvent());
         EXPECT_TRUE(ClearAbortCommonEvent());
@@ -292,7 +295,7 @@ private:
 
     void SubscriberFirstTestCaseThirteen()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase13_18 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberFirstTestcase13_18 ";
         EXPECT_FALSE(AbortCommonEvent());
         EXPECT_FALSE(GetAbortCommonEvent());
         EXPECT_FALSE(ClearAbortCommonEvent());
@@ -302,7 +305,7 @@ private:
 
     void SubscriberFirstTestCase19()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase19 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase19 ";
 
         SetCode(CODECASE1);
         SetData(DATACASE1);
@@ -316,7 +319,7 @@ private:
 
     void SubscriberFirstTestCase20()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase20 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase20 ";
 
         SetCode(CODECASE3);
         SetData(DATACASE3);
@@ -330,7 +333,7 @@ private:
 
     void SubscriberFirstTestCase21()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase21 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase21 ";
 
         SetCode(CODECASE5);
         SetData(DATACASE5);
@@ -344,7 +347,7 @@ private:
 
     void SubscriberFirstTestCase22()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase22 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase22 ";
 
         SetCode(CODECASE7);
         SetData(DATACASE7);
@@ -358,7 +361,7 @@ private:
 
     void SubscriberFirstTestCase23()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase23 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberFirstTest OnReceiveEvent SubscriberThirdTestcase23 ";
 
         SetCode(CODECASE10);
         SetData(DATACASE10);
@@ -382,7 +385,7 @@ public:
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent ";
         std::string action = data.GetWant().GetAction();
         if (action == EVENTCASE1) {
             SubscriberFirstTestCase1();
@@ -431,63 +434,63 @@ public:
         } else if (action == EVENTCASE23) {
             SubscriberFirstTestCase23();
         } else {
-            GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest  OnReceiveEvent do nothing";
+            GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest  OnReceiveEvent do nothing";
         }
     }
 
 private:
     void SubscriberFirstTestCase1()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase1 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase1 ";
 
         EXPECT_EQ(GetCode() == CODECASE1, true);
         EXPECT_EQ(GetData() == DATACASE1, true);
     }
     void SubscriberFirstTestCase2()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase2 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase2 ";
 
         EXPECT_EQ(GetCode() == CODECASE2, true);
         EXPECT_EQ(GetData() == DATACASE2, true);
     }
     void SubscriberFirstTestCase3()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase3 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase3 ";
 
         EXPECT_EQ(GetCode() == CODECASE3, true);
         EXPECT_EQ(GetData() == DATACASE3, true);
     }
     void SubscriberFirstTestCase4()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase4 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase4 ";
 
         EXPECT_EQ(GetCode() == CODECASE4, true);
         EXPECT_EQ(GetData() == DATACASE4, true);
     }
     void SubscriberFirstTestCase5()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase5 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase5 ";
 
         EXPECT_EQ(GetCode() == CODECASE5, true);
         EXPECT_EQ(GetData() == DATACASE5, true);
     }
     void SubscriberFirstTestCase6()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase6 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase6 ";
 
         EXPECT_EQ(GetCode() == CODECASE6, true);
         EXPECT_EQ(GetData() == DATACASE6, true);
     }
     void SubscriberFirstTestCase7()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase7 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberSecondTestcase7 ";
 
         EXPECT_EQ(GetCode() == CODECASE7, true);
         EXPECT_EQ(GetData() == DATACASE7, true);
     }
     void SubscriberFirstTestCaseEight()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberFirstTestcase8_12 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberFirstTestcase8_12 ";
         EXPECT_TRUE(AbortCommonEvent());
         EXPECT_TRUE(GetAbortCommonEvent());
         EXPECT_TRUE(ClearAbortCommonEvent());
@@ -497,7 +500,7 @@ private:
 
     void SubscriberFirstTestCaseThirteen()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberFirstTestcase13_18 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberFirstTestcase13_18 ";
         EXPECT_FALSE(AbortCommonEvent());
         EXPECT_FALSE(GetAbortCommonEvent());
         EXPECT_FALSE(ClearAbortCommonEvent());
@@ -507,27 +510,27 @@ private:
 
     void SubscriberFirstTestCase19()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase19 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase19 ";
     }
 
     void SubscriberFirstTestCase20()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase20 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase20 ";
     }
 
     void SubscriberFirstTestCase21()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase21 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase21 ";
     }
 
     void SubscriberFirstTestCase22()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase22 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase22 ";
     }
 
     void SubscriberFirstTestCase23()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase23 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberSecondTest OnReceiveEvent SubscriberThirdTestcase23 ";
     }
 };
 
@@ -541,7 +544,7 @@ public:
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent ";
         std::string action = data.GetWant().GetAction();
         if (action == EVENTCASE1) {
             SubscriberFirstTestCase1();
@@ -590,63 +593,63 @@ public:
         } else if (action == EVENTCASE23) {
             SubscriberFirstTestCase23();
         } else {
-            GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdtTest  OnReceiveEvent do nothing";
+            GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdtTest  OnReceiveEvent do nothing";
         }
     }
 
 private:
     void SubscriberFirstTestCase1()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase1 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase1 ";
 
         EXPECT_EQ(GetCode() == CODECASE1, true);
         EXPECT_EQ(GetData() == DATACASE1, true);
     }
     void SubscriberFirstTestCase2()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase2 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase2 ";
 
         EXPECT_EQ(GetCode() == CODECASE2, true);
         EXPECT_EQ(GetData() == DATACASE2, true);
     }
     void SubscriberFirstTestCase3()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase3 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase3 ";
 
         EXPECT_EQ(GetCode() == CODECASE3, true);
         EXPECT_EQ(GetData() == DATACASE3, true);
     }
     void SubscriberFirstTestCase4()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase4 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase4 ";
 
         EXPECT_EQ(GetCode() == CODECASE4, true);
         EXPECT_EQ(GetData() == DATACASE4, true);
     }
     void SubscriberFirstTestCase5()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase5 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase5 ";
 
         EXPECT_EQ(GetCode() == CODECASE5, true);
         EXPECT_EQ(GetData() == DATACASE5, true);
     }
     void SubscriberFirstTestCase6()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase6 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase6 ";
 
         EXPECT_EQ(GetCode() == CODECASE6, true);
         EXPECT_EQ(GetData() == DATACASE6, true);
     }
     void SubscriberFirstTestCase7()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase7 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase7 ";
 
         EXPECT_EQ(GetCode() == CODECASE7, true);
         EXPECT_EQ(GetData() == DATACASE7, true);
     }
     void SubscriberFirstTestCaseEight()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberFirstTestcase8_12 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberFirstTestcase8_12 ";
         EXPECT_TRUE(AbortCommonEvent());
         EXPECT_TRUE(GetAbortCommonEvent());
         EXPECT_TRUE(ClearAbortCommonEvent());
@@ -656,7 +659,7 @@ private:
 
     void SubscriberFirstTestCaseThirteen()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberFirstTestcase13_18 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberFirstTestcase13_18 ";
         EXPECT_FALSE(AbortCommonEvent());
         EXPECT_FALSE(GetAbortCommonEvent());
         EXPECT_FALSE(ClearAbortCommonEvent());
@@ -666,27 +669,27 @@ private:
 
     void SubscriberFirstTestCase19()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase19 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase19 ";
     }
 
     void SubscriberFirstTestCase20()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase20 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase20 ";
     }
 
     void SubscriberFirstTestCase21()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase21 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase21 ";
     }
 
     void SubscriberFirstTestCase22()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase22 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase22 ";
     }
 
     void SubscriberFirstTestCase23()
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase23 ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberThirdTest OnReceiveEvent SubscriberThirdTestcase23 ";
     }
 };
 
@@ -701,21 +704,25 @@ public:
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
-        GTEST_LOG_(INFO) << "ActsCESDateTest::SubscriberPublishTest OnReceiveEvent ";
+        GTEST_LOG_(INFO) << "ActsCESDataTest::SubscriberPublishTest OnReceiveEvent ";
         std::string action = data.GetWant().GetAction();
     }
 };
 
-void ActsCESDateTest::SetUpTestCase(void)
+void ActsCESDataTest::SetUpTestCase(void)
+{
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
+}
+
+void ActsCESDataTest::TearDownTestCase(void)
+{
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
+}
+
+void ActsCESDataTest::SetUp(void)
 {}
 
-void ActsCESDateTest::TearDownTestCase(void)
-{}
-
-void ActsCESDateTest::SetUp(void)
-{}
-
-void ActsCESDateTest::TearDown(void)
+void ActsCESDataTest::TearDown(void)
 {}
 
 /*
@@ -725,7 +732,7 @@ void ActsCESDateTest::TearDown(void)
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  * GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeData_0100, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -791,7 +798,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0100, Function | MediumTe
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  * GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeData_0200, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -857,7 +864,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0200, Function | MediumTe
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  * GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeData_0300, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -926,7 +933,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0300, Function | MediumTe
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  * GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeData_0400, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -995,7 +1002,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0400, Function | MediumTe
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  * GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeData_0500, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1064,7 +1071,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0500, Function | MediumTe
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  * GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeData_0600, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1130,7 +1137,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0600, Function | MediumTe
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  * GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeData_0700, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1198,7 +1205,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeData_0700, Function | MediumTe
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: SetWant and GetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0100, Function | MediumTest | Level1)
 {
     std::string eventName = "TESTEVENT_PUBLISH_ACTION";
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION";
@@ -1227,7 +1234,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0100, Function | MediumTest |
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: GetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0200, Function | MediumTest | Level1)
 {
     std::string eventName = "TESTEVENT_PUBLISH_ACTION2";
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION2";
@@ -1257,7 +1264,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0200, Function | MediumTest |
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: GetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0300, Function | MediumTest | Level1)
 {
     Want wantTest;
     bool resultWant = false;
@@ -1272,7 +1279,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0300, Function | MediumTest |
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: SetWant and GetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0400, Function | MediumTest | Level1)
 {
     bool resultWant = false;
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION1";
@@ -1294,7 +1301,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0400, Function | MediumTest |
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: GetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0500, Function | MediumTest | Level1)
 {
     int codeTest = 2;
     bool resultWant = false;
@@ -1314,7 +1321,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0500, Function | MediumTest |
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: SetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0600, Function | MediumTest | Level1)
 {
     bool resultWant = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION2";
@@ -1347,7 +1354,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0600, Function | MediumTest |
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: SetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0700, Function | MediumTest | Level1)
 {
     bool resultWant = false;
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION2";
@@ -1365,7 +1372,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0700, Function | MediumTest |
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: SetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0800, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_Want_0800, Function | MediumTest | Level1)
 {
     int codeTest = 2;
     bool resultWant = false;
@@ -1390,7 +1397,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_Want_0800, Function | MediumTest |
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0100, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1450,7 +1457,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0100, Function |
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0200, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1510,7 +1517,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0200, Function |
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0300, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1570,7 +1577,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0300, Function |
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0400, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1630,7 +1637,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0400, Function |
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0500, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1690,7 +1697,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0500, Function |
  *           2.Verify the function of CommonEventSubscriber when publish no order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0600, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1751,7 +1758,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0600, Function |
  *           2.Verify the function of CommonEventSubscriber when publish no order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0700, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1812,7 +1819,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0700, Function |
  *           2.Verify the function of CommonEventSubscriber when publish no order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0800, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0800, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1873,7 +1880,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0800, Function |
  *           2.Verify the function of CommonEventSubscriber when publish no order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0900, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_0900, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1934,7 +1941,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_0900, Function |
  *           2.Verify the function of CommonEventSubscriber when publish no order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_1000, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_1000, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -1995,7 +2002,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_1000, Function |
  *           2.Verify the function of CommonEventSubscriber when publish no order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_1100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEvent_1100, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2056,7 +2063,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEvent_1100, Function |
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsync_0100, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2116,7 +2123,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0100, Function
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsync_0200, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2176,7 +2183,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0200, Function
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsync_0300, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2236,7 +2243,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0300, Function
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsync_0400, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2296,7 +2303,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0400, Function
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsync_0500, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2356,7 +2363,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsync_0500, Function
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  *           GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeDataInfo_0100, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2420,7 +2427,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0100, Function | Medi
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  *           GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeDataInfo_0200, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2484,7 +2491,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0200, Function | Medi
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  *           GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeDataInfo_0300, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2551,7 +2558,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0300, Function | Medi
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  *           GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeDataInfo_0400, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2618,7 +2625,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0400, Function | Medi
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  *           GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeDataInfo_0500, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2685,7 +2692,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0500, Function | Medi
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  *           GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeDataInfo_0600, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2749,7 +2756,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0600, Function | Medi
  *           2.Verify the function of CommonEventData when publish order event: SetCode SetData GetCode and
  *           GetData
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_CodeDataInfo_0700, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2815,7 +2822,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_CodeDataInfo_0700, Function | Medi
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: SetWant and GetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_WantInfo_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_WantInfo_0100, Function | MediumTest | Level1)
 {
     std::string eventName = "TESTEVENT_PUBLISH_ACTION";
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION";
@@ -2843,7 +2850,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_WantInfo_0100, Function | MediumTe
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: GetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_WantInfo_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_WantInfo_0200, Function | MediumTest | Level1)
 {
     std::string eventName = "TESTEVENT_PUBLISH_ACTION2";
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION2";
@@ -2872,7 +2879,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_WantInfo_0200, Function | MediumTe
  * @tc.desc: 1.Set Subscriber
  *           2.Verify the function of CommonEventData when publish order event: SetWant
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventData_WantInfo_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventData_WantInfo_0300, Function | MediumTest | Level1)
 {
     bool resultWant = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION2";
@@ -2905,7 +2912,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventData_WantInfo_0300, Function | MediumTe
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEventInfo_0100, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -2963,7 +2970,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0100, Functi
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEventInfo_0200, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3021,7 +3028,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0200, Functi
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEventInfo_0300, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3079,7 +3086,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0300, Functi
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEventInfo_0400, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3137,7 +3144,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0400, Functi
  *           2.Verify the function of CommonEventSubscriber when publish order event: AbortCommonEvent
  *           GetAbortCommonEvent ClearAbortCommonEvent and IsOrderedCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CommonEventInfo_0500, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3195,7 +3202,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CommonEventInfo_0500, Functi
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0100, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3253,7 +3260,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0100, Func
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0200, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3311,7 +3318,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0200, Func
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0300, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3369,7 +3376,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0300, Func
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0400, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3427,7 +3434,7 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0400, Func
  *           2.Verify the function of CommonEventSubscriber when publish order event: SetCode
  *           SetData GetCode GetData and GoAsyncCommonEvent
  */
-HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESDataTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0500, Function | MediumTest | Level1)
 {
     // the first subscriber
     MatchingSkills matchingSkills;
@@ -3477,3 +3484,5 @@ HWTEST_F(ActsCESDateTest, CES_CommonEventSubscriber_CodeDataAsyncInfo_0500, Func
     Delay(1);
     EXPECT_TRUE(publishResult);
 }
+} // namespace EventFwk
+} // namespace OHOS
