@@ -51,25 +51,23 @@
         "ram": "3000KB",
         "deps": {
             "components": [
+                "bundle_framework",
+                "hicollie_native",
+                "hisysevent_native",
+                "hitrace_native",
+                "ipc",
+                "access_token",
+                "safwk",
                 "ability_base",
                 "ability_runtime",
-                "appexecfwk_standard",
-                "benchmark",
-                "common",
+                "eventhandler",
                 "hiviewdfx_hilog_native",
-                "ipc",
-                "samgr_standard",
-                "dmsfwk",
-                "media_library",
                 "napi",
-                "user_file_service",
-                "work_scheduler",
-                "wifi"
+                "samgr_standard",
+                "os_account"
             ],
             "third_party": [
-                "libuv",
-                "node",
-                "json"
+                "libuv"
             ]
         },
         "build": {
