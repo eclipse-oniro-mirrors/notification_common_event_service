@@ -144,10 +144,14 @@ public:
 };
 
 void cesSystemTest::SetUpTestCase()
-{}
+{
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
+}
 
 void cesSystemTest::TearDownTestCase()
-{}
+{
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
+}
 
 void cesSystemTest::SetUp()
 {}

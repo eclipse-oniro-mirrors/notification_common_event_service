@@ -111,6 +111,7 @@ StressTestLevel ActsCESManagertest::stLevel_ {};
 
 void ActsCESManagertest::SetUpTestCase()
 {
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
     TestConfigParser tcp;
     tcp.ParseFromFile4StressTest(STRESS_TEST_CONFIG_FILE_PATH, stLevel_);
     std::cout << "stress test level : "
@@ -120,7 +121,9 @@ void ActsCESManagertest::SetUpTestCase()
 }
 
 void ActsCESManagertest::TearDownTestCase()
-{}
+{
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
+}
 
 void ActsCESManagertest::SetUp()
 {}

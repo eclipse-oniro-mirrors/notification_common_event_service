@@ -16,7 +16,7 @@ import("//build/test.gni")
 
 module_output_path = "common_event_service/systemtest"
 
-ohos_systemtest("ActsCESDateTest") {
+ohos_systemtest("ActsCESDataTest") {
   module_out_path = module_output_path
 
   sources = [ "actsCESDataTest.cpp" ]
@@ -60,5 +60,5 @@ ohos_systemtest("ActsCESDateTest") {
 group("actsCESTest") {
   testonly = true
 
-  deps = [ ":ActsCESDateTest" ]
+  deps = [ ":ActsCESDataTest" ]
 }
