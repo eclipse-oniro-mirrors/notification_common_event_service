@@ -19,14 +19,20 @@
 namespace OHOS {
 namespace EventFwk {
 CommonEventSubscriber::CommonEventSubscriber() : result_(nullptr)
-{}
+{
+    EVENT_LOGI("constructor CommonEventSubscriber: %{private}p", this);
+}
 
 CommonEventSubscriber::CommonEventSubscriber(const CommonEventSubscribeInfo &subscribeInfo)
     : subscribeInfo_(subscribeInfo), result_(nullptr)
-{}
+{
+    EVENT_LOGI("constructor CommonEventSubscriber: %{private}p", this);
+}
 
 CommonEventSubscriber::~CommonEventSubscriber()
-{}
+{
+    EVENT_LOGI("destructor CommonEventSubscriber: %{private}p", this);
+}
 
 const CommonEventSubscribeInfo &CommonEventSubscriber::GetSubscribeInfo() const
 {
