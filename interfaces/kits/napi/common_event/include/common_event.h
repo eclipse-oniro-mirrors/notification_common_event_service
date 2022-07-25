@@ -61,8 +61,10 @@ struct AsyncCallbackInfoSubscribe {
 };
 
 struct AsyncCallbackInfoUnsubscribe {
+    explicit AsyncCallbackInfoUnsubscribe();
+    ~AsyncCallbackInfoUnsubscribe();
     napi_env env = nullptr;
-    napi_async_work asyncWork;
+    napi_async_work asyncWork = nullptr;
     napi_ref callback = nullptr;
     size_t argc = 0;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
@@ -213,11 +215,14 @@ public:
 
     void SetEnv(const napi_env &env);
     void SetCallbackRef(const napi_ref &ref);
+    unsigned long long GetID();
 
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
     std::shared_ptr<bool> valid_;
+    std::atomic_ullong id_;
+    static std::atomic_ullong subscriberID_;
 };
 
 napi_value NapiGetNull(napi_env env);
