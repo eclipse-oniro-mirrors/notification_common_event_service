@@ -74,10 +74,14 @@ public:
 };
 
 void cesCheckService::SetUpTestCase()
-{}
+{
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
+}
 
 void cesCheckService::TearDownTestCase()
-{}
+{
+    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
+}
 
 void cesCheckService::SetUp()
 {}
