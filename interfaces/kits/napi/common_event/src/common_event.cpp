@@ -45,14 +45,35 @@ static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;
 
+std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
+
+AsyncCallbackInfoUnsubscribe::AsyncCallbackInfoUnsubscribe()
+{
+    EVENT_LOGI("constructor AsyncCallbackInfoUnsubscribe: %{private}p", this);
+}
+
+AsyncCallbackInfoUnsubscribe::~AsyncCallbackInfoUnsubscribe()
+{
+    EVENT_LOGI("destructor AsyncCallbackInfoUnsubscribe: %{private}p - subscriber[%{public}llu](%{private}p)",
+               this, subscriber->GetID(), subscriber.get());
+}
+
 SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
 {
+    id_ = ++subscriberID_;
+    EVENT_LOGI("constructor SubscriberInstance[%{public}llu]: %{private}p", id_.load(), this);
     valid_ = std::make_shared<bool>(false);
 }
 
 SubscriberInstance::~SubscriberInstance()
 {
+    EVENT_LOGI("destructor SubscriberInstance[%{public}llu]: %{private}p", id_.load(), this);
     *valid_ = false;
+}
+
+unsigned long long SubscriberInstance::GetID()
+{
+    return id_.load();
 }
 
 napi_value SetCommonEventData(const CommonEventDataWorker *commonEventDataWorkerData, napi_value &result)
@@ -2396,8 +2417,8 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
         return NapiGetNull(env);
     }
 
-    AsyncCallbackInfoUnsubscribe *asynccallback =
-        new (std::nothrow) AsyncCallbackInfoUnsubscribe {.env = env, .asyncWork = nullptr, .subscriber = nullptr};
+    AsyncCallbackInfoUnsubscribe *asynccallback = new (std::nothrow) AsyncCallbackInfoUnsubscribe();
+    asynccallback->env = env;
     if (asynccallback == nullptr) {
         EVENT_LOGE("asynccallback is null");
         return NapiGetNull(env);
