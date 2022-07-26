@@ -988,7 +988,7 @@ public:
     static const std::string COMMON_EVENT_FOUNDATION_READY;
 
     /**
-     * Indicates the action of a common event that the phone SIM card state has changed.
+     * Indicates the action of a common event that the default voice subscription has changed.
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_SIM_CARD_DEFAULT_VOICE_SUBSCRIPTION_CHANGED;
@@ -1007,6 +1007,7 @@ public:
 
     /**
      * Indicates the action of a common event that a new sms bas been received by the device.
+     * To subscribe to this common event, your application must have the ohos.permission.RECEIVE_SMS permission.
      * This common event can be triggered only by system.
      */
     static const std::string COMMON_EVENT_SMS_RECEIVE_COMPLETED;
@@ -1092,6 +1093,72 @@ public:
      * Only for test case.
      */
     static const std::string COMMON_EVENT_TEST_ACTION2;
+
+    /**
+     * Indicates the action of a common event that the default SMS subscription has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SIM_CARD_DEFAULT_SMS_SUBSCRIPTION_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the default data subscription has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SIM_CARD_DEFAULT_DATA_SUBSCRIPTION_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the call state has been changed.
+     * To subscribe to this protected common event, your application must have the ohos.permission.GET_TELEPHONY_STATE
+     * permission.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CALL_STATE_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the default main subscription has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SIM_CARD_DEFAULT_MAIN_SUBSCRIPTION_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the cellular data state has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CELLULAR_DATA_STATE_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the signal info has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SIGNAL_INFO_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the network state has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_NETWORK_STATE_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the call recording has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CALL_RECORDING_CHANGED;
+
+    /**
+     * Indicates the action of a common event that the call state has been updated.
+     * To subscribe to this protected common event, your application must have the ohos.permission.GET_TELEPHONY_STATE
+     * permission.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CALL_STATE_UPDATED;
+
+    /**
+     * Indicates the action of a common event that the incoming call has been missed.
+     * To subscribe to this protected common event, your application must have the ohos.permission.GET_TELEPHONY_STATE
+     * permission.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_INCOMING_CALL_MISSED;
 
 public:
     CommonEventSupport();
