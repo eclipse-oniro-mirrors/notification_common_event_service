@@ -37,7 +37,7 @@ config("cesfwk_core_public_config") {
   include_dirs = [
     "${ces_core_path}/include",
     "${ces_innerkits_path}",
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
     "//utils/system/safwk/native/include",
   ]
 }
@@ -63,14 +63,12 @@ ohos_shared_library("cesfwk_core") {
 
   public_configs = [ ":cesfwk_core_public_config" ]
 
-  deps = [
-    "${ces_common_path}:libevent_common",
-    "//utils/native/base:utils",
-  ]
+  deps = [ "${ces_common_path}:libevent_common" ]
 
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_base",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",

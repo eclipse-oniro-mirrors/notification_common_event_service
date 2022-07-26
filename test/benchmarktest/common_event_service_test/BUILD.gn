@@ -40,7 +40,6 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/benchmark:benchmark",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -48,6 +47,7 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "ipc:ipc_core",
     "ipc:libdbinder",
