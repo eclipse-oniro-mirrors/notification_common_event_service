@@ -31,7 +31,6 @@ namespace OHOS {
 namespace EventFwk {
 constexpr int32_t LENGTH = 80;
 constexpr int32_t DOUBLE = 2;
-constexpr unsigned int TIMEVAL = 5000;
 const std::string CONNECTOR = " or ";
 
 CommonEventControlManager::CommonEventControlManager()
@@ -166,7 +165,7 @@ bool CommonEventControlManager::GetUnorderedEventHandler()
     }
     if (handler_->GetEventRunner() != nullptr) {
         std::string threadName = handler_->GetEventRunner()->GetRunnerThreadName();
-        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_, TIMEVAL) != 0) {
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_) != 0) {
             EVENT_LOGE("Failed to Add handler Thread");
         }
     }
@@ -302,7 +301,7 @@ bool CommonEventControlManager::GetOrderedEventHandler()
     }
     if (handlerOrdered_->GetEventRunner() != nullptr) {
         std::string threadName = handlerOrdered_->GetEventRunner()->GetRunnerThreadName();
-        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handlerOrdered_, TIMEVAL) != 0) {
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handlerOrdered_) != 0) {
             EVENT_LOGE("Failed to Add Ordered Thread");
         }
     }
