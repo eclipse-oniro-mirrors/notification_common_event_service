@@ -15,6 +15,8 @@
 
 #include "common_event_command.h"
 
+#include <iostream>                // for cout
+
 int main(int argc, char *argv[])
 {
     OHOS::EventFwk::CommonEventCommand cmd(argc, argv);
