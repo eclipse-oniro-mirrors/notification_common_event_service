@@ -17,11 +17,10 @@
 
 #include "ability_info.h"
 #include "application_info.h"
+#include "mock_constant.h"
 
 namespace OHOS {
 namespace AppExecFwk {
-constexpr uint16_t SYSTEM_UID = 1000;
-
 void MockBundleMgrService::MockSetIsSystemApp(bool isSystemApp)
 {
     isSystemAppMock_ = true;
@@ -33,7 +32,7 @@ bool MockBundleMgrService::CheckIsSystemAppByUid(const int32_t uid)
     if (isSystemAppMock_) {
         return isSystemApp_;
     }
-    return (uid > SYSTEM_UID) ? false : true;
+    return (uid > EventFwk::SYSTEM_UID) ? false : true;
 }
 }  // namespace AppExecFwk
 }  // namespace OHOS

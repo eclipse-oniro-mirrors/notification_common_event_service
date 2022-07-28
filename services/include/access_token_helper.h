@@ -34,6 +34,7 @@ public:
         const std::string &permission);
     static void RecordSensitivePermissionUsage(const AccessToken::AccessTokenID &callerToken,
         const std::string &event);
+    static bool IsDlpHap(const AccessToken::AccessTokenID &callerToken);
 };
 }  // namespace EventFwk
 }  // namespace OHOS

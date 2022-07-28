@@ -14,12 +14,11 @@
  */
 
 #include "access_token_helper.h"
+#include "mock_constant.h"
 
 namespace OHOS {
 namespace EventFwk {
 using namespace OHOS::Security;
-
-constexpr unsigned int PERMISSION_GRANTED = 1;
 
 bool AccessTokenHelper::VerifyNativeToken(const AccessToken::AccessTokenID &callerToken)
 {
@@ -34,5 +33,10 @@ bool AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &call
 void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessToken::AccessTokenID &callerToken,
     const std::string &event)
 {}
+
+bool AccessTokenHelper::IsDlpHap(const AccessToken::AccessTokenID &callerToken)
+{
+    return callerToken == DLP_PERMISSION_GRANTED;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -16,6 +16,7 @@
 #ifndef OHOS_MOCK_IPC_SKELETON_H
 #define OHOS_MOCK_IPC_SKELETON_H
 
+#include "accesstoken_kit.h"
 #include "iremote_object.h"
 
 namespace OHOS {
@@ -56,6 +57,10 @@ public:
     static bool SetCallingIdentity(std::string &identity);
 
     static void SetCallingUid(pid_t uid);
+
+    static uint32_t GetCallingTokenID();
+
+    static void SetCallingTokenID(Security::AccessToken::AccessTokenID callerToken);
 };
 } // namespace OHOS
 #endif // OHOS_MOCK_IPC_SKELETON_H

@@ -15,7 +15,10 @@ import("//base/notification/common_event_service/event.gni")
 cflags = []
 
 config("module_test_config") {
-  include_dirs = [ "//third_party/json/include" ]
+  include_dirs = [
+    "${common_event_service_path}/test/mock/include",
+    "//third_party/json/include",
+  ]
 
   configs = []
 

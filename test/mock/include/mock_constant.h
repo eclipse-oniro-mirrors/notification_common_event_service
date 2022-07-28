@@ -13,38 +13,16 @@
  * limitations under the License.
  */
 
-#include "mock_ipc_skeleton.h"
+#ifndef MOCK_CONSTANT_H
+#define MOCK_CONSTANT_H
+
 
 namespace OHOS {
-#ifdef CONFIG_IPC_SINGLE
-using namespace IPC_SINGLE;
-#endif
-
-pid_t uid_ = 1000;
-Security::AccessToken::AccessTokenID callerToken_ = 0;
-
-pid_t IPCSkeleton::GetCallingUid()
-{
-    return uid_;
-}
-
-pid_t IPCSkeleton::GetCallingPid()
-{
-    return 1;
-}
-
-void IPCSkeleton::SetCallingUid(pid_t uid)
-{
-    uid_ = uid;
-}
-
-Security::AccessToken::AccessTokenID IPCSkeleton::GetCallingTokenID()
-{
-    return callerToken_;
-}
-
-void IPCSkeleton::SetCallingTokenID(Security::AccessToken::AccessTokenID callerToken)
-{
-    callerToken_ = callerToken;
-}
+namespace EventFwk {
+constexpr unsigned int SYSTEM_UID = 1000;
+constexpr unsigned int PERMISSION_GRANTED = 0;
+constexpr unsigned int DLP_PERMISSION_GRANTED = 1;
+}  // namespace Notification
 }  // namespace OHOS
+
+#endif

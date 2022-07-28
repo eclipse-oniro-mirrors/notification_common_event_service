@@ -20,8 +20,8 @@ config("cesfwk_services_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "${tools_path}/cem/include",
-    "${services_path}/test/unittest/mock/include",
+    "${common_event_service_path}/test/mock/include",
+    "${services_path}/include",
   ]
 
   cflags = []
@@ -36,7 +36,7 @@ ohos_unittest("common_event_publish_system_event_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_publish_system_event_test.cpp",
   ]
 
@@ -67,7 +67,7 @@ ohos_unittest("common_event_dump_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_dump_test.cpp",
   ]
 
@@ -98,7 +98,7 @@ ohos_unittest("common_event_freeze_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_freeze_test.cpp",
   ]
 
@@ -129,7 +129,7 @@ ohos_unittest("common_event_freeze_unit_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_freeze_unit_test.cpp",
   ]
 
@@ -160,7 +160,7 @@ ohos_unittest("common_event_sticky_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_sticky_test.cpp",
   ]
 
@@ -191,8 +191,8 @@ ohos_unittest("common_event_subscribe_unit_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
-    "${services_path}/test/unittest/mock/src/mock_ipc.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_ipc_object_stub.cpp",
     "common_event_subscribe_unit_test.cpp",
   ]
 
@@ -223,7 +223,7 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_unsubscribe_unit_test.cpp",
   ]
 
@@ -254,7 +254,7 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_publish_ordered_event_unit_test.cpp",
   ]
 
@@ -285,7 +285,7 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
-    "${services_path}/test/unittest/mock/src/mock_bundle_manager.cpp",
+    "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_publish_permission_event_unit_test.cpp",
   ]
 
@@ -347,11 +347,33 @@ ohos_unittest("common_event_hisysevent_test") {
   ]
 }
 
+ohos_unittest("common_event_access_token_helper_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "${common_event_service_path}/test/mock/mock_accesstoken_kit.cpp",
+    "common_event_access_token_helper_test.cpp",
+  ]
+
+  configs = [ ":cesfwk_services_config" ]
+
+  deps = [
+    "${services_path}:cesfwk_services",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "access_token:libaccesstoken_sdk",
+    "c_utils:utils",
+  ]
+}
+
 group("unittest") {
   testonly = true
   deps = []
 
   deps += [
+    ":common_event_access_token_helper_test",
     ":common_event_dump_test",
     ":common_event_freeze_test",
     ":common_event_freeze_unit_test",

@@ -32,6 +32,7 @@
 #include "event_log_wrapper.h"
 #include "event_receive_stub.h"
 #include "mock_bundle_manager.h"
+#include "mock_ipc_skeleton.h"
 
 using namespace testing::ext;
 
@@ -1449,6 +1450,43 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
     }
 
     EVENT_LOGE("CES_TC_ModuleTest_4300 end");
+}
+
+/*
+ * @tc.number: CES_TC_ModuleTest_4400
+ * @tc.name: DLP App publish common event
+ * @tc.desc: DLP App publish common event failed.
+ */
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
+{
+    EVENT_LOGE("CES_TC_ModuleTest_4400 start");
+    std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION";
+    std::string eventAction = "PUBLISHEVENT_MODULETEST_ACTION";
+    bool sticky = false;
+    bool result = false;
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(eventName);
+    Want testWant;
+    testWant.SetAction(eventAction);
+    CommonEventData commonEventData(testWant);
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(sticky);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
+    sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
+    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener)) {
+        IPCSkeleton::SetCallingTokenID(1);
+        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
+        EXPECT_FALSE(result);
+
+        IPCSkeleton::SetCallingTokenID(0);
+        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
+    }
+    EXPECT_TRUE(result);
+    EVENT_LOGE("CES_TC_ModuleTest_4400 end");
 }
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -165,6 +165,12 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
+    Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    EVENT_LOGI("callerToken = %{public}d", callerToken);
+    if (AccessTokenHelper::IsDlpHap(callerToken)) {
+        EVENT_LOGE("DLP hap not allowed to send common event");
+        return false;
+    }
     struct tm recordTime = {0};
     if (!GetSystemCurrentTime(&recordTime)) {
         EVENT_LOGE("Failed to GetSystemCurrentTime");
@@ -182,8 +188,6 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
             userId);
         return false;
     }
-
-    Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
 
     std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
         innerCommonEventManager_,
