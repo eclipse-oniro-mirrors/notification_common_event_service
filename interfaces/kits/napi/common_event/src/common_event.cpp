@@ -143,6 +143,8 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
         work = nullptr;
         return;
     }
+    napi_handle_scope scope;
+    napi_open_handle_scope(commonEventDataWorkerData->env, &scope);
 
     napi_value result = nullptr;
     napi_create_object(commonEventDataWorkerData->env, &result);
@@ -168,6 +170,7 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
     napi_call_function(
         commonEventDataWorkerData->env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout);
 
+    napi_close_handle_scope(commonEventDataWorkerData->env, scope);
     delete commonEventDataWorkerData;
     commonEventDataWorkerData = nullptr;
     delete work;
