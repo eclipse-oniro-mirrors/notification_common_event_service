@@ -210,7 +210,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventDumpStateTestCase)(be
 
     while (state.KeepRunning()) {
         std::vector<std::string> stateTest;
-        if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState("", ALL_USER, stateTest)) {
+        if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(0, "", ALL_USER, stateTest)) {
             if (stateTest.size() < 1) {
                 state.SkipWithError("DumpState failed.");
             }

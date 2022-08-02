@@ -273,7 +273,7 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
     return innerCommonEventManager_->GetStickyCommonEvent(event, eventData);
 }
 
-bool CommonEventManagerService::DumpState(const std::string &event, const int32_t &userId,
+bool CommonEventManagerService::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
     EVENT_LOGI("enter");
@@ -282,7 +282,7 @@ bool CommonEventManagerService::DumpState(const std::string &event, const int32_
         return false;
     }
 
-    innerCommonEventManager_->DumpState(event, userId, state);
+    innerCommonEventManager_->DumpState(dumpType, event, userId, state);
 
     return true;
 }

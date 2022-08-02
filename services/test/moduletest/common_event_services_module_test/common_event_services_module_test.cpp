@@ -537,7 +537,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventName, ALL_USER, stateTest)) {
+        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(0, eventName, ALL_USER, stateTest)) {
             if (stateTest.size() >= 1) {
                 result = true;
             }
@@ -565,7 +565,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1800, Function | MediumTest | Level2)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventNametest, ALL_USER, stateTest)) {
+        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(0, eventNametest, ALL_USER, stateTest)) {
             if (stateTest.size() == 1) {
                 result = true;
             } else {
@@ -595,7 +595,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
-        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(eventNameInput, ALL_USER, stateTest)) {
+        if (DelayedSingleton<CommonEvent>::GetInstance()->DumpState(0, eventNameInput, ALL_USER, stateTest)) {
             if (stateTest.size() >= 1) {
                 result = true;
             }

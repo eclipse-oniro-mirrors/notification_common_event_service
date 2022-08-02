@@ -44,7 +44,12 @@ constexpr char HELP_MSG_DUMP[] =
     "  -h, --help                   list available commands\n"
     "  -a, --all                    dump the info of all events\n"
     "  -e, --event <name>           dump the info filter by the specified event\n"
-    "  -u, --user-id <userId>       dump the info filter by the specified userId\n";
+    "  -u, --user-id <userId>       dump the info filter by the specified userId\n"
+    "  -p, --part <name>            dump the info of part events\n"
+    "       subscriber              all subscribers\n"
+    "       sticky                  sticky events\n"
+    "       pending                 pending events\n"
+    "       history                 history events\n";
 
 constexpr char HELP_MSG_NO_EVENT_OPTION[] = "error: you must specify an event name with '-e' or '--event'.\n";
 constexpr char STRING_PUBLISH_COMMON_EVENT_OK[] = "publish the common event successfully.\n";
@@ -61,6 +66,12 @@ struct PublishCmdInfo {
     std::string data;
 };
 
+struct DumpCmdInfo {
+    std::string action;
+    int32_t userId = ALL_USER;
+    DumpEventType eventType = DumpEventType::ALL;
+};
+
 class CommonEventCommand : public OHOS::EventFwk::ShellCommand {
 public:
     CommonEventCommand(int argc, char *argv[]) : ShellCommand(argc, argv, TOOL_NAME) {}
@@ -75,7 +86,8 @@ private:
     void CheckPublishOpt();
     void SetPublishCmdInfo(PublishCmdInfo &cmdInfo, ErrCode &result, bool &hasOption);
     void CheckDumpOpt();
-    void SetDumpCmdInfo(std::string &action, int32_t &userId, ErrCode &result, bool &hasOption);
+    void SetDumpCmdInfo(DumpCmdInfo &cmdInfo, ErrCode &result, bool &hasOption);
+    void CheckDumpEventType(DumpCmdInfo &cmdInfo, ErrCode &result);
 
     std::shared_ptr<CommonEvent> commonEventPtr_ = nullptr;
 };

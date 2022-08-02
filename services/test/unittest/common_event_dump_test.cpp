@@ -21,6 +21,7 @@
 #undef private
 #undef protected
 
+#include "common_event_command.h"
 #include "common_event_constant.h"
 #include "common_event_listener.h"
 #include "datetime_ex.h"
@@ -75,7 +76,6 @@ constexpr uint8_t STATE_INDEX3 = 3;
 constexpr uint8_t PUBLISH_COUNT = 60;
 constexpr uint8_t DUMP_SUBSCRIBER_COUNT_ONE = 1;
 constexpr uint8_t DUMP_SUBSCRIBER_COUNT_TWO = 2;
-constexpr uint8_t DUMP_SUBSCRIBER_COUNT_FOUR = 4;
 constexpr uint8_t DUMP_STICKY_COUNT_ONE = 1;
 constexpr uint8_t DUMP_STICKY_COUNT_TWO = 2;
 constexpr uint8_t DUMP_PENDING_COUNT_ONE = 1;
@@ -217,7 +217,7 @@ private:
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
         if (innerCommonEventManager_) {
             std::vector<std::string> state;
-            innerCommonEventManager_->DumpState("", ALL_USER, state);
+            innerCommonEventManager_->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
             CommonEventDumpTest::DumpInfoCount(state,
                 DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_TWO, DUMP_PENDING_COUNT_ONE, 0);
         }
@@ -678,7 +678,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0100, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     ASSERT_NE(state.size(), 0);
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, 0, 0, DUMP_HISTORY_COUNT_TWO);
@@ -710,7 +710,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0200, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_TWO);
 
@@ -732,7 +732,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0300, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     ASSERT_NE(state.size(), 0);
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_TWO);
@@ -767,7 +767,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0400, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 
@@ -801,7 +801,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0500, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 
@@ -834,7 +834,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0600, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 
@@ -866,7 +866,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0700, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 
@@ -897,7 +897,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0800, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_ONE, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 
@@ -928,7 +928,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0900, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState(EVENT3, ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), EVENT3, ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     ASSERT_NE(state.size(), 0);
     DumpInfoCount(state, 0, 0, 0, 0);
@@ -960,7 +960,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1000, TestSize.Level1)
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState(EVENT2, ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), EVENT2, ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_ONE, 0, DUMP_HISTORY_COUNT_THREE);
 
@@ -981,7 +981,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1100, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
@@ -999,7 +999,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1200, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
@@ -1017,7 +1017,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1300, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
@@ -1035,7 +1035,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1400, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
@@ -1053,7 +1053,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1500, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
@@ -1090,7 +1090,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1600, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
@@ -1123,7 +1123,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
     sleep(1);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
 }
@@ -1136,7 +1136,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
 HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1800, TestSize.Level1)
 {
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     ASSERT_NE(state.size(), 0);
     DumpInfoCount(state, 0, DUMP_STICKY_COUNT_TWO, 0, 0);
     EXPECT_EQ("Pending Events:\tNo information", state[STATE_INDEX3]);
@@ -1190,8 +1190,11 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
     sleep(PUBLISH_SLEEP);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_ONE);
+
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(commonEventListener);
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(commonEventListener2);
 }
 /*
  * @tc.number: CommonEventDumpTest_2000
@@ -1251,7 +1254,133 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
     sleep(PUBLISH_SLEEP);
 
     std::vector<std::string> state;
-    GetInnerCommonEventManager()->DumpState("", ALL_USER, state);
-    DumpInfoCount(state, DUMP_SUBSCRIBER_COUNT_FOUR, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_MAX);
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
+    DumpInfoCount(state, DUMP_STICKY_COUNT_TWO, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_MAX);
+
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(commonEventListener);
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(commonEventListener2);
+}
+
+/*
+ * @tc.number: CommonEventDumpPartEventTest_0100
+ * @tc.name: test dump
+ * @tc.desc: Verify dump all subscriber
+ */
+HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0100, Function | MediumTest | Level1)
+{
+    /* Subscribe */
+    CommonEventListener *listener = nullptr;
+    CommonEventListener *listener2 = nullptr;
+    SubscribeDoubleEvent(PRIORITY, PERMISSION, DEVICEDID, listener);
+    SubscribeDoubleEvent(PRIORITY2, PERMISSION2, DEVICEDID2, listener2);
+    EXPECT_NE(nullptr, listener);
+    EXPECT_NE(nullptr, listener2);
+
+    sleep(1);
+
+    std::vector<std::string> state;
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::SUBSCRIBER), "", ALL_USER, state);
+    GTEST_LOG_(INFO) << "get state size:" << state.size();
+    ASSERT_EQ(state.size(), DUMP_SUBSCRIBER_COUNT_TWO);
+    auto pos = state[0].find("Subscribers:");
+    ASSERT_NE(pos, string::npos);
+
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener->AsObject());
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener2->AsObject());
+}
+
+/*
+ * @tc.number: CommonEventDumpPartEventTest_0200
+ * @tc.name: test dump
+ * @tc.desc: Verify dump information after publishing sticky events
+ */
+HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0200, Function | MediumTest | Level1)
+{
+    /* Subscribe */
+    CommonEventListener *listener = nullptr;
+    CommonEventListener *listener2 = nullptr;
+    SubscribeDoubleEvent(PRIORITY, PERMISSION, DEVICEDID, listener);
+    SubscribeDoubleEvent(PRIORITY2, PERMISSION2, DEVICEDID2, listener2);
+    EXPECT_NE(nullptr, listener);
+    EXPECT_NE(nullptr, listener2);
+
+    /* Publish */
+    PublishStickyEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
+    PublishStickyEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
+
+    sleep(1);
+
+    std::vector<std::string> state;
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::STICKY), "", ALL_USER, state);
+    GTEST_LOG_(INFO) << "get state size:" << state.size();
+    ASSERT_EQ(state.size(), DUMP_STICKY_COUNT_TWO);
+    auto pos = state[0].find("Sticky Events:");
+    ASSERT_NE(pos, string::npos);
+
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener->AsObject());
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener2->AsObject());
+}
+
+/*
+ * @tc.number: CommonEventDumpPartEventTest_0300
+ * @tc.name: test dump
+ * @tc.desc: Verify dump pending events
+ */
+HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0300, Function | MediumTest | Level1)
+{
+    /* Subscribe */
+    CommonEventListener *listener = nullptr;
+    CommonEventListener *listener2 = nullptr;
+    SubscribeDoubleEvent(PRIORITY, PERMISSION, DEVICEDID, listener);
+    SubscribeDoubleEvent(PRIORITY2, PERMISSION2, DEVICEDID2, listener2);
+    EXPECT_NE(nullptr, listener);
+    EXPECT_NE(nullptr, listener2);
+
+    /* Publish */
+    PublishUnorderedEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
+    PublishUnorderedEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
+
+    sleep(1);
+
+    std::vector<std::string> state;
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::PENDING), "", ALL_USER, state);
+    GTEST_LOG_(INFO) << "get state size:" << state.size();
+    ASSERT_EQ(state.size(), 1);
+    EXPECT_EQ("Pending Events:\tNo information", state[0]);
+
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener->AsObject());
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener2->AsObject());
+}
+
+/*
+ * @tc.number: CommonEventDumpPartEventTest_0400
+ * @tc.name: test dump
+ * @tc.desc: Verify dump information after publishing unordered events
+ */
+HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0400, Function | MediumTest | Level1)
+{
+    /* Subscribe */
+    CommonEventListener *listener = nullptr;
+    CommonEventListener *listener2 = nullptr;
+    SubscribeDoubleEvent(PRIORITY, PERMISSION, DEVICEDID, listener);
+    SubscribeDoubleEvent(PRIORITY2, PERMISSION2, DEVICEDID2, listener2);
+    EXPECT_NE(nullptr, listener);
+    EXPECT_NE(nullptr, listener2);
+
+    /* Publish */
+    PublishUnorderedEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
+    PublishUnorderedEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
+
+    sleep(1);
+
+    std::vector<std::string> state;
+    GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::HISTORY), "", ALL_USER, state);
+    GTEST_LOG_(INFO) << "get state size:" << state.size();
+    ASSERT_EQ(state.size(), DUMP_HISTORY_COUNT_TWO * 3);
+    auto pos = state[0].find("History Events:");
+    ASSERT_NE(pos, string::npos);
+
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener->AsObject());
+    GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener2->AsObject());
 }
 }  // namespace

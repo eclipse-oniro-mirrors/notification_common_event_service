@@ -85,11 +85,13 @@ public:
     /**
      * Dumps state of common event service.
      *
+     * @param dumpType Indicates the dump type.
      * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
      * @param userId Indicates the user ID.
      * @param state Indicates the state of common event service.
      */
-    void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
+    void DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+        std::vector<std::string> &state);
 
     /**
      * Finishes Receiver.

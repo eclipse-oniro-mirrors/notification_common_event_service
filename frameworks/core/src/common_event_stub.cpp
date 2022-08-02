@@ -130,9 +130,10 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         }
         case static_cast<uint32_t>(ICommonEvent::Message::CES_DUMP_STATE): {
             std::vector<std::string> result;
+            uint8_t dumpType = data.ReadUint8();
             std::string event = Str16ToStr8(data.ReadString16());
             int32_t userId = data.ReadInt32();
-            DumpState(event, userId, result);
+            DumpState(dumpType, event, userId, result);
             reply.WriteInt32(result.size());
             for (auto stack : result) {
                 reply.WriteString16(Str8ToStr16(stack));
@@ -227,7 +228,8 @@ bool CommonEventStub::GetStickyCommonEvent(const std::string &event, CommonEvent
     return true;
 }
 
-bool CommonEventStub::DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
+bool CommonEventStub::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+    std::vector<std::string> &state)
 {
     EVENT_LOGD("called");
 

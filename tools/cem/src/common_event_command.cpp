@@ -18,6 +18,7 @@
 #include <getopt.h>
 
 #include "common_event.h"
+#include "common_event_constant.h"
 #include "common_event_manager.h"
 #include "event_log_wrapper.h"
 #include "singleton.h"
@@ -25,7 +26,7 @@
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string SHORT_OPTIONS = "he:asoc:d:u:";
+const std::string SHORT_OPTIONS = "he:asoc:d:u:p:";
 const struct option LONG_OPTIONS[] = {
     {"help", no_argument, nullptr, 'h'},
     {"all", no_argument, nullptr, 'a'},
@@ -176,9 +177,9 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
     EVENT_LOGI("enter");
     ErrCode result = ERR_OK;
     std::string action;
-    int32_t userId = ALL_USER;
     bool hasOption = false;
-    SetDumpCmdInfo(action, userId, result, hasOption);
+    DumpCmdInfo cmdInfo;
+    SetDumpCmdInfo(cmdInfo, result, hasOption);
     if (!hasOption) {
         resultReceiver_.append(HELP_MSG_NO_OPTION);
         resultReceiver_.append(HELP_MSG_DUMP);
@@ -186,7 +187,8 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
     }
     if (result == ERR_OK) {
         std::vector<std::string> dumpResults;
-        bool dumpResult = commonEventPtr_->DumpState(action, userId, dumpResults);
+        bool dumpResult = commonEventPtr_->DumpState(static_cast<int32_t>(cmdInfo.eventType),
+            cmdInfo.action, cmdInfo.userId, dumpResults);
         if (dumpResult) {
             for (const auto &it : dumpResults) {
                 resultReceiver_.append(it + "\n");
@@ -200,7 +202,7 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
     return result;
 }
 
-void CommonEventCommand::SetDumpCmdInfo(std::string &action, int32_t &userId, ErrCode &result, bool &hasOption)
+void CommonEventCommand::SetDumpCmdInfo(DumpCmdInfo &cmdInfo, ErrCode &result, bool &hasOption)
 {
     int option;
     while ((option = getopt_long(argc_, argv_, SHORT_OPTIONS.c_str(), LONG_OPTIONS, nullptr)) != -1) {
@@ -215,10 +217,13 @@ void CommonEventCommand::SetDumpCmdInfo(std::string &action, int32_t &userId, Er
                 result = ERR_INVALID_VALUE;
                 break;
             case 'e':
-                action = optarg;
+                cmdInfo.action = optarg;
                 break;
             case 'u':
-                userId = atoi(optarg);
+                cmdInfo.userId = atoi(optarg);
+                break;
+            case 'p':
+                CheckDumpEventType(cmdInfo, result);
                 break;
             default:
                 break;
@@ -238,6 +243,22 @@ void CommonEventCommand::CheckDumpOpt()
         default:
             resultReceiver_.append("error: unknown option.\n");
             break;
+    }
+}
+
+void CommonEventCommand::CheckDumpEventType(DumpCmdInfo &cmdInfo, ErrCode &result)
+{
+    if (strcmp(optarg, "subscriber") == 0) {
+        cmdInfo.eventType = DumpEventType::SUBSCRIBER;
+    } else if (strcmp(optarg, "sticky") == 0) {
+        cmdInfo.eventType = DumpEventType::STICKY;
+    } else if (strcmp(optarg, "pending") == 0) {
+        cmdInfo.eventType = DumpEventType::PENDING;
+    } else if (strcmp(optarg, "history") == 0) {
+        cmdInfo.eventType = DumpEventType::HISTORY;
+    } else {
+        resultReceiver_.append("error: option 'p' requires a value.\n");
+        result = ERR_INVALID_VALUE;
     }
 }
 }  // namespace EventFwk

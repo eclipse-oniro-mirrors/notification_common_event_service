@@ -230,7 +230,8 @@ bool CommonEventProxy::GetStickyCommonEvent(const std::string &event, CommonEven
     return ret;
 }
 
-bool CommonEventProxy::DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state)
+bool CommonEventProxy::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+    std::vector<std::string> &state)
 {
     EVENT_LOGD("start");
 
@@ -239,6 +240,11 @@ bool CommonEventProxy::DumpState(const std::string &event, const int32_t &userId
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
+
+    if (!data.WriteUint8(dumpType)) {
+        EVENT_LOGE("Failed to write parcelable dumpType");
         return false;
     }
 
