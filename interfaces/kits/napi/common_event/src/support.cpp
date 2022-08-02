@@ -395,6 +395,9 @@ napi_value SupportInit(napi_env env, napi_value exports)
         EventFwk::CommonEventSupport::COMMON_EVENT_IVI_TEMPERATURE_RECOVERY,
         "COMMON_EVENT_IVI_TEMPERATURE_RECOVERY");
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_ACTIVE, "COMMON_EVENT_IVI_ACTIVE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USB_STATE, "COMMON_EVENT_USB_STATE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USB_PORT_CHANGED, "COMMON_EVENT_USB_PORT_CHANGED");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USB_DEVICE_ATTACHED, "COMMON_EVENT_USB_DEVICE_ATTACHED");
     SetNamedPropertyByStr(
