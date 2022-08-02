@@ -17,29 +17,32 @@
 
 #include "common_event_permission_manager.h"
 #include "event_log_wrapper.h"
+#include "ipc_skeleton.h"
 #include "privacy_kit.h"
+
+using namespace OHOS::Security::AccessToken;
 
 namespace OHOS {
 namespace EventFwk {
-bool AccessTokenHelper::VerifyNativeToken(const AccessToken::AccessTokenID &callerToken)
+bool AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
 {
-    AccessToken::ATokenTypeEnum tokenType = AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
-    return tokenType == AccessToken::ATokenTypeEnum::TOKEN_NATIVE;
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    return (tokenType == ATokenTypeEnum::TOKEN_NATIVE || tokenType == ATokenTypeEnum::TOKEN_SHELL);
 }
 
-bool AccessTokenHelper::VerifyAccessToken(const AccessToken::AccessTokenID &callerToken,
+bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
     const std::string &permission)
 {
-    return (AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission) ==
+    return (AccessTokenKit::VerifyAccessToken(callerToken, permission) ==
         AccessToken::PermissionState::PERMISSION_GRANTED);
 }
 
-void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessToken::AccessTokenID &callerToken,
+void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &callerToken,
     const std::string &event)
 {
     EVENT_LOGI("enter");
-    AccessToken::ATokenTypeEnum tokenType = AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
-    if (tokenType != AccessToken::ATokenTypeEnum::TOKEN_HAP) {
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType != ATokenTypeEnum::TOKEN_HAP) {
         return;
     }
     Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
@@ -47,8 +50,19 @@ void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessToken::Access
         return;
     }
     for (const auto &permissionName : permission.names) {
-        AccessToken::PrivacyKit::AddPermissionUsedRecord(callerToken, permissionName, 1, 0);
+        PrivacyKit::AddPermissionUsedRecord(callerToken, permissionName, 1, 0);
     }
+}
+
+bool AccessTokenHelper::IsDlpHap(const AccessTokenID &callerToken)
+{
+    ATokenTypeEnum type = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (type == ATokenTypeEnum::TOKEN_HAP) {
+        HapTokenInfo info;
+        AccessTokenKit::GetHapTokenInfo(callerToken, info);
+        return (info.dlpType == DlpType::DLP_READ || info.dlpType == DlpType::DLP_FULL_CONTROL);
+    }
+    return false;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

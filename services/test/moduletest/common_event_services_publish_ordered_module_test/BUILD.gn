@@ -21,7 +21,7 @@ ohos_moduletest("CesPublishOrderedEventModuleTest") {
 
   sources = [
     "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
-    "${services_path}/test/mock/src/mock_ipc.cpp",
+    "${common_event_service_path}/test/mock/mock_ipc_object_stub.cpp",
     "common_event_services_publish_ordered_module_test.cpp",
   ]
 

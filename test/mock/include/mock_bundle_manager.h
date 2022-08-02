@@ -30,6 +30,12 @@ namespace OHOS {
 namespace AppExecFwk {
 class MockBundleMgrService : public BundleMgrHost {
 public:
+    MockBundleMgrService()
+    {}
+
+    ~MockBundleMgrService()
+    {}
+
     /**
      * @brief Obtains the ApplicationInfo based on a given bundle name.
      * @param appName Indicates the application bundle name to be queried.
@@ -464,6 +470,43 @@ public:
     }
 
     void MockSetIsSystemApp(bool isSystemApp);
+
+    /**
+     * @brief Obtains an array of all group IDs associated with the given bundle name and UID.
+     * @param bundleName Indicates the bundle name.
+     * @param uid Indicates the uid.
+     * @param gids Indicates the group IDs associated with the specified bundle.
+     * @return Returns true if the gids is successfully obtained; returns false otherwise.
+     */
+    bool GetBundleGidsByUid(const std::string &bundleName, const int &uid, std::vector<int> &gids) override
+    {
+        return true;
+    }
+
+    /**
+     * @brief Queries the AbilityInfo by ability.uri in config.json.
+     * @param abilityUri Indicates the uri of the ability.
+     * @param abilityInfos Indicates the obtained AbilityInfos object.
+     * @return Returns true if the AbilityInfo is successfully obtained; returns false otherwise.
+     */
+    bool QueryAbilityInfosByUri(const std::string &abilityUri, std::vector<AbilityInfo> &abilityInfos) override
+    {
+        return true;
+    }
+
+    /**
+     * @brief Obtains the DistributedBundleInfo based on a given bundle name and networkId.
+     * @param networkId Indicates the networkId of remote device.
+     * @param bundleName Indicates the application bundle name to be queried.
+     * @param distributedBundleInfo Indicates the obtained DistributedBundleInfo object.
+     * @return Returns true if the DistributedBundleInfo is successfully obtained; returns false otherwise.
+     */
+    bool GetDistributedBundleInfo(
+        const std::string &networkId, const std::string &bundleName,
+        DistributedBundleInfo &distributedBundleInfo) override
+    {
+        return true;
+    }
 
 private:
     bool isSystemApp_ = false;
