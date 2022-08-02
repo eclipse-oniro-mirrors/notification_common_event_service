@@ -79,14 +79,15 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     bool isSubsystem = false;
     bool isSystemApp = false;
     bool isProxy = false;
+    EVENT_LOGE("zzzzzzzzzzzzzzzzzz,callerToken=%{public}d, isProxy=%{public}d,user=%{public}d",callerToken,isProxy,user);
     if (!CheckUserId(pid, uid, callerToken, isSubsystem, isSystemApp, isProxy, user)) {
         SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
         return false;
     }
-
+    EVENT_LOGE("zzzzzzzzzzzzzzzzzz,isSubsystem=%{public}d, isSystemApp=%{public}d",isSubsystem,isSystemApp);
     if (isSystemEvent) {
         EVENT_LOGI("System common event");
-        if (!isSystemApp && !isSubsystem) {
+        if (!isSystemApp || !isSubsystem) {
             EVENT_LOGE(
                 "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
                 ", userId = %{public}d",

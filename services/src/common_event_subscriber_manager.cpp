@@ -346,7 +346,7 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
     bool isSystemApp = (eventRecord.eventRecordInfo.isSystemApp || eventRecord.eventRecordInfo.isSubsystem) &&
         !eventRecord.eventRecordInfo.isProxy;
-
+    EVENT_LOGI("enterCommonEventSubscriberManager::GetSubscriberRecordsByWantLocked%{public}d",isSystemApp);
     std::multiset<SubscriberRecordPtr> subscriberRecords = recordsItem->second;
     for (auto it = subscriberRecords.begin(); it != subscriberRecords.end(); it++) {
         if (!(*it)->eventSubscribeInfo->GetMatchingSkills().Match(eventRecord.commonEventData->GetWant())) {

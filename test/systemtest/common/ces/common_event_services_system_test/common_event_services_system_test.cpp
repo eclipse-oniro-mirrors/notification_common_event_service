@@ -69,6 +69,7 @@ CommonEventServicesSystemTest::CommonEventServicesSystemTest(const CommonEventSu
 
 void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 {
+    GTEST_LOG_(INFO) << " cesSystemTest:CommonEventServicesSystemTest:OnReceiveEvent \n";
     std::string action = data.GetWant().GetAction();
     if (action == CompareStrFalse) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE3);
@@ -129,6 +130,7 @@ CESPublishOrderTimeOutTwo::CESPublishOrderTimeOutTwo(const CommonEventSubscribeI
 
 void CESPublishOrderTimeOutTwo::OnReceiveEvent(const CommonEventData &data)
 {
+    GTEST_LOG_(INFO) << " cesSystemTest:CESPublishOrderTimeOutTwo:OnReceiveEvent \n";
     EXPECT_TRUE(data.GetCode() == GetCode());
     mtx_.unlock();
 }
@@ -673,7 +675,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_0100, Function | MediumTest | Level1)
     EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
     mtx_.lock();
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
-    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData), true);
+     
 
     struct tm doingTime = {0};
     int64_t seconds = 0;
@@ -1552,8 +1554,7 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0300, Function | MediumTest | Level1)
  */
 HWTEST_F(cesSystemTest, CES_ReceiveEvent_0400, Function | MediumTest | Level1)
 {
-    bool result = true;
-    std::string eventName = "TESTEVENT_RECEIVE_ACTION_INFO_TRUEReceiveEvent_0400";
+    std::string eventName = "TESTEVENT_RECEIVE_ACTION_INFO_TRUE";
 
     Want wantTest;
     wantTest.SetAction(eventName);
@@ -1580,12 +1581,11 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0400, Function | MediumTest | Level1)
         EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTime), true);
         seconds = OHOS::GetSecondsBetween(startTime, doingTime);
         if (seconds >= TIME_OUT_SECONDS_LIMIT) {
-            result = false;
             break;
         }
     }
     // expect the subscriber could receive the event within 5 seconds.
-    EXPECT_FALSE(result);
+    EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }
@@ -1764,6 +1764,8 @@ HWTEST_F(cesSystemTest, CES_SubscriptionEventTheme_0400, Function | MediumTest |
  */
 HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
 {
+    EVENT_LOGE("stsrt CES_SendEvent_1300");
+    GTEST_LOG_(INFO) << "stsrt CES_SendEvent_1300";
     bool sysResult = false;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
 
@@ -1777,7 +1779,8 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
 
     CommonEventPublishInfo publishInfo;
-
+    EVENT_LOGE("mid CES_SendEvent_1300");
+    GTEST_LOG_(INFO) << " CES_SendEvent_1300";
     EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
     mtx_.lock();
     // The publisher can send normally, but does not have permission to send system events
@@ -1801,7 +1804,9 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
     EXPECT_TRUE(sysResult);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
-}
+    EVENT_LOGE("end CES_SendEvent_1300");
+    GTEST_LOG_(INFO) << "end CES_SendEvent_1300";
+} 
 
 /*
  * @tc.number: CES_SendEvent_1400

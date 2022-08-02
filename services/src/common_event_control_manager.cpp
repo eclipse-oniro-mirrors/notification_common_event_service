@@ -703,19 +703,19 @@ int8_t CommonEventControlManager::CheckPermission(
     if (!ret) {
         return OrderedEventRecord::SKIPPED;
     }
-
+    EVENT_LOGE("zzzzzzzzzzzzzzzzzz,SubscriberPermission=%{public}d",ret);
     std::string subscriberRequiredPermission = subscriberRecord.eventSubscribeInfo->GetPermission();
     ret = CheckSubscriberRequiredPermission(subscriberRequiredPermission, eventRecord, subscriberRecord);
     if (!ret) {
         return OrderedEventRecord::SKIPPED;
     }
-
+    EVENT_LOGE("zzzzzzzzzzzzzzzzzz,SubscriberRequiredPermission=%{public}d",ret);
     std::vector<std::string> publisherRequiredPermissions = eventRecord.publishInfo->GetSubscriberPermissions();
     ret = CheckPublisherRequiredPermissions(publisherRequiredPermissions, subscriberRecord, eventRecord);
     if (!ret) {
         return OrderedEventRecord::SKIPPED;
     }
-
+    EVENT_LOGE("zzzzzzzzzzzzzzzzzz,PublisherRequiredPermissions=%{public}d",ret);
     return OrderedEventRecord::DELIVERED;
 }
 

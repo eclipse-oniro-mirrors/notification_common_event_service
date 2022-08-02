@@ -38,7 +38,7 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 std::mutex g_mtx;
-const time_t g_TIME_OUT_SECONDS_LIMIT = 3;
+const time_t g_TIME_OUT_SECONDS_LIMIT = 5;
 const time_t g_TIME_OUT_SECONDS = 3;
 
 const std::string CompareStr = "cesComparesStrForCase";
@@ -2301,7 +2301,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1300, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
     if (CommonEventManager::SubscribeCommonEvent(subscriberPtr)) {
         result = CommonEventManager::PublishCommonEvent(commonEventData, publishInfo);
-        g_mtx.lock();
+        g_mtx.lock(); 
     }
     // The publisher can send normally, but does not have permission to send system events
     EXPECT_TRUE(result);
