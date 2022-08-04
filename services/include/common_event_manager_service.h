@@ -20,19 +20,23 @@
 #include "event_handler.h"
 #include "inner_common_event_manager.h"
 #include "nocopyable.h"
-#include "system_ability.h"
 
 namespace OHOS {
 namespace EventFwk {
 enum class ServiceRunningState { STATE_NOT_START, STATE_RUNNING };
 
-class CommonEventManagerService : public SystemAbility, public CommonEventStub {
+class CommonEventManagerService : public CommonEventStub {
 public:
-    DECLEAR_SYSTEM_ABILITY(CommonEventManagerService);
-
     CommonEventManagerService();
 
     virtual ~CommonEventManagerService();
+
+    /**
+     * @brief Get the instance of service.
+     *
+     * @return Returns the instance.
+     */
+    static sptr<CommonEventManagerService> GetInstance();
 
     /**
      * Publishes a common event.
@@ -136,13 +140,6 @@ public:
     int Dump(int fd, const std::vector<std::u16string> &args) override;
 
 private:
-    ErrCode Init();
-
-    // The function that overridden from SystemAbility
-    virtual void OnStart() override;
-
-    virtual void OnStop() override;
-
     bool IsReady() const;
 
     bool PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
@@ -150,6 +147,9 @@ private:
 
     void GetHidumpInfo(const std::vector<std::u16string> &args, std::string &result);
 private:
+    static sptr<CommonEventManagerService> instance_;
+    static std::mutex instanceMutex_;
+
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
     ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;
     std::shared_ptr<EventRunner> runner_;

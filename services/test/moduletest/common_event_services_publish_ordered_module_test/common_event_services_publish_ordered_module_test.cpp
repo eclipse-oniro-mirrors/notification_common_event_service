@@ -389,7 +389,6 @@ void CesPublishOrderedEventModuleTest::SetUpTestCase(void)
     p_bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(p_bundleObject);
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
 }
 
 void CesPublishOrderedEventModuleTest::TearDownTestCase(void)

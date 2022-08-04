@@ -1775,12 +1775,19 @@ napi_value GetSubscriberBySubscribe(
     napi_unwrap(env, value, (void **)&commonEventSubscriberPtr);
     if (!commonEventSubscriberPtr) {
         EVENT_LOGI("GetSubscriberBySubscribe commonEventSubscriberPtr is null");
-        return nullptr;
+        return NapiGetNull(env);
     }
+
     EVENT_LOGI("GetSubscriberBySubscribe commonEventSubscriberPtr = %{private}p start", commonEventSubscriberPtr);
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (auto subscriberInstance : subscriberInstances) {
+        if (subscriberInstance.first.get() == commonEventSubscriberPtr) {
+            subscriber = subscriberInstance.first;
+            return NapiGetNull(env);
+        }
+    }
     std::shared_ptr<SubscriberInstance> subscriberInstance(commonEventSubscriberPtr);
     subscriber = subscriberInstance;
-
     return NapiGetNull(env);
 }
 

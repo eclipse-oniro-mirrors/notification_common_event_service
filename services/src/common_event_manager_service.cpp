@@ -28,17 +28,22 @@
 
 namespace OHOS {
 namespace EventFwk {
-const bool REGISTER_RESULT =
-    SystemAbility::MakeAndRegisterAbility(DelayedSingleton<CommonEventManagerService>::GetInstance().get());
+// const bool REGISTER_RESULT =
+//     SystemAbility::MakeAndRegisterAbility(DelayedSingleton<CommonEventManagerService>::GetInstance().get());
+
+sptr<CommonEventManagerService> CommonEventManagerService::instance_;
+std::mutex CommonEventManagerService::instanceMutex_;
 
 CommonEventManagerService::CommonEventManagerService()
-    : SystemAbility(COMMON_EVENT_SERVICE_ID, true),
-      serviceRunningState_(ServiceRunningState::STATE_NOT_START),
+    : serviceRunningState_(ServiceRunningState::STATE_NOT_START),
       runner_(nullptr),
       handler_(nullptr)
 {
     EVENT_LOGI("instance created");
+    runner_ = EventRunner::Create("CesSrvMain");
+    handler_ = std::make_shared<EventHandler>(runner_);
     innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
 }
 
 CommonEventManagerService::~CommonEventManagerService()
@@ -46,6 +51,16 @@ CommonEventManagerService::~CommonEventManagerService()
     EVENT_LOGI("instance destroyed");
 }
 
+sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
+{
+    std::lock_guard<std::mutex> lock(instanceMutex_);
+
+    if (instance_ == nullptr) {
+        instance_ = new CommonEventManagerService();
+    }
+    return instance_;
+}
+/*
 void CommonEventManagerService::OnStart()
 {
     EVENT_LOGI("ready to start service");
@@ -112,6 +127,7 @@ ErrCode CommonEventManagerService::Init()
 
     return ERR_OK;
 }
+*/
 
 bool CommonEventManagerService::IsReady() const
 {
