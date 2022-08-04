@@ -24,11 +24,6 @@ config("ces_services_config") {
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
-
-  defines = [
-    "EVENT_LOG_TAG = \"CesService\"",
-    "LOG_DOMAIN = 0xD008800",
-  ]
 }
 
 config("ces_services_public_config") {

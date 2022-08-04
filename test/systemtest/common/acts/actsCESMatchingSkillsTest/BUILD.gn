@@ -43,11 +43,6 @@ ohos_systemtest("ActsCESMatchingSkillsTest") {
     "//utils/native/base:utils",
   ]
 
-  defines = [
-    "APP_LOG_TAG = \"CesFwkKitsTest\"",
-    "LOG_DOMAIN = 0xD002200",
-  ]
-
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_core",

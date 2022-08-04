@@ -41,11 +41,6 @@ ohos_systemtest("ActsCESDateTest") {
     "//utils/native/base:utils",
   ]
 
-  defines = [
-    "APP_LOG_TAG = \"CesFwkKitsTest\"",
-    "LOG_DOMAIN = 0xD002200",
-  ]
-
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",
