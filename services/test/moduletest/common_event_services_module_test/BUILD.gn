@@ -62,11 +62,6 @@ ohos_moduletest("cesModuleTest") {
     "//third_party/googletest:gtest_main",
   ]
 
-  defines = [
-    "APP_LOG_TAG = \"CesFwkKitsTest\"",
-    "LOG_DOMAIN = 0xD002200",
-  ]
-
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",
