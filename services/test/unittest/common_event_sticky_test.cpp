@@ -111,7 +111,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0100, Function | MediumTes
     publishInfo.SetSticky(true);
 
     struct tm recordTime = {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     InnerCommonEventManager innerCommonEventManager;
     EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
@@ -148,7 +148,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0200, Function | MediumTes
     publishInfo.SetSticky(true);
 
     struct tm recordTime = {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     InnerCommonEventManager innerCommonEventManager;
     EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
@@ -196,7 +196,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0300, Function | MediumTes
     publishInfo.SetSticky(true);
 
     struct tm recordTime = {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     InnerCommonEventManager innerCommonEventManager;
     EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
@@ -228,7 +228,7 @@ HWTEST_F(CommonEventStickyTest, CommonEventStickyTest_0400, Function | MediumTes
     publishInfo.SetSticky(true);
 
     struct tm recordTime = {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     InnerCommonEventManager innerCommonEventManager;
     EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(

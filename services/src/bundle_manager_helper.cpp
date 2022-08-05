@@ -109,8 +109,6 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
 
 bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
 {
-    EVENT_LOGI("enter");
-
     std::lock_guard<std::mutex> lock(mutex_);
 
     bool isSystemApp = false;

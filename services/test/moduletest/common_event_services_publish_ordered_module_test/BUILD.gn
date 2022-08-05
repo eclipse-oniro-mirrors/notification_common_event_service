@@ -58,12 +58,7 @@ ohos_moduletest("CesPublishOrderedEventModuleTest") {
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//third_party/googletest:gtest_main",
   ]
-
-  defines = [
-    "APP_LOG_TAG = \"CesFwkKitsTest\"",
-    "LOG_DOMAIN = 0xD002200",
-  ]
-
+  
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",

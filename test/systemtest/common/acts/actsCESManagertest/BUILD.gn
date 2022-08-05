@@ -43,12 +43,7 @@ ohos_systemtest("ActsCESManagertest") {
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
   ]
-
-  defines = [
-    "APP_LOG_TAG = \"CesFwkKitsTest\"",
-    "LOG_DOMAIN = 0xD002200",
-  ]
-
+  
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",

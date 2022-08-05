@@ -25,7 +25,6 @@ ohos_unittest("EventLogTest") {
 
   configs = [
     "${ces_common_path}:event_common_config",
-    "${ces_common_path}/test:common_test_config",
   ]
 
   deps = [ "//third_party/googletest:gtest_main" ]
