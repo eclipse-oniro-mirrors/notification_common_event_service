@@ -24,11 +24,6 @@ config("cesfwk_core_config") {
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
-
-  defines = [
-    "EVENT_LOG_TAG = \"CesFwk\"",
-    "LOG_DOMAIN = 0xD008800",
-  ]
 }
 
 config("cesfwk_core_public_config") {
@@ -73,7 +68,7 @@ ohos_shared_library("cesfwk_core") {
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 
   subsystem_name = "notification"

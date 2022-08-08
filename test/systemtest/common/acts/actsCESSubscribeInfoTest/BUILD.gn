@@ -42,11 +42,6 @@ ohos_systemtest("ActsCESSubscribeInfoTest") {
     "//third_party/googletest:gtest_main",
   ]
 
-  defines = [
-    "APP_LOG_TAG = \"CesFwkKitsTest\"",
-    "LOG_DOMAIN = 0xD002200",
-  ]
-
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_core",

@@ -13,13 +13,6 @@
 
 import("//base/notification/common_event_service/event.gni")
 
-config("common_test_config") {
-  defines = [
-    "EVENT_LOG_TAG = \"CES_STANDARD\"",
-    "LOG_DOMAIN = 0xD00114E",
-  ]
-}
-
 group("unittest") {
   testonly = true
 

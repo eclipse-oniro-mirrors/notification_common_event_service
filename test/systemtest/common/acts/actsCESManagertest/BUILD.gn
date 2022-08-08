@@ -44,11 +44,6 @@ ohos_systemtest("ActsCESManagertest") {
     "//third_party/googletest:gtest_main",
   ]
 
-  defines = [
-    "APP_LOG_TAG = \"CesFwkKitsTest\"",
-    "LOG_DOMAIN = 0xD002200",
-  ]
-
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",
@@ -58,7 +53,7 @@ ohos_systemtest("ActsCESManagertest") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 

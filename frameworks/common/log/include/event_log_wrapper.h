@@ -22,16 +22,16 @@
 
 namespace OHOS {
 namespace EventFwk {
-#ifndef LOG_DOMAIN
-#define LOG_DOMAIN 0xD001100
+#ifndef EVENT_LOG_DOMAIN
+#define EVENT_LOG_DOMAIN 0xD001200
 #endif
 #ifndef EVENT_LOG_TAG
-#define EVENT_LOG_TAG NULL
+#define EVENT_LOG_TAG "Ces"
 #endif
 
 enum class EventLogLevel { DEBUG = 0, INFO, WARN, ERROR, FATAL };
 
-static constexpr OHOS::HiviewDFX::HiLogLabel Event_LABEL = {LOG_CORE, LOG_DOMAIN, EVENT_LOG_TAG};
+static constexpr OHOS::HiviewDFX::HiLogLabel Event_LABEL = {LOG_CORE, EVENT_LOG_DOMAIN, EVENT_LOG_TAG};
 
 class EventLogWrapper {
 public:

@@ -23,10 +23,7 @@ ohos_unittest("EventLogTest") {
 
   sources += [ "event_log_test.cpp" ]
 
-  configs = [
-    "${ces_common_path}:event_common_config",
-    "${ces_common_path}/test:common_test_config",
-  ]
+  configs = ["${ces_common_path}:event_common_config"]
 
   deps = [ "//third_party/googletest:gtest_main" ]
 
