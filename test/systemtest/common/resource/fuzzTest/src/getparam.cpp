@@ -849,9 +849,6 @@ OHOS::AppExecFwk::DumpFlag GetParamDumpFlag()
         case 0:
             return OHOS::AppExecFwk::DumpFlag::DUMP_BUNDLE_LIST;
             break;
-        case 1:
-            return OHOS::AppExecFwk::DumpFlag::DUMP_ALL_BUNDLE_INFO;
-            break;
         case 2:
             return OHOS::AppExecFwk::DumpFlag::DUMP_BUNDLE_INFO;
             break;
