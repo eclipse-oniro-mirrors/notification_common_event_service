@@ -28,7 +28,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-
 sptr<CommonEventManagerService> CommonEventManagerService::instance_;
 std::mutex CommonEventManagerService::instanceMutex_;
 

@@ -50,7 +50,7 @@ protected:
     static sptr<CommonEventManagerService> commonEventManagerService_;
 };
 
-sptr<CommonEventManagerService> BenchmarkCommonEventManagerService::commonEventManagerService_ = 
+sptr<CommonEventManagerService> BenchmarkCommonEventManagerService::commonEventManagerService_ =
     CommonEventManagerService::GetInstance();
 
 class CommonEventSubscriberBenchmark : public CommonEventSubscriber {
