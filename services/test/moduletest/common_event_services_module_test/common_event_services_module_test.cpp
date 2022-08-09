@@ -59,7 +59,6 @@ CommonEventServicesModuleTest::CommonEventServicesModuleTest(const CommonEventSu
 
 void CommonEventServicesModuleTest::OnReceiveEvent(const CommonEventData &data)
 {
-    GTEST_LOG_(INFO) << "CommonEventServicesModuleTest OnReceiveEvent";
     printf("CommonEventServicesModuleTest OnReceiveEvent\n");
     mtx_.unlock();
 }
