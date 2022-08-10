@@ -1785,6 +1785,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
 
     CommonEventPublishInfo publishInfo;
+
     EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
     mtx_.lock();
     // The publisher can send normally, but does not have permission to send system events

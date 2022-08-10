@@ -617,7 +617,7 @@ void CommonEventDumpTest::PublishStickyEvent(
     publishInfo.SetSubscriberPermissions(permissions);
 
     struct tm curTime {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     innerCommonEventManager_->PublishCommonEvent(
         eventData, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 }
@@ -650,7 +650,7 @@ void CommonEventDumpTest::PublishStickyEvent(
     publishInfo.SetSubscriberPermissions(permissions);
 
     struct tm curTime {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     innerCommonEventManager_->PublishCommonEvent(
         eventData, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 }
@@ -1081,7 +1081,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1600, Function | MediumTest | 
     publishInfo.SetSubscriberPermissions(permissions);
 
     struct tm curTime {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     GetInnerCommonEventManager()->PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
@@ -1114,7 +1114,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
     publishInfo.SetSticky(true);
 
     struct tm curTime {0};
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
 
     GetInnerCommonEventManager()->PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");

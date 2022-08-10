@@ -705,14 +705,12 @@ int8_t CommonEventControlManager::CheckPermission(
     }
 
     std::string subscriberRequiredPermission = subscriberRecord.eventSubscribeInfo->GetPermission();
-    
     ret = CheckSubscriberRequiredPermission(subscriberRequiredPermission, eventRecord, subscriberRecord);
     if (!ret) {
         return OrderedEventRecord::SKIPPED;
     }
 
     std::vector<std::string> publisherRequiredPermissions = eventRecord.publishInfo->GetSubscriberPermissions();
-    
     ret = CheckPublisherRequiredPermissions(publisherRequiredPermissions, subscriberRecord, eventRecord);
     if (!ret) {
         return OrderedEventRecord::SKIPPED;
@@ -787,6 +785,7 @@ bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::str
     if (subscriberRequiredPermission.empty()) {
         return true;
     }
+
     ret = AccessTokenHelper::VerifyAccessToken(eventRecord.eventRecordInfo.callerToken, subscriberRequiredPermission);
     if (!ret) {
         EVENT_LOGW("No permission to send common event %{public}s "

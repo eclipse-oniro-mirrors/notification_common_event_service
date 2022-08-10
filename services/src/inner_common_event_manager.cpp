@@ -79,7 +79,6 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     bool isSubsystem = false;
     bool isSystemApp = false;
     bool isProxy = false;
-    
     if (!CheckUserId(pid, uid, callerToken, isSubsystem, isSystemApp, isProxy, user)) {
         SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
         return false;
@@ -344,6 +343,7 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
         EVENT_LOGE("Invalid User ID %{public}d", userId);
         return false;
     }
+
     isSubsystem = AccessTokenHelper::VerifyNativeToken(callerToken);
     if (!isSubsystem) {
         isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
