@@ -32,13 +32,6 @@ public:
     virtual ~CommonEventManagerService();
 
     /**
-     * @brief Get the instance of service.
-     *
-     * @return Returns the instance.
-     */
-    static sptr<CommonEventManagerService> GetInstance();
-
-    /**
      * Publishes a common event.
      *
      * @param event Indicates the common event data.

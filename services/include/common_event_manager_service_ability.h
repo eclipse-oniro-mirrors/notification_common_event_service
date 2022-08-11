@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,23 +26,23 @@ namespace EventFwk {
 class CommonEventManagerServiceAbility final : public SystemAbility {
 public:
     /**
-     * @brief The constructor of service ability.
+     * @brief The constructor of the common event manager service ability.
      * @param systemAbilityId Indicates the system ability id.
      * @param runOnCreate Run the system ability on created.
      */
     CommonEventManagerServiceAbility(const int32_t systemAbilityId, bool runOnCreate);
 
     /**
-     * @brief The deconstructor.
+     * @brief The destructor.
      */
-    ~CommonEventManagerServiceAbility() final;
-
-    DISALLOW_COPY_AND_MOVE(CommonEventManagerServiceAbility);
-    DECLARE_SYSTEM_ABILITY(CommonEventManagerServiceAbility);
+    virtual ~CommonEventManagerServiceAbility() final;
 
 private:
     void OnStart() final;
     void OnStop() final;
+
+    DISALLOW_COPY_AND_MOVE(CommonEventManagerServiceAbility);
+    DECLARE_SYSTEM_ABILITY(CommonEventManagerServiceAbility);
 
 private:
     sptr<CommonEventManagerService> service_;

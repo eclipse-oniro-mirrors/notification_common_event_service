@@ -76,7 +76,7 @@ sptr<CommonEventManagerService> cesModuleTest::commonEventManagerService_ = null
 
 void cesModuleTest::SetUpTestCase()
 {
-    commonEventManagerService_ = CommonEventManagerService::GetInstance();
+    commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance();
     handlerPtr = std::make_shared<EventHandler>(EventRunner::Create(true));
     auto task = []() { EventRunner::GetMainEventRunner()->Run(); };
     handlerPtr->PostTask(task);

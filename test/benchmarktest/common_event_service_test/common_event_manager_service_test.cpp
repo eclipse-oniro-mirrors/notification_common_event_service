@@ -51,7 +51,7 @@ protected:
 };
 
 sptr<CommonEventManagerService> BenchmarkCommonEventManagerService::commonEventManagerService_ =
-    CommonEventManagerService::GetInstance();
+    DelayedSingleton<CommonEventManagerService>::GetInstance();
 
 class CommonEventSubscriberBenchmark : public CommonEventSubscriber {
 public:

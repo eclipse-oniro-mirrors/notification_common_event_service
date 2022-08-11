@@ -48,16 +48,6 @@ CommonEventManagerService::~CommonEventManagerService()
     EVENT_LOGI("instance destroyed");
 }
 
-sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
-{
-    std::lock_guard<std::mutex> lock(instanceMutex_);
-
-    if (instance_ == nullptr) {
-        instance_ = new CommonEventManagerService();
-    }
-    return instance_;
-}
-
 bool CommonEventManagerService::IsReady() const
 {
     if (!innerCommonEventManager_) {
