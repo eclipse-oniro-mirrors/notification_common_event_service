@@ -74,7 +74,7 @@ struct AsyncCallbackInfoUnsubscribe {
 struct AsyncCallbackInfoSubscribeInfo {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     std::vector<std::string> events;
     std::string permission;
     std::string deviceId;
@@ -86,7 +86,7 @@ struct AsyncCallbackInfoSubscribeInfo {
 struct AsyncCallbackInfoOrderedCommonEvent {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     bool isOrdered = false;
     CallbackPromiseInfo info;
 };
@@ -94,7 +94,7 @@ struct AsyncCallbackInfoOrderedCommonEvent {
 struct AsyncCallbackInfoStickyCommonEvent {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     bool isSticky = false;
     CallbackPromiseInfo info;
 };
@@ -102,7 +102,7 @@ struct AsyncCallbackInfoStickyCommonEvent {
 struct AsyncCallbackInfoGetCode {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int32_t code = 0;
     CallbackPromiseInfo info;
 };
@@ -110,7 +110,7 @@ struct AsyncCallbackInfoGetCode {
 struct AsyncCallbackInfoSetCode {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int32_t code = 0;
     CallbackPromiseInfo info;
 };
@@ -118,7 +118,7 @@ struct AsyncCallbackInfoSetCode {
 struct AsyncCallbackInfoGetData {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     std::string data;
     CallbackPromiseInfo info;
 };
@@ -126,7 +126,7 @@ struct AsyncCallbackInfoGetData {
 struct AsyncCallbackInfoSetData {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     std::string data;
     CallbackPromiseInfo info;
 };
@@ -134,7 +134,7 @@ struct AsyncCallbackInfoSetData {
 struct AsyncCallbackInfoSetCodeAndData {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int32_t code = 0;
     std::string data;
     CallbackPromiseInfo info;
@@ -143,21 +143,21 @@ struct AsyncCallbackInfoSetCodeAndData {
 struct AsyncCallbackInfoAbort {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoClearAbort {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     CallbackPromiseInfo info;
 };
 
 struct AsyncCallbackInfoGetAbort {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     bool abortEvent = false;
     CallbackPromiseInfo info;
 };
@@ -165,7 +165,7 @@ struct AsyncCallbackInfoGetAbort {
 struct AsyncCallbackInfoFinish {
     napi_env env = nullptr;
     napi_async_work asyncWork;
-    SubscriberInstance *objectInfo = nullptr;
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     CallbackPromiseInfo info;
 };
 
@@ -225,6 +225,15 @@ private:
     static std::atomic_ullong subscriberID_;
 };
 
+class SubscriberInstanceWrapper {
+public:
+    SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info);
+    std::shared_ptr<SubscriberInstance> GetSubscriber();
+
+private:
+    std::shared_ptr<SubscriberInstance> subscriber = nullptr;
+};
+
 napi_value NapiGetNull(napi_env env);
 
 napi_value GetCallbackErrorValue(napi_env env, int8_t errorCode);
@@ -262,8 +271,7 @@ void SetPublisherPriorityResult(const napi_env &env, const int32_t &priority, na
 void PaddingAsyncCallbackInfoGetSubscribeInfo(const napi_env &env, const size_t &argc,
     AsyncCallbackInfoSubscribeInfo *&asynccallbackinfo, const napi_ref &callback, napi_value &promise);
 
-void PaddingNapiCreateAsyncWorkCallbackInfo(
-    AsyncCallbackInfoSubscribeInfo *&asynccallbackinfo, SubscriberInstance *&subscriber);
+void PaddingNapiCreateAsyncWorkCallbackInfo(AsyncCallbackInfoSubscribeInfo *&asynccallbackinfo);
 
 void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *asynccallbackinfo, napi_value &result);
 
@@ -354,8 +362,7 @@ void PaddingAsyncCallbackInfoFinish(const napi_env &env, const size_t &argc,
 
 napi_value FinishCommonEvent(napi_env env, napi_callback_info info);
 
-napi_value GetSubscriberBySubscribe(
-    const napi_env &env, const napi_value &value, std::shared_ptr<SubscriberInstance> &subscriber);
+std::shared_ptr<SubscriberInstance> GetSubscriber(const napi_env &env, const napi_value &value);
 
 napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&argv)[SUBSCRIBE_MAX_PARA],
     std::shared_ptr<SubscriberInstance> &subscriber, napi_ref &callback);
