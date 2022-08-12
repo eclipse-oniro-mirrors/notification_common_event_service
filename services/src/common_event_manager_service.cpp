@@ -37,15 +37,47 @@ CommonEventManagerService::CommonEventManagerService()
       handler_(nullptr)
 {
     EVENT_LOGI("instance created");
-    runner_ = EventRunner::Create("CesSrvMain");
-    handler_ = std::make_shared<EventHandler>(runner_);
-    innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
+    Init();
 }
 
 CommonEventManagerService::~CommonEventManagerService()
 {
     EVENT_LOGI("instance destroyed");
+}
+
+sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
+{
+    std::lock_guard<std::mutex> lock(instanceMutex_);
+
+    if (instance_ == nullptr) {
+        instance_ = new (std::nothrow)CommonEventManagerService();
+    }
+    return instance_;
+}
+
+
+ErrCode CommonEventManagerService::Init()
+{
+    EVENT_LOGI("ready to init");
+    innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+
+    if (!innerCommonEventManager_) {
+        EVENT_LOGE("Failed to init without inner service");
+        return ERR_INVALID_OPERATION;
+    }
+
+    runner_ = EventRunner::Create("CesSrvMain");
+    if (!runner_) {
+        EVENT_LOGE("Failed to init due to create runner error");
+        return ERR_INVALID_OPERATION;
+    }
+    handler_ = std::make_shared<EventHandler>(runner_);
+    if (!handler_) {
+        EVENT_LOGE("Failed to init due to create handler error");
+        return ERR_INVALID_OPERATION;
+    }
+
+    serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
 }
 
 bool CommonEventManagerService::IsReady() const

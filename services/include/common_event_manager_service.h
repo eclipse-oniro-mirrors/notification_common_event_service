@@ -32,6 +32,13 @@ public:
     virtual ~CommonEventManagerService();
 
     /**
+     * @brief Get the instance of service.
+     *
+     * @return Returns the instance.
+     */
+    static sptr<CommonEventManagerService> GetInstance();
+
+    /**
      * Publishes a common event.
      *
      * @param event Indicates the common event data.
@@ -131,6 +138,8 @@ public:
     bool UnfreezeAll() override;
 
     int Dump(int fd, const std::vector<std::u16string> &args) override;
+
+    ErrCode Init();
 
 private:
     bool IsReady() const;
