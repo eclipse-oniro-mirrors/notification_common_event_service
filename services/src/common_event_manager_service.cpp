@@ -37,7 +37,9 @@ CommonEventManagerService::CommonEventManagerService()
       handler_(nullptr)
 {
     EVENT_LOGI("instance created");
-    Init();
+    innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    runner_ = EventRunner::Create("CesSrvMain");
+    handler_ = std::make_shared<EventHandler>(runner_);
 }
 
 CommonEventManagerService::~CommonEventManagerService()
@@ -78,6 +80,8 @@ ErrCode CommonEventManagerService::Init()
     }
 
     serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
+
+    return ERR_OK;
 }
 
 bool CommonEventManagerService::IsReady() const
