@@ -37,8 +37,15 @@ void CommonEventManagerServiceAbility::OnStart()
         return;
     }
 
-    service_ = CommonEventManagerService::GetInstance();
-    if (!Publish(service_)) {
+    service_ = DelayedSingleton<CommonEventManagerService>::GetInstance();
+    ErrCode errorCode = service_->Init();
+    if (errorCode != ERR_OK)
+    {
+        EVENT_LOGE("Failed to init the commonEventManagerService instance.");
+        return;
+    }
+    
+    if (!Publish(service_.get())) {
         EVENT_LOGE("Failed to publish CommonEventManagerService to SystemAbilityMgr");
         return;
     }

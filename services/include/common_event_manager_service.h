@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
 
+#include <singleton.h>
 #include "common_event_stub.h"
 #include "event_handler.h"
 #include "inner_common_event_manager.h"
@@ -26,18 +27,8 @@ namespace EventFwk {
 enum class ServiceRunningState { STATE_NOT_START, STATE_RUNNING };
 
 class CommonEventManagerService : public CommonEventStub {
+    DECLARE_DELAYED_SINGLETON(CommonEventManagerService);
 public:
-    CommonEventManagerService();
-
-    virtual ~CommonEventManagerService();
-
-    /**
-     * @brief Get the instance of service.
-     *
-     * @return Returns the instance.
-     */
-    static sptr<CommonEventManagerService> GetInstance();
-
     /**
      * Publishes a common event.
      *
@@ -149,9 +140,6 @@ private:
 
     void GetHidumpInfo(const std::vector<std::u16string> &args, std::string &result);
 private:
-    static sptr<CommonEventManagerService> instance_;
-    static std::mutex instanceMutex_;
-
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
     ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;
     std::shared_ptr<EventRunner> runner_;

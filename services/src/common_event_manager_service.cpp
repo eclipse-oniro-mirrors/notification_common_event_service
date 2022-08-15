@@ -28,8 +28,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-sptr<CommonEventManagerService> CommonEventManagerService::instance_;
-std::mutex CommonEventManagerService::instanceMutex_;
 
 CommonEventManagerService::CommonEventManagerService()
     : serviceRunningState_(ServiceRunningState::STATE_NOT_START),
@@ -37,26 +35,12 @@ CommonEventManagerService::CommonEventManagerService()
       handler_(nullptr)
 {
     EVENT_LOGI("instance created");
-    innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    runner_ = EventRunner::Create("CesSrvMain");
-    handler_ = std::make_shared<EventHandler>(runner_);
 }
 
 CommonEventManagerService::~CommonEventManagerService()
 {
     EVENT_LOGI("instance destroyed");
 }
-
-sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
-{
-    std::lock_guard<std::mutex> lock(instanceMutex_);
-
-    if (instance_ == nullptr) {
-        instance_ = new (std::nothrow)CommonEventManagerService();
-    }
-    return instance_;
-}
-
 
 ErrCode CommonEventManagerService::Init()
 {

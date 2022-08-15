@@ -69,14 +69,15 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
-    static sptr<CommonEventManagerService> commonEventManagerService_;
+    static std::shared_ptr<CommonEventManagerService> commonEventManagerService_;
 };
 
-sptr<CommonEventManagerService> cesModuleTest::commonEventManagerService_ = nullptr;
+std::shared_ptr<CommonEventManagerService> cesModuleTest::commonEventManagerService_ = nullptr;
 
 void cesModuleTest::SetUpTestCase()
 {
-    commonEventManagerService_ = CommonEventManagerService::GetInstance();
+    commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance();
+    commonEventManagerService_->Init();
     handlerPtr = std::make_shared<EventHandler>(EventRunner::Create(true));
     auto task = []() { EventRunner::GetMainEventRunner()->Run(); };
     handlerPtr->PostTask(task);

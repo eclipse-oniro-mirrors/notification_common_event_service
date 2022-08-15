@@ -45,7 +45,7 @@ private:
     DECLARE_SYSTEM_ABILITY(CommonEventManagerServiceAbility);
 
 private:
-    sptr<CommonEventManagerService> service_;
+    std::shared_ptr<CommonEventManagerService> service_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
