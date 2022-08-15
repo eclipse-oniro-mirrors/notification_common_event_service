@@ -126,7 +126,7 @@ HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_01
 HWTEST_F(CommonEventPublishSystemEventTest, CommonEventPublishSystemEventTest_0200, Function | MediumTest | Level1)
 {
     /* Publish */
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
 
     // make a want
     Want want;

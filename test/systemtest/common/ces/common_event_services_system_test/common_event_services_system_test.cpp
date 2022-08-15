@@ -28,6 +28,7 @@
 #include "common_event_support.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
+#include "mock_ipc_skeleton.h"
 
 #include <gtest/gtest.h>
 
@@ -54,6 +55,9 @@ const int32_t g_CODE_COMPARE2 = 2;
 const int32_t g_CODE_COMPARE3 = 200;
 const int32_t PRIORITY_HIGH = 80;
 const int32_t PRIORITY_LOW = 20;
+
+const uint32_t NON_SYSTEM_APP_UID = 20010099;
+const uint32_t NON_NATIVE_TOKEN = 1;
 }  // namespace
 
 class CommonEventServicesSystemTest : public CommonEventSubscriber {
@@ -69,6 +73,7 @@ CommonEventServicesSystemTest::CommonEventServicesSystemTest(const CommonEventSu
 
 void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 {
+    GTEST_LOG_(INFO) << " cesSystemTest:CommonEventServicesSystemTest:OnReceiveEvent \n";
     std::string action = data.GetWant().GetAction();
     if (action == CompareStrFalse) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE3);
@@ -129,6 +134,7 @@ CESPublishOrderTimeOutTwo::CESPublishOrderTimeOutTwo(const CommonEventSubscribeI
 
 void CESPublishOrderTimeOutTwo::OnReceiveEvent(const CommonEventData &data)
 {
+    GTEST_LOG_(INFO) << " cesSystemTest:CESPublishOrderTimeOutTwo:OnReceiveEvent \n";
     EXPECT_TRUE(data.GetCode() == GetCode());
     mtx_.unlock();
 }
@@ -673,7 +679,6 @@ HWTEST_F(cesSystemTest, CES_SendEvent_0100, Function | MediumTest | Level1)
     EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
     mtx_.lock();
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
-    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData), true);
 
     struct tm doingTime = {0};
     int64_t seconds = 0;
@@ -1764,6 +1769,9 @@ HWTEST_F(cesSystemTest, CES_SubscriptionEventTheme_0400, Function | MediumTest |
  */
 HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
 {
+    GTEST_LOG_(INFO) << "start CES_SendEvent_1300";
+    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
+    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
     bool sysResult = false;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
 
@@ -1801,6 +1809,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
     EXPECT_TRUE(sysResult);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
+    GTEST_LOG_(INFO) << "end CES_SendEvent_1300";
 }
 
 /*
@@ -1813,6 +1822,9 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1400, Function | MediumTest | Level1)
 {
     bool sysResult = false;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
+
+    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
+    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
 
     Want wantTest;
     wantTest.SetAction(eventName);
@@ -1861,6 +1873,9 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1500, Function | MediumTest | Level1)
     bool sysResult = false;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
 
+    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
+    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
+
     Want wantTest;
     wantTest.SetAction(eventName);
     CommonEventData commonEventData(wantTest);
@@ -1906,6 +1921,9 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1600, Function | MediumTest | Level1)
 {
     bool result = true;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED;
+
+    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
+    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
 
     Want wantTest;
     wantTest.SetAction(eventName);
