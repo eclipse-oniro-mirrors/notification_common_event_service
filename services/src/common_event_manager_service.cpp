@@ -25,9 +25,9 @@
 #include "ipc_skeleton.h"
 #include "publish_manager.h"
 #include "system_ability_definition.h"
+
 namespace OHOS {
 namespace EventFwk {
-
 CommonEventManagerService::CommonEventManagerService()
     : serviceRunningState_(ServiceRunningState::STATE_NOT_START),
       runner_(nullptr),
