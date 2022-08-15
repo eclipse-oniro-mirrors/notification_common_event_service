@@ -25,7 +25,6 @@
 #include "ipc_skeleton.h"
 #include "publish_manager.h"
 #include "system_ability_definition.h"
-
 namespace OHOS {
 namespace EventFwk {
 
@@ -46,7 +45,6 @@ ErrCode CommonEventManagerService::Init()
 {
     EVENT_LOGI("ready to init");
     innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-
     if (!innerCommonEventManager_) {
         EVENT_LOGE("Failed to init without inner service");
         return ERR_INVALID_OPERATION;

@@ -39,8 +39,7 @@ void CommonEventManagerServiceAbility::OnStart()
 
     service_ = DelayedSingleton<CommonEventManagerService>::GetInstance();
     ErrCode errorCode = service_->Init();
-    if (errorCode != ERR_OK)
-    {
+    if (errorCode != ERR_OK) {
         EVENT_LOGE("Failed to init the commonEventManagerService instance.");
         return;
     }
