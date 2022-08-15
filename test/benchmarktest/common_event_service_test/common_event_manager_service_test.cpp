@@ -32,7 +32,7 @@ class BenchmarkCommonEventManagerService : public benchmark::Fixture {
 public:
     BenchmarkCommonEventManagerService()
     {
-        commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance();
+        commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance().get();
         commonEventManagerService_->Init();
         Iterations(iterations);
         Repetitions(repetitions);
@@ -49,7 +49,7 @@ public:
 protected:
     const int32_t repetitions = 3;
     const int32_t iterations = 100;
-    std::shared_ptr<CommonEventManagerService> commonEventManagerService_; = DelayedSingleton<CommonEventManagerService>::GetInstance();
+    sptr<CommonEventManagerService> commonEventManagerService_;
 };
 
 class CommonEventSubscriberBenchmark : public CommonEventSubscriber {
