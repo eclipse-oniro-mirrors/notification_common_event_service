@@ -63,7 +63,7 @@
                 "eventhandler",
                 "hiviewdfx_hilog_native",
                 "napi",
-                "samgr_standard",
+                "samgr",
                 "os_account"
             ],
             "third_party": [

@@ -41,7 +41,7 @@ ohos_systemtest("ActsCESMatchingSkillsTest") {
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
   ]
-  
+
   external_deps = [
     "ability_base:want",
     "bundle_framework:appexecfwk_core",

@@ -41,7 +41,7 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
   ]
-  
+
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",
@@ -51,7 +51,7 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 

@@ -43,7 +43,7 @@ ohos_systemtest("ActsCESManagertest") {
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
   ]
-  
+
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",
@@ -53,7 +53,7 @@ ohos_systemtest("ActsCESManagertest") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 

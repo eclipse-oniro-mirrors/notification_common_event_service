@@ -1986,11 +1986,6 @@ void fuzzTestManager::RegisterAbility()
         temp->OnKeyPressAndHold(1, std::shared_ptr<KeyEvent>());
     });
 
-    callFunctionMap_.emplace("AbilityOnRequestPermissionsFromUserResult", []() {
-        std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        temp->OnRequestPermissionsFromUserResult(1, std::vector<std::string>(), std::vector<int>());
-    });
-
     callFunctionMap_.emplace("AbilityOnLeaveForeground", []() {
         std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
         temp->OnLeaveForeground();
@@ -2545,9 +2540,14 @@ void fuzzTestManager::RegisterAbilityContext()
 
     callFunctionMap_.emplace("AbilityContextRequestPermissionsFromUser", []() {
         std::shared_ptr<OHOS::AppExecFwk::AbilityContext> temp = GetParamAbilityContext();
-        std::vector<std::string> permissions {};
+        std::vector<std::string> permissions;
+        auto loop = GetIntParam();
+        for (int i = 0; i < loop; i++) {
+            permissions.emplace_back(GetStringParam());
+        }
         std::vector<int> permissionsState(permissions.size(), -1);
-        temp->RequestPermissionsFromUser(permissions, permissionsState, GetIntParam());
+        auto task = [] (const std::vector<std::string> &permissions, const std::vector<int> &grantResults) {};
+        temp->RequestPermissionsFromUser(permissions, permissionsState, std::move(task));
     });
 
     callFunctionMap_.emplace("AbilityContextDeleteFile", []() {

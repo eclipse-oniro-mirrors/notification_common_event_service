@@ -42,7 +42,7 @@ ohos_systemtest("ActsCESCESpublishInfoTest") {
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
   ]
-  
+
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",
