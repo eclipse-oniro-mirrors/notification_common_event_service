@@ -1847,17 +1847,6 @@ void fuzzTestManager::RegisterAbility()
     const int COLOR_G = 100;
     const int COLOR_B = 100;
 
-    callFunctionMap_.emplace("AbilityTerminateAbilityWant", []() {
-        std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        OHOS::AAFwk::Want param;
-        temp->TerminateAbility(param);
-    });
-
-    callFunctionMap_.emplace("AbilityAddActionRoute", []() {
-        std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        temp->AddActionRoute("", "");
-    });
-
     callFunctionMap_.emplace("AbilitySetWindowBackgroundColor", []() {
         std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
         temp->SetWindowBackgroundColor(COLOR_R, COLOR_G, COLOR_B);
@@ -2137,11 +2126,6 @@ void fuzzTestManager::RegisterAbility()
         temp->Query(GetParamUri(), std::vector<std::string>(), GetParamDataAbilityPredicates());
     });
 
-    callFunctionMap_.emplace("AbilitySetMainRoute", []() {
-        std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        temp->SetMainRoute("");
-    });
-
     callFunctionMap_.emplace("AbilityContinueAbilityReversiblyS", []() {
         std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
         temp->ContinueAbilityReversibly("id");
@@ -2155,11 +2139,6 @@ void fuzzTestManager::RegisterAbility()
     callFunctionMap_.emplace("AbilityGetContinuationState", []() {
         std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
         temp->GetContinuationState();
-    });
-
-    callFunctionMap_.emplace("AbilityGetAbilityPackage", []() {
-        std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
-        temp->GetAbilityPackage();
     });
 
     callFunctionMap_.emplace("AbilityDenormalizeUri", []() {
