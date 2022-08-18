@@ -16,7 +16,6 @@
 #include <gtest/gtest.h>
 
 #include <thread>
-#include "common_event_command.h"
 #include "common_event_manager.h"
 #include "common_event_subscriber.h"
 
