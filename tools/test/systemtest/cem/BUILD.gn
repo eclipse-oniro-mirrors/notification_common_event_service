@@ -26,10 +26,7 @@ config("tools_cem_test_config") {
 ohos_systemtest("common_event_command_dump_system_test") {
   module_out_path = module_output_path
 
-  sources = [
-    "${tools_path}/cem/src/common_event_command.cpp",
-    "common_event_command_dump_system_test.cpp",
-  ]
+  sources = [ "common_event_command_dump_system_test.cpp" ]
 
   configs = [ ":tools_cem_test_config" ]
 
@@ -60,10 +57,7 @@ ohos_systemtest("common_event_command_publish_system_test") {
 
   include_dirs = [ "${ability_runtime_path}/tools/test/systemtest/aa" ]
 
-  sources = [
-    "${tools_path}/cem/src/common_event_command.cpp",
-    "common_event_command_publish_system_test.cpp",
-  ]
+  sources = [ "common_event_command_publish_system_test.cpp" ]
 
   configs = [ ":tools_cem_test_config" ]
 
