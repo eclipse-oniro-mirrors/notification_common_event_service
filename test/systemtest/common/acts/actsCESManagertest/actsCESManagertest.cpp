@@ -38,7 +38,7 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 std::mutex g_mtx;
-const time_t g_TIME_OUT_SECONDS_LIMIT = 3;
+const time_t g_TIME_OUT_SECONDS_LIMIT = 5;
 const time_t g_TIME_OUT_SECONDS = 3;
 
 const std::string CompareStr = "cesComparesStrForCase";

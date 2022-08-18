@@ -293,9 +293,9 @@ bool CommonEvent::GetCommonEventProxy()
                 return false;
             }
             commonEventProxy_->AsObject()->AddDeathRecipient(recipient_);
+            isProxyValid_ = true;
         }
     }
-    isProxyValid_ = true;
     return true;
 }
 
