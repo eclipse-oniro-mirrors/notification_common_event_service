@@ -14,16 +14,13 @@
  */
 
 #include "getstickycommonevent_fuzzer.h"
-
-#include <cstddef>
-#include <cstdint>
-
+#include "securec.h"
 #include "common_event_manager.h"
 
 namespace OHOS {
-    bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
+    bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     {
-        std::string event = reinterpret_cast<const char*>(data);
+        std::string event(data);
         EventFwk::CommonEventData commonEventData;
 
         return EventFwk::CommonEventManager::GetStickyCommonEvent(event, commonEventData);
@@ -34,6 +31,27 @@ namespace OHOS {
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::DoSomethingInterestingWithMyAPI(data, size);
+    if (data == nullptr) {
+        std::cout << "invalid data" << std::endl;
+        return 0;
+    }
+
+    char* ch = (char *)malloc(size + 1);
+    if (ch == nullptr) {
+        std::cout << "malloc failed." << std::endl;
+        return 0;
+    }
+
+    (void)memset_s(ch, size + 1, 0x00, size + 1);
+    if (memcpy_s(ch, size, data, size) != EOK) {
+        std::cout << "copy failed." << std::endl;
+        free(ch);
+        ch = nullptr;
+        return 0;
+    }
+
+    OHOS::DoSomethingInterestingWithMyAPI(ch, size);
+    free(ch);
+    ch = nullptr;
     return 0;
 }
