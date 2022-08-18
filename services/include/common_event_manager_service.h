@@ -27,8 +27,9 @@ namespace EventFwk {
 enum class ServiceRunningState { STATE_NOT_START, STATE_RUNNING };
 
 class CommonEventManagerService : public CommonEventStub {
-    DECLARE_DELAYED_SINGLETON(CommonEventManagerService);
 public:
+    CommonEventManagerService();
+    virtual ~CommonEventManagerService();
     /**
      * Publishes a common event.
      *
