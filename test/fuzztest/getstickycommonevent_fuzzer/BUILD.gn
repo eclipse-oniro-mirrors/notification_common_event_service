@@ -35,6 +35,7 @@ ohos_fuzztest("GetStickyCommonEventFuzzTest") {
 
   external_deps = [
     "ability_base:want",
+    "c_utils:utils",
     "ipc:ipc_core",
   ]
 }
