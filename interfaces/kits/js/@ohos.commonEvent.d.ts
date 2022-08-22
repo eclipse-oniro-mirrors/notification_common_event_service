@@ -1088,22 +1088,6 @@ declare namespace commonEvent {
     COMMON_EVENT_SIGNAL_INFO_CHANGED = "usual.event.SIGNAL_INFO_CHANGED",
 
     /**
-     * Indicates the action of a common event that the call recording has been changed.
-     * This is a protected common event that can only be sent by system.
-     * @since 9
-     */
-    COMMON_EVENT_CALL_RECORDING_CHANGED = "usual.event.CALL_RECORDING_CHANGED",
-
-    /**
-     * Indicates the action of a common event that the call state has been updated.
-     * To subscribe to this protected common event, your application must have the ohos.permission.GET_TELEPHONY_STATE
-     * permission.
-     * This is a protected common event that can only be sent by system.
-     * @since 9
-     */
-    COMMON_EVENT_CALL_STATE_UPDATED = "usual.event.CALL_STATE_UPDATED",
-
-    /**
      * Indicates the action of a common event that the incoming call has been missed.
      * To subscribe to this protected common event, your application must have the ohos.permission.GET_TELEPHONY_STATE
      * permission.
