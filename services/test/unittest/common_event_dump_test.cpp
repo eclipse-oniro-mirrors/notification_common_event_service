@@ -1264,6 +1264,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
  * @tc.number: CommonEventDumpPartEventTest_0100
  * @tc.name: test dump
  * @tc.desc: Verify dump all subscriber
+ * @tc.require: I582WG
  */
 HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0100, Function | MediumTest | Level1)
 {
@@ -1292,6 +1293,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0100, Function | Medi
  * @tc.number: CommonEventDumpPartEventTest_0200
  * @tc.name: test dump
  * @tc.desc: Verify dump information after publishing sticky events
+ * @tc.require: I582WG
  */
 HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0200, Function | MediumTest | Level1)
 {
@@ -1324,6 +1326,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0200, Function | Medi
  * @tc.number: CommonEventDumpPartEventTest_0300
  * @tc.name: test dump
  * @tc.desc: Verify dump pending events
+ * @tc.require: I582WG
  */
 HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0300, Function | MediumTest | Level1)
 {
@@ -1355,6 +1358,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0300, Function | Medi
  * @tc.number: CommonEventDumpPartEventTest_0400
  * @tc.name: test dump
  * @tc.desc: Verify dump information after publishing unordered events
+ * @tc.require: I582WG
  */
 HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0400, Function | MediumTest | Level1)
 {
