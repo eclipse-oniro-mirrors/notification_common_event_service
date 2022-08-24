@@ -41,6 +41,7 @@ namespace {
 const std::string EVENT = "com.ces.test.event";
 std::mutex mtx;
 const time_t TIME_OUT_SECONDS_LIMIT = 5;
+constexpr uint16_t SYSTEM_UID = 1000;
 }  // namespace
 
 class SubscriberTest;
@@ -445,4 +446,46 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_015, TestSize.Level1)
     bool result = commonEventListener.IsReady();
 
     EXPECT_EQ(false, result);
+}
+
+/*
+ * tc.number: CommonEventManager_001
+ * tc.name: test Freeze
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke Freeze interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_001, TestSize.Level1)
+{
+    CommonEventManager commonEventManager;
+    bool freeze = commonEventManager.Freeze(SYSTEM_UID);
+    EXPECT_EQ(true, freeze);
+}
+
+/*
+ * tc.number: CommonEventManager_002
+ * tc.name: test Unfreeze
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke Unfreeze interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_002, TestSize.Level1)
+{
+    CommonEventManager commonEventManager;
+    bool unfreeze = commonEventManager.Unfreeze(SYSTEM_UID);
+    EXPECT_EQ(true, unfreeze);
+}
+
+/*
+ * tc.number: CommonEventManager_003
+ * tc.name: test UnfreezeAll
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke UnfreezeAll interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level1)
+{
+    CommonEventManager commonEventManager;
+    bool unfreezeAll = commonEventManager.UnfreezeAll();
+    EXPECT_EQ(true, unfreezeAll);
 }

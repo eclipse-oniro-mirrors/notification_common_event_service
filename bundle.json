@@ -138,6 +138,7 @@
             ],
             "test": [
                 "//base/notification/common_event_service/frameworks/common/test:unittest",
+                "//base/notification/common_event_service/frameworks/core/test/unittest:unittest",
                 "//base/notification/common_event_service/frameworks/native/test/unittest:unittest",
                 "//base/notification/common_event_service/services/test/moduletest:moduletest",
                 "//base/notification/common_event_service/services/test/unittest:unittest",
