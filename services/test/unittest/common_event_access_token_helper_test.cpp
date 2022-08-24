@@ -53,6 +53,7 @@ void CommonEventAccessTokenHelperTest::TearDown(void)
  * @tc.name: IsDlpHap_0100
  * @tc.desc: Judge DLP accessToken
  * @tc.type: FUNC
+ * @tc.require: I582VA
  */
 HWTEST_F(CommonEventAccessTokenHelperTest, IsDlpHap_0100, Level1)
 {

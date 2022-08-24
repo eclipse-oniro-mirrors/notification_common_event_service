@@ -1456,6 +1456,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
  * @tc.number: CES_TC_ModuleTest_4400
  * @tc.name: DLP App publish common event
  * @tc.desc: DLP App publish common event failed.
+ * @tc.require: I582VA
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
 {
