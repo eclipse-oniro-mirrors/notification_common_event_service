@@ -238,6 +238,8 @@ void CommonEventSubscriberManager::DumpState(const std::string &event, const int
 bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
     const std::vector<std::string> &events, const SubscriberRecordPtr &record)
 {
+    EVENT_LOGD("enter");
+
     if (events.size() == 0) {
         EVENT_LOGE("No subscribed events");
         return false;

@@ -32,6 +32,8 @@ class BenchmarkCommonEventManagerService : public benchmark::Fixture {
 public:
     BenchmarkCommonEventManagerService()
     {
+        commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance().get();
+        commonEventManagerService_->Init();
         Iterations(iterations);
         Repetitions(repetitions);
         ReportAggregatesOnly();
@@ -40,17 +42,14 @@ public:
     virtual ~BenchmarkCommonEventManagerService() override = default;
 
     void SetUp(const ::benchmark::State &state) override
-    {
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
-    }
+    {}
     void TearDown(const ::benchmark::State &state) override
-    {
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-    }
+    {}
  
 protected:
     const int32_t repetitions = 3;
     const int32_t iterations = 100;
+    sptr<CommonEventManagerService> commonEventManagerService_;
 };
 
 class CommonEventSubscriberBenchmark : public CommonEventSubscriber {
@@ -76,7 +75,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventSubscribeTestCase001)
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     while (state.KeepRunning()) {
-        bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+        bool result = commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener);
         if (!result) {
             state.SkipWithError("SubscribeCommonEvent failed.");
@@ -100,7 +99,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventSubscribeTestCase002)
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     while (state.KeepRunning()) {
-        bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+        bool result = commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener);
         if (!result) {
             state.SkipWithError("SubscribeCommonEvent failed.");
@@ -124,7 +123,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventSubscribeTestCase003)
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     while (state.KeepRunning()) {
-        bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+        bool result = commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener);
         if (!result) {
             state.SkipWithError("SubscribeCommonEvent failed.");
@@ -148,7 +147,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventUnsubscribeTestCase)(
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     while (state.KeepRunning()) {
-        bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        bool result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
         if (!result) {
             state.SkipWithError("UnsubscribeCommonEvent failed.");
@@ -179,7 +178,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventPublishTestCase)(benc
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     while (state.KeepRunning()) {
-        bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        bool result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
         if (!result) {
             state.SkipWithError("PublishCommonEvent failed.");
@@ -202,7 +201,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventDumpStateTestCase)(be
     auto subscriberPtr = std::make_shared<CommonEventSubscriberBenchmark>(subscribeInfo);
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    bool result = commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener);
     if (!result) {
         state.SkipWithError("DumpState subscribe common event failed.");
@@ -210,7 +209,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventDumpStateTestCase)(be
 
     while (state.KeepRunning()) {
         std::vector<std::string> stateTest;
-        if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(0, "", ALL_USER, stateTest)) {
+        if (commonEventManagerService_->DumpState(0, "", ALL_USER, stateTest)) {
             if (stateTest.size() < 1) {
                 state.SkipWithError("DumpState failed.");
             }

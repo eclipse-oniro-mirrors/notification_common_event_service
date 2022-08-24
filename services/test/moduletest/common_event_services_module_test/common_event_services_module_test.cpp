@@ -69,10 +69,15 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
+    static sptr<CommonEventManagerService> commonEventManagerService_;
 };
+
+sptr<CommonEventManagerService> cesModuleTest::commonEventManagerService_ = nullptr;
 
 void cesModuleTest::SetUpTestCase()
 {
+    commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance().get();
+    commonEventManagerService_->Init();
     handlerPtr = std::make_shared<EventHandler>(EventRunner::Create(true));
     auto task = []() { EventRunner::GetMainEventRunner()->Run(); };
     handlerPtr->PostTask(task);
@@ -80,13 +85,12 @@ void cesModuleTest::SetUpTestCase()
     bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
 }
 
 void cesModuleTest::TearDownTestCase()
 {
+    commonEventManagerService_ = nullptr;
     EventRunner::GetMainEventRunner()->Stop();
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
 }
 
 void cesModuleTest::SetUp()
@@ -110,7 +114,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_0100 end");
 }
@@ -130,7 +134,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_0200 end");
 }
@@ -150,7 +154,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_0300 end");
 }
@@ -169,7 +173,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo1(matchingSkills1);
     auto subscriberPtr1 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo1);
     sptr<CommonEventListener> commonEventListener1 = new CommonEventListener(subscriberPtr1);
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo1, commonEventListener1));
 
     std::string eventName2 = "TESTEVENT2";
@@ -178,7 +182,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo2(matchingSkills2);
     auto subscriberPtr2 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo2);
     sptr<CommonEventListener> commonEventListener2 = new CommonEventListener(subscriberPtr2);
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo2, commonEventListener2));
 
     std::string eventName3 = "TESTEVENT3";
@@ -187,7 +191,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo3(matchingSkills3);
     auto subscriberPtr3 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo3);
     sptr<CommonEventListener> commonEventListener3 = new CommonEventListener(subscriberPtr3);
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo3, commonEventListener3));
     EVENT_LOGE("CES_TC_ModuleTest_0400 end");
 }
@@ -208,7 +212,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_0500 end");
 }
@@ -229,7 +233,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_0600 end");
 }
@@ -250,7 +254,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_0700 end");
 }
@@ -272,9 +276,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level1)
     subscribeInfo.SetPriority(1000);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -299,9 +303,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -324,9 +328,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level1)
     subscribeInfo.SetPriority(100);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -348,9 +352,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -372,9 +376,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -396,9 +400,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -420,9 +424,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo1(matchingSkills4);
     auto subscriberPtr1 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo1);
     sptr<CommonEventListener> commonEventListener1 = new CommonEventListener(subscriberPtr1);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo1, commonEventListener1)) {
-        result1 = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result1 = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener1);
     }
     EXPECT_TRUE(result1);
@@ -434,9 +438,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo2(matchingSkills5);
     auto subscriberPtr2 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo2);
     sptr<CommonEventListener> commonEventListener2 = new CommonEventListener(subscriberPtr2);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo2, commonEventListener2)) {
-        result2 = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result2 = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener2);
     }
     EXPECT_TRUE(result2);
@@ -448,9 +452,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo3(matchingSkills6);
     auto subscriberPtr3 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo3);
     sptr<CommonEventListener> commonEventListener3 = new CommonEventListener(subscriberPtr3);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo3, commonEventListener3)) {
-        result3 = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result3 = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener3);
     }
     EXPECT_TRUE(result3);
@@ -480,9 +484,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
@@ -513,9 +517,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
@@ -624,13 +628,15 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level1)
     testWant.SetAction(eventAction);
     CommonEventData commonEventData(testWant);
     CommonEventPublishInfo publishInfo;
+    publishInfo.SetOrdered(true);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         mtx_.lock();
-        result = CommonEventManager::PublishCommonEvent(commonEventData, publishInfo);
+        result = commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     struct tm startTime = {0};
@@ -674,9 +680,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2100, Function | MediumTest | Level2)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
         mtx_.lock();
     }
@@ -719,13 +725,15 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2200, Function | MediumTest | Level2)
     CommonEventData commonEventData(testWant);
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(stickty);
+    publishInfo.SetOrdered(true);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     bundleObject->MockSetIsSystemApp(false);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -743,6 +751,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2200, Function | MediumTest | Level2)
     }
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     EVENT_LOGE("CES_TC_ModuleTest_2200 end");
     mtx_.unlock();
 }
@@ -770,9 +779,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2300, Function | MediumTest | Level2)
     bundleObject->MockSetIsSystemApp(false);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -791,6 +801,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2300, Function | MediumTest | Level2)
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
     EVENT_LOGE("CES_TC_ModuleTest_2300 end");
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -817,9 +828,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
     bundleObject->MockSetIsSystemApp(false);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -838,6 +850,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
     EVENT_LOGE("CES_TC_ModuleTest_2400 end");
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -859,7 +872,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         result = matchingSkills.Match(wantTest);
     }
@@ -885,14 +898,16 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level1)
     CommonEventData commonEventData(testWant);
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(stickty);
+    publishInfo.SetOrdered(true);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     bundleObject->MockSetIsSystemApp(true);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -911,6 +926,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level1)
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     EVENT_LOGE("CES_TC_ModuleTest_2600 end");
     bundleObject->MockSetIsSystemApp(false);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -932,14 +948,16 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level1)
     CommonEventData commonEventData(testWant);
     CommonEventPublishInfo publishInfo;
     publishInfo.SetSticky(stickty);
+    publishInfo.SetOrdered(true);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     bundleObject->MockSetIsSystemApp(true);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
-        (CommonEventManager::PublishCommonEvent(commonEventData, publishInfo))) {
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -958,6 +976,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level1)
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     EVENT_LOGE("CES_TC_ModuleTest_2700 end");
     bundleObject->MockSetIsSystemApp(false);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -984,7 +1003,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
         CommonEventManager::PublishCommonEvent(commonEventData, publishInfo)) {
         result = true;
@@ -992,7 +1011,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level1)
     EXPECT_TRUE(result);
 
     CommonEventData stickyData;
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->GetStickyCommonEvent(eventAction, stickyData);
+    commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData);
     EXPECT_FALSE(eventActionStr == stickyData.GetWant().GetAction());
     EVENT_LOGE("CES_TC_ModuleTest_2800 end");
 }
@@ -1021,9 +1040,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener) &&
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER)) {
         result = true;
     }
@@ -1031,7 +1050,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
 
     CommonEventData stickyData;
     bool stickyResult =
-        OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->GetStickyCommonEvent(eventAction, stickyData);
+        commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData);
     EXPECT_FALSE(stickyResult);
     EVENT_LOGE("CES_TC_ModuleTest_2900 end");
 }
@@ -1053,7 +1072,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_3000 end");
 }
@@ -1077,7 +1096,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_3100 end");
 }
@@ -1103,7 +1122,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_3200 end");
 }
@@ -1125,9 +1144,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level1)
     subscribeInfo.SetPermission(permissin);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -1153,9 +1172,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level1)
     subscribeInfo.SetPriority(1);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -1183,9 +1202,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level1)
     subscribeInfo.SetDeviceId(deviceId);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -1216,9 +1235,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level1)
     publishInfo.SetSubscriberPermissions(permissions);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
@@ -1251,9 +1270,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level1)
     publishInfo.SetSubscriberPermissions(permissions);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
@@ -1288,9 +1307,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level1)
     publishInfo.SetSubscriberPermissions(permissions);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
@@ -1314,7 +1333,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
         subscribeInfo, commonEventListener));
     EVENT_LOGE("CES_TC_ModuleTest_3900 end");
 }
@@ -1336,9 +1355,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level1)
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(
+        result = commonEventManagerService_->UnsubscribeCommonEvent(
             commonEventListener);
     }
     EXPECT_TRUE(result);
@@ -1366,9 +1385,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level1)
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
@@ -1392,14 +1411,16 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level1)
     testWant.SetAction(eventAction);
     CommonEventData commonEventData(testWant);
     CommonEventPublishInfo publishInfo;
+    publishInfo.SetOrdered(true);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         mtx_.lock();
-        result = CommonEventManager::PublishCommonEvent(commonEventData, publishInfo);
+        result = commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
     struct tm startTime = {0};
@@ -1441,12 +1462,12 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
         auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
         sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
         cesListenerSet.insert(commonEventListener);
-        EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+        EXPECT_TRUE(commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener));
     }
 
     for (auto it = cesListenerSet.begin(); it != cesListenerSet.end(); ++it) {
-        EXPECT_TRUE(OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnsubscribeCommonEvent(*it));
+        EXPECT_TRUE(commonEventManagerService_->UnsubscribeCommonEvent(*it));
     }
 
     EVENT_LOGE("CES_TC_ModuleTest_4300 end");
@@ -1475,15 +1496,15 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    if (OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->SubscribeCommonEvent(
+    if (commonEventManagerService_->SubscribeCommonEvent(
             subscribeInfo, commonEventListener)) {
         IPCSkeleton::SetCallingTokenID(1);
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
         EXPECT_FALSE(result);
 
         IPCSkeleton::SetCallingTokenID(0);
-        result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->PublishCommonEvent(
+        result = commonEventManagerService_->PublishCommonEvent(
             commonEventData, publishInfo, commonEventListener, UNDEFINED_USER);
     }
     EXPECT_TRUE(result);
