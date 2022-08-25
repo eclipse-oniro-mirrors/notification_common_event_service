@@ -28,17 +28,12 @@
 
 namespace OHOS {
 namespace EventFwk {
-const bool REGISTER_RESULT =
-    SystemAbility::MakeAndRegisterAbility(DelayedSingleton<CommonEventManagerService>::GetInstance().get());
-
 CommonEventManagerService::CommonEventManagerService()
-    : SystemAbility(COMMON_EVENT_SERVICE_ID, true),
-      serviceRunningState_(ServiceRunningState::STATE_NOT_START),
+    : serviceRunningState_(ServiceRunningState::STATE_NOT_START),
       runner_(nullptr),
       handler_(nullptr)
 {
     EVENT_LOGI("instance created");
-    innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
 }
 
 CommonEventManagerService::~CommonEventManagerService()
@@ -46,47 +41,10 @@ CommonEventManagerService::~CommonEventManagerService()
     EVENT_LOGI("instance destroyed");
 }
 
-void CommonEventManagerService::OnStart()
-{
-    EVENT_LOGI("ready to start service");
-
-    if (serviceRunningState_ == ServiceRunningState::STATE_RUNNING) {
-        EVENT_LOGW("Failed to start service since it's already running");
-        return;
-    }
-
-    ErrCode errCode = Init();
-    if (FAILED(errCode)) {
-        EVENT_LOGE("Failed to init, errCode: %{public}08x", errCode);
-        return;
-    }
-
-    serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
-
-    EVENT_LOGI("start service success");
-}
-
-void CommonEventManagerService::OnStop()
-{
-    EVENT_LOGI("ready to stop service");
-
-    serviceRunningState_ = ServiceRunningState::STATE_NOT_START;
-
-    if (handler_) {
-        handler_.reset();
-    }
-
-    if (runner_) {
-        runner_.reset();
-    }
-
-    EVENT_LOGI("stop service success");
-}
-
 ErrCode CommonEventManagerService::Init()
 {
     EVENT_LOGI("ready to init");
-
+    innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     if (!innerCommonEventManager_) {
         EVENT_LOGE("Failed to init without inner service");
         return ERR_INVALID_OPERATION;
@@ -103,12 +61,7 @@ ErrCode CommonEventManagerService::Init()
         return ERR_INVALID_OPERATION;
     }
 
-    if (!Publish(this)) {
-        EVENT_LOGE("Failed to publish CommonEventManagerService to SystemAbilityMgr");
-        return ERR_INVALID_OPERATION;
-    }
-
-    EVENT_LOGI("init success");
+    serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
 
     return ERR_OK;
 }

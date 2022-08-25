@@ -23,7 +23,6 @@
 #define private public
 #define protected public
 #include "common_event_control_manager.h"
-#include "common_event_manager_service.h"
 #undef private
 #undef protected
 
@@ -710,14 +709,10 @@ public:
 };
 
 void ActsCESDataTest::SetUpTestCase(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStart();
-}
+{}
 
 void ActsCESDataTest::TearDownTestCase(void)
-{
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->OnStop();
-}
+{}
 
 void ActsCESDataTest::SetUp(void)
 {}
