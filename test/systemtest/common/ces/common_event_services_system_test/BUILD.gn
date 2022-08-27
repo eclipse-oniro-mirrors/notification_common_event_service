@@ -19,17 +19,13 @@ module_output_path = "common_event_service/systemtest"
 ohos_systemtest("cesSystemTest") {
   module_out_path = module_output_path
 
-  sources = [
-    "${common_event_service_path}/test/mock/mock_ipc.cpp",
-    "common_event_services_system_test.cpp",
-  ]
+  sources = [ "common_event_services_system_test.cpp" ]
 
   configs = [ "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config" ]
 
   include_dirs = [
     "//commonlibrary/c_utils/base/include",
     "${services_path}/include",
-    "${common_event_service_path}/test/mock/include",
   ]
 
   cflags = []
