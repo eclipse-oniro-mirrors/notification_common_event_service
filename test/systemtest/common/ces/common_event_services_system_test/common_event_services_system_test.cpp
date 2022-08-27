@@ -28,7 +28,6 @@
 #include "common_event_support.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
-#include "mock_ipc_skeleton.h"
 
 #include <gtest/gtest.h>
 
@@ -55,9 +54,6 @@ const int32_t g_CODE_COMPARE2 = 2;
 const int32_t g_CODE_COMPARE3 = 200;
 const int32_t PRIORITY_HIGH = 80;
 const int32_t PRIORITY_LOW = 20;
-
-const uint32_t NON_SYSTEM_APP_UID = 20010099;
-const uint32_t NON_NATIVE_TOKEN = 1;
 }  // namespace
 
 class CommonEventServicesSystemTest : public CommonEventSubscriber {
@@ -1586,7 +1582,7 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0400, Function | MediumTest | Level1)
         }
     }
     // expect the subscriber could receive the event within 5 seconds.
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }
@@ -1762,12 +1758,12 @@ HWTEST_F(cesSystemTest, CES_SubscriptionEventTheme_0400, Function | MediumTest |
  * @tc.name: PublishCommonEvent
  * @tc.desc: The publisher can send normally, but does not have permission
  * to send system events and cannot receive published system events
+ * This test case has been covered in the module test, and the system test
+ * cannot simulate the non-subsystem scenario
  */
 HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
 {
     GTEST_LOG_(INFO) << "start CES_SendEvent_1300";
-    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
-    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
     bool sysResult = false;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
 
@@ -1802,7 +1798,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
         }
     }
     // Unable to receive published system events, failed to send system events
-    EXPECT_TRUE(sysResult);
+    EXPECT_FALSE(sysResult);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
     GTEST_LOG_(INFO) << "end CES_SendEvent_1300";
@@ -1813,14 +1809,13 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1300, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: The publisher can send normally, but does not have permission
  * to send system events and cannot receive published system events
+ * This test case has been covered in the module test, and the system test
+ * cannot simulate the non-subsystem scenario
  */
 HWTEST_F(cesSystemTest, CES_SendEvent_1400, Function | MediumTest | Level1)
 {
     bool sysResult = false;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
-
-    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
-    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
 
     Want wantTest;
     wantTest.SetAction(eventName);
@@ -1853,7 +1848,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1400, Function | MediumTest | Level1)
         }
     }
     // Unable to receive published system events, failed to send system events
-    EXPECT_TRUE(sysResult);
+    EXPECT_FALSE(sysResult);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }
@@ -1863,14 +1858,13 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1400, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: The publisher can send normally, but does not have permission
  * to send system events and cannot receive published system events
+ * This test case has been covered in the module test, and the system test
+ * cannot simulate the non-subsystem scenario
  */
 HWTEST_F(cesSystemTest, CES_SendEvent_1500, Function | MediumTest | Level1)
 {
     bool sysResult = false;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
-
-    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
-    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
 
     Want wantTest;
     wantTest.SetAction(eventName);
@@ -1903,7 +1897,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1500, Function | MediumTest | Level1)
         }
     }
     // Unable to receive published system events, failed to send system events
-    EXPECT_TRUE(sysResult);
+    EXPECT_FALSE(sysResult);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }
@@ -1912,14 +1906,13 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1500, Function | MediumTest | Level1)
  * @tc.number: CES_SendEvent_1600
  * @tc.name: PublishCommonEvent
  * @tc.desc: publisher cannot receive published system events
+ * This test case has been covered in the module test, and the system test
+ * cannot simulate the non-subsystem scenario
  */
 HWTEST_F(cesSystemTest, CES_SendEvent_1600, Function | MediumTest | Level1)
 {
     bool result = true;
     std::string eventName = CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED;
-
-    IPCSkeleton::SetCallingTokenID(NON_NATIVE_TOKEN);
-    IPCSkeleton::SetCallingUid(NON_SYSTEM_APP_UID);
 
     Want wantTest;
     wantTest.SetAction(eventName);
@@ -1950,7 +1943,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1600, Function | MediumTest | Level1)
         }
     }
     // System events published by ordinary publishers, the publication fails, and the receiver cannot receive it
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }
