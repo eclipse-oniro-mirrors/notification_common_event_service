@@ -19,7 +19,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-constexpr unsigned int SYSTEM_UID = 1000;
+constexpr int32_t SYSTEM_UID = 1000;
 constexpr unsigned int PERMISSION_GRANTED = 0;
 constexpr unsigned int DLP_PERMISSION_GRANTED = 1;
 }  // namespace Notification
