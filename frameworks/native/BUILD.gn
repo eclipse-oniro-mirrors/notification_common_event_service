@@ -59,7 +59,6 @@ ohos_shared_library("cesfwk_innerkits") {
 
   external_deps = [
     "ability_base:want",
-    "bundle_framework:appexecfwk_base",
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
