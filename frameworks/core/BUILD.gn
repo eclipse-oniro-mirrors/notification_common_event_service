@@ -62,7 +62,6 @@ ohos_shared_library("cesfwk_core") {
 
   external_deps = [
     "ability_base:want",
-    "bundle_framework:appexecfwk_base",
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hitrace_native:hitrace_meter",
