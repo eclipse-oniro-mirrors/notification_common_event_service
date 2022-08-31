@@ -591,14 +591,9 @@ std::shared_ptr<OHOS::AppExecFwk::IAbilityEvent> GetParamIAbilityEvent()
     return make_shared<TestAbilityEvent>();
 }
 
-sptr<OHOS::AppExecFwk::AbilityThread> GetParamAbilityThread()
-{
-    return sptr<OHOS::AppExecFwk::AbilityThread>();
-}
-
 std::shared_ptr<OHOS::AppExecFwk::AbilityHandler> GetParamAbilityHandler()
 {
-    return make_shared<OHOS::AppExecFwk::AbilityHandler>(GetParamEventRunner(), GetParamAbilityThread());
+    return make_shared<OHOS::AppExecFwk::AbilityHandler>(GetParamEventRunner());
 }
 
 std::shared_ptr<OHOS::AppExecFwk::Ability> GetParamAbility()

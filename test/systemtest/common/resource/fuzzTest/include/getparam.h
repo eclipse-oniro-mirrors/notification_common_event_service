@@ -54,6 +54,7 @@
 #include "uri.h"
 #include "want.h"
 #include "bundle_mgr_proxy.h"
+#include "ohos_application.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -121,7 +122,6 @@ CommonEventSubscribeInfo::ThreadMode GetParamThreadMode();
 
 std::shared_ptr<OHOS::AppExecFwk::AbilityContext> GetParamAbilityContext();
 std::shared_ptr<OHOS::AppExecFwk::IAbilityEvent> GetParamIAbilityEvent();
-sptr<OHOS::AppExecFwk::AbilityThread> GetParamAbilityThread();
 std::shared_ptr<OHOS::AppExecFwk::AbilityHandler> GetParamAbilityHandler();
 std::shared_ptr<OHOS::AppExecFwk::AbilityStartSetting> GetParamAbilityStartSetting();
 std::shared_ptr<OHOS::AppExecFwk::Ability> GetParamAbility();
