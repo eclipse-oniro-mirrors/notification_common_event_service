@@ -66,7 +66,6 @@ const std::string EVENTCASE3 = "com.ces.test.event.case3";
 const std::string INNITDATA = "com.ces.test.initdata";
 const std::string CHANGEDATA = "com.ces.test.changedata";
 const std::string CHANGEDATA2 = "com.ces.test.changedata2";
-constexpr uint8_t PUBLISH_SLEEP = 10;
 constexpr uid_t UID = 10;
 constexpr uid_t UID2 = 11;
 constexpr uint8_t STATE_INDEX1 = 1;
@@ -674,7 +673,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0100, Function | MediumTest | 
     PublishUnorderedEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
     PublishUnorderedEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -706,7 +705,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0200, Function | MediumTest | 
     PublishStickyEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
     PublishStickyEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -728,7 +727,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0300, Function | MediumTest | 
     PublishStickyEvent(EVENT, TYPE, FLAG, PERMISSION);
     PublishStickyEvent(EVENT2, TYPE2, FLAG2, PERMISSION2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -763,7 +762,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0400, Function | MediumTest | 
     GetInnerCommonEventManager()->SubscribeCommonEvent(
         subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -797,7 +796,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0500, Function | MediumTest | 
     GetInnerCommonEventManager()->SubscribeCommonEvent(
         subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -830,7 +829,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0600, Function | MediumTest | 
     GetInnerCommonEventManager()->SubscribeCommonEvent(
         subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -862,7 +861,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0700, Function | MediumTest | 
     GetInnerCommonEventManager()->SubscribeCommonEvent(
         subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -893,7 +892,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0800, Function | MediumTest | 
     GetInnerCommonEventManager()->SubscribeCommonEvent(
         subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -924,7 +923,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_0900, Function | MediumTest | 
     GetInnerCommonEventManager()->SubscribeCommonEvent(
         subscribeInfo, listener->AsObject(), curTime, PID, SYSTEM_UID, tokenID, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), EVENT3, ALL_USER, state);
@@ -956,7 +955,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1000, TestSize.Level1)
     PublishStickyEvent(EVENT, TYPE, FLAG, PERMISSION);
     PublishStickyEvent(EVENT2, TYPE2, FLAG2, PERMISSION2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), EVENT2, ALL_USER, state);
@@ -977,7 +976,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1100, Function | MediumTest | 
     /* Publish */
     PublishStickyEvent(EVENT, TYPE, FLAG, PERMISSION);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -995,7 +994,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1200, Function | MediumTest | 
     /* Publish */
     PublishStickyEvent(EVENT, "", FLAG, PERMISSION);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1013,7 +1012,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1300, Function | MediumTest | 
     /* Publish */
     PublishStickyEvent(EVENT, "", 0, PERMISSION);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1031,7 +1030,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1400, Function | MediumTest | 
     /* Publish */
     PublishStickyEvent(EVENT, "", 0, PERMISSION);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1049,7 +1048,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1500, Function | MediumTest | 
     /* Publish */
     PublishStickyEvent(EVENT, "", 0, PERMISSION);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1086,7 +1085,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1600, Function | MediumTest | 
     GetInnerCommonEventManager()->PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1119,7 +1118,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1700, Function | MediumTest | 
     GetInnerCommonEventManager()->PublishCommonEvent(
         data, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1163,7 +1162,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
         std::make_shared<SubscriberTest>(subscribeInfo, GetInnerCommonEventManager());
     // subscribe a common event
     EXPECT_TRUE(SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
-    sleep(1);
+    usleep(50000);
 
     // make another subscriber info
     CommonEventSubscribeInfo subscribeInfo2(matchingSkills);
@@ -1174,7 +1173,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
         std::make_shared<SubscriberTest2>(subscribeInfo2, GetInnerCommonEventManager());
     // subscribe another event
     EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
-    sleep(1);
+    usleep(50000);
 
     std::shared_ptr<SubscriberTestLast> subscriber = std::make_shared<SubscriberTestLast>();
 
@@ -1186,7 +1185,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_1900, TestSize.Level1)
     // publish order event
     EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
 
-    sleep(PUBLISH_SLEEP);
+    usleep(500000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1218,7 +1217,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
         std::make_shared<SubscriberTest>(subscribeInfo, GetInnerCommonEventManager());
     // subscribe a common event
     EXPECT_TRUE(SubscribeCommonEvent(subscriberTest, UID, commonEventListener));
-    sleep(1);
+    usleep(50000);
 
     // make another subscriber info
     CommonEventSubscribeInfo subscribeInfo2(matchingSkills);
@@ -1229,7 +1228,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
         std::make_shared<SubscriberTest2>(subscribeInfo2, GetInnerCommonEventManager());
     // subscribe another event
     EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
-    sleep(1);
+    usleep(50000);
 
     std::shared_ptr<SubscriberTestLast> subscriber = std::make_shared<SubscriberTestLast>();
 
@@ -1242,15 +1241,15 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
         // publish order event
         SetPublishDataByOrdered2(data, publishInfo);
         EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
-        sleep(1);
+        usleep(50000);
 
         // publish unorder event
         SetPublishDataByUnordered(data, publishInfo);
         EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
-        sleep(1);
+        usleep(50000);
         count++;
     }
-    sleep(PUBLISH_SLEEP);
+    usleep(500000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
@@ -1276,7 +1275,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0100, Function | Medi
     EXPECT_NE(nullptr, listener);
     EXPECT_NE(nullptr, listener2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::SUBSCRIBER), "", ALL_USER, state);
@@ -1309,7 +1308,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0200, Function | Medi
     PublishStickyEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
     PublishStickyEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::STICKY), "", ALL_USER, state);
@@ -1342,7 +1341,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0300, Function | Medi
     PublishUnorderedEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
     PublishUnorderedEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::PENDING), "", ALL_USER, state);
@@ -1374,7 +1373,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0400, Function | Medi
     PublishUnorderedEvent(EVENT, TYPE, CODE, DATA, PERMISSION);
     PublishUnorderedEvent(EVENT2, TYPE2, CODE2, DATA2, PERMISSION2);
 
-    sleep(1);
+    usleep(50000);
 
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::HISTORY), "", ALL_USER, state);
