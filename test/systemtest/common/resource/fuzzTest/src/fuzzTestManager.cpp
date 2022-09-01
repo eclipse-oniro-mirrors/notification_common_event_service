@@ -1895,8 +1895,7 @@ void fuzzTestManager::RegisterAbility()
     callFunctionMap_.emplace("AbilityInitAOAI", []() {
         std::shared_ptr<OHOS::AppExecFwk::Ability> temp = GetParamAbility();
 
-        auto server = sptr<OHOS::AppExecFwk::AbilityThread>(new OHOS::AppExecFwk::AbilityThread());
-        auto ah = std::make_shared<OHOS::AppExecFwk::AbilityHandler>(OHOS::AppExecFwk::EventRunner::Create(), server);
+        auto ah = std::make_shared<OHOS::AppExecFwk::AbilityHandler>(OHOS::AppExecFwk::EventRunner::Create());
         temp->Init(std::make_shared<OHOS::AppExecFwk::AbilityInfo>(),
             std::make_shared<OHOS::AppExecFwk::OHOSApplication>(),
             ah,
