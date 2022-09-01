@@ -48,9 +48,8 @@ constexpr uint8_t PID = 0;
 constexpr uint16_t SYSTEM_UID = 1000;
 constexpr uid_t UID = 1;
 constexpr uid_t UID2 = 2;
-constexpr uint8_t PUBLISH_SLEEP = 1;
-constexpr uint8_t FREEZE_SLEEP = 10;
-constexpr uint8_t FREEZE_SLEEP2 = 120;
+constexpr uint8_t FREEZE_SLEEP = 1;
+constexpr uint8_t FREEZE_SLEEP2 = 12;
 bool isFreeze_uid = false;
 bool isFreeze_uid2 = false;
 std::mutex mtx;
@@ -435,13 +434,13 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
         CommonEventPublishInfo publishInfo;
         publishInfo.SetOrdered(true);
 
-        sleep(PUBLISH_SLEEP);
+        usleep(100000);
 
         // publish order event
         EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
     }
 
-    sleep(PUBLISH_SLEEP);
+    usleep(100000);
     mtx.unlock();
 }
 
@@ -495,13 +494,13 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
         data.SetData(INNITDATA);
         data.SetCode(INNITCODE);
         CommonEventPublishInfo publishInfo;
-        sleep(PUBLISH_SLEEP);
+        usleep(100000);
 
         // publish order event
         EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
     }
 
-    sleep(PUBLISH_SLEEP);
+    usleep(100000);
     mtx.unlock();
 }
 }  // namespace

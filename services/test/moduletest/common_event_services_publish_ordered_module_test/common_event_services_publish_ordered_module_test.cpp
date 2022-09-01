@@ -1155,37 +1155,37 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_09
 /*
  * @tc.number: CommonEventPublishOrderedEventTest_1000
  * @tc.name: verify Freeze
- * @tc.desc: verify Freeze succeed
+ * @tc.desc: don't set innerCommonEventManager_ verify Freeze false
  * @tc.require: issueI5NGO7
  */
 HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_1000, Function | MediumTest | Level1)
 {
     const uint16_t SYSTEM_UID = 1000;
     bool freeze = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Freeze(SYSTEM_UID);
-    EXPECT_EQ(true, freeze);
+    EXPECT_EQ(false, freeze);
 }
 
 /*
  * @tc.number: CommonEventPublishOrderedEventTest_1100
  * @tc.name: verify Unfreeze
- * @tc.desc: verify Unfreeze succeed
+ * @tc.desc: don't set innerCommonEventManager_ verify Unfreeze false
  * @tc.require: issueI5NGO7
  */
 HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_1100, Function | MediumTest | Level1)
 {
     const uint16_t SYSTEM_UID = 1000;
     bool unfreeze = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Unfreeze(SYSTEM_UID);
-    EXPECT_EQ(true, unfreeze);
+    EXPECT_EQ(false, unfreeze);
 }
 
 /*
  * @tc.number: CommonEventPublishOrderedEventTest_1200
  * @tc.name: verify UnfreezeAll
- * @tc.desc: verify UnfreezeAll succeed
+ * @tc.desc: don't set innerCommonEventManager_ verify UnfreezeAll false
  * @tc.require: issueI5NGO7
  */
 HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_1200, Function | MediumTest | Level1)
 {
     bool unfreezeAll = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnfreezeAll();
-    EXPECT_EQ(true, unfreezeAll);
+    EXPECT_EQ(false, unfreezeAll);
 }
