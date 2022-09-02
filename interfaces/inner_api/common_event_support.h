@@ -1146,6 +1146,12 @@ public:
      */
     static const std::string COMMON_EVENT_INCOMING_CALL_MISSED;
 
+    /**
+     * Indicate the result of quick fix apply.
+     * This common event can be triggered only by system.
+     */
+    static const std::string COMMON_EVENT_QUICK_FIX_APPLY_RESULT;
+
 public:
     CommonEventSupport();
 

@@ -1094,7 +1094,14 @@ declare namespace commonEvent {
      * This is a protected common event that can only be sent by system.
      * @since 9
      */
-    COMMON_EVENT_INCOMING_CALL_MISSED = "usual.event.INCOMING_CALL_MISSED"
+    COMMON_EVENT_INCOMING_CALL_MISSED = "usual.event.INCOMING_CALL_MISSED",
+
+    /**
+     * Indicate the result of quick fix apply.
+     * This common event can be triggered only by system.
+     * @since 9
+     */
+    COMMON_EVENT_QUICK_FIX_APPLY_RESULT = "usual.event.QUICK_FIX_APPLY_RESULT"
   }
 }
 
