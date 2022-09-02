@@ -67,7 +67,7 @@ import CommonEvent from '@ohos.commonevent';
   | event    | 只读     | string              | 是   | 表示要发布的公共事件的名称     |
   | callback | 只读     | AsyncCallback<void> | 是   | 表示发布公共事件方法的回调方法 |
 
-- 
+-
 
   返回值为void
 
@@ -83,7 +83,7 @@ function PublishCallBack(err) {
 CommonEvent.publish("publish_event", PublishCallBack);
 ```
 
-###  
+###
 
 #### CommonEvent.publish(event: string, options: CommonEventPublishData, callback: AsyncCallback<void>)
 
@@ -108,8 +108,8 @@ CommonEvent.publish("publish_event", PublishCallBack);
   | data                  | 只读     | string        | 否   | 表示公共事件的自定义结果数据 |
   | subscriberPermissions | 只读     | Array<string> | 否   | 表示订阅者所需的权限         |
   | isOrdered             | 只读     | bool          | 否   | 表示是否是有序公共事件       |
-  
-- 
+
+-
 
   返回值为void
 
@@ -180,7 +180,7 @@ CommonEvent.publish("publish_event", CommonEventPublishData, PublishCallBack);
   | userId              | 只读     | int           | 否   | 表示用户ID。此参数是可选的，默认值当前用户的ID。如果指定了此参数，则该值必须是系统中现有的用户ID。 |
   | priority            | 只读     | int           | 否   | 表示订阅者的优先级，范围为-100~1000。                        |
 
-- 
+-
 
   返回值为void
 
@@ -224,7 +224,7 @@ CommonEvent.createSubscriber(CommonEventSubscribeInfo, CreateSubscriberCallBack)
   | userId              | 只读     | int           | 否   | 表示用户ID。此参数是可选的，默认值当前用户的ID。如果指定了此参数，则该值必须是系统中现有的用户ID。 |
   | priority            | 只读     | int           | 否   | 表示订阅者的优先级。值的范围是-100到1000                     |
 
-- 
+-
 
   返回值为Promise<CommonEventSubscriber>
 
@@ -266,7 +266,7 @@ CommonEvent.createSubscriber(CommonEventSubscribeInfo).then((data) => {
   | code       | 只读     | int    | 否   | 表示公共事件的结果代码，用于传递int类型的数据           |
   | data       | 只读     | string | 否   | 表示公共事件的自定义结果数据，用于传递string 类型的数据 |
 
-- 
+-
 
   返回值为void
 
@@ -276,7 +276,7 @@ CommonEvent.createSubscriber(CommonEventSubscribeInfo).then((data) => {
 
     ```js
     import CommonEvent from '@ohos.commonevent'
-    
+
     var CommonEventSubscriber;
     //订阅者信息
     var CommonEventSubscribeInfo = {
@@ -296,12 +296,12 @@ CommonEvent.createSubscriber(CommonEventSubscribeInfo).then((data) => {
     //创建订阅者
     CommonEvent.createSubscriber(CommonEventSubscribeInfo, CreateSubscriberCallBack);
     ```
-  
+
   * 有序事件
 
     ```js
   import CommonEvent from '@ohos.commonevent'
-    
+
     var CommonEventSubscriber1;
     var CommonEventSubscriber2;
     //订阅者信息
@@ -339,7 +339,7 @@ CommonEvent.createSubscriber(CommonEventSubscribeInfo).then((data) => {
         console.info("==========================>SubscriberCallBack2=======================>");
         data.finishCommonEvent(finishCommonEventCallBack)
     }
-    
+
     //创建订阅者1回调
     function CreateSubscriberCallBack1(err, data) {
     	console.info("==========================>CreateSubscriberCallBack1=======================>");
@@ -352,12 +352,12 @@ CommonEvent.createSubscriber(CommonEventSubscribeInfo).then((data) => {
     	CommonEventSubscriber2 = data;
     	await CommonEvent.subscribe(CommonEventSubscriber2, SubscriberCallBack2);
     }
-    
+
     //创建订阅者1
     CommonEvent.createSubscriber(CommonEventSubscribeInfo1, CreateSubscriberCallBack1);
     //创建订阅者2
     CommonEvent.createSubscriber(CommonEventSubscribeInfo2, CreateSubscriberCallBack2);
-    
+
     //发布信息
     var CommonEventPublishData = {
         bundleName: "publish_event_bundleName",
@@ -384,7 +384,7 @@ CommonEvent.createSubscriber(CommonEventSubscribeInfo).then((data) => {
   | subscriber | 只读     | CommonEventSubscriber | 是   | 表示订阅者对象         |
   | callback   | 只读     | AsyncCallback<void>   | 否   | 表示取消订阅的回调方法 |
 
-- 
+-
 
   返回值为void
 
@@ -572,6 +572,7 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_ACCOUNT_DELETED                                 | usual.event.data.ACCOUNT_DELETED                            | ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS |
 | COMMON_EVENT_FOUNDATION_READY                                | common.event.FOUNDATION_READY                               | ohos.permission.RECEIVER_STARTUP_COMPLETED     |
 | COMMON_EVENT_AIRPLANE_MODE_CHANGED                           | usual.event.AIRPLANE_MODE                                   | 无                                             |
+| COMMON_EVENT_QUICK_FIX_APPLY_RESULT<sup>9+<sup> | usual.event.QUICK_FIX_APPLY_RESULT | 无 |
 
 ## 相关仓
 

@@ -1255,6 +1255,12 @@ const std::string CommonEventSupport::COMMON_EVENT_SIGNAL_INFO_CHANGED = "usual.
  */
 const std::string CommonEventSupport::COMMON_EVENT_INCOMING_CALL_MISSED = "usual.event.INCOMING_CALL_MISSED";
 
+/**
+ * Indicate the result of quick fix apply.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT = "usual.event.QUICK_FIX_APPLY_RESULT";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -1428,6 +1434,8 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NETWORK_STATE_CHANGED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_INCOMING_CALL_MISSED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT);
 
     return;
 }
