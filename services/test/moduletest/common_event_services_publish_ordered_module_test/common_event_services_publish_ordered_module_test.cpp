@@ -1189,3 +1189,74 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_12
     bool unfreezeAll = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnfreezeAll();
     EXPECT_EQ(false, unfreezeAll);
 }
+
+/*
+ * @tc.number: AsyncCommonEventResult_0100
+ * @tc.name: verify IsStickyCommonEvent
+ * @tc.desc: Invoke IsStickyCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CesPublishOrderedEventModuleTest, AsyncCommonEventResult_0100, Function | MediumTest | Level1)
+{
+    std::shared_ptr<AsyncCommonEventResult> result = std::make_shared<AsyncCommonEventResult>(
+        11, "aa", true, true, nullptr);
+    if (result != nullptr) {
+        bool isStickyCommonEvent = result->IsStickyCommonEvent();
+        EXPECT_EQ(true, isStickyCommonEvent);
+    }
+}
+
+/*
+ * @tc.number: CommonEventControlManager_0100
+ * @tc.name: verify PublishAllFreezeCommonEvents
+ * @tc.desc: Invoke PublishAllFreezeCommonEvents interface verify whether it is normal
+ */
+HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventControlManager_0100, Function | MediumTest | Level1)
+{
+    CommonEventControlManager commonEventControlManager;
+    bool result = commonEventControlManager.PublishAllFreezeCommonEvents();
+    EXPECT_EQ(true, result);
+}
+
+/*
+ * @tc.number: CommonEventManagerService_0100
+ * @tc.name: verify DumpState
+ * @tc.desc: don't set innerCommonEventManager_ verify DumpState false
+ */
+HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0100, Function | MediumTest | Level1)
+{
+    const uint8_t DUMPTYPE = 10;
+    const std::string EVENT = "aa";
+    const int32_t USERID = 20;
+    std::vector<std::string> state;
+    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(
+        DUMPTYPE, EVENT, USERID, state);
+    EXPECT_EQ(false, result);
+}
+
+/*
+ * @tc.number: CommonEventManagerService_0200
+ * @tc.name: verify FinishReceiver
+ * @tc.desc: don't set innerCommonEventManager_ verify FinishReceiver false
+ */
+HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0200, Function | MediumTest | Level1)
+{
+    const std::string RECEIVERDATA = "aa";
+    const int32_t CODE = 20;
+    const bool ABORTEVENT = true;
+    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->FinishReceiver(
+        nullptr, CODE, RECEIVERDATA, ABORTEVENT);
+    EXPECT_EQ(false, result);
+}
+
+/*
+ * @tc.number: CommonEventManagerService_0300
+ * @tc.name: verify Dump
+ * @tc.desc: don't set Dump verify FinishReceiver false
+ */
+HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0300, Function | MediumTest | Level1)
+{
+    const int fd = 22;
+    std::vector<std::u16string> args;
+    int result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Dump(fd, args);
+    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+}
