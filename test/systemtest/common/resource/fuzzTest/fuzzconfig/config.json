@@ -298,7 +298,7 @@
         "DumpInfos": [],
         "IsApplicationEnabled": [],
         "SetApplicationEnabled": [],
-        "GetBundleInstaller": [],
+        "GetBundleInstaller": []
     },
     "OHOSApplication": {
         "DumpApplication": [],
