@@ -1308,7 +1308,8 @@ void fuzzTestManager::RegisterBundleMgrProxy()
 
     callFunctionMap_["BundleMgrProxyIsApplicationEnabled"] = []() {
         std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        temp->IsApplicationEnabled(GetStringParam());
+        bool isEnable = false;
+        temp->IsApplicationEnabled(GetStringParam(), isEnable);
     };
 
     callFunctionMap_["BundleMgrProxySetApplicationEnabled"] = []() {
