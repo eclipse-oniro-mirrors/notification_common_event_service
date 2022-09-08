@@ -28,6 +28,8 @@
 #include "common_event_support.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 #include <gtest/gtest.h>
 
@@ -146,7 +148,25 @@ public:
 };
 
 void cesSystemTest::SetUpTestCase()
-{}
+{
+    uint64_t tokenId;
+    const char **perms = new const char *[1];
+    perms[0] = "ohos.permission.COMMONEVEVT_STICKY"; // system_core
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = 1,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .aplStr = "system_basic",
+    };
+
+    infoInstance.processName = "SetUpTestCase";
+    tokenId = GetAccessTokenId(&infoInstance);
+    SetSelfTokenID(tokenId);
+    delete[] perms;
+}
 
 void cesSystemTest::TearDownTestCase()
 {}
@@ -1675,8 +1695,8 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0600, Function | MediumTest | Level1)
             break;
         }
     }
-    // The publisher sets the Entity, the receiver must set it, otherwise the receiver will not receive the information
-    EXPECT_FALSE(result);
+    // expect the subscriber could receive the event within 5 seconds.
+    EXPECT_TRUE(result);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }
