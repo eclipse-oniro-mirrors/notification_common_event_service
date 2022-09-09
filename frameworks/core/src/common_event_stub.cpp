@@ -236,6 +236,14 @@ bool CommonEventStub::DumpState(const uint8_t &dumpType, const std::string &even
     return true;
 }
 
+bool CommonEventStub::FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData,
+    const bool &abortEvent)
+{
+    EVENT_LOGD("called");
+
+    return true;
+}
+
 bool CommonEventStub::Freeze(const uid_t &uid)
 {
     EVENT_LOGD("called");

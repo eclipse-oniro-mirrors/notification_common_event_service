@@ -105,6 +105,18 @@ public:
         std::vector<std::string> &state) override;
 
     /**
+     * Finishes the receiver for the ordered common event.
+     *
+     * @param proxy Indicates the current subscriber object.
+     * @param code Indicates the result code.
+     * @param receiverData Indicates the result data.
+     * @param abortEvent Indicates whether the current ordered common event should be aborted.
+     * @return Returns true if successful; false otherwise.
+     */
+    bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code,
+        const std::string &receiverData, const bool &abortEvent) override;
+
+    /**
      * Freezes the specified process.
      *
      * @param uid Indicates the uid of frozen process.

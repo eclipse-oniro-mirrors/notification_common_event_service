@@ -24,6 +24,7 @@
 #include "common_event.h"
 #include "common_event_manager.h"
 #include "common_event_manager_service.h"
+#include "inner_common_event_manager.h"
 #undef private
 #undef protected
 #include "datetime_ex.h"
@@ -1259,4 +1260,28 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0300, Funct
     std::vector<std::u16string> args;
     int result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Dump(fd, args);
     EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+}
+
+/*
+ * @tc.number: CommonEventManager_0100
+ * @tc.name: verify PublishCommonEvent
+ * @tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManager_0100, Function | MediumTest | Level1)
+{
+    std::vector<std::u16string> args;
+    std::string results = "hh";
+    auto record = std::make_shared<FrozenEventRecord>();
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    commonEventSubscriberManager.UpdateAllFreezeInfos(true);
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    if (nullptr != innerCommonEventManager_) {
+        innerCommonEventManager_->UnfreezeAll();
+        innerCommonEventManager_->HiDump(args, results);
+    }
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+    const uid_t UID = 1;
+    bool result = CommonEventManager::PublishCommonEvent(data, publishInfo, nullptr, UID);
+    EXPECT_EQ(false, result);
 }
