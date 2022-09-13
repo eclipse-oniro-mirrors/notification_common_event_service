@@ -65,6 +65,7 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
             return false;
         }
     } else {
+        EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
             return false;
@@ -118,6 +119,7 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
             return false;
         }
     } else {
+        EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscriber");
             return false;
@@ -160,9 +162,22 @@ bool CommonEventProxy::SubscribeCommonEvent(
         EVENT_LOGE("Failed to write parcelable subscribeInfo");
         return false;
     }
-    if (!data.WriteRemoteObject(commonEventListener)) {
-        EVENT_LOGE("Failed to write parcelable commonEventListener");
-        return false;
+
+    if (commonEventListener != nullptr) {
+        if (!data.WriteBool(true)) {
+            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            return false;
+        }
+        if (!data.WriteRemoteObject(commonEventListener)) {
+            EVENT_LOGE("Failed to write parcelable commonEventListener");
+            return false;
+        }
+    } else {
+        EVENT_LOGW("invalid commonEventListener");
+        if (!data.WriteBool(false)) {
+            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            return false;
+        }
     }
 
     bool ret = SendRequest(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT, data, reply);
@@ -186,9 +201,21 @@ bool CommonEventProxy::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonE
         return false;
     }
 
-    if (!data.WriteRemoteObject(commonEventListener)) {
-        EVENT_LOGE("Failed to write parcelable commonEventListener");
-        return false;
+    if (commonEventListener != nullptr) {
+        if (!data.WriteBool(true)) {
+            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            return false;
+        }
+        if (!data.WriteRemoteObject(commonEventListener)) {
+            EVENT_LOGE("Failed to write parcelable commonEventListener");
+            return false;
+        }
+    } else {
+        EVENT_LOGW("invalid commonEventListener");
+        if (!data.WriteBool(false)) {
+            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            return false;
+        }
     }
 
     bool ret = SendRequest(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT, data, reply);
@@ -285,10 +312,23 @@ bool CommonEventProxy::FinishReceiver(
         return false;
     }
 
-    if (!data.WriteRemoteObject(proxy)) {
-        EVENT_LOGE("Failed to write parcelable proxy");
-        return false;
+    if (proxy != nullptr) {
+        if (!data.WriteBool(true)) {
+            EVENT_LOGE("Failed to write parcelable hasproxy");
+            return false;
+        }
+        if (!data.WriteRemoteObject(proxy)) {
+            EVENT_LOGE("Failed to write parcelable proxy");
+            return false;
+        }
+    } else {
+        EVENT_LOGW("invalid proxy");
+        if (!data.WriteBool(false)) {
+            EVENT_LOGE("Failed to write parcelable hasproxy");
+            return false;
+        }
     }
+
     if (!data.WriteInt32(code)) {
         EVENT_LOGE("Failed to write int code");
         return false;

@@ -42,6 +42,7 @@ const CommonEventSubscribeInfo &CommonEventSubscriber::GetSubscribeInfo() const
 bool CommonEventSubscriber::SetCode(const int32_t &code)
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -51,6 +52,7 @@ bool CommonEventSubscriber::SetCode(const int32_t &code)
 int32_t CommonEventSubscriber::GetCode() const
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return 0;
     }
 
@@ -60,6 +62,7 @@ int32_t CommonEventSubscriber::GetCode() const
 bool CommonEventSubscriber::SetData(const std::string &data)
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -69,6 +72,7 @@ bool CommonEventSubscriber::SetData(const std::string &data)
 std::string CommonEventSubscriber::GetData() const
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return std::string();
     }
 
@@ -78,6 +82,7 @@ std::string CommonEventSubscriber::GetData() const
 bool CommonEventSubscriber::SetCodeAndData(const int32_t &code, const std::string &data)
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -87,6 +92,7 @@ bool CommonEventSubscriber::SetCodeAndData(const int32_t &code, const std::strin
 bool CommonEventSubscriber::AbortCommonEvent()
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -96,6 +102,7 @@ bool CommonEventSubscriber::AbortCommonEvent()
 bool CommonEventSubscriber::ClearAbortCommonEvent()
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -105,6 +112,7 @@ bool CommonEventSubscriber::ClearAbortCommonEvent()
 bool CommonEventSubscriber::GetAbortCommonEvent() const
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 

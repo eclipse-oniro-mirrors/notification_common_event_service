@@ -964,7 +964,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     PermissionState state = per.state;
 
     EXPECT_TRUE(ret > 0);
-    EXPECT_TRUE(state == PermissionState::OR);
+    EXPECT_TRUE(state == PermissionState::DEFAULT);
 }
 
 /*

@@ -174,9 +174,14 @@ bool CommonEventSubscribeInfo::ReadFromParcel(Parcel &parcel)
 
 CommonEventSubscribeInfo *CommonEventSubscribeInfo::Unmarshalling(Parcel &parcel)
 {
-    CommonEventSubscribeInfo *commonEventSubscribeInfo = new CommonEventSubscribeInfo();
+    CommonEventSubscribeInfo *commonEventSubscribeInfo = new (std::nothrow) CommonEventSubscribeInfo();
 
+    if (commonEventSubscribeInfo == nullptr) {
+        EVENT_LOGE("commonEventSubscribeInfo == nullptr");
+        return nullptr;
+    }
     if (commonEventSubscribeInfo && !commonEventSubscribeInfo->ReadFromParcel(parcel)) {
+        EVENT_LOGE("failed to read from parcel");
         delete commonEventSubscribeInfo;
         commonEventSubscribeInfo = nullptr;
     }

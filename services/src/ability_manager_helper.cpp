@@ -35,7 +35,11 @@ int AbilityManagerHelper::ConnectAbility(
         return -1;
     }
 
-    sptr<StaticSubscriberConnection> connection(new (std::nothrow) StaticSubscriberConnection(event));
+    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(event);
+    if (connection == nullptr) {
+        EVENT_LOGE("failed to create obj!");
+        return -1;
+    }
     return abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
 }
 
@@ -62,7 +66,7 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
             return false;
         }
 
-        deathRecipient_ = (new (std::nothrow) AbilityManagerDeathRecipient());
+        deathRecipient_ = new (std::nothrow) AbilityManagerDeathRecipient();
         if (deathRecipient_ == nullptr) {
             EVENT_LOGE("Failed to create AbilityManagerDeathRecipient");
             return false;

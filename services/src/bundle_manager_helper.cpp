@@ -43,6 +43,7 @@ std::string BundleManagerHelper::GetBundleName(uid_t uid)
     std::string bundleName = "";
 
     if (!GetBundleMgrProxy()) {
+        EVENT_LOGE("failed to get bms proxy");
         return bundleName;
     }
 
@@ -59,6 +60,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
+        EVENT_LOGE("failed to get bms proxy");
         return false;
     }
 
@@ -73,6 +75,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
+        EVENT_LOGE("failed to get bms proxy");
         return false;
     }
     std::vector<int> osAccountIds;
@@ -100,6 +103,7 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
+        EVENT_LOGE("failed to get bms proxy");
         return false;
     }
 
@@ -116,6 +120,7 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
     bool isSystemApp = false;
 
     if (!GetBundleMgrProxy()) {
+        EVENT_LOGE("failed to get bms proxy");
         return isSystemApp;
     }
 
@@ -136,7 +141,8 @@ bool BundleManagerHelper::GetBundleMgrProxy()
             return false;
         }
 
-        sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+        sptr<IRemoteObject> remoteObject =
+            systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
         if (!remoteObject) {
             EVENT_LOGE("Failed to get bundle manager service.");
             return false;
@@ -148,7 +154,7 @@ bool BundleManagerHelper::GetBundleMgrProxy()
             return false;
         }
 
-        bmsDeath_ = new BMSDeathRecipient();
+        bmsDeath_ = new (std::nothrow) BMSDeathRecipient();
         if (!bmsDeath_) {
             EVENT_LOGE("Failed to create death Recipient ptr BMSDeathRecipient");
             return false;

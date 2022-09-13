@@ -132,9 +132,15 @@ bool CommonEventData::ReadFromParcel(Parcel &parcel)
 
 CommonEventData *CommonEventData::Unmarshalling(Parcel &parcel)
 {
-    CommonEventData *commonEventData = new CommonEventData();
+    CommonEventData *commonEventData = new (std::nothrow) CommonEventData();
 
-    if (commonEventData && !commonEventData->ReadFromParcel(parcel)) {
+    if (commonEventData == nullptr) {
+        EVENT_LOGE("CommonEventData == nullptr");
+        return nullptr;
+    }
+
+    if (!commonEventData->ReadFromParcel(parcel)) {
+        EVENT_LOGE("failed to ReadFromParcel");
         delete commonEventData;
         commonEventData = nullptr;
     }

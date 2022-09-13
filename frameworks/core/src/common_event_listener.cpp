@@ -39,8 +39,15 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
         return;
     }
 
-    std::function<void()> onReceiveEventFunc =
-        std::bind(&CommonEventListener::OnReceiveEvent, this, commonEventData, ordered, sticky);
+    wptr<CommonEventListener> wp = this;
+    std::function<void()> onReceiveEventFunc = [wp, commonEventData, ordered, sticky] () {
+        sptr<CommonEventListener> sThis = wp.promote();
+        if (sThis == nullptr) {
+            EVENT_LOGE("invalid listener");
+            return;
+        }
+        sThis->OnReceiveEvent(commonEventData, ordered, sticky);
+    };
     handler_->PostTask(onReceiveEventFunc);
 }
 
@@ -131,7 +138,13 @@ void CommonEventListener::Stop()
         handler_.reset();
     }
 
+    if (commonEventSubscriber_ == nullptr) {
+        EVENT_LOGE("commonEventSubscriber_ == nullptr");
+        return;
+    }
+
     if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
+        EVENT_LOGD("stop listener in HANDLER mode");
         return;
     }
 

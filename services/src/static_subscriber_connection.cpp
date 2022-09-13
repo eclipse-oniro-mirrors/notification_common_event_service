@@ -23,7 +23,10 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
     EVENT_LOGI("enter");
-    proxy_ = (new (std::nothrow) AppExecFwk::StaticSubscriberProxy(remoteObject));
+    proxy_ = new (std::nothrow) AppExecFwk::StaticSubscriberProxy(remoteObject);
+    if (proxy_ == nullptr) {
+        EVENT_LOGE("failed to create obj!");
+    }
     ErrCode ec = proxy_->OnReceiveEvent(&event_);
     EVENT_LOGI("end, errorCode = %d", ec);
 }

@@ -29,9 +29,15 @@ namespace EventFwk {
 #define EVENT_LOG_TAG "Ces"
 #endif
 
-enum class EventLogLevel { DEBUG = 0, INFO, WARN, ERROR, FATAL };
+enum class EventLogLevel {
+    DEBUG = 0,
+    INFO,
+    WARN,
+    ERROR,
+    FATAL
+};
 
-static constexpr OHOS::HiviewDFX::HiLogLabel Event_LABEL = {LOG_CORE, EVENT_LOG_DOMAIN, EVENT_LOG_TAG};
+static constexpr OHOS::HiviewDFX::HiLogLabel Event_LABEL = { LOG_CORE, EVENT_LOG_DOMAIN, EVENT_LOG_TAG };
 
 class EventLogWrapper {
 public:

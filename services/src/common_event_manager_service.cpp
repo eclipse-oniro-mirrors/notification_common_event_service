@@ -82,11 +82,13 @@ bool CommonEventManagerService::IsReady() const
 }
 
 bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
-    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
+    const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener,
+    const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
@@ -105,6 +107,7 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
@@ -142,8 +145,9 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
         return false;
     }
 
-    std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
-        innerCommonEventManager_,
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    wptr<CommonEventManagerService> weakThis = this;
+    std::function<void()> publishCommonEventFunc = [wp,
         event,
         publishinfo,
         commonEventListener,
@@ -153,8 +157,32 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
         callerToken,
         userId,
         bundleName,
-        this);
-    return handler_->PostTask(PublishCommonEventFunc);
+        weakThis] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        sptr<CommonEventManagerService> commonEventManagerService = weakThis.promote();
+        if (commonEventManagerService == nullptr) {
+            EVENT_LOGE("CommonEventManager not exist");
+            return;
+        }
+        bool ret = innerCommonEventManager->PublishCommonEvent(event,
+            publishinfo,
+            commonEventListener,
+            recordTime,
+            pid,
+            uid,
+            callerToken,
+            userId,
+            bundleName,
+            commonEventManagerService);
+        if (!ret) {
+            EVENT_LOGE("failed to publish event %{public}s", event.GetWant().GetAction().c_str());
+        }
+    };
+    return handler_->PostTask(publishCommonEventFunc);
 }
 
 bool CommonEventManagerService::SubscribeCommonEvent(
@@ -164,6 +192,7 @@ bool CommonEventManagerService::SubscribeCommonEvent(
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
@@ -172,21 +201,37 @@ bool CommonEventManagerService::SubscribeCommonEvent(
         EVENT_LOGE("Failed to GetSystemCurrentTime");
         return false;
     }
+
     auto callingUid = IPCSkeleton::GetCallingUid();
+    auto callingPid = IPCSkeleton::GetCallingPid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
-
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
-
-    std::function<void()> SubscribeCommonEventFunc = std::bind(&InnerCommonEventManager::SubscribeCommonEvent,
-        innerCommonEventManager_,
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> subscribeCommonEventFunc = [wp,
         subscribeInfo,
         commonEventListener,
         recordTime,
-        IPCSkeleton::GetCallingPid(),
+        callingPid,
         callingUid,
         callerToken,
-        bundleName);
-    return handler_->PostTask(SubscribeCommonEventFunc);
+        bundleName] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        bool ret = innerCommonEventManager->SubscribeCommonEvent(subscribeInfo,
+            commonEventListener,
+            recordTime,
+            callingPid,
+            callingUid,
+            callerToken,
+            bundleName);
+        if (!ret) {
+            EVENT_LOGE("failed to subscribe event");
+        }
+    };
+    return handler_->PostTask(subscribeCommonEventFunc);
 }
 
 bool CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
@@ -195,12 +240,24 @@ bool CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject>
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
-    std::function<void()> UnsubscribeCommonEventFunc =
-        std::bind(&InnerCommonEventManager::UnsubscribeCommonEvent, innerCommonEventManager_, commonEventListener);
-    return handler_->PostTask(UnsubscribeCommonEventFunc);
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> unsubscribeCommonEventFunc = [wp, commonEventListener] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        bool ret = innerCommonEventManager->UnsubscribeCommonEvent(commonEventListener);
+        if (!ret) {
+            EVENT_LOGE("failed to unsubscribe event");
+        }
+    };
+    
+    return handler_->PostTask(unsubscribeCommonEventFunc);
 }
 
 bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
@@ -208,6 +265,7 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
@@ -240,6 +298,7 @@ bool CommonEventManagerService::DumpState(const uint8_t &dumpType, const std::st
         return false;
     }
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
@@ -254,12 +313,20 @@ bool CommonEventManagerService::FinishReceiver(
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
-
-    std::function<void()> FinishReceiverFunc = std::bind(
-        &InnerCommonEventManager::FinishReceiver, innerCommonEventManager_, proxy, code, receiverData, abortEvent);
-    return handler_->PostTask(FinishReceiverFunc);
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> finishReceiverFunc = [wp, proxy, code, receiverData, abortEvent] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        innerCommonEventManager->FinishReceiver(proxy, code, receiverData, abortEvent);
+    };
+    
+    return handler_->PostTask(finishReceiverFunc);
 }
 
 bool CommonEventManagerService::Freeze(const uid_t &uid)
@@ -271,11 +338,19 @@ bool CommonEventManagerService::Freeze(const uid_t &uid)
         return false;
     }
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
-
-    std::function<void()> FreezeFunc = std::bind(&InnerCommonEventManager::Freeze, innerCommonEventManager_, uid);
-    return handler_->PostImmediateTask(FreezeFunc);
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> freezeFunc = [wp, uid] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        innerCommonEventManager->Freeze(uid);
+    };
+    return handler_->PostImmediateTask(freezeFunc);
 }
 
 bool CommonEventManagerService::Unfreeze(const uid_t &uid)
@@ -287,11 +362,21 @@ bool CommonEventManagerService::Unfreeze(const uid_t &uid)
         return false;
     }
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
-    std::function<void()> UnfreezeFunc = std::bind(&InnerCommonEventManager::Unfreeze, innerCommonEventManager_, uid);
-    return handler_->PostImmediateTask(UnfreezeFunc);
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> unfreezeFunc = [wp, uid] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        innerCommonEventManager->Unfreeze(uid);
+    };
+    
+    return handler_->PostImmediateTask(unfreezeFunc);
 }
 
 bool CommonEventManagerService::UnfreezeAll()
@@ -303,11 +388,21 @@ bool CommonEventManagerService::UnfreezeAll()
         return false;
     }
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return false;
     }
 
-    std::function<void()> UnfreezeAllFunc = std::bind(&InnerCommonEventManager::UnfreezeAll, innerCommonEventManager_);
-    return handler_->PostImmediateTask(UnfreezeAllFunc);
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> unfreezeAllFunc = [wp] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        innerCommonEventManager->UnfreezeAll();
+    };
+
+    return handler_->PostImmediateTask(unfreezeAllFunc);
 }
 
 int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &args)
@@ -319,6 +414,7 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
         return false;
     }
     if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
         return ERR_INVALID_VALUE;
     }
     std::string result;

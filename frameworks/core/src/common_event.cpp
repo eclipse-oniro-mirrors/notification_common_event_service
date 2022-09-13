@@ -30,6 +30,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     EVENT_LOGI("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
+        EVENT_LOGE("failed to check publish parameter");
         return false;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
@@ -43,6 +44,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     EVENT_LOGI("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
+        EVENT_LOGE("failed to check publish parameter");
         return false;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
@@ -56,6 +58,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     EVENT_LOGI("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
+        EVENT_LOGE("failed to check publish parameter");
         return false;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
@@ -69,6 +72,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     EVENT_LOGI("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
+        EVENT_LOGE("failed to check publish parameter");
         return false;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
@@ -96,6 +100,7 @@ bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const Commo
 
     if (subscriber) {
         if (CreateCommonEventListener(subscriber, commonEventListener) == SUBSCRIBE_FAILED) {
+            EVENT_LOGE("failed to CreateCommonEventListener");
             return false;
         }
     }
@@ -220,9 +225,11 @@ void CommonEvent::ResetCommonEventProxy()
     EVENT_LOGI("enter");
     std::lock_guard<std::mutex> lock(mutex_);
     isProxyValid_ = false;
-    if ((commonEventProxy_ != nullptr) && (commonEventProxy_->AsObject() != nullptr)) {
-        commonEventProxy_->AsObject()->RemoveDeathRecipient(recipient_);
+    if ((commonEventProxy_ == nullptr) || (commonEventProxy_->AsObject() == nullptr)) {
+        EVENT_LOGE("invalid proxy state");
+        return;
     }
+    commonEventProxy_->AsObject()->RemoveDeathRecipient(recipient_);
 }
 
 bool CommonEvent::Freeze(const uid_t &uid)
@@ -287,7 +294,7 @@ bool CommonEvent::GetCommonEventProxy()
                 return false;
             }
 
-            recipient_ = new CommonEventDeathRecipient();
+            recipient_ = new (std::nothrow) CommonEventDeathRecipient();
             if (!recipient_) {
                 EVENT_LOGE("Failed to create death Recipient ptr CommonEventDeathRecipient!");
                 return false;
