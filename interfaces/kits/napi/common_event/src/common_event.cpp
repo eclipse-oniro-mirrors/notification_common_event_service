@@ -285,12 +285,18 @@ napi_value ParseParametersByCreateSubscriber(
 
     // argv[0]:CommonEventSubscribeInfo
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_object, "Wrong argument type. object expected.");
+    if (valuetype != napi_object) {
+        EVENT_LOGE("Wrong argument type. object expected.");
+        return nullptr;
+    }
 
     // argv[1]:callback
     if (argc >= CREATE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[1], 1, &callback);
     }
 
@@ -374,7 +380,10 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     size_t argc = CREATE_MAX_PARA;
     napi_value argv[CREATE_MAX_PARA] = {nullptr};
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
-    NAPI_ASSERT(env, argc >= 1, "Wrong number of arguments");
+    if (argc < 1) {
+        EVENT_LOGE("Wrong number of arguments");
+        return NapiGetNull(env);
+    }
 
     napi_ref callback = nullptr;
     if (ParseParametersByCreateSubscriber(env, argv, argc, callback) == nullptr) {
@@ -447,7 +456,11 @@ napi_value ParseParametersByGetSubscribeInfo(
     // argv[0]:callback
     if (argc >= GETSUBSCREBEINFO_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
+
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -635,7 +648,10 @@ napi_value ParseParametersByIsOrderedCommonEvent(
     // argv[0]:callback
     if (argc >= ISORDEREDCOMMONEVENT_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -757,7 +773,10 @@ napi_value ParseParametersByIsStickyCommonEvent(
     // argv[0]:callback
     if (argc >= ISSTICKYCOMMONEVENT_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -862,7 +881,10 @@ napi_value ParseParametersByGetCode(const napi_env &env, const napi_value (&argv
     // argv[0]:callback
     if (argc >= GET_CODE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -966,13 +988,19 @@ napi_value ParseParametersBySetCode(
 
     // argv[0]:code
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+    if (valuetype != napi_number) {
+        EVENT_LOGE("Wrong argument type. Number expected.");
+        return nullptr;
+    }
     NAPI_CALL(env, napi_get_value_int32(env, argv[0], &code));
 
     // argv[1]:callback
     if (argc >= SET_CODE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[1], 1, &callback);
     }
     return NapiGetNull(env);
@@ -1075,7 +1103,10 @@ napi_value ParseParametersByGetData(const napi_env &env, const napi_value (&argv
     // argv[0]:callback
     if (argc >= GET_DATA_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -1181,7 +1212,10 @@ napi_value ParseParametersBySetData(
     char str[STR_DATA_MAX_SIZE] = {0};
     // argv[0]:data
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+    if (valuetype != napi_string) {
+        EVENT_LOGE("Wrong argument type. String expected.");
+        return nullptr;
+    }
     NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], str, STR_DATA_MAX_SIZE, &strLen));
 
     if (strLen > STR_DATA_MAX_SIZE - 1) {
@@ -1194,7 +1228,10 @@ napi_value ParseParametersBySetData(
     // argv[1]:callback
     if (argc >= SET_CODE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[1], 1, &callback);
     }
     return NapiGetNull(env);
@@ -1300,12 +1337,18 @@ napi_value ParseParametersBySetCodeAndData(
 
     // argv[0]:code
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+    if (valuetype != napi_number) {
+        EVENT_LOGE("Wrong argument type. Number expected.");
+        return nullptr;
+    }
     NAPI_CALL(env, napi_get_value_int32(env, argv[0], &code));
 
     // argv[1]:data
     NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+    if (valuetype != napi_string) {
+        EVENT_LOGE("Wrong argument type. String expected.");
+        return nullptr;
+    }
     NAPI_CALL(env, napi_get_value_string_utf8(env, argv[1], str, STR_DATA_MAX_SIZE, &strLen));
 
     if (strLen > STR_DATA_MAX_SIZE - 1) {
@@ -1318,7 +1361,10 @@ napi_value ParseParametersBySetCodeAndData(
     // argv[2]:callback
     if (argc >= SET_CODE_AND_DATA_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[SET_CODE_AND_DATA_MAX_PARA - 1], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[SET_CODE_AND_DATA_MAX_PARA - 1], 1, &callback);
     }
     return NapiGetNull(env);
@@ -1420,7 +1466,10 @@ napi_value ParseParametersByAbort(const napi_env &env, const napi_value (&argv)[
     // argv[0]:callback
     if (argc >= ABORT_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -1520,7 +1569,10 @@ napi_value ParseParametersByClearAbort(
     // argv[0]:callback
     if (argc >= CLEAR_ABORT_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -1620,7 +1672,10 @@ napi_value ParseParametersByGetAbort(const napi_env &env, const napi_value (&arg
     // argv[0]:callback
     if (argc >= GET_ABORT_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -1724,7 +1779,10 @@ napi_value ParseParametersByFinish(const napi_env &env, const napi_value (&argv)
     // argv[0]:callback
     if (argc >= FINISH_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[0], 1, &callback);
     }
 
@@ -1840,7 +1898,10 @@ napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&ar
     napi_valuetype valuetype;
     // argv[0]:subscriber
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_object, "Wrong argument type for arg0. Subscribe expected.");
+    if (valuetype != napi_object) {
+        EVENT_LOGE("Wrong argument type for arg0. Subscribe expected.");
+        return nullptr;
+    }
     subscriber = GetSubscriber(env, argv[0]);
     if (subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
@@ -1849,7 +1910,10 @@ napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&ar
 
     // argv[1]:callback
     NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+    if (valuetype != napi_function) {
+        EVENT_LOGE("Wrong argument type. Function expected.");
+        return nullptr;
+    }
     napi_create_reference(env, argv[1], 1, &callback);
 
     return NapiGetNull(env);
@@ -1863,7 +1927,10 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     size_t argc = SUBSCRIBE_MAX_PARA;
     napi_value argv[SUBSCRIBE_MAX_PARA] = {nullptr};
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
-    NAPI_ASSERT(env, argc >= SUBSCRIBE_MAX_PARA, "Wrong number of arguments");
+    if (argc < SUBSCRIBE_MAX_PARA) {
+        EVENT_LOGE("Wrong number of arguments.");
+        return NapiGetNull(env);
+    }
 
     napi_ref callback = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
@@ -1938,7 +2005,10 @@ napi_value GetBundlenameByPublish(const napi_env &env, const napi_value &value, 
     if (hasProperty) {
         napi_get_named_property(env, value, "bundleName", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+        if (valuetype != napi_string) {
+            EVENT_LOGE("Wrong argument type. String expected.");
+            return nullptr;
+        }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
         bundleName = str;
     }
@@ -1960,7 +2030,10 @@ napi_value GetDataByPublish(const napi_env &env, const napi_value &value, std::s
     if (hasProperty) {
         napi_get_named_property(env, value, "data", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+        if (valuetype != napi_string) {
+            EVENT_LOGE("Wrong argument type. String expected.");
+            return nullptr;
+        }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_DATA_MAX_SIZE, &strLen));
 
         if (strLen > STR_DATA_MAX_SIZE - 1) {
@@ -1986,7 +2059,10 @@ napi_value GetCodeByPublish(const napi_env &env, const napi_value &value, int32_
     if (hasProperty) {
         napi_get_named_property(env, value, "code", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+        if (valuetype != napi_number) {
+            EVENT_LOGE("Wrong argument type. Number expected.");
+            return nullptr;
+        }
         napi_get_value_int32(env, result, &code);
     }
 
@@ -2017,7 +2093,10 @@ napi_value GetSubscriberPermissionsByPublish(
                     napi_value nSubscriberPermission = nullptr;
                     napi_get_element(env, result, i, &nSubscriberPermission);
                     NAPI_CALL(env, napi_typeof(env, nSubscriberPermission, &valuetype));
-                    NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+                    if (valuetype != napi_string) {
+                        EVENT_LOGE("Wrong argument type. String expected.");
+                        return nullptr;
+                    }
                     memset_s(str, STR_MAX_SIZE, 0, STR_MAX_SIZE);
                     NAPI_CALL(
                         env, napi_get_value_string_utf8(env, nSubscriberPermission, str, STR_MAX_SIZE - 1, &strLen));
@@ -2042,7 +2121,10 @@ napi_value GetIsOrderedByPublish(const napi_env &env, const napi_value &value, b
     if (hasProperty) {
         napi_get_named_property(env, value, "isOrdered", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_boolean, "Wrong argument type. Boolean expected.");
+        if (valuetype != napi_boolean) {
+            EVENT_LOGE("Wrong argument type. Boolean expected.");
+            return nullptr;
+        }
         napi_get_value_bool(env, result, &isOrdered);
     }
 
@@ -2061,7 +2143,10 @@ napi_value GetIsStickyByPublish(const napi_env &env, const napi_value &value, bo
     if (hasProperty) {
         napi_get_named_property(env, value, "isSticky", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_boolean, "Wrong argument type. Boolean expected.");
+        if (valuetype != napi_boolean) {
+            EVENT_LOGE("Wrong argument type. Boolean expected.");
+            return nullptr;
+        }
         napi_get_value_bool(env, result, &isSticky);
     }
 
@@ -2080,7 +2165,10 @@ napi_value GetParametersByPublish(const napi_env &env, const napi_value &value, 
     if (hasProperty) {
         napi_get_named_property(env, value, "parameters", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_object, "Wrong argument type. Object expected.");
+        if (valuetype != napi_object) {
+            EVENT_LOGE("Wrong argument type. Object expected.");
+            return nullptr;
+        }
         if (!OHOS::AppExecFwk::UnwrapWantParams(env, result, wantParams)) {
             return nullptr;
         }
@@ -2097,7 +2185,10 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     napi_valuetype valuetype;
     // argv[0]: event
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+    if (valuetype != napi_string) {
+        EVENT_LOGE("Wrong argument type. String expected.");
+        return nullptr;
+    }
 
     char str[STR_MAX_SIZE] = {0};
     size_t strLen = 0;
@@ -2107,7 +2198,10 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     // argv[1]: CommonEventPublishData
     if (argc == PUBLISH_MAX_PARA_BY_PUBLISHDATA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_object, "Wrong argument type. Object expected.");
+        if (valuetype != napi_object) {
+            EVENT_LOGE("Wrong argument type. Object expected.");
+            return nullptr;
+        }
 
         // argv[1]: CommonEventPublishData:bundlename
         if (GetBundlenameByPublish(env, argv[1], commonEventPublishData.bundleName) == nullptr) {
@@ -2142,11 +2236,17 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     // argv[2]: callback
     if (argc == PUBLISH_MAX_PARA_BY_PUBLISHDATA) {
         NAPI_CALL(env, napi_typeof(env, argv[PUBLISH_MAX_PARA], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[PUBLISH_MAX_PARA], 1, &callback);
     } else {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[1], 1, &callback);
     }
 
@@ -2173,7 +2273,10 @@ napi_value Publish(napi_env env, napi_callback_info info)
     size_t argc = PUBLISH_MAX_PARA_BY_PUBLISHDATA;
     napi_value argv[PUBLISH_MAX_PARA_BY_PUBLISHDATA] = {nullptr};
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
-    NAPI_ASSERT(env, argc >= PUBLISH_MAX_PARA, "Wrong number of arguments");
+    if (argc < PUBLISH_MAX_PARA) {
+        EVENT_LOGE("Wrong number of arguments.");
+        NapiGetNull(env);
+    }
 
     std::string event;
     CommonEventPublishDataByjs commonEventPublishDatajs;
@@ -2242,7 +2345,10 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     napi_valuetype valuetype;
     // argv[0]: event
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+    if (valuetype != napi_string) {
+        EVENT_LOGE("Wrong argument type. String expected.");
+        return nullptr;
+    }
 
     char str[STR_MAX_SIZE] = {0};
     size_t strLen = 0;
@@ -2252,14 +2358,20 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
 
     // argv[1]: userId
     NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+    if (valuetype != napi_number) {
+        EVENT_LOGE("Wrong argument type. Number expected.");
+        return nullptr;
+    }
     napi_get_value_int32(env, argv[1], &userId);
     EVENT_LOGI("ParseParametersByPublishAsUser userId = %{public}d", userId);
 
     // argv[2]: CommonEventPublishData
     if (argc == PUBLISH_MAX_PARA_BY_USERID) {
         NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_object, "Wrong argument type. Object expected.");
+        if (valuetype != napi_object) {
+            EVENT_LOGE("Wrong argument type. Object expected.");
+            return nullptr;
+        }
 
         // argv[2]: CommonEventPublishData:bundlename
         if (GetBundlenameByPublish(env, argv[2], commonEventPublishData.bundleName) == nullptr) {
@@ -2294,11 +2406,17 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     // argv[3]: callback
     if (argc == PUBLISH_MAX_PARA_BY_USERID) {
         NAPI_CALL(env, napi_typeof(env, argv[PUBLISH_MAX_PARA_AS_USER], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[PUBLISH_MAX_PARA_AS_USER], 1, &callback);
     } else {
         NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[2], 1, &callback);
     }
 
@@ -2312,7 +2430,10 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
     size_t argc = PUBLISH_MAX_PARA_BY_USERID;
     napi_value argv[PUBLISH_MAX_PARA_BY_USERID] = {nullptr};
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
-    NAPI_ASSERT(env, argc >= PUBLISH_MAX_PARA_AS_USER, "Wrong number of arguments");
+    if (argc < PUBLISH_MAX_PARA_AS_USER) {
+        EVENT_LOGE("Wrong number of arguments.");
+        return NapiGetNull(env);
+    }
 
     std::string event;
     int32_t userId = UNDEFINED_USER;
@@ -2383,7 +2504,7 @@ napi_value GetSubscriberByUnsubscribe(
     subscriber = GetSubscriber(env, value);
     if (subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
-        return NapiGetNull(env);
+        return nullptr;
     }
 
     EVENT_LOGI("subscriber = %{private}p", subscriber.get());
@@ -2408,7 +2529,11 @@ napi_value ParseParametersByUnsubscribe(const napi_env &env, const size_t &argc,
     napi_value result = nullptr;
     // argv[0]:subscriber
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
-    NAPI_ASSERT(env, valuetype == napi_object, "Wrong argument type for arg0. Subscribe expected.");
+    if (valuetype != napi_object) {
+        EVENT_LOGE("Wrong argument type for arg0. Subscribe expected.");
+        return nullptr;
+    }
+
     bool isFind = false;
     if (GetSubscriberByUnsubscribe(env, argv[0], subscriber, isFind) == nullptr) {
         return nullptr;
@@ -2417,7 +2542,10 @@ napi_value ParseParametersByUnsubscribe(const napi_env &env, const size_t &argc,
     // argv[1]:callback
     if (argc >= UNSUBSCRIBE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
         napi_create_reference(env, argv[1], 1, &callback);
     }
 
@@ -2453,7 +2581,10 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
     size_t argc = UNSUBSCRIBE_MAX_PARA;
     napi_value argv[UNSUBSCRIBE_MAX_PARA] = {nullptr};
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
-    NAPI_ASSERT(env, argc >= 1, "Wrong number of arguments");
+    if (argc < 1) {
+        EVENT_LOGI("Wrong number of arguments");
+        return NapiGetNull(env);
+    }
 
     napi_ref callback = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
@@ -2532,17 +2663,29 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
     uint32_t length = 0;
     // events
     NAPI_CALL(env, napi_has_named_property(env, argv, "events", &hasProperty));
-    NAPI_ASSERT(env, hasProperty, "Property events expected.");
+    if (!hasProperty) {
+        EVENT_LOGE("Property events expected.");
+        return nullptr;
+    }
     napi_get_named_property(env, argv, "events", &eventsNapi);
     napi_is_array(env, eventsNapi, &isArray);
-    NAPI_ASSERT(env, isArray, "Wrong argument type. Array expected.");
+    if (!isArray) {
+        EVENT_LOGE("Wrong argument type. Array expected.");
+        return nullptr;
+    }
     napi_get_array_length(env, eventsNapi, &length);
-    NAPI_ASSERT(env, length > 0, "The array is empty.");
+    if (length <= 0) {
+        EVENT_LOGE("The array is empty.");
+        return nullptr;
+    }
     for (size_t i = 0; i < length; i++) {
         napi_value event = nullptr;
         napi_get_element(env, eventsNapi, i, &event);
         NAPI_CALL(env, napi_typeof(env, event, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+        if (valuetype != napi_string) {
+            EVENT_LOGE("Wrong argument type. String expected.");
+            return nullptr;
+        }
         char str[STR_MAX_SIZE] = {0};
         NAPI_CALL(env, napi_get_value_string_utf8(env, event, str, STR_MAX_SIZE - 1, &strLen));
         EVENT_LOGI("event = %{public}s", str);
@@ -2568,7 +2711,10 @@ napi_value GetPublisherPermissionByCreateSubscriber(
     if (hasProperty) {
         napi_get_named_property(env, argv, "publisherPermission", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+        if (valuetype != napi_string) {
+            EVENT_LOGE("Wrong argument type. String expected.");
+            return nullptr;
+        }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
         info.SetPermission(str);
     }
@@ -2592,7 +2738,10 @@ napi_value GetPublisherDeviceIdByCreateSubscriber(
     if (hasProperty) {
         napi_get_named_property(env, argv, "publisherDeviceId", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+        if (valuetype != napi_string) {
+            EVENT_LOGE("Wrong argument type. String expected.");
+            return nullptr;
+        }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
         info.SetDeviceId(str);
     }
@@ -2614,7 +2763,10 @@ napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &ar
     if (hasUserId) {
         napi_get_named_property(env, argv, "userId", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+        if (valuetype != napi_number) {
+            EVENT_LOGE("Wrong argument type. Number expected.");
+            return nullptr;
+        }
         NAPI_CALL(env, napi_get_value_int32(env, result, &value));
         info.SetUserId(value);
     }
@@ -2636,7 +2788,10 @@ napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &
     if (hasProperty) {
         napi_get_named_property(env, argv, "priority", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
-        NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. Number expected.");
+        if (valuetype != napi_number) {
+            EVENT_LOGE("Wrong argument type. Number expected.");
+            return nullptr;
+        }
         NAPI_CALL(env, napi_get_value_int32(env, result, &value));
         info.SetPriority(value);
     }
@@ -2651,7 +2806,10 @@ napi_value ParseParametersConstructor(
     size_t argc = 1;
     napi_value argv[1] = {nullptr};
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr));
-    NAPI_ASSERT(env, argc >= 1, "Wrong number of arguments");
+    if (argc < 1) {
+        EVENT_LOGE("Wrong number of arguments");
+        return nullptr;
+    }
 
     // events: Array<string>
     std::vector<std::string> events;
