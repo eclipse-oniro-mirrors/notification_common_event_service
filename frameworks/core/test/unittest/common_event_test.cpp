@@ -14,6 +14,12 @@
  */
 
 #include "common_event.h"
+#include "common_event_death_recipient.h"
+#include "common_event_stub.h"
+#include "common_event_subscriber.h"
+#include "event_receive_proxy.h"
+#include "common_event_publish_info.h"
+#include "matching_skills.h"
 
 #include <gtest/gtest.h>
 
@@ -26,12 +32,15 @@ namespace {
     constexpr uint16_t SYSTEM_UID = 1000;
 }
 
-class CommonEventTest : public testing::Test {
+class CommonEventTest : public CommonEventSubscriber, public testing::Test {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
+
+    virtual void OnReceiveEvent(const CommonEventData &data)
+    {}
 };
 
 void CommonEventTest::SetUpTestCase()
@@ -145,7 +154,279 @@ HWTEST_F(CommonEventTest, CommonEvent_004, TestSize.Level1)
  */
 HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
 {
+    // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    std::shared_ptr<EventReceiveProxy> result = std::make_shared<EventReceiveProxy>(nullptr);
+    if (result != nullptr) {
+        result->NotifyEvent(data, true, true);
+    }
+
     CommonEvent commonEvent;
+    commonEvent.ResetCommonEventProxy();
     bool unfreezeAll = commonEvent.UnfreezeAll();
     EXPECT_EQ(true, unfreezeAll);
+}
+
+/*
+ * tc.number: CommonEventStub_001
+ * tc.name: test PublishCommonEvent
+ * tc.type: FUNC
+ * tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_001, TestSize.Level1)
+{
+    // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(true);
+
+    std::vector<std::string> permissions;
+    permissions.emplace_back(PERMISSION);
+    publishInfo.SetSubscriberPermissions(permissions);
+
+    const int32_t userId = 1;
+
+    CommonEventStub commonEventStub;
+    bool publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, userId);
+    EXPECT_EQ(true, publishCommonEvent);
+}
+
+/*
+ * tc.number: CommonEventStub_002
+ * tc.name: test PublishCommonEvent
+ * tc.type: FUNC
+ * tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_002, TestSize.Level1)
+{
+    // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(true);
+
+    std::vector<std::string> permissions;
+    permissions.emplace_back(PERMISSION);
+    publishInfo.SetSubscriberPermissions(permissions);
+
+    const int32_t userId = 1;
+
+    CommonEventStub commonEventStub;
+    bool publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, SYSTEM_UID, userId);
+    EXPECT_EQ(true, publishCommonEvent);
+}
+
+/*
+ * tc.number: CommonEventStub_003
+ * tc.name: test SubscribeCommonEvent
+ * tc.type: FUNC
+ * tc.desc: Invoke SubscribeCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level1)
+{
+    CommonEventSubscribeInfo subscribeInfo;
+
+    CommonEventStub commonEventStub;
+    bool subscribeCommonEvent = commonEventStub.SubscribeCommonEvent(subscribeInfo, nullptr);
+    EXPECT_EQ(true, subscribeCommonEvent);
+}
+
+/*
+ * tc.number: CommonEventStub_004
+ * tc.name: test UnsubscribeCommonEvent
+ * tc.type: FUNC
+ * tc.desc: Invoke UnsubscribeCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_004, TestSize.Level1)
+{
+    CommonEventStub commonEventStub;
+    bool unsubscribeCommonEvent = commonEventStub.UnsubscribeCommonEvent(nullptr);
+    EXPECT_EQ(true, unsubscribeCommonEvent);
+}
+
+/*
+ * tc.number: CommonEventStub_005
+ * tc.name: test GetStickyCommonEvent
+ * tc.type: FUNC
+ * tc.desc: Invoke GetStickyCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_005, TestSize.Level1)
+{
+    const std::string event = "aa";
+
+    // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    CommonEventStub commonEventStub;
+    bool getStickyCommonEvent = commonEventStub.GetStickyCommonEvent(event, data);
+    EXPECT_EQ(true, getStickyCommonEvent);
+}
+
+/*
+ * tc.number: CommonEventStub_006
+ * tc.name: test DumpState
+ * tc.type: FUNC
+ * tc.desc: Invoke DumpState interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_006, TestSize.Level1)
+{
+    const uint8_t dumpType = 1;
+    const int32_t userId = 2;
+    std::vector<std::string> state;
+
+    CommonEventStub commonEventStub;
+    bool dumpState = commonEventStub.DumpState(dumpType, EVENT, userId, state);
+    EXPECT_EQ(true, dumpState);
+}
+
+/*
+ * tc.number: CommonEventStub_007
+ * tc.name: test FinishReceiver
+ * tc.type: FUNC
+ * tc.desc: Invoke FinishReceiver interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_007, TestSize.Level1)
+{
+    const int32_t code = 1;
+    const std::string receiverData = "bb";
+
+    CommonEventStub commonEventStub;
+    bool finishReceiver = commonEventStub.FinishReceiver(nullptr, code, receiverData, true);
+    EXPECT_EQ(true, finishReceiver);
+}
+
+/*
+ * tc.number: CommonEventStub_008
+ * tc.name: test Freeze Unfreeze UnfreezeAll
+ * tc.type: FUNC
+ * tc.desc: Invoke Freeze Unfreeze UnfreezeAll interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_008, TestSize.Level1)
+{
+    CommonEventStub commonEventStub;
+    bool freeze = commonEventStub.Freeze(SYSTEM_UID);
+    EXPECT_EQ(true, freeze);
+    bool unfreeze = commonEventStub.Unfreeze(SYSTEM_UID);
+    EXPECT_EQ(true, unfreeze);
+    bool unfreezeAll = commonEventStub.UnfreezeAll();
+    EXPECT_EQ(true, unfreezeAll);
+}
+
+/*
+ * tc.number: CommonEventStub_009
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.desc: Invoke OnRemoteRequest interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_009, TestSize.Level1)
+{
+    const uint32_t code = -1;
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::MessageOption option;
+
+    CommonEventStub commonEventStub;
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
+}
+
+/*
+ * tc.number: MatchingSkills_001
+ * tc.name: test Unmarshalling
+ * tc.type: FUNC
+ * tc.desc: Invoke Unmarshalling interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level1)
+{
+    bool unmarshalling = true;
+    OHOS::Parcel parcel;
+    std::shared_ptr<MatchingSkills> result = std::make_shared<MatchingSkills>();
+    if (nullptr != result) {
+        if(nullptr == result->Unmarshalling(parcel)) {
+            unmarshalling = false;
+        }
+    }
+    EXPECT_EQ(true, unmarshalling);
+}
+
+/*
+ * @tc.number: CommonEventPublishInfo_0100
+ * @tc.name: verify SetBundleName
+ * @tc.desc: Invoke SetBundleName interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventPublishInfo_0100, Function | MediumTest | Level1)
+{
+    const std::string bundleName = "aa";
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName(bundleName);
+    std::string getBundleName = publishInfo.GetBundleName();
+    EXPECT_EQ(bundleName, getBundleName);
+}
+
+/*
+ * @tc.number: CommonEventPublishInfo_0200
+ * @tc.name: verify Unmarshalling
+ * @tc.desc: Invoke Unmarshalling interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventPublishInfo_0200, Function | MediumTest | Level1)
+{
+    bool result = false;
+    OHOS::Parcel parcel;
+    CommonEventPublishInfo publishInfo;
+    if (nullptr == publishInfo.Unmarshalling(parcel)) {
+        result = true;
+    }
+    EXPECT_EQ(true, result);
+}
+
+/*
+ * @tc.number: CommonEventSubscribeInfo_0100
+ * @tc.name: verify Unmarshalling
+ * @tc.desc: Invoke Unmarshalling interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest | Level1)
+{
+    bool result = false;
+    OHOS::Parcel parcel;
+    std::string eventName = "";
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(eventName);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    if(nullptr == subscribeInfo.Unmarshalling(parcel)) {
+        result = true;
+    }
+    EXPECT_EQ(true, result);
+}
+
+/*
+ * @tc.number: CommonEventSubscriber_0100
+ * @tc.name: verify IsStickyCommonEvent
+ * @tc.desc: Invoke IsStickyCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventSubscriber_0100, Function | MediumTest | Level1)
+{
+    CommonEventDeathRecipient commonEventDeathRecipient;
+    commonEventDeathRecipient.OnRemoteDied(nullptr);
+    bool result = CommonEventTest::IsStickyCommonEvent();
+    EXPECT_EQ(false, result);
 }
