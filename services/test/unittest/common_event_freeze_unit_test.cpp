@@ -409,4 +409,64 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800,
     GTEST_LOG_(INFO)
         << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800, TestSize.Level1 end";
 }
+
+/**
+ * @tc.name: CommonEventFreezeUnitTest_0900
+ * @tc.desc: UpdateAllFreezeInfos
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0900,
+    Function | MediumTest | Level1)
+{
+    // make subscribeInfoPtr
+    std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
+        std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    // make subscriber
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(*subscribeInfoPtr);
+    // make commonEventListener
+    OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
+    struct tm curTime {0};
+    // insert subscriber
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    auto result = commonEventSubscriberManager.InsertSubscriber(
+        subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
+    EXPECT_NE(nullptr, result);
+    // update freeze info
+    commonEventSubscriberManager.UpdateAllFreezeInfos(true);
+    size_t expectSize = 1;
+    ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
+    // get freeze records info
+    EXPECT_EQ(true, commonEventSubscriberManager.subscribers_[0]->isFreeze);
+}
+
+/**
+ * @tc.name: CommonEventFreezeUnitTest_1000
+ * @tc.desc: UpdateAllFreezeInfos
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1000,
+    Function | MediumTest | Level1)
+{
+    // make subscribeInfoPtr
+    std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
+        std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    // make subscriber
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(*subscribeInfoPtr);
+    // make common event listener
+    OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
+    struct tm curTime {0};
+    // InsertSubscriber
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    auto result = commonEventSubscriberManager.InsertSubscriber(
+        subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
+    EXPECT_NE(nullptr, result);
+    // update freeze info
+    commonEventSubscriberManager.UpdateAllFreezeInfos(false);
+    size_t expectSize = 1;
+    ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
+    // get freeze records info
+    EXPECT_EQ(false, commonEventSubscriberManager.subscribers_[0]->isFreeze);
+}
 }  // namespace
