@@ -23,6 +23,7 @@
 #undef protected
 #include "common_event_listener.h"
 #include "common_event_subscriber.h"
+#include "event_report.h"
 
 using namespace testing::ext;
 using namespace OHOS;
@@ -468,5 +469,118 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1000,
     ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
     // get freeze records info
     EXPECT_EQ(false, commonEventSubscriberManager.subscribers_[0]->isFreeze);
+}
+
+/**
+ * @tc.name: CommonEventFreezeUnitTest_1001
+ * @tc.desc: InsertFrozenEvents
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
+    Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001, TestSize.Level1";
+    // make subscriber info
+    std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
+        std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    // make subscriber
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(*subscribeInfoPtr);
+    // make common event listener
+    OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
+    struct tm curTime {0};
+    // InsertSubscriber
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    auto result = commonEventSubscriberManager.InsertSubscriber(
+        subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
+    EXPECT_NE(nullptr, result);
+    // clear frozen events
+    std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
+    size_t expectSize = 0;
+    EXPECT_EQ(expectSize, allFrozenRecords.size());
+    // make SubscriberRecordPtr
+    SubscriberRecordPtr eventSubscriberRecord = nullptr;
+    // make commonEventData
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    // make commonEventPublishInfo
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    // make commonEventRecord
+    CommonEventRecord commonEventRecord;
+    commonEventRecord.commonEventData = commonEventData;
+    commonEventRecord.publishInfo = publishInfo;
+    commonEventRecord.eventRecordInfo = eventRecordInfo_;
+    // insert frozen events
+    commonEventSubscriberManager.InsertFrozenEvents(eventSubscriberRecord, commonEventRecord);
+    std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
+    expectSize = 0;
+    EXPECT_EQ(expectSize, allFrozenRecords1.size());
+    GTEST_LOG_(INFO)
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001, TestSize.Level1 end";
+}
+
+/**
+ * @tc.name: CommonEventFreezeUnitTest_1002
+ * @tc.desc: RemoveFrozenEventsBySubscriber
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
+    Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002, TestSize.Level1";
+    // make subscriber info
+    std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
+        std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    // make subscriber
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(*subscribeInfoPtr);
+    // make common event listener
+    OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriber);
+    struct tm curTime {0};
+    // InsertSubscriber
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    auto result = commonEventSubscriberManager.InsertSubscriber(
+        subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
+    EXPECT_NE(nullptr, result);
+    // clear frozen events
+    std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
+    size_t expectSize = 0;
+    EXPECT_EQ(expectSize, allFrozenRecords.size());
+    // make SubscriberRecordPtr
+    SubscriberRecordPtr eventSubscriberRecord = std::make_shared<EventSubscriberRecord>();
+    eventSubscriberRecord->eventSubscribeInfo = subscribeInfoPtr;
+    eventSubscriberRecord->commonEventListener = commonEventListener;
+    eventSubscriberRecord->eventRecordInfo = eventRecordInfo_;
+    eventSubscriberRecord->isFreeze = true;
+    // insert frozen events
+    commonEventSubscriberManager.RemoveFrozenEventsBySubscriber(eventSubscriberRecord);
+    std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
+    expectSize = 0;
+    EXPECT_EQ(expectSize, allFrozenRecords1.size());
+    GTEST_LOG_(INFO)
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002, TestSize.Level1 end";
+}
+
+/**
+ * @tc.name: CommonEventFreezeUnitTest_1003
+ * @tc.desc: SendSubscriberExceedMaximumHiSysEvent
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003,
+    Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003, TestSize.Level1";
+    int32_t userId = 0;
+    std::string eventName = "EventName";
+    uint32_t subscriberNum = 0;
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    commonEventSubscriberManager.SendSubscriberExceedMaximumHiSysEvent(userId, eventName,subscriberNum);
+    size_t expectSize = 0;
+    ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
+    GTEST_LOG_(INFO)
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003, TestSize.Level1 end";
 }
 }  // namespace
