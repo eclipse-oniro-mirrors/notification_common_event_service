@@ -93,10 +93,10 @@ HWTEST_F(CommonEventAccessTokenHelperTest, VerifyAccessToken_0100, Level1)
 {
     std::string permission = "PERMISSION";
     AccessTokenID callerToken = DLP_PERMISSION_GRANTED;
-    EXPECT_FALSE(AccessTokenHelper::VerifyAccessToken(callerToken,permission));
+    EXPECT_FALSE(AccessTokenHelper::VerifyAccessToken(callerToken, permission));
 
     callerToken = PERMISSION_GRANTED;
-    EXPECT_FALSE(AccessTokenHelper::VerifyAccessToken(callerToken,permission));
+    EXPECT_FALSE(AccessTokenHelper::VerifyAccessToken(callerToken, permission));
 }
 }
 }
