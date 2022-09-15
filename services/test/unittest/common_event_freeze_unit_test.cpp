@@ -432,13 +432,13 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0900,
     CommonEventSubscriberManager commonEventSubscriberManager;
     auto result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
-    EXPECT_NE(nullptr, result);
+    EXPECT_NE(result, nullptr);
     // update freeze info
     commonEventSubscriberManager.UpdateAllFreezeInfos(true);
     size_t expectSize = 1;
-    ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
+    ASSERT_EQ(commonEventSubscriberManager.subscribers_.size(), expectSize);
     // get freeze records info
-    EXPECT_EQ(true, commonEventSubscriberManager.subscribers_[0]->isFreeze);
+    EXPECT_EQ(commonEventSubscriberManager.subscribers_[0]->isFreeze, true);
 }
 
 /**
@@ -462,13 +462,13 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1000,
     CommonEventSubscriberManager commonEventSubscriberManager;
     auto result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
-    EXPECT_NE(nullptr, result);
+    EXPECT_NE(result, nullptr);
     // update freeze info
     commonEventSubscriberManager.UpdateAllFreezeInfos(false);
     size_t expectSize = 1;
-    ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
+    ASSERT_EQ(commonEventSubscriberManager.subscribers_.size(), expectSize);
     // get freeze records info
-    EXPECT_EQ(false, commonEventSubscriberManager.subscribers_[0]->isFreeze);
+    EXPECT_EQ(commonEventSubscriberManager.subscribers_[0]->isFreeze, false);
 }
 
 /**
@@ -494,11 +494,11 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
     CommonEventSubscriberManager commonEventSubscriberManager;
     auto result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
-    EXPECT_NE(nullptr, result);
+    EXPECT_NE(result, nullptr);
     // clear frozen events
     std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
     size_t expectSize = 0;
-    EXPECT_EQ(expectSize, allFrozenRecords.size());
+    EXPECT_EQ(allFrozenRecords.size(), expectSize);
     // make SubscriberRecordPtr
     SubscriberRecordPtr eventSubscriberRecord = nullptr;
     // make commonEventData
@@ -514,7 +514,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
     commonEventSubscriberManager.InsertFrozenEvents(eventSubscriberRecord, commonEventRecord);
     std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
     expectSize = 0;
-    EXPECT_EQ(expectSize, allFrozenRecords1.size());
+    EXPECT_EQ(allFrozenRecords1.size(), expectSize);
     GTEST_LOG_(INFO)
         << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001, TestSize.Level1 end";
 }
@@ -542,11 +542,11 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
     CommonEventSubscriberManager commonEventSubscriberManager;
     auto result = commonEventSubscriberManager.InsertSubscriber(
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
-    EXPECT_NE(nullptr, result);
+    EXPECT_NE(result, nullptr);
     // clear frozen events
     std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
     size_t expectSize = 0;
-    EXPECT_EQ(expectSize, allFrozenRecords.size());
+    EXPECT_EQ(allFrozenRecords.size(), expectSize);
     // make SubscriberRecordPtr
     SubscriberRecordPtr eventSubscriberRecord = std::make_shared<EventSubscriberRecord>();
     eventSubscriberRecord->eventSubscribeInfo = subscribeInfoPtr;
@@ -557,7 +557,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
     commonEventSubscriberManager.RemoveFrozenEventsBySubscriber(eventSubscriberRecord);
     std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
     expectSize = 0;
-    EXPECT_EQ(expectSize, allFrozenRecords1.size());
+    EXPECT_EQ(allFrozenRecords1.size(), expectSize);
     GTEST_LOG_(INFO)
         << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002, TestSize.Level1 end";
 }
@@ -579,7 +579,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003,
     CommonEventSubscriberManager commonEventSubscriberManager;
     commonEventSubscriberManager.SendSubscriberExceedMaximumHiSysEvent(userId, eventName, subscriberNum);
     size_t expectSize = 0;
-    ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
+    ASSERT_EQ(commonEventSubscriberManager.subscribers_.size(), expectSize);
     GTEST_LOG_(INFO)
         << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003, TestSize.Level1 end";
 }
