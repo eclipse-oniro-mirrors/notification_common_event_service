@@ -577,7 +577,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003,
     std::string eventName = "EventName";
     uint32_t subscriberNum = 0;
     CommonEventSubscriberManager commonEventSubscriberManager;
-    commonEventSubscriberManager.SendSubscriberExceedMaximumHiSysEvent(userId, eventName,subscriberNum);
+    commonEventSubscriberManager.SendSubscriberExceedMaximumHiSysEvent(userId, eventName, subscriberNum);
     size_t expectSize = 0;
     ASSERT_EQ(expectSize, commonEventSubscriberManager.subscribers_.size());
     GTEST_LOG_(INFO)
