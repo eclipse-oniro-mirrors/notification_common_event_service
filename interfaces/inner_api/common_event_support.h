@@ -1152,6 +1152,12 @@ public:
      */
     static const std::string COMMON_EVENT_QUICK_FIX_APPLY_RESULT;
 
+    /**
+     * Indicates the action of a common event that radio state change.
+     * To subscribe to this protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_RADIO_STATE_CHANGE;
+
 public:
     CommonEventSupport();
 
