@@ -1261,6 +1261,12 @@ const std::string CommonEventSupport::COMMON_EVENT_INCOMING_CALL_MISSED = "usual
  */
 const std::string CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT = "usual.event.QUICK_FIX_APPLY_RESULT";
 
+/**
+ * Indicates the action of a common event that radio state change.
+ * To subscribe to this protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE = "usual.event.RADIO_STATE_CHANGE";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -1436,6 +1442,8 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_INCOMING_CALL_MISSED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE);
 
     return;
 }
