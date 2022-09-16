@@ -439,7 +439,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1200, Functi
  * @tc.name: StaticSubscriberManager_0001
  * @tc.desc: InitAllowList
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0001, Function | MediumTest | Level1)
 {
@@ -452,7 +452,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0001, Function | 
  * @tc.name: StaticSubscriberManager_0002
  * @tc.desc: InitValidSubscribers
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0002, Function | MediumTest | Level1)
 {
@@ -465,7 +465,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0002, Function | 
  * @tc.name: StaticSubscriberManager_0004
  * @tc.desc: VerifyPublisherPermission
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0004, Function | MediumTest | Level1)
 {
@@ -480,7 +480,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0004, Function | 
  * @tc.name: StaticSubscriberManager_0005
  * @tc.desc: VerifySubscriberPermission
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0005, Function | MediumTest | Level1)
 {
@@ -496,7 +496,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0005, Function | 
  * @tc.name: AbilityManagerHelper_0001
  * @tc.desc: GetAbilityMgrProxy
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0001, Function | MediumTest | Level1)
 {
@@ -510,7 +510,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0001, Function | Med
  * @tc.name: AbilityManagerHelper_0002
  * @tc.desc: ConnectAbility
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | MediumTest | Level1)
 {
@@ -532,7 +532,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | Med
  * @tc.name: BundleManagerHelper_0001
  * @tc.desc: QueryExtensionInfos
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0001, Function | MediumTest | Level1)
 {
@@ -547,7 +547,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0001, Function | Medi
  * @tc.name: BundleManagerHelper_0002
  * @tc.desc: GetResConfigFile
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0002, Function | MediumTest | Level1)
 {
@@ -562,7 +562,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0002, Function | Medi
  * @tc.name: CommonEventManagerService_0001
  * @tc.desc: PublishCommonEvent
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function | MediumTest | Level1)
 {
@@ -585,7 +585,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function 
  * @tc.name: CommonEventManagerService_0002
  * @tc.desc: DumpState
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function | MediumTest | Level1)
 {
