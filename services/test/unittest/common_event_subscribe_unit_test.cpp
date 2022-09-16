@@ -514,7 +514,6 @@ HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0001, Function | Med
  */
 HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | MediumTest | Level1)
 {
-    
     // make a want
     Want want;
     want.SetAction(EVENT);
@@ -602,7 +601,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function 
  * @tc.name: CommonEventManagerService_0003
  * @tc.desc: FinishReceiver
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0003, Function | MediumTest | Level1)
 {
@@ -618,11 +617,11 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0003, Function 
  * @tc.name: CommonEventManagerService_0004
  * @tc.desc: Dump
  * @tc.type: FUNC
- * @tc.require: 
+ * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0004, Function | MediumTest | Level1)
 {
-    int fd = 1; 
+    int fd = 1;
     std::vector<std::u16string> args;
     CommonEventManagerService commonEventManagerService;
     int result = commonEventManagerService.Dump(fd, args);
