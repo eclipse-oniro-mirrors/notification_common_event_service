@@ -199,6 +199,7 @@ ohos_unittest("common_event_subscribe_unit_test") {
   configs = [ ":cesfwk_services_config" ]
 
   deps = [
+    "${ability_runtime_path}/frameworks/native/ability/native:static_subscriber_ipc",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
@@ -208,6 +209,7 @@ ohos_unittest("common_event_subscribe_unit_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_runtime:ability_manager",
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
