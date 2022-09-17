@@ -1115,11 +1115,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_07
 {
     CommonEventControlManager commonEventControlManager;
     commonEventControlManager.EnqueueOrderedRecord(nullptr);
-    bool result = false;
-    if (commonEventControlManager.orderedEventQueue_.size() == 0) {
-        result = true;
-    }
-    EXPECT_EQ(true, result);
+    EXPECT_EQ(0, commonEventControlManager.orderedEventQueue_.size());
 }
 
 /*
@@ -1130,10 +1126,8 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_07
 HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_0800, Function | MediumTest | Level1)
 {
     CommonEventControlManager commonEventControlManager;
-    bool result;
     std::string receiverData = "receiverData";
-    result = commonEventControlManager.FinishReceiver(nullptr, 0, receiverData, false);
-    EXPECT_EQ(false, result);
+    EXPECT_EQ(false, commonEventControlManager.FinishReceiver(nullptr, 0, receiverData, false));
 }
 
 /*
@@ -1148,9 +1142,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_09
     std::shared_ptr<CommonEventControlManager> controlManager = std::make_shared<CommonEventControlManager>();
     commonEventControlManager.handlerOrdered_ =
         std::make_shared<OrderedEventHandler>(EventRunner::Create(), controlManager);
-    bool result;
-    result = commonEventControlManager.GetOrderedEventHandler();
-    EXPECT_EQ(true, result);
+    EXPECT_EQ(true, commonEventControlManager.GetOrderedEventHandler());
 }
 
 /*
