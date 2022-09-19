@@ -35,7 +35,6 @@
 #include "datetime_ex.h"
 
 #include <gtest/gtest.h>
-#include "async_common_event_result.h"
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
