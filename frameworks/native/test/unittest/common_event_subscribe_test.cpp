@@ -26,12 +26,16 @@
 #include "common_event_stub.h"
 #include "common_event_subscriber_manager.h"
 #include "inner_common_event_manager.h"
+#include "common_event_publish_info.h"
+#include "common_event_subscribe_info.h"
+#include "matching_skills.h"
 #undef private
 #undef protected
 
 #include "datetime_ex.h"
 
 #include <gtest/gtest.h>
+#include "async_common_event_result.h"
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -488,4 +492,149 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level1)
     CommonEventManager commonEventManager;
     bool unfreezeAll = commonEventManager.UnfreezeAll();
     EXPECT_EQ(true, unfreezeAll);
+}
+
+/*
+ * tc.number: CommonEventManager_004
+ * tc.name: test PublishCommonEventAsUser
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke PublishCommonEventAsUser interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_004, TestSize.Level1)
+{
+    // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+    int32_t userId = 1;
+    CommonEventManager commonEventManager;
+    bool result = commonEventManager.PublishCommonEventAsUser(data, userId);
+    EXPECT_EQ(result, true);
+}
+
+/*
+ * tc.number: CommonEventManager_005
+ * tc.name: test PublishCommonEventAsUser
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke PublishCommonEventAsUser interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_005, TestSize.Level1)
+{
+     // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(true);
+    int32_t userId = 2;
+    CommonEventManager commonEventManager;
+    bool result = commonEventManager.PublishCommonEventAsUser(data, publishInfo, userId);
+    EXPECT_EQ(result, true);
+}
+
+/*
+ * tc.number: CommonEventManager_006
+ * tc.name: test PublishCommonEvent
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_006, TestSize.Level1)
+{
+     // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(true);
+    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    CommonEventManager commonEventManager;
+    bool result = commonEventManager.PublishCommonEvent(data, publishInfo, subscriber, SYSTEM_UID);
+    EXPECT_EQ(result, true);
+}
+
+/*
+ * tc.number: CommonEventManager_007
+ * tc.name: test PublishCommonEventAsUser
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke PublishCommonEventAsUser interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_007, TestSize.Level1)
+{
+     // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(true);
+    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    int32_t userId = 4;
+    CommonEventManager commonEventManager;
+    bool result = commonEventManager.PublishCommonEventAsUser(data, publishInfo, subscriber, SYSTEM_UID, userId);
+    EXPECT_EQ(result, true);
+}
+
+/*
+ * tc.number: CommonEventPublishInfo_001
+ * tc.name: test ReadFromParcel
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventPublishInfo_001, TestSize.Level1)
+{
+
+    Parcel parcel;
+    CommonEventPublishInfo commonEventPublishInfo;
+    bool result = commonEventPublishInfo.ReadFromParcel(parcel);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: CommonEventSubscribeInfo_001
+ * tc.name: test ReadFromParcel
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribeInfo_001, TestSize.Level1)
+{
+
+    Parcel parcel;
+    CommonEventSubscribeInfo commonEventSubscribeInfo;
+    bool result = commonEventSubscribeInfo.ReadFromParcel(parcel);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: MatchingSkills_001
+ * tc.name: test ReadFromParcel
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, MatchingSkills_001, TestSize.Level1)
+{
+
+    Parcel parcel;
+    MatchingSkills matchingSkills;
+    bool result = matchingSkills.ReadFromParcel(parcel);
+    EXPECT_EQ(result, true);
 }
