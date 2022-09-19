@@ -22,7 +22,7 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "include",
     "${common_event_service_path}/test/mock/include",
     "${ces_core_path}/include",
-    "${ces_innerkits_path}/include",
+    "${ces_innerkits_path}",
     "//foundation/systemabilitymgr/safwk/services/safwk/include",
     "${services_path}/include",
   ]

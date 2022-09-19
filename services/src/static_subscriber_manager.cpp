@@ -191,6 +191,15 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
 {
     EVENT_LOGI("enter, subscriber name = %{public}s, bundle name = %{public}s, userId = %{public}d",
         extensionName.c_str(), extensionBundleName.c_str(), extensionUserId);
+    
+    if (profile.empty()) {
+        EVENT_LOGE("invalid profile");
+        return;
+    }
+    if (!nlohmann::json::accept(profile.c_str())) {
+        EVENT_LOGE("invalid format profile");
+        return;
+    }
 
     nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
     if (jsonObj.is_null() || jsonObj.empty()) {
@@ -262,7 +271,9 @@ void StaticSubscriberManager::AddToValidSubscribers(const std::string &eventName
 {
     if (validSubscribers_.find(eventName) != validSubscribers_.end()) {
         for (auto sub : validSubscribers_[eventName]) {
-            if (sub == subscriber) {
+            if ((sub.name == subscriber.name) &&
+                (sub.bundleName == subscriber.bundleName) &&
+                (sub.userId == subscriber.userId)) {
                 EVENT_LOGI("subscriber already exist, event = %{public}s, bundlename = %{public}s, name = %{public}s,"
                     "userId = %{public}d", eventName.c_str(), subscriber.bundleName.c_str(), subscriber.name.c_str(),
                     subscriber.userId);
