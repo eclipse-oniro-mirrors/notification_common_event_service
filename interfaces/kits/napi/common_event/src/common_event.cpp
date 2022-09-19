@@ -2097,7 +2097,10 @@ napi_value GetSubscriberPermissionsByPublish(
                         EVENT_LOGE("Wrong argument type. String expected.");
                         return nullptr;
                     }
-                    memset_s(str, STR_MAX_SIZE, 0, STR_MAX_SIZE);
+                    if (memset_s(str, STR_MAX_SIZE, 0, STR_MAX_SIZE) != 0) {
+                        EVENT_LOGE("memset_s failed.");
+                        return nullptr;
+                    }
                     NAPI_CALL(
                         env, napi_get_value_string_utf8(env, nSubscriberPermission, str, STR_MAX_SIZE - 1, &strLen));
                     subscriberPermissions.emplace_back(str);
