@@ -19,6 +19,8 @@
 #define protected public
 #include "bundle_manager_helper.h"
 #include "common_event_subscriber_manager.h"
+#include "static_subscriber_manager.h"
+#include "ability_manager_helper.h"
 #undef private
 #undef protected
 
@@ -27,6 +29,8 @@
 #include "common_event_subscriber.h"
 #include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
+#include "bundle_manager_helper.h"
+#include "common_event_manager_service.h"
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -429,4 +433,140 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1200, Functi
 
     // InsertSubscriberRecordLocked
     EXPECT_FALSE(commonEventSubscriberManager.InsertSubscriberRecordLocked(events, nullptr));
+}
+
+/**
+ * @tc.name: AbilityManagerHelper_0001
+ * @tc.desc: GetAbilityMgrProxy
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0001, Function | MediumTest | Level1)
+{
+    AbilityManagerHelper abilityManagerHelper;
+    bool result = abilityManagerHelper.GetAbilityMgrProxy();
+    abilityManagerHelper.Clear();
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: AbilityManagerHelper_0002
+ * @tc.desc: ConnectAbility
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | MediumTest | Level1)
+{
+    // make a want
+    Want want;
+    want.SetAction(EVENT);
+
+    // make common event data
+    CommonEventData event;
+    OHOS::sptr<OHOS::IRemoteObject> callerToken(nullptr);
+    int32_t userId = 1;
+    AbilityManagerHelper abilityManagerHelper;
+    int result = abilityManagerHelper.ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result, 2097177);
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0001
+ * @tc.desc: QueryExtensionInfos
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0001, Function | MediumTest | Level1)
+{
+    std::vector<OHOS::AppExecFwk::ExtensionAbilityInfo> extensionInfos;
+    int32_t userId = 3;
+    BundleManagerHelper bundleManagerHelper;
+    bool result = bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0002
+ * @tc.desc: GetResConfigFile
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0002, Function | MediumTest | Level1)
+{
+    OHOS::AppExecFwk::ExtensionAbilityInfo extension;
+    std::vector<std::string> profileInfos;
+    BundleManagerHelper bundleManagerHelper;
+    bool result = bundleManagerHelper.GetResConfigFile(extension, profileInfos);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: CommonEventManagerService_0001
+ * @tc.desc: PublishCommonEvent
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function | MediumTest | Level1)
+{
+    // make a want
+    Want want;
+    want.SetAction(EVENT);
+    // make common event data
+    CommonEventData event;
+    // make publish info
+    CommonEventPublishInfo publishinfo;
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener(nullptr);
+    uid_t uid = 1;
+    int32_t userId = 1;
+    CommonEventManagerService commonEventManagerService;
+    bool result = commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid, userId);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: CommonEventManagerService_0002
+ * @tc.desc: DumpState
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function | MediumTest | Level1)
+{
+    uint8_t dumpType = 1;
+    std::string event = "Event";
+    int32_t userId =2;
+    std::vector<std::string> state;
+    CommonEventManagerService commonEventManagerService;
+    bool result = commonEventManagerService.DumpState(dumpType, event, userId, state);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: CommonEventManagerService_0003
+ * @tc.desc: FinishReceiver
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0003, Function | MediumTest | Level1)
+{
+    OHOS::sptr<OHOS::IRemoteObject> proxy(nullptr);
+    int32_t code = 0;
+    std::string receiverData = "receiverData";
+    CommonEventManagerService commonEventManagerService;
+    bool result = commonEventManagerService.FinishReceiver(proxy, code, receiverData, false);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: CommonEventManagerService_0004
+ * @tc.desc: Dump
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0004, Function | MediumTest | Level1)
+{
+    int fd = 1;
+    std::vector<std::u16string> args;
+    CommonEventManagerService commonEventManagerService;
+    int result = commonEventManagerService.Dump(fd, args);
+    EXPECT_EQ(result, 22);
 }

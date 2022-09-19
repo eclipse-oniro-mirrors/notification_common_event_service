@@ -67,5 +67,36 @@ HWTEST_F(CommonEventAccessTokenHelperTest, IsDlpHap_0100, Level1)
 
     GTEST_LOG_(INFO) << "IsDlpHap_0100 end";
 }
+
+/**
+ * @tc.name: VerifyNativeToken_0100
+ * @tc.desc: Judge DLP accessToken
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventAccessTokenHelperTest, VerifyNativeToken_0100, Level1)
+{
+    AccessTokenID callerToken = DLP_PERMISSION_GRANTED;
+    EXPECT_FALSE(AccessTokenHelper::VerifyNativeToken(callerToken));
+
+    callerToken = PERMISSION_GRANTED;
+    EXPECT_FALSE(AccessTokenHelper::VerifyNativeToken(callerToken));
+}
+
+/**
+ * @tc.name: VerifyAccessToken_0100
+ * @tc.desc: Judge DLP accessToken
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+HWTEST_F(CommonEventAccessTokenHelperTest, VerifyAccessToken_0100, Level1)
+{
+    std::string permission = "PERMISSION";
+    AccessTokenID callerToken = DLP_PERMISSION_GRANTED;
+    EXPECT_FALSE(AccessTokenHelper::VerifyAccessToken(callerToken, permission));
+
+    callerToken = PERMISSION_GRANTED;
+    EXPECT_FALSE(AccessTokenHelper::VerifyAccessToken(callerToken, permission));
+}
 }
 }
