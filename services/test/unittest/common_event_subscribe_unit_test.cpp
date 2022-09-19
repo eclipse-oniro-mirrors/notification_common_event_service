@@ -435,63 +435,6 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1200, Functi
     EXPECT_FALSE(commonEventSubscriberManager.InsertSubscriberRecordLocked(events, nullptr));
 }
 
- /**
- * @tc.name: StaticSubscriberManager_0001
- * @tc.desc: InitAllowList
- * @tc.type: FUNC
- * @tc.require: I5R11Y
- */
-HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0001, Function | MediumTest | Level1)
-{
-    StaticSubscriberManager staticSubscriberManager;
-    bool result = staticSubscriberManager.InitAllowList();
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: StaticSubscriberManager_0002
- * @tc.desc: InitValidSubscribers
- * @tc.type: FUNC
- * @tc.require: I5R11Y
- */
-HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0002, Function | MediumTest | Level1)
-{
-    StaticSubscriberManager staticSubscriberManager;
-    bool result = staticSubscriberManager.InitValidSubscribers();
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: StaticSubscriberManager_0004
- * @tc.desc: VerifyPublisherPermission
- * @tc.type: FUNC
- * @tc.require: I5R11Y
- */
-HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0004, Function | MediumTest | Level1)
-{
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 1;
-    std::string permission = "Permission";
-    StaticSubscriberManager staticSubscriberManager;
-    bool result = staticSubscriberManager.VerifyPublisherPermission(tokenID, permission);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: StaticSubscriberManager_0005
- * @tc.desc: VerifySubscriberPermission
- * @tc.type: FUNC
- * @tc.require: I5R11Y
- */
-HWTEST_F(CommonEventSubscribeUnitTest, StaticSubscriberManager_0005, Function | MediumTest | Level1)
-{
-    std::string bundleName = "BundleName";
-    int32_t userId = 1;
-    std::vector<std::string> permissions;
-    StaticSubscriberManager staticSubscriberManager;
-    bool result = staticSubscriberManager.VerifySubscriberPermission(bundleName, userId, permissions);
-    EXPECT_EQ(result, true);
-}
-
 /**
  * @tc.name: AbilityManagerHelper_0001
  * @tc.desc: GetAbilityMgrProxy
