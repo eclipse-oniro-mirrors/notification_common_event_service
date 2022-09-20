@@ -1101,7 +1101,14 @@ declare namespace commonEvent {
      * This common event can be triggered only by system.
      * @since 9
      */
-    COMMON_EVENT_QUICK_FIX_APPLY_RESULT = "usual.event.QUICK_FIX_APPLY_RESULT"
+    COMMON_EVENT_QUICK_FIX_APPLY_RESULT = "usual.event.QUICK_FIX_APPLY_RESULT",
+
+    /**
+     * Indicates the action of a common event that radio state change.
+     * To subscribe to this protected common event that can only be sent by system.
+     * @since 9
+     */
+    COMMON_EVENT_RADIO_STATE_CHANGE = "usual.event.RADIO_STATE_CHANGE"
   }
 }
 

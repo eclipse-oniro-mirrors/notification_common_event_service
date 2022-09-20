@@ -506,6 +506,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_INCOMING_CALL_MISSED");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE,
+        "COMMON_EVENT_RADIO_STATE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SIM_CARD_DEFAULT_DATA_SUBSCRIPTION_CHANGED,
         "COMMON_EVENT_SIM_CARD_DEFAULT_DATA_SUBSCRIPTION_CHANGED");
     SetNamedPropertyByStr(env,
