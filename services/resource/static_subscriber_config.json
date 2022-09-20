@@ -1,7 +1,6 @@
 {
     "apps": [
         "com.ohos.launcher",
-        "com.ohos.systemui",
-        "com.example.staticsubscriberapplication"
+        "com.ohos.systemui"
     ]
 }

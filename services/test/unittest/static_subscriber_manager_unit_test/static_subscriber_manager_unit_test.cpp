@@ -15,6 +15,8 @@
 
 #include <gtest/gtest.h>
 
+#include "common_event_support.h"
+#include "want.h"
 #define private public
 #define protected public
 #include "static_subscriber_manager.h"
@@ -25,9 +27,18 @@ using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::EventFwk;
 
+extern void MockVerifyAccessToken(bool mockRet);
+extern void MockGetHapTokenID(Security::AccessToken::AccessTokenID mockRet);
+extern void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase);
+extern void MockGetResConfigFile(bool mockRet, uint8_t mockCase);
+extern void MockQueryActiveOsAccountIds(bool mockRet, uint8_t mockCase);
+extern void MockGetOsAccountLocalIdFromUid(bool mockRet);
+
 namespace {
-    constexpr uint8_t TEST_ALLOWLIST_SIZE = 3;
+    constexpr uint8_t TEST_ALLOWLIST_SIZE = 2;
     constexpr uint8_t TEST_PARSE_EVENTS_MUL_SIZE = 2;
+    constexpr uint8_t MOCK_CASE_2 = 2;
+    constexpr uint8_t MOCK_CASE_3 = 3;
 }
 
 class StaticSubscriberManagerUnitTest : public testing::Test {
@@ -55,7 +66,7 @@ void StaticSubscriberManagerUnitTest::TearDown() {}
 
 /*
  * @tc.name: InitAllowListTest_0100
- * @tc.desc: test if StaticSubscriberManager's InitAllowList function excuted as expected in normal case.
+ * @tc.desc: test if StaticSubscriberManager's InitAllowList function executed as expected in normal case.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
  * 
@@ -78,7 +89,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitAllowListTest_0100, Function | Med
 
 /*
  * @tc.name: ParseEventsTest_0100
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           valid params when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -121,7 +132,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0100, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0200
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid empty profile when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -145,7 +156,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0200, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0300
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid non-object profile when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -169,7 +180,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0300, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0400
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid empty 'commonEvents' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -197,7 +208,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0400, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0500
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid non-object 'commonEvents' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -224,7 +235,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0500, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0600
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid empty 'name' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -257,7 +268,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0600, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0700
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid non-string 'name' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -290,7 +301,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0700, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0800
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid non-string 'name' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -323,7 +334,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0800, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_0900
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid json string when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -356,7 +367,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0900, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1000
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid nonm-string 'permission' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -389,7 +400,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1000, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1100
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid null type 'events' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -422,7 +433,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1100, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1200
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid non-array 'events' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -455,7 +466,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1200, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1300
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid empty 'events' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -488,7 +499,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1300, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1400
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid null 'event' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -521,7 +532,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1400, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1500
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           invalid non-string 'event' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -554,7 +565,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1500, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1600
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected
  *            when profile has two elements.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -615,7 +626,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1600, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1700
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           one invalid element when profile has two elements.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -669,7 +680,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1700, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1800
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           two invalid elements when profile has two elements.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -715,7 +726,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1800, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_1900
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  * duplicated elements when profile has two elements.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -764,7 +775,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1900, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_2000
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  * almost duplicated elements when profile has two elements.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -813,7 +824,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2000, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_2100
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           no 'name' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -845,7 +856,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2100, Function | Mediu
 
 /*
  * @tc.name: ParseEventsTest_2200
- * @tc.desc: test if StaticSubscriberManager's ParseEvents function excuted as expected with
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function executed as expected with
  *           no 'events' element when profile only has one element.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
@@ -875,7 +886,882 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2200, Function | Mediu
     EXPECT_EQ(0, manager->validSubscribers_.size());
 }
 
+/*
+ * @tc.name: AddToValidSubsribersTest_0100
+ * @tc.desc: test if StaticSubscriberManager's AddToValidSubsribers function executed as expected in normal case.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0100, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName = "testEvent";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo);
+    // expect valid subscribers map is empty
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+}
 
+/*
+ * @tc.name: AddToValidSubsribersTest_0200
+ * @tc.desc: test if StaticSubscriberManager's AddToValidSubsribers function executed as expected when add 
+ *           duplicated subscriber with same event.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0200, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName = "testEvent";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo0 = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo0);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    StaticSubscriberManager::StaticSubscriberInfo testInfo1 = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo1);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+}
 
+/*
+ * @tc.name: AddToValidSubsribersTest_0300
+ * @tc.desc: test if StaticSubscriberManager's AddToValidSubsribers function executed as expected when add 
+ *           different subscribers with same event.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName = "testEvent";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo0 = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo0);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    StaticSubscriberManager::StaticSubscriberInfo testInfo1 = {
+        .name = "testName1",
+        .bundleName = "testBundleName1",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo1);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    auto subcriberList = manager->validSubscribers_[testEventName];
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, subcriberList.size());
+}
 
+/*
+ * @tc.name: AddToValidSubsribersTest_0400
+ * @tc.desc: test if StaticSubscriberManager's AddToValidSubsribers function executed as expected when add 
+ *           same subscriber with diffrernt events.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0400, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName0 = "testEvent0";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName0, testInfo);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    std::string testEventName1 = "testEvent1";
+    manager->AddToValidSubscribers(testEventName1, testInfo);
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, manager->validSubscribers_.size());
+    auto subcriberList1 = manager->validSubscribers_[testEventName0];
+    EXPECT_EQ(1, subcriberList1.size());
+    auto subcriberList2 = manager->validSubscribers_[testEventName1];
+    EXPECT_EQ(1, subcriberList2.size());
+}
 
+/*
+ * @tc.name: AddToValidSubsribersTest_0500
+ * @tc.desc: test if StaticSubscriberManager's AddToValidSubsribers function executed as expected when add 
+ *           different subscribers with diffrernt events.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0500, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0500, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName0 = "testEvent0";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo0 = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName0, testInfo0);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    std::string testEventName1 = "testEvent1";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo1 = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName1, testInfo1);
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: RemoveSubscriberWithBundleNameTest_0100
+ * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected in normal case.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0100, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName = "testEvent";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo);
+    // expect valid subscribers map is empty
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    std::string testBundleName = "testBundleName";
+    int testUserId = 100;
+    manager->RemoveSubscriberWithBundleName(testBundleName, testUserId);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: RemoveSubscriberWithBundleNameTest_0200
+ * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected
+ *           when userId not match.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0200, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName = "testEvent";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo);
+    // expect valid subscribers map is empty
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    std::string testBundleName = "testBundleName";
+    int testUserId = 101;
+    manager->RemoveSubscriberWithBundleName(testBundleName, testUserId);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: RemoveSubscriberWithBundleNameTest_0300
+ * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected
+ *           when bundleName not match.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName = "testEvent";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName, testInfo);
+    // expect valid subscribers map is empty
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    std::string testBundleName = "testBundleName1";
+    int testUserId = 100;
+    manager->RemoveSubscriberWithBundleName(testBundleName, testUserId);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: RemoveSubscriberWithBundleNameTest_0400
+ * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected
+ *           when multiple bundlename and userid matched.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0400, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleNameTest_0400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string testEventName0 = "testEvent0";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "testName",
+        .bundleName = "testBundleName",
+        .userId = 100,
+        .permission = ""
+    };
+    manager->AddToValidSubscribers(testEventName0, testInfo);
+    // expect valid subscribers map is empty
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    std::string testEventName1 = "testEvent1";
+    manager->AddToValidSubscribers(testEventName1, testInfo);
+    // expect valid subscribers map is empty
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, manager->validSubscribers_.size());
+    std::string testBundleName = "testBundleName";
+    int testUserId = 100;
+    manager->RemoveSubscriberWithBundleName(testBundleName, testUserId);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: VerifyPublisherPermissionTest_0100
+ * @tc.desc: test if StaticSubscriberManager's VerifyPublisherPermission function executed as expected
+ *           when in normal case.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, VerifyPublisherPermissionTest_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, VerifyPublisherPermissionTest_0100, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    Security::AccessToken::AccessTokenID id = 100;
+    std::string permission = "permission";
+    MockVerifyAccessToken(true);
+    EXPECT_TRUE(manager->VerifyPublisherPermission(id, permission));
+}
+
+/*
+ * @tc.name: VerifyPublisherPermissionTest_0200
+ * @tc.desc: test if StaticSubscriberManager's VerifyPublisherPermission function executed as expected
+ *           when permission is null.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, VerifyPublisherPermissionTest_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, VerifyPublisherPermissionTest_0200, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    Security::AccessToken::AccessTokenID id = 100;
+    std::string permission = "";
+    EXPECT_TRUE(manager->VerifyPublisherPermission(id, permission));
+}
+
+/*
+ * @tc.name: VerifyPublisherPermissionTest_0300
+ * @tc.desc: test if StaticSubscriberManager's VerifyPublisherPermission function executed as expected
+ *           when permission verify failed.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, VerifyPublisherPermissionTest_0300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, VerifyPublisherPermissionTest_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    Security::AccessToken::AccessTokenID id = 100;
+    std::string permission = "permission";
+    MockVerifyAccessToken(false);
+    EXPECT_FALSE(manager->VerifyPublisherPermission(id, permission));
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0100
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           in normal case.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0100, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    EXPECT_TRUE(manager->InitValidSubscribers());
+    EXPECT_TRUE(manager->hasInitValidSubscribers_);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    auto validSubscribers = manager->validSubscribers_["usual.event.TIME_TICK"];
+    EXPECT_EQ(1, validSubscribers.size());
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0200
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           when valid list is not empty.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0200, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    std::string eventName = "eventName0";
+    std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
+    manager->validSubscribers_.insert(make_pair(eventName, info0));
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_TRUE(manager->InitValidSubscribers());
+    EXPECT_TRUE(manager->hasInitValidSubscribers_);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    auto validSubscribers = manager->validSubscribers_["usual.event.TIME_TICK"];
+    EXPECT_EQ(1, validSubscribers.size());
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0300
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           when query extension info failed.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    MockQueryExtensionInfos(false, 0);
+    std::string eventName = "eventName0";
+    EXPECT_FALSE(manager->InitValidSubscribers());
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0400
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           when one invalid extensions were found.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0400, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    MockQueryExtensionInfos(true, MOCK_CASE_2);
+    MockGetResConfigFile(true, 1);
+    EXPECT_TRUE(manager->InitValidSubscribers());
+    EXPECT_TRUE(manager->hasInitValidSubscribers_);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0500
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           when two valid extensions were found, profile different.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0500, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0500, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    manager->subscriberList_.emplace_back("com.ohos.systemui1");
+    MockQueryExtensionInfos(true, MOCK_CASE_3);
+    MockGetResConfigFile(true, MOCK_CASE_2);
+    EXPECT_TRUE(manager->InitValidSubscribers());
+    EXPECT_TRUE(manager->hasInitValidSubscribers_);
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, manager->validSubscribers_.size());
+    auto validSubscribers0 = manager->validSubscribers_["usual.event.TIME_TICK"];
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, validSubscribers0.size());
+    auto validSubscribers1 = manager->validSubscribers_["usual.event.TIME_TICK1"];
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, validSubscribers1.size());
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0600
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           when two valid extensions were found, profile same.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0600, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0600, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    manager->subscriberList_.emplace_back("com.ohos.systemui1");
+    MockQueryExtensionInfos(true, MOCK_CASE_3);
+    MockGetResConfigFile(true, MOCK_CASE_3);
+    EXPECT_TRUE(manager->InitValidSubscribers());
+    EXPECT_TRUE(manager->hasInitValidSubscribers_);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    auto validSubscribers = manager->validSubscribers_["usual.event.TIME_TICK"];
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, validSubscribers.size());
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0700
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           when one valid extension and one invalid extension were found.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0700, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0700, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    MockQueryExtensionInfos(true, MOCK_CASE_3);
+    MockGetResConfigFile(true, MOCK_CASE_3);
+    EXPECT_TRUE(manager->InitValidSubscribers());
+    EXPECT_TRUE(manager->hasInitValidSubscribers_);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    auto validSubscribers = manager->validSubscribers_["usual.event.TIME_TICK"];
+    EXPECT_EQ(1, validSubscribers.size());
+}
+
+/*
+ * @tc.name: InitValidSubscribersTest_0800
+ * @tc.desc: test if StaticSubscriberManager's InitValidSubscribers function executed as expected
+ *           when two invalid extension were found.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0800, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0800, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui2");
+    MockQueryExtensionInfos(true, MOCK_CASE_3);
+    MockGetResConfigFile(true, MOCK_CASE_3);
+    EXPECT_TRUE(manager->InitValidSubscribers());
+    EXPECT_TRUE(manager->hasInitValidSubscribers_);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: UpdateSubscriberTest_0100
+ * @tc.desc: test if StaticSubscriberManager's UpdateSubscriber function executed as expected
+ *           in normal case.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0100, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    Want testWant;
+    std::string testNormalEventName = "testEventName";
+    testWant.SetAction(testNormalEventName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    manager->UpdateSubscriber(testEventData);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: UpdateSubscriberTest_0200
+ * @tc.desc: test if StaticSubscriberManager's UpdateSubscriber function executed as expected
+ *           when add bundle event was sent.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0200, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    Want testWant;
+    std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED;
+    testWant.SetAction(testNormalEventName);
+    std::string testBundleName = "com.ohos.systemui";
+    std::string testAbilityName = "StaticSubscriber";
+    testWant.SetElementName(testBundleName, testAbilityName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    MockGetOsAccountLocalIdFromUid(true);
+    MockQueryActiveOsAccountIds(true, 0);
+    manager->UpdateSubscriber(testEventData);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: UpdateSubscriberTest_0300
+ * @tc.desc: test if StaticSubscriberManager's UpdateSubscriber function executed as expected
+ *           when change bundle event was sent.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    manager->subscriberList_.emplace_back("com.ohos.systemui");
+    std::string eventName = "usual.event.TIME_TICK";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "StaticSubscriber",
+        .bundleName = "com.ohos.systemui",
+        .userId = 100,
+        .permission = "permission1"
+    };
+    std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
+    info0.emplace_back(testInfo);
+    manager->validSubscribers_.insert(make_pair(eventName, info0));
+    auto validSubscribers0 = manager->validSubscribers_[eventName];
+    EXPECT_EQ(1, validSubscribers0.size());
+    std::string expectPermissionBefore = "permission1";
+    EXPECT_EQ(expectPermissionBefore, validSubscribers0[0].permission);
+    Want testWant;
+    std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED;
+    testWant.SetAction(testNormalEventName);
+    std::string testBundleName = "com.ohos.systemui";
+    std::string testAbilityName = "StaticSubscriber";
+    testWant.SetElementName(testBundleName, testAbilityName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    manager->UpdateSubscriber(testEventData);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    std::string expectPermissionAfter = "permission0";
+    auto validSubscribers1 = manager->validSubscribers_[eventName];
+    EXPECT_EQ(1, validSubscribers1.size());
+    EXPECT_EQ(expectPermissionAfter, validSubscribers1[0].permission);
+}
+
+/*
+ * @tc.name: UpdateSubscriberTest_0400
+ * @tc.desc: test if StaticSubscriberManager's UpdateSubscriber function executed as expected
+ *           when remove bundle event was sent.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0400, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    std::string eventName = "usual.event.TIME_TICK";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "StaticSubscriber",
+        .bundleName = "com.ohos.systemui",
+        .userId = 100,
+        .permission = "permission1"
+    };
+    std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
+    info0.emplace_back(testInfo);
+    manager->validSubscribers_.insert(make_pair(eventName, info0));
+    auto validSubscribers0 = manager->validSubscribers_[eventName];
+    EXPECT_EQ(1, validSubscribers0.size());
+    std::string expectPermissionBefore = "permission1";
+    EXPECT_EQ(expectPermissionBefore, validSubscribers0[0].permission);
+    Want testWant;
+    std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED;
+    testWant.SetAction(testNormalEventName);
+    std::string testBundleName = "com.ohos.systemui";
+    std::string testAbilityName = "StaticSubscriber";
+    testWant.SetElementName(testBundleName, testAbilityName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    manager->UpdateSubscriber(testEventData);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: UpdateSubscriberTest_0500
+ * @tc.desc: test if StaticSubscriberManager's UpdateSubscriber function executed as expected
+ *           when GetOsAccountLocalIdFromUid failed.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0500, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0500, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    Want testWant;
+    std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED;
+    testWant.SetAction(testNormalEventName);
+    std::string testBundleName = "com.ohos.systemui";
+    std::string testAbilityName = "StaticSubscriber";
+    testWant.SetElementName(testBundleName, testAbilityName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    MockGetOsAccountLocalIdFromUid(false);
+    manager->UpdateSubscriber(testEventData);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: UpdateSubscriberTest_0600
+ * @tc.desc: test if StaticSubscriberManager's UpdateSubscriber function executed as expected
+ *           when QueryActiveOsAccountIds failed.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0600, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0600, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    Want testWant;
+    std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED;
+    testWant.SetAction(testNormalEventName);
+    std::string testBundleName = "com.ohos.systemui";
+    std::string testAbilityName = "StaticSubscriber";
+    testWant.SetElementName(testBundleName, testAbilityName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    MockQueryActiveOsAccountIds(false, 0);
+    manager->UpdateSubscriber(testEventData);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: UpdateSubscriberTest_0700
+ * @tc.desc: test if StaticSubscriberManager's UpdateSubscriber function executed as expected
+ *           when userId not match.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0700, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0700, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    Want testWant;
+    std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED;
+    testWant.SetAction(testNormalEventName);
+    std::string testBundleName = "com.ohos.systemui";
+    std::string testAbilityName = "StaticSubscriber";
+    testWant.SetElementName(testBundleName, testAbilityName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    MockQueryExtensionInfos(true, 1);
+    MockGetResConfigFile(true, 1);
+    MockGetOsAccountLocalIdFromUid(true);
+    MockQueryActiveOsAccountIds(true, 1);
+    manager->UpdateSubscriber(testEventData);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: AddSubscriberTest_0100
+ * @tc.desc: test if StaticSubscriberManager's AddSubscriber function executed as expected
+ *           in normal case.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddSubscriberTest_0100, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    AppExecFwk::ExtensionAbilityInfo info0;
+    info0.bundleName = "com.ohos.systemui";
+    info0.name = "StaticSubscriber";
+    MockGetResConfigFile(true, 1);
+    manager->AddSubscriber(info0);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: AddSubscriberTest_0200
+ * @tc.desc: test if StaticSubscriberManager's AddSubscriber function executed as expected
+ *           when GetResConfigFile failed.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddSubscriberTest_0200, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    AppExecFwk::ExtensionAbilityInfo info0;
+    info0.bundleName = "com.ohos.systemui";
+    info0.name = "StaticSubscriber";
+    MockGetResConfigFile(false, 0);
+    manager->AddSubscriber(info0);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: AddSubscriberTest_0300
+ * @tc.desc: test if StaticSubscriberManager's AddSubscriber function executed as expected
+ *           when GetOsAccountLocalIdFromUid failed.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddSubscriberTest_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    AppExecFwk::ExtensionAbilityInfo info0;
+    info0.bundleName = "com.ohos.systemui";
+    info0.name = "StaticSubscriber";
+    MockGetResConfigFile(true, 1);
+    MockGetOsAccountLocalIdFromUid(false);
+    manager->AddSubscriber(info0);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: AddSubscriberTest_0400
+ * @tc.desc: test if StaticSubscriberManager's AddSubscriber function executed as expected
+ *           when profiles has more than one profile.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0400, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddSubscriberTest_0400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+    AppExecFwk::ExtensionAbilityInfo info0;
+    info0.bundleName = "com.ohos.systemui";
+    info0.name = "StaticSubscriber";
+    MockGetResConfigFile(true, MOCK_CASE_2);
+    MockGetOsAccountLocalIdFromUid(true);
+    manager->AddSubscriber(info0);
+    EXPECT_EQ(TEST_PARSE_EVENTS_MUL_SIZE, manager->validSubscribers_.size());
+}

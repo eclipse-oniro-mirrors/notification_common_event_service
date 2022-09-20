@@ -18,6 +18,7 @@
 #include <fstream>
 
 #include "ability_manager_helper.h"
+#include "access_token_helper.h"
 #include "bundle_manager_helper.h"
 #include "common_event_constant.h"
 #include "common_event_support.h"
@@ -163,22 +164,19 @@ bool StaticSubscriberManager::VerifyPublisherPermission(const Security::AccessTo
         EVENT_LOGI("no need permission");
         return true;
     }
-    return Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission) ==
-        Security::AccessToken::PermissionState::PERMISSION_GRANTED;
+    return AccessTokenHelper::VerifyAccessToken(callerToken, permission);
 }
 
 bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bundleName, const int32_t &userId,
     const std::vector<std::string> &permissions)
 {
     // get hap tokenid with default instindex(0), this should be modified later.
-    Security::AccessToken::AccessTokenID tokenId =
-        Security::AccessToken::AccessTokenKit::GetHapTokenID(userId, bundleName, 0);
+    Security::AccessToken::AccessTokenID tokenId = AccessTokenHelper::GetHapTokenID(userId, bundleName, 0);
     for (auto permission : permissions) {
         if (permission.empty()) {
             continue;
         }
-        if (Security::AccessToken::AccessTokenKit::VerifyAccessToken(tokenId, permission) !=
-            Security::AccessToken::PermissionState::PERMISSION_GRANTED) {
+        if (AccessTokenHelper::VerifyAccessToken(tokenId, permission)) {
             EVENT_LOGW("subscriber does not have required permission : %{public}s", permission.c_str());
             return false;
         }
@@ -307,7 +305,7 @@ void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &
 {
     EVENT_LOGI("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
 
-    for (auto it = validSubscribers_.begin(); it != validSubscribers_.end(); it++) {
+    for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
         auto subIt = it->second.begin();
         while (subIt != it->second.end()) {
             if ((subIt->bundleName == bundleName) && (subIt->userId == userId)) {
@@ -317,6 +315,11 @@ void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &
             } else {
                 subIt++;
             }
+        }
+        if (it->second.empty()) {
+            validSubscribers_.erase(it++);
+        } else {
+            it++;
         }
     }
 }
