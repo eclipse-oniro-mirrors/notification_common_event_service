@@ -26,6 +26,9 @@
 #include "common_event_stub.h"
 #include "common_event_subscriber_manager.h"
 #include "inner_common_event_manager.h"
+#include "common_event_publish_info.h"
+#include "common_event_subscribe_info.h"
+#include "matching_skills.h"
 #undef private
 #undef protected
 
@@ -488,4 +491,49 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level1)
     CommonEventManager commonEventManager;
     bool unfreezeAll = commonEventManager.UnfreezeAll();
     EXPECT_EQ(true, unfreezeAll);
+}
+
+/*
+ * tc.number: CommonEventPublishInfo_001
+ * tc.name: test ReadFromParcel
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventPublishInfo_001, TestSize.Level1)
+{
+    Parcel parcel;
+    CommonEventPublishInfo commonEventPublishInfo;
+    bool result = commonEventPublishInfo.ReadFromParcel(parcel);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: CommonEventSubscribeInfo_001
+ * tc.name: test ReadFromParcel
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribeInfo_001, TestSize.Level1)
+{
+    Parcel parcel;
+    CommonEventSubscribeInfo commonEventSubscribeInfo;
+    bool result = commonEventSubscribeInfo.ReadFromParcel(parcel);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: MatchingSkills_001
+ * tc.name: test ReadFromParcel
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, MatchingSkills_001, TestSize.Level1)
+{
+    Parcel parcel;
+    MatchingSkills matchingSkills;
+    bool result = matchingSkills.ReadFromParcel(parcel);
+    EXPECT_EQ(result, true);
 }
