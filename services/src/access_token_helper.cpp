@@ -64,5 +64,11 @@ bool AccessTokenHelper::IsDlpHap(const AccessTokenID &callerToken)
     }
     return false;
 }
+
+AccessTokenID AccessTokenHelper::GetHapTokenID(int userID,
+    const std::string& bundleName, int instIndex)
+{
+    return AccessTokenKit::GetHapTokenID(userID, bundleName, instIndex);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

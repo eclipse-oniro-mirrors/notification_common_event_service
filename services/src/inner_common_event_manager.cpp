@@ -348,7 +348,6 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     if (!isSubsystem) {
         isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
     }
-
     isProxy = pid == UNDEFINED_PID;
     if ((isSystemApp || isSubsystem) && !isProxy) {
         if (userId == CURRENT_USER) {

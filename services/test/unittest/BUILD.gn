@@ -166,7 +166,9 @@ ohos_unittest("static_subscriber_manager_unit_test") {
 
   sources = [
     "${services_path}/src/static_subscriber_manager.cpp",
+    "static_subscriber_manager_unit_test/mock_access_token_helper.cpp",
     "static_subscriber_manager_unit_test/mock_bundle_manager_helper.cpp",
+    "static_subscriber_manager_unit_test/mock_os_account_manager_helper.cpp",
     "static_subscriber_manager_unit_test/static_subscriber_manager_unit_test.cpp",
   ]
 
@@ -177,6 +179,7 @@ ohos_unittest("static_subscriber_manager_unit_test") {
   ]
 
   external_deps = [
+    "ability_base:want",
     "ability_runtime:ability_manager",
     "access_token:libaccesstoken_sdk",
     "bundle_framework:appexecfwk_base",
