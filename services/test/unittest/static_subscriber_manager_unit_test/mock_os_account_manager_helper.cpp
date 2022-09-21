@@ -16,41 +16,66 @@
 #include "os_account_manager_helper.h"
 
 namespace {
-int32_t mockId = 100; // default id when there is no os_account part
-bool mockQueryActiveOsAccountIdsRet = true;
-bool mockGetOsAccountLocalIdFromUidRet = true;
+int32_t g_MockId = 100; // default id when there is no os_account part
+bool g_MockQueryActiveOsAccountIdsRet = true;
+bool g_MockGetOsAccountLocalIdFromUidRet = true;
+int32_t g_MockIdForGetOsAccountLocalIdFromUid = 100;
 }
 
 void MockQueryActiveOsAccountIds(bool mockRet, uint8_t mockCase)
 {
-    mockQueryActiveOsAccountIdsRet = mockRet;
+    g_MockQueryActiveOsAccountIdsRet = mockRet;
     switch (mockCase) {
         case 1: {
-            mockId = 101;
+            g_MockId = 101;
             break;
         }
-        default:
+        default: {
+            g_MockId = 100;
             break;
+        }
     }
 }
 
-void MockGetOsAccountLocalIdFromUid(bool mockRet)
+void ResetAccountMock()
 {
-    mockGetOsAccountLocalIdFromUidRet = mockRet;
+    g_MockId = 100;
+    g_MockQueryActiveOsAccountIdsRet = true;
+    g_MockGetOsAccountLocalIdFromUidRet = true;
+    g_MockIdForGetOsAccountLocalIdFromUid = 100;
+}
+
+void MockGetOsAccountLocalIdFromUid(bool mockRet, uint8_t mockCase = 0)
+{
+    g_MockGetOsAccountLocalIdFromUidRet = mockRet;
+    switch (mockCase) {
+        case 1: { // mock for invalid id
+            g_MockIdForGetOsAccountLocalIdFromUid = -2;
+            break;
+        }
+        case 2: { // mock for system id
+            g_MockIdForGetOsAccountLocalIdFromUid = 88;
+            break;
+        }
+        default: {
+            g_MockIdForGetOsAccountLocalIdFromUid = 100;
+            break;
+        }
+    }
 }
 
 namespace OHOS {
 namespace EventFwk {
 ErrCode OsAccountManagerHelper::QueryActiveOsAccountIds(std::vector<int32_t>& ids)
 {
-    ids.emplace_back(mockId);
-    return mockQueryActiveOsAccountIdsRet ? ERR_OK : ERR_INVALID_OPERATION;
+    ids.emplace_back(g_MockId);
+    return g_MockQueryActiveOsAccountIdsRet ? ERR_OK : ERR_INVALID_OPERATION;
 }
 
 ErrCode OsAccountManagerHelper::GetOsAccountLocalIdFromUid(const int32_t uid, int32_t &id)
 {
-    id = 100;
-    return mockGetOsAccountLocalIdFromUidRet ? ERR_OK : ERR_INVALID_OPERATION;
+    id = g_MockIdForGetOsAccountLocalIdFromUid;
+    return g_MockGetOsAccountLocalIdFromUidRet ? ERR_OK : ERR_INVALID_OPERATION;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

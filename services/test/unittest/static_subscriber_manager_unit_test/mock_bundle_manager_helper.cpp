@@ -24,6 +24,14 @@ bool g_MockGetResConfigFileRet = true;
 std::vector<std::string> g_mockProfileInfos;
 }
 
+void ResetBundleManagerHelperMock()
+{
+    g_MockQueryExtensionInfosRet = true;
+    g_mockExtensionInfos.clear();
+    g_MockGetResConfigFileRet = true;
+    g_mockProfileInfos.clear();
+}
+
 void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
 {
     g_mockExtensionInfos.clear();
@@ -33,10 +41,11 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             ExtensionAbilityInfo info0;
             info0.bundleName = "com.ohos.systemui";
             info0.name = "StaticSubscriber";
+            info0.permissions.emplace_back("permission0");
             g_mockExtensionInfos.emplace_back(info0);
             break;
         }
-        case 2: { // case for one invalid
+        case 2: { // case for one different
             ExtensionAbilityInfo info0;
             info0.bundleName = "com.ohos.systemui1";
             info0.name = "StaticSubscriber";
@@ -51,6 +60,17 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             ExtensionAbilityInfo info1;
             info1.bundleName = "com.ohos.systemui1";
             info1.name = "StaticSubscriber";
+            g_mockExtensionInfos.emplace_back(info1);
+            break;
+        }
+        case 4: { // case for two different extensionName
+            ExtensionAbilityInfo info0;
+            info0.bundleName = "com.ohos.systemui";
+            info0.name = "StaticSubscriber";
+            g_mockExtensionInfos.emplace_back(info0);
+            ExtensionAbilityInfo info1;
+            info1.bundleName = "com.ohos.systemui";
+            info1.name = "StaticSubscriber1";
             g_mockExtensionInfos.emplace_back(info1);
             break;
         }
@@ -115,6 +135,48 @@ void MockGetResConfigFile(bool mockRet, uint8_t mockCase)
                 "    ]"
                 "}";
             g_mockProfileInfos.emplace_back(profile0);
+            g_mockProfileInfos.emplace_back(profile0);
+            break;
+        }
+        case 4: { // case for two different susbcriber name
+            std::string profile0 =
+                "{"
+                "    \"commonEvents\":["
+                "        {"
+                "            \"events\":[\"usual.event.TIME_TICK\"],"
+                "            \"name\":\"StaticSubscriber\","
+                "            \"permission\":\"\""
+                "        }"
+                "    ]"
+                "}";
+            g_mockProfileInfos.emplace_back(profile0);
+            std::string profile1 =
+                "{"
+                "    \"commonEvents\":["
+                "        {"
+                "            \"events\":[\"usual.event.TIME_TICK\"],"
+                "            \"name\":\"StaticSubscriber1\","
+                "            \"permission\":\"\""
+                "        }"
+                "    ]"
+                "}";
+            g_mockProfileInfos.emplace_back(profile1);
+            break;
+        }
+        case 5: { // case for basic
+            std::string profile0 =
+                "{"
+                "    \"commonEvents\":["
+                "        {"
+                "            \"events\":["
+                "                \"usual.event.TIME_TICK\","
+                "                \"usual.event.PACKAGE_ADDED\""
+                "            ],"
+                "            \"name\":\"StaticSubscriber\","
+                "            \"permission\":\"permission0\""
+                "        }"
+                "    ]"
+                "}";
             g_mockProfileInfos.emplace_back(profile0);
             break;
         }
