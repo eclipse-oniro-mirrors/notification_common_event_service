@@ -48,14 +48,15 @@ const time_t TIME_OUT_SECONDS_TWENTY = 20;
 const size_t SUBSCRIBER_MAX_SIZE = 200;
 const size_t SUBSCRIBER_MAX_SIZE_PLUS = 201;
 
-const std::string CompareStr = "cesComparesStrForCase";
-const std::string CompareStrFalse = "cesComparesStrForCaseFalse";
+const std::string COMPARE_STR = "cesComparesStrForCase";
+const std::string COMPARE_STR_FALSE = "cesComparesStrForCaseFalse";
 
 const int32_t g_CODE_COMPARE1 = 1;
 const int32_t g_CODE_COMPARE2 = 2;
 const int32_t g_CODE_COMPARE3 = 200;
 const int32_t PRIORITY_HIGH = 80;
 const int32_t PRIORITY_LOW = 20;
+const int32_t milliseconds2000 = 2000;
 }  // namespace
 
 class CommonEventServicesSystemTest : public CommonEventSubscriber {
@@ -73,7 +74,7 @@ void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 {
     GTEST_LOG_(INFO) << " cesSystemTest:CommonEventServicesSystemTest:OnReceiveEvent \n";
     std::string action = data.GetWant().GetAction();
-    if (action == CompareStrFalse) {
+    if (action == COMPARE_STR_FALSE) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE3);
     }
     mtx_.unlock();
@@ -95,9 +96,9 @@ void CommonEventServicesSystemTestSubscriber::OnReceiveEvent(const CommonEventDa
 {
     GTEST_LOG_(INFO) << " cesSystemTest:CommonEventServicesSystemTestSubscriber:OnReceiveEvent \n";
     std::string action = data.GetWant().GetAction();
-    if (action == CompareStr) {
+    if (action == COMPARE_STR) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE1);
-    } else if (action == CompareStrFalse) {
+    } else if (action == COMPARE_STR_FALSE) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE2);
     }
     mtx2_.unlock();
@@ -116,7 +117,7 @@ CESPublishOrderTimeOutOne::CESPublishOrderTimeOutOne(const CommonEventSubscribeI
 
 void CESPublishOrderTimeOutOne::OnReceiveEvent(const CommonEventData &data)
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(20000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds2000));
 }
 
 class CESPublishOrderTimeOutTwo : public CommonEventSubscriber {
@@ -1977,7 +1978,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1600, Function | MediumTest | Level1)
 HWTEST_F(cesSystemTest, CES_SendEvent_1700, Function | MediumTest | Level1)
 {
     struct tm startTime = {0};
-    std::string eventName = CompareStr;
+    std::string eventName = COMPARE_STR;
 
     Want wantTest;
     wantTest.SetAction(eventName);
@@ -2031,7 +2032,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1700, Function | MediumTest | Level1)
 HWTEST_F(cesSystemTest, CES_SendEvent_1800, Function | MediumTest | Level1)
 {
     struct tm startTime = {0};
-    std::string eventName = CompareStrFalse;
+    std::string eventName = COMPARE_STR_FALSE;
 
     Want wantTest;
     wantTest.SetAction(eventName);
