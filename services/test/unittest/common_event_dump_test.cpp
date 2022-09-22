@@ -132,7 +132,7 @@ private:
 
 class SubscriberTest : public CommonEventSubscriber {
 public:
-    SubscriberTest(const CommonEventSubscribeInfo &sp,
+    explicit SubscriberTest(const CommonEventSubscribeInfo &sp,
         const std::shared_ptr<InnerCommonEventManager> &innerCommonEventManager = nullptr)
         : CommonEventSubscriber(sp)
     {

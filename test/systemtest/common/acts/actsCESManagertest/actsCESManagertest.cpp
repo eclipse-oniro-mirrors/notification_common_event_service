@@ -41,8 +41,8 @@ std::mutex g_mtx;
 const time_t g_TIME_OUT_SECONDS_LIMIT = 5;
 const time_t g_TIME_OUT_SECONDS = 3;
 
-const std::string CompareStr = "cesComparesStrForCase";
-const std::string CompareStrFalse = "cesComparesStrForCaseFalse";
+const std::string COMPARE_STR = "cesComparesStrForCase";
+const std::string COMPARE_STR_FALSE = "cesComparesStrForCaseFalse";
 
 const int32_t g_CODE_COMPARE1 = 1;
 const int32_t g_CODE_COMPARE2 = 200;
@@ -66,7 +66,7 @@ void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 {
     GTEST_LOG_(INFO) << " ActsCESManagertest:CommonEventServicesSystemTest:OnReceiveEvent \n";
     std::string action = data.GetWant().GetAction();
-    if (action == CompareStr) {
+    if (action == COMPARE_STR) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE1);
         ++SIGNUMFIRST;
     }
@@ -77,7 +77,7 @@ class CommonEventServicesSystemTestSubscriber : public CommonEventSubscriber {
 public:
     explicit CommonEventServicesSystemTestSubscriber(const CommonEventSubscribeInfo &subscribeInfo);
     virtual ~CommonEventServicesSystemTestSubscriber() {};
-    virtual void OnReceiveEvent(const CommonEventData &data);
+    void OnReceiveEvent(const CommonEventData &data);
 };
 
 CommonEventServicesSystemTestSubscriber::CommonEventServicesSystemTestSubscriber(
@@ -89,10 +89,10 @@ void CommonEventServicesSystemTestSubscriber::OnReceiveEvent(const CommonEventDa
 {
     GTEST_LOG_(INFO) << " ActsCESManagertest:CommonEventServicesSystemTestSubscriber:OnReceiveEvent \n";
     std::string action = data.GetWant().GetAction();
-    if (action == CompareStr) {
+    if (action == COMPARE_STR) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE1);
         ++SIGNUMSECOND;
-    } else if (action == CompareStrFalse) {
+    } else if (action == COMPARE_STR_FALSE) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE2);
         ++SIGNUMTHIRD;
     }
@@ -2471,8 +2471,8 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1600, Function | MediumTest | Level1)
  */
 HWTEST_F(ActsCESManagertest, CES_SendEvent_1700, Function | MediumTest | Level1)
 {
-    std::string eventName = CompareStr;
-    std::string eventAction = CompareStr;
+    std::string eventName = COMPARE_STR;
+    std::string eventAction = COMPARE_STR;
     MatchingSkills matchingSkills;
     for (int i = 1; i <= stLevel_.CESLevel; i++) {
         matchingSkills.AddEvent(eventName);
@@ -2510,8 +2510,8 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1700, Function | MediumTest | Level1)
  */
 HWTEST_F(ActsCESManagertest, CES_SendEvent_1800, Function | MediumTest | Level1)
 {
-    std::string eventName = CompareStrFalse;
-    std::string eventAction = CompareStrFalse;
+    std::string eventName = COMPARE_STR_FALSE;
+    std::string eventAction = COMPARE_STR_FALSE;
     MatchingSkills matchingSkills;
     for (int i = 1; i <= stLevel_.CESLevel; i++) {
         matchingSkills.AddEvent(eventName);

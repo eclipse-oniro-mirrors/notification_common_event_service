@@ -362,7 +362,7 @@ HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level1)
     OHOS::Parcel parcel;
     std::shared_ptr<MatchingSkills> result = std::make_shared<MatchingSkills>();
     if (nullptr != result) {
-        if(nullptr == result->Unmarshalling(parcel)) {
+        if (nullptr == result->Unmarshalling(parcel)) {
             unmarshalling = false;
         }
     }
@@ -412,7 +412,7 @@ HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest |
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    if(nullptr == subscribeInfo.Unmarshalling(parcel)) {
+    if (nullptr == subscribeInfo.Unmarshalling(parcel)) {
         result = true;
     }
     EXPECT_EQ(true, result);
