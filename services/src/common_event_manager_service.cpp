@@ -235,6 +235,10 @@ bool CommonEventManagerService::DumpState(const uint8_t &dumpType, const std::st
 {
     EVENT_LOGI("enter");
 
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+        EVENT_LOGE("Not subsystem or shell request");
+        return false;
+    }
     if (!IsReady()) {
         return false;
     }
@@ -262,6 +266,10 @@ bool CommonEventManagerService::Freeze(const uid_t &uid)
 {
     EVENT_LOGI("enter");
 
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+        EVENT_LOGE("Not subsystem request");
+        return false;
+    }
     if (!IsReady()) {
         return false;
     }
@@ -274,6 +282,10 @@ bool CommonEventManagerService::Unfreeze(const uid_t &uid)
 {
     EVENT_LOGI("enter");
 
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+        EVENT_LOGE("Not subsystem request");
+        return false;
+    }
     if (!IsReady()) {
         return false;
     }
@@ -286,6 +298,10 @@ bool CommonEventManagerService::UnfreezeAll()
 {
     EVENT_LOGI("enter");
 
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+        EVENT_LOGE("Not subsystem request");
+        return false;
+    }
     if (!IsReady()) {
         return false;
     }
@@ -297,6 +313,11 @@ bool CommonEventManagerService::UnfreezeAll()
 int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &args)
 {
     EVENT_LOGI("enter");
+
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+        EVENT_LOGE("Not subsystem or shell request");
+        return false;
+    }
     if (!IsReady()) {
         return ERR_INVALID_VALUE;
     }
