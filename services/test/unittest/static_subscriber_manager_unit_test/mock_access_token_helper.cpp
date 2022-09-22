@@ -17,43 +17,63 @@
 
 using namespace OHOS::Security::AccessToken;
 namespace {
-bool g_mockVerifyNativeTokenRet = true;
-bool g_mockVerifyAccessTokenRet = true;
-bool g_mockIsDlpHapRet = true;
-AccessTokenID g_mockAccessTokenID = 0;
+bool g_MockVerifyNativeTokenRet = true;
+bool g_MockVerifyAccessTokenRet = true;
+bool g_MockIsDlpHapRet = true;
+int8_t g_TimesBeforeVerifyAccessToken = 0;
+int8_t g_CountForVerifyAccessToken = 0;
+AccessTokenID g_MockAccessTokenID = 0;
+}
+
+void ResetAccessTokenHelperMock()
+{
+    g_MockVerifyNativeTokenRet = true;
+    g_MockVerifyAccessTokenRet = true;
+    g_MockIsDlpHapRet = true;
+    g_TimesBeforeVerifyAccessToken = 0;
+    g_CountForVerifyAccessToken = 0;
+    g_MockAccessTokenID = 0;
 }
 
 void MockVerifyNativeToken(bool mockRet)
 {
-    g_mockVerifyNativeTokenRet = mockRet;
+    g_MockVerifyNativeTokenRet = mockRet;
 }
 
-void MockVerifyAccessToken(bool mockRet)
+void MockVerifyAccessToken(bool mockRet, int8_t times = 0)
 {
-    g_mockVerifyAccessTokenRet = mockRet;
+    
+    g_MockVerifyAccessTokenRet = mockRet;
+    g_TimesBeforeVerifyAccessToken = times;
 }
 
 void MockIsDlpHap(bool mockRet)
 {
-    g_mockIsDlpHapRet = mockRet;
+    g_MockIsDlpHapRet = mockRet;
 }
 
 void MockGetHapTokenID(AccessTokenID mockRet)
 {
-    g_mockAccessTokenID = mockRet;
+    g_MockAccessTokenID = mockRet;
 }
 
 namespace OHOS {
 namespace EventFwk {
 bool AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
 {
-    return g_mockVerifyNativeTokenRet;
+    return g_MockVerifyNativeTokenRet;
 }
 
 bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
     const std::string &permission)
 {
-    return g_mockVerifyAccessTokenRet;
+    if (g_CountForVerifyAccessToken < g_TimesBeforeVerifyAccessToken) {
+        g_CountForVerifyAccessToken++;
+        return !g_MockVerifyAccessTokenRet;
+    }
+    g_TimesBeforeVerifyAccessToken = 0;
+    g_CountForVerifyAccessToken = 0;
+    return g_MockVerifyAccessTokenRet;
 }
 
 void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &callerToken,
@@ -63,13 +83,13 @@ void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &call
 
 bool AccessTokenHelper::IsDlpHap(const AccessTokenID &callerToken)
 {
-    return g_mockIsDlpHapRet;
+    return g_MockIsDlpHapRet;
 }
 
 AccessTokenID AccessTokenHelper::GetHapTokenID(int userID,
     const std::string& bundleName, int instIndex)
 {
-    return g_mockAccessTokenID;
+    return g_MockAccessTokenID;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

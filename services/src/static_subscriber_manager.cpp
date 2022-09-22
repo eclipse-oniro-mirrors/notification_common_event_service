@@ -176,7 +176,7 @@ bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bund
         if (permission.empty()) {
             continue;
         }
-        if (AccessTokenHelper::VerifyAccessToken(tokenId, permission)) {
+        if (!AccessTokenHelper::VerifyAccessToken(tokenId, permission)) {
             EVENT_LOGW("subscriber does not have required permission : %{public}s", permission.c_str());
             return false;
         }
@@ -293,6 +293,7 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
         EVENT_LOGE("QueryExtensionInfos failed");
         return;
     }
+
     for (auto extension : extensions) {
         if ((extension.bundleName == bundleName) &&
             find(subscriberList_.begin(), subscriberList_.end(), extension.bundleName) != subscriberList_.end()) {
