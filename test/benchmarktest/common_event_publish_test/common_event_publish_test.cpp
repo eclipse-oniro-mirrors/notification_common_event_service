@@ -34,7 +34,7 @@ public:
         ReportAggregatesOnly();
     }
 
-    virtual ~BenchmarkCommonEventPublish() override = default;
+    ~BenchmarkCommonEventPublish() override = default;
 
     void SetUp(const ::benchmark::State &state) override
     {}
