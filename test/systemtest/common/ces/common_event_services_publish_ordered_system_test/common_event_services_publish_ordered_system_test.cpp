@@ -77,7 +77,7 @@ public:
         GTEST_LOG_(INFO) << "instance created";
     }
 
-    virtual ~TestHandler() override
+    ~TestHandler() override
     {
         GTEST_LOG_(INFO) << "instance destroyed";
     }

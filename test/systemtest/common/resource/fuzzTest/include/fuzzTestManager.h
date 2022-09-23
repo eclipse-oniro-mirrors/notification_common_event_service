@@ -49,7 +49,7 @@ public:
     void StartFuzzTest();
 
 private:
-    void SetJsonFunction(std::string);
+    void SetJsonFunction(std::string functionName);
     void SetCycle(uint16_t cycle);
     fuzzTestManager();
     fuzzTestManager(fuzzTestManager &) = delete;
