@@ -84,13 +84,6 @@ private:
     void RegisterElementName();
     void RegisterBundleMgrProxy();
 
-    void RegisterOHOSApplication();
-    void RegisterAbility();
-    void RegisterDataAbilityHelper();
-    void RegisterDataUriUtils();
-    void RegisterLifeCycle();
-
-    void RegisterAbilityContext();
     void RegisterProcessInfo();
 };
 }  // namespace EventFwk
