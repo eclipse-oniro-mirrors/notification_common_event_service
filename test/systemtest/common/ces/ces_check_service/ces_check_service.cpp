@@ -41,7 +41,7 @@ namespace EventFwk {
 namespace {
 std::mutex mtx_;
 const time_t TIME_OUT_SECONDS_LIMIT = 5;
-const std::string CompareStrFalse = "cesComparesStrForCaseFalse";
+const std::string COMPARE_STR_FALSE = "cesComparesStrForCaseFalse";
 const int32_t g_CODE_COMPARE3 = 200;
 }  // namespace
 
@@ -59,7 +59,7 @@ CommonEventServicesSystemTest::CommonEventServicesSystemTest(const CommonEventSu
 void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 {
     std::string action = data.GetWant().GetAction();
-    if (action == CompareStrFalse) {
+    if (action == COMPARE_STR_FALSE) {
         EXPECT_TRUE(data.GetCode() == g_CODE_COMPARE3);
     }
     mtx_.unlock();
