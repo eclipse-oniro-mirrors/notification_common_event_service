@@ -56,7 +56,6 @@ const int32_t g_CODE_COMPARE2 = 2;
 const int32_t g_CODE_COMPARE3 = 200;
 const int32_t PRIORITY_HIGH = 80;
 const int32_t PRIORITY_LOW = 20;
-const int32_t MILLISECONDS_2000 = 2000;
 }  // namespace
 
 class CommonEventServicesSystemTest : public CommonEventSubscriber {
@@ -117,7 +116,7 @@ CESPublishOrderTimeOutOne::CESPublishOrderTimeOutOne(const CommonEventSubscribeI
 
 void CESPublishOrderTimeOutOne::OnReceiveEvent(const CommonEventData &data)
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECONDS_2000));
+    std::this_thread::sleep_for(std::chrono::seconds(TIME_OUT_SECONDS_TEN));
 }
 
 class CESPublishOrderTimeOutTwo : public CommonEventSubscriber {
