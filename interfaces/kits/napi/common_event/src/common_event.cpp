@@ -2200,7 +2200,7 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     event = str;
     EVENT_LOGI("ParseParametersByPublish event = %{public}s", str);
     // argv[1]: CommonEventPublishData
-    if (argc >= PUBLISH_MAX_PARA_BY_PUBLISHDATA - 1) {
+    if (argc == PUBLISH_MAX_PARA_BY_PUBLISHDATA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
@@ -2370,7 +2370,7 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     EVENT_LOGI("ParseParametersByPublishAsUser userId = %{public}d", userId);
 
     // argv[2]: CommonEventPublishData
-    if (argc >= PUBLISH_MAX_PARA_BY_USERID - 1) {
+    if (argc == PUBLISH_MAX_PARA_BY_USERID) {
         NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
