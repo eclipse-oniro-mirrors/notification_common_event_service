@@ -454,7 +454,7 @@ void InnerCommonEventManager::SendSubscribeHiSysEvent(int32_t userId, const std:
     eventInfo.pid = pid;
     eventInfo.uid = uid;
     eventInfo.eventName = std::accumulate(events.begin(), events.end(), std::string(""),
-        [&events](std::string eventName, const std::string &str) {
+        [events](std::string eventName, const std::string &str) {
             return (str == events.front()) ? (eventName + str) : (eventName + "," + str);
         });
     EventReport::SendHiSysEvent(SUBSCRIBE, eventInfo);
@@ -473,7 +473,7 @@ void InnerCommonEventManager::SendUnSubscribeHiSysEvent(const sptr<IRemoteObject
         eventInfo.userId = subscriberRecord->eventSubscribeInfo->GetUserId();
         std::vector<std::string> events = subscriberRecord->eventSubscribeInfo->GetMatchingSkills().GetEvents();
         eventInfo.eventName = std::accumulate(events.begin(), events.end(), std::string(""),
-            [&events](std::string eventName, const std::string &str) {
+            [events](std::string eventName, const std::string &str) {
                 return (str == events.front()) ? (eventName + str) : (eventName + "," + str);
             });
     }
