@@ -302,12 +302,13 @@ public:
     static const std::string COMMON_EVENT_USER_FOREGROUND;
     /**
      * Indicates the action of a common event that a user switch is happening.
-     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_USERS permission.
+     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS
+     * permission.
      */
     static const std::string COMMON_EVENT_USER_SWITCHED;
     /**
      * Indicates the action of a common event that the user is going to be started.
-     * To subscribe to this common event, your application must have the ohos.permission.INTERACT_ACROSS_USERS
+     * To subscribe to this common event, your application must have the ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS
      * permission.
      */
     static const std::string COMMON_EVENT_USER_STARTING;
@@ -318,7 +319,7 @@ public:
     static const std::string COMMON_EVENT_USER_UNLOCKED;
     /**
      * Indicates the action of a common event that the user is going to be stopped.
-     * To subscribe to this common event, your application must have the ohos.permission.INTERACT_ACROSS_USERS
+     * To subscribe to this common event, your application must have the ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS
      * permission.
      */
     static const std::string COMMON_EVENT_USER_STOPPING;
@@ -707,12 +708,14 @@ public:
 
     /**
      * Indicates the action of a common event that a user has been added to the system.
-     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_USERS permission.
+     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS
+     * permission.
      */
     static const std::string COMMON_EVENT_USER_ADDED;
     /**
      * Indicates the action of a common event that a user has been removed from the system.
-     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_USERS permission.
+     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS
+     * permission.
      */
     static const std::string COMMON_EVENT_USER_REMOVED;
 
