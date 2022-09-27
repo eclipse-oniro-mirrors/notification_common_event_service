@@ -44,6 +44,7 @@ static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;
+static const int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
@@ -2601,11 +2602,11 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
     }
 
     AsyncCallbackInfoUnsubscribe *asynccallback = new (std::nothrow) AsyncCallbackInfoUnsubscribe();
-    asynccallback->env = env;
     if (asynccallback == nullptr) {
         EVENT_LOGE("asynccallback is null");
         return NapiGetNull(env);
     }
+    asynccallback->env = env;
     asynccallback->subscriber = subscriber;
     asynccallback->argc = argc;
     if (argc >= UNSUBSCRIBE_MAX_PARA) {
@@ -2674,8 +2675,8 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
         return nullptr;
     }
     napi_get_array_length(env, eventsNapi, &length);
-    if (length <= 0) {
-        EVENT_LOGE("The array is empty.");
+    if (length == 0 || length > SUBSCRIBE_EVENT_MAX_NUM) {
+        EVENT_LOGE("The array size is error.");
         return nullptr;
     }
     for (size_t i = 0; i < length; i++) {

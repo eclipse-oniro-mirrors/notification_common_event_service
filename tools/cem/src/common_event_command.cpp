@@ -176,7 +176,6 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
 {
     EVENT_LOGI("enter");
     ErrCode result = ERR_OK;
-    std::string action;
     bool hasOption = false;
     DumpCmdInfo cmdInfo;
     SetDumpCmdInfo(cmdInfo, result, hasOption);
