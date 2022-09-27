@@ -977,7 +977,7 @@ const std::string CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE = "usual.
 /**
  * Indicates the action of a common event that an external storage device was removed.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_DISK_REMOVED = "usual.event.data.DISK_REMOVED";
@@ -985,7 +985,7 @@ const std::string CommonEventSupport::COMMON_EVENT_DISK_REMOVED = "usual.event.d
 /**
  * Indicates the action of a common event that an external storage device was unmounted.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTED = "usual.event.data.DISK_UNMOUNTED";
@@ -993,7 +993,7 @@ const std::string CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTED = "usual.event
 /**
  * Indicates the action of a common event that an external storage device was mounted.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_DISK_MOUNTED = "usual.event.data.DISK_MOUNTED";
@@ -1001,7 +1001,7 @@ const std::string CommonEventSupport::COMMON_EVENT_DISK_MOUNTED = "usual.event.d
 /**
  * Indicates the action of a common event that an external storage device was removed without being unmounted.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL = "usual.event.data.DISK_BAD_REMOVAL";
@@ -1009,7 +1009,7 @@ const std::string CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL = "usual.eve
 /**
  * Indicates the action of a common event that an external storage device becomes unmountable.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE = "usual.event.data.DISK_UNMOUNTABLE";
@@ -1017,7 +1017,7 @@ const std::string CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE = "usual.eve
 /**
  * Indicates the action of a common event that an external storage device was ejected.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_DISK_EJECT = "usual.event.data.DISK_EJECT";
@@ -1025,7 +1025,7 @@ const std::string CommonEventSupport::COMMON_EVENT_DISK_EJECT = "usual.event.dat
 /**
  * Indicates the action of a common event that an external storage device was removed.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED = "usual.event.data.VOLUME_REMOVED";
@@ -1033,7 +1033,7 @@ const std::string CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED = "usual.event
 /**
  * Indicates the action of a common event that an external storage device was unmounted.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_VOLUME_UNMOUNTED = "usual.event.data.VOLUME_UNMOUNTED";
@@ -1041,7 +1041,7 @@ const std::string CommonEventSupport::COMMON_EVENT_VOLUME_UNMOUNTED = "usual.eve
 /**
  * Indicates the action of a common event that an external storage device was mounted.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_VOLUME_MOUNTED = "usual.event.data.VOLUME_MOUNTED";
@@ -1049,7 +1049,7 @@ const std::string CommonEventSupport::COMMON_EVENT_VOLUME_MOUNTED = "usual.event
 /**
  * Indicates the action of a common event that an external storage device was removed without being unmounted.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_VOLUME_BAD_REMOVAL = "usual.event.data.VOLUME_BAD_REMOVAL";
@@ -1057,7 +1057,7 @@ const std::string CommonEventSupport::COMMON_EVENT_VOLUME_BAD_REMOVAL = "usual.e
 /**
  * Indicates the action of a common event that an external storage device was ejected.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
- * ohos.permission.READ_USER_STORAGE permission.
+ * ohos.permission.STORAGE_MANAGER permission.
  * This common event can be published only by system applications.
  */
 const std::string CommonEventSupport::COMMON_EVENT_VOLUME_EJECT = "usual.event.data.VOLUME_EJECT";
