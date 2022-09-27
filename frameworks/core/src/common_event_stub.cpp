@@ -40,7 +40,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             sptr<IRemoteObject> commonEventListener = nullptr;
             bool hasLastSubscriber = data.ReadBool();
             if (hasLastSubscriber) {
-                sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
+                commonEventListener = data.ReadRemoteObject();
             }
             int32_t userId = data.ReadInt32();
             if (!event) {
@@ -64,7 +64,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             sptr<IRemoteObject> commonEventListener = nullptr;
             bool hasLastSubscriber = data.ReadBool();
             if (hasLastSubscriber) {
-                sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
+                commonEventListener = data.ReadRemoteObject();
             }
             int32_t uid = data.ReadInt32();
             int32_t userId = data.ReadInt32();
