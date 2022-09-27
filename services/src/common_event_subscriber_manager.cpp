@@ -23,6 +23,7 @@
 namespace OHOS {
 namespace EventFwk {
 constexpr int32_t LENGTH = 80;
+static constexpr int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
     : death_(sptr<IRemoteObject::DeathRecipient>(new SubscriberDeathRecipient()))
@@ -51,8 +52,8 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
     }
 
     std::vector<std::string> events = eventSubscribeInfo->GetMatchingSkills().GetEvents();
-    if (events.size() <= 0) {
-        EVENT_LOGE("No subscribed events");
+    if (events.size() == 0 || events.size() > SUBSCRIBE_EVENT_MAX_NUM) {
+        EVENT_LOGE("subscribed events size is error");
         return nullptr;
     }
 
