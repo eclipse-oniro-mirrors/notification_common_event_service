@@ -472,10 +472,10 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_USER_STARTED                                    | usual.event.USER_STARTED                                    | 无                                             |
 | COMMON_EVENT_USER_BACKGROUND                                 | usual.event.USER_BACKGROUND                                 | 无                                             |
 | COMMON_EVENT_USER_FOREGROUND                                 | usual.event.USER_FOREGROUND                                 | 无                                             |
-| COMMON_EVENT_USER_SWITCHED                                   | usual.event.USER_SWITCHED                                   | ohos.permission.MANAGE_USERS                   |
-| COMMON_EVENT_USER_STARTING                                   | usual.event.USER_STARTING                                   | ohos.permission.INTERACT_ACROSS_USERS          |
+| COMMON_EVENT_USER_SWITCHED                                   | usual.event.USER_SWITCHED                                   | ohos.permission.MANAGE_LOCAL_ACCOUNTS                   |
+| COMMON_EVENT_USER_STARTING                                   | usual.event.USER_STARTING                                   | ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS          |
 | COMMON_EVENT_USER_UNLOCKED                                   | usual.event.USER_UNLOCKED                                   | 无                                             |
-| COMMON_EVENT_USER_STOPPING                                   | usual.event.USER_STOPPING                                   | ohos.permission.INTERACT_ACROSS_USERS          |
+| COMMON_EVENT_USER_STOPPING                                   | usual.event.USER_STOPPING                                   | ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS          |
 | COMMON_EVENT_USER_STOPPED                                    | usual.event.USER_STOPPED                                    | 无                                             |
 | COMMON_EVENT_HWID_LOGIN                                      | common.event.HWID_LOGIN                                     | 无                                             |
 | COMMON_EVENT_HWID_LOGOUT                                     | common.event.HWID_LOGOUT                                    | 无                                             |
@@ -539,8 +539,8 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_CHARGING                                        | usual.event.CHARGING                                        | 无                                             |
 | COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED                        | usual.event.DEVICE_IDLE_MODE_CHANGED                        | 无                                             |
 | COMMON_EVENT_POWER_SAVE_MODE_CHANGED                         | usual.event.POWER_SAVE_MODE_CHANGED                         | 无                                             |
-| COMMON_EVENT_USER_ADDED                                      | usual.event.USER_ADDED                                      | ohos.permission.MANAGE_USERS                   |
-| COMMON_EVENT_USER_REMOVED                                    | usual.event.USER_REMOVED                                    | ohos.permission.MANAGE_USERS                   |
+| COMMON_EVENT_USER_ADDED                                      | usual.event.USER_ADDED                                      | ohos.permission.MANAGE_LOCAL_ACCOUNTS                   |
+| COMMON_EVENT_USER_REMOVED                                    | usual.event.USER_REMOVED                                    | ohos.permission.MANAGE_LOCAL_ACCOUNTS                   |
 | COMMON_EVENT_ABILITY_ADDED                                   | common.event.ABILITY_ADDED                                  | ohos.permission.LISTEN_BUNDLE_CHANGE           |
 | COMMON_EVENT_ABILITY_REMOVED                                 | common.event.ABILITY_REMOVED                                | ohos.permission.LISTEN_BUNDLE_CHANGE           |
 | COMMON_EVENT_ABILITY_UPDATED                                 | common.event.ABILITY_UPDATED                                | ohos.permission.LISTEN_BUNDLE_CHANGE           |
