@@ -882,7 +882,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was removed.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_DISK_REMOVED;
@@ -890,7 +890,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was unmounted.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_DISK_UNMOUNTED;
@@ -898,7 +898,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was mounted.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_DISK_MOUNTED;
@@ -906,7 +906,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was removed without being unmounted.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_DISK_BAD_REMOVAL;
@@ -914,7 +914,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device becomes unmountable.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_DISK_UNMOUNTABLE;
@@ -922,7 +922,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was ejected.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_DISK_EJECT;
@@ -930,7 +930,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was removed.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_VOLUME_REMOVED;
@@ -938,7 +938,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was unmounted.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_VOLUME_UNMOUNTED;
@@ -946,7 +946,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was mounted.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_VOLUME_MOUNTED;
@@ -954,7 +954,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was removed without being unmounted.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_VOLUME_BAD_REMOVAL;
@@ -962,7 +962,7 @@ public:
     /**
      * Indicates the action of a common event that an external storage device was ejected.
      * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
-     * ohos.permission.READ_USER_STORAGE permission.
+     * ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
      */
     static const std::string COMMON_EVENT_VOLUME_EJECT;
