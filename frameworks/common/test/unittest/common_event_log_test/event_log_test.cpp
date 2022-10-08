@@ -95,3 +95,17 @@ HWTEST_F(EventFwkLogTest, EventLogWrapper_003, TestSize.Level1)
     result = EventLogWrapper::GetBriefFileName(nullptr);
     EXPECT_EQ(exceptStr, result);
 }
+
+/*
+ * @tc.name: EventLogWrapper_004
+ * @tc.desc: test JudgeLevel function when level < curLevel
+ * @tc.type: FUNC
+ * @tc.require: issueI5UINZ
+ */
+HWTEST_F(EventFwkLogTest, EventLogWrapper_004, TestSize.Level1)
+{
+    EventLogWrapper::SetLogLevel(EventLogLevel::INFO);
+    EventLogLevel level = EventLogLevel::DEBUG;
+    bool ret = EventLogWrapper::JudgeLevel(level);
+    EXPECT_EQ(ret, false);
+}
