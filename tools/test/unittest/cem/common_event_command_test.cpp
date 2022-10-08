@@ -153,7 +153,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0500, Function | MediumTest | Level1)
  */
 HWTEST_F(CemCommandTest, Cem_Command_0600, Function | MediumTest | Level1)
 {
-     char *argv[] = {
+    char *argv[] = {
         (char *)toolName_.c_str(),
         (char *)"-xxx",
         (char *)"",
@@ -173,7 +173,7 @@ HWTEST_F(CemCommandTest, Cem_Command_0600, Function | MediumTest | Level1)
  */
 HWTEST_F(CemCommandTest, Cem_Command_0700, Function | MediumTest | Level1)
 {
-     char *argv[] = {
+    char *argv[] = {
         (char *)toolName_.c_str(),
         (char *)"-xxx",
         (char *)"",

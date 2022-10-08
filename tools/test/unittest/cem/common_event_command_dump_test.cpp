@@ -29,18 +29,6 @@ using namespace OHOS::AAFwk;
 using namespace OHOS::EventFwk;
 
 namespace {
-static char p_dumpCmdInfo[] =
-"error: unknown option.\nusage: cem dump [<options>]\noptions list:\n"
-"  -h, --help                   list available commands\n"
-"  -a, --all                    dump the info of all events\n"
-"  -e, --event <name>           dump the info filter by the specified event\n"
-"  -u, --user-id <userId>       dump the info filter by the specified userId\n"
-"  -p, --part <name>            dump the info of part events\n"
-"       subscriber              all subscribers\n"
-"       sticky                  sticky events\n"
-"       pending                 pending events\n"
-"       history                 history events\n";
-
 const std::string STRING_EVENT = "com.ces.event";
 
 static std::string Concatenate(const std::string &first,  const std::string &second)
@@ -578,7 +566,7 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1900, Function | MediumTest | Leve
     CommonEventCommand cmd(argc, argv);
     // set the mock objects
     SetMockObjects(cmd);
-    EXPECT_EQ(cmd.ExecCommand(), p_dumpCmdInfo);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
 }
 
 /**
