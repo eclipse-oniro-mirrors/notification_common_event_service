@@ -530,3 +530,66 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2200, Function | MediumTest 
     CommonEventCommand cmd(argc, argv);
     EXPECT_EQ(cmd.ExecCommand(), STRING_PUBLISH_COMMON_EVENT_OK);
 }
+
+/**
+ * @tc.number: Cem_Command_Publish_2300
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem publish -s" command.
+ * @tc.require: issueI5UINZ
+ */
+HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2300, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-s",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    EXPECT_EQ(cmd.ExecCommand(), "publish the common event successfully.\n");
+}
+
+/**
+ * @tc.number: Cem_Command_Publish_2400
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem publish -o" command.
+ * @tc.require: issueI5UINZ
+ */
+HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2400, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-o",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    EXPECT_EQ(cmd.ExecCommand(), "publish the common event successfully.\n");
+}
+
+/**
+ * @tc.number: Cem_Command_Publish_2500
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem publish -e <name> -u <user-id>" command.
+ * @tc.require: issueI5UINZ
+ */
+HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_2500, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-u",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'u' requires a value.\n", HELP_MSG_PUBLISH));
+}

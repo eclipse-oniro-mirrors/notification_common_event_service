@@ -595,6 +595,7 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -717,6 +718,7 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -826,6 +828,7 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -933,6 +936,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -1049,6 +1053,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -1155,6 +1160,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -1280,6 +1286,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -1414,6 +1421,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -1518,6 +1526,7 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
     napi_value promise = nullptr;
@@ -1621,6 +1630,7 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -1724,6 +1734,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -1831,6 +1842,7 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
 
@@ -2200,7 +2212,7 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     event = str;
     EVENT_LOGI("ParseParametersByPublish event = %{public}s", str);
     // argv[1]: CommonEventPublishData
-    if (argc >= PUBLISH_MAX_PARA_BY_PUBLISHDATA - 1) {
+    if (argc == PUBLISH_MAX_PARA_BY_PUBLISHDATA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
@@ -2370,7 +2382,7 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     EVENT_LOGI("ParseParametersByPublishAsUser userId = %{public}d", userId);
 
     // argv[2]: CommonEventPublishData
-    if (argc >= PUBLISH_MAX_PARA_BY_USERID - 1) {
+    if (argc == PUBLISH_MAX_PARA_BY_USERID) {
         NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");

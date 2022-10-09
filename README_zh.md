@@ -1,4 +1,4 @@
-# 事件通知子系统
+# 公共事件子系统
 
 ## 简介
 
@@ -14,7 +14,11 @@ OpenHarmony通过CES（Common Event Service，公共事件服务）为应用程�
 
 ### 架构图
 
-![](figures/cesfwk_architecture_diagram.png "公共事件服务架构图")
+**图1** 子系统架构图
+
+![子系统架构图](figures/cesfwk_architecture_diagram.png "公共事件服务架构图")
+
+
 
 ## 目录
 
@@ -22,17 +26,19 @@ OpenHarmony通过CES（Common Event Service，公共事件服务）为应用程�
 /base/notification/common_event_service/
 │── frameworks      # 组件目录
 │   |── common/log  # 日志组件目录
-│   |── core        # 组件native接口内部实现
-│   ├── native      # 组件native接口实现
-│── interface       # 对外接口目录
-|   |── innerkits   # 组件native接口定义
-|   |── kits/napi   # 组件napi实现
-├── sa_profile      # 组件服务配置
-├── services        # 组件服务实现
-├── tools           # 组件工具实现
-│── ohos.build      # 组件编译脚本
+│   |── core        # native接口内部实现
+│   ├── native      # native接口实现
+│── interface       # 对外接口声明
+|   |── inner_api   # native接口声明
+|   |── kits/napi   # napi接口声明
+├── sa_profile      # 服务配置
+├── services        # 服务实现
+├── tools           # 工具实现
+│── ohos.build      # 编译脚本
 
 ```
+
+
 
 ## 使用说明
 
@@ -82,8 +88,6 @@ function PublishCallBack(err) {
 
 CommonEvent.publish("publish_event", PublishCallBack);
 ```
-
-###
 
 #### CommonEvent.publish(event: string, options: CommonEventPublishData, callback: AsyncCallback<void>)
 
@@ -199,7 +203,6 @@ function CreateSubscriberCallBack(err, data) {
 
 CommonEvent.createSubscriber(CommonEventSubscribeInfo, CreateSubscriberCallBack);
 ```
-
 
 
 #### CommonEvent.createSubscriber(subscribeInfo: CommonEventSubscribeInfo)
@@ -472,10 +475,10 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_USER_STARTED                                    | usual.event.USER_STARTED                                    | 无                                             |
 | COMMON_EVENT_USER_BACKGROUND                                 | usual.event.USER_BACKGROUND                                 | 无                                             |
 | COMMON_EVENT_USER_FOREGROUND                                 | usual.event.USER_FOREGROUND                                 | 无                                             |
-| COMMON_EVENT_USER_SWITCHED                                   | usual.event.USER_SWITCHED                                   | ohos.permission.MANAGE_USERS                   |
-| COMMON_EVENT_USER_STARTING                                   | usual.event.USER_STARTING                                   | ohos.permission.INTERACT_ACROSS_USERS          |
+| COMMON_EVENT_USER_SWITCHED                                   | usual.event.USER_SWITCHED                                   | ohos.permission.MANAGE_LOCAL_ACCOUNTS                   |
+| COMMON_EVENT_USER_STARTING                                   | usual.event.USER_STARTING                                   | ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS          |
 | COMMON_EVENT_USER_UNLOCKED                                   | usual.event.USER_UNLOCKED                                   | 无                                             |
-| COMMON_EVENT_USER_STOPPING                                   | usual.event.USER_STOPPING                                   | ohos.permission.INTERACT_ACROSS_USERS          |
+| COMMON_EVENT_USER_STOPPING                                   | usual.event.USER_STOPPING                                   | ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS          |
 | COMMON_EVENT_USER_STOPPED                                    | usual.event.USER_STOPPED                                    | 无                                             |
 | COMMON_EVENT_HWID_LOGIN                                      | common.event.HWID_LOGIN                                     | 无                                             |
 | COMMON_EVENT_HWID_LOGOUT                                     | common.event.HWID_LOGOUT                                    | 无                                             |
@@ -539,8 +542,8 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_CHARGING                                        | usual.event.CHARGING                                        | 无                                             |
 | COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED                        | usual.event.DEVICE_IDLE_MODE_CHANGED                        | 无                                             |
 | COMMON_EVENT_POWER_SAVE_MODE_CHANGED                         | usual.event.POWER_SAVE_MODE_CHANGED                         | 无                                             |
-| COMMON_EVENT_USER_ADDED                                      | usual.event.USER_ADDED                                      | ohos.permission.MANAGE_USERS                   |
-| COMMON_EVENT_USER_REMOVED                                    | usual.event.USER_REMOVED                                    | ohos.permission.MANAGE_USERS                   |
+| COMMON_EVENT_USER_ADDED                                      | usual.event.USER_ADDED                                      | ohos.permission.MANAGE_LOCAL_ACCOUNTS                   |
+| COMMON_EVENT_USER_REMOVED                                    | usual.event.USER_REMOVED                                    | ohos.permission.MANAGE_LOCAL_ACCOUNTS                   |
 | COMMON_EVENT_ABILITY_ADDED                                   | common.event.ABILITY_ADDED                                  | ohos.permission.LISTEN_BUNDLE_CHANGE           |
 | COMMON_EVENT_ABILITY_REMOVED                                 | common.event.ABILITY_REMOVED                                | ohos.permission.LISTEN_BUNDLE_CHANGE           |
 | COMMON_EVENT_ABILITY_UPDATED                                 | common.event.ABILITY_UPDATED                                | ohos.permission.LISTEN_BUNDLE_CHANGE           |
@@ -576,11 +579,6 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 
 ## 相关仓
 
-事件通知子系统
+**[公共事件子系统](https://gitee.com/openharmony/notification_common_event_service/blob/master/README_zh.md)**
 
-**[notification_common_event_service](https://gitee.com/openharmony/notification_ces_standard/blob/master/README_zh.md)**
-
-[ans部件仓](https://gitee.com/openharmony/notification_ans_standard/blob/master/README_zh.md )
-
-
-
+[通知子系统](https://gitee.com/openharmony/notification_distributed_notification_service/blob/master/README_zh.md)

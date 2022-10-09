@@ -542,4 +542,65 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1800, Function | MediumTest | Leve
     SetMockObjects(cmd);
     EXPECT_EQ(cmd.ExecCommand(), STRING_EVENT + "\n");
 }
+
+/**
+ * @tc.number: Cem_Command_Dump_1900
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem dump -p" command.
+ * @tc.require: issueI5UINZ
+ */
+HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_1900, Function | MediumTest | Level1)
+{
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-e",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-u",
+        (char *)"100",
+        (char *)STRING_EVENT.c_str(),
+        (char *)"-p",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    // set the mock objects
+    SetMockObjects(cmd);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
+}
+
+/**
+ * @tc.number: Cem_Command_Dump_2000
+ * @tc.name: ExecCommand
+ * @tc.desc: Verify the "cem dump -p" command.
+ * @tc.require: issueI5UINZ
+ */
+HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_2000, Function | MediumTest | Level1)
+{
+      /* Subscribe */
+
+    // make matching skills
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(STRING_EVENT);
+
+    // make subscribe info
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+
+    // make a subscriber object
+    auto subscriberTestPtr = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
+    // subscribe a common event
+    CommonEventManager::SubscribeCommonEvent(subscriberTestPtr);
+    char *argv[] = {
+        (char *)toolName_.c_str(),
+        (char *)cmd_.c_str(),
+        (char *)"-p",
+        (char *)"11",
+        (char *)"",
+    };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
+    CommonEventCommand cmd(argc, argv);
+    // set the mock objects
+    SetMockObjects(cmd);
+    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: option 'p' requires a value.\n", HELP_MSG_DUMP));
+}
 }  // namespace

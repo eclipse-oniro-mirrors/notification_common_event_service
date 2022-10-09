@@ -35,13 +35,13 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVER_STARTUP_COMPLETED"}}
     },
     {CommonEventSupport::COMMON_EVENT_USER_SWITCHED,
-        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_USERS"}}
+        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_LOCAL_ACCOUNTS"}}
     },
     {CommonEventSupport::COMMON_EVENT_USER_STARTING,
-        {PermissionState::DEFAULT, {"ohos.permission.INTERACT_ACROSS_USERS"}}
+        {PermissionState::DEFAULT, {"ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS"}}
     },
     {CommonEventSupport::COMMON_EVENT_USER_STOPPING,
-        {PermissionState::DEFAULT, {"ohos.permission.INTERACT_ACROSS_USERS"}}
+        {PermissionState::DEFAULT, {"ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS"}}
     },
     {CommonEventSupport::COMMON_EVENT_WIFI_SCAN_FINISHED,
         {PermissionState::DEFAULT, {"ohos.permission.LOCATION"}}
@@ -161,10 +161,10 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
         {PermissionState::DEFAULT, {"ohos.permission.MANAGE_SECURE_SETTINGS"}}
     },
     {CommonEventSupport::COMMON_EVENT_USER_ADDED,
-        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_USERS"}}
+        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_LOCAL_ACCOUNTS"}}
     },
     {CommonEventSupport::COMMON_EVENT_USER_REMOVED,
-        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_USERS"}}
+        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_LOCAL_ACCOUNTS"}}
     },
     {CommonEventSupport::COMMON_EVENT_ABILITY_ADDED,
         {PermissionState::DEFAULT, {"ohos.permission.LISTEN_BUNDLE_CHANGE"}}
@@ -176,37 +176,37 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
         {PermissionState::DEFAULT, {"ohos.permission.LISTEN_BUNDLE_CHANGE"}}
     },
     {CommonEventSupport::COMMON_EVENT_DISK_REMOVED,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTED,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_DISK_MOUNTED,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_DISK_EJECT,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_VOLUME_UNMOUNTED,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_VOLUME_MOUNTED,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_VOLUME_BAD_REMOVAL,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_VOLUME_EJECT,
-        {PermissionState::OR, {"ohos.permission.WRITE_USER_STORAGE", "ohos.permission.READ_USER_STORAGE"}}
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
     {CommonEventSupport::COMMON_EVENT_VISIBLE_ACCOUNTS_UPDATED,
             {PermissionState::DEFAULT, {"ohos.permission.GET_APP_ACCOUNTS"}}
