@@ -1452,8 +1452,7 @@ bool CommonEventSupport::IsSystemEvent(std::string &str)
 {
     EVENT_LOGI("enter");
 
-    std::vector<std::string>::iterator iter = commonEventSupport_.begin();
-    iter = find(commonEventSupport_.begin(), commonEventSupport_.end(), str);
+    std::vector<std::string>::iterator iter = find(commonEventSupport_.begin(), commonEventSupport_.end(), str);
     if (iter != commonEventSupport_.end()) {
         return true;
     }
