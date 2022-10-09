@@ -55,6 +55,13 @@ ErrCode CommonEventManagerService::Init()
         EVENT_LOGE("Failed to init due to create runner error");
         return ERR_INVALID_OPERATION;
     }
+    if (runner_->GetEventRunner() != nullptr) {
+        std::string threadName = runner_->GetEventRunner()->GetRunnerThreadName();
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, runner_) != 0) {
+            EVENT_LOGE("Failed to Add main Thread");
+        }
+    }
+
     handler_ = std::make_shared<EventHandler>(runner_);
     if (!handler_) {
         EVENT_LOGE("Failed to init due to create handler error");
