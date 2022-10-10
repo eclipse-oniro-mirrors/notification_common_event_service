@@ -25,6 +25,7 @@
 #include "ipc_skeleton.h"
 #include "publish_manager.h"
 #include "system_ability_definition.h"
+#include "xcollie/watchdog.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -59,6 +60,12 @@ ErrCode CommonEventManagerService::Init()
     if (!handler_) {
         EVENT_LOGE("Failed to init due to create handler error");
         return ERR_INVALID_OPERATION;
+    }
+    if (handler_->GetEventRunner() != nullptr) {
+        std::string threadName = handler_->GetEventRunner()->GetRunnerThreadName();
+        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_) != 0) {
+            EVENT_LOGE("Failed to Add main Thread");
+        }
     }
 
     serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
