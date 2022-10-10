@@ -85,11 +85,16 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         }
         case static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT): {
             std::unique_ptr<CommonEventSubscribeInfo> subscribeInfo(data.ReadParcelable<CommonEventSubscribeInfo>());
-            sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             if (!subscribeInfo) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventSubscribeInfo>");
                 return ERR_INVALID_VALUE;
             }
+            bool hasSubscriber = data.ReadBool();
+            if (!hasSubscriber) {
+                EVENT_LOGE("no valid commonEventListener!");
+                return ERR_INVALID_VALUE;
+            }
+            sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             if (commonEventListener == nullptr) {
                 EVENT_LOGE("Failed to ReadParcelable<IRemoteObject>");
                 return ERR_INVALID_VALUE;
@@ -102,6 +107,11 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             break;
         }
         case static_cast<uint32_t>(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT): {
+            bool hasSubscriber = data.ReadBool();
+            if (!hasSubscriber) {
+                EVENT_LOGE("no valid commonEventListener!");
+                return ERR_INVALID_VALUE;
+            }
             sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             if (commonEventListener == nullptr) {
                 EVENT_LOGE("Failed to ReadParcelable<IRemoteObject>");
@@ -141,6 +151,11 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             break;
         }
         case static_cast<uint32_t>(ICommonEvent::Message::CES_FINISH_RECEIVER): {
+            bool hasPorxy = data.ReadBool();
+            if (!hasPorxy) {
+                EVENT_LOGE("no valid proxy!");
+                return ERR_INVALID_VALUE;
+            }
             sptr<IRemoteObject> proxy = data.ReadRemoteObject();
             if (proxy == nullptr) {
                 EVENT_LOGE("Failed to ReadRemoteObject");

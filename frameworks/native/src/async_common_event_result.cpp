@@ -37,6 +37,7 @@ AsyncCommonEventResult::~AsyncCommonEventResult()
 bool AsyncCommonEventResult::SetCode(const int32_t &code)
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -53,6 +54,7 @@ int32_t AsyncCommonEventResult::GetCode() const
 bool AsyncCommonEventResult::SetData(const std::string &data)
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -69,6 +71,7 @@ std::string AsyncCommonEventResult::GetData() const
 bool AsyncCommonEventResult::SetCodeAndData(const int32_t &code, const std::string &data)
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -81,6 +84,7 @@ bool AsyncCommonEventResult::SetCodeAndData(const int32_t &code, const std::stri
 bool AsyncCommonEventResult::AbortCommonEvent()
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -92,6 +96,7 @@ bool AsyncCommonEventResult::AbortCommonEvent()
 bool AsyncCommonEventResult::ClearAbortCommonEvent()
 {
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 
@@ -110,6 +115,7 @@ bool AsyncCommonEventResult::FinishCommonEvent()
     EVENT_LOGI("enter");
 
     if (!CheckSynchronous()) {
+        EVENT_LOGE("failed to CheckSynchronous");
         return false;
     }
 

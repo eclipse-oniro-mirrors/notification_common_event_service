@@ -136,9 +136,15 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
 
 CommonEventPublishInfo *CommonEventPublishInfo::Unmarshalling(Parcel &parcel)
 {
-    CommonEventPublishInfo *commonEventPublishInfo = new CommonEventPublishInfo();
+    CommonEventPublishInfo *commonEventPublishInfo = new (std::nothrow) CommonEventPublishInfo();
 
-    if (commonEventPublishInfo && !commonEventPublishInfo->ReadFromParcel(parcel)) {
+    if (commonEventPublishInfo == nullptr) {
+        EVENT_LOGE("commonEventPublishInfo == nullptr");
+        return nullptr;
+    }
+
+    if (!commonEventPublishInfo->ReadFromParcel(parcel)) {
+        EVENT_LOGE("failed to ReadFromParcel");
         delete commonEventPublishInfo;
         commonEventPublishInfo = nullptr;
     }

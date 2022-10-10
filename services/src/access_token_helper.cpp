@@ -43,10 +43,12 @@ void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &call
     EVENT_LOGI("enter");
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
     if (tokenType != ATokenTypeEnum::TOKEN_HAP) {
+        EVENT_LOGE("tokenType != ATokenTypeEnum::TOKEN_HAP");
         return;
     }
     Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
     if (!permission.isSensitive || permission.names.empty()) {
+        EVENT_LOGE("permission denied");
         return;
     }
     for (const auto &permissionName : permission.names) {

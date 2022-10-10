@@ -32,6 +32,7 @@ CommonEventManagerServiceAbility::~CommonEventManagerServiceAbility()
 
 void CommonEventManagerServiceAbility::OnStart()
 {
+    EVENT_LOGD("OnStart called.");
     if (service_ != nullptr) {
         EVENT_LOGD("The CommonEventManagerService has existed.");
         return;
@@ -52,6 +53,7 @@ void CommonEventManagerServiceAbility::OnStart()
 
 void CommonEventManagerServiceAbility::OnStop()
 {
+    EVENT_LOGD("onStop called.");
     service_ = nullptr;
 }
 }  // namespace EventFwk

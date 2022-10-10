@@ -208,7 +208,7 @@ struct CommonEventDataWorker {
 
 class SubscriberInstance : public CommonEventSubscriber {
 public:
-    SubscriberInstance(const CommonEventSubscribeInfo &sp);
+    explicit SubscriberInstance(const CommonEventSubscribeInfo &sp);
     ~SubscriberInstance();
 
     virtual void OnReceiveEvent(const CommonEventData &data) override;
@@ -227,7 +227,7 @@ private:
 
 class SubscriberInstanceWrapper {
 public:
-    SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info);
+    explicit SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info);
     std::shared_ptr<SubscriberInstance> GetSubscriber();
 
 private:

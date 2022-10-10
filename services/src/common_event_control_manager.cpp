@@ -80,6 +80,7 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
     EVENT_LOGI("enter");
 
     if (!GetUnorderedEventHandler()) {
+        EVENT_LOGE("failed to get eventhandler");
         return false;
     }
     PublishFrozenEventsInner(DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetFrozenEvents(uid));
@@ -88,9 +89,11 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
 
 bool CommonEventControlManager::PublishAllFreezeCommonEvents()
 {
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (!GetUnorderedEventHandler()) {
+        EVENT_LOGE("failed to get eventhandler");
         return false;
     }
 
@@ -107,6 +110,7 @@ void CommonEventControlManager::PublishFrozenEventsInner(const FrozenRecords &fr
     for (auto record : frozenRecords) {
         for (auto vec : record.second) {
             if (!record.first || !vec) {
+                EVENT_LOGW("failed to find record");
                 continue;
             }
 
@@ -143,12 +147,18 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         EVENT_LOGE("check permission is failed");
         return false;
     }
+    if (eventRecord.commonEventData == nullptr) {
+        EVENT_LOGE("commonEventData == nullptr");
+        return false;
+    }
     EVENT_LOGI("Send common event %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) "
                 "when unfreezed",
         eventRecord.commonEventData->GetWant().GetAction().c_str(),
-        subscriberRecord.eventRecordInfo.bundleName.c_str(), subscriberRecord.eventRecordInfo.pid,
+        subscriberRecord.eventRecordInfo.bundleName.c_str(),
+        subscriberRecord.eventRecordInfo.pid,
         subscriberRecord.eventRecordInfo.uid);
-    commonEventListenerProxy->NotifyEvent(*(eventRecord.commonEventData), false, eventRecord.publishInfo->IsSticky());
+    commonEventListenerProxy->NotifyEvent(*(eventRecord.commonEventData),
+        false, eventRecord.publishInfo->IsSticky());
     AccessTokenHelper::RecordSensitivePermissionUsage(subscriberRecord.eventRecordInfo.callerToken,
         eventRecord.commonEventData->GetWant().GetAction());
     return true;
@@ -184,6 +194,10 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
     EVENT_LOGI("event = %{public}s, receivers size = %{public}zu",
         eventRecord->commonEventData->GetWant().GetAction().c_str(), eventRecord->receivers.size());
     for (auto vec : eventRecord->receivers) {
+        if (vec == nullptr) {
+            EVENT_LOGE("invalid vec");
+            continue;
+        }
         size_t index = eventRecord->nextReceiver++;
         eventRecord->curReceiver = vec->commonEventListener;
         if (vec->isFreeze) {
@@ -227,6 +241,7 @@ bool CommonEventControlManager::ProcessUnorderedEvent(
     bool ret = false;
 
     if (!GetUnorderedEventHandler()) {
+        EVENT_LOGE("failed to get eventhandler");
         return ret;
     }
 
@@ -279,7 +294,7 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::GetMatchingOrdere
 
     std::lock_guard<std::mutex> lock(orderedMutex_);
 
-    if (orderedEventQueue_.size() > 0) {
+    if (!orderedEventQueue_.empty()) {
         std::shared_ptr<OrderedEventRecord> firstRecord = orderedEventQueue_.front();
         if ((firstRecord != nullptr) && (firstRecord->curReceiver == proxy)) {
             return firstRecord;
@@ -317,6 +332,7 @@ bool CommonEventControlManager::ProcessOrderedEvent(
     bool ret = false;
 
     if (!GetOrderedEventHandler()) {
+        EVENT_LOGE("failed to get eventhandler");
         return ret;
     }
 
@@ -401,6 +417,9 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
     record.isSystemEvent = eventRecordPtr->isSystemEvent;
 
     for (auto vec : eventRecordPtr->receivers) {
+        if (vec == nullptr) {
+            continue;
+        }
         HistorySubscriberRecord receiver;
         receiver.recordTime = vec->recordTime;
         receiver.bundleName = vec->eventRecordInfo.bundleName;
@@ -501,7 +520,8 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
     std::lock_guard<std::mutex> lock(orderedMutex_);
 
     do {
-        if (orderedEventQueue_.size() == 0) {
+        if (orderedEventQueue_.empty()) {
+            EVENT_LOGE("orderedEventQueue_ is empty");
             return;
         }
 
@@ -523,7 +543,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
             return;
         }
 
-        if ((sp->receivers.size() == 0) || (sp->nextReceiver >= numReceivers) || sp->resultAbort || forceReceive) {
+        if ((sp->receivers.empty()) || (sp->nextReceiver >= numReceivers) || sp->resultAbort || forceReceive) {
             // No more receivers for this ordered common event, then process the final result receiver
             bool hasLastSubscribe = (sp->resultTo != nullptr) ? true : false;
             if (sp->resultTo != nullptr) {
@@ -555,8 +575,6 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
         sp->state = OrderedEventRecord::IDLE;
         ScheduleOrderedCommonEvent();
     }
-
-    return;
 }
 
 void CommonEventControlManager::SetTime(size_t recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage)
@@ -573,8 +591,6 @@ void CommonEventControlManager::SetTime(size_t recIdx, std::shared_ptr<OrderedEv
         int64_t timeoutTime = sp->receiverTime + TIMEOUT;
         SetTimeout(timeoutTime);
     }
-
-    return;
 }
 
 bool CommonEventControlManager::SetTimeout(int64_t timeoutTime)
@@ -611,7 +627,8 @@ void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
         pendingTimeoutMessage_ = false;
     }
 
-    if (orderedEventQueue_.size() == 0) {
+    if (orderedEventQueue_.empty()) {
+        EVENT_LOGE("empty orderedEventQueue_");
         return;
     }
 
@@ -728,7 +745,7 @@ bool CommonEventControlManager::CheckSubscriberPermission(
 
     Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(
         eventRecord.commonEventData->GetWant().GetAction());
-    if (permission.names.size() < 1) {
+    if (permission.names.empty()) {
         return true;
     }
 
@@ -813,7 +830,7 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
 {
     bool ret = false;
 
-    if (publisherRequiredPermissions.size() == 0) {
+    if (publisherRequiredPermissions.empty()) {
         return true;
     }
 
@@ -1156,7 +1173,7 @@ void CommonEventControlManager::DumpStateBySubscriberRecord(
 {
     EVENT_LOGI("enter");
 
-    if (record->receivers.size() == 0) {
+    if (record->receivers.empty()) {
         dumpInfo = "\tSubscribers:\tNo information";
         return;
     }
@@ -1201,7 +1218,7 @@ void CommonEventControlManager::DumpHistoryStateBySubscriberRecord(
 {
     EVENT_LOGI("enter");
 
-    if (record.receivers.size() == 0) {
+    if (record.receivers.empty()) {
         dumpInfo = "\tSubscribers:\tNo information";
         return;
     }
@@ -1212,8 +1229,8 @@ void CommonEventControlManager::DumpHistoryStateBySubscriberRecord(
 
         std::string title = std::to_string(num);
         if (num == 1) {
-            title = "\tSubscribers:\tTotal " + std::to_string(record.receivers.size()) + " subscribers\n\tNO " + title +
-                    "\n";
+            title = "\tSubscribers:\tTotal " + std::to_string(record.receivers.size()) +
+                " subscribers\n\tNO " + title + "\n";
         } else {
             title = "\tNO " + title + "\n";
         }
@@ -1286,7 +1303,7 @@ void CommonEventControlManager::DumpState(
     records.insert(records.end(), unorderedRecords.begin(), unorderedRecords.end());
     records.insert(records.end(), orderedRecords.begin(), orderedRecords.end());
 
-    if (records.size() == 0) {
+    if (records.empty()) {
         state.emplace_back("Pending Events:\tNo information");
         return;
     }
@@ -1319,7 +1336,7 @@ void CommonEventControlManager::DumpHistoryState(
     std::lock_guard<std::mutex> lock(historyMutex_);
     GetHistoryEventRecords(event, userId, records);
 
-    if (records.size() == 0) {
+    if (records.empty()) {
         state.emplace_back("History Events:\tNo information");
         return;
     }

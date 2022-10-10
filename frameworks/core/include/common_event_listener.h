@@ -36,7 +36,7 @@ public:
      */
     explicit CommonEventListener(const std::shared_ptr<CommonEventSubscriber> &commonEventSubscriber);
 
-    virtual ~CommonEventListener() override;
+    virtual ~CommonEventListener();
 
     /**
      * Notifies event.
@@ -45,7 +45,7 @@ public:
      * @param ordered Indicates whether it is an ordered common event.
      * @param sticky Indicates whether it is a sticky common event.
      */
-    virtual void NotifyEvent(const CommonEventData &data, const bool &ordered, const bool &sticky) override;
+    void NotifyEvent(const CommonEventData &data, const bool &ordered, const bool &sticky) override;
 
     /**
      * Stops to receive events.

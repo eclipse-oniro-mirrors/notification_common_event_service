@@ -216,9 +216,15 @@ bool MatchingSkills::ReadFromParcel(Parcel &parcel)
 
 MatchingSkills *MatchingSkills::Unmarshalling(Parcel &parcel)
 {
-    MatchingSkills *matchingSkills = new MatchingSkills();
+    MatchingSkills *matchingSkills = new (std::nothrow) MatchingSkills();
 
-    if (matchingSkills && !matchingSkills->ReadFromParcel(parcel)) {
+    if (matchingSkills == nullptr) {
+        EVENT_LOGE("failed to create obj");
+        return nullptr;
+    }
+
+    if (!matchingSkills->ReadFromParcel(parcel)) {
+        EVENT_LOGE("failed to ReadFromParcel");
         delete matchingSkills;
         matchingSkills = nullptr;
     }
@@ -238,7 +244,8 @@ bool MatchingSkills::MatchEvent(const std::string &event) const
 
 bool MatchingSkills::MatchEntity(const std::vector<std::string> &entities) const
 {
-    if (entities.size() == 0) {
+    if (entities.empty()) {
+        EVENT_LOGI("match empty entity");
         return true;
     }
 
