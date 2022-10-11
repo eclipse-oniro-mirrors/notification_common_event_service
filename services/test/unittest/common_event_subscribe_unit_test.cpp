@@ -42,6 +42,7 @@ const std::string ENTITY = "com.ces.test.entity";
 const std::string SCHEME = "com.ces.test.scheme";
 const std::string PERMISSION = "com.ces.test.permission";
 const std::string DEVICEDID = "deviceId";
+constexpr int32_t ERR_COMMON = -1;
 }  // namespace
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
@@ -74,21 +75,21 @@ public:
     CommonEventStubTest()
     {}
 
-    virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener, const int32_t &userId)
     {
-        return false;
+        return ERR_COMMON;
     }
 
-    virtual bool SubscribeCommonEvent(
+    virtual int32_t SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
     {
-        return false;
+        return ERR_COMMON;
     }
 
-    virtual bool UnsubscribeCommonEvent(const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
+    virtual int32_t UnsubscribeCommonEvent(const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
     {
-        return false;
+        return ERR_COMMON;
     }
 
     virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,

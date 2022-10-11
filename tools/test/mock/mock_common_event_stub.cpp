@@ -17,22 +17,22 @@
 
 using namespace OHOS::EventFwk;
 
-bool MockCommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+int32_t MockCommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
     const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
-    return true;
+    return ERR_OK;
 }
 
-bool MockCommonEventStub::SubscribeCommonEvent(
+int32_t MockCommonEventStub::SubscribeCommonEvent(
     const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGI("enter");
 
     subscribeInfoPtr = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
-    return true;
+    return ERR_OK;
 }
 
 bool MockCommonEventStub::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,

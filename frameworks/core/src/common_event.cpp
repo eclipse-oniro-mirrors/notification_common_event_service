@@ -20,9 +20,12 @@
 #include "hitrace_meter.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
+#include "ces_inner_error_code.h"
 
 namespace OHOS {
 namespace EventFwk {
+using namespace OHOS::Notification;
+
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
@@ -37,7 +40,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, UNDEFINED_USER);
 }
 
-bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
@@ -45,7 +48,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         EVENT_LOGE("failed to check publish parameter");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
     return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, userId);
@@ -108,24 +111,24 @@ bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const Commo
     return true;
 }
 
-bool CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
+int32_t CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (subscriber == nullptr) {
         EVENT_LOGE("the subscriber is null");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (subscriber->GetSubscribeInfo().GetMatchingSkills().CountEvent() == 0) {
         EVENT_LOGE("the subscriber has no event");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("the commonEventProxy_ is null");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     sptr<IRemoteObject> commonEventListener = nullptr;
@@ -134,42 +137,42 @@ bool CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscrib
         EVENT_LOGD("before SubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
         return commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
     } else if (subscribeState == ALREADY_SUBSCRIBED) {
-        return true;
+        return ERR_OK;
     } else {
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT;
     }
 }
 
-bool CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
+int32_t CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (subscriber == nullptr) {
         EVENT_LOGE("the subscriber is null");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("the commonEventProxy is null");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
     auto eventListener = eventListeners_.find(subscriber);
     if (eventListener != eventListeners_.end()) {
         EVENT_LOGD("before UnsubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
-        if (commonEventProxy_->UnsubscribeCommonEvent(eventListener->second->AsObject())) {
+        if (commonEventProxy_->UnsubscribeCommonEvent(eventListener->second->AsObject()) == ERR_OK) {
             eventListener->second->Stop();
             eventListeners_.erase(eventListener);
-            return true;
+            return ERR_OK;
         }
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT;
     } else {
         EVENT_LOGW("No specified subscriber has been registered");
     }
 
-    return true;
+    return ERR_OK;
 }
 
 bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)

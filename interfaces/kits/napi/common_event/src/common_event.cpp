@@ -2417,9 +2417,9 @@ napi_value Publish(napi_env env, napi_callback_info info)
                 EVENT_LOGE("asyncCallbackInfo is null");
                 return;
             }
-            asyncCallbackInfo->errorCode = CommonEventManager::PublishCommonEvent(
-                asyncCallbackInfo->commonEventData, asyncCallbackInfo->commonEventPublishInfo) ?
-                NO_ERROR : ERR_CES_FAILED;
+            int32_t ret = CommonEventManager::PublishCommonEvent(
+                asyncCallbackInfo->commonEventData, asyncCallbackInfo->commonEventPublishInfo);
+            asyncCallbackInfo->errorCode = ret == NO_ERROR ? NO_ERROR : ERR_CES_FAILED;
         },
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoPublish *asyncCallbackInfo = (AsyncCallbackInfoPublish *)data;

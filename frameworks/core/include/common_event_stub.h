@@ -47,9 +47,9 @@ public:
      * @param publishInfo Indicates the publish info.
      * @param commonEventListener Indicates the last subscriber to receive the event.
      * @param userId Indicates the user ID.
-     * @return Returns true if successful; false otherwise.
+     * @return Returns ERR_OK if successful; otherwise failed.
      */
-    bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
     /**
@@ -70,18 +70,18 @@ public:
      *
      * @param subscribeInfo Indicates the subscribe information.
      * @param commonEventListener Indicates the subscriber object.
-     * @return Returns true if successful; false otherwise.
+     * @return Returns ERR_OK if successful; otherwise failed.
      */
-    bool SubscribeCommonEvent(
+    int32_t SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
      * Unsubscribes from common events.
      *
      * @param commonEventListener Indicates the subscriber object.
-     * @return Returns true if successful; false otherwise.
+     * @return Returns ERR_OK if successful; otherwise failed.
      */
-    bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
+    int32_t UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
      * Gets the current sticky common event.

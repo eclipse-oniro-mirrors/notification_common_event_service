@@ -19,7 +19,10 @@ group("common_target") {
 }
 
 config("event_common_config") {
-  include_dirs = [ "log/include" ]
+  include_dirs = [
+    "log/include",
+    "error_code",
+  ]
 }
 
 ohos_shared_library("libevent_common") {

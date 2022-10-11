@@ -39,7 +39,7 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
     /**
@@ -62,7 +62,7 @@ public:
      * @param commonEventListener Indicates the common event subscriber.
      * @return Returns true if successful; false otherwise.
      */
-    bool SubscribeCommonEvent(
+    int32_t SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
@@ -71,7 +71,7 @@ public:
      * @param commonEventListener Indicates the common event subscriber.
      * @return Returns true if successful; false otherwise.
      */
-    bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
+    int32_t UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
      * Gets the current sticky common event
@@ -136,7 +136,7 @@ public:
 private:
     bool IsReady() const;
 
-    bool PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    int32_t PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const pid_t &pid, const uid_t &uid, const int32_t &userId);
 
     void GetHidumpInfo(const std::vector<std::u16string> &args, std::string &result);

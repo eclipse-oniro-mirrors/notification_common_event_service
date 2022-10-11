@@ -31,6 +31,10 @@ using namespace OHOS;
 using namespace OHOS::EventFwk;
 using OHOS::Parcel;
 
+namespace {
+constexpr int32_t ERR_COMMON = -1;
+}
+
 class CommonEventUnSubscribeTest : public testing::Test {
 public:
     CommonEventUnSubscribeTest()
@@ -66,21 +70,21 @@ public:
     CommonEventStubTest()
     {}
 
-    virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
     {
-        return false;
+        return ERR_COMMON;
     }
 
-    virtual bool SubscribeCommonEvent(
+    virtual int32_t SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const OHOS::sptr<IRemoteObject> &commonEventListener)
     {
-        return false;
+        return ERR_COMMON;
     }
 
-    virtual bool UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject> &commonEventListener)
+    virtual int32_t UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject> &commonEventListener)
     {
-        return false;
+        return ERR_COMMON;
     }
 
     virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,

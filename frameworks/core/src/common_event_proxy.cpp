@@ -17,10 +17,12 @@
 #include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "string_ex.h"
+#include "ces_inner_error_code.h"
 
 namespace OHOS {
 namespace EventFwk {
 using namespace OHOS::AppExecFwk;
+using namespace OHOS::Notification;
 
 CommonEventProxy::CommonEventProxy(const sptr<IRemoteObject> &object) : IRemoteProxy<ICommonEvent>(object)
 {
@@ -32,7 +34,7 @@ CommonEventProxy::~CommonEventProxy()
     EVENT_LOGD("CommonEventProxy instance destroyed");
 }
 
-bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishInfo,
+int32_t CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishInfo,
     const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
 {
     EVENT_LOGD("start");
@@ -42,48 +44,49 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         EVENT_LOGE("Failed to write InterfaceToken");
-        return false;
+        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
     }
 
     if (!data.WriteParcelable(&event)) {
         EVENT_LOGE("Failed to write parcelable event");
-        return false;
+        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
     }
 
     if (!data.WriteParcelable(&publishInfo)) {
         EVENT_LOGE("Failed to write parcelable publishInfo");
-        return false;
+        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
     }
 
     if (commonEventListener) {
         if (!data.WriteBool(true)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
-            return false;
+            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
         }
         if (!data.WriteRemoteObject(commonEventListener)) {
             EVENT_LOGE("Failed to write parcelable commonEventListener");
-            return false;
+            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
         }
     } else {
         EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
-            return false;
+            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
         }
     }
 
     if (!data.WriteInt32(userId)) {
         EVENT_LOGE("Failed to write parcelable userId");
-        return false;
+        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
     }
 
     bool ret = SendRequest(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT, data, reply);
-    if (ret) {
-        ret = reply.ReadBool();
+    if (!ret) {
+        EVENT_LOGE("Failed to send request");
+        return ERR_NOTIFICATION_SEND_ERROR;
     }
 
     EVENT_LOGD("end");
-    return ret;
+    return reply.ReadInt32();
 }
 
 bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishInfo,
@@ -145,7 +148,7 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
     return ret;
 }
 
-bool CommonEventProxy::SubscribeCommonEvent(
+int32_t CommonEventProxy::SubscribeCommonEvent(
     const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGD("start");
@@ -155,41 +158,42 @@ bool CommonEventProxy::SubscribeCommonEvent(
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         EVENT_LOGE("Failed to write InterfaceToken");
-        return false;
+        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
     }
 
     if (!data.WriteParcelable(&subscribeInfo)) {
         EVENT_LOGE("Failed to write parcelable subscribeInfo");
-        return false;
+        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
     }
 
     if (commonEventListener != nullptr) {
         if (!data.WriteBool(true)) {
             EVENT_LOGE("Failed to write parcelable hasSubscriber");
-            return false;
+            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
         }
         if (!data.WriteRemoteObject(commonEventListener)) {
             EVENT_LOGE("Failed to write parcelable commonEventListener");
-            return false;
+            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
         }
     } else {
         EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasSubscriber");
-            return false;
+            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
         }
     }
 
     bool ret = SendRequest(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT, data, reply);
-    if (ret) {
-        ret = reply.ReadBool();
+    if (!ret) {
+        EVENT_LOGE("Failed to send request");
+        return ERR_NOTIFICATION_SEND_ERROR;
     }
 
     EVENT_LOGD("end");
-    return ret;
+    return reply.ReadInt32();
 }
 
-bool CommonEventProxy::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
+int32_t CommonEventProxy::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGD("start");
 
@@ -198,33 +202,34 @@ bool CommonEventProxy::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonE
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         EVENT_LOGE("Failed to write InterfaceToken");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (commonEventListener != nullptr) {
         if (!data.WriteBool(true)) {
             EVENT_LOGE("Failed to write parcelable hasSubscriber");
-            return false;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
         if (!data.WriteRemoteObject(commonEventListener)) {
             EVENT_LOGE("Failed to write parcelable commonEventListener");
-            return false;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     } else {
         EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasSubscriber");
-            return false;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     }
 
     bool ret = SendRequest(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT, data, reply);
-    if (ret) {
-        ret = reply.ReadBool();
+    if (!ret) {
+        EVENT_LOGE("Failed to send request");
+        return ERR_NOTIFICATION_SEND_ERROR;
     }
 
     EVENT_LOGD("end");
-    return ret;
+    return reply.ReadInt32();
 }
 
 bool CommonEventProxy::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
