@@ -17,9 +17,12 @@
 #include "common_event_publish_info.h"
 #include "event_log_wrapper.h"
 #include "string_ex.h"
+#include "ces_inner_error_code.h"
 
 namespace OHOS {
 namespace EventFwk {
+using namespace OHOS::Notification;
+
 CommonEventStub::CommonEventStub()
 {}
 
@@ -45,16 +48,16 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             int32_t userId = data.ReadInt32();
             if (!event) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventData>");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
             if (!publishinfo) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventPublishInfo>");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
-            bool ret = PublishCommonEvent(*event, *publishinfo, commonEventListener, userId);
-            if (!reply.WriteBool(ret)) {
+            int32_t ret = PublishCommonEvent(*event, *publishinfo, commonEventListener, userId);
+            if (!reply.WriteInt32(ret)) {
                 EVENT_LOGE("Failed to write reply ");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
             break;
         }
@@ -87,7 +90,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             std::unique_ptr<CommonEventSubscribeInfo> subscribeInfo(data.ReadParcelable<CommonEventSubscribeInfo>());
             if (!subscribeInfo) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventSubscribeInfo>");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
             bool hasSubscriber = data.ReadBool();
             if (!hasSubscriber) {
@@ -97,12 +100,12 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             if (commonEventListener == nullptr) {
                 EVENT_LOGE("Failed to ReadParcelable<IRemoteObject>");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
-            bool ret = SubscribeCommonEvent(*subscribeInfo, commonEventListener);
-            if (!reply.WriteBool(ret)) {
+            int32_t ret = SubscribeCommonEvent(*subscribeInfo, commonEventListener);
+            if (!reply.WriteInt32(ret)) {
                 EVENT_LOGE("Failed to write reply");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
             break;
         }
@@ -115,12 +118,12 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             if (commonEventListener == nullptr) {
                 EVENT_LOGE("Failed to ReadParcelable<IRemoteObject>");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
-            bool ret = UnsubscribeCommonEvent(commonEventListener);
-            if (!reply.WriteBool(ret)) {
+            int32_t ret = UnsubscribeCommonEvent(commonEventListener);
+            if (!reply.WriteInt32(ret)) {
                 EVENT_LOGE("Failed to write reply");
-                return ERR_INVALID_VALUE;
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
             break;
         }
@@ -205,12 +208,12 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
     return NO_ERROR;
 }
 
-bool CommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+int32_t CommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
     const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
 {
     EVENT_LOGD("called");
 
-    return true;
+    return ERR_OK;
 }
 
 bool CommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
@@ -221,15 +224,15 @@ bool CommonEventStub::PublishCommonEvent(const CommonEventData &event, const Com
     return true;
 }
 
-bool CommonEventStub::SubscribeCommonEvent(
+int32_t CommonEventStub::SubscribeCommonEvent(
     const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGD("called");
 
-    return true;
+    return ERR_OK;
 }
 
-bool CommonEventStub::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
+int32_t CommonEventStub::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGD("called");
 
@@ -240,7 +243,7 @@ bool CommonEventStub::GetStickyCommonEvent(const std::string &event, CommonEvent
 {
     EVENT_LOGD("called");
 
-    return true;
+    return ERR_OK;
 }
 
 bool CommonEventStub::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,

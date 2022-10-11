@@ -37,7 +37,7 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if success; false otherwise.
      */
-    bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
     /**
@@ -47,7 +47,7 @@ public:
      * @param commonEventListener the subscriber object.
      * @return Returns true if success; false otherwise.
      */
-    bool SubscribeCommonEvent(
+    int32_t SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
 
     /**

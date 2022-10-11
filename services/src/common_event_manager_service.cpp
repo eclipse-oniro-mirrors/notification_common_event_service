@@ -26,9 +26,12 @@
 #include "publish_manager.h"
 #include "system_ability_definition.h"
 #include "xcollie/watchdog.h"
+#include "ces_inner_error_code.h"
 
 namespace OHOS {
 namespace EventFwk {
+using namespace OHOS::Notification;
+
 CommonEventManagerService::CommonEventManagerService()
     : serviceRunningState_(ServiceRunningState::STATE_NOT_START),
       runner_(nullptr),
@@ -88,7 +91,7 @@ bool CommonEventManagerService::IsReady() const
     return true;
 }
 
-bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
+int32_t CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener,
     const int32_t &userId)
 {
@@ -96,7 +99,7 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
-        return false;
+        return ERR_NOTIFICATION_CESM_ERROR;
     }
 
     return PublishCommonEventDetailed(event,
@@ -121,7 +124,7 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     return PublishCommonEventDetailed(event, publishinfo, commonEventListener, UNDEFINED_PID, uid, userId);
 }
 
-bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData &event,
+int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData &event,
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const pid_t &pid,
     const uid_t &uid, const int32_t &userId)
 {
@@ -132,12 +135,12 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
     EVENT_LOGI("callerToken = %{public}d", callerToken);
     if (AccessTokenHelper::IsDlpHap(callerToken)) {
         EVENT_LOGE("DLP hap not allowed to send common event");
-        return false;
+        return ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP;
     }
     struct tm recordTime = {0};
     if (!GetSystemCurrentTime(&recordTime)) {
         EVENT_LOGE("Failed to GetSystemCurrentTime");
-        return false;
+        return ERR_NOTIFICATION_SYS_ERROR;
     }
 
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
@@ -149,7 +152,7 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
             pid,
             uid,
             userId);
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
@@ -189,10 +192,10 @@ bool CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData
             EVENT_LOGE("failed to publish event %{public}s", event.GetWant().GetAction().c_str());
         }
     };
-    return handler_->PostTask(publishCommonEventFunc);
+    return handler_->PostTask(publishCommonEventFunc) ? ERR_OK : ERR_NOTIFICATION_CESM_ERROR;
 }
 
-bool CommonEventManagerService::SubscribeCommonEvent(
+int32_t CommonEventManagerService::SubscribeCommonEvent(
     const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
@@ -200,13 +203,13 @@ bool CommonEventManagerService::SubscribeCommonEvent(
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     struct tm recordTime = {0};
     if (!GetSystemCurrentTime(&recordTime)) {
         EVENT_LOGE("Failed to GetSystemCurrentTime");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     auto callingUid = IPCSkeleton::GetCallingUid();
@@ -238,17 +241,17 @@ bool CommonEventManagerService::SubscribeCommonEvent(
             EVENT_LOGE("failed to subscribe event");
         }
     };
-    return handler_->PostTask(subscribeCommonEventFunc);
+    return handler_->PostTask(subscribeCommonEventFunc) ? ERR_OK : ERR_NOTIFICATION_CESM_ERROR;
 }
 
-bool CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
+int32_t CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
@@ -264,7 +267,7 @@ bool CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject>
         }
     };
     
-    return handler_->PostTask(unsubscribeCommonEventFunc);
+    return handler_->PostTask(unsubscribeCommonEventFunc) ? ERR_OK : ERR_NOTIFICATION_CESM_ERROR;
 }
 
 bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)

@@ -37,7 +37,7 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) = 0;
 
     /**
@@ -60,7 +60,7 @@ public:
      * @param commonEventListener Indicates the subscriber object.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool SubscribeCommonEvent(
+    virtual int32_t SubscribeCommonEvent(
         const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) = 0;
 
     /**
@@ -69,7 +69,7 @@ public:
      * @param commonEventListener Indicates the subscriber object.
      * @return Returns true if successful; false otherwise.
      */
-    virtual bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) = 0;
+    virtual int32_t UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) = 0;
 
     /**
      * Gets the current sticky common event

@@ -55,10 +55,30 @@ public:
      *
      * @param data Indicates the common event data.
      * @param publishInfo Indicates the publish info.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    static int32_t NewPublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo);
+
+    /**
+     * Publishes a common event.
+     *
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
      * @param userId Indicates the user ID.
      * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const int32_t &userId);
+
+    /**
+     * Publishes a common event.
+     *
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param userId Indicates the user ID.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    static int32_t NewPublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const int32_t &userId);
 
     /**
@@ -82,6 +102,18 @@ public:
      * @return Returns true if success; false otherwise.
      */
     static bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId);
+
+    /**
+     * Publishes a common event.
+     *
+     * @param data Indicates the common event data.
+     * @param publishInfo Indicates the publish info.
+     * @param subscriber Indicates the common event subscriber.
+     * @param userId Indicates the user ID.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    static int32_t NewPublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId);
 
     /**
@@ -118,12 +150,28 @@ public:
     static bool SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
+     * Subscribes to common events.
+     *
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    static int32_t NewSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
+
+    /**
      * Unsubscribes from common events.
      *
      * @param subscriber Indicates the common event subscriber.
      * @return Returns true if success; false otherwise.
      */
     static bool UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
+
+    /**
+     * Unsubscribes from common events.
+     *
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    static int32_t NewUnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
      * Gets the current sticky common event
