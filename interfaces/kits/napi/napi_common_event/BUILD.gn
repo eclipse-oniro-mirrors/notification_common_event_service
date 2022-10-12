@@ -38,6 +38,7 @@ ohos_shared_library("commoneventmanager") {
   sources = [
     "src/init.cpp",
     "src/napi_common_event.cpp",
+    "src/support.cpp",
   ]
 
   deps = [
