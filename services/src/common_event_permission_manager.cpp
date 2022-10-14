@@ -217,9 +217,6 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_FOUNDATION_READY,
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVER_STARTUP_COMPLETED"}}
     },
-    {CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN,
-        {PermissionState::DEFAULT, {"ohos.permission.RECEIVER_SPLIT_SCREEN"}}
-    },
     {CommonEventSupport::COMMON_EVENT_SLOT_CHANGE,
         {PermissionState::DEFAULT, {"ohos.permission.NOTIFICATION_CONTROLLER"}}
     },
