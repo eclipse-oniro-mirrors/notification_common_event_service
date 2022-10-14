@@ -27,7 +27,6 @@ namespace EventManagerFwkNapi {
 using namespace OHOS::EventFwk;
 using namespace OHOS::Notification;
 
-namespace {
 static const int32_t STR_MAX_SIZE = 256;
 static const int32_t STR_DATA_MAX_SIZE = 64 * 1024;  // 64KB
 static const int32_t PUBLISH_MAX_PARA = 2;
@@ -47,7 +46,6 @@ static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;
-}
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
@@ -58,12 +56,11 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
     {ERR_NOTIFICATION_CES_WANT_ACTION_IS_NULL, "Want action is null"},
     {ERR_NOTIFICATION_CES_SANDBOX_NOT_SUPPORT, "sandbox application can not send common event"},
     {ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH, "common event send frequency too high"},
-    {ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, "not SA app or System app"},
+    {ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, "not System services or System app"},
     {ERR_NOTIFICATION_CES_NO_SUBSCRIBER, "subscriber can not found"},
     {ERR_NOTIFICATION_CES_USERID_INVALID, "usreId is invalid"},
-    {ERR_NOTIFICATION_CES_PARCLE_REEOR, "parcle not written correctly"},
     {ERR_NOTIFICATION_SEND_ERROR, "message send error"},
-    {ERR_NOTIFICATION_CESM_ERROR, "CEMS is not read"},
+    {ERR_NOTIFICATION_CESM_ERROR, "CEMS error"},
     {ERR_NOTIFICATION_SYS_ERROR, "system error"}
 };
 
