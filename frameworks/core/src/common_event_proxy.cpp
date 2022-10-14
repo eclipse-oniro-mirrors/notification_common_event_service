@@ -44,39 +44,39 @@ int32_t CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         EVENT_LOGE("Failed to write InterfaceToken");
-        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (!data.WriteParcelable(&event)) {
         EVENT_LOGE("Failed to write parcelable event");
-        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (!data.WriteParcelable(&publishInfo)) {
         EVENT_LOGE("Failed to write parcelable publishInfo");
-        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (commonEventListener) {
         if (!data.WriteBool(true)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
-            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
         if (!data.WriteRemoteObject(commonEventListener)) {
             EVENT_LOGE("Failed to write parcelable commonEventListener");
-            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     } else {
         EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
-            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     }
 
     if (!data.WriteInt32(userId)) {
         EVENT_LOGE("Failed to write parcelable userId");
-        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     bool ret = SendRequest(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT, data, reply);
@@ -158,28 +158,28 @@ int32_t CommonEventProxy::SubscribeCommonEvent(
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         EVENT_LOGE("Failed to write InterfaceToken");
-        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (!data.WriteParcelable(&subscribeInfo)) {
         EVENT_LOGE("Failed to write parcelable subscribeInfo");
-        return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (commonEventListener != nullptr) {
         if (!data.WriteBool(true)) {
             EVENT_LOGE("Failed to write parcelable hasSubscriber");
-            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
         if (!data.WriteRemoteObject(commonEventListener)) {
             EVENT_LOGE("Failed to write parcelable commonEventListener");
-            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     } else {
         EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasSubscriber");
-            return ERR_NOTIFICATION_CES_PARCLE_REEOR;
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     }
 

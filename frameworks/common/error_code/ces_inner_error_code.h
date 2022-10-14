@@ -20,9 +20,6 @@
 namespace OHOS {
 namespace Notification {
 
-    // ok
-    const int32_t ERR_NOTIFICATION_CES_OK = 0;
-    
     // The application dose not have permission to call the interface
     const int32_t ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED = 201;
 
@@ -50,17 +47,14 @@ namespace Notification {
     // The usreId is invalid
     const int32_t ERR_NOTIFICATION_CES_USERID_INVALID = 1500006;
 
-    // The parcle not written correctly
-    const int32_t ERR_NOTIFICATION_CES_PARCLE_REEOR = 1500007;
-
     // The message send error
-    const int32_t ERR_NOTIFICATION_SEND_ERROR = 1500008;
+    const int32_t ERR_NOTIFICATION_SEND_ERROR = 1500007;
 
-    // The CEMS is not read
-    const int32_t ERR_NOTIFICATION_CESM_ERROR = 150009;
+    // The CEMS error
+    const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
 
     // The system error
-    const int32_t ERR_NOTIFICATION_SYS_ERROR = 1500010;
+    const int32_t ERR_NOTIFICATION_SYS_ERROR = 1500009;
 }  // namespace Notification
 }  // namespace OHOS
 
