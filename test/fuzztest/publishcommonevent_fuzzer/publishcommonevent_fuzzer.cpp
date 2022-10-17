@@ -40,6 +40,9 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
 
     std::shared_ptr<EventFwk::CommonEventSubscriber> subscriber = nullptr;
 
+    // test pubilshCommonEvent function and two paramter
+    EventFwk::CommonEventManager::PublishCommonEvent(commonEventData, commonEventPublishInfo);
+
     if (size < FUZZ_DATA_LEN) {
         return EventFwk::CommonEventManager::PublishCommonEvent(
             commonEventData, commonEventPublishInfo, subscriber);

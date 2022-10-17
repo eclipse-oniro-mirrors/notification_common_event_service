@@ -43,6 +43,9 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
 
     int32_t userId = code + 100;
 
+    // test PublishCommonEventAsUser and two paramter
+    EventFwk::CommonEventManager::PublishCommonEventAsUser(commonEventData, userId);
+
     if (size < FUZZ_DATA_LEN) {
         return EventFwk::CommonEventManager::PublishCommonEventAsUser(
             commonEventData, commonEventPublishInfo, subscriber, userId);

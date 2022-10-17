@@ -42,15 +42,28 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     matchingSkills.AddEvent(stringData);
     matchingSkills.AddEntity(stringData);
     matchingSkills.AddScheme(stringData);
-
+    // set CommonEventSubscribeInfo and test CommonEventSubscribeInfo class function
+    uint8_t mode = *data % U32_AT_SIZE;
+    EventFwk::CommonEventSubscribeInfo::ThreadMode threadMode =
+        EventFwk::CommonEventSubscribeInfo::ThreadMode(mode);
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     int32_t priority = U32_AT(reinterpret_cast<const uint8_t*>(data));
     subscribeInfo.SetPriority(priority);
     subscribeInfo.SetPermission(stringData);
     subscribeInfo.SetDeviceId(stringData);
+    subscribeInfo.SetThreadMode(threadMode);
+    subscribeInfo.GetPriority();
+    subscribeInfo.SetUserId(priority);
+    subscribeInfo.GetUserId();
+    subscribeInfo.GetPermission();
+    subscribeInfo.GetDeviceId();
 
     std::shared_ptr<EventFwk::TestSubscriber> subscriber =
         std::make_shared<EventFwk::TestSubscriber>(subscribeInfo);
+    if (subscriber != nullptr) {
+        subscriber->IsOrderedCommonEvent();
+        subscriber->IsStickyCommonEvent();
+    }
     return EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber);
 }
 }  // namespace OHOS
