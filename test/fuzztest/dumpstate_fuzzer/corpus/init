@@ -10,18 +10,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import("//base/notification/common_event_service/event.gni")
-
-group("fuzztest") {
-  testonly = true
-
-  deps = [
-    "dumpstate_fuzzer:DumpStateFuzzTest",
-    "getstickycommonevent_fuzzer:GetStickyCommonEventFuzzTest",
-    "publishcommonevent_fuzzer:PublishCommonEventFuzzTest",
-    "publishcommoneventasuser_fuzzer:PublishCommonEventAsUserFuzzTest",
-    "subscribecommonevent_fuzzer:SubscribeCommonEventFuzzTest",
-    "unsubscribecommonevent_fuzzer:UnSubscribeCommonEventFuzzTest",
-  ]
-}
+FUZZ
