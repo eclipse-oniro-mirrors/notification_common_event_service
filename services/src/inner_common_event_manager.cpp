@@ -32,6 +32,8 @@
 
 namespace OHOS {
 namespace EventFwk {
+static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
+
 InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_shared<CommonEventControlManager>()),
     staticSubscriberManager_(std::make_shared<StaticSubscriberManager>())
 {}
@@ -138,7 +140,11 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         controlPtr_->PublishCommonEvent(mappedEventRecord, commonEventListener);
     }
 
-    SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), true);
+    if (time(nullptr) - sysEventTime >= PUBLISH_SYS_EVENT_INTERVAL) {
+        SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), true);
+        sysEventTime = time(nullptr);
+    }
+
     return true;
 }
 

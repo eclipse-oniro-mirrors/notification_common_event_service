@@ -146,6 +146,7 @@ private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;
     std::shared_ptr<StaticSubscriberManager> staticSubscriberManager_;
     DISALLOW_COPY_AND_MOVE(InnerCommonEventManager);
+    time_t sysEventTime = 0;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
