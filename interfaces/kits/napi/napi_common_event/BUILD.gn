@@ -31,14 +31,15 @@ ohos_shared_library("commoneventmanager") {
     "${interfaces_path}/kits/napi/napi_common_event/include",
     "//third_party/node/src",
     "//third_party/libuv/include",
+    "${interfaces_path}/kits/napi/support/include",
   ]
 
   configs = [ ":native_module_config" ]
 
   sources = [
+    "${interfaces_path}/kits/napi/support/src/support.cpp",
     "src/init.cpp",
     "src/napi_common_event.cpp",
-    "src/support.cpp",
   ]
 
   deps = [

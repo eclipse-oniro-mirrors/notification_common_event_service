@@ -31,146 +31,79 @@ napi_value SupportInit(napi_env env, napi_value exports)
     napi_value obj = nullptr;
     napi_create_object(env, &obj);
 
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED,
-        "COMMON_EVENT_BOOT_COMPLETED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED, "COMMON_EVENT_BOOT_COMPLETED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED,
         "COMMON_EVENT_LOCKED_BOOT_COMPLETED");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_SHUTDOWN, "COMMON_EVENT_SHUTDOWN");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED, "COMMON_EVENT_BATTERY_CHANGED");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_LOW, "COMMON_EVENT_BATTERY_LOW");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_OKAY, "COMMON_EVENT_BATTERY_OKAY");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_POWER_CONNECTED, "COMMON_EVENT_POWER_CONNECTED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_POWER_DISCONNECTED, "COMMON_EVENT_POWER_DISCONNECTED");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_OFF, "COMMON_EVENT_SCREEN_OFF");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_ON, "COMMON_EVENT_SCREEN_ON");
     SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_SHUTDOWN,
-        "COMMON_EVENT_SHUTDOWN");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED,
-        "COMMON_EVENT_BATTERY_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_LOW,
-        "COMMON_EVENT_BATTERY_LOW");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_OKAY,
-        "COMMON_EVENT_BATTERY_OKAY");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_POWER_CONNECTED,
-        "COMMON_EVENT_POWER_CONNECTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_POWER_DISCONNECTED,
-        "COMMON_EVENT_POWER_DISCONNECTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_OFF,
-        "COMMON_EVENT_SCREEN_OFF");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_ON,
-        "COMMON_EVENT_SCREEN_ON");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED,
-        "COMMON_EVENT_THERMAL_LEVEL_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_PRESENT,
-        "COMMON_EVENT_USER_PRESENT");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_TIME_TICK,
-        "COMMON_EVENT_TIME_TICK");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_TIME_CHANGED,
-        "COMMON_EVENT_TIME_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DATE_CHANGED,
-        "COMMON_EVENT_DATE_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_TIMEZONE_CHANGED,
-        "COMMON_EVENT_TIMEZONE_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_CLOSE_SYSTEM_DIALOGS,
-        "COMMON_EVENT_CLOSE_SYSTEM_DIALOGS");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED,
-        "COMMON_EVENT_PACKAGE_ADDED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED,
-        "COMMON_EVENT_PACKAGE_REPLACED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_MY_PACKAGE_REPLACED,
-        "COMMON_EVENT_MY_PACKAGE_REPLACED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED,
-        "COMMON_EVENT_PACKAGE_REMOVED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_BUNDLE_REMOVED,
-        "COMMON_EVENT_BUNDLE_REMOVED");
+        obj, EventFwk::CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED, "COMMON_EVENT_THERMAL_LEVEL_CHANGED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_PRESENT, "COMMON_EVENT_USER_PRESENT");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_TIME_TICK, "COMMON_EVENT_TIME_TICK");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_TIME_CHANGED, "COMMON_EVENT_TIME_CHANGED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DATE_CHANGED, "COMMON_EVENT_DATE_CHANGED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_TIMEZONE_CHANGED, "COMMON_EVENT_TIMEZONE_CHANGED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_CLOSE_SYSTEM_DIALOGS, "COMMON_EVENT_CLOSE_SYSTEM_DIALOGS");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED, "COMMON_EVENT_PACKAGE_ADDED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED, "COMMON_EVENT_PACKAGE_REPLACED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_MY_PACKAGE_REPLACED, "COMMON_EVENT_MY_PACKAGE_REPLACED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED, "COMMON_EVENT_PACKAGE_REMOVED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_BUNDLE_REMOVED, "COMMON_EVENT_BUNDLE_REMOVED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_FULLY_REMOVED,
         "COMMON_EVENT_PACKAGE_FULLY_REMOVED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED,
-        "COMMON_EVENT_PACKAGE_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_RESTARTED,
-        "COMMON_EVENT_PACKAGE_RESTARTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_DATA_CLEARED,
-        "COMMON_EVENT_PACKAGE_DATA_CLEARED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_CACHE_CLEARED,
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED, "COMMON_EVENT_PACKAGE_CHANGED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_RESTARTED, "COMMON_EVENT_PACKAGE_RESTARTED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_DATA_CLEARED, "COMMON_EVENT_PACKAGE_DATA_CLEARED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_CACHE_CLEARED,
         "COMMON_EVENT_PACKAGE_CACHE_CLEARED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGES_SUSPENDED,
-        "COMMON_EVENT_PACKAGES_SUSPENDED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGES_UNSUSPENDED,
-        "COMMON_EVENT_PACKAGES_UNSUSPENDED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_MY_PACKAGE_SUSPENDED,
-        "COMMON_EVENT_MY_PACKAGE_SUSPENDED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGES_SUSPENDED, "COMMON_EVENT_PACKAGES_SUSPENDED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGES_UNSUSPENDED, "COMMON_EVENT_PACKAGES_UNSUSPENDED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_MY_PACKAGE_SUSPENDED, "COMMON_EVENT_MY_PACKAGE_SUSPENDED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_MY_PACKAGE_UNSUSPENDED,
         "COMMON_EVENT_MY_PACKAGE_UNSUSPENDED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_UID_REMOVED,
-        "COMMON_EVENT_UID_REMOVED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_FIRST_LAUNCH,
-        "COMMON_EVENT_PACKAGE_FIRST_LAUNCH");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_UID_REMOVED, "COMMON_EVENT_UID_REMOVED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_FIRST_LAUNCH, "COMMON_EVENT_PACKAGE_FIRST_LAUNCH");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_NEEDS_VERIFICATION,
         "COMMON_EVENT_PACKAGE_NEEDS_VERIFICATION");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_VERIFIED,
-        "COMMON_EVENT_PACKAGE_VERIFIED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_VERIFIED, "COMMON_EVENT_PACKAGE_VERIFIED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_EXTERNAL_APPLICATIONS_AVAILABLE,
@@ -183,114 +116,58 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_CONFIGURATION_CHANGED,
         "COMMON_EVENT_CONFIGURATION_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_LOCALE_CHANGED,
-        "COMMON_EVENT_LOCALE_CHANGED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_LOCALE_CHANGED, "COMMON_EVENT_LOCALE_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_MANAGE_PACKAGE_STORAGE,
         "COMMON_EVENT_MANAGE_PACKAGE_STORAGE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DRIVE_MODE,
-        "COMMON_EVENT_DRIVE_MODE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_HOME_MODE,
-        "COMMON_EVENT_HOME_MODE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_OFFICE_MODE,
-        "COMMON_EVENT_OFFICE_MODE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN,
-        "COMMON_EVENT_SPLIT_SCREEN");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_STARTED,
-        "COMMON_EVENT_USER_STARTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_BACKGROUND,
-        "COMMON_EVENT_USER_BACKGROUND");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_FOREGROUND,
-        "COMMON_EVENT_USER_FOREGROUND");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED,
-        "COMMON_EVENT_USER_SWITCHED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_STARTING,
-        "COMMON_EVENT_USER_STARTING");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_UNLOCKED,
-        "COMMON_EVENT_USER_UNLOCKED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_STOPPING,
-        "COMMON_EVENT_USER_STOPPING");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_STOPPED,
-        "COMMON_EVENT_USER_STOPPED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN,
-        "COMMON_EVENT_HWID_LOGIN");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT,
-        "COMMON_EVENT_HWID_LOGOUT");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_HWID_TOKEN_INVALID,
-        "COMMON_EVENT_HWID_TOKEN_INVALID");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOFF,
-        "COMMON_EVENT_HWID_LOGOFF");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_POWER_STATE,
-        "COMMON_EVENT_WIFI_POWER_STATE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_SCAN_FINISHED,
-        "COMMON_EVENT_WIFI_SCAN_FINISHED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_RSSI_VALUE,
-        "COMMON_EVENT_WIFI_RSSI_VALUE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_CONN_STATE,
-        "COMMON_EVENT_WIFI_CONN_STATE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_HOTSPOT_STATE,
-        "COMMON_EVENT_WIFI_HOTSPOT_STATE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_AP_STA_JOIN,
-        "COMMON_EVENT_WIFI_AP_STA_JOIN");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_AP_STA_LEAVE,
-        "COMMON_EVENT_WIFI_AP_STA_LEAVE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DRIVE_MODE, "COMMON_EVENT_DRIVE_MODE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_HOME_MODE, "COMMON_EVENT_HOME_MODE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_OFFICE_MODE, "COMMON_EVENT_OFFICE_MODE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN, "COMMON_EVENT_SPLIT_SCREEN");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_STARTED, "COMMON_EVENT_USER_STARTED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_BACKGROUND, "COMMON_EVENT_USER_BACKGROUND");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_FOREGROUND, "COMMON_EVENT_USER_FOREGROUND");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED, "COMMON_EVENT_USER_SWITCHED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_STARTING, "COMMON_EVENT_USER_STARTING");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_UNLOCKED, "COMMON_EVENT_USER_UNLOCKED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_STOPPING, "COMMON_EVENT_USER_STOPPING");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_STOPPED, "COMMON_EVENT_USER_STOPPED");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGIN, "COMMON_EVENT_HWID_LOGIN");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOUT, "COMMON_EVENT_HWID_LOGOUT");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_HWID_TOKEN_INVALID, "COMMON_EVENT_HWID_TOKEN_INVALID");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_HWID_LOGOFF, "COMMON_EVENT_HWID_LOGOFF");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_POWER_STATE, "COMMON_EVENT_WIFI_POWER_STATE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_SCAN_FINISHED, "COMMON_EVENT_WIFI_SCAN_FINISHED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_RSSI_VALUE, "COMMON_EVENT_WIFI_RSSI_VALUE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_CONN_STATE, "COMMON_EVENT_WIFI_CONN_STATE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_HOTSPOT_STATE, "COMMON_EVENT_WIFI_HOTSPOT_STATE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_AP_STA_JOIN, "COMMON_EVENT_WIFI_AP_STA_JOIN");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_AP_STA_LEAVE, "COMMON_EVENT_WIFI_AP_STA_LEAVE");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_MPLINK_STATE_CHANGE,
         "COMMON_EVENT_WIFI_MPLINK_STATE_CHANGE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_P2P_CONN_STATE,
-        "COMMON_EVENT_WIFI_P2P_CONN_STATE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_P2P_CONN_STATE, "COMMON_EVENT_WIFI_P2P_CONN_STATE");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_WIFI_P2P_STATE_CHANGED,
@@ -471,14 +348,8 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_NFC_ACTION_RF_FIELD_OFF_DETECTED,
         "COMMON_EVENT_NFC_ACTION_RF_FIELD_OFF_DETECTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DISCHARGING,
-        "COMMON_EVENT_DISCHARGING");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_CHARGING,
-        "COMMON_EVENT_CHARGING");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISCHARGING, "COMMON_EVENT_DISCHARGING");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_CHARGING, "COMMON_EVENT_CHARGING");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED,
@@ -487,54 +358,28 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_POWER_SAVE_MODE_CHANGED,
         "COMMON_EVENT_POWER_SAVE_MODE_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_ADDED,
-        "COMMON_EVENT_USER_ADDED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED,
-        "COMMON_EVENT_USER_REMOVED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_ABILITY_ADDED,
-        "COMMON_EVENT_ABILITY_ADDED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED,
-        "COMMON_EVENT_ABILITY_REMOVED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED,
-        "COMMON_EVENT_ABILITY_UPDATED");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_ADDED, "COMMON_EVENT_USER_ADDED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED, "COMMON_EVENT_USER_REMOVED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_ABILITY_ADDED, "COMMON_EVENT_ABILITY_ADDED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED, "COMMON_EVENT_ABILITY_REMOVED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED, "COMMON_EVENT_ABILITY_UPDATED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_LOCATION_MODE_STATE_CHANGED,
         "COMMON_EVENT_LOCATION_MODE_STATE_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_SLEEP,
-        "COMMON_EVENT_IVI_SLEEP");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_PAUSE,
-        "COMMON_EVENT_IVI_PAUSE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_STANDBY,
-        "COMMON_EVENT_IVI_STANDBY");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_LASTMODE_SAVE,
-        "COMMON_EVENT_IVI_LASTMODE_SAVE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_VOLTAGE_ABNORMAL,
-        "COMMON_EVENT_IVI_VOLTAGE_ABNORMAL");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_HIGH_TEMPERATURE,
-        "COMMON_EVENT_IVI_HIGH_TEMPERATURE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_SLEEP, "COMMON_EVENT_IVI_SLEEP");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_PAUSE, "COMMON_EVENT_IVI_PAUSE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_STANDBY, "COMMON_EVENT_IVI_STANDBY");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_LASTMODE_SAVE, "COMMON_EVENT_IVI_LASTMODE_SAVE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_VOLTAGE_ABNORMAL, "COMMON_EVENT_IVI_VOLTAGE_ABNORMAL");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_HIGH_TEMPERATURE, "COMMON_EVENT_IVI_HIGH_TEMPERATURE");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_IVI_EXTREME_TEMPERATURE,
@@ -543,34 +388,20 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_IVI_TEMPERATURE_ABNORMAL,
         "COMMON_EVENT_IVI_TEMPERATURE_ABNORMAL");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_VOLTAGE_RECOVERY,
-        "COMMON_EVENT_IVI_VOLTAGE_RECOVERY");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_VOLTAGE_RECOVERY, "COMMON_EVENT_IVI_VOLTAGE_RECOVERY");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_IVI_TEMPERATURE_RECOVERY,
         "COMMON_EVENT_IVI_TEMPERATURE_RECOVERY");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_IVI_ACTIVE,
-        "COMMON_EVENT_IVI_ACTIVE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USB_STATE,
-        "COMMON_EVENT_USB_STATE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USB_PORT_CHANGED,
-        "COMMON_EVENT_USB_PORT_CHANGED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USB_DEVICE_ATTACHED,
-        "COMMON_EVENT_USB_DEVICE_ATTACHED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_USB_DEVICE_DETACHED,
-        "COMMON_EVENT_USB_DEVICE_DETACHED");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_IVI_ACTIVE, "COMMON_EVENT_IVI_ACTIVE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USB_STATE, "COMMON_EVENT_USB_STATE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USB_PORT_CHANGED, "COMMON_EVENT_USB_PORT_CHANGED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USB_DEVICE_ATTACHED, "COMMON_EVENT_USB_DEVICE_ATTACHED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USB_DEVICE_DETACHED, "COMMON_EVENT_USB_DEVICE_DETACHED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_USB_ACCESSORY_ATTACHED,
@@ -579,62 +410,35 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_USB_ACCESSORY_DETACHED,
         "COMMON_EVENT_USB_ACCESSORY_DETACHED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DISK_REMOVED,
-        "COMMON_EVENT_DISK_REMOVED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTED,
-        "COMMON_EVENT_DISK_UNMOUNTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DISK_MOUNTED,
-        "COMMON_EVENT_DISK_MOUNTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL,
-        "COMMON_EVENT_DISK_BAD_REMOVAL");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE,
-        "COMMON_EVENT_DISK_UNMOUNTABLE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DISK_EJECT,
-        "COMMON_EVENT_DISK_EJECT");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED,
-        "COMMON_EVENT_VOLUME_REMOVED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_UNMOUNTED,
-        "COMMON_EVENT_VOLUME_UNMOUNTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_MOUNTED,
-        "COMMON_EVENT_VOLUME_MOUNTED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_BAD_REMOVAL,
-        "COMMON_EVENT_VOLUME_BAD_REMOVAL");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_EJECT,
-        "COMMON_EVENT_VOLUME_EJECT");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_REMOVED, "COMMON_EVENT_DISK_REMOVED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTED, "COMMON_EVENT_DISK_UNMOUNTED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_MOUNTED, "COMMON_EVENT_DISK_MOUNTED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL, "COMMON_EVENT_DISK_BAD_REMOVAL");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE, "COMMON_EVENT_DISK_UNMOUNTABLE");
+    SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_EJECT, "COMMON_EVENT_DISK_EJECT");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED, "COMMON_EVENT_VOLUME_REMOVED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_UNMOUNTED, "COMMON_EVENT_VOLUME_UNMOUNTED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_MOUNTED, "COMMON_EVENT_VOLUME_MOUNTED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_BAD_REMOVAL, "COMMON_EVENT_VOLUME_BAD_REMOVAL");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_EJECT, "COMMON_EVENT_VOLUME_EJECT");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_VISIBLE_ACCOUNTS_UPDATED,
         "COMMON_EVENT_VISIBLE_ACCOUNTS_UPDATED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED,
-        "COMMON_EVENT_ACCOUNT_DELETED");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_FOUNDATION_READY,
-        "COMMON_EVENT_FOUNDATION_READY");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED, "COMMON_EVENT_ACCOUNT_DELETED");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_FOUNDATION_READY, "COMMON_EVENT_FOUNDATION_READY");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SIM_STATE_CHANGED,
@@ -683,6 +487,7 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_OPERATOR_CONFIG_CHANGED,
         "COMMON_EVENT_OPERATOR_CONFIG_CHANGED");
+
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SLOT_CHANGE,

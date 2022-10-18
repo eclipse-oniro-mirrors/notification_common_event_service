@@ -3007,7 +3007,7 @@ napi_value CommonEventManagerInit(napi_env env, napi_value exports)
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
-    OHOS::EventManagerFwkNapi::SupportInit(env, exports);
+    OHOS::EventFwkNapi::SupportInit(env, exports);
     return exports;
 }
 }  // namespace EventManagerFwkNapi
