@@ -243,7 +243,7 @@ bool CommonEventStub::GetStickyCommonEvent(const std::string &event, CommonEvent
 {
     EVENT_LOGD("called");
 
-    return ERR_OK;
+    return true;
 }
 
 bool CommonEventStub::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,

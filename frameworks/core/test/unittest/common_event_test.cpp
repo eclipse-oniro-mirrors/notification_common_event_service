@@ -30,6 +30,7 @@ namespace {
     const std::string EVENT = "com.ces.test.event";
     const std::string PERMISSION = "com.ces.test.permission";
     constexpr uint16_t SYSTEM_UID = 1000;
+    constexpr int32_t ERR_OK = 0;
 }
 
 class CommonEventTest : public CommonEventSubscriber, public testing::Test {
@@ -198,8 +199,8 @@ HWTEST_F(CommonEventTest, CommonEventStub_001, TestSize.Level1)
     const int32_t userId = 1;
 
     CommonEventStub commonEventStub;
-    bool publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, userId);
-    EXPECT_EQ(true, publishCommonEvent);
+    int32_t publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, userId);
+    EXPECT_EQ(ERR_OK, publishCommonEvent);
 }
 
 /*
@@ -244,7 +245,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level1)
 
     CommonEventStub commonEventStub;
     bool subscribeCommonEvent = commonEventStub.SubscribeCommonEvent(subscribeInfo, nullptr);
-    EXPECT_EQ(true, subscribeCommonEvent);
+    EXPECT_EQ(ERR_OK, subscribeCommonEvent);
 }
 
 /*
