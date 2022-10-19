@@ -95,9 +95,9 @@ ErrCode CommonEventCommand::RunAsPublishCommand()
         publishInfo.SetSticky(cmdInfo.isSticky);
         publishInfo.SetOrdered(cmdInfo.isOrdered);
         // publish the common event
-        bool publishResult = commonEventPtr_->PublishCommonEventAsUser(commonEventData, publishInfo, nullptr,
+        int32_t publishResult = commonEventPtr_->PublishCommonEventAsUser(commonEventData, publishInfo, nullptr,
             cmdInfo.userId);
-        if (publishResult) {
+        if (publishResult == ERR_OK) {
             resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_OK;
         } else {
             resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_NG;

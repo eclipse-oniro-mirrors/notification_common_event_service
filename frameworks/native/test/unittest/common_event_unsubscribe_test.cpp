@@ -172,7 +172,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_002, TestSize.Level1)
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
     std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
-    EXPECT_EQ(true, DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber));
+    EXPECT_EQ(ERR_OK, DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber));
 }
 
 /*
@@ -189,7 +189,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_003, TestSize.Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
     std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
     DelayedSingleton<CommonEvent>::GetInstance()->SubscribeCommonEvent(subscriber);
-    EXPECT_EQ(true, DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber));
+    EXPECT_EQ(ERR_OK, DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber));
 }
 
 /*
@@ -239,7 +239,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_005, TestSize.Level1)
 HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_006, TestSize.Level1)
 {
     std::shared_ptr<DreivedSubscriber> subscriber = nullptr;
-    EXPECT_EQ(false, DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber));
+    EXPECT_NE(ERR_OK, DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber));
 }
 
 /*

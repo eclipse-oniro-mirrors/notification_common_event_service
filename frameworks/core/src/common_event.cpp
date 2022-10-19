@@ -37,7 +37,8 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
         return false;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, UNDEFINED_USER);
+    return commonEventProxy_->PublishCommonEvent(
+        data, publishInfo, commonEventListener, UNDEFINED_USER) == ERR_OK ? true : false;
 }
 
 int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
