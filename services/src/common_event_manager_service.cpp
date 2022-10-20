@@ -121,7 +121,8 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
-    return PublishCommonEventDetailed(event, publishinfo, commonEventListener, UNDEFINED_PID, uid, userId);
+    return PublishCommonEventDetailed(
+        event, publishinfo, commonEventListener, UNDEFINED_PID, uid, userId) == ERR_OK ? true : false;
 }
 
 int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData &event,
