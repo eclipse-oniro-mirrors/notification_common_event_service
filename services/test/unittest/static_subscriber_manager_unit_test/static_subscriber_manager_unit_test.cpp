@@ -40,7 +40,7 @@ extern void ResetBundleManagerHelperMock();
 extern void ResetAccessTokenHelperMock();
 
 namespace {
-    constexpr uint8_t TEST_ALLOWLIST_SIZE = 2;
+    constexpr uint8_t TEST_ALLOWLIST_SIZE = 3;
     constexpr uint8_t TEST_MUL_SIZE = 2;
     constexpr uint8_t MOCK_CASE_2 = 2;
     constexpr uint8_t MOCK_CASE_3 = 3;
