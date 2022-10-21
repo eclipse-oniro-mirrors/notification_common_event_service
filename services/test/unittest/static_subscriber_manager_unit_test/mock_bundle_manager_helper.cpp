@@ -18,24 +18,24 @@
 using namespace OHOS;
 using namespace OHOS::AppExecFwk;
 namespace {
-bool g_MockQueryExtensionInfosRet = true;
+bool g_mockQueryExtensionInfosRet = true;
 std::vector<ExtensionAbilityInfo> g_mockExtensionInfos;
-bool g_MockGetResConfigFileRet = true;
+bool g_mockGetResConfigFileRet = true;
 std::vector<std::string> g_mockProfileInfos;
 }
 
 void ResetBundleManagerHelperMock()
 {
-    g_MockQueryExtensionInfosRet = true;
+    g_mockQueryExtensionInfosRet = true;
     g_mockExtensionInfos.clear();
-    g_MockGetResConfigFileRet = true;
+    g_mockGetResConfigFileRet = true;
     g_mockProfileInfos.clear();
 }
 
 void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
 {
     g_mockExtensionInfos.clear();
-    g_MockQueryExtensionInfosRet = mockRet;
+    g_mockQueryExtensionInfosRet = mockRet;
     switch (mockCase) {
         case 1: { // case for basic
             ExtensionAbilityInfo info0;
@@ -81,7 +81,7 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
 
 void MockGetResConfigFile(bool mockRet, uint8_t mockCase)
 {
-    g_MockGetResConfigFileRet = mockRet;
+    g_mockGetResConfigFileRet = mockRet;
     g_mockProfileInfos.clear();
     switch (mockCase) {
         case 1: { // case for basic
@@ -202,20 +202,20 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     const int32_t &userId)
 {
     extensionInfos = g_mockExtensionInfos;
-    return g_MockQueryExtensionInfosRet;
+    return g_mockQueryExtensionInfosRet;
 }
 
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
     extensionInfos = g_mockExtensionInfos;
-    return g_MockQueryExtensionInfosRet;
+    return g_mockQueryExtensionInfosRet;
 }
 
 bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension,
                                            std::vector<std::string> &profileInfos)
 {
     profileInfos = g_mockProfileInfos;
-    return g_MockGetResConfigFileRet;
+    return g_mockGetResConfigFileRet;
 }
 
 bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)

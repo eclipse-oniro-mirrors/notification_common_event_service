@@ -16,16 +16,16 @@
 #include "ability_manager_helper.h"
 
 namespace {
-bool g_IsConnectAbilityCalled = false;
+bool g_isConnectAbilityCalled = false;
 }
 bool IsConnectAbilityCalled()
 {
-    return g_IsConnectAbilityCalled;
+    return g_isConnectAbilityCalled;
 }
 
 void ResetConnectAbilityState()
 {
-    g_IsConnectAbilityCalled = false;
+    g_isConnectAbilityCalled = false;
 }
 
 namespace OHOS {
@@ -33,7 +33,7 @@ namespace EventFwk {
 int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
-    g_IsConnectAbilityCalled = true;
+    g_isConnectAbilityCalled = true;
     return 0;
 }
 
