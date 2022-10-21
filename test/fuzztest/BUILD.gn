@@ -17,8 +17,11 @@ group("fuzztest") {
   testonly = true
 
   deps = [
+    "asynccommoneventresult_fuzzer:AsyncCommonEventResultFuzzTest",
+    "commoneventstub_fuzzer:CommonEventStubFuzzTest",
     "dumpstate_fuzzer:DumpStateFuzzTest",
     "getstickycommonevent_fuzzer:GetStickyCommonEventFuzzTest",
+    "matchingskills_fuzzer:MatchingSkillsFuzzTest",
     "publishcommonevent_fuzzer:PublishCommonEventFuzzTest",
     "publishcommoneventasuser_fuzzer:PublishCommonEventAsUserFuzzTest",
     "subscribecommonevent_fuzzer:SubscribeCommonEventFuzzTest",
