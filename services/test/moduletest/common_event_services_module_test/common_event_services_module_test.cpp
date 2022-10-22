@@ -98,7 +98,9 @@ void cesModuleTest::SetUp()
 {}
 
 void cesModuleTest::TearDown()
-{}
+{
+    commonEventManagerService_->innerCommonEventManager_->controlPtr_->orderedEventQueue_.clear();
+}
 
 /*
  * @tc.number: CES_TC_ModuleTest_0100
