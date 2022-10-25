@@ -1267,6 +1267,34 @@ const std::string CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT = "usu
  */
 const std::string CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE = "usual.event.RADIO_STATE_CHANGE";
 
+/**
+ * Indicates the action of a common event about a login of a distributed account.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN =
+    "common.event.DISTRIBUTED_ACCOUNT_LOGIN";
+
+/**
+ * Indicates the action of a common event about a logout of a distributed account.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT =
+    "common.event.DISTRIBUTED_ACCOUNT_LOGOUT";
+
+/**
+ * Indicates the action of a common event that the token of a distributed account is invalid.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_TOKEN_INVALID =
+    "common.event.DISTRIBUTED_ACCOUNT_TOKEN_INVALID";
+
+/**
+ * Indicates the action of a common event about a logoff of a distributed account.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF =
+    "common.event.DISTRIBUTED_ACCOUNT_LOGOFF";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
