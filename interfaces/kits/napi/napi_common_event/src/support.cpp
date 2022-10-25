@@ -536,6 +536,22 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE,
         "COMMON_EVENT_RADIO_STATE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN,
+        "COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT,
+        "COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_TOKEN_INVALID,
+        "COMMON_EVENT_DISTRIBUTED_ACCOUNT_TOKEN_INVALID");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF,
+        "COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF");
 
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
