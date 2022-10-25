@@ -89,7 +89,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitAllowListTest_0100, Function | Med
         << "StaticSubscriberManagerUnitTest, InitAllowListTest_0100, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
-    //Init
+    // Init
     bool initResult = manager->InitAllowList();
     // expect init success
     EXPECT_TRUE(initResult);
@@ -126,7 +126,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0100, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -160,7 +160,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0200, Function | Mediu
     std::string testExtensionBundleName = "default";
     int testExtensionUserId = 100;
     std::string testProfile ="";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -184,7 +184,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0300, Function | Mediu
     std::string testExtensionBundleName = "default";
     int testExtensionUserId = 100;
     std::string testProfile = "test";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -212,7 +212,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0400, Function | Mediu
         "    \"commonEvents\":["
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -239,7 +239,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0500, Function | Mediu
         "{"
         "    \"commonEvents\":true"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -272,7 +272,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0600, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -305,7 +305,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0700, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -338,7 +338,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0800, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -371,7 +371,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0900, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -404,7 +404,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1000, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -437,7 +437,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1100, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -470,7 +470,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1200, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -503,7 +503,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1300, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -536,7 +536,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1400, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -569,7 +569,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1500, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -607,7 +607,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1600, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
     EXPECT_EQ(TEST_MUL_SIZE, manager->validSubscribers_.size());
@@ -668,7 +668,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1700, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -722,7 +722,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1800, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -768,7 +768,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1900, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -817,7 +817,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2000, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -860,7 +860,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2100, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -892,7 +892,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2200, Function | Mediu
         "        }"
         "    ]"
         "}";
-    //Init
+    // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is empty
     EXPECT_EQ(0, manager->validSubscribers_.size());
@@ -1064,7 +1064,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0500, Functio
 
 /*
  * @tc.name: RemoveSubscriberWithBundleNameTest_0100
- * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected in normal case.
+ * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected 
+ *           in normal case.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
  * 
