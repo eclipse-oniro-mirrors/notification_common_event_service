@@ -34,7 +34,7 @@ extern void MockGetResConfigFile(bool mockRet, uint8_t mockCase);
 extern void MockQueryActiveOsAccountIds(bool mockRet, uint8_t mockCase);
 extern void MockGetOsAccountLocalIdFromUid(bool mockRet, uint8_t mockCase = 0);
 extern bool IsConnectAbilityCalled();
-extern void ResetConnectAbilityState();
+extern void ResetAbilityManagerHelperState();
 extern void ResetAccountMock();
 extern void ResetBundleManagerHelperMock();
 extern void ResetAccessTokenHelperMock();
@@ -2106,7 +2106,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0100, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_TRUE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2170,7 +2170,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0200, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_TRUE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2216,7 +2216,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0300, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2262,7 +2262,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0400, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2308,7 +2308,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0500, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2354,7 +2354,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0600, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2400,7 +2400,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0700, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2446,7 +2446,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0800, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2492,7 +2492,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0900, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2538,7 +2538,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1000, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2584,7 +2584,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1100, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2630,7 +2630,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1200, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2676,7 +2676,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1300, Function 
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2744,7 +2744,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1400, Function 
     auto subscribers1 = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers1.size());
     EXPECT_TRUE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2811,7 +2811,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1500, Function 
     auto subscribers1 = manager->validSubscribers_[CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED];
     EXPECT_EQ(1, subscribers1.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2876,7 +2876,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1600, Function 
     auto subscribers0 = manager->validSubscribers_[eventName];
     EXPECT_EQ(1, subscribers0.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2925,7 +2925,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1700, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -2975,7 +2975,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1800, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_TRUE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -3025,7 +3025,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1900, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -3075,7 +3075,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2000, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -3132,7 +3132,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2100, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 
 /*
@@ -3182,6 +3182,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2200, Function 
     auto subscribers = manager->validSubscribers_[testNormalEventName];
     EXPECT_EQ(1, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
-    ResetConnectAbilityState();
+    ResetAbilityManagerHelperState();
 }
 

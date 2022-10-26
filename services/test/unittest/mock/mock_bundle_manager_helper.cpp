@@ -22,6 +22,12 @@ bool g_mockQueryExtensionInfosRet = true;
 std::vector<ExtensionAbilityInfo> g_mockExtensionInfos;
 bool g_mockGetResConfigFileRet = true;
 std::vector<std::string> g_mockProfileInfos;
+bool g_mockIsClearBundleManagerHelperCalled = false;
+}
+
+bool IsClearBundleManagerHelperCalled()
+{
+    return g_mockIsClearBundleManagerHelperCalled;
 }
 
 void ResetBundleManagerHelperMock()
@@ -30,6 +36,7 @@ void ResetBundleManagerHelperMock()
     g_mockExtensionInfos.clear();
     g_mockGetResConfigFileRet = true;
     g_mockProfileInfos.clear();
+    g_mockIsClearBundleManagerHelperCalled = false;
 }
 
 void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
@@ -223,6 +230,11 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
     return true;
 }
 
+bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundleName, const int32_t &userId)
+{
+    return true;
+}
+
 bool BundleManagerHelper::GetBundleMgrProxy()
 {
     return true;
@@ -230,6 +242,7 @@ bool BundleManagerHelper::GetBundleMgrProxy()
 
 void BundleManagerHelper::ClearBundleManagerHelper()
 {
+    g_mockIsClearBundleManagerHelperCalled = true;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
