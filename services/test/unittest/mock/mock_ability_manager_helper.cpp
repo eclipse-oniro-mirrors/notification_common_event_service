@@ -13,27 +13,45 @@
  * limitations under the License.
  */
 
-#include "static_subscriber_connection.h"
+#include "ability_manager_helper.h"
 
-#include "event_log_wrapper.h"
+namespace {
+bool g_isConnectAbilityCalled = false;
+bool g_isClearCalled = false;
+}
+bool IsConnectAbilityCalled()
+{
+    return g_isConnectAbilityCalled;
+}
+
+bool IsClearCalled()
+{
+    return g_isClearCalled;
+}
+
+void ResetAbilityManagerHelperState()
+{
+    g_isConnectAbilityCalled = false;
+    g_isClearCalled = false;
+}
 
 namespace OHOS {
 namespace EventFwk {
-void StaticSubscriberConnection::OnAbilityConnectDone(
-    const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
+int AbilityManagerHelper::ConnectAbility(
+    const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
-    EVENT_LOGI("enter");
-    proxy_ = new (std::nothrow) AppExecFwk::StaticSubscriberProxy(remoteObject);
-    if (proxy_ == nullptr) {
-        EVENT_LOGE("failed to create obj!");
-    }
-    ErrCode ec = proxy_->OnReceiveEvent(&event_);
-    EVENT_LOGI("end, errorCode = %d", ec);
+    g_isConnectAbilityCalled = true;
+    return 0;
 }
 
-void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
+bool AbilityManagerHelper::GetAbilityMgrProxy()
 {
-    EVENT_LOGI("enter");
+    return true;
+}
+
+void AbilityManagerHelper::Clear()
+{
+    g_isClearCalled = true;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

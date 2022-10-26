@@ -130,6 +130,12 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
+            // judge if app is system app.
+            if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->
+                CheckIsSystemAppByBundleName(subscriber.bundleName, subscriber.userId)) {
+                EVENT_LOGW("subscriber is not system app, not allow.");
+                continue;
+            }
             if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
                 EVENT_LOGW("publisher does not have required permission %{public}s", subscriber.permission.c_str());
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
