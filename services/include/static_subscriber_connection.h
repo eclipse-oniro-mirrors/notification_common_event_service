@@ -30,6 +30,7 @@ public:
      * @param event, Indicates the common event data.
      */
     explicit StaticSubscriberConnection(const CommonEventData& event) : event_(event) {}
+
     /**
      * OnAbilityConnectDone, Ability Manager Service notify caller ability the result of connect.
      *
