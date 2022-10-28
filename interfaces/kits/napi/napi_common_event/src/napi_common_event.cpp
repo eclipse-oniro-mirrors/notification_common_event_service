@@ -2651,11 +2651,11 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
     }
 
     AsyncCallbackInfoUnsubscribe *asynccallback = new (std::nothrow) AsyncCallbackInfoUnsubscribe();
-    asynccallback->env = env;
     if (asynccallback == nullptr) {
         EVENT_LOGE("asynccallback is null");
         return NapiGetNull(env);
     }
+    asynccallback->env = env;
     asynccallback->subscriber = subscriber;
     asynccallback->argc = argc;
     if (argc >= UNSUBSCRIBE_MAX_PARA) {
