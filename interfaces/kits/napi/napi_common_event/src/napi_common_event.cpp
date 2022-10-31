@@ -2242,8 +2242,9 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     napi_get_value_string_utf8(env, argv[0], str, STR_MAX_SIZE - 1, &strLen);
     event = str;
     EVENT_LOGI("ParseParametersByPublish event = %{public}s", str);
-    // argv[1]: CommonEventPublishData
+
     if (argc == PUBLISH_MAX_PARA_BY_PUBLISHDATA) {
+        // argv[1]: CommonEventPublishData
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
@@ -2278,10 +2279,8 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
         if (GetParametersByPublish(env, argv[1], commonEventPublishData.wantParams) == nullptr) {
             return nullptr;
         }
-    }
 
-    // argv[2]: callback
-    if (argc == PUBLISH_MAX_PARA_BY_PUBLISHDATA) {
+        // argv[2]: callback
         NAPI_CALL(env, napi_typeof(env, argv[PUBLISH_MAX_PARA], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
@@ -2412,8 +2411,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     napi_get_value_int32(env, argv[1], &userId);
     EVENT_LOGI("ParseParametersByPublishAsUser userId = %{public}d", userId);
 
-    // argv[2]: CommonEventPublishData
     if (argc == PUBLISH_MAX_PARA_BY_USERID) {
+        // argv[2]: CommonEventPublishData
         NAPI_CALL(env, napi_typeof(env, argv[ARGS_DATA_TWO], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
@@ -2449,10 +2448,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
         if (GetParametersByPublish(env, argv[ARGS_DATA_TWO], commonEventPublishData.wantParams) == nullptr) {
             return nullptr;
         }
-    }
 
-    // argv[3]: callback
-    if (argc == PUBLISH_MAX_PARA_BY_USERID) {
+        // argv[3]: callback
         NAPI_CALL(env, napi_typeof(env, argv[PUBLISH_MAX_PARA_AS_USER], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
@@ -2723,7 +2720,7 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
         return nullptr;
     }
     napi_get_array_length(env, eventsNapi, &length);
-    if (length <= 0) {
+    if (length == 0) {
         EVENT_LOGE("The array is empty.");
         return nullptr;
     }
