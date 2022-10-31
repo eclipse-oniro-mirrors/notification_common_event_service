@@ -287,11 +287,20 @@ napi_value NapiGetNull(napi_env env)
 
 napi_value GetCallbackErrorValue(napi_env env, int8_t errorCode)
 {
-    napi_value result = nullptr;
-    napi_value eCode = nullptr;
+    napi_value result = NapiGetNull(env);
+    napi_value eCode = NapiGetNull(env);
+    if (errorCode == ERR_OK) {
+        return result;
+    }
     NAPI_CALL(env, napi_create_int32(env, errorCode, &eCode));
     NAPI_CALL(env, napi_create_object(env, &result));
     NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
+
+    auto iter = ErrorCodeToMsg.find(errorCode);
+    std::string errMsg = iter != ErrorCodeToMsg.end() ? iter->second : "";
+    napi_value message = nullptr;
+    napi_create_string_utf8(env, errMsg.c_str(), NAPI_AUTO_LENGTH, &message);
+    napi_set_named_property(env, result, "message", message);
     return result;
 }
 
