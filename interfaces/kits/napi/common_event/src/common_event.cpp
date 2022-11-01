@@ -750,7 +750,8 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
         resourceName,
         [](napi_env env, void *data) {
             EVENT_LOGI("IsOrderedCommonEvent napi_create_async_work start");
-            AsyncCallbackInfoOrderedCommonEvent *asyncCallbackInfo = static_cast<AsyncCallbackInfoOrderedCommonEvent *>(data);
+            AsyncCallbackInfoOrderedCommonEvent *asyncCallbackInfo =
+                static_cast<AsyncCallbackInfoOrderedCommonEvent *>(data);
             if (asyncCallbackInfo == nullptr) {
                 EVENT_LOGE("asyncCallbackInfo is null");
                 return;
@@ -764,7 +765,8 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("IsOrderedCommonEvent napi_create_async_work end");
-            AsyncCallbackInfoOrderedCommonEvent *asyncCallbackInfo = static_cast<AsyncCallbackInfoOrderedCommonEvent *>(data);
+            AsyncCallbackInfoOrderedCommonEvent *asyncCallbackInfo =
+                static_cast<AsyncCallbackInfoOrderedCommonEvent *>(data);
             if (asyncCallbackInfo == nullptr) {
                 EVENT_LOGE("asyncCallbackInfo is null");
                 return;
@@ -867,7 +869,8 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
         resourceName,
         [](napi_env env, void *data) {
             EVENT_LOGI("isStickyCommonEvent napi_create_async_work start");
-            AsyncCallbackInfoStickyCommonEvent *asyncCallbackInfo = static_cast<AsyncCallbackInfoStickyCommonEvent *>(data);
+            AsyncCallbackInfoStickyCommonEvent *asyncCallbackInfo =
+                static_cast<AsyncCallbackInfoStickyCommonEvent *>(data);
             if (asyncCallbackInfo == nullptr) {
                 EVENT_LOGE("asyncCallbackInfo is null");
                 return;
@@ -881,7 +884,8 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGI("isStickyCommonEvent napi_create_async_work end");
-            AsyncCallbackInfoStickyCommonEvent *asyncCallbackInfo = static_cast<AsyncCallbackInfoStickyCommonEvent *>(data);
+            AsyncCallbackInfoStickyCommonEvent *asyncCallbackInfo =
+                static_cast<AsyncCallbackInfoStickyCommonEvent *>(data);
             if (asyncCallbackInfo == nullptr) {
                 EVENT_LOGE("asyncCallbackInfo is null");
                 return;

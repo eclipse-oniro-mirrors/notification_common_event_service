@@ -1064,7 +1064,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddToValidSubsribersTest_0500, Functio
 
 /*
  * @tc.name: RemoveSubscriberWithBundleNameTest_0100
- * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected 
+ * @tc.desc: test if StaticSubscriberManager's RemoveSubscriberWithBundleName function executed as expected
  *           in normal case.
  * @tc.type: FUNC
  * @tc.require: #I5RLKK
