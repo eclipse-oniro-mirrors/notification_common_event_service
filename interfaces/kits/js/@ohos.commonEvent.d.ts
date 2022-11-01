@@ -962,6 +962,8 @@ declare namespace commonEvent {
 
     /**
      * Indicate the action of a common event that a new sms emergency cell broadcast bas been received by the device.
+     * To subscribe to this protected common event, your application must have the ohos.permission.RECEIVE_SMS
+     * permission.
      * This common event can be triggered only by system.
      * @since 8
      */
@@ -969,6 +971,8 @@ declare namespace commonEvent {
 
     /**
      * Indicate the action of a common event that a new sms normal cell broadcast bas been received by the device.
+     * To subscribe to this protected common event, your application must have the ohos.permission.RECEIVE_SMS
+     * permission.
      * This common event can be triggered only by system.
      * @since 8
      */
@@ -1017,6 +1021,8 @@ declare namespace commonEvent {
 
     /**
      * Indicate the action of a common event that a new sms wappush has been received by the device.
+     * To subscribe to this protected common event, your application must have the ohos.permission.RECEIVE_SMS
+     * permission.
      * This common event can be triggered only by system.
      * @since 8
      */
