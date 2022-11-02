@@ -14,6 +14,7 @@
  */
 
 #include "common_event_stub.h"
+#include "common_event_data.h"
 #include "commoneventstub_fuzzer.h"
 #include "securec.h"
 
@@ -27,10 +28,14 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     std::string stringData(data);
     int32_t code = U32_AT(reinterpret_cast<const uint8_t*>(data));
     bool enabled = *data % ENABLE;
+    MessageParcel dataParcel;
+    MessageParcel reply;
+    MessageOption option;
     EventFwk::CommonEventStub commonEventStub;
     // test PublishCommonEvent function
     AAFwk::Want want;
     EventFwk::CommonEventData commonEventData;
+    EventFwk::CommonEventData eventData(want, code, stringData);
     commonEventData.SetWant(want);
     commonEventData.SetCode(code);
     commonEventData.SetData(stringData);
@@ -62,6 +67,7 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     commonEventStub.Freeze(code);
     // test Unfreeze function
     commonEventStub.Unfreeze(code);
+    commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     // test UnfreezeAll function
     return commonEventStub.UnfreezeAll();
 }

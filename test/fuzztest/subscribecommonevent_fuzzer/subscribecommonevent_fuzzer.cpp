@@ -13,6 +13,12 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
+#include "common_event_subscribe_info.h"
+#undef private
+#undef protected
+
 #include "subscribecommonevent_fuzzer.h"
 #include "securec.h"
 #include "common_event_manager.h"
@@ -39,6 +45,7 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     std::string stringData(data);
 
     EventFwk::MatchingSkills matchingSkills;
+    Parcel parcel;
     matchingSkills.AddEvent(stringData);
     matchingSkills.AddEntity(stringData);
     matchingSkills.AddScheme(stringData);
@@ -48,6 +55,8 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
         EventFwk::CommonEventSubscribeInfo::ThreadMode(mode);
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     int32_t priority = U32_AT(reinterpret_cast<const uint8_t*>(data));
+    subscribeInfo.ReadFromParcel(parcel);
+    subscribeInfo.Unmarshalling(parcel);
     subscribeInfo.SetPriority(priority);
     subscribeInfo.SetPermission(stringData);
     subscribeInfo.SetDeviceId(stringData);
