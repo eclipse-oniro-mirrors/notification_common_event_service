@@ -28,6 +28,8 @@ namespace {
 bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
 {
     std::string stringData(data);
+    size_t index = U32_AT(reinterpret_cast<const uint8_t*>(data));
+    Parcel parcel;
     // test MatchingSkills class function
     EventFwk::MatchingSkills matchingSkills;
     // test HasEntity function
@@ -56,6 +58,11 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     matchingSkills.MatchEntity(permissions);
     // test MatchScheme function
     matchingSkills.MatchScheme(stringData);
+    matchingSkills.GetEntity(index);
+    matchingSkills.GetEvent(index);
+    matchingSkills.GetScheme(index);
+    matchingSkills.ReadFromParcel(parcel);
+    matchingSkills.Unmarshalling(parcel);
     // test Match function
     AAFwk::Want want;
     return matchingSkills.Match(want);
