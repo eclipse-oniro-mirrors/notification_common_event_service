@@ -129,6 +129,25 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
     return isSystemApp;
 }
 
+bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundleName, const int32_t &userId)
+{
+    EVENT_LOGI("enter");
+
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    bool isSystemApp = false;
+
+    if (!GetBundleMgrProxy()) {
+        EVENT_LOGE("failed to get bms proxy");
+        return isSystemApp;
+    }
+
+    uid_t uid = sptrBundleMgr_->GetUidByBundleName(bundleName, userId);
+    isSystemApp = sptrBundleMgr_->CheckIsSystemAppByUid(uid);
+
+    return isSystemApp;
+}
+
 bool BundleManagerHelper::GetBundleMgrProxy()
 {
     EVENT_LOGD("enter");

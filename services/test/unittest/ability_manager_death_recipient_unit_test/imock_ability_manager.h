@@ -13,37 +13,19 @@
  * limitations under the License.
  */
 
-#include "ability_manager_helper.h"
+#ifndef OHOS_CES_I_MOCK_ABILITY_MANAGER_H
+#define OHOS_CES_I_MOCK_ABILITY_MANAGER_H
 
-namespace {
-bool g_isConnectAbilityCalled = false;
-}
-bool IsConnectAbilityCalled()
-{
-    return g_isConnectAbilityCalled;
-}
-
-void ResetConnectAbilityState()
-{
-    g_isConnectAbilityCalled = false;
-}
+#include <string_ex.h>
+#include <iremote_broker.h>
 
 namespace OHOS {
 namespace EventFwk {
-int AbilityManagerHelper::ConnectAbility(
-    const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
-{
-    g_isConnectAbilityCalled = true;
-    return 0;
-}
+class IMockAbilityManager : public IRemoteBroker {
+public:
+    DECLARE_INTERFACE_DESCRIPTOR(u"ces.unittest.mock_ability_manager");
+};
+} // namespace EventFwk
+} // namespace OHOS
+#endif // OHOS_CES_I_MOCK_ABILITY_MANAGER_H
 
-bool AbilityManagerHelper::GetAbilityMgrProxy()
-{
-    return true;
-}
-
-void AbilityManagerHelper::Clear()
-{
-}
-}  // namespace EventFwk
-}  // namespace OHOS

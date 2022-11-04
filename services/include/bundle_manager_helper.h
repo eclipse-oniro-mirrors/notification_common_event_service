@@ -45,6 +45,8 @@ public:
      */
     bool CheckIsSystemAppByUid(uid_t uid);
 
+    bool CheckIsSystemAppByBundleName(const std::string &bundleName, const int32_t &userId);
+
     /**
      * Gets bundle name.
      *
