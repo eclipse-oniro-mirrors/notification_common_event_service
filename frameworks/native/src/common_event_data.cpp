@@ -69,18 +69,20 @@ const Want &CommonEventData::GetWant() const
 
 bool CommonEventData::Marshalling(Parcel &parcel) const
 {
-    MessageParcel *messageParcel = reinterpret_cast<MessageParcel *>(&parcel);
-    if (!messageParcel) {
-        EVENT_LOGE("Type conversion failed");
-        return false;
-    }
-    if (!messageParcel->WriteUint64(data_.size() + 1)) {
-        EVENT_LOGE("Failed to write data size");
-        return false;
-    }
-    if (!messageParcel->WriteRawData(data_.c_str(), data_.size() + 1)) {
-        EVENT_LOGE("Failed to write data");
-        return false;
+    // write data
+    if (GetData().empty()) {
+        if (!parcel.WriteInt32(VALUE_NULL)) {
+            EVENT_LOGE("null data");
+            return false;
+        }
+    } else {
+        if (!parcel.WriteInt32(VALUE_OBJECT)) {
+            return false;
+        }
+        if (!parcel.WriteString16(Str8ToStr16(GetData()))) {
+            EVENT_LOGE("Failed to write data");
+            return false;
+        }
     }
 
     if (!parcel.WriteInt32(code_)) {
@@ -99,22 +101,13 @@ bool CommonEventData::Marshalling(Parcel &parcel) const
 bool CommonEventData::ReadFromParcel(Parcel &parcel)
 {
     // read data
-    MessageParcel *messageParcel = reinterpret_cast<MessageParcel *>(&parcel);
-    if (!messageParcel) {
-        EVENT_LOGE("Type conversion failed");
+    int empty = VALUE_NULL;
+    if (!parcel.ReadInt32(empty)) {
         return false;
     }
-    uint64_t length = messageParcel->ReadUint64();
-    if (length == 0) {
-        EVENT_LOGE("Invalid data length");
-        return false;
+    if (empty == VALUE_OBJECT) {
+        SetData(Str16ToStr8(parcel.ReadString16()));
     }
-    const char *data = reinterpret_cast<const char *>(messageParcel->ReadRawData(length));
-    if (!data) {
-        EVENT_LOGE("Fail to read raw data, length = %{public}" PRIu64 "", length);
-        return false;
-    }
-    data_ = data;
 
     // read code
     code_ = parcel.ReadInt32();

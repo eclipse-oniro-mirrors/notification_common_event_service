@@ -142,6 +142,23 @@ size_t MatchingSkills::CountSchemes() const
     return schemes_.size();
 }
 
+bool MatchingSkills::WriteVectorInfo(Parcel &parcel, std::vector<std::u16string>vectorInfo) const
+{
+    if (vectorInfo.empty()) {
+        if (!parcel.WriteInt32(VALUE_NULL)) {
+            return false;
+        }
+    } else {
+        if (!parcel.WriteInt32(VALUE_OBJECT)) {
+            return false;
+        }
+        if (!parcel.WriteString16Vector(vectorInfo)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool MatchingSkills::Marshalling(Parcel &parcel) const
 {
     // write entity
@@ -149,7 +166,8 @@ bool MatchingSkills::Marshalling(Parcel &parcel) const
     for (std::vector<std::string>::size_type i = 0; i < entities_.size(); i++) {
         actionU16Entity.emplace_back(Str8ToStr16(entities_[i]));
     }
-    if (!parcel.WriteString16Vector(actionU16Entity)) {
+
+    if (!WriteVectorInfo(parcel, actionU16Entity)) {
         EVENT_LOGE("matching skills write entity error");
         return false;
     }
@@ -159,7 +177,8 @@ bool MatchingSkills::Marshalling(Parcel &parcel) const
     for (std::vector<std::string>::size_type i = 0; i < events_.size(); i++) {
         actionU16Event.emplace_back(Str8ToStr16(events_[i]));
     }
-    if (!parcel.WriteString16Vector(actionU16Event)) {
+
+    if (!WriteVectorInfo(parcel, actionU16Event)) {
         EVENT_LOGE("matching skills write event error");
         return false;
     }
@@ -169,7 +188,8 @@ bool MatchingSkills::Marshalling(Parcel &parcel) const
     for (std::vector<std::string>::size_type i = 0; i < schemes_.size(); i++) {
         actionU16Scheme.emplace_back(Str8ToStr16(schemes_[i]));
     }
-    if (!parcel.WriteString16Vector(actionU16Scheme)) {
+
+    if (!WriteVectorInfo(parcel, actionU16Scheme)) {
         EVENT_LOGE("matching skills write scheme error");
         return false;
     }
@@ -179,11 +199,16 @@ bool MatchingSkills::Marshalling(Parcel &parcel) const
 
 bool MatchingSkills::ReadFromParcel(Parcel &parcel)
 {
-    // read entity
+    // read entities
     std::vector<std::u16string> actionU16Entity;
-    if (!parcel.ReadString16Vector(&actionU16Entity)) {
-        EVENT_LOGE("matching skills read entity error");
+    int empty = VALUE_NULL;
+    if (!parcel.ReadInt32(empty)) {
         return false;
+    }
+    if (empty == VALUE_OBJECT) {
+        if (!parcel.ReadString16Vector(&actionU16Entity)) {
+            return false;
+        }
     }
     entities_.clear();
     for (std::vector<std::u16string>::size_type i = 0; i < actionU16Entity.size(); i++) {
@@ -192,20 +217,30 @@ bool MatchingSkills::ReadFromParcel(Parcel &parcel)
 
     // read event
     std::vector<std::u16string> actionU16Event;
-    if (!parcel.ReadString16Vector(&actionU16Event)) {
-        EVENT_LOGE("matching skills read event error");
+    empty = VALUE_NULL;
+    if (!parcel.ReadInt32(empty)) {
         return false;
+    }
+    if (empty == VALUE_OBJECT) {
+        if (!parcel.ReadString16Vector(&actionU16Event)) {
+            return false;
+        }
     }
     events_.clear();
     for (std::vector<std::u16string>::size_type i = 0; i < actionU16Event.size(); i++) {
         events_.emplace_back(Str16ToStr8(actionU16Event[i]));
     }
 
-    // read scheme
+    // read event
     std::vector<std::u16string> actionU16Scheme;
-    if (!parcel.ReadString16Vector(&actionU16Scheme)) {
-        EVENT_LOGE("matching skills read scheme error");
+    empty = VALUE_NULL;
+    if (!parcel.ReadInt32(empty)) {
         return false;
+    }
+    if (empty == VALUE_OBJECT) {
+        if (!parcel.ReadString16Vector(&actionU16Scheme)) {
+            return false;
+        }
     }
     schemes_.clear();
     for (std::vector<std::u16string>::size_type i = 0; i < actionU16Scheme.size(); i++) {
