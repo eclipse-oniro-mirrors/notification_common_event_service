@@ -177,6 +177,8 @@ public:
      */
     static MatchingSkills *Unmarshalling(Parcel &parcel);
 
+    bool WriteVectorInfo(Parcel &parcel, std::vector<std::u16string>vectorInfo) const;
+
 private:
     /**
      * Reads MatchingSkills object from a Parcel.
@@ -214,6 +216,8 @@ private:
     std::vector<std::string> entities_;
     std::vector<std::string> events_;
     std::vector<std::string> schemes_;
+    static constexpr int VALUE_NULL = -1;
+    static constexpr int VALUE_OBJECT = 1;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
