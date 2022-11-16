@@ -116,6 +116,8 @@ private:
     Want want_;
     int32_t code_;
     std::string data_;
+    static constexpr int VALUE_NULL = -1;
+    static constexpr int VALUE_OBJECT = 1;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
