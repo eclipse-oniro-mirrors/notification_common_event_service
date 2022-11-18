@@ -201,7 +201,7 @@ bool MatchingSkills::ReadFromParcel(Parcel &parcel)
 {
     // read entities
     std::vector<std::u16string> actionU16Entity;
-    int empty = VALUE_NULL;
+    int32_t empty = VALUE_NULL;
     if (!parcel.ReadInt32(empty)) {
         return false;
     }

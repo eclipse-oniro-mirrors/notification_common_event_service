@@ -216,8 +216,8 @@ private:
     std::vector<std::string> entities_;
     std::vector<std::string> events_;
     std::vector<std::string> schemes_;
-    static constexpr int VALUE_NULL = -1;
-    static constexpr int VALUE_OBJECT = 1;
+    static constexpr int32_t VALUE_NULL = -1;
+    static constexpr int32_t VALUE_OBJECT = 1;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
