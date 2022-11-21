@@ -388,10 +388,8 @@ HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level1)
     }
     result->WriteVectorInfo(parcel, actionU16Scheme);
     
-    if (nullptr != result) {
-        if (nullptr == result->Unmarshalling(parcel)) {
-            unmarshalling = false;
-        }
+    if (nullptr == result->Unmarshalling(parcel)) {
+        unmarshalling = false;
     }
     EXPECT_EQ(true, unmarshalling);
 }
