@@ -535,6 +535,32 @@ HWTEST_F(CommonEventSubscribeTest, MatchingSkills_001, TestSize.Level1)
 {
     Parcel parcel;
     MatchingSkills matchingSkills;
+
+    // write entity
+    int32_t value = 1;
+    parcel.WriteInt32(value);
+    std::vector<std::u16string> actionU16Entity;
+    for (std::vector<std::string>::size_type i = 0; i < 3; i++) {
+        actionU16Entity.emplace_back(OHOS::Str8ToStr16("test"));
+    }
+    matchingSkills.WriteVectorInfo(parcel, actionU16Entity);
+
+    //write event
+    parcel.WriteInt32(value);
+    std::vector<std::u16string> actionU16Event;
+    for (std::vector<std::string>::size_type i = 0; i < 3; i++) {
+        actionU16Event.emplace_back(OHOS::Str8ToStr16("test"));
+    }
+    matchingSkills.WriteVectorInfo(parcel, actionU16Event);
+
+    // write scheme
+    parcel.WriteInt32(value);
+    std::vector<std::u16string> actionU16Scheme;
+    for (std::vector<std::string>::size_type i = 0; i < 3; i++) {
+        actionU16Scheme.emplace_back(OHOS::Str8ToStr16("test"));
+    }
+    matchingSkills.WriteVectorInfo(parcel, actionU16Scheme);
+
     bool result = matchingSkills.ReadFromParcel(parcel);
     EXPECT_EQ(result, true);
 }

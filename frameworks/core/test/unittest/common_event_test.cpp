@@ -362,6 +362,32 @@ HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level1)
     bool unmarshalling = true;
     OHOS::Parcel parcel;
     std::shared_ptr<MatchingSkills> result = std::make_shared<MatchingSkills>();
+
+    // write entity
+    int32_t value = 1;
+    parcel.WriteInt32(value);
+    std::vector<std::u16string> actionU16Entity;
+    for (std::vector<std::string>::size_type i = 0; i < 3; i++) {
+        actionU16Entity.emplace_back(OHOS::Str8ToStr16("test"));
+    }
+    result->WriteVectorInfo(parcel, actionU16Entity);
+
+    //write event
+    parcel.WriteInt32(value);
+    std::vector<std::u16string> actionU16Event;
+    for (std::vector<std::string>::size_type i = 0; i < 3; i++) {
+        actionU16Event.emplace_back(OHOS::Str8ToStr16("test"));
+    }
+    result->WriteVectorInfo(parcel, actionU16Event);
+
+    // write scheme
+    parcel.WriteInt32(value);
+    std::vector<std::u16string> actionU16Scheme;
+    for (std::vector<std::string>::size_type i = 0; i < 3; i++) {
+        actionU16Scheme.emplace_back(OHOS::Str8ToStr16("test"));
+    }
+    result->WriteVectorInfo(parcel, actionU16Scheme);
+    
     if (nullptr != result) {
         if (nullptr == result->Unmarshalling(parcel)) {
             unmarshalling = false;
