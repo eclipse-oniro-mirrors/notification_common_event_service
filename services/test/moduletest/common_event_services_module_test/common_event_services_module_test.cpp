@@ -90,6 +90,7 @@ void cesModuleTest::SetUpTestCase()
 
 void cesModuleTest::TearDownTestCase()
 {
+    commonEventManagerService_->runner_->Stop();
     commonEventManagerService_ = nullptr;
     EventRunner::GetMainEventRunner()->Stop();
 }
