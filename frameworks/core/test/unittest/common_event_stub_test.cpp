@@ -35,8 +35,6 @@ using namespace OHOS::EventFwk;
 namespace {
     const std::string EVENT = "com.ces.test.event";
     const std::string PERMISSION = "com.ces.test.permission";
-    // constexpr uint16_t SYSTEM_UID = 1000;
-    // constexpr int32_t ERR_OK = 0;
 }
 
 class CommonEventStubTest : public CommonEventSubscriber, public testing::Test {
@@ -423,5 +421,3 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_016, TestSize.Level1)
     int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
 }
-
-
