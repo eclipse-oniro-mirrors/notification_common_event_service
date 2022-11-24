@@ -142,7 +142,7 @@ bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundle
         return isSystemApp;
     }
 
-    uid_t uid = sptrBundleMgr_->GetUidByBundleName(bundleName, userId);
+    int32_t uid = sptrBundleMgr_->GetUidByBundleName(bundleName, userId);
     isSystemApp = sptrBundleMgr_->CheckIsSystemAppByUid(uid);
 
     return isSystemApp;
