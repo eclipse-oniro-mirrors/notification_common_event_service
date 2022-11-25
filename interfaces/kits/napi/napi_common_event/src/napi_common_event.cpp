@@ -766,7 +766,8 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
             AsyncCallbackInfoOrderedCommonEvent *asyncCallbackInfo =
                 static_cast<AsyncCallbackInfoOrderedCommonEvent *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->isOrdered = asyncResult->IsOrderedCommonEvent();
                 } else {
@@ -881,7 +882,8 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
             AsyncCallbackInfoStickyCommonEvent *asyncCallbackInfo =
                 static_cast<AsyncCallbackInfoStickyCommonEvent *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->isSticky = asyncResult->IsStickyCommonEvent();
                 } else {
@@ -992,7 +994,8 @@ napi_value GetCode(napi_env env, napi_callback_info info)
             EVENT_LOGI("GetCode napi_create_async_work start");
             AsyncCallbackInfoGetCode *asyncCallbackInfo = static_cast<AsyncCallbackInfoGetCode *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->code = asyncResult->GetCode();
                 } else {
@@ -1112,7 +1115,8 @@ napi_value SetCode(napi_env env, napi_callback_info info)
             EVENT_LOGI("SetCode napi_create_async_work start");
             AsyncCallbackInfoSetCode *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetCode *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 EVENT_LOGI("SetCode get = %{private}p", asyncResult.get());
                 if (asyncResult) {
                     EVENT_LOGI("SetCode get2 = %{private}p", asyncResult.get());
@@ -1222,7 +1226,8 @@ napi_value GetData(napi_env env, napi_callback_info info)
             EVENT_LOGI("GetData napi_create_async_work start");
             AsyncCallbackInfoGetData *asyncCallbackInfo = static_cast<AsyncCallbackInfoGetData *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->data = asyncResult->GetData();
                 } else {
@@ -1351,7 +1356,8 @@ napi_value SetData(napi_env env, napi_callback_info info)
             EVENT_LOGI("SetData napi_create_async_work start");
             AsyncCallbackInfoSetData *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetData *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 EVENT_LOGI("SetData get = %{private}p", asyncResult.get());
                 if (asyncResult) {
                     EVENT_LOGI("SetData get2 = %{private}p", asyncResult.get());
@@ -1489,7 +1495,8 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
             EVENT_LOGI("SetCodeAndData napi_create_async_work start");
             AsyncCallbackInfoSetCodeAndData *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetCodeAndData *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->SetCodeAndData(
                         asyncCallbackInfo->code, asyncCallbackInfo->data) ? NO_ERROR : ERR_CES_FAILED;
@@ -1596,7 +1603,8 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
             EVENT_LOGI("Abort napi_create_async_work start");
             AsyncCallbackInfoAbort *asyncCallbackInfo = static_cast<AsyncCallbackInfoAbort *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->AbortCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
                 }
@@ -1704,7 +1712,8 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
             EVENT_LOGI("ClearAbort napi_create_async_work start");
             AsyncCallbackInfoClearAbort *asyncCallbackInfo = static_cast<AsyncCallbackInfoClearAbort *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->ClearAbortCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
                 }
@@ -1811,7 +1820,8 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
             EVENT_LOGI("GetAbort napi_create_async_work start");
             AsyncCallbackInfoGetAbort *asyncCallbackInfo = static_cast<AsyncCallbackInfoGetAbort *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->abortEvent = asyncResult->GetAbortCommonEvent();
                 } else {
@@ -1922,7 +1932,8 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
             EVENT_LOGI("Finish napi_create_async_work start");
             AsyncCallbackInfoFinish *asyncCallbackInfo = static_cast<AsyncCallbackInfoFinish *>(data);
             if (asyncCallbackInfo) {
-                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(asyncCallbackInfo->subscriber.get());
+                std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
+                    asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->FinishCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
                 }
@@ -2041,7 +2052,8 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo) {
                 asyncCallbackInfo->subscriber->SetEnv(env);
                 asyncCallbackInfo->subscriber->SetCallbackRef(asyncCallbackInfo->callback);
-                asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(asyncCallbackInfo->subscriber);
+                asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(
+                    asyncCallbackInfo->subscriber);
             }
         },
         [](napi_env env, napi_status status, void *data) {
@@ -2710,7 +2722,8 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
             EVENT_LOGI("Unsubscribe napi_create_async_work start");
             AsyncCallbackInfoUnsubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoUnsubscribe *>(data);
             if (asyncCallbackInfo) {
-                asyncCallbackInfo->errorCode = CommonEventManager::NewUnSubscribeCommonEvent(asyncCallbackInfo->subscriber);
+                asyncCallbackInfo->errorCode = CommonEventManager::NewUnSubscribeCommonEvent(
+                    asyncCallbackInfo->subscriber);
             }
         },
         [](napi_env env, napi_status status, void *data) {
