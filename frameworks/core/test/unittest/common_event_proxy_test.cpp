@@ -23,6 +23,8 @@
 #include "common_event_publish_info.h"
 #include "matching_skills.h"
 
+#include "mock_message_parcel.h"
+
 #include "event_log_wrapper.h"
 #include "string_ex.h"
 #include "ces_inner_error_code.h"
@@ -31,7 +33,7 @@
 #include <gtest/gtest.h>
 
 using namespace testing::ext;
-using namespace OHOS;
+// using namespace OHOS;
 using namespace OHOS::EventFwk;
 
 namespace {
@@ -62,6 +64,8 @@ void CommonEventProxyTest::SetUp()
 void CommonEventProxyTest::TearDown()
 {}
 
+namespace OHOS
+{
 class MockIRemoteObject : public IRemoteObject {
 public:
     MockIRemoteObject() : IRemoteObject(u"mock_i_remote_object") {}
@@ -119,7 +123,7 @@ public:
         return descriptor;
     }
 };
-
+}
 /*
  * tc.number: PublishCommonEvent_001
  * tc.name: test OnRemoteRequest
@@ -131,23 +135,49 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_001, TestSize.Level1)
 {
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
-    sptr<IRemoteObject> object = new MockIRemoteObject();
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
     CommonEventProxy commonEventProxy(object);
 
-    // make a want
-    Want want;
-
-    // make common event data
+    CommonEventData event;
     CommonEventData data;
-    data.SetWant(want);
-
-    // make publish info
     CommonEventPublishInfo publishInfo;
-    publishInfo.SetSticky(true);
+    dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
+    dataParcel.WriteParcelable(&event);
+    dataParcel.WriteParcelable(&publishInfo);
 
     const int32_t useId = 0;
 
-    dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
     int result = commonEventProxy.PublishCommonEvent(data, publishInfo, nullptr, useId);
-    EXPECT_EQ(ERR_OK, result);
+    EXPECT_EQ(OHOS::ERR_OK, result);
+}
+
+/*
+ * tc.number: PublishCommonEvent_002
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, PublishCommonEvent_002, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
+
+    CommonEventData event;
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+
+    MessageParcel::setFlag(false);
+
+
+    // dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
+    // dataParcel.WriteParcelable(&event);
+    // dataParcel.WriteParcelable(&publishInfo);
+    const int32_t useId = 1;
+
+    int result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
+    EXPECT_EQ(OHOS::ERR_OK, result);
 }
