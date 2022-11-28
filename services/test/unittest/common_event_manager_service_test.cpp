@@ -66,10 +66,6 @@ void CommonEventManagerServiceTest::SetUp()
 void CommonEventManagerServiceTest::TearDown()
 {}
 
-// std::shared_ptr<EventRunner> EventRunner::Create(std::string &threadName)
-// {
-//     return g_event;
-// }
 /**
  * @tc.name: Init_001
  * @tc.desc: Test CommonEventManagerService_
@@ -80,8 +76,6 @@ HWTEST_F(CommonEventManagerServiceTest, Init_001, Level1)
 {
     CommonEventManagerService commonEventManagerService;
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
-    std::shared_ptr<EventRunner> runner_;
-    std::shared_ptr<EventHandler> handler_;
     int result = commonEventManagerService.Init();
     EXPECT_EQ(ERR_OK, result);
 }
@@ -117,8 +111,6 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_001, Level1)
     CommonEventPublishInfo publishInfo;
 
     int32_t userId = 1;
-
-    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = nullptr;
     const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
     int32_t result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
     EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, result);
@@ -140,8 +132,6 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_002, Level1)
     CommonEventPublishInfo publishInfo;
 
     int32_t userId = 1;
-
-    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = nullptr;
     bool result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
     EXPECT_EQ(true, result);
 }
