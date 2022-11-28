@@ -30,12 +30,6 @@
 
 #include <gtest/gtest.h>
 
-
-// namespace {
-//     const std::string EVENT = "com.ces.test.event";
-//     const std::string PERMISSION = "com.ces.test.permission";
-// }
-
 class MessageParcel {
 public:
     MessageParcel() = default;
@@ -48,13 +42,13 @@ public:
         return false;
     }
 
-    static void setFlag(bool flag);
+    static void SetFlag(bool flag);
 
     static bool flag_;
 };
 
 bool MessageParcel::flag_ = false;
-void MessageParcel::setFlag(bool flag)
+void MessageParcel::SetFlag(bool flag)
 {
     flag_ = flag;
 }
