@@ -33,7 +33,6 @@
 #include <gtest/gtest.h>
 
 using namespace testing::ext;
-// using namespace OHOS;
 using namespace OHOS::EventFwk;
 
 namespace {
@@ -64,8 +63,7 @@ void CommonEventProxyTest::SetUp()
 void CommonEventProxyTest::TearDown()
 {}
 
-namespace OHOS
-{
+namespace OHOS {
 class MockIRemoteObject : public IRemoteObject {
 public:
     MockIRemoteObject() : IRemoteObject(u"mock_i_remote_object") {}
@@ -170,14 +168,8 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_002, TestSize.Level1)
     CommonEventData data;
     CommonEventPublishInfo publishInfo;
 
-    MessageParcel::setFlag(false);
-
-
-    // dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
-    // dataParcel.WriteParcelable(&event);
-    // dataParcel.WriteParcelable(&publishInfo);
+    MessageParcel::SetFlag(false);
     const int32_t useId = 1;
-
     int result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
     EXPECT_EQ(OHOS::ERR_OK, result);
 }

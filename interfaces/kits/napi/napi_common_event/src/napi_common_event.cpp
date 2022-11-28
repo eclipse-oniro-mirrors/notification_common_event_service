@@ -1715,7 +1715,8 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
                     asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
-                    asyncCallbackInfo->info.errorCode = asyncResult->ClearAbortCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
+                    asyncCallbackInfo->info.errorCode =
+                        asyncResult->ClearAbortCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
                 }
             }
         },
