@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 
+#ifndef MOCK_MESSAGE_PARCEL_H
+#define MOCK_MESSAGE_PARCEL_H
+
 #include "common_event.h"
 #include "common_event_death_recipient.h"
 #include "common_event_stub.h"
@@ -35,7 +38,8 @@ public:
     MessageParcel() = default;
     virtual ~MessageParcel() = default;
 
-    bool WriteInterfaceToken(std::string descriptor) {
+    bool WriteInterfaceToken(std::string descriptor)
+    {
         if (flag_) {
             return true;
         }
@@ -52,3 +56,5 @@ void MessageParcel::SetFlag(bool flag)
 {
     flag_ = flag;
 }
+
+#endif  // MOCK_MESSAGE_PARCEL_H
