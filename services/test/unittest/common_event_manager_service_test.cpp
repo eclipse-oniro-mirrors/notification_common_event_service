@@ -33,16 +33,12 @@
 #undef private
 #undef protected
 
-
 #include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
 using namespace OHOS;
 
-namespace {
-    std::shared_ptr<EventRunner> g_event = nullptr;
-}
 class CommonEventManagerServiceTest : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -75,7 +71,6 @@ void CommonEventManagerServiceTest::TearDown()
 HWTEST_F(CommonEventManagerServiceTest, Init_001, Level1)
 {
     CommonEventManagerService commonEventManagerService;
-    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
     int result = commonEventManagerService.Init();
     EXPECT_EQ(ERR_OK, result);
 }
@@ -89,8 +84,6 @@ HWTEST_F(CommonEventManagerServiceTest, Init_001, Level1)
 HWTEST_F(CommonEventManagerServiceTest, Init_002, Level1)
 {
     CommonEventManagerService commonEventManagerService;
-    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
-    innerCommonEventManager = nullptr;
     int result = commonEventManagerService.Init();
     EXPECT_NE(ERR_INVALID_OPERATION, result);
 }
@@ -104,9 +97,6 @@ HWTEST_F(CommonEventManagerServiceTest, Init_002, Level1)
 HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_001, Level1)
 {
     CommonEventManagerService commonEventManagerService;
-    OHOS::MessageParcel dataParcel;
-    OHOS::MessageParcel reply;
-    OHOS::MessageOption option;
     CommonEventData event;
     CommonEventPublishInfo publishInfo;
 
@@ -125,9 +115,6 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_001, Level1)
 HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_002, Level1)
 {
     CommonEventManagerService commonEventManagerService;
-    OHOS::MessageParcel dataParcel;
-    OHOS::MessageParcel reply;
-    OHOS::MessageOption option;
     CommonEventData event;
     CommonEventPublishInfo publishInfo;
 
