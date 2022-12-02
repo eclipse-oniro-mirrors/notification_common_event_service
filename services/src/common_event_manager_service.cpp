@@ -121,6 +121,11 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+        EVENT_LOGE("invalid user.");
+        return false;
+    }
+
     return PublishCommonEventDetailed(
         event, publishinfo, commonEventListener, UNDEFINED_PID, uid, userId) == ERR_OK ? true : false;
 }
