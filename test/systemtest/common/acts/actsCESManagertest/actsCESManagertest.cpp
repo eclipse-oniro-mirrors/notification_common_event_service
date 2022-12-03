@@ -2050,7 +2050,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0400, Function | MediumTest | Leve
         }
     }
     // expect the subscriber could receive the event within 5 seconds.
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);   // not system app
     g_mtx.unlock();
     CommonEventManager::UnSubscribeCommonEvent(subscriberPtr);
 }

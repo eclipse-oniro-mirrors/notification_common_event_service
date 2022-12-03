@@ -27,7 +27,7 @@ namespace EventFwk {
 bool AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
 {
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
-    return (tokenType == ATokenTypeEnum::TOKEN_NATIVE || tokenType == ATokenTypeEnum::TOKEN_SHELL);
+    return (tokenType == ATokenTypeEnum::TOKEN_NATIVE);
 }
 
 bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
