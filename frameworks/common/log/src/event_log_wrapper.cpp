@@ -20,16 +20,16 @@ namespace EventFwk {
 // initial static member object
 EventLogLevel EventLogWrapper::level_ = EventLogLevel::DEBUG;
 
-bool EventLogWrapper::JudgeLevel(const EventLogLevel &level)
+bool EventLogWrapper::JudgeLevel(const EventLogLevel& level)
 {
-    const EventLogLevel &curLevel = EventLogWrapper::GetLogLevel();
+    const EventLogLevel& curLevel = EventLogWrapper::GetLogLevel();
     if (level < curLevel) {
         return false;
     }
     return true;
 }
 
-std::string EventLogWrapper::GetBriefFileName(const char *str)
+std::string EventLogWrapper::GetBriefFileName(const char* str)
 {
     if (!str) {
         return std::string();

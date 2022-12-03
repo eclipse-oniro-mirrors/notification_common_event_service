@@ -31,7 +31,7 @@ public:
      *
      * @param remote Indicates the died object.
      */
-    virtual void OnRemoteDied(const wptr<IRemoteObject> &remote);
+    virtual void OnRemoteDied(const wptr<IRemoteObject>& remote);
 };
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -47,14 +47,14 @@ public:
      * @param level Indicates the level of the log.
      * @return Returns true if success; false otherwise.
      */
-    static bool JudgeLevel(const EventLogLevel &level);
+    static bool JudgeLevel(const EventLogLevel& level);
 
     /**
      * Sets the level of the log.
      *
      * @param level Indicates the level of the log.
      */
-    static void SetLogLevel(const EventLogLevel &level)
+    static void SetLogLevel(const EventLogLevel& level)
     {
         level_ = level;
     }
@@ -64,7 +64,7 @@ public:
      *
      * @return Returns the level of the log.
      */
-    static const EventLogLevel &GetLogLevel()
+    static const EventLogLevel& GetLogLevel()
     {
         return level_;
     }
@@ -75,7 +75,7 @@ public:
      * @param str Indicates the full name of the file.
      * @return Returns the full name of the file.
      */
-    static std::string GetBriefFileName(const char *str);
+    static std::string GetBriefFileName(const char* str);
 
 private:
     static EventLogLevel level_;
