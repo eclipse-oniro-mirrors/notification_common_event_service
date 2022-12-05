@@ -114,7 +114,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0100, Function | 
     std::string command = "cem dump -a";
     std::string commandResult = ExecuteCommand(command);
 
-    EXPECT_NE(commandResult, "");
+    EXPECT_EQ(commandResult, "");  // Dumping is not supported temporarily.
 
     // unsubscribe a common event
     CommonEventManager::UnSubscribeCommonEvent(subscriberTestPtr);
@@ -131,7 +131,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0200, Function | 
     std::string command = "cem dump -e " + STRING_EVENT;
     std::string commandResult = ExecuteCommand(command);
 
-    EXPECT_EQ(commandResult, STRING_NO_SUBSCRIBERS);
+    EXPECT_EQ(commandResult, ""); // Dumping is not supported temporarily.
 }
 
 /**
@@ -159,7 +159,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0300, Function | 
     std::string command = "cem dump -e " + STRING_EVENT;
     std::string commandResult = ExecuteCommand(command);
 
-    EXPECT_NE(commandResult, "");
+    EXPECT_EQ(commandResult, "");   // Dumping is not supported temporarily.
 
     // unsubscribe a common event
     CommonEventManager::UnSubscribeCommonEvent(subscriberTestPtr);

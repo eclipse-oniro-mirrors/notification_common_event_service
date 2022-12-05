@@ -24,6 +24,7 @@
 #undef private
 #undef protected
 
+#include "ces_inner_error_code.h"
 #include "common_event_listener.h"
 #include "common_event_stub.h"
 #include "common_event_subscriber.h"
@@ -569,5 +570,5 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0004, Function 
     std::vector<std::u16string> args;
     CommonEventManagerService commonEventManagerService;
     int result = commonEventManagerService.Dump(fd, args);
-    EXPECT_EQ(result, int(OHOS::ERR_OK));
+    EXPECT_EQ(result, int(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED));
 }
