@@ -1185,6 +1185,12 @@ public:
     */
     static const std::string COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF;
 
+    /**
+    * Indicates the action of a common event that the user information has been updated.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_USER_INFO_UPDATED;
+
 public:
     CommonEventSupport();
 
