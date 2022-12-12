@@ -48,6 +48,23 @@ ohos_unittest("common_event_test") {
   ]
 }
 
+ohos_unittest("common_event_listener_test") {
+  module_out_path = module_output_path
+
+  sources = [ "common_event_listener_test.cpp" ]
+
+  configs = [ ":kits_natvie_config" ]
+
+  deps = [ "${ces_core_path}:cesfwk_core" ]
+
+  external_deps = [
+    "ability_base:want",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "ipc:ipc_core",
+  ]
+}
+
 ohos_unittest("common_event_stub_test") {
   module_out_path = module_output_path
 
@@ -122,6 +139,7 @@ group("unittest") {
   deps = []
 
   deps += [
+    ":common_event_listener_test",
     ":common_event_proxy_test",
     ":common_event_stub_test",
     ":common_event_test",
