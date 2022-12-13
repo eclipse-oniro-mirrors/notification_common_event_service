@@ -98,5 +98,35 @@ HWTEST_F(CommonEventAccessTokenHelperTest, VerifyAccessToken_0100, Level1)
     callerToken = PERMISSION_GRANTED;
     EXPECT_FALSE(AccessTokenHelper::VerifyAccessToken(callerToken, permission));
 }
+
+/**
+ * @tc.name: AccessTokenHelper_0100
+ * @tc.desc: test RecordSensitivePermissionUsage function and tokenType != ATokenTypeEnum::TOKEN_HAP.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventAccessTokenHelperTest, AccessTokenHelper_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "AccessTokenHelper_0100 start";
+    AccessTokenHelper accessTokenHelper;
+    AccessTokenID callerToken = PERMISSION_GRANTED;
+    std::string event = "aa";
+    accessTokenHelper.RecordSensitivePermissionUsage(callerToken, event);
+    GTEST_LOG_(INFO) << "AccessTokenHelper_0100 end";
+}
+
+/**
+ * @tc.name: AccessTokenHelper_0200
+ * @tc.desc: test RecordSensitivePermissionUsage function and tokenType == ATokenTypeEnum::TOKEN_HAP.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventAccessTokenHelperTest, AccessTokenHelper_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "AccessTokenHelper_0200 start";
+    AccessTokenHelper accessTokenHelper;
+    AccessTokenID callerToken = DLP_PERMISSION_GRANTED;
+    std::string event = "aa";
+    accessTokenHelper.RecordSensitivePermissionUsage(callerToken, event);
+    GTEST_LOG_(INFO) << "AccessTokenHelper_0200 end";
+}
 }
 }
