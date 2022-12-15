@@ -115,7 +115,7 @@ HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
     
     CommonEvent commonEvent;
     bool publishCommonEvent = commonEvent.PublishCommonEvent(data, publishInfo, subscriber, SYSTEM_UID);
-    EXPECT_EQ(true, publishCommonEvent);
+    EXPECT_EQ(false, publishCommonEvent);
 }
 
 /*
