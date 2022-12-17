@@ -43,6 +43,7 @@ ces_services_path = "${services_path}"
 declare_args() {
   common_event_service_with_graphics = true
   has_hisysevent_part = true
+  common_event_service_tool_cem_enable = true
 
   if (!defined(global_parts_info) ||
       defined(global_parts_info.account_os_account)) {
