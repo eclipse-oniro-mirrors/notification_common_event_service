@@ -40,7 +40,13 @@ ohos_unittest("matching_skills_test") {
 
   deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
-  external_deps = [ "ability_base:want" ]
+  external_deps = [
+    "ability_base:want",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+  ]
 }
 
 ohos_unittest("common_event_subscribe_test") {
