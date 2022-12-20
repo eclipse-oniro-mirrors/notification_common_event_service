@@ -15,7 +15,9 @@ import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
 group("tools_target") {
-  deps = [ "cem:tools_cem" ]
+  if (common_event_service_tool_cem_enable) {
+    deps = [ "cem:tools_cem" ]
+  }
 }
 
 group("systemtest") {
