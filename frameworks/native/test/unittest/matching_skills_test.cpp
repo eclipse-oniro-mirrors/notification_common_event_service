@@ -15,6 +15,7 @@
 
 #define private public
 #define protected public
+#include "async_common_event_result.h"
 #include "matching_skills.h"
 #undef private
 #undef protected
@@ -22,6 +23,7 @@
 #include <gtest/gtest.h>
 
 using namespace testing::ext;
+using namespace OHOS;
 using namespace OHOS::EventFwk;
 using OHOS::Parcel;
 
@@ -218,4 +220,187 @@ HWTEST_F(MatchingSkillsTest, MatchingSkills_Match_001, TestSize.Level1)
     want.AddEntity(entity);
     want.SetAction(event);
     EXPECT_EQ(true, matchSkills.Match(want));
+}
+
+/*
+ * Feature: GetEntity
+ * Function: GetEntity
+ * SubFunction: NA
+ * FunctionPoints: GetEntity
+ * EnvConditions: NA
+ * CaseDescription: test GetEntity function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_001, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.entities_.emplace_back(event);
+    size_t index = 1;
+    EXPECT_EQ("", matchSkills.GetEntity(index));
+}
+
+/*
+ * Feature: GetEntity
+ * Function: GetEntity
+ * SubFunction: NA
+ * FunctionPoints: GetEntity
+ * EnvConditions: NA
+ * CaseDescription: test GetEntity function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_002, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.entities_.emplace_back(event);
+    size_t index = -1;
+    EXPECT_EQ("", matchSkills.GetEntity(index));
+}
+
+/*
+ * Feature: GetEntity
+ * Function: GetEntity
+ * SubFunction: NA
+ * FunctionPoints: GetEntity
+ * EnvConditions: NA
+ * CaseDescription: test GetEntity function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_003, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.entities_.emplace_back(event);
+    size_t index = 0;
+    EXPECT_EQ("event.unit.test", matchSkills.GetEntity(index));
+}
+
+/*
+ * Feature: GetEvent
+ * Function: GetEvent
+ * SubFunction: NA
+ * FunctionPoints: GetEvent
+ * EnvConditions: NA
+ * CaseDescription: test GetEvent function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_004, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.events_.emplace_back(event);
+    size_t index = 1;
+    EXPECT_EQ("", matchSkills.GetEvent(index));
+}
+
+/*
+ * Feature: GetEvent
+ * Function: GetEvent
+ * SubFunction: NA
+ * FunctionPoints: GetEvent
+ * EnvConditions: NA
+ * CaseDescription: test GetEvent function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_005, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.events_.emplace_back(event);
+    size_t index = -1;
+    EXPECT_EQ("", matchSkills.GetEvent(index));
+}
+
+/*
+ * Feature: GetEvent
+ * Function: GetEvent
+ * SubFunction: NA
+ * FunctionPoints: GetEvent
+ * EnvConditions: NA
+ * CaseDescription: test GetEvent function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_006, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.events_.emplace_back(event);
+    size_t index = 0;
+    EXPECT_EQ("event.unit.test", matchSkills.GetEvent(index));
+}
+
+/*
+ * Feature: GetScheme
+ * Function: GetScheme
+ * SubFunction: NA
+ * FunctionPoints: GetScheme
+ * EnvConditions: NA
+ * CaseDescription: test GetScheme function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_007, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.schemes_.emplace_back(event);
+    size_t index = 1;
+    EXPECT_EQ("", matchSkills.GetScheme(index));
+}
+
+/*
+ * Feature: GetScheme
+ * Function: GetScheme
+ * SubFunction: NA
+ * FunctionPoints: GetScheme
+ * EnvConditions: NA
+ * CaseDescription: test GetScheme function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_008, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.schemes_.emplace_back(event);
+    size_t index = -1;
+    EXPECT_EQ("", matchSkills.GetScheme(index));
+}
+
+/*
+ * Feature: GetScheme
+ * Function: GetScheme
+ * SubFunction: NA
+ * FunctionPoints: GetScheme
+ * EnvConditions: NA
+ * CaseDescription: test GetScheme function
+ */
+
+HWTEST_F(MatchingSkillsTest, MatchingSkills_009, TestSize.Level1)
+{
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.schemes_.emplace_back(event);
+    size_t index = 0;
+    EXPECT_EQ("event.unit.test", matchSkills.GetScheme(index));
+}
+
+/*
+ * Feature: FinishCommonEvent
+ * Function: FinishCommonEvent
+ * SubFunction: NA
+ * FunctionPoints: FinishCommonEvent
+ * EnvConditions: NA
+ * CaseDescription: test FinishCommonEvent function
+ */
+
+HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_001, TestSize.Level1)
+{
+    int32_t resultCode = 1;
+    std::string resultData = "aa";
+    bool ordered = true;
+    bool sticky = true;
+    sptr<IRemoteObject> token = nullptr;
+    AsyncCommonEventResult asyncCommonEventResult(resultCode, resultData, ordered, sticky, token);
+    asyncCommonEventResult.finished_ = true;
+    EXPECT_EQ(false, asyncCommonEventResult.FinishCommonEvent());
 }

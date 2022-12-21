@@ -18,8 +18,10 @@
 #define private public
 #include "bundle_manager_helper.h"
 #undef private
+#include "mock_common_event_stub.h"
 
 using namespace testing::ext;
+using namespace OHOS;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
 
@@ -49,23 +51,8 @@ void BundleManagerHelperTest::TearDown(void)
 {}
 
 /**
- * @tc.name: BundleManagerHelper_0100
- * @tc.desc: test CheckIsSystemAppByBundleName function.
- * @tc.type: FUNC
- */
-HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0100, Level1)
-{
-    GTEST_LOG_(INFO) << "BundleManagerHelper_0100 start";
-    BundleManagerHelper bundleManagerHelper;
-    std::string bundleName = "aa";
-    const int32_t userId = 1;
-    EXPECT_EQ(false, bundleManagerHelper.CheckIsSystemAppByBundleName(bundleName, userId));
-    GTEST_LOG_(INFO) << "BundleManagerHelper_0100 end";
-}
-
-/**
  * @tc.name: BundleManagerHelper_0200
- * @tc.desc: test CheckIsSystemAppByBundleName function.
+ * @tc.desc: test ClearBundleManagerHelper function and sptrBundleMgr_ is nullptr.
  * @tc.type: FUNC
  */
 HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0200, Level1)
@@ -74,4 +61,157 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0200, Level1)
     BundleManagerHelper bundleManagerHelper;
     bundleManagerHelper.ClearBundleManagerHelper();
     GTEST_LOG_(INFO) << "BundleManagerHelper_0200 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0300
+ * @tc.desc: test GetBundleMgrProxy function and sptrBundleMgr_ is not nullptr.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0300, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0300 start";
+    BundleManagerHelper bundleManagerHelper;
+    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
+    bundleManagerHelper.sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
+    EXPECT_EQ(true, bundleManagerHelper.GetBundleMgrProxy());
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0300 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0400
+ * @tc.desc: test GetBundleMgrProxy function and sptrBundleMgr_ is nullptr.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0400, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0400 start";
+    BundleManagerHelper bundleManagerHelper;
+    bundleManagerHelper.sptrBundleMgr_ = nullptr;
+    EXPECT_EQ(false, bundleManagerHelper.GetBundleMgrProxy());
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0400 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0500
+ * @tc.desc: test GetBundleName function and GetBundleMgrProxy is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0500, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0500 start";
+    BundleManagerHelper bundleManagerHelper;
+    bundleManagerHelper.sptrBundleMgr_ = nullptr;
+    uid_t uid = 1;
+    EXPECT_EQ("", bundleManagerHelper.GetBundleName(uid));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0500 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0600
+ * @tc.desc: test QueryExtensionInfos function and GetBundleMgrProxy is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0600, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0600 start";
+    BundleManagerHelper bundleManagerHelper;
+    bundleManagerHelper.sptrBundleMgr_ = nullptr;
+    std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
+    int32_t userId = 1;
+    EXPECT_EQ(false, bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0600 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0700
+ * @tc.desc: test QueryExtensionInfos function and GetBundleMgrProxy is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0700, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0700 start";
+    BundleManagerHelper bundleManagerHelper;
+    bundleManagerHelper.sptrBundleMgr_ = nullptr;
+    std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
+    EXPECT_EQ(false, bundleManagerHelper.QueryExtensionInfos(extensionInfos));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0700 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0800
+ * @tc.desc: test QueryExtensionInfos function and GetBundleMgrProxy is true and osAccountIds.size() is 0.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0800, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0800 start";
+    BundleManagerHelper bundleManagerHelper;
+    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
+    bundleManagerHelper.sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
+    std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
+    EXPECT_EQ(false, bundleManagerHelper.QueryExtensionInfos(extensionInfos));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0800 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0900
+ * @tc.desc: test GetResConfigFile function and GetBundleMgrProxy is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0900, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0900 start";
+    BundleManagerHelper bundleManagerHelper;
+    bundleManagerHelper.sptrBundleMgr_ = nullptr;
+    AppExecFwk::ExtensionAbilityInfo extension;
+    std::vector<std::string> profileInfos;
+    EXPECT_EQ(false, bundleManagerHelper.GetResConfigFile(extension, profileInfos));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0900 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_1000
+ * @tc.desc: test CheckIsSystemAppByUid function and GetBundleMgrProxy is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1000, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1000 start";
+    BundleManagerHelper bundleManagerHelper;
+    bundleManagerHelper.sptrBundleMgr_ = nullptr;
+    uid_t uid = 1;
+    EXPECT_EQ(false, bundleManagerHelper.CheckIsSystemAppByUid(uid));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1000 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_1100
+ * @tc.desc: test CheckIsSystemAppByBundleName function and GetBundleMgrProxy is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1100, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1100 start";
+    BundleManagerHelper bundleManagerHelper;
+    bundleManagerHelper.sptrBundleMgr_ = nullptr;
+    std::string bundleName = "aa";
+    int32_t userId = 1;
+    EXPECT_EQ(false, bundleManagerHelper.CheckIsSystemAppByBundleName(bundleName, userId));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1100 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_1200
+ * @tc.desc: test ClearBundleManagerHelper function and sptrBundleMgr_ is not nullptr.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1200, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1200 start";
+    BundleManagerHelper bundleManagerHelper;
+    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
+    bundleManagerHelper.sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
+    bundleManagerHelper.ClearBundleManagerHelper();
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1200 end";
 }

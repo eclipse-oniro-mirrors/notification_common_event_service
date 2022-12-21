@@ -561,7 +561,14 @@ ohos_unittest("common_event_manager_service_ability_test") {
 ohos_unittest("bundle_manager_helper_test") {
   module_out_path = module_output_path
 
-  sources = [ "bundle_manager_helper_test.cpp" ]
+  include_dirs = [ "${tools_path}/test/mock" ]
+
+  sources = [
+    "${tools_path}/test/mock/mock_common_event_stub.cpp",
+    "bundle_manager_helper_test.cpp",
+    "mock/mock_os_account_manager_helper.cpp",
+    "mock/mock_service_registry.cpp",
+  ]
 
   configs = [ ":cesfwk_services_config" ]
 
@@ -571,6 +578,7 @@ ohos_unittest("bundle_manager_helper_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
+    "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -710,6 +718,43 @@ ohos_unittest("inner_common_event_manager_test") {
   ]
 }
 
+ohos_unittest("ability_manager_helper_test") {
+  module_out_path = module_output_path
+
+  include_dirs = [ "${tools_path}/test/mock" ]
+
+  sources = [
+    "${tools_path}/test/mock/mock_common_event_stub.cpp",
+    "ability_manager_helper_test.cpp",
+    "mock/mock_service_registry.cpp",
+  ]
+
+  configs = [ ":cesfwk_services_config" ]
+
+  deps = [
+    "${ability_runtime_path}/frameworks/native/ability/native:static_subscriber_ipc",
+    "${ces_common_path}:libevent_common",
+    "${ces_core_path}:cesfwk_core",
+    "${ces_native_path}:cesfwk_innerkits",
+    "${services_path}:cesfwk_services",
+    "//third_party/googletest:gmock_main",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "ability_runtime:ability_manager",
+    "access_token:libaccesstoken_sdk",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "samgr:samgr_proxy",
+  ]
+}
+
 ohos_unittest("ordered_event_handler_test") {
   module_out_path = module_output_path
 
@@ -774,6 +819,7 @@ group("unittest") {
 
   deps += [
     ":ability_manager_death_recipient_unit_test",
+    ":ability_manager_helper_test",
     ":bundle_manager_death_recipient_unit_test",
     ":bundle_manager_helper_test",
     ":common_event_access_token_helper_test",
