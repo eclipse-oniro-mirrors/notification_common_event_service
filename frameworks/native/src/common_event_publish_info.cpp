@@ -101,7 +101,7 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
         return false;
     }
     // write bundleName
-    if (!parcel.WriteString(bundleName_)) {
+    if (!parcel.WriteString16(Str8ToStr16(bundleName_))) {
         EVENT_LOGE("common event Publish Info  write bundleName failed");
         return false;
     }
@@ -126,11 +126,9 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
     ordered_ = parcel.ReadBool();
     // read sticky
     sticky_ = parcel.ReadBool();
+    // read bundleName
+    bundleName_ = Str16ToStr8(parcel.ReadString16());
 
-    if (!parcel.ReadString(bundleName_)) {
-        EVENT_LOGE("Fail to read bundleName");
-        return false;
-    }
     return true;
 }
 
