@@ -1295,6 +1295,13 @@ const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_TOKEN_INV
 const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF =
     "common.event.DISTRIBUTED_ACCOUNT_LOGOFF";
 
+/**
+ * Indicates the action of a common event that the os account information has been updated.
+ * This is a protected common event that can only be sent by system.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_USER_INFO_UPDATED =
+    "usual.event.USER_INFO_UPDATED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -1472,6 +1479,16 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_TOKEN_INVALID);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_INFO_UPDATED);
 
     return;
 }
