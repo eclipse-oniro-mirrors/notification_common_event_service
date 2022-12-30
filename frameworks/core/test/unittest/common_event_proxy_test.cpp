@@ -173,3 +173,175 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_002, TestSize.Level1)
     int result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
     EXPECT_EQ(OHOS::ERR_OK, result);
 }
+
+/*
+ * tc.number: PublishCommonEvent_003
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, PublishCommonEvent_003, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
+
+    CommonEventData event;
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+
+    dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
+    dataParcel.WriteParcelable(&event);
+
+    MessageParcel::SetFlag(false);
+    const int32_t useId = 1;
+    bool result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
+    EXPECT_EQ(false, result);
+}
+
+/*
+ * tc.number: PublishCommonEvent_004
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, PublishCommonEvent_004, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
+
+    CommonEventData event;
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+
+    dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
+    dataParcel.WriteParcelable(&publishInfo);
+
+    MessageParcel::SetFlag(false);
+    const int32_t useId = 1;
+    bool result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
+    EXPECT_EQ(false, result);
+}
+
+/*
+ * tc.number: PublishCommonEvent_005
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, PublishCommonEvent_005, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
+
+    CommonEventData event;
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+
+    dataParcel.WriteParcelable(&event);
+    dataParcel.WriteParcelable(&publishInfo);
+
+    MessageParcel::SetFlag(false);
+    const int32_t useId = 1;
+    bool result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
+    EXPECT_EQ(false, result);
+}
+
+/*
+ * tc.number: PublishCommonEvent_006
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, PublishCommonEvent_006, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
+
+    uint8_t dumpType = 0;
+    const std::string event = "this is an event";
+    int32_t userId = 1;
+    std::vector<std::string> state;
+
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+
+    MessageParcel::SetFlag(false);
+    bool result = commonEventProxy.DumpState(dumpType, event, userId, state);
+    EXPECT_EQ(true, result);
+}
+
+/*
+ * tc.number: PublishCommonEvent_007
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, PublishCommonEvent_007, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
+
+    uint8_t dumpType = 0;
+    const std::string event = "this is an event";
+    int32_t userId = 1;
+    std::vector<std::string> state;
+
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+
+    dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
+
+    MessageParcel::SetFlag(false);
+    bool result = commonEventProxy.DumpState(dumpType, event, userId, state);
+    EXPECT_EQ(true, result);
+}
+
+/*
+ * tc.number: PublishCommonEvent_008
+ * tc.name: test OnRemoteRequest
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, PublishCommonEvent_008, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
+
+    uint8_t dumpType = 0;
+    const std::string event = "this is an event";
+    int32_t userId = 1;
+    std::vector<std::string> state;
+
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
+
+    dataParcel.WriteParcelable(&publishInfo);
+
+    MessageParcel::SetFlag(false);
+    bool result = commonEventProxy.DumpState(dumpType, event, userId, state);
+    EXPECT_EQ(true, result);
+}
