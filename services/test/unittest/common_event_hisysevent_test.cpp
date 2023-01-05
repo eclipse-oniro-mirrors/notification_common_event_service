@@ -23,8 +23,8 @@ using namespace testing::ext;
 
 namespace {
 const std::string TEST_EVENT_NAME = "usual.event.TEST_HISYSEVENT";
-const std::string TEST_SUBSCRIBER_BUNDLE_NAME = "subscriber";
-const std::string TEST_PUBLISHER_BUNDLE_NAME = "publisher";
+const std::string TEST_BUNDLE_NAME_OF_SUBSCRIBER = "subscriber";
+const std::string TEST_BUNDLE_NAME_OF_PUBLISHER = "publisher";
 constexpr int32_t TEST_USER_ID = 1000;
 constexpr int32_t TEST_SUBSCRIBER_NUM = 256;
 } // namespace
@@ -66,7 +66,7 @@ HWTEST_F(CommonEventHisyseventTest, SendOrderedEventProcTimeoutSysEvent_0100, Le
 
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
-    eventInfo.subscriberName = TEST_SUBSCRIBER_BUNDLE_NAME;
+    eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     eventInfo.eventName = TEST_EVENT_NAME;
@@ -87,8 +87,8 @@ HWTEST_F(CommonEventHisyseventTest, SendStaticEventProcErrorSysEvent_0100, Level
 
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
-    eventInfo.publisherName = TEST_PUBLISHER_BUNDLE_NAME;
-    eventInfo.subscriberName = TEST_SUBSCRIBER_BUNDLE_NAME;
+    eventInfo.publisherName = TEST_BUNDLE_NAME_OF_PUBLISHER;
+    eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
     eventInfo.eventName = TEST_EVENT_NAME;
     EventReport::SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
 
@@ -126,7 +126,7 @@ HWTEST_F(CommonEventHisyseventTest, SendPublishEventErrorSysEvent_0100, Level1)
 
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
-    eventInfo.publisherName = TEST_SUBSCRIBER_BUNDLE_NAME;
+    eventInfo.publisherName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     eventInfo.eventName = TEST_EVENT_NAME;
@@ -147,7 +147,7 @@ HWTEST_F(CommonEventHisyseventTest, SendSubscribeSysEvent_0100, Level1)
 
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
-    eventInfo.subscriberName = TEST_SUBSCRIBER_BUNDLE_NAME;
+    eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     std::vector<std::string> events = {"event1", "event2", "event3"};
@@ -179,7 +179,7 @@ HWTEST_F(CommonEventHisyseventTest, SendUnSubscribeSysEvent_0100, Level1)
 
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
-    eventInfo.subscriberName = TEST_SUBSCRIBER_BUNDLE_NAME;
+    eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     std::vector<std::string> events = {"event1_1", "event1_2", "event1_3"};
@@ -212,7 +212,7 @@ HWTEST_F(CommonEventHisyseventTest, SendPublishSysEvent_0100, Level1)
 
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
-    eventInfo.publisherName = TEST_PUBLISHER_BUNDLE_NAME;
+    eventInfo.publisherName = TEST_BUNDLE_NAME_OF_PUBLISHER;
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     eventInfo.eventName = TEST_EVENT_NAME;
