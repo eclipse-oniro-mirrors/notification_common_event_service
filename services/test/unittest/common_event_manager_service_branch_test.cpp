@@ -55,13 +55,13 @@ void CommonEventManagerServiceTest::TearDown(void)
 
 /**
  * @tc.name: CommonEventManagerServiceBranch_0100
- * @tc.desc: test PublishCommonEvent function and VerifyNativeToken is false.
+ * @tc.desc: test PublishCommonEvent function, shell is system app and return true.
  * @tc.type: FUNC
  */
 HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0100 start";
-    std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
+    sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
@@ -75,7 +75,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Le
     sptr<IRemoteObject> commonEventListener = nullptr;
     uid_t uid = 1;
     int32_t userId = 2;
-    EXPECT_EQ(false, comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, userId));
+    EXPECT_EQ(true, comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0100 end";
 }
 
