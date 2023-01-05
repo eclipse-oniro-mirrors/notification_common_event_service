@@ -401,6 +401,14 @@ bool InnerCommonEventManager::PublishStickyEvent(
         }
         EVENT_LOGI("publish sticky event : %{public}s",
             commonEventRecord->commonEventData->GetWant().GetAction().c_str());
+
+        if (!commonEventRecord->publishInfo->GetBundleName().empty() &&
+            commonEventRecord->publishInfo->GetBundleName() != subscriberRecord->eventRecordInfo.bundleName) {
+            EVENT_LOGW("commonEventRecord assigned to bundleName[%{public}s]",
+                commonEventRecord->publishInfo->GetBundleName().c_str());
+            continue;
+        }
+
         commonEventRecord->publishInfo->SetOrdered(false);
         if (!controlPtr_) {
             EVENT_LOGE("CommonEventControlManager ptr is nullptr");
