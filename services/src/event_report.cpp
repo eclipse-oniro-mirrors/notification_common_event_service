@@ -24,8 +24,8 @@ const std::string EVENT_PARAM_USER_ID = "USER_ID";
 const std::string EVENT_PARAM_PID = "PID";
 const std::string EVENT_PARAM_UID = "UID";
 const std::string EVENT_PARAM_SUBSCRIBER_NUM = "SUBSCRIBER_NUM";
-const std::string EVENT_PARAM_PUBLISHER_BUNDLE_NAME = "PUBLISHER_BUNDLE_NAME";
-const std::string EVENT_PARAM_SUBSCRIBER_BUNDLE_NAME = "SUBSCRIBER_BUNDLE_NAME";
+const std::string EVENT_PARAM_BUNDLE_NAME_OF_PUBLISHER = "BUNDLE_NAME_OF_PUBLISHER";
+const std::string EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER = "BUNDLE_NAME_OF_SUBSCRIBER";
 const std::string EVENT_PARAM_EVENT_NAME = "EVENT_NAME";
 } // namespace
 
@@ -74,7 +74,7 @@ void EventReport::InnerSendOrderedEventProcTimeoutEvent(const EventInfo &eventIn
         ORDERED_EVENT_PROC_TIMEOUT,
         HiviewDFX::HiSysEvent::EventType::FAULT,
         EVENT_PARAM_USER_ID, eventInfo.userId,
-        EVENT_PARAM_SUBSCRIBER_BUNDLE_NAME, eventInfo.subscriberName,
+        EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER, eventInfo.subscriberName,
         EVENT_PARAM_PID, eventInfo.pid,
         EVENT_PARAM_UID, eventInfo.uid,
         EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
@@ -86,8 +86,8 @@ void EventReport::InnerSendStaticEventProcErrorEvent(const EventInfo &eventInfo)
         STATIC_EVENT_PROC_ERROR,
         HiviewDFX::HiSysEvent::EventType::FAULT,
         EVENT_PARAM_USER_ID, eventInfo.userId,
-        EVENT_PARAM_PUBLISHER_BUNDLE_NAME, eventInfo.publisherName,
-        EVENT_PARAM_SUBSCRIBER_BUNDLE_NAME, eventInfo.subscriberName,
+        EVENT_PARAM_BUNDLE_NAME_OF_PUBLISHER, eventInfo.publisherName,
+        EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER, eventInfo.subscriberName,
         EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
 }
 
@@ -107,7 +107,7 @@ void EventReport::InnerSendPublishErrorEvent(const EventInfo &eventInfo)
         PUBLISH_ERROR,
         HiviewDFX::HiSysEvent::EventType::FAULT,
         EVENT_PARAM_USER_ID, eventInfo.userId,
-        EVENT_PARAM_PUBLISHER_BUNDLE_NAME, eventInfo.publisherName,
+        EVENT_PARAM_BUNDLE_NAME_OF_PUBLISHER, eventInfo.publisherName,
         EVENT_PARAM_PID, eventInfo.pid,
         EVENT_PARAM_UID, eventInfo.uid,
         EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
@@ -119,7 +119,7 @@ void EventReport::InnerSendSubscribeEvent(const EventInfo &eventInfo)
         SUBSCRIBE,
         HiviewDFX::HiSysEvent::EventType::STATISTIC,
         EVENT_PARAM_USER_ID, eventInfo.userId,
-        EVENT_PARAM_SUBSCRIBER_BUNDLE_NAME, eventInfo.subscriberName,
+        EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER, eventInfo.subscriberName,
         EVENT_PARAM_PID, eventInfo.pid,
         EVENT_PARAM_UID, eventInfo.uid,
         EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
@@ -131,7 +131,7 @@ void EventReport::InnerSendUnSubscribeEvent(const EventInfo &eventInfo)
         UNSUBSCRIBE,
         HiviewDFX::HiSysEvent::EventType::STATISTIC,
         EVENT_PARAM_USER_ID, eventInfo.userId,
-        EVENT_PARAM_SUBSCRIBER_BUNDLE_NAME, eventInfo.subscriberName,
+        EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER, eventInfo.subscriberName,
         EVENT_PARAM_PID, eventInfo.pid,
         EVENT_PARAM_UID, eventInfo.uid,
         EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
@@ -143,7 +143,7 @@ void EventReport::InnerSendPublishEvent(const EventInfo &eventInfo)
         PUBLISH,
         HiviewDFX::HiSysEvent::EventType::STATISTIC,
         EVENT_PARAM_USER_ID, eventInfo.userId,
-        EVENT_PARAM_PUBLISHER_BUNDLE_NAME, eventInfo.publisherName,
+        EVENT_PARAM_BUNDLE_NAME_OF_PUBLISHER, eventInfo.publisherName,
         EVENT_PARAM_PID, eventInfo.pid,
         EVENT_PARAM_UID, eventInfo.uid,
         EVENT_PARAM_EVENT_NAME, eventInfo.eventName);

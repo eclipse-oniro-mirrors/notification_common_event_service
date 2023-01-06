@@ -17,7 +17,7 @@ domain: COMMONEVENT
 ORDERED_EVENT_PROC_TIMEOUT:
   __BASE: {type: FAULT, level: MINOR, desc: process ordered event timeout}
   USER_ID: {type: INT32, desc: userId}
-  SUBSCRIBER_BUNDLE_NAME: {type: STRING, desc: subscriber bundle name}
+  BUNDLE_NAME_OF_SUBSCRIBER: {type: STRING, desc: bundle name of subscriber}
   PID: {type: INT32, desc: subscriber pid}
   UID: {type: INT32, desc: subscriber uid}
   EVENT_NAME: {type: STRING, desc: event name}
@@ -25,8 +25,8 @@ ORDERED_EVENT_PROC_TIMEOUT:
 STATIC_EVENT_PROC_ERROR:
   __BASE: {type: FAULT, level: MINOR, desc: process static event error}
   USER_ID: {type: INT32, desc: userId}
-  PUBLISHER_BUNDLE_NAME: {type: STRING, desc: publisher bundle name}
-  SUBSCRIBER_BUNDLE_NAME: {type: STRING, desc: subscriber bundle name}
+  BUNDLE_NAME_OF_PUBLISHER: {type: STRING, desc: bundle name of publisher}
+  BUNDLE_NAME_OF_SUBSCRIBER: {type: STRING, desc: bundle name of subscriber}
   EVENT_NAME: {type: STRING, desc: event name}
 
 SUBSCRIBER_EXCEED_MAXIMUM:
@@ -38,7 +38,7 @@ SUBSCRIBER_EXCEED_MAXIMUM:
 PUBLISH_ERROR:
   __BASE: {type: FAULT, level: MINOR, desc: publish event error}
   USER_ID: {type: INT32, desc: userId}
-  PUBLISHER_BUNDLE_NAME: {type: STRING, desc: publisher bundle name}
+  BUNDLE_NAME_OF_PUBLISHER: {type: STRING, desc: bundle name of publisher}
   PID: {type: INT32, desc: publisher pid}
   UID: {type: INT32, desc: publisher uid}
   EVENT_NAME: {type: STRING, desc: published event name}
@@ -47,7 +47,7 @@ PUBLISH_ERROR:
 SUBSCRIBE:
   __BASE: {type: STATISTIC, level: MINOR, desc: subscribe event}
   USER_ID: {type: INT32, desc: userId}
-  SUBSCRIBER_BUNDLE_NAME: {type: STRING, desc: subscriber bundle name}
+  BUNDLE_NAME_OF_SUBSCRIBER: {type: STRING, desc: bundle name of subscriber}
   PID: {type: INT32, desc: subscriber pid}
   UID: {type: INT32, desc: subscriber uid}
   EVENT_NAME: {type: STRING, desc: subscribed event name}
@@ -55,7 +55,7 @@ SUBSCRIBE:
 UNSUBSCRIBE:
   __BASE: {type: STATISTIC, level: MINOR, desc: unsubscribe event}
   USER_ID: {type: INT32, desc: userId}
-  SUBSCRIBER_BUNDLE_NAME: {type: STRING, desc: subscriber bundle name}
+  BUNDLE_NAME_OF_SUBSCRIBER: {type: STRING, desc: bundle name of subscriber}
   PID: {type: INT32, desc: subscriber pid}
   UID: {type: INT32, desc: subscriber uid}
   EVENT_NAME: {type: STRING, desc: subscribed event name}
@@ -63,7 +63,7 @@ UNSUBSCRIBE:
 PUBLISH:
   __BASE: {type: STATISTIC, level: MINOR, desc: publish event}
   USER_ID: {type: INT32, desc: userId}
-  PUBLISHER_BUNDLE_NAME: {type: STRING, desc: publisher bundle name}
+  BUNDLE_NAME_OF_PUBLISHER: {type: STRING, desc: bundle name of publisher}
   PID: {type: INT32, desc: publisher pid}
   UID: {type: INT32, desc: publisher uid}
   EVENT_NAME: {type: STRING, desc: published event name}
