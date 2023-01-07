@@ -122,8 +122,11 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     }
 
     if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
-        EVENT_LOGE("invalid user.");
-        return false;
+        int32_t callUid = IPCSkeleton::GetCallingUid();
+        if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(callUid)) {
+            EVENT_LOGE("It's not sa or system app.");
+            return false;
+        }
     }
 
     return PublishCommonEventDetailed(

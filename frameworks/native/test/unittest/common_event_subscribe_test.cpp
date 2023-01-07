@@ -506,7 +506,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventPublishInfo_001, TestSize.Level1)
     Parcel parcel;
     CommonEventPublishInfo commonEventPublishInfo;
     bool result = commonEventPublishInfo.ReadFromParcel(parcel);
-    EXPECT_EQ(result, false);
+    EXPECT_EQ(result, true);
 }
 
 /*

@@ -23,6 +23,7 @@ extern void mockVerifyNativeToken(bool mockRet);
 extern void mockVerifyAccessToken(bool mockRet);
 
 using namespace testing::ext;
+using namespace OHOS;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
 
@@ -74,7 +75,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0100, Level1)
 HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0200, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerService_0200 start";
-    std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
+    sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
@@ -87,7 +88,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0200, Level1)
     CommonEventPublishInfo publishinfo;
     uid_t uid = 1;
     int32_t userId = 2;
-    EXPECT_EQ(false, comm->PublishCommonEvent(event, publishinfo, nullptr, uid, userId));
+    EXPECT_EQ(true, comm->PublishCommonEvent(event, publishinfo, nullptr, uid, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0200 end";
 }
 

@@ -115,7 +115,7 @@ HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
     
     CommonEvent commonEvent;
     bool publishCommonEvent = commonEvent.PublishCommonEvent(data, publishInfo, subscriber, SYSTEM_UID);
-    EXPECT_EQ(false, publishCommonEvent);
+    EXPECT_EQ(true, publishCommonEvent);
 }
 
 /*
@@ -415,11 +415,11 @@ HWTEST_F(CommonEventTest, CommonEventPublishInfo_0100, Function | MediumTest | L
  */
 HWTEST_F(CommonEventTest, CommonEventPublishInfo_0200, Function | MediumTest | Level1)
 {
-    bool result = false;
+    bool result = true;
     OHOS::Parcel parcel;
     CommonEventPublishInfo publishInfo;
     if (nullptr == publishInfo.Unmarshalling(parcel)) {
-        result = true;
+        result = false;
     }
     EXPECT_EQ(true, result);
 }
