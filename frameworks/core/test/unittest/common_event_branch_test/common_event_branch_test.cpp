@@ -309,7 +309,8 @@ HWTEST_F(CommonEventTest, CommonEvent_016, TestSize.Level1)
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
     uid_t uid = 1;
     int32_t userId = 1;
-    EXPECT_EQ(true, commonEvent.PublishCommonEventAsUser(data, publishInfo, subscriber, uid, userId));
+    int32_t callToken = 0;
+    EXPECT_EQ(true, commonEvent.PublishCommonEventAsUser(data, publishInfo, subscriber, uid, callToken, userId));
 }
 
 /*

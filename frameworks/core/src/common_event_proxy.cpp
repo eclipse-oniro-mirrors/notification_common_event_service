@@ -90,7 +90,8 @@ int32_t CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const
 }
 
 bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishInfo,
-    const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId)
+    const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &callerToken,
+    const int32_t &userId)
 {
     EVENT_LOGD("start");
 
@@ -132,6 +133,11 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
     if (!data.WriteInt32(uid)) {
         EVENT_LOGE("Failed to write int uid");
         return false;
+    }
+
+    if (!data.WriteInt32(callerToken)) {
+        EVENT_LOGE("Failed to write parcelable callerToken");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (!data.WriteInt32(userId)) {

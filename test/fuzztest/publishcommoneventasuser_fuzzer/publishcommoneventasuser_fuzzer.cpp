@@ -52,7 +52,7 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     } else {
         int32_t uid = U32_AT(reinterpret_cast<const uint8_t*>(data));
         return EventFwk::CommonEventManager::PublishCommonEventAsUser(
-            commonEventData, commonEventPublishInfo, subscriber, uid, userId);
+            commonEventData, commonEventPublishInfo, subscriber, uid, code, userId);
     }
 }
 }

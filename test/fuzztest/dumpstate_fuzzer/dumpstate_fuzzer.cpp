@@ -77,7 +77,7 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     }
     commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
     // test PublishCommonEvent and four paramter
-    commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber, code);
+    commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber, code, code);
     // test DumpState function
     return commonEvent.DumpState(dumpType, stringData, code, state);
 }

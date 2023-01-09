@@ -56,10 +56,11 @@ public:
      * @param publishInfo Indicates the publish info.
      * @param subscriber Indicates the common event subscriber.
      * @param uid Indicates the uid of application.
+     * @param callerToken Indicates the caller token.
      * @return Returns true if successful; false otherwise.
      */
     bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid);
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &callerToken);
 
     /**
      * Publishes a common event.
@@ -68,11 +69,12 @@ public:
      * @param publishInfo Indicates the publish info.
      * @param subscriber Indicates the common event subscriber.
      * @param uid Indicates the uid of application.
+     * @param callerToken Indicates the caller token.
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
     bool PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid,
+        const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &callerToken,
         const int32_t &userId);
 
     /**

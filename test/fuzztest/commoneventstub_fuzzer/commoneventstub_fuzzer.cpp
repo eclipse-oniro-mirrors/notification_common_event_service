@@ -45,7 +45,7 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     permissions.emplace_back(stringData);
     commonEventPublishInfo.SetSubscriberPermissions(permissions);
     sptr<IRemoteObject> commonEventListener = nullptr;
-    commonEventStub.PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener, code, code);
+    commonEventStub.PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener, code, code, code);
     // test SubscribeCommonEvent function
     EventFwk::MatchingSkills matchingSkills;
     matchingSkills.AddEvent(stringData);
