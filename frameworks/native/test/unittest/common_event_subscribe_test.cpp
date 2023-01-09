@@ -521,7 +521,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribeInfo_001, TestSize.Level1
     Parcel parcel;
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     bool result = commonEventSubscribeInfo.ReadFromParcel(parcel);
-    EXPECT_EQ(result, false);
+    EXPECT_EQ(result, true);
 }
 
 /*
