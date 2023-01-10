@@ -52,18 +52,19 @@ static const int32_t ARGS_DATA_TWO = 2;
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
 static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
-    {ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED, "Permission denied"},
-    {ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, "Invalid parameter"},
-    {ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT, "SystemCapability not found"},
-    {ERR_NOTIFICATION_CES_WANT_ACTION_IS_NULL, "Want action is null"},
-    {ERR_NOTIFICATION_CES_SANDBOX_NOT_SUPPORT, "sandbox application can not send common event"},
-    {ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH, "common event send frequency too high"},
-    {ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, "not System services or System app"},
-    {ERR_NOTIFICATION_CES_NO_SUBSCRIBER, "subscriber can not found"},
-    {ERR_NOTIFICATION_CES_USERID_INVALID, "usreId is invalid"},
-    {ERR_NOTIFICATION_SEND_ERROR, "message send error"},
-    {ERR_NOTIFICATION_CESM_ERROR, "CEMS error"},
-    {ERR_NOTIFICATION_SYS_ERROR, "system error"}
+    {ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED,
+        "Permission verification failed, usually the result returned by VerifyAccessToken."},
+    {ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, "Parameter error."},
+    {ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT, "Capability not supported."},
+    {ERR_NOTIFICATION_CES_WANT_ACTION_IS_NULL, "The action field in the want parameter is null."},
+    {ERR_NOTIFICATION_CES_SANDBOX_NOT_SUPPORT, "A sandbox application cannot send common events."},
+    {ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH, "Too many common events are send in a short period of time."},
+    {ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, "A third-party application cannot send system common events."},
+    {ERR_NOTIFICATION_CES_NO_SUBSCRIBER, "The subscriber is not found."},
+    {ERR_NOTIFICATION_CES_USERID_INVALID, "Invalid userId."},
+    {ERR_NOTIFICATION_SEND_ERROR, "Failed to send the message."},
+    {ERR_NOTIFICATION_CESM_ERROR, "Failed to read the data."},
+    {ERR_NOTIFICATION_SYS_ERROR, "System error."}
 };
 
 AsyncCallbackInfoUnsubscribe::AsyncCallbackInfoUnsubscribe()
