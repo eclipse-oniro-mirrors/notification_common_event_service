@@ -520,8 +520,10 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function 
     OHOS::sptr<OHOS::IRemoteObject> commonEventListener(nullptr);
     uid_t uid = 1;
     int32_t userId = 1;
+    int32_t tokenId = 0;
     CommonEventManagerService commonEventManagerService;
-    bool result = commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid, userId);
+    bool result = commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid,
+        tokenId, userId);
     EXPECT_EQ(result, false);
 }
 

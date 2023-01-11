@@ -67,15 +67,16 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->runner_ = EventRunner::Create("CesSrvMain");
     comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
-    // set VerifyNativeToken is false
-    mockVerifyNativeToken(false);
+    // set VerifyNativeToken is true
+    mockVerifyNativeToken(true);
     // test PublishCommonEvent
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
     uid_t uid = 1;
     int32_t userId = 2;
-    EXPECT_EQ(true, comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, userId));
+    int32_t callerToken = 0;
+    EXPECT_EQ(true, comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, callerToken, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0100 end";
 }
 
