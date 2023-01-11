@@ -70,6 +70,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
                 commonEventListener = data.ReadRemoteObject();
             }
             int32_t uid = data.ReadInt32();
+            int32_t callerToken = data.ReadInt32();
             int32_t userId = data.ReadInt32();
             if (!event) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventData>");
@@ -79,7 +80,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventPublishInfo>");
                 return ERR_INVALID_VALUE;
             }
-            bool ret = PublishCommonEvent(*event, *publishinfo, commonEventListener, uid, userId);
+            bool ret = PublishCommonEvent(*event, *publishinfo, commonEventListener, uid, callerToken, userId);
             if (!reply.WriteBool(ret)) {
                 EVENT_LOGE("Failed to write reply ");
                 return ERR_INVALID_VALUE;
@@ -217,7 +218,8 @@ int32_t CommonEventStub::PublishCommonEvent(const CommonEventData &event, const 
 }
 
 bool CommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-    const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId)
+    const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &callerToken,
+    const int32_t &userId)
 {
     EVENT_LOGD("called");
 

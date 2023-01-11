@@ -113,9 +113,10 @@ HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
 
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
     
+    // only sa can publish event as proxy, so return false.
     CommonEvent commonEvent;
-    bool publishCommonEvent = commonEvent.PublishCommonEvent(data, publishInfo, subscriber, SYSTEM_UID);
-    EXPECT_EQ(true, publishCommonEvent);
+    bool publishCommonEvent = commonEvent.PublishCommonEvent(data, publishInfo, subscriber, SYSTEM_UID, 0);
+    EXPECT_EQ(false, publishCommonEvent);
 }
 
 /*
@@ -229,7 +230,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_002, TestSize.Level1)
     const int32_t userId = 1;
 
     CommonEventStub commonEventStub;
-    bool publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, SYSTEM_UID, userId);
+    bool publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, SYSTEM_UID, 0, userId);
     EXPECT_EQ(true, publishCommonEvent);
 }
 

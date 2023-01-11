@@ -1274,6 +1274,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManager_0100, Function | M
     CommonEventData data;
     CommonEventPublishInfo publishInfo;
     uid_t uid = 1;
-    bool result = CommonEventManager::PublishCommonEvent(data, publishInfo, nullptr, uid);
+    int32_t callerToken = 0;
+    bool result = CommonEventManager::PublishCommonEvent(data, publishInfo, nullptr, uid, callerToken);
     EXPECT_EQ(false, result);
 }
