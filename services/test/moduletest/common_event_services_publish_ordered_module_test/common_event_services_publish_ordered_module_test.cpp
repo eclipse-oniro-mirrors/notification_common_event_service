@@ -1252,7 +1252,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0300, Funct
     int fd = 22;
     std::vector<std::u16string> args;
     int result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Dump(fd, args);
-    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED, result);
+    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
 }
 
 /*
