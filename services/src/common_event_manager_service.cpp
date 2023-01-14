@@ -107,12 +107,13 @@ int32_t CommonEventManagerService::PublishCommonEvent(const CommonEventData &eve
         commonEventListener,
         IPCSkeleton::GetCallingPid(),
         IPCSkeleton::GetCallingUid(),
+        IPCSkeleton::GetCallingTokenID(),
         userId);
 }
 
 bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const uid_t &uid,
-    const int32_t &userId)
+    const int32_t &callerToken, const int32_t &userId)
 {
     EVENT_LOGI("enter");
 
@@ -122,27 +123,23 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     }
 
     if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
-        int32_t callUid = IPCSkeleton::GetCallingUid();
-        if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(callUid)) {
-            EVENT_LOGE("It's not sa or system app.");
-            return false;
-        }
+        EVENT_LOGE("Only sa can publish common event as proxy.");
+        return false;
     }
 
     return PublishCommonEventDetailed(
-        event, publishinfo, commonEventListener, UNDEFINED_PID, uid, userId) == ERR_OK ? true : false;
+        event, publishinfo, commonEventListener, UNDEFINED_PID, uid, callerToken, userId) == ERR_OK ? true : false;
 }
 
 int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventData &event,
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const pid_t &pid,
-    const uid_t &uid, const int32_t &userId)
+    const uid_t &uid, const int32_t &clientToken, const int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
 
-    Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
-    EVENT_LOGI("callerToken = %{public}d", callerToken);
-    if (AccessTokenHelper::IsDlpHap(callerToken)) {
+    EVENT_LOGI("clientToken = %{public}d", clientToken);
+    if (AccessTokenHelper::IsDlpHap(clientToken)) {
         EVENT_LOGE("DLP hap not allowed to send common event");
         return ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP;
     }
@@ -173,7 +170,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
         recordTime,
         pid,
         uid,
-        callerToken,
+        clientToken,
         userId,
         bundleName,
         weakThis] () {
@@ -193,7 +190,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
             recordTime,
             pid,
             uid,
-            callerToken,
+            clientToken,
             userId,
             bundleName,
             commonEventManagerService);

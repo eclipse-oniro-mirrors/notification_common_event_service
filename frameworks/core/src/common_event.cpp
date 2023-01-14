@@ -56,7 +56,7 @@ int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const
 }
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid)
+    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &callerToken)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
@@ -66,11 +66,13 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
         return false;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, UNDEFINED_USER);
+    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken,
+        UNDEFINED_USER);
 }
 
 bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &userId)
+    const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid,
+    const int32_t &callerToken, const int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
@@ -80,7 +82,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
         return false;
     }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, userId);
+    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken, userId);
 }
 
 bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,

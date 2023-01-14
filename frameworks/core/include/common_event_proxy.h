@@ -51,11 +51,13 @@ public:
      * @param publishInfo Indicates the publish info
      * @param commonEventListener Indicates the last subscriber to receive the event
      * @param uid Indicates the uid
+     * @param callerToken Indicates the caller token
      * @param userId Indicates the user ID
      * @return Returns true if success; false otherwise.
      */
     bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &userId) override;
+        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &callerToken,
+        const int32_t &userId) override;
 
     /**
      * Subscribes to common events.
