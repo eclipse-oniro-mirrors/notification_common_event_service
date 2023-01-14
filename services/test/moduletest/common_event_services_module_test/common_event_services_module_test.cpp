@@ -497,7 +497,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level1)
         result = true;
     }
     GTEST_LOG_(INFO) << " stateTest size = " << stateTest.size();
-    EXPECT_FALSE(result);  // Dumping is not supported temporarily.
+    EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_1700 end");
 }
 
@@ -553,7 +553,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level1)
         result = true;
     }
     GTEST_LOG_(INFO) << " stateTest size = " << stateTest.size();
-    EXPECT_FALSE(result);  // Dumping is not supported temporarily.
+    EXPECT_TRUE(result);
     EVENT_LOGE("CES_TC_ModuleTest_1900 end");
 }
 
