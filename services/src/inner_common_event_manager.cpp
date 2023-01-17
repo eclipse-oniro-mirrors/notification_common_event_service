@@ -54,6 +54,10 @@ const std::unordered_map<std::string, char> HIDUMPER_CMD_MAP = {
     { "-e", 'e' },
 };
 
+const std::map<std::string, std::string> EVENT_COUNT_DISALLOW = {
+    { CommonEventSupport::COMMON_EVENT_TIME_TICK, "usual.event.TIME_TICK" },
+};
+
 constexpr size_t HIDUMP_OPTION_MAX_SIZE = 2;
 
 bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -140,7 +144,8 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         controlPtr_->PublishCommonEvent(mappedEventRecord, commonEventListener);
     }
 
-    if (time(nullptr) - sysEventTime >= PUBLISH_SYS_EVENT_INTERVAL) {
+    if (time(nullptr) - sysEventTime >= PUBLISH_SYS_EVENT_INTERVAL &&
+        EVENT_COUNT_DISALLOW.find(data.GetWant().GetAction().c_str()) == EVENT_COUNT_DISALLOW.end()) {
         SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), true);
         sysEventTime = time(nullptr);
     }
