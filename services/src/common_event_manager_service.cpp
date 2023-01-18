@@ -309,7 +309,8 @@ bool CommonEventManagerService::DumpState(const uint8_t &dumpType, const std::st
 {
     EVENT_LOGI("enter");
 
-    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+    auto callerToken = IPCSkeleton::GetCallingTokenID();
+    if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
         EVENT_LOGE("Not subsystem or shell request");
         return false;
     }
@@ -425,7 +426,8 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
 {
     EVENT_LOGI("enter");
 
-    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+    auto callerToken = IPCSkeleton::GetCallingTokenID();
+    if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
         EVENT_LOGE("Not subsystem or shell request");
         return ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED;
     }

@@ -82,21 +82,19 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     std::string action = data.GetWant().GetAction();
     bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(action);
     int32_t user = userId;
-    bool isSubsystem = false;
-    bool isSystemApp = false;
-    bool isProxy = false;
-    if (!CheckUserId(pid, uid, callerToken, isSubsystem, isSystemApp, isProxy, user)) {
+    EventComeFrom comeFrom;
+    if (!CheckUserId(pid, uid, callerToken, comeFrom, user)) {
         SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
         return false;
     }
 
     if (isSystemEvent) {
         EVENT_LOGI("System common event");
-        if (!isSystemApp && !isSubsystem) {
+        if (!comeFrom.isSystemApp && !comeFrom.isSubsystem && !comeFrom.isCemShell) {
             EVENT_LOGE(
                 "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
                 ", userId = %{public}d",
-                bundleName.c_str(), pid, uid, userId);
+            bundleName.c_str(), pid, uid, userId);
             SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
             return false;
         }
@@ -115,9 +113,9 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     eventRecord.eventRecordInfo.callerToken = callerToken;
     eventRecord.userId = user;
     eventRecord.eventRecordInfo.bundleName = bundleName;
-    eventRecord.eventRecordInfo.isSubsystem = isSubsystem;
-    eventRecord.eventRecordInfo.isSystemApp = isSystemApp;
-    eventRecord.eventRecordInfo.isProxy = isProxy;
+    eventRecord.eventRecordInfo.isSubsystem = comeFrom.isSubsystem;
+    eventRecord.eventRecordInfo.isSystemApp = (comeFrom.isSystemApp || comeFrom.isCemShell);
+    eventRecord.eventRecordInfo.isProxy = comeFrom.isProxy;
     eventRecord.isSystemEvent = isSystemEvent;
 
     if (publishInfo.IsSticky()) {
@@ -172,10 +170,8 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 
     CommonEventSubscribeInfo subscribeInfo_(subscribeInfo);
     int32_t userId = subscribeInfo_.GetUserId();
-    bool isSubsystem = false;
-    bool isSystemApp = false;
-    bool isProxy = false;
-    if (!CheckUserId(pid, uid, callerToken, isSubsystem, isSystemApp, isProxy, userId)) {
+    EventComeFrom comeFrom;
+    if (!CheckUserId(pid, uid, callerToken, comeFrom, userId)) {
         return false;
     }
     subscribeInfo_.SetUserId(userId);
@@ -188,9 +184,9 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     eventRecordInfo.uid = uid;
     eventRecordInfo.callerToken = callerToken;
     eventRecordInfo.bundleName = bundleName;
-    eventRecordInfo.isSubsystem = isSubsystem;
-    eventRecordInfo.isSystemApp = isSystemApp;
-    eventRecordInfo.isProxy = isProxy;
+    eventRecordInfo.isSubsystem = comeFrom.isSubsystem;
+    eventRecordInfo.isSystemApp = comeFrom.isSystemApp;
+    eventRecordInfo.isProxy = comeFrom.isProxy;
 
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
@@ -344,8 +340,7 @@ bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record
 }
 
 bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
-    const Security::AccessToken::AccessTokenID &callerToken, bool &isSubsystem, bool &isSystemApp, bool &isProxy,
-    int32_t &userId)
+    const Security::AccessToken::AccessTokenID &callerToken, EventComeFrom &comeFrom, int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter");
@@ -355,12 +350,17 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
         return false;
     }
 
-    isSubsystem = AccessTokenHelper::VerifyNativeToken(callerToken);
-    if (!isSubsystem) {
-        isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
+    comeFrom.isSubsystem = AccessTokenHelper::VerifyNativeToken(callerToken);
+    if (!comeFrom.isSubsystem) {
+        if (AccessTokenHelper::VerifyShellToken(callerToken)) {
+            const std::string permission = "ohos.permission.PUBLISH_SYSTEM_COMMON_EVENT";
+            comeFrom.isCemShell = AccessTokenHelper::VerifyAccessToken(callerToken, permission);
+        } else {
+            comeFrom.isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
+        }
     }
-    isProxy = pid == UNDEFINED_PID;
-    if ((isSystemApp || isSubsystem) && !isProxy) {
+    comeFrom.isProxy = pid == UNDEFINED_PID;
+    if ((comeFrom.isSystemApp || comeFrom.isSubsystem || comeFrom.isCemShell) && !comeFrom.isProxy) {
         if (userId == CURRENT_USER) {
             DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
         } else if (userId == UNDEFINED_USER) {
