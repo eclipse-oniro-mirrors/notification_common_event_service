@@ -113,10 +113,10 @@ HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
 
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
 
-    // EVENT is normal common event
+    // only sa can publish event as proxy, so return false.
     CommonEvent commonEvent;
     bool publishCommonEvent = commonEvent.PublishCommonEvent(data, publishInfo, subscriber, SYSTEM_UID, 0);
-    EXPECT_EQ(true, publishCommonEvent);
+    EXPECT_EQ(false, publishCommonEvent);
 }
 
 /*
