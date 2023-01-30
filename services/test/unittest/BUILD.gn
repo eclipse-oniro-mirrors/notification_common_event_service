@@ -139,7 +139,7 @@ ohos_unittest("common_event_freeze_unit_test") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -448,7 +448,7 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
   configs = [ ":cesfwk_services_config" ]
 
   deps = [
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -466,7 +466,7 @@ ohos_unittest("common_event_hisysevent_test") {
   configs = [ ":cesfwk_services_config" ]
 
   deps = [
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -487,7 +487,7 @@ ohos_unittest("common_event_access_token_helper_test") {
   configs = [ ":cesfwk_services_config" ]
 
   deps = [
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -577,7 +577,7 @@ ohos_unittest("bundle_manager_helper_test") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
   ]
@@ -742,7 +742,7 @@ ohos_unittest("common_event_subscriber_manager_test") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -771,7 +771,7 @@ ohos_unittest("inner_common_event_manager_test") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -806,7 +806,7 @@ ohos_unittest("ability_manager_helper_test") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
   ]
@@ -837,7 +837,7 @@ ohos_unittest("ordered_event_handler_test") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -866,7 +866,7 @@ ohos_unittest("subscriber_deach_recipient_test") {
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 

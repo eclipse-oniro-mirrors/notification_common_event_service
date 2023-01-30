@@ -59,7 +59,7 @@ ohos_unittest("common_event_subscribe_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
   ]
 
   external_deps = [
@@ -83,7 +83,7 @@ ohos_unittest("common_event_unsubscribe_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
   ]
 
   external_deps = [
