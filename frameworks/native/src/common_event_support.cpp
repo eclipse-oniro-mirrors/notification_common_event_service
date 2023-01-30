@@ -1480,6 +1480,142 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE);
 
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MANAGE_PACKAGE_STORAGE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_STARTED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_BACKGROUND);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_FOREGROUND);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_SWITCHED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_STARTING);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_UNLOCKED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_STOPPING);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_STOPPED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_POWER_STATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_POWER_STATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_SCAN_FINISHED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_RSSI_VALUE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_CONN_STATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_HOTSPOT_STATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_AP_STA_JOIN);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_AP_STA_LEAVE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_MPLINK_STATE_CHANGE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_P2P_CONN_STATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_P2P_STATE_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_P2P_PEERS_STATE_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_P2P_PEERS_DISCOVERY_STATE_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_P2P_CURRENT_DEVICE_STATE_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_WIFI_P2P_GROUP_STATE_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CURRENT_DEVICE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_AUDIO_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CURRENT_DEVICE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAYING_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CLASS_VALUE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_CONNECTED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_DISCONNECTED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_NAME_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_SDP_RESULT);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_UUID_VALUE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIRING_REQ);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIRING_CANCEL);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CONNECT_REQ);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CONNECT_REPLY);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CONNECT_CANCEL);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREEUNIT_CONNECT_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREEUNIT_AUDIO_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREEUNIT_AG_COMMON_EVENT);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREEUNIT_AG_CALL_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_REQ_DISCOVERABLE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_REQ_ENABLE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_REQ_DISABLE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_DISCOVERY_STARTED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_DISCOVERY_FINISHED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_NAME_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSINK_CONNECT_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSINK_PLAYING_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSINK_AUDIO_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_ADDED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_REMOVED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VOLUME_UNMOUNTED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VOLUME_MOUNTED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VOLUME_BAD_REMOVAL);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VOLUME_EJECT);
+
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT);
