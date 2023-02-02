@@ -69,7 +69,7 @@ void CommonEventManagerServiceTest::TearDown()
  * @tc.require: I582Y4
  */
 HWTEST_F(CommonEventManagerServiceTest, Init_001, Level1)
-{
+{   
     CommonEventManagerService commonEventManagerService;
     int result = commonEventManagerService.Init();
     EXPECT_EQ(ERR_OK, result);
@@ -82,7 +82,7 @@ HWTEST_F(CommonEventManagerServiceTest, Init_001, Level1)
  * @tc.require: I582Y4
  */
 HWTEST_F(CommonEventManagerServiceTest, Init_002, Level1)
-{
+{   
     CommonEventManagerService commonEventManagerService;
     int result = commonEventManagerService.Init();
     EXPECT_NE(ERR_INVALID_OPERATION, result);
@@ -95,7 +95,7 @@ HWTEST_F(CommonEventManagerServiceTest, Init_002, Level1)
  * @tc.require: I582Y4
  */
 HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_001, Level1)
-{
+{   
     CommonEventManagerService commonEventManagerService;
     CommonEventData event;
     CommonEventPublishInfo publishInfo;
@@ -121,4 +121,176 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_002, Level1)
     int32_t userId = 1;
     bool result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
     EXPECT_EQ(true, result);
+}
+
+/**
+ * @tc.name: SubscribeCommonEvent_001
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_001, Level1)
+{   
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData event;
+    CommonEventSubscribeInfo subscribeInfo;
+
+    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
+    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
+    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+}
+
+/**
+ * @tc.name: SubscribeCommonEvent_002
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_002, Level1)
+{   
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData event;
+    CommonEventSubscribeInfo subscribeInfo;
+
+    struct tm recordTime = {0};
+    GetSystemCurrentTime(&recordTime);
+
+    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
+    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
+    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+}
+
+/**
+ * @tc.name: SubscribeCommonEvent_003
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_003, Level1)
+{   
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData event;
+    CommonEventSubscribeInfo subscribeInfo;
+
+    struct tm recordTime = {0};
+    GetSystemCurrentTime(&recordTime);
+
+    std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(1);
+
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+
+    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
+    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
+    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+}
+
+/**
+ * @tc.name: SubscribeCommonEvent_004
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_004, Level1)
+{   
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData event;
+    CommonEventSubscribeInfo subscribeInfo;
+
+    struct tm recordTime = {0};
+    
+    auto callingUid = 0;
+    auto callingPid = 0;
+    auto callerToken = 0;
+    std::string bundleName = "bundleName";
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    bool ret = innerCommonEventManager->SubscribeCommonEvent(subscribeInfo,
+            nullptr,
+            recordTime,
+            callingPid,
+            callingUid,
+            callerToken,
+            bundleName);
+   
+    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
+    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
+    EXPECT_EQ(false, ret);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+}
+
+/**
+ * @tc.name: GetStickyCommonEvent_001
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, GetStickyCommonEvent_001, Level1)
+{   
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData eventData;
+
+    const std::string event = "this is an event";
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+
+    bool ret = innerCommonEventManager_->GetStickyCommonEvent(event, eventData);
+    EXPECT_EQ(false, ret);
+}
+
+/**
+ * @tc.name: FinishReceiver_001
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, FinishReceiver_001, Level1)
+{   
+    GTEST_LOG_(INFO) << "FinishReceiver_001 start";
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData eventData;
+
+    const std::string event = "this is an event";
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    const sptr<IRemoteObject> proxy = nullptr;
+    const int32_t code = 0;
+    const std::string receiverData = "this is an receiverData";
+    const bool abortEvent = true;
+
+    innerCommonEventManager_->FinishReceiver(proxy, code, receiverData, abortEvent);
+    GTEST_LOG_(INFO) << "FinishReceiver_001 end";
+}
+
+/**
+ * @tc.name: Unfreeze_001
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, Unfreeze_001, Level1)
+{   
+    GTEST_LOG_(INFO) << "Unfreeze_001 start";
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData eventData;
+
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    const uid_t uid = 0;
+
+    innerCommonEventManager->Unfreeze(uid);
+    GTEST_LOG_(INFO) << "Unfreeze_001 end";
+}
+
+/**
+ * @tc.name: UnfreezeAll_001
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, UnfreezeAll_001, Level1)
+{   
+    GTEST_LOG_(INFO) << "UnfreezeAll_001 start";
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData eventData;
+
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+
+    innerCommonEventManager->UnfreezeAll();
+    GTEST_LOG_(INFO) << "UnfreezeAll_001 end";
 }
