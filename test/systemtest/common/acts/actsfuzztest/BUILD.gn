@@ -53,7 +53,6 @@ ohos_systemtest("ActsFuzzTest") {
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "${ability_runtime_path}/frameworks/native/ability/native:data_ability_helper",
     "${ability_runtime_path}/frameworks/native/appkit:appkit_native",
-    "${ability_runtime_services_path}/abilitymgr:abilityms",
     "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",

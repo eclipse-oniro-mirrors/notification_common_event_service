@@ -124,19 +124,6 @@
                     ]
                   },
                   "name":"//base/notification/common_event_service/frameworks/native:cesfwk_innerkits"
-                },
-                {
-                  "header": {
-                    "header_base" : "//base/notification/common_event_service/services/include",
-                    "header_files": [
-                      "common_event_control_manager.h",
-                      "common_event_manager_service.h",
-                      "common_event_sticky_manager.h",
-                      "common_event_subscriber_manager.h",
-                      "inner_common_event_manager.h"
-                    ]
-                  },
-                  "name":"//base/notification/common_event_service/services:cesfwk_services"
                 }
             ],
             "test": [
