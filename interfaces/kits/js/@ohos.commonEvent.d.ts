@@ -701,6 +701,11 @@ declare namespace commonEvent {
     COMMON_EVENT_CHARGING = "usual.event.CHARGING",
 
     /**
+     * Sent when a charge type has been updated.
+     */
+    COMMON_EVENT_CHARGE_TYPE_CHANGED = "usual.event.CHARGE_TYPE_CHANGED",
+
+    /**
      * Sent when device's idle mode changed
      */
     COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED = "usual.event.DEVICE_IDLE_MODE_CHANGED",

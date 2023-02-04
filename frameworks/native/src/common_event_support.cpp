@@ -786,6 +786,12 @@ const std::string CommonEventSupport::COMMON_EVENT_DISCHARGING = "usual.event.DI
 const std::string CommonEventSupport::COMMON_EVENT_CHARGING = "usual.event.CHARGING";
 
 /**
+ * Indicates the action of a common event that a charge type has been updated.
+ * This is a protected common event, which can be sent only by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED = "usual.event.CHARGE_TYPE_CHANGED";
+
+/**
  * Indicates the action of a common event that the system idle mode has changed.
  * This is a protected common event, which can be sent only by the system.
  */
@@ -1376,6 +1382,7 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISCHARGING);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGING);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_POWER_SAVE_MODE_CHANGED);
 
