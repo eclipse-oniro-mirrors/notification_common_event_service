@@ -880,6 +880,12 @@ public:
     static const std::string COMMON_EVENT_CONNECTIVITY_CHANGE;
 
     /**
+     * The global http proxy was changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_HTTP_PROXY_CHANGE;
+
+    /**
      * Indicates the action of a common event that an external storage device was removed.
      * To subscribe to this common event, your application must have the ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
