@@ -996,7 +996,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     /* Publish */
     Want want;
-    // want.SetAction("usual.event.BOOT_COMPLETED");
     want.SetAction("usual.event.nfc.action.RF_FIELD_ON_DETECTED");
     CommonEventData data;
     data.SetWant(want);
@@ -1042,7 +1041,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     /* Publish */
     Want want;
-    // want.SetAction("usual.event.USER_SWITCHED");
     want.SetAction("usual.event.wifi.mplink.STATE_CHANGE");
     CommonEventData data;
     data.SetWant(want);
@@ -1088,7 +1086,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     /* Publish */
     Want want;
-    // want.SetAction("usual.event.wifi.p2p.CONN_STATE_CHANGE");
     want.SetAction("usual.event.bluetooth.remotedevice.DISCOVERED");
     CommonEventData data;
     data.SetWant(want);
@@ -1124,7 +1121,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     };
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
-    // matchingSkillsObj.AddEvent("usual.event.data.DISK_REMOVED");
     matchingSkillsObj.AddEvent("usual.event.data.DISK_MOUNTED");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
     subscribeInfo.SetPermission("");
@@ -1135,7 +1131,6 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     /* Publish */
     Want want;
-    // want.SetAction("usual.event.data.DISK_REMOVED");
     want.SetAction("usual.event.data.DISK_MOUNTED");
     CommonEventData data;
     data.SetWant(want);
