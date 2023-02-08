@@ -13,6 +13,7 @@
 
 1.0 {
   global:
+    *AccessTokenHelper*;
     *BundleManagerHelper*;
     *Check*Permission*;
     *Clear*;
@@ -42,6 +43,7 @@
     *Unfreeze*;
     *UnsubscribeCommonEvent*;
     *UpdateStickyEvent*;
+    *Want*;
   local:
     *;
 };
