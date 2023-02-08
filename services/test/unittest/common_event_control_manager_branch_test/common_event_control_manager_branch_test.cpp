@@ -112,7 +112,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0300, Le
     eventRecord.commonEventData = commonEventData;
     // set VerifyAccessToken is true
     mockVerifyAccessToken(true);
-    EXPECT_EQ(false, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
+    EXPECT_EQ(true, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0300 end";
 }
 
@@ -160,7 +160,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0500, Le
     eventRecord.publishInfo = publishInfo;
     // set VerifyAccessToken is true
     mockVerifyAccessToken(true);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0500 end";
 }
 
@@ -250,9 +250,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0900, Le
     CommonEventRecord eventRecord;
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
-    // set VerifyAccessToken is false
+    // set VerifyAccessToken is true
     mockVerifyAccessToken(true);
-    EXPECT_EQ(false, commonEventControlManager.CheckPublisherRequiredPermissions(
+    EXPECT_EQ(true, commonEventControlManager.CheckPublisherRequiredPermissions(
         publisherRequiredPermissions, subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0900 end";
 }
