@@ -1253,26 +1253,10 @@ void fuzzTestManager::RegisterBundleMgrProxy()
         temp->GetLaunchWantForBundle(GetStringParam(), want);
     };
 
-    callFunctionMap_["BundleMgrProxyCheckPublicKeys"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        temp->CheckPublicKeys(GetStringParam(), GetStringParam());
-    };
-
     callFunctionMap_["BundleMgrProxyGetPermissionDef"] = []() {
         std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
         PermissionDef a;
         temp->GetPermissionDef(GetStringParam(), a);
-    };
-
-    callFunctionMap_["BundleMgrProxyGetSystemAvailableCapabilities"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        std::vector<std::string> a;
-        temp->GetSystemAvailableCapabilities(a);
-    };
-
-    callFunctionMap_["BundleMgrProxyIsSafeMode"] = []() {
-        std::shared_ptr<BundleMgrProxy> temp = GetParamBundleMgrProxy();
-        temp->IsSafeMode();
     };
 
     callFunctionMap_["BundleMgrProxyCleanBundleCacheFiles"] = []() {
