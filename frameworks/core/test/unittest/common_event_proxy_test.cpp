@@ -127,7 +127,7 @@ public:
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_001, TestSize.Level1)
 {
@@ -154,7 +154,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_001, TestSize.Level1)
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_002, TestSize.Level1)
 {
@@ -179,7 +179,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_002, TestSize.Level1)
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_003, TestSize.Level1)
 {
@@ -207,7 +207,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_003, TestSize.Level1)
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_004, TestSize.Level1)
 {
@@ -235,7 +235,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_004, TestSize.Level1)
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_005, TestSize.Level1)
 {
@@ -263,7 +263,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_005, TestSize.Level1)
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_006, TestSize.Level1)
 {
@@ -291,7 +291,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_006, TestSize.Level1)
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_007, TestSize.Level1)
 {
@@ -321,7 +321,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_007, TestSize.Level1)
  * tc.name: test OnRemoteRequest
  * tc.type: FUNC
  * tc.require: issueI5NGO7
- * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
  */
 HWTEST_F(CommonEventProxyTest, PublishCommonEvent_008, TestSize.Level1)
 {
