@@ -29,8 +29,6 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     Parcel parcel;
     EventFwk::CommonEventPublishInfo PublishInfo;
     EventFwk::CommonEventPublishInfo commonEventPublishInfo(PublishInfo);
-    commonEventPublishInfo.ReadFromParcel(parcel);
-    commonEventPublishInfo.Unmarshalling(parcel);
     return true;
 }
 }
