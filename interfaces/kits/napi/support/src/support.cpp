@@ -350,6 +350,8 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_NFC_ACTION_RF_FIELD_OFF_DETECTED");
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISCHARGING, "COMMON_EVENT_DISCHARGING");
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_CHARGING, "COMMON_EVENT_CHARGING");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED, "COMMON_EVENT_CHARGE_TYPE_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED,
