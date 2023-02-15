@@ -695,6 +695,12 @@ public:
     static const std::string COMMON_EVENT_CHARGING;
 
     /**
+     * Indicates the action of a common event that a charge type has been updated.
+     * This is a protected common event, which can be sent only by the system.
+     */
+    static const std::string COMMON_EVENT_CHARGE_TYPE_CHANGED;
+
+    /**
      * Indicates the action of a common event that the system idle mode has changed.
      * This is a protected common event, which can be sent only by the system.
      */
