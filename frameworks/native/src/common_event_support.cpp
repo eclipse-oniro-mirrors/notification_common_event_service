@@ -975,6 +975,12 @@ const std::string CommonEventSupport::COMMON_EVENT_DEVICE_STORAGE_FULL = "usual.
 const std::string CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE = "usual.event.CONNECTIVITY_CHANGE";
 
 /**
+ * The global http proxy was changed.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_HTTP_PROXY_CHANGE = "usual.event.HTTP_PROXY_CHANGE";
+
+/**
  * Indicates the action of a common event that an external storage device was removed.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
  * ohos.permission.STORAGE_MANAGER permission.
@@ -1409,6 +1415,7 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_STORAGE_FULL);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_HTTP_PROXY_CHANGE);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_REMOVED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTED);
