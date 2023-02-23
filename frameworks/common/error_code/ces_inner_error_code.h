@@ -23,6 +23,9 @@ namespace Notification {
 // The application dose not have permission to call the interface
 const int32_t ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED = 201;
 
+// The application is not system application
+const int32_t ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP = 202;
+
 // The param input is invalid
 const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
 

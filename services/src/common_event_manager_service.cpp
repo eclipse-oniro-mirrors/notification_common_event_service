@@ -102,6 +102,14 @@ int32_t CommonEventManagerService::PublishCommonEvent(const CommonEventData &eve
         return ERR_NOTIFICATION_CESM_ERROR;
     }
 
+    if (userId != ALL_USER && userId != CURRENT_USER && userId != UNDEFINED_USER) {
+        bool isSubsystem = AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID());
+        if (!isSubsystem && !AccessTokenHelper::IsSystemApp()) {
+            EVENT_LOGE("publish to special user must to system application.");
+            return ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
+        }
+    }
+
     return PublishCommonEventDetailed(event,
         publishinfo,
         commonEventListener,

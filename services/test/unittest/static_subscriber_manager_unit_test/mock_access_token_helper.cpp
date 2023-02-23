@@ -90,5 +90,10 @@ AccessTokenID AccessTokenHelper::GetHapTokenID(int userID,
 {
     return g_MockAccessTokenID;
 }
+
+bool AccessTokenHelper::IsSystemApp()
+{
+    return true;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -19,6 +19,7 @@
 #include "event_log_wrapper.h"
 #include "ipc_skeleton.h"
 #include "privacy_kit.h"
+#include "tokenid_kit.h"
 
 using namespace OHOS::Security::AccessToken;
 
@@ -77,6 +78,19 @@ bool AccessTokenHelper::VerifyShellToken(const AccessTokenID &callerToken)
 {
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
     return (tokenType == ATokenTypeEnum::TOKEN_SHELL);
+}
+
+bool AccessTokenHelper::IsSystemApp()
+{
+    AccessTokenID tokenId = IPCSkeleton::GetCallingTokenID();
+    ATokenTypeEnum type = AccessTokenKit::GetTokenTypeFlag(tokenId);
+    if (type == ATokenTypeEnum::TOKEN_HAP) {
+        uint64_t fullTokenId = IPCSkeleton::GetCallingFullTokenID();
+        if (TokenIdKit::IsSystemAppByFullTokenID(fullTokenId)) {
+            return true;
+        }
+    }
+    return false;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
