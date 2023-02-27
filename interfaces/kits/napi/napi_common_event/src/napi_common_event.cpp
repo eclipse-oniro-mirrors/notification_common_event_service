@@ -288,7 +288,7 @@ napi_value NapiGetNull(napi_env env)
     return result;
 }
 
-napi_value GetCallbackErrorValue(napi_env env, int8_t errorCode)
+napi_value GetCallbackErrorValue(napi_env env, int32_t errorCode)
 {
     napi_value result = NapiGetNull(env);
     napi_value eCode = NapiGetNull(env);
@@ -332,7 +332,7 @@ napi_value ParseParametersByCreateSubscriber(
     return NapiGetNull(env);
 }
 
-void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int8_t &errorCode, const napi_value &result)
+void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int32_t &errorCode, const napi_value &result)
 {
     napi_value undefined = nullptr;
     napi_get_undefined(env, &undefined);
@@ -366,7 +366,7 @@ void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_val
         napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout));
 }
 
-void SetPromise(const napi_env &env, const napi_deferred &deferred, const int8_t &errorCode, const napi_value &result)
+void SetPromise(const napi_env &env, const napi_deferred &deferred, const int32_t &errorCode, const napi_value &result)
 {
     if (errorCode == NO_ERROR) {
         napi_resolve_deferred(env, deferred, result);
