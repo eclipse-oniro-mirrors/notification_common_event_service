@@ -49,7 +49,7 @@ struct CallbackPromiseInfo {
     napi_ref callback = nullptr;
     napi_deferred deferred = nullptr;
     bool isCallback = false;
-    int8_t errorCode = NO_ERROR;
+    int32_t errorCode = NO_ERROR;
 };
 
 struct AsyncCallbackInfoSubscribe {
@@ -57,7 +57,7 @@ struct AsyncCallbackInfoSubscribe {
     napi_async_work asyncWork;
     napi_ref callback = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
-    int8_t errorCode = NO_ERROR;
+    int32_t errorCode = NO_ERROR;
 };
 
 struct AsyncCallbackInfoUnsubscribe {
@@ -68,7 +68,7 @@ struct AsyncCallbackInfoUnsubscribe {
     napi_ref callback = nullptr;
     size_t argc = 0;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
-    int8_t errorCode = NO_ERROR;
+    int32_t errorCode = NO_ERROR;
 };
 
 struct AsyncCallbackInfoSubscribeInfo {
@@ -184,7 +184,7 @@ struct AsyncCallbackInfoPublish {
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
     int32_t userId = UNDEFINED_USER;
-    int8_t errorCode = NO_ERROR;
+    int32_t errorCode = NO_ERROR;
 };
 
 struct CommonEventPublishDataByjs {
@@ -236,16 +236,16 @@ private:
 
 napi_value NapiGetNull(napi_env env);
 
-napi_value GetCallbackErrorValue(napi_env env, int8_t errorCode);
+napi_value GetCallbackErrorValue(napi_env env, int32_t errorCode);
 
 napi_value ParseParametersByCreateSubscriber(
     const napi_env &env, const napi_value (&argv)[CREATE_MAX_PARA], const size_t &argc, napi_ref &callback);
 
-void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int8_t &errorCode, const napi_value &result);
+void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int32_t &errorCode, const napi_value &result);
 
 void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_value &result);
 
-void SetPromise(const napi_env &env, const napi_deferred &deferred, const int8_t &errorCode, const napi_value &result);
+void SetPromise(const napi_env &env, const napi_deferred &deferred, const int32_t &errorCode, const napi_value &result);
 
 void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info, const napi_value &result);
 

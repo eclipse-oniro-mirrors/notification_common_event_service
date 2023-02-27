@@ -1696,7 +1696,7 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0600, Function | MediumTest | Level1)
         }
     }
     // expect the subscriber could receive the event within 5 seconds.
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }

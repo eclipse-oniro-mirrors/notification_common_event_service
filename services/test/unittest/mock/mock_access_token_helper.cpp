@@ -44,5 +44,10 @@ bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
 {
     return g_mockVerifyAccessTokenRet;
 }
+
+bool AccessTokenHelper::IsSystemApp()
+{
+    return true;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

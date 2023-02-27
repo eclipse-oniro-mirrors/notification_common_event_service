@@ -37,6 +37,7 @@ public:
     static bool IsDlpHap(const AccessToken::AccessTokenID &callerToken);
     static AccessToken::AccessTokenID GetHapTokenID(int userID, const std::string& bundleName, int instIndex);
     static bool VerifyShellToken(const AccessToken::AccessTokenID &callerToken);
+    static bool IsSystemApp();
 };
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -20,6 +20,8 @@
 #include "common_event_command.h"
 #include "common_event_manager.h"
 #include "common_event_subscriber.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 using namespace testing::ext;
 using namespace OHOS;
@@ -68,7 +70,25 @@ public:
 };
 
 void CemCommandPublishSystemTest::SetUpTestCase()
-{}
+{
+    uint64_t tokenId;
+    const char **perms = new const char *[1];
+    perms[0] = "ohos.permission.COMMONEVEVT_STICKY"; // system_core
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = 1,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .aplStr = "system_basic",
+    };
+
+    infoInstance.processName = "common_event_command_dump_system_test";
+    tokenId = GetAccessTokenId(&infoInstance);
+    SetSelfTokenID(tokenId);
+    delete[] perms;
+}
 
 void CemCommandPublishSystemTest::TearDownTestCase()
 {}

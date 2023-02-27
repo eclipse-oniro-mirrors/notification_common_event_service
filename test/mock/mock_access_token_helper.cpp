@@ -38,5 +38,10 @@ bool AccessTokenHelper::IsDlpHap(const AccessToken::AccessTokenID &callerToken)
 {
     return callerToken == DLP_PERMISSION_GRANTED;
 }
+
+bool AccessTokenHelper::IsSystemApp()
+{
+    return true;
+}
 }  // namespace EventFwk
 }  // namespace OHOS
