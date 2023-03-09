@@ -1,8 +1,0 @@
-{
-    "apps": [
-        "com.ohos.launcher",
-        "com.ohos.systemui",
-        "com.ohos.mms",
-        "com.ohos.contacts"
-    ]
-}

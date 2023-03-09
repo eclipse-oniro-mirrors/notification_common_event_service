@@ -40,7 +40,6 @@ extern void ResetBundleManagerHelperMock();
 extern void ResetAccessTokenHelperMock();
 
 namespace {
-    constexpr uint8_t TEST_ALLOWLIST_SIZE = 3;
     constexpr uint8_t TEST_MUL_SIZE = 2;
     constexpr uint8_t MOCK_CASE_2 = 2;
     constexpr uint8_t MOCK_CASE_3 = 3;
@@ -89,12 +88,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitAllowListTest_0100, Function | Med
         << "StaticSubscriberManagerUnitTest, InitAllowListTest_0100, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
-    // Init
     bool initResult = manager->InitAllowList();
     // expect init success
     EXPECT_TRUE(initResult);
-    // expect allow list has apps
-    EXPECT_EQ(TEST_ALLOWLIST_SIZE, manager->subscriberList_.size());
     // expect hasInit true
     EXPECT_TRUE(manager->hasInitAllowList_);
 }
@@ -1265,7 +1261,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0100, Functio
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     MockQueryExtensionInfos(true, 1);
     MockGetResConfigFile(true, 1);
     EXPECT_TRUE(manager->InitValidSubscribers());
@@ -1295,7 +1290,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0200, Functio
     MockGetResConfigFile(true, 1);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     std::string eventName = "eventName0";
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     manager->validSubscribers_.insert(make_pair(eventName, info0));
@@ -1343,7 +1337,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0400, Functio
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     MockQueryExtensionInfos(true, MOCK_CASE_2);
     MockGetResConfigFile(true, 1);
     EXPECT_TRUE(manager->InitValidSubscribers());
@@ -1367,8 +1360,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0500, Functio
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
-    manager->subscriberList_.emplace_back("com.ohos.systemui1");
     MockQueryExtensionInfos(true, MOCK_CASE_3);
     MockGetResConfigFile(true, MOCK_CASE_2);
     EXPECT_TRUE(manager->InitValidSubscribers());
@@ -1398,8 +1389,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0600, Functio
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
-    manager->subscriberList_.emplace_back("com.ohos.systemui1");
     MockQueryExtensionInfos(true, MOCK_CASE_3);
     MockGetResConfigFile(true, MOCK_CASE_3);
     EXPECT_TRUE(manager->InitValidSubscribers());
@@ -1426,7 +1415,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0700, Functio
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     MockQueryExtensionInfos(true, MOCK_CASE_3);
     MockGetResConfigFile(true, MOCK_CASE_3);
     EXPECT_TRUE(manager->InitValidSubscribers());
@@ -1452,7 +1440,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0800, Functio
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
-    manager->subscriberList_.emplace_back("com.ohos.systemui2");
     MockQueryExtensionInfos(true, MOCK_CASE_3);
     MockGetResConfigFile(true, MOCK_CASE_3);
     EXPECT_TRUE(manager->InitValidSubscribers());
@@ -1500,7 +1487,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0200, Function | 
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     Want testWant;
     std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED;
     testWant.SetAction(testNormalEventName);
@@ -1534,7 +1520,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, Function | 
     ASSERT_NE(nullptr, manager);
     EXPECT_EQ(0, manager->validSubscribers_.size());
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     std::string eventName = "usual.event.TIME_TICK";
     StaticSubscriberManager::StaticSubscriberInfo testInfo = {
         .name = "StaticSubscriber",
@@ -1815,7 +1800,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0100, 
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     // mock that query extension info with one extension
     MockQueryExtensionInfos(true, 1);
     // mock that cet config file with one profile
@@ -1841,7 +1825,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0200, 
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     // mock that query extension info failed
     MockQueryExtensionInfos(false, 0);
     MockGetResConfigFile(true, 1);
@@ -1866,7 +1849,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0300, 
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     // mock that query extension info with one extension
     MockQueryExtensionInfos(true, 1);
     MockGetResConfigFile(true, 1);
@@ -1891,7 +1873,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0400, 
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui0");
     // mock that query extension info with one extension
     MockQueryExtensionInfos(true, 1);
     MockGetResConfigFile(true, 1);
@@ -1915,8 +1896,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0500, 
         << "StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0500, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
-    // init subscriberList
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     MockQueryExtensionInfos(true, MOCK_CASE_4);
     MockGetResConfigFile(true, MOCK_CASE_4);
     std::string testBundleName = "com.ohos.systemui";
@@ -2101,11 +2080,11 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0100, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
     auto subscribers = manager->validSubscribers_[testNormalEventName];
-    EXPECT_EQ(1, subscribers.size());
-    EXPECT_TRUE(IsConnectAbilityCalled());
+    EXPECT_EQ(0, subscribers.size());
+    EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
 
@@ -2125,7 +2104,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0200, Function 
     ASSERT_NE(nullptr, manager);
     // mock that allowlist has already inited
     manager->hasInitAllowList_ = true;
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
     // mock that valid subscribers has already inited
     manager->hasInitValidSubscribers_ = true;
     std::string eventName = "usual.event.TIME_TICK";
@@ -2260,7 +2238,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0400, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -2352,7 +2330,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0600, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -2444,7 +2422,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0800, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -2536,7 +2514,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1000, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -2628,7 +2606,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1200, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -2695,8 +2673,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1400, Function 
     ASSERT_NE(nullptr, manager);
     // mock that allowlist has already inited
     manager->hasInitAllowList_ = true;
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
-    manager->subscriberList_.emplace_back("com.ohos.systemui1");
     // mock that valid subscribers has already inited
     manager->hasInitValidSubscribers_ = true;
     std::string eventName = "usual.event.TIME_TICK";
@@ -2763,8 +2739,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1500, Function 
     ASSERT_NE(nullptr, manager);
     // mock that allowlist has already inited
     manager->hasInitAllowList_ = true;
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
-    manager->subscriberList_.emplace_back("com.ohos.systemui1");
     // mock that valid subscribers has already inited
     manager->hasInitValidSubscribers_ = true;
     std::string eventName = "usual.event.TIME_TICK";
@@ -2830,8 +2804,6 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1600, Function 
     ASSERT_NE(nullptr, manager);
     // mock that allowlist has already inited
     manager->hasInitAllowList_ = true;
-    manager->subscriberList_.emplace_back("com.ohos.systemui");
-    manager->subscriberList_.emplace_back("com.ohos.systemui1");
     // mock that valid subscribers has already inited
     manager->hasInitValidSubscribers_ = true;
     std::string eventName = "usual.event.TIME_TICK";
@@ -2920,10 +2892,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1700, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, 1);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
     auto subscribers = manager->validSubscribers_[testNormalEventName];
-    EXPECT_EQ(1, subscribers.size());
+    EXPECT_EQ(0, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -2970,11 +2942,11 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1800, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
     auto subscribers = manager->validSubscribers_[testNormalEventName];
-    EXPECT_EQ(1, subscribers.size());
-    EXPECT_TRUE(IsConnectAbilityCalled());
+    EXPECT_EQ(0, subscribers.size());
+    EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
 
@@ -3020,10 +2992,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1900, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
     auto subscribers = manager->validSubscribers_[testNormalEventName];
-    EXPECT_EQ(1, subscribers.size());
+    EXPECT_EQ(0, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -3070,10 +3042,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2000, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
     auto subscribers = manager->validSubscribers_[testNormalEventName];
-    EXPECT_EQ(1, subscribers.size());
+    EXPECT_EQ(0, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -3127,10 +3099,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2100, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
     auto subscribers = manager->validSubscribers_[testNormalEventName];
-    EXPECT_EQ(1, subscribers.size());
+    EXPECT_EQ(0, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }
@@ -3177,10 +3149,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2200, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
-    EXPECT_EQ(1, manager->validSubscribers_.size());
+    EXPECT_EQ(0, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
     auto subscribers = manager->validSubscribers_[testNormalEventName];
-    EXPECT_EQ(1, subscribers.size());
+    EXPECT_EQ(0, subscribers.size());
     EXPECT_FALSE(IsConnectAbilityCalled());
     ResetAbilityManagerHelperState();
 }

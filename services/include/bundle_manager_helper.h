@@ -87,6 +87,16 @@ public:
      */
     void ClearBundleManagerHelper();
 
+    /**
+     * @brief Obtains information about all installed applications of current user.
+     * @param flag Indicates the flag used to specify information contained
+     *             in the ApplicationInfo objects that will be returned.
+     * @param appInfos Indicates all of the obtained ApplicationInfo objects.
+     * @return Returns true if the application is successfully obtained; returns false otherwise.
+     */
+    bool GetApplicationInfos(const AppExecFwk::ApplicationFlag &flag,
+        std::vector<AppExecFwk::ApplicationInfo> &appInfos);
+
 private:
     bool GetBundleMgrProxy();
 

@@ -30,7 +30,6 @@
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string STATIC_SUBSCRIBER_CONFIG_FILE = "/system/etc/static_subscriber_config.json";
 const std::string CONFIG_APPS = "apps";
 constexpr static char JSON_KEY_COMMON_EVENTS[] = "commonEvents";
 constexpr static char JSON_KEY_NAME[] = "name";
@@ -46,19 +45,27 @@ bool StaticSubscriberManager::InitAllowList()
 {
     EVENT_LOGI("enter");
 
-    nlohmann::json jsonObj;
-    std::ifstream jfile(STATIC_SUBSCRIBER_CONFIG_FILE);
-    if (!jfile.is_open()) {
-        EVENT_LOGI("json file can not open");
-        hasInitAllowList_ = false;
+    std::vector<AppExecFwk::ApplicationInfo> appInfos {};
+    if (!DelayedSingleton<BundleManagerHelper>::GetInstance()
+            ->GetApplicationInfos(AppExecFwk::ApplicationFlag::GET_BASIC_APPLICATION_INFO, appInfos)) {
+        EVENT_LOGE("GetApplicationInfos failed");
         return false;
     }
-    jfile >> jsonObj;
-    jfile.close();
 
-    for (auto j : jsonObj[CONFIG_APPS]) {
-        subscriberList_.emplace_back(j.get<std::string>());
+    for (auto const &appInfo : appInfos) {
+        std::vector<std::string> allowCommonEvents = appInfo.allowCommonEvent;
+        std::string bundleName = appInfo.bundleName;
+        for (auto e : allowCommonEvents) {
+            if (staticSubscribers_.find(bundleName) == staticSubscribers_.end()) {
+                std::set<std::string> s = {};
+                s.emplace(e);
+                staticSubscribers_.insert(std::make_pair(bundleName, s));
+            } else {
+                staticSubscribers_[bundleName].emplace(e);
+            }
+        }
     }
+
     hasInitAllowList_ = true;
     return true;
 }
@@ -78,7 +85,7 @@ bool StaticSubscriberManager::InitValidSubscribers()
     }
     // filter legal extensions and add them to valid map
     for (auto extension : extensions) {
-        if (find(subscriberList_.begin(), subscriberList_.end(), extension.bundleName) == subscriberList_.end()) {
+        if (staticSubscribers_.find(extension.bundleName) == staticSubscribers_.end()) {
             continue;
         }
         EVENT_LOGI("find legal extension, bundlename = %{public}s", extension.bundleName.c_str());
@@ -239,7 +246,8 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
         }
 
         for (auto e : commonEventObj[JSON_KEY_EVENTS]) {
-            if (e.is_null() || !e.is_string()) {
+            if (e.is_null() || !e.is_string()
+                || (staticSubscribers_[extensionBundleName].find(e) == staticSubscribers_[extensionBundleName].end())) {
                 EVENT_LOGW("invalid event obj");
                 continue;
             }
@@ -302,7 +310,7 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
 
     for (auto extension : extensions) {
         if ((extension.bundleName == bundleName) &&
-            find(subscriberList_.begin(), subscriberList_.end(), extension.bundleName) != subscriberList_.end()) {
+            staticSubscribers_.find(extension.bundleName) != staticSubscribers_.end()) {
             AddSubscriber(extension);
         }
     }
