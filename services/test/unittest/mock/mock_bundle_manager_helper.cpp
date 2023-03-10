@@ -244,5 +244,11 @@ void BundleManagerHelper::ClearBundleManagerHelper()
 {
     g_mockIsClearBundleManagerHelperCalled = true;
 }
+
+bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag &flag,
+    std::vector<AppExecFwk::ApplicationInfo> &appInfos)
+{
+    return true;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

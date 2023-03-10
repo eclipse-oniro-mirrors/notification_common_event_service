@@ -18,6 +18,7 @@
 
 #include <map>
 #include <string>
+#include <set>
 #include <vector>
 
 #include "nlohmann/json.hpp"
@@ -78,8 +79,8 @@ private:
     void SendStaticEventProcErrHiSysEvent(int32_t userId, const std::string &publisherName,
         const std::string &subscriberName, const std::string &eventName);
 
-    std::vector<std::string> subscriberList_;
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
+    std::map<std::string, std::set<std::string>> staticSubscribers_;
     bool hasInitAllowList_ = false;
     bool hasInitValidSubscribers_ = false;
     std::mutex subscriberMutex_;

@@ -197,5 +197,27 @@ void BundleManagerHelper::ClearBundleManagerHelper()
     }
     sptrBundleMgr_ = nullptr;
 }
+
+bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag &flag,
+    std::vector<AppExecFwk::ApplicationInfo> &appInfos)
+{
+    EVENT_LOGD("enter");
+
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    std::vector<int> osAccountIds {};
+    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(osAccountIds) != ERR_OK
+        || osAccountIds.empty()) {
+        EVENT_LOGE("failed to QueryActiveOsAccountIds!");
+        return false;
+    }
+
+    if (!GetBundleMgrProxy()) {
+        EVENT_LOGE("failed to get bms proxy");
+        return false;
+    }
+
+    return sptrBundleMgr_->GetApplicationInfos(flag, osAccountIds[0], appInfos);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

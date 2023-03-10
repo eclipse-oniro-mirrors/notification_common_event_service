@@ -70,7 +70,6 @@ ohos_shared_library("cesfwk_services") {
   public_configs = [ ":ces_services_public_config" ]
 
   deps = [
-    ":static_subscriber_config.json",
     "${ability_runtime_path}/frameworks/native/ability/native:static_subscriber_ipc",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
@@ -119,7 +118,6 @@ ohos_static_library("cesfwk_services_static") {
   public_configs = [ ":ces_services_public_config" ]
 
   deps = [
-    ":static_subscriber_config.json",
     "${ability_runtime_path}/frameworks/native/ability/native:static_subscriber_ipc",
     "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
@@ -153,12 +151,6 @@ ohos_static_library("cesfwk_services_static") {
     external_deps += [ "hisysevent_native:libhisysevent" ]
   }
 
-  subsystem_name = "notification"
-  part_name = "common_event_service"
-}
-
-ohos_prebuilt_etc("static_subscriber_config.json") {
-  source = "//base/notification/common_event_service/services/resource/static_subscriber_config.json"
   subsystem_name = "notification"
   part_name = "common_event_service"
 }
