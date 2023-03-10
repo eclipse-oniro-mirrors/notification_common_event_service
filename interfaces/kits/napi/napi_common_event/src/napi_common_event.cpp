@@ -69,25 +69,24 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
 
 AsyncCallbackInfoUnsubscribe::AsyncCallbackInfoUnsubscribe()
 {
-    EVENT_LOGI("constructor AsyncCallbackInfoUnsubscribe: %{private}p", this);
+    EVENT_LOGI("constructor AsyncCallbackInfoUnsubscribe");
 }
 
 AsyncCallbackInfoUnsubscribe::~AsyncCallbackInfoUnsubscribe()
 {
-    EVENT_LOGI("destructor AsyncCallbackInfoUnsubscribe: %{private}p - subscriber[%{public}llu](%{private}p)",
-               this, subscriber->GetID(), subscriber.get());
+    EVENT_LOGI("destructor AsyncCallbackInfoUnsubscribe");
 }
 
 SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
 {
     id_ = ++subscriberID_;
-    EVENT_LOGI("constructor SubscriberInstance[%{public}llu]: %{private}p", id_.load(), this);
+    EVENT_LOGI("constructor SubscriberInstance[%{public}llu]", id_.load());
     valid_ = std::make_shared<bool>(false);
 }
 
 SubscriberInstance::~SubscriberInstance()
 {
-    EVENT_LOGI("destructor SubscriberInstance[%{public}llu]: %{private}p", id_.load(), this);
+    EVENT_LOGI("destructor SubscriberInstance[%{public}llu]", id_.load());
     *valid_ = false;
 }
 
@@ -104,7 +103,7 @@ SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeI
         return;
     }
 
-    EVENT_LOGI("Constructor objectInfo = %{private}p", objectInfo);
+    EVENT_LOGI("Constructor objectInfo");
     subscriber = std::shared_ptr<SubscriberInstance>(objectInfo);
 }
 
@@ -198,7 +197,6 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
 
     napi_value callback = nullptr;
     napi_value resultout = nullptr;
-    EVENT_LOGI("OnReceiveEvent ref = %{private}p", commonEventDataWorkerData->ref);
     napi_get_reference_value(commonEventDataWorkerData->env, commonEventDataWorkerData->ref, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
@@ -246,12 +244,9 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 
     work->data = reinterpret_cast<void *>(commonEventDataWorker);
 
-    EVENT_LOGI("OnReceiveEvent this = %{private}p", this);
-
     if (this->IsOrderedCommonEvent()) {
         std::lock_guard<std::mutex> lock(subscriberInsMutex);
         for (auto subscriberInstance : subscriberInstances) {
-            EVENT_LOGI("OnReceiveEvent get = %{private}p", subscriberInstance.first.get());
             if (subscriberInstance.first.get() == this) {
                 subscriberInstances[subscriberInstance.first].commonEventResult = GoAsyncCommonEvent();
                 break;
@@ -715,9 +710,7 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncResult(const SubscriberInstance 
     }
     std::lock_guard<std::mutex> lock(subscriberInsMutex);
     for (auto subscriberInstance : subscriberInstances) {
-        EVENT_LOGI("SubscriberInstance = %{private}p", subscriberInstance.first.get());
         if (subscriberInstance.first.get() == objectInfo) {
-            EVENT_LOGI("Result = %{private}p", subscriberInstance.second.commonEventResult.get());
             return subscriberInstance.second.commonEventResult;
         }
     }
@@ -1118,9 +1111,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo) {
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
                     asyncCallbackInfo->subscriber.get());
-                EVENT_LOGI("SetCode get = %{private}p", asyncResult.get());
                 if (asyncResult) {
-                    EVENT_LOGI("SetCode get2 = %{private}p", asyncResult.get());
                     asyncCallbackInfo->info.errorCode = asyncResult->SetCode(asyncCallbackInfo->code) ?
                         NO_ERROR : ERR_CES_FAILED;
                 }
@@ -1359,9 +1350,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo) {
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
                     asyncCallbackInfo->subscriber.get());
-                EVENT_LOGI("SetData get = %{private}p", asyncResult.get());
                 if (asyncResult) {
-                    EVENT_LOGI("SetData get2 = %{private}p", asyncResult.get());
                     asyncCallbackInfo->info.errorCode = asyncResult->SetData(asyncCallbackInfo->data) ?
                         NO_ERROR : ERR_CES_FAILED;
                 }
@@ -1977,7 +1966,6 @@ std::shared_ptr<SubscriberInstance> GetSubscriber(const napi_env &env, const nap
         return nullptr;
     }
 
-    EVENT_LOGI("GetSubscriber wrapper = %{private}p", wrapper);
     return wrapper->GetSubscriber();
 }
 
@@ -2037,7 +2025,6 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         EVENT_LOGE("asyncCallbackInfo is null");
         return NapiGetNull(env);
     }
-    EVENT_LOGI("Subscribe new asyncCallbackInfo = %{private}p", asyncCallbackInfo);
     asyncCallbackInfo->subscriber = subscriber;
     asyncCallbackInfo->callback = callback;
 
@@ -2065,8 +2052,6 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo->errorCode == NO_ERROR) {
                 std::lock_guard<std::mutex> lock(subscriberInsMutex);
                 subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
-                EVENT_LOGI("subscriberInstances[%{private}p] push %{private}p",
-                    asyncCallbackInfo->subscriber.get(), asyncCallbackInfo);
             } else {
                 SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
 
@@ -2607,7 +2592,6 @@ napi_value GetSubscriberByUnsubscribe(
         return nullptr;
     }
 
-    EVENT_LOGI("subscriber = %{private}p", subscriber.get());
     std::lock_guard<std::mutex> lock(subscriberInsMutex);
     for (auto subscriberInstance : subscriberInstances) {
         if (subscriberInstance.first.get() == subscriber.get()) {
@@ -2661,7 +2645,6 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
     auto subscribe = subscriberInstances.find(subscriber);
     if (subscribe != subscriberInstances.end()) {
         for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {
-            EVENT_LOGI("NapiDeleteSubscribe ptr = %{private}p", asyncCallbackInfoSubscribe);
             if (asyncCallbackInfoSubscribe->callback != nullptr) {
                 napi_delete_reference(env, asyncCallbackInfoSubscribe->callback);
             }
@@ -2963,18 +2946,14 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
         EVENT_LOGE("wrapper is null");
         return NapiGetNull(env);
     }
-    EVENT_LOGI("Constructor wrapper = %{private}p", wrapper);
 
     napi_wrap(env, thisVar, wrapper,
         [](napi_env env, void *data, void *hint) {
             auto *wrapper = reinterpret_cast<SubscriberInstanceWrapper *>(data);
-            EVENT_LOGI("Constructor destroy %{private}p", wrapper);
             std::lock_guard<std::mutex> lock(subscriberInsMutex);
             for (auto subscriberInstance : subscriberInstances) {
-                EVENT_LOGI("Constructor get = %{private}p", subscriberInstance.first.get());
                 if (subscriberInstance.first.get() == wrapper->GetSubscriber().get()) {
                     for (auto asyncCallbackInfo : subscriberInstance.second.asyncCallbackInfo) {
-                        EVENT_LOGI("Constructor ptr = %{private}p", asyncCallbackInfo);
                         if (asyncCallbackInfo->callback != nullptr) {
                             napi_delete_reference(env, asyncCallbackInfo->callback);
                         }
