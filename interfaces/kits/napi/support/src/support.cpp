@@ -451,8 +451,8 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_AIRPLANE_MODE_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED,
-        "COMMON_EVENT_SMS_RECEIVE_COMPLETED");
+        EventFwk::CommonEventSupport::COMMON_EVENT_SMS_RECEIVED_COMPLETED,
+        "COMMON_EVENT_SMS_RECEIVED_COMPLETED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED,
