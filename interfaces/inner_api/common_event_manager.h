@@ -207,6 +207,14 @@ public:
      * @return Returns true if successful; false otherwise.
      */
     static bool UnfreezeAll();
+
+    /**
+     * Remove sticky common event.
+     *
+     * @param event Name of the common event.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    static int32_t RemoveStickyCommonEvent(const std::string &event);
 };
 }  // namespace EventFwk
 }  // namespace OHOS

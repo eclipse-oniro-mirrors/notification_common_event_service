@@ -2770,5 +2770,52 @@ HWTEST_F(cesSystemTest, CES_PermissionAndOrDefault_0100, Function | MediumTest |
     CommonEventPublishInfo publishInfoDefaultN;
     EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventDataDefaultN, publishInfoDefaultN), true);
 }
+
+/*
+ * @tc.number: CES_RemoveStickyCommonEvent_0100
+ * @tc.name: RemoveStickyCommonEvent
+ * @tc.desc: Verify remove sticky common event
+ */
+HWTEST_F(cesSystemTest, CES_RemoveStickyCommonEvent_0100, Function | MediumTest | Level1)
+{
+    bool result = true;
+    std::string eventName = "TESTEVENT_REMOVE_STICKY_COMMON_EVENT";
+
+    Want wantTest;
+    wantTest.SetAction(eventName);
+    CommonEventData commonEventData(wantTest);
+
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(eventName);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
+
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(true);
+    EXPECT_EQ(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo), true);
+
+    std::this_thread::sleep_for(std::chrono::seconds(TIME_OUT_SECONDS_));
+    EXPECT_EQ(CommonEventManager::RemoveStickyCommonEvent(eventName), OHOS::ERR_OK);
+    EXPECT_EQ(CommonEventManager::SubscribeCommonEvent(subscriberPtr), true);
+    mtx_.lock();
+
+    struct tm startTime = {0};
+    EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
+    struct tm doingTime = {0};
+    int64_t seconds = 0;
+    while (!mtx_.try_lock()) {
+        // get current time and compare it with the start time
+        EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTime), true);
+        seconds = OHOS::GetSecondsBetween(startTime, doingTime);
+        if (seconds >= TIME_OUT_SECONDS_LIMIT) {
+            result = false;
+            break;
+        }
+    }
+    // expect the subscriber can't receive the event within 5 seconds.
+    EXPECT_FALSE(result);
+    mtx_.unlock();
+    EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

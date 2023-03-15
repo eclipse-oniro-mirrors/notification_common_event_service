@@ -476,3 +476,39 @@ HWTEST_F(CommonEventStickyTest, UpdateStickyEvent_1000, TestSize.Level1)
     auto updatedData = recordPtr->commonEventData->GetData();
     EXPECT_EQ(updatedData, STRING_DATA);
 }
+
+/*
+ * @tc.number: RemoveStickyCommonEvent_1100
+ * @tc.name: test RemoveStickyCommonEvent
+ * @tc.desc: Get sticky common event failed when removed.
+ */
+HWTEST_F(CommonEventStickyTest, RemoveStickyCommonEvent_1100, Function | MediumTest | Level1)
+{
+    Want want;
+    want.SetAction(EVENT);
+    want.SetType(TYPE);
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSticky(true);
+
+    struct tm recordTime = {0};
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+
+    InnerCommonEventManager innerCommonEventManager;
+    EXPECT_TRUE(innerCommonEventManager.PublishCommonEvent(
+        data, publishInfo, nullptr, recordTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello"));
+
+    sleep(1);
+
+    CommonEventData Stickydata;
+    EXPECT_TRUE(
+        OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT, Stickydata));
+
+    EXPECT_EQ(innerCommonEventManager.RemoveStickyCommonEvent(EVENT, SYSTEM_UID), OHOS::ERR_OK);
+    EXPECT_FALSE(
+        OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT, Stickydata));
+}

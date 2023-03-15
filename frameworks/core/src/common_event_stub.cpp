@@ -201,6 +201,15 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
+        case static_cast<uint32_t>(ICommonEvent::Message::CES_REMOVE_STICKY_COMMON_EVENT): {
+            std::string event = Str16ToStr8(data.ReadString16());
+            int32_t ret = RemoveStickyCommonEvent(event);
+            if (!reply.WriteInt32(ret)) {
+                EVENT_LOGE("Failed to write reply");
+                return ERR_INVALID_VALUE;
+            }
+            break;
+        }
         default:
             EVENT_LOGW("unknown, code = %{public}u, flags= %{public}u", code, option.GetFlags());
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -283,6 +292,13 @@ bool CommonEventStub::UnfreezeAll()
     EVENT_LOGD("called");
 
     return true;
+}
+
+int32_t CommonEventStub::RemoveStickyCommonEvent(const std::string &event)
+{
+    EVENT_LOGD("called");
+
+    return ERR_OK;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

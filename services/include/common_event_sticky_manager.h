@@ -64,6 +64,15 @@ public:
      */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
+    /**
+     * Remove sticky common event.
+     *
+     * @param event Name of the common event.
+     * @param callerUid caller uid.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    int32_t RemoveStickyCommonEvent(const std::string &event, int32_t callerUid);
+
 private:
     void FindStickyEventsLocked(
         const std::vector<std::string> &events, std::vector<CommonEventRecordPtr> &commonEventRecords);

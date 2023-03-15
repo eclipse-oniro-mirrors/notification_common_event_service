@@ -233,5 +233,18 @@ void CommonEventStickyManager::GetStickyCommonEventRecords(
         }
     }
 }
+
+int32_t CommonEventStickyManager::RemoveStickyCommonEvent(const std::string &event, int32_t callerUid)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    auto it = commonEventRecords_.find(event);
+    if (it != commonEventRecords_.end()) {
+        if (it->second->eventRecordInfo.uid == callerUid) {
+            commonEventRecords_.erase(it);
+        }
+    }
+    return ERR_OK;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

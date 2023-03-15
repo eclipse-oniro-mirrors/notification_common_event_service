@@ -435,6 +435,31 @@ bool CommonEventProxy::UnfreezeAll()
     return ret;
 }
 
+int32_t CommonEventProxy::RemoveStickyCommonEvent(const std::string &event)
+{
+    EVENT_LOGD("start");
+
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    if (!data.WriteString16(Str8ToStr16(event))) {
+        EVENT_LOGE("Failed to write string event");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    MessageParcel reply;
+    bool ret = SendRequest(ICommonEvent::Message::CES_REMOVE_STICKY_COMMON_EVENT, data, reply);
+    if (!ret) {
+        return ERR_NOTIFICATION_SEND_ERROR;
+    }
+
+    EVENT_LOGD("end");
+    return reply.ReadInt32();
+}
+
 bool CommonEventProxy::SendRequest(ICommonEvent::Message code, MessageParcel &data, MessageParcel &reply)
 {
     EVENT_LOGD("start");

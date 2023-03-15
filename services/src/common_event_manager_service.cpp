@@ -452,5 +452,31 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
     }
     return ERR_OK;
 }
+
+int32_t CommonEventManagerService::RemoveStickyCommonEvent(const std::string &event)
+{
+    EVENT_LOGI("enter");
+
+    if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
+        return ERR_NOTIFICATION_CESM_ERROR;
+    }
+
+    auto tokenId = IPCSkeleton::GetCallingTokenID();
+    bool isSubsystem = AccessTokenHelper::VerifyNativeToken(tokenId);
+    if (!isSubsystem && !AccessTokenHelper::IsSystemApp()) {
+        EVENT_LOGE("Not system application or subsystem request.");
+        return ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
+    }
+
+    const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
+    bool ret = AccessTokenHelper::VerifyAccessToken(tokenId, permission);
+    if (!ret && !isSubsystem) {
+        EVENT_LOGE("No permission.");
+        return ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED;
+    }
+
+    return innerCommonEventManager_->RemoveStickyCommonEvent(event, IPCSkeleton::GetCallingUid());
+}
 }  // namespace EventFwk
 }  // namespace OHOS

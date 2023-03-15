@@ -32,6 +32,7 @@ static const int32_t PUBLISH_MAX_PARA_BY_PUBLISHDATA = 3;
 static const int32_t PUBLISH_MAX_PARA_BY_USERID = 4;
 static const int8_t NO_ERROR = 0;
 static const int8_t ERR_CES_FAILED = 1;
+static const int8_t REMOVE_STICKY_MAX_PARA = 2;
 
 class SubscriberInstance;
 struct AsyncCallbackInfoSubscribe;
@@ -204,6 +205,13 @@ struct CommonEventDataWorker {
     Want want;
     int32_t code = 0;
     std::string data;
+};
+
+struct AsyncCallbackRemoveSticky {
+    napi_env env = nullptr;
+    napi_async_work asyncWork = nullptr;
+    std::string event;
+    CallbackPromiseInfo info;
 };
 
 class SubscriberInstance : public CommonEventSubscriber {
@@ -427,7 +435,17 @@ napi_value CommonEventSubscriberInit(napi_env env, napi_value exports);
 
 napi_value CommonEventManagerInit(napi_env env, napi_value exports);
 
+void PaddingCallbackPromiseInfo(const napi_env &env, const napi_ref &callback,
+    CallbackPromiseInfo &callbackInfo, napi_value &promise);
+
 void NapiThrow(napi_env env, int32_t errCode);
+
+napi_value ParseParametersByRemoveSticky(const napi_env &env,
+    const napi_callback_info &info, std::string &event, CallbackPromiseInfo &params);
+
+void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status status, void *data);
+
+napi_value RemoveStickyCommonEvent(napi_env env, napi_callback_info info);
 }  // namespace EventManagerFwkNapi
 }  // namespace OHOS
 
