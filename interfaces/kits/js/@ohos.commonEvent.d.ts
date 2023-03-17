@@ -963,7 +963,7 @@ declare namespace commonEvent {
      * This common event can be triggered only by system.
      * @since 8
      */
-    COMMON_EVENT_SMS_RECEIVE_COMPLETED = "usual.event.SMS_RECEIVE_COMPLETED",
+    COMMON_EVENT_SMS_RECEIVED_COMPLETED = "usual.event.SMS_RECEIVED_COMPLETED",
 
     /**
      * Indicate the action of a common event that a new sms emergency cell broadcast bas been received by the device.
