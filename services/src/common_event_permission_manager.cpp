@@ -220,13 +220,13 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_SLOT_CHANGE,
         {PermissionState::DEFAULT, {"ohos.permission.NOTIFICATION_CONTROLLER"}}
     },
-    {CommonEventSupport::COMMON_EVENT_SMS_RECEIVED_COMPLETED,
+    {CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED,
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVE_SMS"}}
     }
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {
-    CommonEventSupport::COMMON_EVENT_SMS_RECEIVED_COMPLETED
+    CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED
 };
 
 CommonEventPermissionManager::CommonEventPermissionManager()
