@@ -1014,7 +1014,7 @@ public:
      * To subscribe to this common event, your application must have the ohos.permission.RECEIVE_SMS permission.
      * This common event can be triggered only by system.
      */
-    static const std::string COMMON_EVENT_SMS_RECEIVED_COMPLETED;
+    static const std::string COMMON_EVENT_SMS_RECEIVE_COMPLETED;
 
     /**
      * Indicates the action of a common event that a new sms emergency cell broadcast bas been received by the device.
