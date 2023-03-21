@@ -274,9 +274,20 @@ bool CommonEvent::UnfreezeAll()
     return commonEventProxy_->UnfreezeAll();
 }
 
+int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
+{
+    EVENT_LOGD("enter");
+
+    if (!GetCommonEventProxy()) {
+        EVENT_LOGE("failed to get commonEventProxy");
+        return false;
+    }
+    return commonEventProxy_->RemoveStickyCommonEvent(event);
+}
+
 bool CommonEvent::GetCommonEventProxy()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!commonEventProxy_ || !isProxyValid_) {
         std::lock_guard<std::mutex> lock(mutex_);

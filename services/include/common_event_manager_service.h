@@ -131,6 +131,14 @@ public:
      */
     bool UnfreezeAll() override;
 
+    /**
+     * Remove sticky common event.
+     *
+     * @param event Name of the common event.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    int32_t RemoveStickyCommonEvent(const std::string &event) override;
+
     int Dump(int fd, const std::vector<std::u16string> &args) override;
 
     ErrCode Init();

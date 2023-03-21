@@ -518,5 +518,10 @@ void InnerCommonEventManager::SendPublishHiSysEvent(int32_t userId, const std::s
         EventReport::SendHiSysEvent(PUBLISH_ERROR, eventInfo);
     }
 }
+
+int32_t InnerCommonEventManager::RemoveStickyCommonEvent(const std::string &event, int32_t callerUid)
+{
+    return DelayedSingleton<CommonEventStickyManager>::GetInstance()->RemoveStickyCommonEvent(event, callerUid);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

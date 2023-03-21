@@ -141,6 +141,14 @@ public:
      */
     bool UnfreezeAll() override;
 
+    /**
+     * Remove sticky common event.
+     *
+     * @param event Name of the common event.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    int32_t RemoveStickyCommonEvent(const std::string &event) override;
+
 private:
     DISALLOW_COPY_AND_MOVE(CommonEventStub);
 };

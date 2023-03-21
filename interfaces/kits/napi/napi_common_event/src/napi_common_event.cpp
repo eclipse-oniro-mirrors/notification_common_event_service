@@ -400,6 +400,22 @@ void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env, const size_t 
     }
 }
 
+void PaddingCallbackPromiseInfo(const napi_env &env, const napi_ref &callback,
+    CallbackPromiseInfo &callbackInfo, napi_value &promise)
+{
+    EVENT_LOGD("PaddingCallbackPromiseInfo start");
+
+    if (callback) {
+        callbackInfo.callback = callback;
+        callbackInfo.isCallback = true;
+    } else {
+        napi_deferred deferred = nullptr;
+        napi_create_promise(env, &deferred, &promise);
+        callbackInfo.deferred = deferred;
+        callbackInfo.isCallback = false;
+    }
+}
+
 napi_value CreateSubscriber(napi_env env, napi_callback_info info)
 {
     EVENT_LOGI("CreateSubscriber start");
@@ -2740,6 +2756,117 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
     return NapiGetNull(env);
 }
 
+napi_value ParseParametersByRemoveSticky(const napi_env &env,
+    const napi_callback_info &info, std::string &event, CallbackPromiseInfo &params)
+{
+    EVENT_LOGD("ParseParametersByRemoveSticky start");
+
+    size_t argc = REMOVE_STICKY_MAX_PARA;
+    napi_value argv[REMOVE_STICKY_MAX_PARA] = {nullptr};
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
+    if (argc < REMOVE_STICKY_MAX_PARA - 1) {
+        EVENT_LOGE("Wrong number of arguments.");
+        return nullptr;
+    }
+
+    // argv[0]: event
+    napi_valuetype valuetype = napi_undefined;
+    NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valuetype));
+    if (valuetype != napi_string) {
+        EVENT_LOGE("Wrong argument type. String expected.");
+        return nullptr;
+    }
+    size_t strLen = 0;
+    char str[STR_MAX_SIZE] = {0};
+    NAPI_CALL(env, napi_get_value_string_utf8(env, argv[PARAM0], str, STR_MAX_SIZE - 1, &strLen));
+    event = str;
+
+    // argv[1]:callback
+    if (argc >= REMOVE_STICKY_MAX_PARA) {
+        NAPI_CALL(env, napi_typeof(env, argv[PARAM1], &valuetype));
+        if (valuetype != napi_function) {
+            EVENT_LOGE("Wrong argument type. Function expected.");
+            return nullptr;
+        }
+        napi_create_reference(env, argv[PARAM1], 1, &params.callback);
+    }
+
+    return NapiGetNull(env);
+}
+
+void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status status, void *data)
+{
+    EVENT_LOGD("enter");
+    if (!data) {
+        EVENT_LOGE("Invalid async callback data");
+        return;
+    }
+    AsyncCallbackRemoveSticky *asyncCallbackInfo = static_cast<AsyncCallbackRemoveSticky *>(data);
+    ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
+    if (asyncCallbackInfo->info.callback != nullptr) {
+        napi_delete_reference(env, asyncCallbackInfo->info.callback);
+    }
+
+    napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
+    delete asyncCallbackInfo;
+    asyncCallbackInfo = nullptr;
+}
+
+napi_value RemoveStickyCommonEvent(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("RemoveStickyCommonEvent start");
+
+    std::string event;
+    CallbackPromiseInfo params;
+    napi_value result = ParseParametersByRemoveSticky(env, info, event, params);
+    if (result == nullptr) {
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        return NapiGetNull(env);
+    }
+
+    AsyncCallbackRemoveSticky *asyncCallbackInfo =
+        new (std::nothrow) AsyncCallbackRemoveSticky {.env = env, .asyncWork = nullptr, .event = event};
+    if (asyncCallbackInfo == nullptr) {
+        EVENT_LOGE("asyncCallbackInfo is null");
+        return NapiGetNull(env);
+    }
+    napi_value promise = nullptr;
+    PaddingCallbackPromiseInfo(env, params.callback, asyncCallbackInfo->info, promise);
+
+    napi_value resourceName = nullptr;
+    napi_create_string_latin1(env, "removeStickyCommonEvent", NAPI_AUTO_LENGTH, &resourceName);
+
+    // Asynchronous function call
+    napi_create_async_work(env,
+        nullptr,
+        resourceName,
+        [](napi_env env, void *data) {
+            EVENT_LOGI("removeStickyCommonEvent napi_create_async_work start");
+            AsyncCallbackRemoveSticky *asyncCallbackInfo = static_cast<AsyncCallbackRemoveSticky *>(data);
+            if (asyncCallbackInfo) {
+                asyncCallbackInfo->info.errorCode =
+                    CommonEventManager::RemoveStickyCommonEvent(asyncCallbackInfo->event);
+            }
+        },
+        AsyncCompleteCallbackRemoveStickyCommonEvent,
+        (void *)asyncCallbackInfo,
+        &asyncCallbackInfo->asyncWork);
+
+    napi_status status = napi_queue_async_work(env, asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        delete asyncCallbackInfo;
+        asyncCallbackInfo = nullptr;
+        EVENT_LOGE("napi_queue_async_work failed return: %{public}d", status);
+        return NapiGetNull(env);
+    }
+
+    if (asyncCallbackInfo->info.isCallback) {
+        return NapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
 napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &argv, std::vector<std::string> &events)
 {
     EVENT_LOGI("enter");
@@ -3041,6 +3168,7 @@ napi_value CommonEventManagerInit(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("createSubscriber", CreateSubscriber),
         DECLARE_NAPI_FUNCTION("subscribe", Subscribe),
         DECLARE_NAPI_FUNCTION("unsubscribe", Unsubscribe),
+        DECLARE_NAPI_FUNCTION("removeStickyCommonEvent", RemoveStickyCommonEvent),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));

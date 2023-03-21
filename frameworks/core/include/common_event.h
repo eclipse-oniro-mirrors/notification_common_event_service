@@ -153,6 +153,14 @@ public:
      * @return Returns true if successful; false otherwise.
      */
     bool UnfreezeAll();
+
+    /**
+     * Remove sticky common event.
+     *
+     * @param event Name of the common event.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    int32_t RemoveStickyCommonEvent(const std::string &event);
 private:
     /**
      * Gets common event proxy.

@@ -134,5 +134,10 @@ bool CommonEventManager::UnfreezeAll()
 {
     return DelayedSingleton<CommonEvent>::GetInstance()->UnfreezeAll();
 }
+
+int32_t CommonEventManager::RemoveStickyCommonEvent(const std::string &event)
+{
+    return DelayedSingleton<CommonEvent>::GetInstance()->RemoveStickyCommonEvent(event);
+}
 }  // namespace EventFwk
 }  // namespace OHOS
