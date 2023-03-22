@@ -280,7 +280,7 @@ bool MatchingSkills::MatchEvent(const std::string &event) const
 bool MatchingSkills::MatchEntity(const std::vector<std::string> &entities) const
 {
     if (entities.empty()) {
-        EVENT_LOGI("match empty entity");
+        EVENT_LOGD("match empty entity");
         return true;
     }
 

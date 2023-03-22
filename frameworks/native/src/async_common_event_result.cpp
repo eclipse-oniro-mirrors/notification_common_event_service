@@ -112,7 +112,7 @@ bool AsyncCommonEventResult::GetAbortCommonEvent() const
 
 bool AsyncCommonEventResult::FinishCommonEvent()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!CheckSynchronous()) {
         EVENT_LOGE("failed to CheckSynchronous");

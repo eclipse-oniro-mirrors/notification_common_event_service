@@ -43,7 +43,7 @@ StaticSubscriberManager::~StaticSubscriberManager() {}
 
 bool StaticSubscriberManager::InitAllowList()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::vector<AppExecFwk::ApplicationInfo> appInfos {};
     if (!DelayedSingleton<BundleManagerHelper>::GetInstance()
@@ -72,7 +72,7 @@ bool StaticSubscriberManager::InitAllowList()
 
 bool StaticSubscriberManager::InitValidSubscribers()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!validSubscribers_.empty()) {
         validSubscribers_.clear();
@@ -88,7 +88,7 @@ bool StaticSubscriberManager::InitValidSubscribers()
         if (staticSubscribers_.find(extension.bundleName) == staticSubscribers_.end()) {
             continue;
         }
-        EVENT_LOGI("find legal extension, bundlename = %{public}s", extension.bundleName.c_str());
+        EVENT_LOGD("find legal extension, bundlename = %{public}s", extension.bundleName.c_str());
         AddSubscriber(extension);
     }
     hasInitValidSubscribers_ = true;
@@ -100,7 +100,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
+    EVENT_LOGD("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
     if (!hasInitAllowList_ && !InitAllowList()) {
@@ -161,7 +161,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
             }
             AAFwk::Want want;
             want.SetElementName(subscriber.bundleName, subscriber.name);
-            EVENT_LOGI("Ready to connect to subscriber %{public}s in bundle %{public}s",
+            EVENT_LOGD("Ready to connect to subscriber %{public}s in bundle %{public}s",
                 subscriber.name.c_str(), subscriber.bundleName.c_str());
             DelayedSingleton<AbilityManagerHelper>::GetInstance()->
                 ConnectAbility(want, data, service, subscriber.userId);
@@ -172,9 +172,9 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
 bool StaticSubscriberManager::VerifyPublisherPermission(const Security::AccessToken::AccessTokenID &callerToken,
     const std::string &permission)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     if (permission.empty()) {
-        EVENT_LOGI("no need permission");
+        EVENT_LOGD("no need permission");
         return true;
     }
     return AccessTokenHelper::VerifyAccessToken(callerToken, permission);
@@ -200,7 +200,7 @@ bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bund
 void StaticSubscriberManager::ParseEvents(const std::string &extensionName, const std::string &extensionBundleName,
     const int32_t &extensionUserId, const std::string &profile)
 {
-    EVENT_LOGI("enter, subscriber name = %{public}s, bundle name = %{public}s, userId = %{public}d",
+    EVENT_LOGD("enter, subscriber name = %{public}s, bundle name = %{public}s, userId = %{public}d",
         extensionName.c_str(), extensionBundleName.c_str(), extensionUserId);
     
     if (profile.empty()) {
@@ -260,7 +260,7 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
 
 void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension)
 {
-    EVENT_LOGI("enter, subscriber bundlename = %{public}s", extension.bundleName.c_str());
+    EVENT_LOGD("enter, subscriber bundlename = %{public}s", extension.bundleName.c_str());
 
     std::vector<std::string> profileInfos;
     if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->GetResConfigFile(extension, profileInfos)) {
@@ -286,7 +286,7 @@ void StaticSubscriberManager::AddToValidSubscribers(const std::string &eventName
             if ((sub.name == subscriber.name) &&
                 (sub.bundleName == subscriber.bundleName) &&
                 (sub.userId == subscriber.userId)) {
-                EVENT_LOGI("subscriber already exist, event = %{public}s, bundlename = %{public}s, name = %{public}s,"
+                EVENT_LOGD("subscriber already exist, event = %{public}s, bundlename = %{public}s, name = %{public}s,"
                     "userId = %{public}d", eventName.c_str(), subscriber.bundleName.c_str(), subscriber.name.c_str(),
                     subscriber.userId);
                 return;
@@ -294,13 +294,13 @@ void StaticSubscriberManager::AddToValidSubscribers(const std::string &eventName
         }
     }
     validSubscribers_[eventName].emplace_back(subscriber);
-    EVENT_LOGI("subscriber added, event = %{public}s, bundlename = %{public}s, name = %{public}s, userId = %{public}d",
+    EVENT_LOGD("subscriber added, event = %{public}s, bundlename = %{public}s, name = %{public}s, userId = %{public}d",
         eventName.c_str(), subscriber.bundleName.c_str(), subscriber.name.c_str(), subscriber.userId);
 }
 
 void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId)
 {
-    EVENT_LOGI("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
+    EVENT_LOGD("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensions;
     if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->QueryExtensionInfos(extensions, userId)) {
@@ -318,13 +318,13 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
 
 void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId)
 {
-    EVENT_LOGI("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
+    EVENT_LOGD("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
 
     for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
         auto subIt = it->second.begin();
         while (subIt != it->second.end()) {
             if ((subIt->bundleName == bundleName) && (subIt->userId == userId)) {
-                EVENT_LOGI("remove subscriber, event = %{public}s, bundlename = %{public}s, userId = %{public}d",
+                EVENT_LOGD("remove subscriber, event = %{public}s, bundlename = %{public}s, userId = %{public}d",
                     it->first.c_str(), bundleName.c_str(), userId);
                 subIt = it->second.erase(subIt);
             } else {
@@ -342,12 +342,12 @@ void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &
 void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if ((data.GetWant().GetAction() != CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED) &&
         (data.GetWant().GetAction() != CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED) &&
         (data.GetWant().GetAction() != CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED)) {
-        EVENT_LOGI("no need to update map");
+        EVENT_LOGD("no need to update map");
         return;
     }
 
@@ -367,15 +367,15 @@ void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
         EVENT_LOGW("userId is not active, no need to update.");
         return;
     }
-    EVENT_LOGI("active uid = %{public}d, userId = %{public}d", uid, userId);
+    EVENT_LOGD("active uid = %{public}d, userId = %{public}d", uid, userId);
     if (data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED) {
-        EVENT_LOGI("UpdateSubscribersMap bundle %{public}s ready to add", bundleName.c_str());
+        EVENT_LOGD("UpdateSubscribersMap bundle %{public}s ready to add", bundleName.c_str());
         AddSubscriberWithBundleName(bundleName, userId);
     } else if (data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED) {
-        EVENT_LOGI("UpdateSubscribersMap bundle %{public}s ready to remove", bundleName.c_str());
+        EVENT_LOGD("UpdateSubscribersMap bundle %{public}s ready to remove", bundleName.c_str());
         RemoveSubscriberWithBundleName(bundleName, userId);
     } else {
-        EVENT_LOGI("UpdateSubscribersMap bundle %{public}s ready to update", bundleName.c_str());
+        EVENT_LOGD("UpdateSubscribersMap bundle %{public}s ready to update", bundleName.c_str());
         RemoveSubscriberWithBundleName(bundleName, userId);
         AddSubscriberWithBundleName(bundleName, userId);
     }

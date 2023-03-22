@@ -37,7 +37,7 @@ BundleManagerHelper::~BundleManagerHelper()
 
 std::string BundleManagerHelper::GetBundleName(uid_t uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
     std::string bundleName = "";
@@ -55,7 +55,7 @@ std::string BundleManagerHelper::GetBundleName(uid_t uid)
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos,
     const int32_t &userId)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -70,7 +70,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
 
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -88,7 +88,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
         return false;
     }
     for (auto userId : osAccountIds) {
-        EVENT_LOGI("active userId = %{public}d", userId);
+        EVENT_LOGD("active userId = %{public}d", userId);
         sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
             userId, extensionInfos);
     }
@@ -98,7 +98,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
 bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension,
                                            std::vector<std::string> &profileInfos)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -113,7 +113,7 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
 
 bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -131,7 +131,7 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
 
 bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundleName, const int32_t &userId)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -188,7 +188,7 @@ bool BundleManagerHelper::GetBundleMgrProxy()
 
 void BundleManagerHelper::ClearBundleManagerHelper()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
 
