@@ -39,7 +39,7 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
     const struct tm &recordTime, const EventRecordInfo &eventRecordInfo)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (eventSubscribeInfo == nullptr) {
         EVENT_LOGE("eventSubscribeInfo is null");
@@ -82,7 +82,7 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
 int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (commonEventListener == nullptr) {
         EVENT_LOGE("commonEventListener is null");
@@ -99,7 +99,7 @@ int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &co
 std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager::GetSubscriberRecords(
     const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     auto records = std::vector<SubscriberRecordPtr>();
 
@@ -209,7 +209,7 @@ void CommonEventSubscriberManager::DumpDetailed(
 void CommonEventSubscriberManager::DumpState(const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::vector<SubscriberRecordPtr> records;
 
@@ -400,7 +400,7 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByEvent(
 void CommonEventSubscriberManager::UpdateFreezeInfo(
     const uid_t &uid, const bool &freezeState, const int64_t &freezeTime)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
@@ -411,15 +411,15 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
                 recordPtr->freezeTime = 0;
             }
             recordPtr->isFreeze = freezeState;
-            EVENT_LOGI("recordPtr->uid: %{public}d", recordPtr->eventRecordInfo.uid);
-            EVENT_LOGI("recordPtr->isFreeze: %{public}d", recordPtr->isFreeze);
+            EVENT_LOGD("recordPtr->uid: %{public}d", recordPtr->eventRecordInfo.uid);
+            EVENT_LOGD("recordPtr->isFreeze: %{public}d", recordPtr->isFreeze);
         }
     }
 }
 
 void CommonEventSubscriberManager::UpdateAllFreezeInfos(const bool &freezeState, const int64_t &freezeTime)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
@@ -430,13 +430,13 @@ void CommonEventSubscriberManager::UpdateAllFreezeInfos(const bool &freezeState,
         }
         recordPtr->isFreeze = freezeState;
     }
-    EVENT_LOGI("all subscribers update freeze state to %{public}d", freezeState);
+    EVENT_LOGD("all subscribers update freeze state to %{public}d", freezeState);
 }
 
 void CommonEventSubscriberManager::InsertFrozenEvents(
     const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (subscriberRecord == nullptr) {
         EVENT_LOGE("subscriberRecord is null");
@@ -473,7 +473,7 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
 std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> CommonEventSubscriberManager::GetFrozenEvents(
     const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> frozenEvents;
     std::lock_guard<std::mutex> lock(mutex_);
@@ -489,14 +489,14 @@ std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> CommonEventSubscriber
 
 std::map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEvents()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     std::lock_guard<std::mutex> lock(mutex_);
     return std::move(frozenEvents_);
 }
 
 void CommonEventSubscriberManager::RemoveFrozenEvents(const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     auto infoItem = frozenEvents_.find(uid);
     if (infoItem != frozenEvents_.end()) {
         frozenEvents_.erase(uid);
@@ -505,7 +505,7 @@ void CommonEventSubscriberManager::RemoveFrozenEvents(const uid_t &uid)
 
 void CommonEventSubscriberManager::RemoveFrozenEventsBySubscriber(const SubscriberRecordPtr &subscriberRecord)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {

@@ -24,7 +24,7 @@ using namespace OHOS::AppExecFwk;
 
 int64_t SystemTime::GetNowSysTime()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     InnerEvent::TimePoint nowSys = InnerEvent::Clock::now();
     auto epoch = nowSys.time_since_epoch();

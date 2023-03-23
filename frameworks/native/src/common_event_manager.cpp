@@ -67,7 +67,6 @@ bool CommonEventManager::PublishCommonEventAsUser(const CommonEventData &data,
     const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
     const int32_t &userId)
 {
-    EVENT_LOGI("enter");
     return NewPublishCommonEventAsUser(data, publishInfo, subscriber, userId) == ERR_OK ? true : false;
 }
 
@@ -75,7 +74,6 @@ int32_t CommonEventManager::NewPublishCommonEventAsUser(const CommonEventData &d
     const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
     const int32_t &userId)
 {
-    EVENT_LOGI("enter");
     return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber,
         userId);
 }
@@ -90,7 +88,6 @@ bool CommonEventManager::PublishCommonEventAsUser(const CommonEventData &data,
     const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
     const uid_t &uid, const int32_t &callerToken, const int32_t &userId)
 {
-    EVENT_LOGI("enter");
     return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber, uid,
         callerToken, userId);
 }

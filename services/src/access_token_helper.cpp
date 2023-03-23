@@ -41,7 +41,7 @@ bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
 void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &callerToken,
     const std::string &event)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
     if (tokenType != ATokenTypeEnum::TOKEN_HAP) {
         EVENT_LOGE("tokenType != ATokenTypeEnum::TOKEN_HAP");

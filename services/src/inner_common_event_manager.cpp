@@ -66,7 +66,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     const sptr<IRemoteObject> &service)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d), event = %{public}s to userId = %{public}d",
+    EVENT_LOGD("enter %{public}s(pid = %{public}d, uid = %{public}d), event = %{public}s to userId = %{public}d",
         bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str(), userId);
 
     if (data.GetWant().GetAction().empty()) {
@@ -89,7 +89,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     }
 
     if (isSystemEvent) {
-        EVENT_LOGI("System common event");
+        EVENT_LOGD("System common event");
         if (!comeFrom.isSystemApp && !comeFrom.isSubsystem && !comeFrom.isCemShell) {
             EVENT_LOGE(
                 "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
@@ -156,7 +156,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
+    EVENT_LOGD("enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
         bundleName.c_str(), pid, uid, subscribeInfo.GetUserId());
 
     if (subscribeInfo.GetMatchingSkills().CountEvent() == 0) {
@@ -200,7 +200,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (commonEventListener == nullptr) {
         EVENT_LOGE("commonEventListener == nullptr");
@@ -214,7 +214,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &
 
     std::shared_ptr<OrderedEventRecord> sp = controlPtr_->GetMatchingOrderedReceiver(commonEventListener);
     if (sp) {
-        EVENT_LOGI("Unsubscribe the subscriber who is waiting to receive finish feedback");
+        EVENT_LOGD("Unsubscribe the subscriber who is waiting to receive finish feedback");
         int32_t code = sp->commonEventData->GetCode();
         std::string data = sp->commonEventData->GetData();
         controlPtr_->FinishReceiverAction(sp, code, data, sp->resultAbort);
@@ -228,7 +228,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &
 
 bool InnerCommonEventManager::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(event, eventData);
 }
@@ -236,7 +236,7 @@ bool InnerCommonEventManager::GetStickyCommonEvent(const std::string &event, Com
 void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     switch (dumpType) {
         case DumpEventType::SUBSCRIBER: {
@@ -278,7 +278,7 @@ void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::stri
 void InnerCommonEventManager::FinishReceiver(
     const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
@@ -295,14 +295,14 @@ void InnerCommonEventManager::FinishReceiver(
 
 void InnerCommonEventManager::Freeze(const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(
         uid, true, SystemTime::GetNowSysTime());
 }
 
 void InnerCommonEventManager::Unfreeze(const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(uid, false);
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
@@ -313,7 +313,7 @@ void InnerCommonEventManager::Unfreeze(const uid_t &uid)
 
 void InnerCommonEventManager::UnfreezeAll()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateAllFreezeInfos(false);
     if (!controlPtr_) {
         EVENT_LOGE("CommonEventControlManager ptr is nullptr");
@@ -324,7 +324,7 @@ void InnerCommonEventManager::UnfreezeAll()
 
 bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool result = AccessTokenHelper::VerifyAccessToken(record.eventRecordInfo.callerToken, permission);
     // Only subsystems and system apps with permissions can publish sticky common events
@@ -343,7 +343,7 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, EventComeFrom &comeFrom, int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (userId < UNDEFINED_USER) {
         EVENT_LOGE("Invalid User ID %{public}d", userId);
@@ -382,7 +382,7 @@ bool InnerCommonEventManager::PublishStickyEvent(
     const std::shared_ptr<CommonEventSubscribeInfo> &sp, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!sp) {
         EVENT_LOGE("sp is null");
@@ -404,7 +404,7 @@ bool InnerCommonEventManager::PublishStickyEvent(
             EVENT_LOGW("commonEventRecord is nullptr and get next");
             continue;
         }
-        EVENT_LOGI("publish sticky event : %{public}s",
+        EVENT_LOGD("publish sticky event : %{public}s",
             commonEventRecord->commonEventData->GetWant().GetAction().c_str());
 
         if (!commonEventRecord->publishInfo->GetBundleName().empty() &&

@@ -37,17 +37,17 @@ CommonEventManagerService::CommonEventManagerService()
       runner_(nullptr),
       handler_(nullptr)
 {
-    EVENT_LOGI("instance created");
+    EVENT_LOGD("instance created");
 }
 
 CommonEventManagerService::~CommonEventManagerService()
 {
-    EVENT_LOGI("instance destroyed");
+    EVENT_LOGD("instance destroyed");
 }
 
 ErrCode CommonEventManagerService::Init()
 {
-    EVENT_LOGI("ready to init");
+    EVENT_LOGD("ready to init");
     innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     if (!innerCommonEventManager_) {
         EVENT_LOGE("Failed to init without inner service");
@@ -95,7 +95,7 @@ int32_t CommonEventManagerService::PublishCommonEvent(const CommonEventData &eve
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener,
     const int32_t &userId)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
@@ -123,7 +123,7 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const uid_t &uid,
     const int32_t &callerToken, const int32_t &userId)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
@@ -144,9 +144,8 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
     const uid_t &uid, const int32_t &clientToken, const int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
 
-    EVENT_LOGI("clientToken = %{public}d", clientToken);
+    EVENT_LOGD("clientToken = %{public}d", clientToken);
     if (AccessTokenHelper::IsDlpHap(clientToken)) {
         EVENT_LOGE("DLP hap not allowed to send common event");
         return ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP;
@@ -213,7 +212,7 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(
     const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
@@ -261,7 +260,7 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(
 int32_t CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
@@ -286,7 +285,7 @@ int32_t CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObje
 
 bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
@@ -315,7 +314,7 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
 bool CommonEventManagerService::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
@@ -335,7 +334,7 @@ bool CommonEventManagerService::DumpState(const uint8_t &dumpType, const std::st
 bool CommonEventManagerService::FinishReceiver(
     const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
@@ -356,7 +355,7 @@ bool CommonEventManagerService::FinishReceiver(
 
 bool CommonEventManagerService::Freeze(const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
         EVENT_LOGE("Not subsystem request");
@@ -380,7 +379,7 @@ bool CommonEventManagerService::Freeze(const uid_t &uid)
 
 bool CommonEventManagerService::Unfreeze(const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
         EVENT_LOGE("Not subsystem request");
@@ -406,7 +405,7 @@ bool CommonEventManagerService::Unfreeze(const uid_t &uid)
 
 bool CommonEventManagerService::UnfreezeAll()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
         EVENT_LOGE("Not subsystem request");
@@ -432,7 +431,7 @@ bool CommonEventManagerService::UnfreezeAll()
 
 int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &args)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {

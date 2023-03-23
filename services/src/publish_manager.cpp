@@ -30,11 +30,11 @@ PublishManager::~PublishManager()
 
 bool PublishManager::CheckIsFloodAttack(pid_t appUid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     std::lock_guard<std::mutex> lock(mutex_);
     bool isAttacked = false;
     int64_t now = SystemTime::GetNowSysTime();
-    EVENT_LOGI("dispatch common event by app (uid = %{publish}d) at now = %{public}" PRId64, appUid, now);
+    EVENT_LOGD("dispatch common event by app (uid = %{publish}d) at now = %{public}" PRId64, appUid, now);
     auto iter = floodAttackAppStatistics_.find(appUid);
     if (iter == floodAttackAppStatistics_.end()) {
         floodAttackAppStatistics_[appUid].emplace_back(now);
