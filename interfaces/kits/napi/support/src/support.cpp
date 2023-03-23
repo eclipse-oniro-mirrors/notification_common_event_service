@@ -562,7 +562,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_HTTP_PROXY_CHANGE,
         "COMMON_EVENT_HTTP_PROXY_CHANGE");
-
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED,
+        "COMMON_EVENT_SCREEN_LOCKED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED,
+        "COMMON_EVENT_SCREEN_UNLOCKED");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 

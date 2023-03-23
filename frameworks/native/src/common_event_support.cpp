@@ -1314,6 +1314,18 @@ const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF =
 const std::string CommonEventSupport::COMMON_EVENT_USER_INFO_UPDATED =
     "usual.event.USER_INFO_UPDATED";
 
+/**
+ * Indicates the action of a common event that the screen lock.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED = "usual.event.SCREEN_LOCKED";
+
+/**
+ * Indicates the action of a common event that the screen unlock.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED = "usual.event.SCREEN_UNLOCKED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -1640,6 +1652,9 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_INFO_UPDATED);
 
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED);
     return;
 }
 
