@@ -18,6 +18,7 @@
 #include "bundle_constants.h"
 #include "bundle_mgr_client.h"
 #include "event_log_wrapper.h"
+#include "ipc_skeleton.h"
 #include "iservice_registry.h"
 #include "nlohmann/json.hpp"
 #include "os_account_manager_helper.h"
@@ -46,9 +47,9 @@ std::string BundleManagerHelper::GetBundleName(uid_t uid)
         EVENT_LOGE("failed to get bms proxy");
         return bundleName;
     }
-
-    sptrBundleMgr_->GetBundleNameForUid(uid, bundleName);
-
+    std::string identity = IPCSkeleton::ResetCallingIdentity();
+    sptrBundleMgr_->GetNameForUid(uid, bundleName);
+    IPCSkeleton::SetCallingIdentity(identity);
     return bundleName;
 }
 
@@ -141,8 +142,12 @@ bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundle
         EVENT_LOGE("failed to get bms proxy");
         return isSystemApp;
     }
-
+    std::string identity = IPCSkeleton::ResetCallingIdentity();
     int32_t uid = sptrBundleMgr_->GetUidByBundleName(bundleName, userId);
+    IPCSkeleton::SetCallingIdentity(identity);
+    if (uid < 0) {
+        EVENT_LOGW("get invalid uid from bundle %{public}s of userId %{public}d", bundleName.c_str(), userId);
+    }
     isSystemApp = sptrBundleMgr_->CheckIsSystemAppByUid(uid);
 
     return isSystemApp;
