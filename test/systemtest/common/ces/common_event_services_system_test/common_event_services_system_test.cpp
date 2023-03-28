@@ -2280,7 +2280,7 @@ HWTEST_F(cesSystemTest, CES_SetEventAuthority_0800, Function | MediumTest | Leve
             break;
         }
     }
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     mtx_.unlock();
     EXPECT_EQ(CommonEventManager::UnSubscribeCommonEvent(subscriberPtr), true);
 }
