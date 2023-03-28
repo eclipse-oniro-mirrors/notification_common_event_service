@@ -168,11 +168,11 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
     napi_create_object(commonEventDataWorkerData->env, &result);
     if (SetCommonEventData(commonEventDataWorkerData, result) == nullptr) {
         EVENT_LOGE("failed to set common event data");
+        napi_close_handle_scope(commonEventDataWorkerData->env, scope);
         delete work;
         work = nullptr;
         delete commonEventDataWorkerData;
         commonEventDataWorkerData = nullptr;
-        napi_close_handle_scope(commonEventDataWorkerData->env, scope);
         return;
     }
 
