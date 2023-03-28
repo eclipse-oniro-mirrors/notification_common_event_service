@@ -186,7 +186,7 @@ char32_t GetChar32Param()
 {
     char32_t param = ' ';
     std::random_device rd;
-    static uniform_int_distribution<char32_t> u;
+    static uniform_int_distribution<int32_t> u;
     static default_random_engine e(rd());
     param = u(e);
     return param;
