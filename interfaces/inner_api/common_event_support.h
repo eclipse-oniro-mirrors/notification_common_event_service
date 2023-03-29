@@ -1192,6 +1192,18 @@ public:
     */
     static const std::string COMMON_EVENT_USER_INFO_UPDATED;
 
+    /**
+     * Indicates the action of a common event that the screen lock.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SCREEN_LOCKED;
+
+    /**
+     * Indicates the action of a common event that the screen unlock.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SCREEN_UNLOCKED;
+
 public:
     CommonEventSupport();
 
