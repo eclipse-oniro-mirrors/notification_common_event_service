@@ -24,7 +24,7 @@ constexpr int32_t LENGTH = 80;
 int CommonEventStickyManager::FindStickyEvents(
     const SubscribeInfoPtr &subscribeInfo, std::vector<CommonEventRecordPtr> &commonEventRecords)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (subscribeInfo == nullptr) {
         EVENT_LOGE("subscribeInfo is null");
@@ -44,7 +44,7 @@ int CommonEventStickyManager::FindStickyEvents(
 
 bool CommonEventStickyManager::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (event.empty()) {
         EVENT_LOGE("Invalid event name");
@@ -56,7 +56,7 @@ bool CommonEventStickyManager::GetStickyCommonEvent(const std::string &event, Co
 
 int CommonEventStickyManager::UpdateStickyEvent(const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     auto commonEventRecordPtr = std::make_shared<CommonEventRecord>(eventRecord);
     if (commonEventRecordPtr == nullptr) {
@@ -72,7 +72,7 @@ int CommonEventStickyManager::UpdateStickyEvent(const CommonEventRecord &eventRe
 void CommonEventStickyManager::DumpState(
     const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::vector<CommonEventRecordPtr> records;
 

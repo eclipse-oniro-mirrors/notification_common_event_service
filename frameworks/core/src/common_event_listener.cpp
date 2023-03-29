@@ -31,7 +31,7 @@ CommonEventListener::~CommonEventListener()
 void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsReady()) {
@@ -102,7 +102,7 @@ void CommonEventListener::OnReceiveEvent(
     const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
+    EVENT_LOGD("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
 
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -127,12 +127,12 @@ void CommonEventListener::OnReceiveEvent(
     if ((commonEventSubscriber_->GetAsyncCommonEventResult() != nullptr) && ordered) {
         commonEventSubscriber_->GetAsyncCommonEventResult()->FinishCommonEvent();
     }
-    EVENT_LOGI("end");
+    EVENT_LOGD("end");
 }
 
 void CommonEventListener::Stop()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     std::lock_guard<std::mutex> lock(mutex_);
     if (handler_) {
         handler_.reset();
