@@ -30,7 +30,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         EVENT_LOGE("failed to check publish parameter");
@@ -45,7 +45,7 @@ int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         EVENT_LOGE("failed to check publish parameter");
@@ -59,7 +59,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &callerToken)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         EVENT_LOGE("failed to check publish parameter");
@@ -75,7 +75,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     const int32_t &callerToken, const int32_t &userId)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
         EVENT_LOGE("failed to check publish parameter");
@@ -88,7 +88,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
 bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     if (data.GetWant().GetAction() == std::string()) {
         EVENT_LOGE("the commonEventdata action is null");
         return false;
@@ -117,7 +117,7 @@ bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const Commo
 int32_t CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (subscriber == nullptr) {
         EVENT_LOGE("the subscriber is null");
@@ -149,7 +149,7 @@ int32_t CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubsc
 int32_t CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (subscriber == nullptr) {
         EVENT_LOGE("the subscriber is null");
@@ -180,7 +180,7 @@ int32_t CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSub
 
 bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("the commonEventProxy is null");
@@ -198,7 +198,7 @@ bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData
 bool CommonEvent::FinishReceiver(
     const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &data, const bool &abortEvent)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (proxy == nullptr) {
         EVENT_LOGE("the proxy is null");
@@ -216,7 +216,7 @@ bool CommonEvent::FinishReceiver(
 bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("the commonEventProxy is null");
@@ -228,7 +228,7 @@ bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, c
 
 void CommonEvent::ResetCommonEventProxy()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
     std::lock_guard<std::mutex> lock(mutex_);
     isProxyValid_ = false;
     if ((commonEventProxy_ == nullptr) || (commonEventProxy_->AsObject() == nullptr)) {
@@ -240,7 +240,7 @@ void CommonEvent::ResetCommonEventProxy()
 
 bool CommonEvent::Freeze(const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("the commonEventProxy is null");
@@ -252,7 +252,7 @@ bool CommonEvent::Freeze(const uid_t &uid)
 
 bool CommonEvent::Unfreeze(const uid_t &uid)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("the commonEventProxy is null");
@@ -264,7 +264,7 @@ bool CommonEvent::Unfreeze(const uid_t &uid)
 
 bool CommonEvent::UnfreezeAll()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD("enter");
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("the commonEventProxy is null");
