@@ -560,6 +560,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_USER_INFO_UPDATED");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED,
+        "COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_HTTP_PROXY_CHANGE,
         "COMMON_EVENT_HTTP_PROXY_CHANGE");
     SetNamedPropertyByStr(env,
