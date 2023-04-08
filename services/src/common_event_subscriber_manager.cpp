@@ -89,11 +89,12 @@ int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &co
         return ERR_INVALID_VALUE;
     }
 
+    int res = RemoveSubscriberRecordLocked(commonEventListener);
+    
     if (death_ != nullptr) {
         commonEventListener->RemoveDeathRecipient(death_);
     }
-
-    return RemoveSubscriberRecordLocked(commonEventListener);
+    return res;
 }
 
 std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager::GetSubscriberRecords(
