@@ -1193,6 +1193,12 @@ public:
     static const std::string COMMON_EVENT_USER_INFO_UPDATED;
 
     /**
+    * Indicate the action of a common event that domain account status has been changed.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED;
+
+    /**
      * Indicates the action of a common event that the screen lock.
      * This is a protected common event that can only be sent by system.
      */

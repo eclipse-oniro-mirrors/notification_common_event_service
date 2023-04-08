@@ -1315,6 +1315,13 @@ const std::string CommonEventSupport::COMMON_EVENT_USER_INFO_UPDATED =
     "usual.event.USER_INFO_UPDATED";
 
 /**
+ * Indicate the action of a common event that domain account status has been changed.
+ * This is a protected common event that can only be sent by system.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED =
+    "usual.event.DOMAIN_ACCOUNT_STATUS_CHANGED";
+
+/**
  * Indicates the action of a common event that the screen lock.
  * This is a protected common event that can only be sent by system.
  */
@@ -1651,6 +1658,8 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VOLUME_EJECT);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_INFO_UPDATED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED);
 
