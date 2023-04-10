@@ -742,9 +742,14 @@ bool CommonEventControlManager::CheckSubscriberPermission(
     EVENT_LOGD("enter");
     bool ret = false;
     std::string lackPermission {};
-
-    Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(
-        eventRecord.commonEventData->GetWant().GetAction());
+    std::string event = eventRecord.commonEventData->GetWant().GetAction();
+    bool isSystemAPIEvent = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->IsSystemAPIEvent(event);
+    if (isSystemAPIEvent && !(subscriberRecord.eventRecordInfo.isSubsystem
+        || subscriberRecord.eventRecordInfo.isSystemApp)) {
+        EVENT_LOGW("Invalid permission for system api event.");
+        return false;
+    }
+    Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
     if (permission.names.empty()) {
         return true;
     }
@@ -757,38 +762,33 @@ bool CommonEventControlManager::CheckSubscriberPermission(
     if (permission.names.size() == 1) {
         ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, permission.names[0]);
         lackPermission = permission.names[0];
-    } else {
-        if (permission.state == PermissionState::AND) {
-            for (auto vec : permission.names) {
-                ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
-                if (!ret) {
-                    lackPermission = vec;
-                    break;
-                }
+    } else if (permission.state == PermissionState::AND) {
+        for (auto vec : permission.names) {
+            ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
+            if (!ret) {
+                lackPermission = vec;
+                break;
             }
-        } else if (permission.state == PermissionState::OR) {
-            for (auto vec : permission.names) {
-                ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
-                lackPermission += vec + CONNECTOR;
-                if (ret) {
-                    break;
-                }
-            }
-            lackPermission = lackPermission.substr(0, lackPermission.length() - CONNECTOR.length());
-        } else {
-            EVENT_LOGW("Invalid Permission.");
-            return false;
         }
+    } else if (permission.state == PermissionState::OR) {
+        for (auto vec : permission.names) {
+            ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
+            lackPermission += vec + CONNECTOR;
+            if (ret) {
+                break;
+            }
+        }
+        lackPermission = lackPermission.substr(0, lackPermission.length() - CONNECTOR.length());
+    } else {
+        EVENT_LOGW("Invalid Permission.");
+        return false;
     }
     if (!ret) {
         EVENT_LOGW("No permission to receive common event %{public}s, "
                     "due to subscriber %{public}s (pid = %{public}d, uid = %{public}d) lacks "
                     "the %{public}s permission.",
-            eventRecord.commonEventData->GetWant().GetAction().c_str(),
-            subscriberRecord.eventRecordInfo.bundleName.c_str(),
-            subscriberRecord.eventRecordInfo.pid,
-            subscriberRecord.eventRecordInfo.uid,
-            lackPermission.c_str());
+            event.c_str(), subscriberRecord.eventRecordInfo.bundleName.c_str(),
+            subscriberRecord.eventRecordInfo.pid, subscriberRecord.eventRecordInfo.uid, lackPermission.c_str());
     }
 
     return ret;

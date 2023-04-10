@@ -57,6 +57,8 @@ public:
      */
     Permission GetEventPermission(const std::string &event);
 
+    bool IsSystemAPIEvent(const std::string &event);
+
 private:
     static bool IsSensitiveEvent(const std::string &event);
     std::unordered_map<std::string, Permission> eventMap_;
