@@ -15,7 +15,10 @@ import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
 config("cesfwk_kits_test_config") {
-  visibility = [ ":*" ]
+  visibility = [
+    "./../*",
+    "./../../../../services/test/moduletest/*",
+  ]
 
   include_dirs = [
     "//commonlibrary/c_utils/base/include",
