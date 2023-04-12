@@ -519,7 +519,7 @@ void InnerCommonEventManager::SendPublishHiSysEvent(int32_t userId, const std::s
     }
 }
 
-int32_t InnerCommonEventManager::RemoveStickyCommonEvent(const std::string &event, int32_t callerUid)
+int32_t InnerCommonEventManager::RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid)
 {
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->RemoveStickyCommonEvent(event, callerUid);
 }

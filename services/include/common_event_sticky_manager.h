@@ -71,7 +71,7 @@ public:
      * @param callerUid caller uid.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    int32_t RemoveStickyCommonEvent(const std::string &event, int32_t callerUid);
+    int32_t RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid);
 
 private:
     void FindStickyEventsLocked(

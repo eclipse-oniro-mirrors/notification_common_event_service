@@ -234,7 +234,7 @@ void CommonEventStickyManager::GetStickyCommonEventRecords(
     }
 }
 
-int32_t CommonEventStickyManager::RemoveStickyCommonEvent(const std::string &event, int32_t callerUid)
+int32_t CommonEventStickyManager::RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
