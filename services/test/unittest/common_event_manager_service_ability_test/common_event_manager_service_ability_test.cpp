@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -60,9 +60,11 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0100 start";
     int32_t systemAbilityId = 1;
     bool runOnCreate = true;
-    CommonEventManagerServiceAbility CommonEventManagerServiceAbility(systemAbilityId, runOnCreate);
-    CommonEventManagerServiceAbility.service_ = std::make_shared<CommonEventManagerService>();
-    CommonEventManagerServiceAbility.OnStart();
+    std::shared_ptr<CommonEventManagerServiceAbility> commonEventManagerServiceAbility =
+        std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
+    ASSERT_NE(nullptr, commonEventManagerServiceAbility);
+    commonEventManagerServiceAbility->service_ = std::make_shared<CommonEventManagerService>();
+    commonEventManagerServiceAbility->OnStart();
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0100 end";
 }
 
@@ -76,10 +78,12 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0200 start";
     int32_t systemAbilityId = 1;
     bool runOnCreate = true;
-    CommonEventManagerServiceAbility CommonEventManagerServiceAbility(systemAbilityId, runOnCreate);
-    CommonEventManagerServiceAbility.service_ = nullptr;
+    std::shared_ptr<CommonEventManagerServiceAbility> commonEventManagerServiceAbility =
+        std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
+    ASSERT_NE(nullptr, commonEventManagerServiceAbility);
+    commonEventManagerServiceAbility->service_ = nullptr;
     mockInit(true);
-    CommonEventManagerServiceAbility.OnStart();
+    commonEventManagerServiceAbility->OnStart();
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0200 end";
 }
 
@@ -93,10 +97,12 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0300 start";
     int32_t systemAbilityId = 1;
     bool runOnCreate = true;
-    CommonEventManagerServiceAbility CommonEventManagerServiceAbility(systemAbilityId, runOnCreate);
-    CommonEventManagerServiceAbility.service_ = nullptr;
+    std::shared_ptr<CommonEventManagerServiceAbility> commonEventManagerServiceAbility =
+        std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
+    ASSERT_NE(nullptr, commonEventManagerServiceAbility);
+    commonEventManagerServiceAbility->service_ = nullptr;
     mockInit(false);
-    CommonEventManagerServiceAbility.OnStart();
+    commonEventManagerServiceAbility->OnStart();
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0300 end";
 }
 }  // namespace EventFwk

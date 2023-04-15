@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -58,8 +58,9 @@ void BundleManagerHelperTest::TearDown(void)
 HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0200, Level1)
 {
     GTEST_LOG_(INFO) << "BundleManagerHelper_0200 start";
-    BundleManagerHelper bundleManagerHelper;
-    bundleManagerHelper.ClearBundleManagerHelper();
+    std::shared_ptr<BundleManagerHelper> bundleManagerHelper = std::make_shared<BundleManagerHelper>();
+    ASSERT_NE(nullptr, bundleManagerHelper);
+    bundleManagerHelper->ClearBundleManagerHelper();
     GTEST_LOG_(INFO) << "BundleManagerHelper_0200 end";
 }
 
@@ -209,9 +210,10 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1100, Level1)
 HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1200, Level1)
 {
     GTEST_LOG_(INFO) << "BundleManagerHelper_1200 start";
-    BundleManagerHelper bundleManagerHelper;
+    std::shared_ptr<BundleManagerHelper> bundleManagerHelper = std::make_shared<BundleManagerHelper>();
+    ASSERT_NE(nullptr, bundleManagerHelper);
     sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
-    bundleManagerHelper.sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
-    bundleManagerHelper.ClearBundleManagerHelper();
+    bundleManagerHelper->sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
+    bundleManagerHelper->ClearBundleManagerHelper();
     GTEST_LOG_(INFO) << "BundleManagerHelper_1200 end";
 }

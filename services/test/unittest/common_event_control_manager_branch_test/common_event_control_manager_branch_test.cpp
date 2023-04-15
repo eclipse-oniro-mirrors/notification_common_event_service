@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,14 +61,16 @@ void CommonEventControlManagerBranchTest::TearDown(void)
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0100 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::map<std::shared_ptr<EventSubscriberRecord>, std::vector<std::shared_ptr<CommonEventRecord>>> frozenRecords;
     std::shared_ptr<EventSubscriberRecord> rec = nullptr;
     std::vector<std::shared_ptr<CommonEventRecord>> com;
     std::shared_ptr<CommonEventRecord> eve = nullptr;
     com.emplace_back(eve);
     frozenRecords.emplace(rec, com);
-    commonEventControlManager.PublishFrozenEventsInner(frozenRecords);
+    commonEventControlManager->PublishFrozenEventsInner(frozenRecords);
     GTEST_LOG_(INFO) << "CommonEventControlManager_0100 end";
 }
 
@@ -265,17 +267,19 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0900, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1000, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1000 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
-    commonEventControlManager.unorderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->unorderedEventQueue_.emplace_back(rec);
     std::string event = "aa";
     int32_t userId = ALL_USER;
     // set GetAction == event
     mockGetAction(false);
-    commonEventControlManager.GetUnorderedEventRecords(event, userId, records);
+    commonEventControlManager->GetUnorderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1000 end";
 }
 
@@ -287,18 +291,20 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1000, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1100 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 100;
-    commonEventControlManager.unorderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->unorderedEventQueue_.emplace_back(rec);
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction == event
     mockGetAction(false);
-    commonEventControlManager.GetUnorderedEventRecords(event, userId, records);
+    commonEventControlManager->GetUnorderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1100 end";
 }
 
@@ -310,18 +316,20 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1100, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1200, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1200 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 99;
-    commonEventControlManager.unorderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->unorderedEventQueue_.emplace_back(rec);
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction != event
     mockGetAction(true);
-    commonEventControlManager.GetUnorderedEventRecords(event, userId, records);
+    commonEventControlManager->GetUnorderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1200 end";
 }
 
@@ -333,16 +341,18 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1200, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1300, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1300 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 99;
-    commonEventControlManager.orderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->orderedEventQueue_.emplace_back(rec);
     std::string event = "";
     int32_t userId = 100;
-    commonEventControlManager.GetOrderedEventRecords(event, userId, records);
+    commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1300 end";
 }
 
@@ -354,16 +364,18 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1300, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1400, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1400 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 100;
-    commonEventControlManager.orderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->orderedEventQueue_.emplace_back(rec);
     std::string event = "";
     int32_t userId = 100;
-    commonEventControlManager.GetOrderedEventRecords(event, userId, records);
+    commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1400 end";
 }
 
@@ -375,18 +387,20 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1400, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1500, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1500 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 100;
-    commonEventControlManager.orderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->orderedEventQueue_.emplace_back(rec);
     std::string event = "aa";
     int32_t userId = ALL_USER;
     // set GetAction == event
     mockGetAction(false);
-    commonEventControlManager.GetOrderedEventRecords(event, userId, records);
+    commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1500 end";
 }
 
@@ -398,18 +412,20 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1500, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1600, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1600 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 100;
-    commonEventControlManager.orderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->orderedEventQueue_.emplace_back(rec);
     std::string event = "aa";
     int32_t userId = ALL_USER;
     // set GetAction != event
     mockGetAction(true);
-    commonEventControlManager.GetOrderedEventRecords(event, userId, records);
+    commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1600 end";
 }
 
@@ -421,18 +437,20 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1600, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1700, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1700 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 99;
-    commonEventControlManager.orderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->orderedEventQueue_.emplace_back(rec);
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction != event
     mockGetAction(true);
-    commonEventControlManager.GetOrderedEventRecords(event, userId, records);
+    commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1700 end";
 }
 
@@ -444,18 +462,20 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1700, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1800, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1800 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::shared_ptr<OrderedEventRecord> rec = std::make_shared<OrderedEventRecord>();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     rec->commonEventData = commonEventData;
     rec->userId = 100;
-    commonEventControlManager.orderedEventQueue_.emplace_back(rec);
+    commonEventControlManager->orderedEventQueue_.emplace_back(rec);
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction == event
     mockGetAction(false);
-    commonEventControlManager.GetOrderedEventRecords(event, userId, records);
+    commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1800 end";
 }
 
@@ -467,14 +487,16 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1800, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1900, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1900 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = 100;
-    commonEventControlManager.historyEventRecords_.emplace_back(historyEventRecord);
+    commonEventControlManager->historyEventRecords_.emplace_back(historyEventRecord);
     std::string event = "";
     int32_t userId = 100;
-    commonEventControlManager.GetHistoryEventRecords(event, userId, records);
+    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1900 end";
 }
 
@@ -486,16 +508,18 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1900, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2000, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2000 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = 100;
-    commonEventControlManager.historyEventRecords_.emplace_back(historyEventRecord);
+    commonEventControlManager->historyEventRecords_.emplace_back(historyEventRecord);
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction == event
     mockGetAction(false);
-    commonEventControlManager.GetHistoryEventRecords(event, userId, records);
+    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2000 end";
 }
 
@@ -507,16 +531,18 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2000, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2100 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::vector<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = 90;
-    commonEventControlManager.historyEventRecords_.emplace_back(historyEventRecord);
+    commonEventControlManager->historyEventRecords_.emplace_back(historyEventRecord);
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction != event
     mockGetAction(true);
-    commonEventControlManager.GetHistoryEventRecords(event, userId, records);
+    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2100 end";
 }
 
@@ -528,7 +554,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2100, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2200, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2200 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     record->userId = UNDEFINED_USER;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
@@ -536,7 +564,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2200, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     record->commonEventData = commonEventData;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2200 end";
 }
 
@@ -548,7 +576,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2200, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2300, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2300 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     record->userId = 100;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
@@ -556,7 +586,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2300, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     record->commonEventData = commonEventData;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2300 end";
 }
 
@@ -568,7 +598,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2300, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2400 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     record->userId = 100;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
@@ -585,7 +617,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Le
     record->commonEventData = commonEventData;
     std::string dumpInfo = "aa";
     // test DumpStateByCommonEventRecord
-    commonEventControlManager.DumpStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2400 end";
 }
 
@@ -597,7 +629,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2500, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2500 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     record->userId = 100;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
@@ -607,7 +641,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2500, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     record->commonEventData = commonEventData;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2500 end";
 }
 
@@ -619,7 +653,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2500, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2600, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2600 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     record->userId = 100;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
@@ -630,7 +666,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2600, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     record->commonEventData = commonEventData;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2600 end";
 }
 
@@ -642,7 +678,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2600, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2700, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2700 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     record->userId = 100;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
@@ -653,7 +691,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2700, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     record->commonEventData = commonEventData;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2700 end";
 }
 
@@ -665,11 +703,13 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2700, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2800, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2800 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     record.userId = UNDEFINED_USER;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2800 end";
 }
 
@@ -681,11 +721,13 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2800, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2900, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2900 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     record.userId = 100;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2900 end";
 }
 
@@ -697,7 +739,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2900, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3000, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3000 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     record.userId = UNDEFINED_USER;
     std::string bb = "bb";
@@ -705,7 +749,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3000, Le
     record.subscriberPermissions.emplace_back(bb);
     record.subscriberPermissions.emplace_back(cc);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3000 end";
 }
 
@@ -717,12 +761,14 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3000, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3100 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     record.userId = UNDEFINED_USER;
     record.state = OrderedEventRecord::RECEIVING;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3100 end";
 }
 
@@ -734,12 +780,14 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3100, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3200, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3200 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     record.userId = UNDEFINED_USER;
     record.state = OrderedEventRecord::RECEIVED;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3200 end";
 }
 
@@ -751,12 +799,14 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3200, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3300, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3300 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     record.userId = UNDEFINED_USER;
     record.state = 100;
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateByCommonEventRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3300 end";
 }
 
@@ -768,10 +818,12 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3300, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3400, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3400 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3400 end";
 }
 
@@ -783,7 +835,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3400, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3500, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3500 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     // set record->receivers is not empty
     std::shared_ptr<EventSubscriberRecord> rec = std::make_shared<EventSubscriberRecord>();
@@ -791,7 +845,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3500, Le
     // set record->deliveryState is OrderedEventRecord::PENDING
     record->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3500 end";
 }
 
@@ -803,7 +857,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3500, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3600, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3600 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     // set record->receivers is not empty
     std::shared_ptr<EventSubscriberRecord> rec = std::make_shared<EventSubscriberRecord>();
@@ -811,7 +867,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3600, Le
     // set record->deliveryState is OrderedEventRecord::SKIPPED
     record->deliveryState.emplace_back(OrderedEventRecord::SKIPPED);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3600 end";
 }
 
@@ -823,7 +879,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3600, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3700, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3700 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     // set record->receivers is not empty
     std::shared_ptr<EventSubscriberRecord> rec = std::make_shared<EventSubscriberRecord>();
@@ -831,7 +889,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3700, Le
     // set record->deliveryState is OrderedEventRecord::TIMEOUT
     record->deliveryState.emplace_back(OrderedEventRecord::TIMEOUT);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3700 end";
 }
 
@@ -843,7 +901,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3700, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3800, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3800 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
     // set record->receivers is not empty
     std::shared_ptr<EventSubscriberRecord> rec = std::make_shared<EventSubscriberRecord>();
@@ -851,7 +911,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3800, Le
     // set record->deliveryState is default
     record->deliveryState.emplace_back(100);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3800 end";
 }
 
@@ -863,7 +923,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3800, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3900, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3900 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     // set record.receivers is not empty
     HistorySubscriberRecord historySubscriberRecord;
@@ -871,7 +933,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3900, Le
     record.receivers.emplace_back(historySubscriberRecord);
     record.deliveryState.emplace_back(OrderedEventRecord::PENDING);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3900 end";
 }
 
@@ -883,7 +945,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3900, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4000, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_4000 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     // set record.receivers is not empty
     HistorySubscriberRecord historySubscriberRecord;
@@ -891,7 +955,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4000, Le
     record.receivers.emplace_back(historySubscriberRecord);
     record.deliveryState.emplace_back(OrderedEventRecord::TIMEOUT);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_4000 end";
 }
 
@@ -903,7 +967,9 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4000, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_4100 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     HistoryEventRecord record;
     // set record.receivers is not empty
     HistorySubscriberRecord historySubscriberRecord;
@@ -911,7 +977,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4100, Le
     record.receivers.emplace_back(historySubscriberRecord);
     record.deliveryState.emplace_back(100);
     std::string dumpInfo = "aa";
-    commonEventControlManager.DumpHistoryStateBySubscriberRecord(record, dumpInfo);
+    commonEventControlManager->DumpHistoryStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_4100 end";
 }
 
@@ -923,10 +989,12 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4100, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4200, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_4200 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<EventSubscriberRecord> subscriberRecord = nullptr;
     std::string eventName = "aa";
-    commonEventControlManager.SendOrderedEventProcTimeoutHiSysEvent(subscriberRecord, eventName);
+    commonEventControlManager->SendOrderedEventProcTimeoutHiSysEvent(subscriberRecord, eventName);
     GTEST_LOG_(INFO) << "CommonEventControlManager_4200 end";
 }
 
@@ -938,11 +1006,13 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4200, Le
 HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4300, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_4300 start";
-    CommonEventControlManager commonEventControlManager;
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
     std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
     std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
     subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
     std::string eventName = "aa";
-    commonEventControlManager.SendOrderedEventProcTimeoutHiSysEvent(subscriberRecord, eventName);
+    commonEventControlManager->SendOrderedEventProcTimeoutHiSysEvent(subscriberRecord, eventName);
     GTEST_LOG_(INFO) << "CommonEventControlManager_4300 end";
 }

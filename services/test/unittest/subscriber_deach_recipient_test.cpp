@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -113,9 +113,10 @@ public:
 HWTEST_F(SubscriberDeathRecipientTest, SubscriberDeathRecipient_0100, Level1)
 {
     GTEST_LOG_(INFO) << "SubscriberDeathRecipient_0100 start";
-    SubscriberDeathRecipient subscriberDeathRecipient;
+    std::shared_ptr<SubscriberDeathRecipient> subscriberDeathRecipient = std::make_shared<SubscriberDeathRecipient>();
+    ASSERT_NE(nullptr, subscriberDeathRecipient);
     wptr<MockIRemoteObject> remote = nullptr;
-    subscriberDeathRecipient.OnRemoteDied(remote);
+    subscriberDeathRecipient->OnRemoteDied(remote);
     GTEST_LOG_(INFO) << "SubscriberDeathRecipient_0100 end";
 }
 

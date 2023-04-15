@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -105,9 +105,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0300, Level1)
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0400, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0400 start";
-    AbilityManagerHelper abilityManagerHelper;
-    abilityManagerHelper.abilityMgr_ = nullptr;
-    abilityManagerHelper.Clear();
+    std::shared_ptr<AbilityManagerHelper> abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    ASSERT_NE(nullptr, abilityManagerHelper);
+    abilityManagerHelper->abilityMgr_ = nullptr;
+    abilityManagerHelper->Clear();
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0400 end";
 }
 
@@ -119,9 +120,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0400, Level1)
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0500, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0500 start";
-    AbilityManagerHelper abilityManagerHelper;
+    std::shared_ptr<AbilityManagerHelper> abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    ASSERT_NE(nullptr, abilityManagerHelper);
     sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
-    abilityManagerHelper.abilityMgr_ = iface_cast<AAFwk::IAbilityManager>(remoteObject);
-    abilityManagerHelper.Clear();
+    abilityManagerHelper->abilityMgr_ = iface_cast<AAFwk::IAbilityManager>(remoteObject);
+    abilityManagerHelper->Clear();
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0500 end";
 }

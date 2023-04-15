@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -107,12 +107,14 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0200, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0300, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0300 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string title = "aa";
     SubscriberRecordPtr record = nullptr;
     std::string format = "aa";
     std::string dumpInfo = "aa";
-    commonEventSubscriberManager.DumpDetailed(title, record, format, dumpInfo);
+    commonEventSubscriberManager->DumpDetailed(title, record, format, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0300 end";
 }
 
@@ -124,13 +126,15 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0300, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0400, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0400 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string title = "aa";
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
     record->eventSubscribeInfo = nullptr;
     std::string format = "aa";
     std::string dumpInfo = "aa";
-    commonEventSubscriberManager.DumpDetailed(title, record, format, dumpInfo);
+    commonEventSubscriberManager->DumpDetailed(title, record, format, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0400 end";
 }
 
@@ -142,7 +146,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0400, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0500, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0500 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string title = "aa";
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
     MatchingSkills matchingSkills_;
@@ -151,7 +157,7 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0500, Le
     record->eventSubscribeInfo->SetUserId(userId);
     std::string format = "aa";
     std::string dumpInfo = "aa";
-    commonEventSubscriberManager.DumpDetailed(title, record, format, dumpInfo);
+    commonEventSubscriberManager->DumpDetailed(title, record, format, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0500 end";
 }
 
@@ -163,7 +169,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0500, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0600, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0600 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string title = "aa";
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
     MatchingSkills matchingSkills_;
@@ -172,7 +180,7 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0600, Le
     record->eventSubscribeInfo->SetUserId(userId);
     std::string format = "aa";
     std::string dumpInfo = "aa";
-    commonEventSubscriberManager.DumpDetailed(title, record, format, dumpInfo);
+    commonEventSubscriberManager->DumpDetailed(title, record, format, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0600 end";
 }
 
@@ -333,11 +341,13 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1500, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1600, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1600 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string event = "";
     int32_t userId = ALL_USER;
     std::vector<SubscriberRecordPtr> records;
-    commonEventSubscriberManager.GetSubscriberRecordsByEvent(event, userId, records);
+    commonEventSubscriberManager->GetSubscriberRecordsByEvent(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1600 end";
 }
 
@@ -349,7 +359,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1600, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1700, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1700 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string event = "";
     int32_t userId = 100;
     std::vector<SubscriberRecordPtr> records;
@@ -357,8 +369,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1700, Le
     MatchingSkills matchingSkills_;
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
     record->eventSubscribeInfo->SetUserId(userId);
-    commonEventSubscriberManager.subscribers_.emplace_back(record);
-    commonEventSubscriberManager.GetSubscriberRecordsByEvent(event, userId, records);
+    commonEventSubscriberManager->subscribers_.emplace_back(record);
+    commonEventSubscriberManager->GetSubscriberRecordsByEvent(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1700 end";
 }
 
@@ -370,7 +382,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1700, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1800, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1800 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string event = "";
     int32_t userId = 100;
     std::vector<SubscriberRecordPtr> records;
@@ -379,8 +393,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1800, Le
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
     int32_t userIds = 90;
     record->eventSubscribeInfo->SetUserId(userIds);
-    commonEventSubscriberManager.subscribers_.emplace_back(record);
-    commonEventSubscriberManager.GetSubscriberRecordsByEvent(event, userId, records);
+    commonEventSubscriberManager->subscribers_.emplace_back(record);
+    commonEventSubscriberManager->GetSubscriberRecordsByEvent(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1800 end";
 }
 
@@ -392,11 +406,13 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1800, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1900, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1900 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string event = "aa";
     int32_t userId = 99;
     std::vector<SubscriberRecordPtr> records;
-    commonEventSubscriberManager.GetSubscriberRecordsByEvent(event, userId, records);
+    commonEventSubscriberManager->GetSubscriberRecordsByEvent(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_1900 end";
 }
 
@@ -408,7 +424,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_1900, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2000, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2000 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string event = "aa";
     int32_t userId = 99;
     std::vector<SubscriberRecordPtr> records;
@@ -419,8 +437,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2000, Le
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
     int32_t userIds = -1;
     record->eventSubscribeInfo->SetUserId(userIds);
-    commonEventSubscriberManager.eventSubscribers_.emplace(event, sub);
-    commonEventSubscriberManager.GetSubscriberRecordsByEvent(event, userId, records);
+    commonEventSubscriberManager->eventSubscribers_.emplace(event, sub);
+    commonEventSubscriberManager->GetSubscriberRecordsByEvent(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2000 end";
 }
 
@@ -432,7 +450,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2000, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2100 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     std::string event = "aa";
     int32_t userId = 99;
     std::vector<SubscriberRecordPtr> records;
@@ -443,8 +463,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2100, Le
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
     int32_t userIds = 101;
     record->eventSubscribeInfo->SetUserId(userIds);
-    commonEventSubscriberManager.eventSubscribers_.emplace(event, sub);
-    commonEventSubscriberManager.GetSubscriberRecordsByEvent(event, userId, records);
+    commonEventSubscriberManager->eventSubscribers_.emplace(event, sub);
+    commonEventSubscriberManager->GetSubscriberRecordsByEvent(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2100 end";
 }
 
@@ -456,14 +476,16 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2100, Le
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2200, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2200 start";
-    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
     SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
     uid_t uids = 1;
     subscriberRecord->eventRecordInfo.uid = uids;
     // set frozenEvents_
     FrozenRecords frozenRecord;
-    commonEventSubscriberManager.frozenEvents_.emplace(uids, frozenRecord);
-    commonEventSubscriberManager.RemoveFrozenEventsBySubscriber(subscriberRecord);
+    commonEventSubscriberManager->frozenEvents_.emplace(uids, frozenRecord);
+    commonEventSubscriberManager->RemoveFrozenEventsBySubscriber(subscriberRecord);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2200 end";
 }
 
@@ -505,15 +527,17 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0200, Level1
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0300, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0300 start";
-    CommonEventStickyManager commonEventStickyManager;
+    std::shared_ptr<CommonEventStickyManager> commonEventStickyManager =
+        std::make_shared<CommonEventStickyManager>();
+    ASSERT_NE(nullptr, commonEventStickyManager);
     std::string event = "";
     int32_t userId = ALL_USER;
     std::vector<std::shared_ptr<CommonEventRecord>> records;
     // set commonEventRecords_
     std::shared_ptr<CommonEventRecord> comm = std::make_shared<CommonEventRecord>();
     comm->userId = ALL_USER;
-    commonEventStickyManager.commonEventRecords_.emplace(event, comm);
-    commonEventStickyManager.GetStickyCommonEventRecords(event, userId, records);
+    commonEventStickyManager->commonEventRecords_.emplace(event, comm);
+    commonEventStickyManager->GetStickyCommonEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0300 end";
 }
 
@@ -525,15 +549,17 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0300, Level1
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0400, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0400 start";
-    CommonEventStickyManager commonEventStickyManager;
+    std::shared_ptr<CommonEventStickyManager> commonEventStickyManager =
+        std::make_shared<CommonEventStickyManager>();
+    ASSERT_NE(nullptr, commonEventStickyManager);
     std::string event = "";
     int32_t userId = 100;
     std::vector<std::shared_ptr<CommonEventRecord>> records;
     // set commonEventRecords_
     std::shared_ptr<CommonEventRecord> comm = std::make_shared<CommonEventRecord>();
     comm->userId = 101;
-    commonEventStickyManager.commonEventRecords_.emplace(event, comm);
-    commonEventStickyManager.GetStickyCommonEventRecords(event, userId, records);
+    commonEventStickyManager->commonEventRecords_.emplace(event, comm);
+    commonEventStickyManager->GetStickyCommonEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0400 end";
 }
 
@@ -545,15 +571,17 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0400, Level1
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0500, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0500 start";
-    CommonEventStickyManager commonEventStickyManager;
+    std::shared_ptr<CommonEventStickyManager> commonEventStickyManager =
+        std::make_shared<CommonEventStickyManager>();
+    ASSERT_NE(nullptr, commonEventStickyManager);
     std::string event = "aa";
     int32_t userId = 100;
     std::vector<std::shared_ptr<CommonEventRecord>> records;
     // set commonEventRecords_
     std::shared_ptr<CommonEventRecord> comm = std::make_shared<CommonEventRecord>();
     comm->userId = 101;
-    commonEventStickyManager.commonEventRecords_.emplace(event, comm);
-    commonEventStickyManager.GetStickyCommonEventRecords(event, userId, records);
+    commonEventStickyManager->commonEventRecords_.emplace(event, comm);
+    commonEventStickyManager->GetStickyCommonEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0500 end";
 }
 
@@ -565,15 +593,17 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0500, Level1
 HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0600, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0600 start";
-    CommonEventStickyManager commonEventStickyManager;
+    std::shared_ptr<CommonEventStickyManager> commonEventStickyManager =
+        std::make_shared<CommonEventStickyManager>();
+    ASSERT_NE(nullptr, commonEventStickyManager);
     std::string event = "aa";
     int32_t userId = ALL_USER;
     std::vector<std::shared_ptr<CommonEventRecord>> records;
     // set commonEventRecords_
     std::shared_ptr<CommonEventRecord> comm = std::make_shared<CommonEventRecord>();
     comm->userId = ALL_USER;
-    commonEventStickyManager.commonEventRecords_.emplace(event, comm);
-    commonEventStickyManager.GetStickyCommonEventRecords(event, userId, records);
+    commonEventStickyManager->commonEventRecords_.emplace(event, comm);
+    commonEventStickyManager->GetStickyCommonEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0600 end";
 }
 
