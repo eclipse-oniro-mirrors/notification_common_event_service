@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "common_event_support.h"
@@ -225,6 +226,10 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     }
 };
 
+static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
+    CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED
+};
+
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED
 };
@@ -267,6 +272,11 @@ bool CommonEventPermissionManager::IsSensitiveEvent(const std::string &event)
 {
     auto it = find(SENSITIVE_COMMON_EVENTS.begin(), SENSITIVE_COMMON_EVENTS.end(), event);
     return it != SENSITIVE_COMMON_EVENTS.end();
+}
+
+bool CommonEventPermissionManager::IsSystemAPIEvent(const std::string &event)
+{
+    return SYSTEM_API_COMMON_EVENTS.find(event) != SYSTEM_API_COMMON_EVENTS.end();
 }
 }  // namespace EventFwk
 }  // namespace OHOS
