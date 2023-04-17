@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -179,10 +179,11 @@ HWTEST_F(CommonEventTest, CommonEvent_008, TestSize.Level1)
  */
 HWTEST_F(CommonEventTest, CommonEvent_009, TestSize.Level1)
 {
-    CommonEvent commonEvent;
+    std::shared_ptr<CommonEvent> commonEvent = std::make_shared<CommonEvent>();
+    ASSERT_NE(nullptr, commonEvent);
     auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent.ResetCommonEventProxy();
+    commonEvent->commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
+    commonEvent->ResetCommonEventProxy();
 }
 
 /*

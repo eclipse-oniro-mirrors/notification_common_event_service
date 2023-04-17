@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -249,6 +249,7 @@ HWTEST_F(CommonEventManagerServiceTest, FinishReceiver_001, Level1)
 
     const std::string event = "this is an event";
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager_);
     const sptr<IRemoteObject> proxy = nullptr;
     const int32_t code = 0;
     const std::string receiverData = "this is an receiverData";
@@ -271,6 +272,7 @@ HWTEST_F(CommonEventManagerServiceTest, Unfreeze_001, Level1)
     CommonEventData eventData;
 
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     const uid_t uid = 0;
 
     innerCommonEventManager->Unfreeze(uid);
@@ -290,6 +292,7 @@ HWTEST_F(CommonEventManagerServiceTest, UnfreezeAll_001, Level1)
     CommonEventData eventData;
 
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
 
     innerCommonEventManager->UnfreezeAll();
     GTEST_LOG_(INFO) << "UnfreezeAll_001 end";

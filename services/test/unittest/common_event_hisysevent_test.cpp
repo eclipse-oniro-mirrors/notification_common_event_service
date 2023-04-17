@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -64,13 +64,15 @@ HWTEST_F(CommonEventHisyseventTest, SendOrderedEventProcTimeoutSysEvent_0100, Le
 {
     GTEST_LOG_(INFO) << "SendOrderedEventProcTimeoutSysEvent_0100 start";
 
+    std::shared_ptr<EventReport> eventReport = std::make_shared<EventReport>();
+    ASSERT_NE(nullptr, eventReport);
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
     eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     eventInfo.eventName = TEST_EVENT_NAME;
-    EventReport::SendHiSysEvent(ORDERED_EVENT_PROC_TIMEOUT, eventInfo);
+    eventReport->SendHiSysEvent(ORDERED_EVENT_PROC_TIMEOUT, eventInfo);
 
     GTEST_LOG_(INFO) << "SendOrderedEventProcTimeoutSysEvent_0100 end";
 }
@@ -85,12 +87,14 @@ HWTEST_F(CommonEventHisyseventTest, SendStaticEventProcErrorSysEvent_0100, Level
 {
     GTEST_LOG_(INFO) << "SendStaticEventProcErrorSysEvent_0100 start";
 
+    std::shared_ptr<EventReport> eventReport = std::make_shared<EventReport>();
+    ASSERT_NE(nullptr, eventReport);
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
     eventInfo.publisherName = TEST_BUNDLE_NAME_OF_PUBLISHER;
     eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
     eventInfo.eventName = TEST_EVENT_NAME;
-    EventReport::SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
+    eventReport->SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
 
     GTEST_LOG_(INFO) << "SendStaticEventProcErrorSysEvent_0100 end";
 }
@@ -105,11 +109,13 @@ HWTEST_F(CommonEventHisyseventTest, SendSubscriberExceedMaximumSysEvent_0100, Le
 {
     GTEST_LOG_(INFO) << "SendSubscriberExceedMaximumSysEvent_0100 start";
 
+    std::shared_ptr<EventReport> eventReport = std::make_shared<EventReport>();
+    ASSERT_NE(nullptr, eventReport);
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
     eventInfo.eventName = TEST_EVENT_NAME;
     eventInfo.subscriberNum = TEST_SUBSCRIBER_NUM;
-    EventReport::SendHiSysEvent(SUBSCRIBER_EXCEED_MAXIMUM, eventInfo);
+    eventReport->SendHiSysEvent(SUBSCRIBER_EXCEED_MAXIMUM, eventInfo);
 
     GTEST_LOG_(INFO) << "SendSubscriberExceedMaximumSysEvent_0100 end";
 }
@@ -130,7 +136,9 @@ HWTEST_F(CommonEventHisyseventTest, SendPublishEventErrorSysEvent_0100, Level1)
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     eventInfo.eventName = TEST_EVENT_NAME;
-    EventReport::SendHiSysEvent(PUBLISH_ERROR, eventInfo);
+    std::shared_ptr<EventReport> eventReport = std::make_shared<EventReport>();
+    ASSERT_NE(nullptr, eventReport);
+    eventReport->SendHiSysEvent(PUBLISH_ERROR, eventInfo);
 
     GTEST_LOG_(INFO) << "SendPublishEventErrorSysEvent_0100 end";
 }
@@ -145,6 +153,8 @@ HWTEST_F(CommonEventHisyseventTest, SendSubscribeSysEvent_0100, Level1)
 {
     GTEST_LOG_(INFO) << "SendSubscribeSysEvent_0100 start";
 
+    std::shared_ptr<EventReport> eventReport = std::make_shared<EventReport>();
+    ASSERT_NE(nullptr, eventReport);
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
     eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
@@ -155,14 +165,14 @@ HWTEST_F(CommonEventHisyseventTest, SendSubscribeSysEvent_0100, Level1)
         [events](std::string eventName, const std::string &str) {
             return (str == events.front()) ? (eventName + str) : (eventName + "," + str);
         });
-    EventReport::SendHiSysEvent(SUBSCRIBE, eventInfo);
+    eventReport->SendHiSysEvent(SUBSCRIBE, eventInfo);
 
     std::vector<std::string> anotherEvent = {"event"};
     eventInfo.eventName = std::accumulate(anotherEvent.begin(), anotherEvent.end(), std::string(""),
         [anotherEvent](std::string eventName, const std::string &str) {
             return (str == anotherEvent.front()) ? (eventName + str) : (eventName + "," + str);
         });
-    EventReport::SendHiSysEvent(SUBSCRIBE, eventInfo);
+    eventReport->SendHiSysEvent(SUBSCRIBE, eventInfo);
 
     GTEST_LOG_(INFO) << "SendSubscribeSysEvent_0100 end";
 }
@@ -177,6 +187,8 @@ HWTEST_F(CommonEventHisyseventTest, SendUnSubscribeSysEvent_0100, Level1)
 {
     GTEST_LOG_(INFO) << "SendUnSubscribeSysEvent_0100 start";
 
+    std::shared_ptr<EventReport> eventReport = std::make_shared<EventReport>();
+    ASSERT_NE(nullptr, eventReport);
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
     eventInfo.subscriberName = TEST_BUNDLE_NAME_OF_SUBSCRIBER;
@@ -187,7 +199,7 @@ HWTEST_F(CommonEventHisyseventTest, SendUnSubscribeSysEvent_0100, Level1)
         [events](std::string eventName, const std::string &str) {
             return (str == events.front()) ? (eventName + str) : (eventName + "," + str);
         });
-    EventReport::SendHiSysEvent(UNSUBSCRIBE, eventInfo);
+    eventReport->SendHiSysEvent(UNSUBSCRIBE, eventInfo);
 
     eventInfo.eventName = "";
     std::vector<std::string> anotherEvent = {"event"};
@@ -195,7 +207,7 @@ HWTEST_F(CommonEventHisyseventTest, SendUnSubscribeSysEvent_0100, Level1)
         [anotherEvent](std::string eventName, const std::string &str) {
             return (str == anotherEvent.front()) ? (eventName + str) : (eventName + "," + str);
         });
-    EventReport::SendHiSysEvent(UNSUBSCRIBE, eventInfo);
+    eventReport->SendHiSysEvent(UNSUBSCRIBE, eventInfo);
 
     GTEST_LOG_(INFO) << "SendUnSubscribeSysEvent_0100 end";
 }
@@ -210,13 +222,15 @@ HWTEST_F(CommonEventHisyseventTest, SendPublishSysEvent_0100, Level1)
 {
     GTEST_LOG_(INFO) << "SendPublishSysEvent_0100 start";
 
+    std::shared_ptr<EventReport> eventReport = std::make_shared<EventReport>();
+    ASSERT_NE(nullptr, eventReport);
     EventInfo eventInfo;
     eventInfo.userId = TEST_USER_ID;
     eventInfo.publisherName = TEST_BUNDLE_NAME_OF_PUBLISHER;
     eventInfo.pid = getpid();
     eventInfo.uid = getuid();
     eventInfo.eventName = TEST_EVENT_NAME;
-    EventReport::SendHiSysEvent(PUBLISH, eventInfo);
+    eventReport->SendHiSysEvent(PUBLISH, eventInfo);
 
     GTEST_LOG_(INFO) << "SendPublishSysEvent_0100 end";
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -98,9 +98,11 @@ HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_003, TestSize.Level1)
 HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_004, TestSize.Level1)
 {
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber = nullptr;
-    CommonEventListener commonEventListener(commonEventSubscriber);
-    commonEventListener.handler_ = nullptr;
-    commonEventListener.Stop();
+    std::shared_ptr<CommonEventListener> commonEventListener =
+        std::make_shared<CommonEventListener>(commonEventSubscriber);
+    ASSERT_NE(nullptr, commonEventListener);
+    commonEventListener->handler_ = nullptr;
+    commonEventListener->Stop();
 }
 
 /*
@@ -112,8 +114,10 @@ HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_004, TestSize.Level1)
 HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_005, TestSize.Level1)
 {
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber = nullptr;
-    CommonEventListener commonEventListener(commonEventSubscriber);
-    commonEventListener.runner_ =  OHOS::AppExecFwk::EventRunner::Create("CesFwkListener");
-    commonEventListener.handler_ = std::make_shared< OHOS::AppExecFwk::EventHandler>(commonEventListener.runner_);
-    commonEventListener.Stop();
+    std::shared_ptr<CommonEventListener> commonEventListener =
+        std::make_shared<CommonEventListener>(commonEventSubscriber);
+    ASSERT_NE(nullptr, commonEventListener);
+    commonEventListener->runner_ =  OHOS::AppExecFwk::EventRunner::Create("CesFwkListener");
+    commonEventListener->handler_ = std::make_shared< OHOS::AppExecFwk::EventHandler>(commonEventListener->runner_);
+    commonEventListener->Stop();
 }

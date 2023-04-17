@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -107,14 +107,15 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0200, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0300, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0300 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     uint8_t dumpType = DumpEventType::PENDING;
     std::string event = "";
     int32_t userId = 1;
     std::vector<std::string> state;
     // set controlPtr_ is nullptr
-    innerCommonEventManager.controlPtr_ = nullptr;
-    innerCommonEventManager.DumpState(dumpType, event, userId, state);
+    innerCommonEventManager->controlPtr_ = nullptr;
+    innerCommonEventManager->DumpState(dumpType, event, userId, state);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0300 end";
 }
 
@@ -126,12 +127,13 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0300, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0400, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0400 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     uint8_t dumpType = DumpEventType::PENDING;
     std::string event = "";
     int32_t userId = 1;
     std::vector<std::string> state;
-    innerCommonEventManager.DumpState(dumpType, event, userId, state);
+    innerCommonEventManager->DumpState(dumpType, event, userId, state);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0400 end";
 }
 
@@ -143,12 +145,13 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0400, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0500, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0500 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     uint8_t dumpType = DumpEventType::HISTORY;
     std::string event = "";
     int32_t userId = 1;
     std::vector<std::string> state;
-    innerCommonEventManager.DumpState(dumpType, event, userId, state);
+    innerCommonEventManager->DumpState(dumpType, event, userId, state);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0500 end";
 }
 
@@ -160,14 +163,15 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0500, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0600, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0600 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     uint8_t dumpType = DumpEventType::HISTORY;
     std::string event = "";
     int32_t userId = 1;
     std::vector<std::string> state;
     // set controlPtr_ is nullptr
-    innerCommonEventManager.controlPtr_ = nullptr;
-    innerCommonEventManager.DumpState(dumpType, event, userId, state);
+    innerCommonEventManager->controlPtr_ = nullptr;
+    innerCommonEventManager->DumpState(dumpType, event, userId, state);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0600 end";
 }
 
@@ -179,14 +183,15 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0600, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0700, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0700 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     uint8_t dumpType = 100;
     std::string event = "";
     int32_t userId = 1;
     std::vector<std::string> state;
     // set controlPtr_ is nullptr
-    innerCommonEventManager.controlPtr_ = nullptr;
-    innerCommonEventManager.DumpState(dumpType, event, userId, state);
+    innerCommonEventManager->controlPtr_ = nullptr;
+    innerCommonEventManager->DumpState(dumpType, event, userId, state);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0700 end";
 }
 
@@ -198,12 +203,13 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0700, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0800, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0800 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     uint8_t dumpType = 100;
     std::string event = "";
     int32_t userId = 1;
     std::vector<std::string> state;
-    innerCommonEventManager.DumpState(dumpType, event, userId, state);
+    innerCommonEventManager->DumpState(dumpType, event, userId, state);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0800 end";
 }
 
@@ -215,14 +221,15 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0800, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0900, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0900 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     sptr<IRemoteObject> proxy = nullptr;
     int32_t code = 1;
     std::string receiverData = "";
     bool abortEvent = true;
     // set controlPtr_ is nullptr
-    innerCommonEventManager.controlPtr_ = nullptr;
-    innerCommonEventManager.FinishReceiver(proxy, code, receiverData, abortEvent);
+    innerCommonEventManager->controlPtr_ = nullptr;
+    innerCommonEventManager->FinishReceiver(proxy, code, receiverData, abortEvent);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0900 end";
 }
 
@@ -234,11 +241,12 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0900, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1000, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1000 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     uid_t uid = 1;
     // set controlPtr_ is nullptr
-    innerCommonEventManager.controlPtr_ = nullptr;
-    innerCommonEventManager.Unfreeze(uid);
+    innerCommonEventManager->controlPtr_ = nullptr;
+    innerCommonEventManager->Unfreeze(uid);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1000 end";
 }
 
@@ -250,10 +258,11 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1000, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1100, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1100 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     // set controlPtr_ is nullptr
-    innerCommonEventManager.controlPtr_ = nullptr;
-    innerCommonEventManager.UnfreezeAll();
+    innerCommonEventManager->controlPtr_ = nullptr;
+    innerCommonEventManager->UnfreezeAll();
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1100 end";
 }
 
@@ -296,10 +305,11 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1300, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1400, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1400 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::vector<std::u16string> args;
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1400 end";
 }
 
@@ -311,7 +321,8 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1400, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1500, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1500 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::u16string aa = u"aa";
     std::u16string bb = u"bb";
     std::u16string cc = u"cc";
@@ -320,7 +331,7 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1500, Level1)
     args.emplace_back(bb);
     args.emplace_back(cc);
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1500 end";
 }
 
@@ -332,12 +343,13 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1500, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1600, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1600 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::u16string aa = u"aa";
     std::vector<std::u16string> args;
     args.emplace_back(aa);
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1600 end";
 }
 
@@ -349,12 +361,13 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1600, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1700, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1700 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::u16string aa = u"-h";
     std::vector<std::u16string> args;
     args.emplace_back(aa);
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1700 end";
 }
 
@@ -366,14 +379,15 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1700, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1800, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1800 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::u16string aa = u"-h";
     std::u16string bb = u"-a";
     std::vector<std::u16string> args;
     args.emplace_back(aa);
     args.emplace_back(bb);
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1800 end";
 }
 
@@ -385,12 +399,13 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1800, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1900, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1900 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::u16string aa = u"-a";
     std::vector<std::u16string> args;
     args.emplace_back(aa);
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1900 end";
 }
 
@@ -402,12 +417,13 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1900, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_2000, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_2000 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::u16string aa = u"-e";
     std::vector<std::u16string> args;
     args.emplace_back(aa);
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_2000 end";
 }
 
@@ -419,13 +435,14 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_2000, Level1)
 HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_2100, Level1)
 {
     GTEST_LOG_(INFO) << "InnerCommonEventManager_2100 start";
-    InnerCommonEventManager innerCommonEventManager;
+    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
     std::u16string aa = u"-e";
     std::u16string bb = u"-a";
     std::vector<std::u16string> args;
     args.emplace_back(aa);
     args.emplace_back(bb);
     std::string result = "";
-    innerCommonEventManager.HiDump(args, result);
+    innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_2100 end";
 }

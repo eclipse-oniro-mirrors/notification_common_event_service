@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -107,10 +107,11 @@ HWTEST_F(CommonEventAccessTokenHelperTest, VerifyAccessToken_0100, Level1)
 HWTEST_F(CommonEventAccessTokenHelperTest, AccessTokenHelper_0100, Level1)
 {
     GTEST_LOG_(INFO) << "AccessTokenHelper_0100 start";
-    AccessTokenHelper accessTokenHelper;
+    std::shared_ptr<AccessTokenHelper> accessTokenHelper = std::make_shared<AccessTokenHelper>();
+    ASSERT_NE(nullptr, accessTokenHelper);
     AccessTokenID callerToken = PERMISSION_GRANTED;
     std::string event = "aa";
-    accessTokenHelper.RecordSensitivePermissionUsage(callerToken, event);
+    accessTokenHelper->RecordSensitivePermissionUsage(callerToken, event);
     GTEST_LOG_(INFO) << "AccessTokenHelper_0100 end";
 }
 
@@ -122,10 +123,11 @@ HWTEST_F(CommonEventAccessTokenHelperTest, AccessTokenHelper_0100, Level1)
 HWTEST_F(CommonEventAccessTokenHelperTest, AccessTokenHelper_0200, Level1)
 {
     GTEST_LOG_(INFO) << "AccessTokenHelper_0200 start";
-    AccessTokenHelper accessTokenHelper;
+    std::shared_ptr<AccessTokenHelper> accessTokenHelper = std::make_shared<AccessTokenHelper>();
+    ASSERT_NE(nullptr, accessTokenHelper);
     AccessTokenID callerToken = DLP_PERMISSION_GRANTED;
     std::string event = "aa";
-    accessTokenHelper.RecordSensitivePermissionUsage(callerToken, event);
+    accessTokenHelper->RecordSensitivePermissionUsage(callerToken, event);
     GTEST_LOG_(INFO) << "AccessTokenHelper_0200 end";
 }
 }
