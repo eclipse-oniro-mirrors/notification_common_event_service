@@ -27,6 +27,7 @@ public:
         POST,        // the event dispatch thread.
         ASYNC,       // an asynchronous thread.
         BACKGROUND,  // the background thread.
+        COMMON,      // common listening thread of a process.
     };
 
     /**
