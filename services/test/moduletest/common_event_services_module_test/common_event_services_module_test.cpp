@@ -1388,5 +1388,47 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_4400 end");
 }
+
+/*
+ * @tc.number: CES_TC_ModuleTest_4500
+ * @tc.name: OnReceiveEvent
+ * @tc.desc: Verify receive common event
+ */
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4500, Function | MediumTest | Level1)
+{
+    EVENT_LOGE("CES_TC_ModuleTest_4500 start");
+    std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION4500";
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(eventName);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::COMMON);
+    auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
+    sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    mtx_.lock();
+
+    Want testWant;
+    testWant.SetAction(eventName);
+    CommonEventData commonEventData(testWant);
+    CommonEventPublishInfo publishInfo;
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, nullptr, UNDEFINED_USER), ERR_OK);
+    struct tm startTime = {0};
+    EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
+    struct tm doingTime = {0};
+    int64_t seconds = 0;
+    while (!mtx_.try_lock()) {
+        // get current time and compare it with the start time
+        EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTime), true);
+        seconds = OHOS::GetSecondsBetween(startTime, doingTime);
+        if (seconds >= TIME_OUT_SECONDS_LIMIT) {
+            break;
+        }
+    }
+    // expect the subscriber could receive the event within 5 seconds.
+    EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
+    mtx_.unlock();
+    EVENT_LOGE("CES_TC_ModuleTest_4500 end");
+}
 }  // namespace EventFwk
 }  // namespace OHOS

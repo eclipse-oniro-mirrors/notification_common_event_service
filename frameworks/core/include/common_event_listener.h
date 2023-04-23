@@ -56,9 +56,14 @@ public:
 private:
     ErrCode Init();
 
+    std::shared_ptr<EventRunner> GetCommonRunner();
+
     bool IsReady();
 
     void OnReceiveEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky);
+
+public:
+    static std::shared_ptr<EventRunner> commonRunner_;
 
 private:
     std::mutex mutex_;

@@ -19,6 +19,8 @@
 
 namespace OHOS {
 namespace EventFwk {
+std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::commonRunner_ = nullptr;
+
 CommonEventListener::CommonEventListener(const std::shared_ptr<CommonEventSubscriber> &commonEventSubscriber)
     : commonEventSubscriber_(commonEventSubscriber)
 {
@@ -61,8 +63,13 @@ ErrCode CommonEventListener::Init()
             EVENT_LOGE("Failed to init with CommonEventSubscriber nullptr");
             return ERR_INVALID_OPERATION;
         }
-        if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
+
+        auto threadMode = commonEventSubscriber_->GetSubscribeInfo().GetThreadMode();
+        EVENT_LOGD("thread mode: %{public}d", threadMode);
+        if (threadMode == CommonEventSubscribeInfo::HANDLER) {
             runner_ = EventRunner::GetMainEventRunner();
+        } else if (threadMode == CommonEventSubscribeInfo::COMMON) {
+            runner_ = GetCommonRunner();
         } else {
             runner_ = EventRunner::Create("CesFwkListener");
         }
@@ -81,6 +88,15 @@ ErrCode CommonEventListener::Init()
     }
 
     return ERR_OK;
+}
+
+std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::GetCommonRunner()
+{
+    if (CommonEventListener::commonRunner_ == nullptr) {
+        CommonEventListener::commonRunner_ = EventRunner::Create("CesComListener");
+    }
+
+    return CommonEventListener::commonRunner_;
 }
 
 bool CommonEventListener::IsReady()
