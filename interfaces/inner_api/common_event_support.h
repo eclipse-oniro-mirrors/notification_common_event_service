@@ -710,14 +710,7 @@ public:
      * Indicates the action of a common event that the list of exempt applications is updated in the idle mode.
      * This is a protected common event, which can be sent only by the system.
      */
-    static const std::string COMMON_EVENT_DEVICE_IDLE_EXEMPTION_UPDATE;
-
-    /**
-     * Indicates the action of a common event that the app's network access is restricted,
-     * when screen is off for about 30 minutes.
-     * This is a protected common event, which can be sent only by the system.
-     */
-    static const std::string COMMON_EVENT_DEVICE_IDLE_CTRL_NETWORK;
+    static const std::string COMMON_EVENT_DEVICE_IDLE_EXEMPTION_SYSTEM_UPDATE;
 
     /**
      * Indicates the action of a common event that the power save mode of the system has changed.

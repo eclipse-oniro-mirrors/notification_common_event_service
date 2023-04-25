@@ -801,14 +801,7 @@ const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED = "u
  * Indicates the action of a common event that the list of exempt applications is updated in the idle mode.
  * This is a protected common event, which can be sent only by the system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_UPDATE = "usual.event.DEVICE_IDLE_EXEMPTION_UPDATE";
-
-/**
- * Indicates the action of a common event that the app's network access is restricted,
- * when screen is off for about 30 minutes.
- * This is a protected common event, which can be sent only by the system.
- */
-const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_CTRL_NETWORK = "usual.event.DEVICE_IDLE_CTRL_NETWORK";
+const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_SYSTEM_UPDATE = "usual.event.DEVICE_IDLE_EXEMPTION_SYSTEM_UPDATE";
 
 /**
  * Indicates the action of a common event that the power save mode of the system has changed.
@@ -1422,8 +1415,7 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGING);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_UPDATE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_CTRL_NETWORK);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_SYSTEM_UPDATE);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_POWER_SAVE_MODE_CHANGED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ABILITY_ADDED);
