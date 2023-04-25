@@ -29,10 +29,7 @@ config("ces_services_config") {
 config("ces_services_public_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [
-    "${ces_services_path}/include",
-    "//utils/system/safwk/native/include",
-  ]
+  include_dirs = [ "${ces_services_path}/include" ]
 }
 
 cesfwk_services_sources = [

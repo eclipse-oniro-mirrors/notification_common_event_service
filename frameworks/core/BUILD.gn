@@ -32,8 +32,6 @@ config("cesfwk_core_public_config") {
   include_dirs = [
     "${ces_core_path}/include",
     "${ces_innerkits_path}",
-    "//commonlibrary/c_utils/base/include",
-    "//utils/system/safwk/native/include",
   ]
 }
 
