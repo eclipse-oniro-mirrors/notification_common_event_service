@@ -358,8 +358,8 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_SYSTEM_UPDATE,
-        "COMMON_EVENT_DEVICE_IDLE_EXEMPTION_SYSTEM_UPDATE");
+        EventFwk::CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED,
+        "COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_POWER_SAVE_MODE_CHANGED,
