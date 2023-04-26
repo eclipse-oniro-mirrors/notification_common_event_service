@@ -39,6 +39,8 @@ ces_innerkits_path = "${interfaces_path}/inner_api"
 
 ces_native_path = "${frameworks_path}/native"
 
+ces_extension_path = "${frameworks_path}/extension"
+
 ces_services_path = "${services_path}"
 declare_args() {
   common_event_service_with_graphics = true
