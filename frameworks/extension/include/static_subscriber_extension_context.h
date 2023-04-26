@@ -17,6 +17,7 @@
 #define OHOS_COMMON_EVENT_SERVICE_STATIC_SUBSCRIBER_EXTENSION_CONTEXT_H
 
 #include "extension_context.h"
+#include "want.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -28,12 +29,15 @@ public:
 
     using SelfType = StaticSubscriberExtensionContext;
     static const size_t CONTEXT_TYPE_ID;
+    ErrCode StartAbility(const AAFwk::Want& want);
 
 protected:
     bool IsContext(size_t contextTypeId) override
     {
         return contextTypeId == CONTEXT_TYPE_ID || ExtensionContext::IsContext(contextTypeId);
     }
+
+    bool CheckCallerIsSystemApp();
 };
 } // namespace EventFwk
 } // namespace OHOS
