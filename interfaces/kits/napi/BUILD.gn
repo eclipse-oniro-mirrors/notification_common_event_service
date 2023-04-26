@@ -11,14 +11,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
 group("napi_packages") {
   deps = []
   if (support_jsapi) {
     deps += [
-      "//base/notification/common_event_service/interfaces/kits/napi/common_event:commonevent",
-      "//base/notification/common_event_service/interfaces/kits/napi/napi_common_event:commoneventmanager",
+      "${interfaces_path}/kits/napi/common_event:commonevent",
+      "${interfaces_path}/kits/napi/napi_common_event:commoneventmanager",
+      "${interfaces_path}/kits/napi/static_subscriber_extension:staticsubscriberextensionability_napi",
+      "${interfaces_path}/kits/napi/static_subscriber_extension_context:staticsubscriberextensioncontext_napi",
     ]
   }
 }
