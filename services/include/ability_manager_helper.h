@@ -20,7 +20,9 @@
 #include "ability_manager_interface.h"
 #include "ability_manager_death_recipient.h"
 #include "common_event_data.h"
+#include "event_handler.h"
 #include "singleton.h"
+#include "static_subscriber_connection.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -29,6 +31,15 @@ public:
     AbilityManagerHelper() {}
 
     virtual ~AbilityManagerHelper() {}
+
+    /**
+     * @brief SetEventHandler.
+     * @param handler event handler
+     */
+    inline void SetEventHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
+    {
+        eventHandler_ = handler;
+    }
 
     /**
      * Connects ability.
@@ -47,12 +58,21 @@ public:
      *
      */
     void Clear();
+
+    /**
+     * @brief Disconnect ability delay.
+     * @param connection Indicates the connection want to disconnect.
+     */
+    void DisconnectServiceAbilityDelay(const sptr<StaticSubscriberConnection> &connection);
 private:
     bool GetAbilityMgrProxy();
+    void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection);
 
     std::mutex mutex_;
     sptr<AAFwk::IAbilityManager> abilityMgr_;
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
+    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+    std::set<sptr<StaticSubscriberConnection>> subscriberConnection_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

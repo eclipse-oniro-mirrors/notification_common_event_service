@@ -172,6 +172,7 @@ ohos_unittest("ability_manager_death_recipient_unit_test") {
     "${services_path}/src/ability_manager_death_recipient.cpp",
     "ability_manager_death_recipient_unit_test/ability_manager_death_recipient_unit_test.cpp",
     "mock/mock_ability_manager_helper.cpp",
+    "static_subscriber_connection_unit_test/mock_static_subscriber_proxy.cpp",
   ]
 
   deps = [
@@ -231,6 +232,7 @@ ohos_unittest("static_subscriber_manager_unit_test") {
     "${services_path}/src/static_subscriber_manager.cpp",
     "mock/mock_ability_manager_helper.cpp",
     "mock/mock_bundle_manager_helper.cpp",
+    "static_subscriber_connection_unit_test/mock_static_subscriber_proxy.cpp",
     "static_subscriber_manager_unit_test/mock_access_token_helper.cpp",
     "static_subscriber_manager_unit_test/mock_os_account_manager_helper.cpp",
     "static_subscriber_manager_unit_test/static_subscriber_manager_unit_test.cpp",
@@ -268,6 +270,7 @@ ohos_unittest("static_subscriber_connection_unit_test") {
 
   sources = [
     "${services_path}/src/static_subscriber_connection.cpp",
+    "mock/mock_ability_manager_helper.cpp",
     "static_subscriber_connection_unit_test/mock_static_subscriber_proxy.cpp",
     "static_subscriber_connection_unit_test/static_subscriber_connection_unit_test.cpp",
   ]

@@ -53,5 +53,10 @@ void AbilityManagerHelper::Clear()
 {
     g_isClearCalled = true;
 }
+
+void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscriberConnection> &connection)
+{
+}
+
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -15,6 +15,7 @@
 
 #include "static_subscriber_connection.h"
 
+#include "ability_manager_helper.h"
 #include "event_log_wrapper.h"
 
 namespace OHOS {
@@ -29,6 +30,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     }
     ErrCode ec = proxy_->OnReceiveEvent(&event_);
     EVENT_LOGI("end, errorCode = %d", ec);
+    AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(this);
 }
 
 void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
