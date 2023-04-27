@@ -82,6 +82,7 @@
                     "//base/notification/common_event_service/frameworks/common:libevent_common",
                     "//base/notification/common_event_service/frameworks/core:cesfwk_core",
                     "//base/notification/common_event_service/frameworks/native:cesfwk_innerkits",
+                    "//base/notification/common_event_service/frameworks/extension:cesfwk_extension",
                     "//base/notification/common_event_service/interfaces/kits/napi:napi_packages"
                 ],
                 "service_group": [
@@ -129,6 +130,7 @@
             "test": [
                 "//base/notification/common_event_service/frameworks/common/test:unittest",
                 "//base/notification/common_event_service/frameworks/core/test/unittest:unittest",
+                "//base/notification/common_event_service/frameworks/extension/test:unittest",
                 "//base/notification/common_event_service/frameworks/native/test/unittest:unittest",
                 "//base/notification/common_event_service/services/test/moduletest:moduletest",
                 "//base/notification/common_event_service/services/test/unittest:unittest",

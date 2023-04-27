@@ -30,11 +30,11 @@ void ResetStaticSubscriberProxyMockState()
 }
 
 namespace OHOS {
-namespace AppExecFwk {
+namespace EventFwk {
 ErrCode StaticSubscriberProxy::OnReceiveEvent(CommonEventData* inData)
 {
     g_MockOnReceiveEventRet = true;
     return ERR_OK;
 }
-} // namespace AppExecFwk
+} // namespace EventFwk
 } // namespace OHOS
