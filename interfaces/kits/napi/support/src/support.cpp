@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -534,6 +534,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT,
         "COMMON_EVENT_QUICK_FIX_APPLY_RESULT");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_QUICK_FIX_REVOKE_RESULT,
+        "COMMON_EVENT_QUICK_FIX_REVOKE_RESULT");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE,
