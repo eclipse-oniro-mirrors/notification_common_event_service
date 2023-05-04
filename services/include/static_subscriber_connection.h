@@ -48,8 +48,9 @@ public:
      * @param resultCode, Returns ERR_OK on success, others on failure.
      */
     void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode) override;
+
 private:
-    sptr<AppExecFwk::StaticSubscriberProxy> proxy_ = nullptr;
+    sptr<StaticSubscriberProxy> proxy_ = nullptr;
     CommonEventData event_;
 };
 }  // namespace EventFwk

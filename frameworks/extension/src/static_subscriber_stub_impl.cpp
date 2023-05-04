@@ -23,8 +23,8 @@ ErrCode StaticSubscriberStubImpl::OnReceiveEvent(CommonEventData* data)
 {
     EVENT_LOGD("OnReceiveEvent begin.");
     auto extension = extension_.lock();
+    std::shared_ptr<CommonEventData> commonEventData(data);
     if (extension != nullptr) {
-        std::shared_ptr<CommonEventData> commonEventData(data);
         extension->OnReceiveEvent(commonEventData);
         EVENT_LOGI("OnReceiveEvent end successed.");
         return 0;
