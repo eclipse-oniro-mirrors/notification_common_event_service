@@ -53,7 +53,8 @@ private:
 NativeValue* JsStaticSubscriberExtensionContext::StartAbility(NativeEngine* engine, NativeCallbackInfo* info)
 {
     EVENT_LOGI("OnStartAbility is called.");
-    JsStaticSubscriberExtensionContext* me = CheckParamsAndGetThis<JsStaticSubscriberExtensionContext>(engine, info);
+    JsStaticSubscriberExtensionContext* me =
+        AbilityRuntime::CheckParamsAndGetThis<JsStaticSubscriberExtensionContext>(engine, info);
     return (me != nullptr) ? me->OnStartAbility(*engine, *info) : nullptr;
 }
 
@@ -64,7 +65,7 @@ NativeValue* JsStaticSubscriberExtensionContext::OnStartAbility(NativeEngine& en
 
     if (info.argc == ARGC_ZERO) {
         EVENT_LOGE("Not enough params");
-        ThrowTooFewParametersError(engine);
+        AbilityRuntime::ThrowTooFewParametersError(engine);
         return engine.CreateUndefined();
     }
 
@@ -85,14 +86,14 @@ NativeValue* JsStaticSubscriberExtensionContext::OnStartAbility(NativeEngine& en
         *innerErrorCode = context->StartAbility(want);
     };
 
-    AbilityRuntime::AsyncTask::CompleteCallback complete = [innerErrorCode](NativeEngine& engine, AsyncTask& task,
-        int32_t status) {
-        if (*innerErrorCode == 0) {
-            task.Resolve(engine, engine.CreateUndefined());
-        } else {
-            task.Reject(engine, AbilityRuntime::CreateJsErrorByNativeErr(engine, *innerErrorCode));
-        }
-    };
+    AbilityRuntime::AsyncTask::CompleteCallback complete =
+        [innerErrorCode](NativeEngine& engine, AbilityRuntime::AsyncTask& task, int32_t status) {
+            if (*innerErrorCode == ERR_OK) {
+                task.Resolve(engine, engine.CreateUndefined());
+            } else {
+                task.Reject(engine, AbilityRuntime::CreateJsErrorByNativeErr(engine, *innerErrorCode));
+            }
+        };
 
     NativeValue* lastParam = (info.argc > unwrapArgc) ? info.argv[unwrapArgc] : nullptr;
     NativeValue* result = nullptr;

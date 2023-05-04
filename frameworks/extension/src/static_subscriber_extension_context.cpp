@@ -18,14 +18,16 @@
 #include "ability_business_error.h"
 #include "ability_manager_client.h"
 #include "ability_manager_errors.h"
+#include "accesstoken_kit.h"
 #include "event_log_wrapper.h"
 #include "ipc_skeleton.h"
-#include "permission_constants.h"
-#include "permission_verification.h"
 #include "tokenid_kit.h"
 
 namespace OHOS {
 namespace EventFwk {
+namespace {
+constexpr const char* PERMISSION_START_ABILITIES_FROM_BACKGROUND = "ohos.permission.START_ABILITIES_FROM_BACKGROUND";
+}
 const size_t StaticSubscriberExtensionContext::CONTEXT_TYPE_ID(
     std::hash<const char*> {} ("StaticSubscriberExtensionContext"));
 
@@ -46,11 +48,11 @@ bool StaticSubscriberExtensionContext::CheckCallerIsSystemApp()
 ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
 {
     EVENT_LOGI("Start calling StartAbility.");
-    ErrCode err =  static_cast<int32_t>(OHOS::AbilityRuntime::AbilityErrorCode::ERROR_OK);
+    ErrCode err = static_cast<int32_t>(OHOS::AbilityRuntime::AbilityErrorCode::ERROR_OK);
 
     if (!CheckCallerIsSystemApp()) {
         EVENT_LOGE("This application is not system-app, can not use system-api");
-        err = static_cast<int32_t>(OHOS::AAFwk::ERR_NOT_SYSTEM_APP);
+        err = AAFwk::ERR_NOT_SYSTEM_APP;
         return err;
     }
 
@@ -58,20 +60,32 @@ ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
     std::string calledBundleName = want.GetBundle();
     if (calledBundleName.compare(callerBundleName) != 0) {
         EVENT_LOGE("This application won't start no-self-ability.");
-        err = static_cast<int32_t>(OHOS::AAFwk::ABILITY_VISIBLE_FALSE_DENY_REQUEST);
+        err = AAFwk::ABILITY_VISIBLE_FALSE_DENY_REQUEST;
         return err;
     }
 
-    if (!AAFwk::PermissionVerification::GetInstance()->VerifyCallingPermission(
-            AAFwk::PermissionConstants::PERMISSION_START_ABILITIES_FROM_BACKGROUND)) {
+    if (!VerifyCallingPermission(PERMISSION_START_ABILITIES_FROM_BACKGROUND)) {
         EVENT_LOGE("Caller has none of PERMISSION_START_ABILITIES_FROM_BACKGROUND, Fail.");
-        err = static_cast<int32_t>(OHOS::AAFwk::CHECK_PERMISSION_FAILED);
+        err = AAFwk::CHECK_PERMISSION_FAILED;
         return err;
     }
     
     err = AAFwk::AbilityManagerClient::GetInstance()->StartAbility(want, token_);
     EVENT_LOGI("StaticSubscriberExtensionContext::StartAbility. End calling StartAbility. err=%{public}d", err);
     return err;
+}
+
+bool StaticSubscriberExtensionContext::VerifyCallingPermission(const std::string& permissionName) const
+{
+    EVENT_LOGD("VerifyCallingPermission permission %{public}s", permissionName.c_str());
+    auto callerToken = IPCSkeleton::GetCallingTokenID();
+    int32_t ret = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
+    if (ret == Security::AccessToken::PermissionState::PERMISSION_DENIED) {
+        EVENT_LOGE("permission %{public}s: PERMISSION_DENIED", permissionName.c_str());
+        return false;
+    }
+    EVENT_LOGD("verify AccessToken success");
+    return true;
 }
 } // namespace EventFwk
 } // namespace OHOS

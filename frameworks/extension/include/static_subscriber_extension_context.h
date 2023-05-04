@@ -38,6 +38,7 @@ protected:
     }
 
     bool CheckCallerIsSystemApp();
+    bool VerifyCallingPermission(const std::string& permissionName) const;
 };
 } // namespace EventFwk
 } // namespace OHOS
