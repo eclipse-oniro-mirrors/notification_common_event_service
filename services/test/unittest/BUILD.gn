@@ -177,6 +177,7 @@ ohos_unittest("ability_manager_death_recipient_unit_test") {
 
   deps = [
     "${ces_common_path}:libevent_common",
+    "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
   ]
@@ -240,6 +241,7 @@ ohos_unittest("static_subscriber_manager_unit_test") {
 
   deps = [
     "${ces_common_path}:libevent_common",
+    "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
   ]
