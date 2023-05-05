@@ -66,6 +66,8 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     subscribeInfo.GetUserId();
     subscribeInfo.GetPermission();
     subscribeInfo.GetDeviceId();
+    subscribeInfo.GetMatchingSkills();
+    subscribeInfo.Marshalling(parcel);
 
     std::shared_ptr<EventFwk::TestSubscriber> subscriber =
         std::make_shared<EventFwk::TestSubscriber>(subscribeInfo);

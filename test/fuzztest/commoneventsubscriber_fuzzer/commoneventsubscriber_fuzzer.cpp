@@ -13,9 +13,11 @@
  * limitations under the License.
  */
 
-#include "dumpstate_fuzzer.h"
+#include "commoneventsubscriber_fuzzer.h"
 #include "securec.h"
 #include "common_event.h"
+#include "common_event_subscriber.h"
+
 
 namespace OHOS {
 namespace EventFwk {
@@ -74,6 +76,9 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
         subscriber->ClearAbortCommonEvent();
         subscriber->GetAbortCommonEvent();
         subscriber->GoAsyncCommonEvent();
+        subscriber->GetSubscribeInfo();
+        subscriber->IsOrderedCommonEvent();
+        subscriber->IsStickyCommonEvent();
     }
     commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
     // test PublishCommonEvent and four paramter

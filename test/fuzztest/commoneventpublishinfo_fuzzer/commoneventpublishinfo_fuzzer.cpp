@@ -24,11 +24,18 @@
 
 namespace OHOS {
 constexpr size_t U32_AT_SIZE = 4;
+constexpr uint8_t ENABLE = 2;
 bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
 {
     Parcel parcel;
+    bool enabled = *data % ENABLE;
     EventFwk::CommonEventPublishInfo PublishInfo;
     EventFwk::CommonEventPublishInfo commonEventPublishInfo(PublishInfo);
+    commonEventPublishInfo.SetSticky(enabled);
+    commonEventPublishInfo.SetOrdered(enabled);
+    commonEventPublishInfo.IsOrdered();
+    commonEventPublishInfo.Marshalling(parcel);
+    commonEventPublishInfo.Unmarshalling(parcel);
     return true;
 }
 }
