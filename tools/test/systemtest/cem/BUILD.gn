@@ -17,10 +17,7 @@ import("//build/test.gni")
 module_output_path = "common_event_service/tools"
 
 config("tools_cem_test_config") {
-  include_dirs = [
-    "${tools_path}/cem/include",
-    "//commonlibrary/c_utils/base/include",
-  ]
+  include_dirs = [ "${tools_path}/cem/include" ]
 }
 
 ohos_systemtest("common_event_command_dump_system_test") {

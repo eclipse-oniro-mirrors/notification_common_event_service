@@ -23,10 +23,7 @@ ohos_systemtest("cesCheckService") {
 
   configs = [ "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config" ]
 
-  include_dirs = [
-    "//commonlibrary/c_utils/base/include",
-    "${services_path}/include",
-  ]
+  include_dirs = [ "${services_path}/include" ]
 
   cflags = []
 

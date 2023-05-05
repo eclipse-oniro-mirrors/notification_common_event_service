@@ -19,12 +19,6 @@ config("cesfwk_kits_test_config") {
     "./../*",
     "./../../../../services/test/moduletest/*",
   ]
-
-  include_dirs = [
-    "//commonlibrary/c_utils/base/include",
-    "//utils/system/safwk/native/include",
-    "//foundation/systemabilitymgr/safwk/services/safwk/include",
-  ]
 }
 
 ohos_shared_library("cesfwk_kits_test") {

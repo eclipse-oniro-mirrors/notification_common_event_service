@@ -15,10 +15,7 @@ import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
 config("tools_cem_config") {
-  include_dirs = [
-    "//commonlibrary/c_utils/base/include",
-    "include",
-  ]
+  include_dirs = [ "include" ]
 }
 
 ohos_source_set("tools_cem_source_set") {

@@ -20,7 +20,8 @@ module_output_path = "common_event_service/services"
 ##############################fuzztest##########################################
 ohos_fuzztest("CommonEventProxyFuzzTest") {
   module_out_path = module_output_path
-  fuzz_config_file = "//base/notification/common_event_service/test/fuzztest/commoneventproxy_fuzzer"
+  fuzz_config_file =
+      "${common_event_service_path}/test/fuzztest/commoneventproxy_fuzzer"
 
   include_dirs = []
   cflags = [

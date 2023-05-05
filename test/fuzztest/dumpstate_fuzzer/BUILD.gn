@@ -21,7 +21,7 @@ module_output_path = "common_event_service/services"
 ohos_fuzztest("DumpStateFuzzTest") {
   module_out_path = module_output_path
   fuzz_config_file =
-      "//base/notification/common_event_service/test/fuzztest/dumpstate_fuzzer"
+      "${common_event_service_path}/test/fuzztest/dumpstate_fuzzer"
 
   include_dirs = []
   cflags = [
