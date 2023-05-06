@@ -29,6 +29,7 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 constexpr size_t ARGC_ZERO = 0;
+constexpr size_t ARGC_TWO = 2;
 class JsStaticSubscriberExtensionContext final {
 public:
     explicit JsStaticSubscriberExtensionContext(const std::shared_ptr<StaticSubscriberExtensionContext>& context)
@@ -63,7 +64,7 @@ NativeValue* JsStaticSubscriberExtensionContext::OnStartAbility(NativeEngine& en
 {
     EVENT_LOGI("OnStartAbility is called.");
 
-    if (info.argc == ARGC_ZERO) {
+    if (info.argc == ARGC_ZERO || info.argc > ARGC_TWO) {
         EVENT_LOGE("Not enough params");
         AbilityRuntime::ThrowTooFewParametersError(engine);
         return engine.CreateUndefined();
