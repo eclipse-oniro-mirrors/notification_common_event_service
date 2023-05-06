@@ -51,8 +51,8 @@ cesfwk_services_sources = [
   "${ces_services_path}/src/os_account_manager_helper.cpp",
   "${ces_services_path}/src/publish_manager.cpp",
   "${ces_services_path}/src/static_subscriber_connection.cpp",
-  "${ces_services_path}/src/static_subscriber_manager.cpp",
   "${ces_services_path}/src/static_subscriber_data_manager.cpp",
+  "${ces_services_path}/src/static_subscriber_manager.cpp",
   "${ces_services_path}/src/subscriber_death_recipient.cpp",
   "${ces_services_path}/src/system_time.cpp",
 ]
