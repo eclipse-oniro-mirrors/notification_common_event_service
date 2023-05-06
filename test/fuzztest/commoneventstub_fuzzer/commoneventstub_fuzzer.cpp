@@ -39,6 +39,12 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     commonEventData.SetWant(want);
     commonEventData.SetCode(code);
     commonEventData.SetData(stringData);
+    commonEventData.GetWant();
+    commonEventData.GetCode();
+    commonEventData.GetData();
+    Parcel p;
+    commonEventData.Marshalling(p);
+    commonEventData.Unmarshalling(p);
     // make commonEventPublishInfo info
     EventFwk::CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> permissions;

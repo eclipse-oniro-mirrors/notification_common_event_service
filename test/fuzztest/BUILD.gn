@@ -21,7 +21,7 @@ group("fuzztest") {
     "commoneventproxy_fuzzer:CommonEventProxyFuzzTest",
     "commoneventpublishinfo_fuzzer:CommonEventPublishInfoFuzzTest",
     "commoneventstub_fuzzer:CommonEventStubFuzzTest",
-    "dumpstate_fuzzer:DumpStateFuzzTest",
+    "commoneventsubscriber_fuzzer:CommonEventSubscriberFuzzTest",
     "eventreceiveproxy_fuzzer:EventReceiveProxyFuzzTest",
     "getstickycommonevent_fuzzer:GetStickyCommonEventFuzzTest",
     "matchingskills_fuzzer:MatchingSkillsFuzzTest",

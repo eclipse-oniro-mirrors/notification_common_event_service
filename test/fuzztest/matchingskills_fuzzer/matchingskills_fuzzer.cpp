@@ -63,6 +63,11 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     matchingSkills.GetScheme(index);
     matchingSkills.ReadFromParcel(parcel);
     matchingSkills.Unmarshalling(parcel);
+    matchingSkills.AddEntity(stringData);
+    matchingSkills.AddEvent(stringData);
+    matchingSkills.CountEvent();
+    matchingSkills.AddScheme(stringData);
+    matchingSkills.Marshalling(parcel);
     // test Match function
     AAFwk::Want want;
     return matchingSkills.Match(want);
