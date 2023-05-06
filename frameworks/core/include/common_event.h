@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -161,6 +161,15 @@ public:
      * @return Returns ERR_OK if success; otherwise failed.
      */
     int32_t RemoveStickyCommonEvent(const std::string &event);
+
+    /**
+     * Set Static Subscribe Event State.
+     *
+     * @param enable static subscribe event State..
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    int32_t SetStaticSubscribeEventState(bool enable);
+
 private:
     /**
      * Gets common event proxy.

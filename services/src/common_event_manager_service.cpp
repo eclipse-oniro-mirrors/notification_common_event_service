@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -476,6 +476,16 @@ int32_t CommonEventManagerService::RemoveStickyCommonEvent(const std::string &ev
     }
 
     return innerCommonEventManager_->RemoveStickyCommonEvent(event, IPCSkeleton::GetCallingUid());
+}
+
+int32_t CommonEventManagerService::SetStaticSubscribeEventState(bool enable)
+{
+    if (!AccessTokenHelper::IsSystemApp()) {
+        EVENT_LOGE("Not system application");
+        return ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
+    }
+
+    return innerCommonEventManager_->SetStaticSubscribeEventState(enable);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

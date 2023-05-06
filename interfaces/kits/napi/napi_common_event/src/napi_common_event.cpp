@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,10 +17,10 @@
 
 #include <uv.h>
 
+#include "ces_inner_error_code.h"
 #include "event_log_wrapper.h"
 #include "napi_common.h"
 #include "support.h"
-#include "ces_inner_error_code.h"
 
 namespace OHOS {
 namespace EventManagerFwkNapi {
@@ -47,7 +47,11 @@ static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;
 static const int32_t ARGS_DATA_TWO = 2;
-
+static const int INDEX_ZERO = 0;
+static const int INDEX_ONE = 1;
+static const int32_t ARGC_ONE = 1;
+static const int32_t ARGC_TWO = 2;
+constexpr int32_t ERR_OK = 0;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
@@ -67,6 +71,30 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
     {ERR_NOTIFICATION_CESM_ERROR, "Failed to read the data."},
     {ERR_NOTIFICATION_SYS_ERROR, "System error."}
 };
+
+static NativeValue *NapiStaicSubscribeInit(NativeEngine *engine, NativeValue *exports)
+{
+    EVENT_LOGD("NapiStaicSubscribe is called");
+    if (engine == nullptr || exports == nullptr) {
+        EVENT_LOGD("Invalid input parameters");
+        return nullptr;
+    }
+
+    NativeObject *object = OHOS::AbilityRuntime::ConvertNativeValueTo<NativeObject>(exports);
+    if (object == nullptr) {
+        EVENT_LOGD("object is nullptr");
+        return nullptr;
+    }
+
+    std::unique_ptr<NapiStaicSubscribe> napiStaicSubscribe = std::make_unique<NapiStaicSubscribe>();
+    object->SetNativePointer(napiStaicSubscribe.release(), NapiStaicSubscribe::Finalizer, nullptr);
+
+    const char *moduleName = "NapiStaicSubscribe";
+    OHOS::AbilityRuntime::BindNativeFunction(
+        *engine, *object, "setStaticSubscribeEventState", moduleName, NapiStaicSubscribe::SetStaticSubscribeEventState);
+
+    return exports;
+}
 
 AsyncCallbackInfoUnsubscribe::AsyncCallbackInfoUnsubscribe()
 {
@@ -2438,6 +2466,51 @@ napi_value Publish(napi_env env, napi_callback_info info)
     return NapiGetNull(env);
 }
 
+void NapiStaicSubscribe::Finalizer(NativeEngine *engine, void *data, void *hint)
+{
+    EVENT_LOGD("NapiStaicSubscribe::Finalizer is called");
+    std::unique_ptr<NapiStaicSubscribe>(static_cast<NapiStaicSubscribe *>(data));
+}
+
+NativeValue *NapiStaicSubscribe::SetStaticSubscribeEventState(NativeEngine *engine, NativeCallbackInfo *info)
+{
+    NapiStaicSubscribe *me = OHOS::AbilityRuntime::CheckParamsAndGetThis<NapiStaicSubscribe>(engine, info);
+    return (me != nullptr) ? me->OnSetStaticSubscribeEventState(*engine, *info) : nullptr;
+}
+
+NativeValue *NapiStaicSubscribe::OnSetStaticSubscribeEventState(NativeEngine &engine, const NativeCallbackInfo &info)
+{
+    EVENT_LOGD("%{public}s is called", __FUNCTION__);
+
+    if (info.argc < ARGC_ONE || info.argc > ARGC_TWO) {
+        EVENT_LOGD("The param is invalid.");
+        OHOS::AbilityRuntime::ThrowTooFewParametersError(engine);
+        return engine.CreateUndefined();
+    }
+
+    bool enable;
+    if (!OHOS::AbilityRuntime::ConvertFromJsValue(engine, info.argv[INDEX_ZERO], enable)) {
+        EVENT_LOGD("Parse type failed");
+        OHOS::AbilityRuntime::ThrowError(engine, AbilityRuntime::AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
+        return engine.CreateUndefined();
+    }
+
+    auto complete = [enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
+        auto ret = CommonEventManager::SetStaticSubscribeEventState(enable);
+        if (ret == ERR_OK) {
+            task.Resolve(engine, engine.CreateUndefined());
+        } else {
+            task.Reject(engine, AbilityRuntime::CreateJsError(engine, ret, "SetStaticSubscribeEventState failed"));
+        }
+    };
+
+    auto callback = (info.argc == ARGC_ONE) ? nullptr : info.argv[INDEX_ONE];
+    NativeValue *result = nullptr;
+    AbilityRuntime::AsyncTask::Schedule("NapiStaicSubscribe::OnSetStaticSubscribeEventState", engine,
+        AbilityRuntime::CreateAsyncTaskWithLastParam(engine, callback, nullptr, std::move(complete), &result));
+    return result;
+}
+
 napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value (&argv)[PUBLISH_MAX_PARA_BY_USERID],
     const size_t &argc, std::string &event, int32_t &userId, CommonEventPublishDataByjs &commonEventPublishData,
     napi_ref &callback)
@@ -3174,7 +3247,8 @@ napi_value CommonEventManagerInit(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
     OHOS::EventFwkNapi::SupportInit(env, exports);
-    return exports;
+    return reinterpret_cast<napi_value>(NapiStaicSubscribeInit(reinterpret_cast<NativeEngine*>(env),
+        reinterpret_cast<NativeValue*>(exports)));
 }
 }  // namespace EventManagerFwkNapi
 }  // namespace OHOS
