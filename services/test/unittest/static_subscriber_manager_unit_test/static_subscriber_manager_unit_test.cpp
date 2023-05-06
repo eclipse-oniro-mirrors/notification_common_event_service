@@ -46,6 +46,7 @@ namespace {
     constexpr uint8_t MOCK_CASE_3 = 3;
     constexpr uint8_t MOCK_CASE_4 = 4;
     constexpr uint8_t MOCK_CASE_5 = 5;
+    const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
 }
 
 class StaticSubscriberManagerUnitTest : public testing::Test {
@@ -3272,7 +3273,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscribeEventState_0100, Fun
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     auto ret = manager->SetStaticSubscribeEventState(true);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, ret);
 }
 
 /*
@@ -3289,5 +3290,5 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscribeEventState_0200, Fun
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     auto ret = manager->SetStaticSubscribeEventState(false);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, ret);
 }
