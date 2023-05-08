@@ -1339,6 +1339,19 @@ const std::string CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED = "usual.event.
  */
 const std::string CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED = "usual.event.SCREEN_UNLOCKED";
 
+/**
+ * Indicates the action of a common event that the call audio quality information has been updated.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_AUDIO_QUALITY_CHANGE =
+    "usual.event.AUDIO_QUALITY_CHANGE";
+
+/**
+ * Indicates the action of a common event about special code.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SPECIAL_CODE = "common.event.SPECIAL_CODE";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -1671,6 +1684,11 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_AUDIO_QUALITY_CHANGE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPECIAL_CODE);
+
     return;
 }
 

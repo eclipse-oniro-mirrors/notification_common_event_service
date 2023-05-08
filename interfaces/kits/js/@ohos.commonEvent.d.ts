@@ -1120,7 +1120,22 @@ declare namespace commonEvent {
      * To subscribe to this protected common event that can only be sent by system.
      * @since 10
      */
-    COMMON_EVENT_HTTP_PROXY_CHANGE = "usual.event.HTTP_PROXY_CHANGE"
+    COMMON_EVENT_HTTP_PROXY_CHANGE = "usual.event.HTTP_PROXY_CHANGE",
+
+    /**
+     * Indicates the action of a common event that the call audio quality information has been updated.
+     * This is a protected common event that can only be sent by system.
+     * @since 10
+     */
+    COMMON_EVENT_AUDIO_QUALITY_CHANGE = "usual.event.AUDIO_QUALITY_CHANGE",
+
+    /**
+     * Indicates the action of a common event about special code.
+     * This is a protected common event that can only be sent by system.
+     * @systemapi
+     * @since 10
+     */
+    COMMON_EVENT_SPECIAL_CODE = "usual.event.SPECIAL_CODE"
   }
 }
 
