@@ -60,7 +60,7 @@ ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
     std::string calledBundleName = want.GetBundle();
     if (calledBundleName.compare(callerBundleName) != 0) {
         EVENT_LOGE("This application won't start no-self-ability.");
-        err = AAFwk::ABILITY_VISIBLE_FALSE_DENY_REQUEST;
+        err = AAFwk::ERR_NOT_SELF_APPLICATION;
         return err;
     }
 
