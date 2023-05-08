@@ -19,7 +19,7 @@ namespace {
     bool g_mockGetActionRet = true;
 }
 
-void mockGetAction(bool mockRet)
+void MockGetAction(bool mockRet)
 {
     g_mockGetActionRet = mockRet;
 }

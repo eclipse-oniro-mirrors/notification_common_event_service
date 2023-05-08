@@ -20,8 +20,8 @@
 #undef private
 #include "mock_common_event_stub.h"
 
-extern void mockVerifyAccessToken(bool mockRet);
-extern void mockGetAction(bool mockRet);
+extern void MockVerifyAccessToken(bool mockRet);
+extern void MockGetAction(bool mockRet);
 
 using namespace testing::ext;
 using namespace OHOS;
@@ -91,7 +91,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0200, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
     // set VerifyAccessToken is false
-    mockVerifyAccessToken(false);
+    MockVerifyAccessToken(false);
     EXPECT_EQ(false, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0200 end";
 }
@@ -113,7 +113,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0300, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
     // set VerifyAccessToken is true
-    mockVerifyAccessToken(true);
+    MockVerifyAccessToken(true);
     EXPECT_EQ(true, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0300 end";
 }
@@ -135,7 +135,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0400, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
     // set VerifyAccessToken is false
-    mockVerifyAccessToken(false);
+    MockVerifyAccessToken(false);
     EXPECT_EQ(OrderedEventRecord::SKIPPED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0400 end";
 }
@@ -161,7 +161,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0500, Le
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
     eventRecord.publishInfo = publishInfo;
     // set VerifyAccessToken is true
-    mockVerifyAccessToken(true);
+    MockVerifyAccessToken(true);
     EXPECT_EQ(OrderedEventRecord::DELIVERED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0500 end";
 }
@@ -184,7 +184,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0600, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
     // set VerifyAccessToken is false
-    mockVerifyAccessToken(false);
+    MockVerifyAccessToken(false);
     EXPECT_EQ(false, commonEventControlManager.NotifyFreezeEvents(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0600 end";
 }
@@ -228,7 +228,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0800, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
     // set VerifyAccessToken is false
-    mockVerifyAccessToken(false);
+    MockVerifyAccessToken(false);
     EXPECT_EQ(false, commonEventControlManager.CheckPublisherRequiredPermissions(
         publisherRequiredPermissions, subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0800 end";
@@ -253,7 +253,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0900, Le
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
     // set VerifyAccessToken is true
-    mockVerifyAccessToken(true);
+    MockVerifyAccessToken(true);
     EXPECT_EQ(true, commonEventControlManager.CheckPublisherRequiredPermissions(
         publisherRequiredPermissions, subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0900 end";
@@ -278,7 +278,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1000, Le
     std::string event = "aa";
     int32_t userId = ALL_USER;
     // set GetAction == event
-    mockGetAction(false);
+    MockGetAction(false);
     commonEventControlManager->GetUnorderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1000 end";
 }
@@ -303,7 +303,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1100, Le
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction == event
-    mockGetAction(false);
+    MockGetAction(false);
     commonEventControlManager->GetUnorderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1100 end";
 }
@@ -328,7 +328,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1200, Le
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction != event
-    mockGetAction(true);
+    MockGetAction(true);
     commonEventControlManager->GetUnorderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1200 end";
 }
@@ -399,7 +399,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1500, Le
     std::string event = "aa";
     int32_t userId = ALL_USER;
     // set GetAction == event
-    mockGetAction(false);
+    MockGetAction(false);
     commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1500 end";
 }
@@ -424,7 +424,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1600, Le
     std::string event = "aa";
     int32_t userId = ALL_USER;
     // set GetAction != event
-    mockGetAction(true);
+    MockGetAction(true);
     commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1600 end";
 }
@@ -449,7 +449,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1700, Le
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction != event
-    mockGetAction(true);
+    MockGetAction(true);
     commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1700 end";
 }
@@ -474,7 +474,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1800, Le
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction == event
-    mockGetAction(false);
+    MockGetAction(false);
     commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1800 end";
 }
@@ -518,7 +518,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2000, Le
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction == event
-    mockGetAction(false);
+    MockGetAction(false);
     commonEventControlManager->GetHistoryEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2000 end";
 }
@@ -541,7 +541,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2100, Le
     std::string event = "aa";
     int32_t userId = 100;
     // set GetAction != event
-    mockGetAction(true);
+    MockGetAction(true);
     commonEventControlManager->GetHistoryEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2100 end";
 }

@@ -19,7 +19,7 @@ namespace {
     bool g_mockInitRet = true;
 }
 
-void mockInit(bool mockRet)
+void MockInit(bool mockRet)
 {
     g_mockInitRet = mockRet;
 }

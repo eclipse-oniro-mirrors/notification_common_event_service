@@ -20,12 +20,12 @@ namespace {
     bool g_mockVerifyAccessTokenRet = true;
 }
 
-void mockVerifyNativeToken(bool mockRet)
+void MockVerifyNativeToken(bool mockRet)
 {
     g_mockVerifyNativeTokenRet = mockRet;
 }
 
-void mockVerifyAccessToken(bool mockRet)
+void MockVerifyAccessToken(bool mockRet)
 {
     g_mockVerifyAccessTokenRet = mockRet;
 }

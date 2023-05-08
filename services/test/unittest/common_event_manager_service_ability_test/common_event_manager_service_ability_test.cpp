@@ -19,7 +19,7 @@
 #include "common_event_manager_service_ability.h"
 #undef private
 
-extern void mockInit(bool mockRet);
+extern void MockInit(bool mockRet);
 
 namespace OHOS {
 namespace EventFwk {
@@ -82,7 +82,7 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
         std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
     ASSERT_NE(nullptr, commonEventManagerServiceAbility);
     commonEventManagerServiceAbility->service_ = nullptr;
-    mockInit(true);
+    MockInit(true);
     commonEventManagerServiceAbility->OnStart();
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0200 end";
 }
@@ -101,7 +101,7 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
         std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
     ASSERT_NE(nullptr, commonEventManagerServiceAbility);
     commonEventManagerServiceAbility->service_ = nullptr;
-    mockInit(false);
+    MockInit(false);
     commonEventManagerServiceAbility->OnStart();
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0300 end";
 }

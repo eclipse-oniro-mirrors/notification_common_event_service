@@ -24,7 +24,7 @@ namespace {
     bool g_mockGetEventPermissionRet = true;
 }
 
-void mockGetEventPermission(bool mockRet)
+void MockGetEventPermission(bool mockRet)
 {
     g_mockGetEventPermissionRet = mockRet;
 }

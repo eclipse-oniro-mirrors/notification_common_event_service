@@ -19,8 +19,8 @@
 #include "common_event_control_manager.h"
 #undef private
 
-extern void mockGetEventPermission(bool mockRet);
-extern void mockVerifyAccessToken(bool mockRet);
+extern void MockGetEventPermission(bool mockRet);
+extern void MockVerifyAccessToken(bool mockRet);
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -207,7 +207,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_1000, Level1)
     CommonEventRecord eventRecord;
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
-    mockGetEventPermission(true);
+    MockGetEventPermission(true);
     EXPECT_EQ(true, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_1000 end";
 }
@@ -228,8 +228,8 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_1100, Level1)
     CommonEventRecord eventRecord;
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
-    mockGetEventPermission(true);
-    mockVerifyAccessToken(true);
+    MockGetEventPermission(true);
+    MockVerifyAccessToken(true);
     EXPECT_EQ(true, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_1100 end";
 }
@@ -250,8 +250,8 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_1200, Level1)
     CommonEventRecord eventRecord;
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
-    mockGetEventPermission(true);
-    mockVerifyAccessToken(false);
+    MockGetEventPermission(true);
+    MockVerifyAccessToken(false);
     EXPECT_EQ(false, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_1200 end";
 }
