@@ -2472,6 +2472,24 @@ void NapiStaicSubscribe::Finalizer(NativeEngine *engine, void *data, void *hint)
     std::unique_ptr<NapiStaicSubscribe>(static_cast<NapiStaicSubscribe *>(data));
 }
 
+int32_t NapiStaicSubscribe::ConvertErrorType(int32_t ret)
+{
+    int32_t result = 0;
+    switch (ret) {
+        case ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP: {
+            result = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
+            break;
+        }
+        case ERR_NOTIFICATION_SEND_ERROR: {
+            result = ERR_NOTIFICATION_SEND_ERROR;
+            break;
+        }
+        default:
+            result = ERR_NOTIFICATION_CESM_ERROR;
+    }
+    return result;
+}
+
 NativeValue *NapiStaicSubscribe::SetStaticSubscribeEventState(NativeEngine *engine, NativeCallbackInfo *info)
 {
     NapiStaicSubscribe *me = OHOS::AbilityRuntime::CheckParamsAndGetThis<NapiStaicSubscribe>(engine, info);
@@ -2495,12 +2513,13 @@ NativeValue *NapiStaicSubscribe::OnSetStaticSubscribeEventState(NativeEngine &en
         return engine.CreateUndefined();
     }
 
-    auto complete = [enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
+    auto complete = [this, enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
         auto ret = CommonEventManager::SetStaticSubscribeEventState(enable);
         if (ret == ERR_OK) {
             task.Resolve(engine, engine.CreateUndefined());
         } else {
-            task.Reject(engine, AbilityRuntime::CreateJsError(engine, ret, "SetStaticSubscribeEventState failed"));
+            task.Reject(engine,
+                AbilityRuntime::CreateJsError(engine, ConvertErrorType(ret), "SetStaticSubscribeEventState failed"));
         }
     };
 

@@ -434,7 +434,7 @@ int32_t StaticSubscriberManager::SetStaticSubscribeEventState(bool enable)
         result =
             DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->InsertDisableStaticSubscribeData(bundleName);
     }
-    return result == ERR_OK ? ERR_OK : Notification::ERR_NOTIFICATION_CESM_ERROR;
+    return result;
 }
 
 void StaticSubscriberManager::InitDisableStaticSubscribersStates(const std::string &bundleName)

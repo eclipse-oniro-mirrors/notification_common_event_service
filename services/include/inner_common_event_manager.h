@@ -150,7 +150,7 @@ public:
     /**
      * Set Static Subscribe Event State.
      *
-     * @param enable static subscribe event State..
+     * @param enable static subscribe event State.
      * @return Returns ERR_OK if success; otherwise failed.
      */
     int32_t SetStaticSubscribeEventState(bool enable);

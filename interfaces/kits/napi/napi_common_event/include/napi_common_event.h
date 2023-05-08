@@ -52,6 +52,7 @@ public:
     static NativeValue* SetStaticSubscribeEventState(NativeEngine* engine, NativeCallbackInfo* info);
 private:
     NativeValue* OnSetStaticSubscribeEventState(NativeEngine &engine, const NativeCallbackInfo &info);
+    int32_t ConvertErrorType(int32_t ret);
 };
 
 static thread_local napi_ref g_CommonEventSubscriber = nullptr;

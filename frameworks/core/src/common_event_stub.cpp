@@ -211,7 +211,6 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             break;
         }
         case static_cast<uint32_t>(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBE_EVENT_STATE): {
-            std::string bundleName = Str16ToStr8(data.ReadString16());
             bool enable = bool(data.ReadBool());
             int32_t ret = SetStaticSubscribeEventState(enable);
             if (!reply.WriteInt32(ret)) {
