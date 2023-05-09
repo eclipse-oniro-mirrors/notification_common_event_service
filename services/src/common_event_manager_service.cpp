@@ -478,14 +478,14 @@ int32_t CommonEventManagerService::RemoveStickyCommonEvent(const std::string &ev
     return innerCommonEventManager_->RemoveStickyCommonEvent(event, IPCSkeleton::GetCallingUid());
 }
 
-int32_t CommonEventManagerService::SetStaticSubscribeEventState(bool enable)
+int32_t CommonEventManagerService::SetStaticSubscriberState(bool enable)
 {
     if (!AccessTokenHelper::IsSystemApp()) {
         EVENT_LOGE("Not system application");
         return ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
     }
 
-    return innerCommonEventManager_->SetStaticSubscribeEventState(enable);
+    return innerCommonEventManager_->SetStaticSubscriberState(enable);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

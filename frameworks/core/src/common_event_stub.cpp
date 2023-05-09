@@ -210,9 +210,9 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBE_EVENT_STATE): {
+        case static_cast<uint32_t>(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBER_STATE): {
             bool enable = bool(data.ReadBool());
-            int32_t ret = SetStaticSubscribeEventState(enable);
+            int32_t ret = SetStaticSubscriberState(enable);
             if (!reply.WriteInt32(ret)) {
                 EVENT_LOGE("Failed to write reply");
                 return ERR_INVALID_VALUE;
@@ -310,7 +310,7 @@ int32_t CommonEventStub::RemoveStickyCommonEvent(const std::string &event)
     return ERR_OK;
 }
 
-int32_t CommonEventStub::SetStaticSubscribeEventState(bool enable)
+int32_t CommonEventStub::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD("called");
 

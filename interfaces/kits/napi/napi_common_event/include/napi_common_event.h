@@ -49,9 +49,9 @@ public:
     NapiStaicSubscribe() = default;
     ~NapiStaicSubscribe() = default;
     static void Finalizer(NativeEngine* engine, void* data, void* hint);
-    static NativeValue* SetStaticSubscribeEventState(NativeEngine* engine, NativeCallbackInfo* info);
+    static NativeValue* SetStaticSubscriberState(NativeEngine* engine, NativeCallbackInfo* info);
 private:
-    NativeValue* OnSetStaticSubscribeEventState(NativeEngine &engine, const NativeCallbackInfo &info);
+    NativeValue* OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info);
     int32_t ConvertErrorType(int32_t ret);
 };
 

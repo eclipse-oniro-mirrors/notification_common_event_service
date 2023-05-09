@@ -50,12 +50,12 @@ public:
         const sptr<IRemoteObject> &service, const std::string &bundleName);
 
     /**
-     * Set Static Subscribe Event State.
+     * Set Static Subscriber State.
      *
-     * @param enable static subscribe event State.
+     * @param enable static subscriber state.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    int32_t SetStaticSubscribeEventState(bool enable);
+    int32_t SetStaticSubscriberState(bool enable);
 
 private:
     struct StaticSubscriberInfo {

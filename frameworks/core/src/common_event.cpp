@@ -285,7 +285,7 @@ int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
     return commonEventProxy_->RemoveStickyCommonEvent(event);
 }
 
-int32_t CommonEvent::SetStaticSubscribeEventState(bool enable)
+int32_t CommonEvent::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD("enter");
 
@@ -293,7 +293,7 @@ int32_t CommonEvent::SetStaticSubscribeEventState(bool enable)
         EVENT_LOGE("failed to get commonEventProxy");
         return false;
     }
-    return commonEventProxy_->SetStaticSubscribeEventState(enable);
+    return commonEventProxy_->SetStaticSubscriberState(enable);
 }
 
 bool CommonEvent::GetCommonEventProxy()

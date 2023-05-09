@@ -91,7 +91,7 @@ static NativeValue *NapiStaicSubscribeInit(NativeEngine *engine, NativeValue *ex
 
     const char *moduleName = "NapiStaicSubscribe";
     OHOS::AbilityRuntime::BindNativeFunction(
-        *engine, *object, "setStaticSubscribeEventState", moduleName, NapiStaicSubscribe::SetStaticSubscribeEventState);
+        *engine, *object, "setStaticSubscriberState", moduleName, NapiStaicSubscribe::SetStaticSubscriberState);
 
     return exports;
 }
@@ -2490,13 +2490,13 @@ int32_t NapiStaicSubscribe::ConvertErrorType(int32_t ret)
     return result;
 }
 
-NativeValue *NapiStaicSubscribe::SetStaticSubscribeEventState(NativeEngine *engine, NativeCallbackInfo *info)
+NativeValue *NapiStaicSubscribe::SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info)
 {
     NapiStaicSubscribe *me = OHOS::AbilityRuntime::CheckParamsAndGetThis<NapiStaicSubscribe>(engine, info);
-    return (me != nullptr) ? me->OnSetStaticSubscribeEventState(*engine, *info) : nullptr;
+    return (me != nullptr) ? me->OnSetStaticSubscriberState(*engine, *info) : nullptr;
 }
 
-NativeValue *NapiStaicSubscribe::OnSetStaticSubscribeEventState(NativeEngine &engine, const NativeCallbackInfo &info)
+NativeValue *NapiStaicSubscribe::OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info)
 {
     EVENT_LOGD("%{public}s is called", __FUNCTION__);
 
@@ -2514,18 +2514,18 @@ NativeValue *NapiStaicSubscribe::OnSetStaticSubscribeEventState(NativeEngine &en
     }
 
     auto complete = [this, enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
-        auto ret = CommonEventManager::SetStaticSubscribeEventState(enable);
+        auto ret = CommonEventManager::SetStaticSubscriberState(enable);
         if (ret == ERR_OK) {
             task.Resolve(engine, engine.CreateUndefined());
         } else {
             task.Reject(engine,
-                AbilityRuntime::CreateJsError(engine, ConvertErrorType(ret), "SetStaticSubscribeEventState failed"));
+                AbilityRuntime::CreateJsError(engine, ConvertErrorType(ret), "SetStaticSubscriberState failed"));
         }
     };
 
     auto callback = (info.argc == ARGC_ONE) ? nullptr : info.argv[INDEX_ONE];
     NativeValue *result = nullptr;
-    AbilityRuntime::AsyncTask::Schedule("NapiStaicSubscribe::OnSetStaticSubscribeEventState", engine,
+    AbilityRuntime::AsyncTask::Schedule("NapiStaicSubscribe::OnSetStaticSubscriberState", engine,
         AbilityRuntime::CreateAsyncTaskWithLastParam(engine, callback, nullptr, std::move(complete), &result));
     return result;
 }

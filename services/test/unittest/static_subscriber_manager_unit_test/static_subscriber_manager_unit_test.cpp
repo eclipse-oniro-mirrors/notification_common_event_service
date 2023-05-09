@@ -3260,35 +3260,35 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2200, Function 
 }
 
 /*
- * @tc.name: SetStaticSubscribeEventState_0100
- * @tc.desc: Test SetStaticSubscribeEventState function.
+ * @tc.name: SetStaticSubscriberState_0100
+ * @tc.desc: Test SetStaticSubscriberState function.
  * @tc.type: FUNC
  * @tc.require: #
  * 
  */
-HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscribeEventState_0100, Function | SmallTest | Level1)
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, Function | SmallTest | Level1)
 {
     GTEST_LOG_(INFO)
-        << "StaticSubscriberManagerUnitTest, SetStaticSubscribeEventState_0100, TestSize.Level1";
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
-    auto ret = manager->SetStaticSubscribeEventState(true);
+    auto ret = manager->SetStaticSubscriberState(true);
     EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, ret);
 }
 
 /*
- * @tc.name: SetStaticSubscribeEventState_0200
- * @tc.desc: Test SetStaticSubscribeEventState function.
+ * @tc.name: SetStaticSubscriberState_0200
+ * @tc.desc: Test SetStaticSubscriberState function.
  * @tc.type: FUNC
  * @tc.require: #
  * 
  */
-HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscribeEventState_0200, Function | SmallTest | Level1)
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, Function | SmallTest | Level1)
 {
     GTEST_LOG_(INFO)
-        << "StaticSubscriberManagerUnitTest, SetStaticSubscribeEventState_0200, TestSize.Level1";
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
-    auto ret = manager->SetStaticSubscribeEventState(false);
+    auto ret = manager->SetStaticSubscriberState(false);
     EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, ret);
 }

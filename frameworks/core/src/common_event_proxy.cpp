@@ -460,7 +460,7 @@ int32_t CommonEventProxy::RemoveStickyCommonEvent(const std::string &event)
     return reply.ReadInt32();
 }
 
-int32_t CommonEventProxy::SetStaticSubscribeEventState(bool enable)
+int32_t CommonEventProxy::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD("start");
 
@@ -476,7 +476,7 @@ int32_t CommonEventProxy::SetStaticSubscribeEventState(bool enable)
     }
 
     MessageParcel reply;
-    bool ret = SendRequest(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBE_EVENT_STATE, data, reply);
+    bool ret = SendRequest(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBER_STATE, data, reply);
     if (!ret) {
         return ERR_NOTIFICATION_SEND_ERROR;
     }

@@ -150,12 +150,12 @@ public:
     int32_t RemoveStickyCommonEvent(const std::string &event) override;
 
     /**
-     * Set Static Subscribe Event State.
+     * Set Static Subscriber State.
      *
-     * @param enable static subscribe event State.
+     * @param enable static subscriber state.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    int32_t SetStaticSubscribeEventState(bool enable) override;
+    int32_t SetStaticSubscriberState(bool enable) override;
 
 private:
     DISALLOW_COPY_AND_MOVE(CommonEventStub);

@@ -138,12 +138,12 @@ public:
     virtual int32_t RemoveStickyCommonEvent(const std::string &event) = 0;
 
     /**
-     * Set Static Subscribe Event State.
+     * Set Static Subscriber State.
      *
-     * @param enable static subscribe event State.
+     * @param enable static subscriber state.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    virtual int32_t SetStaticSubscribeEventState(bool enable) = 0;
+    virtual int32_t SetStaticSubscriberState(bool enable) = 0;
 
     enum class Message {
         CES_PUBLISH_COMMON_EVENT = 0,
@@ -156,7 +156,7 @@ public:
         CES_UNFREEZE,
         CES_UNFREEZE_ALL,
         CES_REMOVE_STICKY_COMMON_EVENT,
-        CES_SET_STATIC_SUBSCRIBE_EVENT_STATE,
+        CES_SET_STATIC_SUBSCRIBER_STATE,
         // ipc id 2001-3000 for tools
         // ipc id for dumping Subscribe State (2001)
         CES_DUMP_STATE = 2001,

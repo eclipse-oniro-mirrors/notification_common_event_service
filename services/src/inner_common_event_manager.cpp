@@ -525,10 +525,10 @@ int32_t InnerCommonEventManager::RemoveStickyCommonEvent(const std::string &even
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->RemoveStickyCommonEvent(event, callerUid);
 }
 
-int32_t InnerCommonEventManager::SetStaticSubscribeEventState(bool enable)
+int32_t InnerCommonEventManager::SetStaticSubscriberState(bool enable)
 {
     if (staticSubscriberManager_ != nullptr) {
-        return staticSubscriberManager_->SetStaticSubscribeEventState(enable);
+        return staticSubscriberManager_->SetStaticSubscriberState(enable);
     }
     return Notification::ERR_NOTIFICATION_CESM_ERROR;
 }

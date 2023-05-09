@@ -406,20 +406,20 @@ void StaticSubscriberManager::SendStaticEventProcErrHiSysEvent(int32_t userId, c
     EventReport::SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
 }
 
-int32_t StaticSubscriberManager::SetStaticSubscribeEventState(bool enable)
+int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
 {
     int32_t result;
     uid_t uid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
     EVENT_LOGI(
-        "SetStaticSubscribeEventState current bundleName:%{public}s, enable:%{public}d.", bundleName.c_str(), enable);
+        "SetStaticSubscriberState current bundleName:%{public}s, enable:%{public}d.", bundleName.c_str(), enable);
     if (staticSubscribers_.find(bundleName) != staticSubscribers_.end()) {
         staticSubscribers_[bundleName].enable = enable;
     }
     for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
         for (auto subIt = it->second.begin(); subIt != it->second.end();) {
             if (subIt->bundleName == bundleName) {
-                EVENT_LOGI("SetStaticSubscribeEventState validSubscribers_ bundleName:%{public}s, enable:%{public}d.",
+                EVENT_LOGI("SetStaticSubscriberState validSubscribers_ bundleName:%{public}s, enable:%{public}d.",
                     bundleName.c_str(), enable);
                 subIt->enable = enable;
             }
