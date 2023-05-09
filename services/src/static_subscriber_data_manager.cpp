@@ -47,7 +47,7 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
         (!disableStaticSubscribeAllData.empty())) {
         if (disableStaticSubscribeAllData.find(bundleName) != disableStaticSubscribeAllData.end()) {
             EVENT_LOGW("Insert bundleName again!");
-            return ERR_ALREADY_EXISTS;
+            return ERR_OK;
         }
     }
 
@@ -77,7 +77,7 @@ int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std:
     if (!QueryDisableStaticSubscribeAllData(disableStaticSubscribeAllData)) {
         if (disableStaticSubscribeAllData.find(bundleName) == disableStaticSubscribeAllData.end()) {
             EVENT_LOGW("Delete bundleName is not exist!");
-            return ERR_INVALID_OPERATION;
+            return ERR_OK;
         }
     }
 
