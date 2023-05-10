@@ -449,7 +449,7 @@ void StaticSubscriberManager::InitDisableStaticSubscribersStates(const std::stri
     if (disableStaticSubscribeAllData.find(bundleName) != disableStaticSubscribeAllData.end()) {
         if (staticSubscribers_.find(bundleName) != staticSubscribers_.end()) {
             staticSubscribers_[bundleName].enable = false;
-            EVENT_LOGI("Current static subscriber is disable.");
+            EVENT_LOGI("Current static subscriber bundleName:%{public}s is disable.", bundleName.c_str());
             return;
         }
     }

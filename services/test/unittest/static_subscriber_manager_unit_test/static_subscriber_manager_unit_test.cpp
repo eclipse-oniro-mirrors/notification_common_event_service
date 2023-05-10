@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 
+#include "ces_inner_error_code.h"
 #include "common_event_support.h"
 #include "want.h"
 #define private public
@@ -39,6 +40,7 @@ extern void ResetAbilityManagerHelperState();
 extern void ResetAccountMock();
 extern void ResetBundleManagerHelperMock();
 extern void ResetAccessTokenHelperMock();
+extern void SetBundleNameMock();
 
 namespace {
     constexpr uint8_t TEST_MUL_SIZE = 2;
@@ -46,7 +48,6 @@ namespace {
     constexpr uint8_t MOCK_CASE_3 = 3;
     constexpr uint8_t MOCK_CASE_4 = 4;
     constexpr uint8_t MOCK_CASE_5 = 5;
-    const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
 }
 
 class StaticSubscriberManagerUnitTest : public testing::Test {
@@ -3263,7 +3264,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2200, Function 
  * @tc.name: SetStaticSubscriberState_0100
  * @tc.desc: Test SetStaticSubscriberState function.
  * @tc.type: FUNC
- * @tc.require: #
+ * @tc.require: #I70XI1
  * 
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, Function | SmallTest | Level1)
@@ -3272,15 +3273,16 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, Functio
         << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
+    SetBundleNameMock();
     auto ret = manager->SetStaticSubscriberState(true);
-    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, ret);
+    EXPECT_EQ(0, ret);
 }
 
 /*
  * @tc.name: SetStaticSubscriberState_0200
  * @tc.desc: Test SetStaticSubscriberState function.
  * @tc.type: FUNC
- * @tc.require: #
+ * @tc.require: #I70XI1
  * 
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, Function | SmallTest | Level1)
@@ -3289,6 +3291,41 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, Functio
         << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
+    SetBundleNameMock();
     auto ret = manager->SetStaticSubscriberState(false);
-    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, ret);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: SetStaticSubscriberState_0300
+ * @tc.desc: Test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ * @tc.require: #I70XI1
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0300, Function | SmallTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    auto ret = manager->SetStaticSubscriberState(true);
+    EXPECT_EQ(ERR_INVALID_VALUE, ret);
+}
+
+/*
+ * @tc.name: SetStaticSubscriberState_0400
+ * @tc.desc: Test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ * @tc.require: #I70XI1
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0400, Function | SmallTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    auto ret = manager->SetStaticSubscriberState(false);
+    EXPECT_EQ(ERR_INVALID_VALUE, ret);
 }
