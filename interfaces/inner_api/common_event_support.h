@@ -707,6 +707,12 @@ public:
     static const std::string COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED;
 
     /**
+     * Indicates the action of a common event that the list of exempt applications is updated in the idle mode.
+     * This is a protected common event, which can be sent only by the system.
+     */
+    static const std::string COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED;
+
+    /**
      * Indicates the action of a common event that the power save mode of the system has changed.
      * This is a protected common event, which can be sent only by the system.
      */
@@ -1215,6 +1221,18 @@ public:
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_SCREEN_UNLOCKED;
+
+    /**
+    * Indicates the action of a common event that the call audio quality information has been updated.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_AUDIO_QUALITY_CHANGE;
+
+    /**
+    * Indicates the action of a common event about special code.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SPECIAL_CODE;
 
 public:
     CommonEventSupport();

@@ -19,10 +19,7 @@ module_output_path = "common_event_service/frameworks/native"
 config("kits_natvie_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [
-    "//commonlibrary/c_utils/base/include",
-    "//utils/system/safwk/native/include",
-  ]
+  include_dirs = []
 
   cflags = []
 

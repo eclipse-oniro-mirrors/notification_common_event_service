@@ -28,10 +28,7 @@ config("event_common_config") {
 ohos_shared_library("libevent_common") {
   sources = [ "log/src/event_log_wrapper.cpp" ]
 
-  public_configs = [
-    ":event_common_config",
-    "//commonlibrary/c_utils/base:utils_config",
-  ]
+  public_configs = [ ":event_common_config" ]
 
   external_deps = [
     "c_utils:utils",

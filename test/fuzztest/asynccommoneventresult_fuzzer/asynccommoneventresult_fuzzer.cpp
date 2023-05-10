@@ -48,6 +48,8 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
         result->GetAbortCommonEvent();
         // test IsOrderedCommonEvent function
         result->IsOrderedCommonEvent();
+        // test CheckSynchronous function
+        result->CheckSynchronous();
         // test IsStickyCommonEvent function
         return result->IsStickyCommonEvent();
     } else {

@@ -798,6 +798,12 @@ const std::string CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED = "usual.
 const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED = "usual.event.DEVICE_IDLE_MODE_CHANGED";
 
 /**
+ * Indicates the action of a common event that the list of exempt applications is updated in the idle mode.
+ * This is a protected common event, which can be sent only by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED = "usual.event.DEVICE_IDLE_EXEMPTION_LIST_UPDATED";
+
+/**
  * Indicates the action of a common event that the power save mode of the system has changed.
  * This is a protected common event, which can be sent only by the system.
  */
@@ -1339,6 +1345,19 @@ const std::string CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED = "usual.event.
  */
 const std::string CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED = "usual.event.SCREEN_UNLOCKED";
 
+/**
+ * Indicates the action of a common event that the call audio quality information has been updated.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_AUDIO_QUALITY_CHANGE =
+    "usual.event.AUDIO_QUALITY_CHANGE";
+
+/**
+ * Indicates the action of a common event about special code.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SPECIAL_CODE = "common.event.SPECIAL_CODE";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -1415,6 +1434,7 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGING);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_POWER_SAVE_MODE_CHANGED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ABILITY_ADDED);
@@ -1670,6 +1690,11 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_AUDIO_QUALITY_CHANGE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPECIAL_CODE);
+
     return;
 }
 

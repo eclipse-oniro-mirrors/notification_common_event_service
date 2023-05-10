@@ -19,10 +19,7 @@ module_output_path = "common_event_service/frameworks/core"
 config("kits_natvie_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [
-    "//commonlibrary/c_utils/base/include",
-    "//utils/system/safwk/native/include",
-  ]
+  include_dirs = []
 
   cflags = []
 
@@ -120,9 +117,6 @@ ohos_unittest("common_event_stub_test") {
 ohos_unittest("common_event_proxy_test") {
   module_out_path = module_output_path
 
-  include_dirs =
-      [ "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include" ]
-
   sources = [ "common_event_proxy_test.cpp" ]
 
   configs = [ ":kits_natvie_config" ]
@@ -144,8 +138,7 @@ ohos_unittest("common_event_proxy_test") {
 ohos_unittest("event_receive_stub_test") {
   module_out_path = module_output_path
 
-  include_dirs =
-      [ "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include" ]
+  include_dirs = []
 
   sources = [ "event_receive_stub_test.cpp" ]
 
