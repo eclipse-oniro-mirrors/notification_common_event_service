@@ -19,8 +19,8 @@
 #include "common_event_manager_service.h"
 #undef private
 
-extern void mockVerifyNativeToken(bool mockRet);
-extern void mockVerifyAccessToken(bool mockRet);
+extern void MockVerifyNativeToken(bool mockRet);
+extern void MockVerifyAccessToken(bool mockRet);
 
 using namespace testing::ext;
 using namespace OHOS;
@@ -82,7 +82,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0200, Level1)
     comm->runner_ = EventRunner::Create("CesSrvMain");
     comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     // test PublishCommonEvent
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -129,7 +129,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0600, Level1)
     comm->runner_ = EventRunner::Create("CesSrvMain");
     comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
     // set VerifyAccessToken is false
-    mockVerifyAccessToken(false);
+    MockVerifyAccessToken(false);
     // test GetStickyCommonEvent function
     std::string event = "sticky common event";
     CommonEventData eventData;
@@ -148,7 +148,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0700, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     // set IsReady is false
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     // test DumpState function
@@ -171,7 +171,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0800, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->runner_ = EventRunner::Create("CesSrvMain");
@@ -218,7 +218,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1000, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     uid_t uid = 1;
     EXPECT_EQ(false, comm->Freeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1000 end";
@@ -235,7 +235,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1100, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->runner_ = EventRunner::Create("CesSrvMain");
@@ -257,7 +257,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1200, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     uid_t uid = 1;
     EXPECT_EQ(false, comm->Unfreeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1200 end";
@@ -274,7 +274,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1300, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->runner_ = EventRunner::Create("CesSrvMain");
@@ -296,7 +296,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1400, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     EXPECT_EQ(false, comm->UnfreezeAll());
     GTEST_LOG_(INFO) << "CommonEventManagerService_1400 end";
 }
@@ -312,7 +312,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1500, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->runner_ = EventRunner::Create("CesSrvMain");
@@ -333,7 +333,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1600, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     int fd = 1;
     std::vector<std::u16string> args;
     EXPECT_EQ(OHOS::ERR_INVALID_VALUE, comm->Dump(fd, args));
@@ -351,7 +351,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1700, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
-    mockVerifyNativeToken(true);
+    MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->runner_ = EventRunner::Create("CesSrvMain");
