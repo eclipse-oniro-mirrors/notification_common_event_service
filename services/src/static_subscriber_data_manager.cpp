@@ -43,7 +43,7 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
     }
 
     std::set<std::string> disableStaticSubscribeAllData;
-    if ((QueryDisableStaticSubscribeAllData(disableStaticSubscribeAllData)) &&
+    if ((QueryDisableStaticSubscribeAllData(disableStaticSubscribeAllData) == ERR_OK) &&
         (!disableStaticSubscribeAllData.empty())) {
         if (disableStaticSubscribeAllData.find(bundleName) != disableStaticSubscribeAllData.end()) {
             EVENT_LOGW("Insert bundleName again!");
@@ -74,7 +74,7 @@ int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std:
     }
 
     std::set<std::string> disableStaticSubscribeAllData;
-    if (!QueryDisableStaticSubscribeAllData(disableStaticSubscribeAllData)) {
+    if (QueryDisableStaticSubscribeAllData(disableStaticSubscribeAllData) == ERR_OK) {
         if (disableStaticSubscribeAllData.find(bundleName) == disableStaticSubscribeAllData.end()) {
             EVENT_LOGW("Delete bundleName is not exist!");
             return ERR_OK;
@@ -109,7 +109,7 @@ int32_t StaticSubscriberDataManager::QueryDisableStaticSubscribeAllData(std::set
 
     if (!file.is_open()) {
         EVENT_LOGE("Failed to open file!");
-        return ERR_ENOUGH_DATA;
+        return ERR_NO_INIT;
     }
 
     std::string data;
