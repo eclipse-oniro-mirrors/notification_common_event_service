@@ -1537,6 +1537,8 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT);
 
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_QUICK_FIX_REVOKE_RESULT);
+
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN);
