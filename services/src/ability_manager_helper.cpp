@@ -123,7 +123,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
     auto task = [connection, weak = weak_from_this()]() {
         auto self = weak.lock();
         if (self == nullptr) {
-            HILOG_ERROR("self is nullptr");
+            EVENT_LOGE("self is nullptr");
             return;
         }
         AbilityManagerHelper::GetInstance()->DisconnectAbility(connection);
