@@ -19,6 +19,10 @@ class StaticSubscriberExtensionContext extends ExtensionContext {
     constructor(obj) {
         super(obj);
     }
+
+    startAbility(want, callback) {
+        return this.__context_impl__.startAbility(want, callback)
+    }
 }
 
 export default StaticSubscriberExtensionContext
