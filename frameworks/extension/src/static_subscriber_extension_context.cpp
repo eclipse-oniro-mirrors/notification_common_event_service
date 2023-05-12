@@ -47,8 +47,8 @@ bool StaticSubscriberExtensionContext::CheckCallerIsSystemApp()
 
 ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
 {
-    EVENT_LOGI("Start calling StartAbility.");
-    ErrCode err = static_cast<int32_t>(OHOS::AbilityRuntime::AbilityErrorCode::ERROR_OK);
+    EVENT_LOGD("called");
+    ErrCode err = ERR_OK;
 
     if (!CheckCallerIsSystemApp()) {
         EVENT_LOGE("This application is not system-app, can not use system-api");
@@ -58,7 +58,7 @@ ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
 
     std::string callerBundleName = GetBundleName();
     std::string calledBundleName = want.GetBundle();
-    if (calledBundleName.compare(callerBundleName) != 0) {
+    if (calledBundleName != callerBundleName) {
         EVENT_LOGE("This application won't start no-self-ability.");
         err = AAFwk::ERR_NOT_SELF_APPLICATION;
         return err;
