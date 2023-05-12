@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
-#ifndef BASE_NOTIFICATION_CES_STANDARD_SERVICES_CES_INCLUDE_STATIC_SUBSCRIBER_DATA_MANAGER_H
-#define BASE_NOTIFICATION_CES_STANDARD_SERVICES_CES_INCLUDE_STATIC_SUBSCRIBER_DATA_MANAGER_H
+#ifndef BASE_NOTIFICATION_COMMON_EVENT_SERVICE_INCLUDE_STATIC_SUBSCRIBER_DATA_MANAGER_H
+#define BASE_NOTIFICATION_COMMON_EVENT_SERVICE_INCLUDE_STATIC_SUBSCRIBER_DATA_MANAGER_H
 
+#include <mutex>
 #include <set>
 #include <string>
 
@@ -34,7 +35,10 @@ public:
     int32_t DeleteDisableStaticSubscribeData(const std::string &bundleName);
 
     int32_t QueryDisableStaticSubscribeAllData(std::set<std::string> &disableStaticSubscribeAllData);
+
+private:
+    static std::mutex dataMutex_;
 };
 } // namespace EventFwk
 } // namespace OHOS
-#endif // BASE_NOTIFICATION_CES_STANDARD_SERVICES_CES_INCLUDE_STATIC_SUBSCRIBER_DATA_MANAGER_H
+#endif // BASE_NOTIFICATION_COMMON_EVENT_SERVICE_INCLUDE_STATIC_SUBSCRIBER_DATA_MANAGER_H

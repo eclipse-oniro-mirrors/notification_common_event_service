@@ -28,6 +28,7 @@ namespace {
 const static std::string DISABLE_STATIC_SUBSCRIBER_DATA_FULL_PATH(
     "/data/service/el1/public/common_event_service/disablestaticsubscribe.db");
 }
+std::mutex StaticSubscriberDataManager::dataMutex_;
 
 StaticSubscriberDataManager::StaticSubscriberDataManager() {}
 
@@ -35,7 +36,7 @@ StaticSubscriberDataManager::~StaticSubscriberDataManager() {}
 
 int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std::string &bundleName)
 {
-    EVENT_LOGI("InsertDisableStaticSubscribeData bundleName: %{public}s", bundleName.c_str());
+    EVENT_LOGD("InsertDisableStaticSubscribeData bundleName: %{public}s", bundleName.c_str());
 
     if (bundleName.empty()) {
         EVENT_LOGW("Invalid value!");
@@ -46,27 +47,27 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
     if ((QueryDisableStaticSubscribeAllData(disableStaticSubscribeAllData) == ERR_OK) &&
         (!disableStaticSubscribeAllData.empty())) {
         if (disableStaticSubscribeAllData.find(bundleName) != disableStaticSubscribeAllData.end()) {
-            EVENT_LOGW("Insert bundleName again!");
+            EVENT_LOGI("Insert bundleName again!");
             return ERR_OK;
         }
     }
-
-    std::ofstream file;
-    file.open(DISABLE_STATIC_SUBSCRIBER_DATA_FULL_PATH.c_str(), std::ios::out | std::ios::app);
-    if (!file.is_open()) {
-        EVENT_LOGE("Failed to open file!");
-        return ERR_ENOUGH_DATA;
+    {
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        std::ofstream file;
+        file.open(DISABLE_STATIC_SUBSCRIBER_DATA_FULL_PATH.c_str(), std::ios::out | std::ios::app);
+        if (!file.is_open()) {
+            EVENT_LOGE("Failed to open file!");
+            return ERR_ENOUGH_DATA;
+        }
+        file << bundleName << std::endl;
+        file.close();
     }
-
-    file << bundleName << std::endl;
-    file.close();
-
     return ERR_OK;
 }
 
 int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std::string &bundleName)
 {
-    EVENT_LOGI("DeleteDisableStaticSubscribeData bundleName: %{public}s", bundleName.c_str());
+    EVENT_LOGD("DeleteDisableStaticSubscribeData bundleName: %{public}s", bundleName.c_str());
 
     if (bundleName.empty()) {
         EVENT_LOGW("Invalid value!");
@@ -76,7 +77,7 @@ int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std:
     std::set<std::string> disableStaticSubscribeAllData;
     if (QueryDisableStaticSubscribeAllData(disableStaticSubscribeAllData) == ERR_OK) {
         if (disableStaticSubscribeAllData.find(bundleName) == disableStaticSubscribeAllData.end()) {
-            EVENT_LOGW("Delete bundleName is not exist!");
+            EVENT_LOGI("Delete bundleName is not exist!");
             return ERR_OK;
         }
     }
@@ -86,24 +87,26 @@ int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std:
         return ERR_OK;
     }
     disableStaticSubscribeAllData.erase(bundleName);
-
-    std::ofstream file;
-    file.open(DISABLE_STATIC_SUBSCRIBER_DATA_FULL_PATH.c_str(), std::ios::out | std::ios::trunc);
-    if (!file.is_open()) {
-        EVENT_LOGE("Failed to open file!");
-        return ERR_ENOUGH_DATA;
+    {
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        std::ofstream file;
+        file.open(DISABLE_STATIC_SUBSCRIBER_DATA_FULL_PATH.c_str(), std::ios::out | std::ios::trunc);
+        if (!file.is_open()) {
+            EVENT_LOGE("Failed to open file!");
+            return ERR_ENOUGH_DATA;
+        }
+        for (std::string s : disableStaticSubscribeAllData) {
+            file << s << std::endl;
+        }
+        file.close();
     }
-
-    for (std::string s :disableStaticSubscribeAllData) {
-        file << s << std::endl;
-    }
-    file.close();
-
     return ERR_OK;
 }
 
-int32_t StaticSubscriberDataManager::QueryDisableStaticSubscribeAllData(std::set<std::string> &disableStaticSubscribeAllData)
+int32_t StaticSubscriberDataManager::QueryDisableStaticSubscribeAllData(
+    std::set<std::string> &disableStaticSubscribeAllData)
 {
+    std::lock_guard<std::mutex> lock(dataMutex_);
     std::ifstream file;
     file.open(DISABLE_STATIC_SUBSCRIBER_DATA_FULL_PATH.c_str(), std::ios::in);
 
@@ -120,7 +123,6 @@ int32_t StaticSubscriberDataManager::QueryDisableStaticSubscribeAllData(std::set
         EVENT_LOGI("disableStaticSubscribeAllData[%{public}s].", s.c_str());
     }
     file.close();
-
     return ERR_OK;
 }
 } // namespace EventFwk

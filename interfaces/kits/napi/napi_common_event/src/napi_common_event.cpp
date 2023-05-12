@@ -47,10 +47,9 @@ static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;
 static const int32_t ARGS_DATA_TWO = 2;
-static const int INDEX_ZERO = 0;
-static const int INDEX_ONE = 1;
+static const int32_t INDEX_ZERO = 0;
+static const int32_t INDEX_ONE = 1;
 static const int32_t ARGC_ONE = 1;
-static const int32_t ARGC_TWO = 2;
 constexpr int32_t ERR_OK = 0;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
@@ -74,24 +73,24 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
 
 static NativeValue *NapiStaicSubscribeInit(NativeEngine *engine, NativeValue *exports)
 {
-    EVENT_LOGD("NapiStaicSubscribe is called");
+    EVENT_LOGD("called");
     if (engine == nullptr || exports == nullptr) {
         EVENT_LOGD("Invalid input parameters");
         return nullptr;
     }
 
-    NativeObject *object = OHOS::AbilityRuntime::ConvertNativeValueTo<NativeObject>(exports);
+    NativeObject *object = AbilityRuntime::ConvertNativeValueTo<NativeObject>(exports);
     if (object == nullptr) {
         EVENT_LOGD("object is nullptr");
         return nullptr;
     }
 
-    std::unique_ptr<NapiStaicSubscribe> napiStaicSubscribe = std::make_unique<NapiStaicSubscribe>();
-    object->SetNativePointer(napiStaicSubscribe.release(), NapiStaicSubscribe::Finalizer, nullptr);
+    std::unique_ptr<NapiStaticSubscribe> napiStaicSubscribe = std::make_unique<NapiStaticSubscribe>();
+    object->SetNativePointer(napiStaicSubscribe.release(), NapiStaticSubscribe::Finalizer, nullptr);
 
-    const char *moduleName = "NapiStaicSubscribe";
-    OHOS::AbilityRuntime::BindNativeFunction(
-        *engine, *object, "setStaticSubscriberState", moduleName, NapiStaicSubscribe::SetStaticSubscriberState);
+    const char *moduleName = "NapiStaticSubscribe";
+    AbilityRuntime::BindNativeFunction(
+        *engine, *object, "setStaticSubscriberState", moduleName, NapiStaticSubscribe::SetStaticSubscriberState);
 
     return exports;
 }
@@ -2466,66 +2465,60 @@ napi_value Publish(napi_env env, napi_callback_info info)
     return NapiGetNull(env);
 }
 
-void NapiStaicSubscribe::Finalizer(NativeEngine *engine, void *data, void *hint)
+void NapiStaticSubscribe::Finalizer(NativeEngine *engine, void *data, void *hint)
 {
-    EVENT_LOGD("NapiStaicSubscribe::Finalizer is called");
-    std::unique_ptr<NapiStaicSubscribe>(static_cast<NapiStaicSubscribe *>(data));
+    EVENT_LOGD("called");
+    std::unique_ptr<NapiStaticSubscribe>(static_cast<NapiStaticSubscribe *>(data));
 }
 
-int32_t NapiStaicSubscribe::ConvertErrorType(int32_t ret)
+NativeValue *NapiStaticSubscribe::SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info)
 {
-    int32_t result = 0;
-    switch (ret) {
-        case ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP: {
-            result = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
-            break;
-        }
-        case ERR_NOTIFICATION_SEND_ERROR: {
-            result = ERR_NOTIFICATION_SEND_ERROR;
-            break;
-        }
-        default:
-            result = ERR_NOTIFICATION_CESM_ERROR;
-    }
-    return result;
-}
-
-NativeValue *NapiStaicSubscribe::SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info)
-{
-    NapiStaicSubscribe *me = OHOS::AbilityRuntime::CheckParamsAndGetThis<NapiStaicSubscribe>(engine, info);
+    NapiStaticSubscribe *me = AbilityRuntime::CheckParamsAndGetThis<NapiStaticSubscribe>(engine, info);
     return (me != nullptr) ? me->OnSetStaticSubscriberState(*engine, *info) : nullptr;
 }
 
-NativeValue *NapiStaicSubscribe::OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info)
+NativeValue *NapiStaticSubscribe::OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info)
 {
-    EVENT_LOGD("%{public}s is called", __FUNCTION__);
+    EVENT_LOGD("called");
 
-    if (info.argc < ARGC_ONE || info.argc > ARGC_TWO) {
-        EVENT_LOGD("The param is invalid.");
-        OHOS::AbilityRuntime::ThrowTooFewParametersError(engine);
+    if (info.argc < ARGC_ONE) {
+        EVENT_LOGE("The param is invalid.");
+        AbilityRuntime::ThrowTooFewParametersError(engine);
         return engine.CreateUndefined();
     }
 
     bool enable;
-    if (!OHOS::AbilityRuntime::ConvertFromJsValue(engine, info.argv[INDEX_ZERO], enable)) {
-        EVENT_LOGD("Parse type failed");
-        OHOS::AbilityRuntime::ThrowError(engine, AbilityRuntime::AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
+    if (!AbilityRuntime::ConvertFromJsValue(engine, info.argv[INDEX_ZERO], enable)) {
+        EVENT_LOGE("Parse type failed");
+        AbilityRuntime::ThrowError(engine, AbilityRuntime::AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
         return engine.CreateUndefined();
     }
 
-    auto complete = [this, enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
+    auto complete = [enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
         auto ret = CommonEventManager::SetStaticSubscriberState(enable);
         if (ret == ERR_OK) {
             task.Resolve(engine, engine.CreateUndefined());
         } else {
-            task.Reject(engine,
-                AbilityRuntime::CreateJsError(engine, ConvertErrorType(ret), "SetStaticSubscriberState failed"));
+            int32_t result = 0;
+            switch (ret) {
+                case ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP: {
+                    result = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
+                    break;
+                }
+                case ERR_NOTIFICATION_SEND_ERROR: {
+                    result = ERR_NOTIFICATION_SEND_ERROR;
+                    break;
+                }
+                default:
+                    result = ERR_NOTIFICATION_CESM_ERROR;
+            }
+            task.Reject(engine, AbilityRuntime::CreateJsError(engine, result, "SetStaticSubscriberState failed"));
         }
     };
 
     auto callback = (info.argc == ARGC_ONE) ? nullptr : info.argv[INDEX_ONE];
     NativeValue *result = nullptr;
-    AbilityRuntime::AsyncTask::Schedule("NapiStaicSubscribe::OnSetStaticSubscriberState", engine,
+    AbilityRuntime::AsyncTask::Schedule("NapiStaticSubscribe::OnSetStaticSubscriberState", engine,
         AbilityRuntime::CreateAsyncTaskWithLastParam(engine, callback, nullptr, std::move(complete), &result));
     return result;
 }

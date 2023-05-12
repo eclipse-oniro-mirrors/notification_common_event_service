@@ -44,15 +44,14 @@ struct subscriberInstanceInfo {
     std::shared_ptr<AsyncCommonEventResult> commonEventResult = nullptr;
 };
 
-class NapiStaicSubscribe {
+class NapiStaticSubscribe {
 public:
-    NapiStaicSubscribe() = default;
-    ~NapiStaicSubscribe() = default;
+    NapiStaticSubscribe() = default;
+    ~NapiStaticSubscribe() = default;
     static void Finalizer(NativeEngine* engine, void* data, void* hint);
     static NativeValue* SetStaticSubscriberState(NativeEngine* engine, NativeCallbackInfo* info);
 private:
     NativeValue* OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info);
-    int32_t ConvertErrorType(int32_t ret);
 };
 
 static thread_local napi_ref g_CommonEventSubscriber = nullptr;
