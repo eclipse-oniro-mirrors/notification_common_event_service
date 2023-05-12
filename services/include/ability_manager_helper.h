@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,8 @@
 
 namespace OHOS {
 namespace EventFwk {
-class AbilityManagerHelper : public DelayedSingleton<AbilityManagerHelper> {
+class AbilityManagerHelper : public DelayedSingleton<AbilityManagerHelper>,
+                             public std::enable_shared_from_this<AbilityManagerHelper> {
 public:
     AbilityManagerHelper() {}
 
@@ -67,8 +68,10 @@ public:
 private:
     bool GetAbilityMgrProxy();
     void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection);
+    void RemoveSubscriberConnection(const sptr<StaticSubscriberConnection> &connection);
 
     std::mutex mutex_;
+    std::mutex subscriberConnectionMutex_;
     sptr<AAFwk::IAbilityManager> abilityMgr_;
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
