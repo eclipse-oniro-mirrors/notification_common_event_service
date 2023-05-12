@@ -26,8 +26,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-class AbilityManagerHelper : public DelayedSingleton<AbilityManagerHelper>,
-                             public std::enable_shared_from_this<AbilityManagerHelper> {
+class AbilityManagerHelper : public DelayedSingleton<AbilityManagerHelper> {
 public:
     AbilityManagerHelper() {}
 
@@ -68,7 +67,6 @@ public:
 private:
     bool GetAbilityMgrProxy();
     void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection);
-    void RemoveSubscriberConnection(const sptr<StaticSubscriberConnection> &connection);
 
     std::mutex mutex_;
     std::mutex subscriberConnectionMutex_;

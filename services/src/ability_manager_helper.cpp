@@ -120,15 +120,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         }
     }
 
-    auto task = [connection, weak = weak_from_this()]() {
-        auto self = weak.lock();
-        if (self == nullptr) {
-            EVENT_LOGE("self is nullptr");
-            return;
-        }
-        AbilityManagerHelper::GetInstance()->DisconnectAbility(connection);
-        self->RemoveSubscriberConnection(connection);
-    };
+    auto task = [connection]() { AbilityManagerHelper::GetInstance()->DisconnectAbility(connection); };
     eventHandler_->PostTask(task, DISCONNECT_DELAY_TIME);
 }
 
@@ -144,10 +136,7 @@ void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnecti
         return;
     }
     IN_PROCESS_CALL_WITHOUT_RET(abilityMgr_->DisconnectAbility(connection));
-}
 
-void AbilityManagerHelper::RemoveSubscriberConnection(const sptr<StaticSubscriberConnection> &connection)
-{
     std::lock_guard<std::mutex> lock(subscriberConnectionMutex_);
     subscriberConnection_.erase(connection);
 }
