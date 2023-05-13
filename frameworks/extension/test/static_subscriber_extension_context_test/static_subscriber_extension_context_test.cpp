@@ -22,9 +22,11 @@
 #undef private
 #undef protected
 
+using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::EventFwk;
+
+namespace OHOS {
+namespace EventFwk {
 class static_subscriber_extension_context_test : public testing::Test {
 public:
     static void SetUpTestCase();
@@ -53,8 +55,7 @@ void static_subscriber_extension_context_test::TearDown()
 HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_context_test_0100, TestSize.Level1)
 {
     auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
-    bool result = staticSubscriberExtensionContext->CheckCallerIsSystemApp();
-    EXPECT_FALSE(result);
+    EXPECT_FALSE(staticSubscriberExtensionContext->CheckCallerIsSystemApp());
 }
 
 /**
@@ -67,6 +68,18 @@ HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_c
     auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
     AAFwk::Want want;
     want.SetBundle("BundleName");
-    auto result = staticSubscriberExtensionContext->StartAbility(want);
-    EXPECT_EQ(AAFwk::ERR_NOT_SYSTEM_APP, result);
+    EXPECT_EQ(staticSubscriberExtensionContext->StartAbility(want), AAFwk::ERR_NOT_SYSTEM_APP);
 }
+
+/**
+ * @tc.name  : test VerifyCallingPermission
+ * @tc.number: static_subscriber_extension_context_test_0300
+ * @tc.desc  : test VerifyCallingPermission failed
+ */
+HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_context_test_0300, TestSize.Level1)
+{
+    auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
+    EXPECT_FALSE(staticSubscriberExtensionContext->VerifyCallingPermission("permission"));
+}
+} // namespace EventFwk
+} // namespace OHOS

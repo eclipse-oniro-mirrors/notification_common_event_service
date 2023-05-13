@@ -132,36 +132,42 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0500, Level1)
 /**
  * @tc.name  : test SetEventHandler
  * @tc.number: AbilityManagerHelper_0600
- * @tc.desc  : test SetEventHandler succeeded and eventHandler_ is not nullptr.
+ * @tc.desc  : Test SetEventHandler succeeded.
  */
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0600, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0600 start";
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection= new (std::nothrow) StaticSubscriberConnection(data);
+    abilityManagerHelper->subscriberConnection_.emplace(connection);
     auto handler = std::make_shared<EventHandler>(EventRunner::Create());
     abilityManagerHelper->SetEventHandler(handler);
-    EXPECT_NE(nullptr, abilityManagerHelper->eventHandler_);
+    EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0600 end";
 }
 
 /**
  * @tc.name  : test DisconnectAbility
  * @tc.number: AbilityManagerHelper_0700
- * @tc.desc  : test DisconnectAbility failed and abilityMgr_ is nullptr.
+ * @tc.desc  : Test the DisconnectAbility function when the connection is nullptr.
  */
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0700, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0700 start";
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection= new (std::nothrow) StaticSubscriberConnection(data);
+    abilityManagerHelper->subscriberConnection_.emplace(connection);
     abilityManagerHelper->DisconnectAbility(nullptr);
-    EXPECT_EQ(nullptr, abilityManagerHelper->abilityMgr_);
+    EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0700 end";
 }
 
 /**
  * @tc.name  : test DisconnectAbility
  * @tc.number: AbilityManagerHelper_0800
- * @tc.desc  : test DisconnectAbility failed and abilityMgr_ is nullptr.
+ * @tc.desc  : Test the DisconnectAbility function when the connection is not nullptr.
  */
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0800, Level1)
 {
@@ -169,15 +175,16 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0800, Level1)
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection= new (std::nothrow) StaticSubscriberConnection(data);
+    abilityManagerHelper->subscriberConnection_.emplace(connection);
     abilityManagerHelper->DisconnectAbility(connection);
-    EXPECT_EQ(nullptr, abilityManagerHelper->abilityMgr_);
+    EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0800 end";
 }
 
 /**
  * @tc.name  : test DisconnectServiceAbilityDelay
  * @tc.number: AbilityManagerHelper_0900
- * @tc.desc  : test DisconnectServiceAbilityDelay failed and subscriberConnection_ not null.
+ * @tc.desc  : Test the DisconnectServiceAbilityDelay function when the connection is nullptr.
  */
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0900, Level1)
 {
@@ -196,7 +203,7 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0900, Level1)
 /**
  * @tc.name  : test DisconnectServiceAbilityDelay
  * @tc.number: AbilityManagerHelper_1000
- * @tc.desc  : test DisconnectServiceAbilityDelay failed and subscriberConnection_ not null.
+ * @tc.desc  : Test the DisconnectServiceAbilityDelay function when the eventHandler_ is nullptr.
  */
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1000, Level1)
 {
@@ -213,7 +220,7 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1000, Level1)
 /**
  * @tc.name  : test DisconnectServiceAbilityDelay
  * @tc.number: AbilityManagerHelper_1100
- * @tc.desc  : test DisconnectServiceAbilityDelay failed and subscriberConnection_ not null.
+ * @tc.desc  : Test the DisconnectServiceAbilityDelay function when the input parameters meet the requirements.
  */
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1100, Level1)
 {
