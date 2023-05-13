@@ -36,7 +36,7 @@ StaticSubscriberDataManager::~StaticSubscriberDataManager() {}
 
 int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std::string &bundleName)
 {
-    EVENT_LOGD("InsertDisableStaticSubscribeData bundleName: %{public}s", bundleName.c_str());
+    EVENT_LOGD("bundleName: %{public}s", bundleName.c_str());
 
     if (bundleName.empty()) {
         EVENT_LOGW("Invalid value!");
@@ -67,7 +67,7 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
 
 int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std::string &bundleName)
 {
-    EVENT_LOGD("DeleteDisableStaticSubscribeData bundleName: %{public}s", bundleName.c_str());
+    EVENT_LOGD("bundleName: %{public}s", bundleName.c_str());
 
     if (bundleName.empty()) {
         EVENT_LOGW("Invalid value!");

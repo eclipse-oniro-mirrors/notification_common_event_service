@@ -131,7 +131,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     if (targetSubscribers != validSubscribers_.end()) {
         for (auto subscriber : targetSubscribers->second) {
             EVENT_LOGW("subscriber.userId = %{public}d, userId = %{public}d", subscriber.userId, userId);
-            if (subscriber.enable == false) {
+            if (!subscriber.enable) {
                 EVENT_LOGW("current subscriber is disable, subscriber.userId = %{public}d", subscriber.userId);
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
@@ -411,15 +411,14 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
     int32_t result;
     uid_t uid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
-    EVENT_LOGI(
-        "SetStaticSubscriberState current bundleName:%{public}s, enable:%{public}d.", bundleName.c_str(), enable);
+    EVENT_LOGI("current bundleName:%{public}s, enable:%{public}d.", bundleName.c_str(), enable);
     if (staticSubscribers_.find(bundleName) != staticSubscribers_.end()) {
         staticSubscribers_[bundleName].enable = enable;
     }
     for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
         for (auto subIt = it->second.begin(); subIt != it->second.end();) {
             if (subIt->bundleName == bundleName) {
-                EVENT_LOGI("SetStaticSubscriberState validSubscribers_ bundleName:%{public}s, enable:%{public}d.",
+                EVENT_LOGI("validSubscribers_ bundleName:%{public}s, enable:%{public}d.",
                     bundleName.c_str(), enable);
                 subIt->enable = enable;
             }

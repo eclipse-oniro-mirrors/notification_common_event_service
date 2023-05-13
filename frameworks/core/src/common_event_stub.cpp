@@ -211,7 +211,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             break;
         }
         case static_cast<uint32_t>(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBER_STATE): {
-            bool enable = bool(data.ReadBool());
+            bool enable = data.ReadBool();
             int32_t ret = SetStaticSubscriberState(enable);
             if (!reply.WriteInt32(ret)) {
                 EVENT_LOGE("Failed to write reply");

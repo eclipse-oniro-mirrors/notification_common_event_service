@@ -470,8 +470,8 @@ int32_t CommonEventProxy::SetStaticSubscriberState(bool enable)
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
-    if (!data.WriteBool(bool(enable))) {
-        EVENT_LOGE("Failed to write string event");
+    if (!data.WriteBool(enable)) {
+        EVENT_LOGE("Failed to write bool enable");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 

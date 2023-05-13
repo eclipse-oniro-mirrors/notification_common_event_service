@@ -44,13 +44,10 @@ static const int32_t CLEAR_ABORT_MAX_PARA = 1;
 static const int32_t GET_ABORT_MAX_PARA = 1;
 static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t ARGS_TWO_EVENT = 2;
-static const int32_t PARAM0_EVENT = 0;
-static const int32_t PARAM1_EVENT = 1;
 static const int32_t ARGS_DATA_TWO = 2;
 static const int32_t INDEX_ZERO = 0;
 static const int32_t INDEX_ONE = 1;
 static const int32_t ARGC_ONE = 1;
-constexpr int32_t ERR_OK = 0;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
@@ -229,10 +226,10 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
     napi_get_reference_value(commonEventDataWorkerData->env, commonEventDataWorkerData->ref, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
-    results[PARAM0_EVENT] = GetCallbackErrorValue(commonEventDataWorkerData->env, NO_ERROR);
-    results[PARAM1_EVENT] = result;
+    results[INDEX_ZERO] = GetCallbackErrorValue(commonEventDataWorkerData->env, NO_ERROR);
+    results[INDEX_ONE] = result;
     napi_call_function(
-        commonEventDataWorkerData->env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout);
+        commonEventDataWorkerData->env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout);
 
     napi_close_handle_scope(commonEventDataWorkerData->env, scope);
     delete commonEventDataWorkerData;
@@ -367,11 +364,11 @@ void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int32_t 
     napi_get_reference_value(env, callbackIn, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
-    results[PARAM0_EVENT] = GetCallbackErrorValue(env, errorCode);
-    results[PARAM1_EVENT] = result;
+    results[INDEX_ZERO] = GetCallbackErrorValue(env, errorCode);
+    results[INDEX_ONE] = result;
 
     NAPI_CALL_RETURN_VOID(env,
-        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout));
+        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout));
 }
 
 void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_value &result)
@@ -384,11 +381,11 @@ void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_val
     napi_get_reference_value(env, callbackIn, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
-    results[PARAM0_EVENT] = GetCallbackErrorValue(env, NO_ERROR);
-    results[PARAM1_EVENT] = result;
+    results[INDEX_ZERO] = GetCallbackErrorValue(env, NO_ERROR);
+    results[INDEX_ONE] = result;
 
     NAPI_CALL_RETURN_VOID(env,
-        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout));
+        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout));
 }
 
 void SetPromise(const napi_env &env, const napi_deferred &deferred, const int32_t &errorCode, const napi_value &result)
@@ -2468,7 +2465,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
 void NapiStaticSubscribe::Finalizer(NativeEngine *engine, void *data, void *hint)
 {
     EVENT_LOGD("called");
-    std::unique_ptr<NapiStaticSubscribe>(static_cast<NapiStaticSubscribe *>(data));
+    delete static_cast<NapiStaticSubscribe *>(data);
 }
 
 NativeValue *NapiStaticSubscribe::SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info)
@@ -2499,24 +2496,19 @@ NativeValue *NapiStaticSubscribe::OnSetStaticSubscriberState(NativeEngine &engin
         if (ret == ERR_OK) {
             task.Resolve(engine, engine.CreateUndefined());
         } else {
-            int32_t result = 0;
-            switch (ret) {
-                case ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP: {
-                    result = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
-                    break;
-                }
-                case ERR_NOTIFICATION_SEND_ERROR: {
-                    result = ERR_NOTIFICATION_SEND_ERROR;
-                    break;
-                }
-                default:
-                    result = ERR_NOTIFICATION_CESM_ERROR;
+            if (ret != ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP && ret != ERR_NOTIFICATION_SEND_ERROR) {
+                ret = ERR_NOTIFICATION_CESM_ERROR;
             }
-            task.Reject(engine, AbilityRuntime::CreateJsError(engine, result, "SetStaticSubscriberState failed"));
+            task.Reject(engine, AbilityRuntime::CreateJsError(engine, ret, "SetStaticSubscriberState failed"));
         }
     };
 
-    auto callback = (info.argc == ARGC_ONE) ? nullptr : info.argv[INDEX_ONE];
+    NativeValue *callback = nullptr;
+    if (info.argc > ARGC_ONE) {
+        if (info.argv[INDEX_ONE] && (info.argv[INDEX_ONE]->TypeOf() == NATIVE_FUNCTION)) {
+            callback = info.argv[INDEX_ONE];
+        }
+    }
     NativeValue *result = nullptr;
     AbilityRuntime::AsyncTask::Schedule("NapiStaticSubscribe::OnSetStaticSubscriberState", engine,
         AbilityRuntime::CreateAsyncTaskWithLastParam(engine, callback, nullptr, std::move(complete), &result));
