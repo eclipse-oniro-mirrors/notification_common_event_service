@@ -257,8 +257,9 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
         }
 
         for (auto e : commonEventObj[JSON_KEY_EVENTS]) {
-            if (e.is_null() || !e.is_string()
-                || (staticSubscribers_[extensionBundleName].events.find(e) == staticSubscribers_[extensionBundleName].events.end())) {
+            if (e.is_null() || !e.is_string() ||
+                (staticSubscribers_[extensionBundleName].events.find(e) ==
+                    staticSubscribers_[extensionBundleName].events.end())) {
                 EVENT_LOGW("invalid event obj");
                 continue;
             }
