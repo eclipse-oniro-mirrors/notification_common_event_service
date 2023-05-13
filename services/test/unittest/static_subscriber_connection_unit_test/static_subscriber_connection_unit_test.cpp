@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -64,7 +64,7 @@ HWTEST_F(StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0100, Func
     GTEST_LOG_(INFO)
         << "StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0100, TestSize.Level1";
     CommonEventData data;
-    std::shared_ptr<StaticSubscriberConnection> conn = std::make_shared<StaticSubscriberConnection>(data);
+    sptr<StaticSubscriberConnection> conn = new (std::nothrow) StaticSubscriberConnection(data);
     ASSERT_NE(nullptr, conn);
     ElementName element;
     sptr<IRemoteObject> remoteObject = nullptr;

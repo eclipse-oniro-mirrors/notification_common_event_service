@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,12 +17,17 @@
 
 #include "event_log_wrapper.h"
 #include "hitrace_meter.h"
+#include "in_process_call_wrapper.h"
 #include "iservice_registry.h"
 #include "static_subscriber_connection.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
 namespace EventFwk {
+namespace {
+constexpr int32_t DISCONNECT_DELAY_TIME = 15000; // ms
+}
+
 int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
@@ -40,7 +45,11 @@ int AbilityManagerHelper::ConnectAbility(
         EVENT_LOGE("failed to create obj!");
         return -1;
     }
-    return abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
+    int32_t result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
+    if (result == ERR_OK) {
+        subscriberConnection_.emplace(connection);
+    }
+    return result;
 }
 
 bool AbilityManagerHelper::GetAbilityMgrProxy()
@@ -88,6 +97,46 @@ void AbilityManagerHelper::Clear()
         abilityMgr_->AsObject()->RemoveDeathRecipient(deathRecipient_);
     }
     abilityMgr_ = nullptr;
+}
+
+void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscriberConnection> &connection)
+{
+    EVENT_LOGD("enter");
+    if (connection == nullptr) {
+        EVENT_LOGE("connection is nullptr");
+        return;
+    }
+    if (eventHandler_ == nullptr) {
+        EVENT_LOGE("eventHandler_ is nullptr");
+        return;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
+            EVENT_LOGE("failed to find connection!");
+            return;
+        }
+    }
+
+    auto task = [connection]() { AbilityManagerHelper::GetInstance()->DisconnectAbility(connection); };
+    eventHandler_->PostTask(task, DISCONNECT_DELAY_TIME);
+}
+
+void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
+{
+    EVENT_LOGD("enter");
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (connection == nullptr) {
+        EVENT_LOGE("connection is nullptr");
+        return;
+    }
+    if (!GetAbilityMgrProxy()) {
+        EVENT_LOGE("failed to get ability manager proxy!");
+        return;
+    }
+    IN_PROCESS_CALL_WITHOUT_RET(abilityMgr_->DisconnectAbility(connection));
+    subscriberConnection_.erase(connection);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

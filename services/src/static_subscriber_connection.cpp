@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 
 #include "static_subscriber_connection.h"
 
+#include "ability_manager_helper.h"
 #include "event_log_wrapper.h"
 
 namespace OHOS {
@@ -29,6 +30,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     }
     ErrCode ec = proxy_->OnReceiveEvent(&event_);
     EVENT_LOGI("end, errorCode = %d", ec);
+    AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(this);
 }
 
 void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
