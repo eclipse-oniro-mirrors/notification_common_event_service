@@ -14,10 +14,9 @@
  */
 
 #include "commoneventsubscriber_fuzzer.h"
-#include "securec.h"
 #include "common_event.h"
 #include "common_event_subscriber.h"
-
+#include "securec.h"
 
 namespace OHOS {
 namespace EventFwk {
