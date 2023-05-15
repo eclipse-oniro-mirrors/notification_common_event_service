@@ -23,11 +23,17 @@ std::vector<ExtensionAbilityInfo> g_mockExtensionInfos;
 bool g_mockGetResConfigFileRet = true;
 std::vector<std::string> g_mockProfileInfos;
 bool g_mockIsClearBundleManagerHelperCalled = false;
+bool g_mockBundleName = false;
 }
 
 bool IsClearBundleManagerHelperCalled()
 {
     return g_mockIsClearBundleManagerHelperCalled;
+}
+
+void SetBundleNameMock()
+{
+    g_mockBundleName = true;
 }
 
 void ResetBundleManagerHelperMock()
@@ -37,6 +43,7 @@ void ResetBundleManagerHelperMock()
     g_mockGetResConfigFileRet = true;
     g_mockProfileInfos.clear();
     g_mockIsClearBundleManagerHelperCalled = false;
+    g_mockBundleName = false;
 }
 
 void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
@@ -202,6 +209,9 @@ BundleManagerHelper::~BundleManagerHelper()
 
 std::string BundleManagerHelper::GetBundleName(uid_t uid)
 {
+    if (g_mockBundleName) {
+        return "testBundleName";
+    }
     return "";
 }
 

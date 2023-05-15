@@ -136,5 +136,10 @@ int32_t CommonEventManager::RemoveStickyCommonEvent(const std::string &event)
 {
     return DelayedSingleton<CommonEvent>::GetInstance()->RemoveStickyCommonEvent(event);
 }
+
+int32_t CommonEventManager::SetStaticSubscriberState(bool enable)
+{
+    return DelayedSingleton<CommonEvent>::GetInstance()->SetStaticSubscriberState(enable);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 
+#include "ces_inner_error_code.h"
 #include "common_event_support.h"
 #include "want.h"
 #define private public
@@ -26,6 +27,7 @@
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::EventFwk;
+using StaticSubscriber = OHOS::EventFwk::StaticSubscriberManager::StaticSubscriber;
 
 extern void MockVerifyAccessToken(bool mockRet, int8_t times = 0);
 extern void MockGetHapTokenID(Security::AccessToken::AccessTokenID mockRet);
@@ -38,6 +40,7 @@ extern void ResetAbilityManagerHelperState();
 extern void ResetAccountMock();
 extern void ResetBundleManagerHelperMock();
 extern void ResetAccessTokenHelperMock();
+extern void SetBundleNameMock();
 
 namespace {
     constexpr uint8_t TEST_MUL_SIZE = 2;
@@ -124,8 +127,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0100, Function | Mediu
         "}";
     // set staticSubscribers_ value
     string expectEventName = "usual.event.TIME_TICK";
-    std::set<std::string> subscribers;
-    subscribers.insert(expectEventName);
+    std::set<std::string> events;
+    events.insert(expectEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -610,9 +614,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1600, Function | Mediu
     // set staticSubscribers_ value
     string expectEventName0 = "usual.event.TIME_TICK0";
     string expectEventName1 = "usual.event.TIME_TICK1";
-    std::set<std::string> subscribers;
-    subscribers.insert(expectEventName0);
-    subscribers.insert(expectEventName1);
+    std::set<std::string> events;
+    events.insert(expectEventName0);
+    events.insert(expectEventName1);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -675,8 +680,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1700, Function | Mediu
         "}";
     // set staticSubscribers_ value
     string expectEventName1 = "usual.event.TIME_TICK1";
-    std::set<std::string> subscribers;
-    subscribers.insert(expectEventName1);
+    std::set<std::string> events;
+    events.insert(expectEventName1);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -779,8 +785,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1900, Function | Mediu
         "}";
     // set staticSubscribers_ value
     string expectEventName0 = "usual.event.TIME_TICK0";
-    std::set<std::string> subscribers;
-    subscribers.insert(expectEventName0);
+    std::set<std::string> events;
+    events.insert(expectEventName0);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -832,8 +839,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2000, Function | Mediu
         "}";
     // set staticSubscribers_ value
     string expectEventName0 = "usual.event.TIME_TICK0";
-    std::set<std::string> subscribers;
-    subscribers.insert(expectEventName0);
+    std::set<std::string> events;
+    events.insert(expectEventName0);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -1287,8 +1295,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0100, Functio
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
     std::string bundleName = "com.ohos.systemui";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName);
+    std::set<std::string> events;
+    events.insert(testEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1323,8 +1332,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0200, Functio
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
     std::string bundleName = "com.ohos.systemui";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName);
+    std::set<std::string> events;
+    events.insert(testEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1396,8 +1406,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0500, Functio
     // set staticSubscribers_ value
     std::string testEventName0 = "usual.event.TIME_TICK";
     std::string bundleName = "com.ohos.systemui";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName0);
+    std::set<std::string> events;
+    events.insert(testEventName0);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1427,8 +1438,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0600, Functio
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
     std::string bundleName = "com.ohos.systemui";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName);
+    std::set<std::string> events;
+    events.insert(testEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1458,8 +1470,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0700, Functio
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
     std::string bundleName = "com.ohos.systemui";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName);
+    std::set<std::string> events;
+    events.insert(testEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1545,8 +1558,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0200, Function | 
     MockQueryActiveOsAccountIds(true, 0);
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName);
+    std::set<std::string> events;
+    events.insert(testEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->UpdateSubscriber(testEventData);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1595,8 +1609,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, Function | 
     MockGetResConfigFile(true, 1);
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName);
+    std::set<std::string> events;
+    events.insert(testEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->UpdateSubscriber(testEventData);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1765,8 +1780,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0100, Function | Med
     MockGetResConfigFile(true, 1);
     // set staticSubscribers_ value
     string expectEventName = "usual.event.TIME_TICK";
-    std::set<std::string> subscribers;
-    subscribers.insert(expectEventName);
+    std::set<std::string> events;
+    events.insert(expectEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(info0.bundleName, subscribers);
     manager->AddSubscriber(info0);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1841,8 +1857,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0400, Function | Med
     MockGetOsAccountLocalIdFromUid(true);
     // set staticSubscribers_ value
     string expectEventName = "usual.event.TIME_TICK";
-    std::set<std::string> subscribers;
-    subscribers.insert(expectEventName);
+    std::set<std::string> events;
+    events.insert(expectEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(info0.bundleName, subscribers);
     manager->AddSubscriber(info0);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1871,8 +1888,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0100, 
     int32_t testUserId = 100;
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
-    std::set<std::string> subscribers;
-    subscribers.insert(testEventName);
+    std::set<std::string> events;
+    events.insert(testEventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->AddSubscriberWithBundleName(testBundleName, testUserId);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1970,8 +1988,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0500, 
     int32_t testUserId = 100;
     // set staticSubscribers_ value
     string expectEventName = "usual.event.TIME_TICK";
-    std::set<std::string> subscriber;
-    subscriber.insert(expectEventName);
+    std::set<std::string> events;
+    events.insert(expectEventName);
+    StaticSubscriber subscriber = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testBundleName, subscriber);
     manager->AddSubscriberWithBundleName(testBundleName, testUserId);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -2184,7 +2203,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0200, Function 
         .name = "StaticSubscriber",
         .bundleName = "com.ohos.systemui",
         .userId = 100,
-        .permission = "permission1"
+        .permission = "permission1",
+        .enable = true
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
@@ -2786,8 +2806,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1400, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true);
     // set staticSubscribers_ value
-    std::set<std::string> subscribers;
-    subscribers.insert(eventName);
+    std::set<std::string> events;
+    events.insert(eventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     // expect time_tick and add event both have subscriber
@@ -2855,8 +2876,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1500, Function 
     // mock that GetOsAccountLocalIdFromUid success
     MockGetOsAccountLocalIdFromUid(true);
     // set staticSubscribers_ value
-    std::set<std::string> subscribers;
-    subscribers.insert(eventName);
+    std::set<std::string> events;
+    events.insert(eventName);
+    StaticSubscriber subscribers = { .events = events, .enable = true };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     // expect time_tick and add event both have subscriber
@@ -3238,3 +3260,72 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2200, Function 
     ResetAbilityManagerHelperState();
 }
 
+/*
+ * @tc.name: SetStaticSubscriberState_0100
+ * @tc.desc: Test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ * @tc.require: #I70XI1
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, Function | SmallTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    SetBundleNameMock();
+    auto ret = manager->SetStaticSubscriberState(true);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: SetStaticSubscriberState_0200
+ * @tc.desc: Test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ * @tc.require: #I70XI1
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, Function | SmallTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    SetBundleNameMock();
+    auto ret = manager->SetStaticSubscriberState(false);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: SetStaticSubscriberState_0300
+ * @tc.desc: Test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ * @tc.require: #I70XI1
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0300, Function | SmallTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    auto ret = manager->SetStaticSubscriberState(true);
+    EXPECT_EQ(ERR_INVALID_VALUE, ret);
+}
+
+/*
+ * @tc.name: SetStaticSubscriberState_0400
+ * @tc.desc: Test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ * @tc.require: #I70XI1
+ * 
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0400, Function | SmallTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    auto ret = manager->SetStaticSubscriberState(false);
+    EXPECT_EQ(ERR_INVALID_VALUE, ret);
+}

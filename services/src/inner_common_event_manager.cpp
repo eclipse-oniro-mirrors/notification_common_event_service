@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 
 #include "inner_common_event_manager.h"
 
+#include "ces_inner_error_code.h"
 #include "common_event_constant.h"
 #include "common_event_record.h"
 #include "common_event_sticky_manager.h"
@@ -522,6 +523,14 @@ void InnerCommonEventManager::SendPublishHiSysEvent(int32_t userId, const std::s
 int32_t InnerCommonEventManager::RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid)
 {
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->RemoveStickyCommonEvent(event, callerUid);
+}
+
+int32_t InnerCommonEventManager::SetStaticSubscriberState(bool enable)
+{
+    if (staticSubscriberManager_ != nullptr) {
+        return staticSubscriberManager_->SetStaticSubscriberState(enable);
+    }
+    return Notification::ERR_NOTIFICATION_CESM_ERROR;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -210,6 +210,15 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
+        case static_cast<uint32_t>(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBER_STATE): {
+            bool enable = data.ReadBool();
+            int32_t ret = SetStaticSubscriberState(enable);
+            if (!reply.WriteInt32(ret)) {
+                EVENT_LOGE("Failed to write reply");
+                return ERR_INVALID_VALUE;
+            }
+            break;
+        }
         default:
             EVENT_LOGW("unknown, code = %{public}u, flags= %{public}u", code, option.GetFlags());
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -295,6 +304,13 @@ bool CommonEventStub::UnfreezeAll()
 }
 
 int32_t CommonEventStub::RemoveStickyCommonEvent(const std::string &event)
+{
+    EVENT_LOGD("called");
+
+    return ERR_OK;
+}
+
+int32_t CommonEventStub::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD("called");
 

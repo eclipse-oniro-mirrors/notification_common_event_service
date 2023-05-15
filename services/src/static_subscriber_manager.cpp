@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,16 +16,20 @@
 #include "static_subscriber_manager.h"
 
 #include <fstream>
+#include <set>
 
 #include "ability_manager_helper.h"
 #include "access_token_helper.h"
 #include "bundle_manager_helper.h"
+#include "ces_inner_error_code.h"
 #include "common_event_constant.h"
 #include "common_event_support.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
 #include "hitrace_meter.h"
+#include "ipc_skeleton.h"
 #include "os_account_manager_helper.h"
+#include "static_subscriber_data_manager.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -59,9 +63,10 @@ bool StaticSubscriberManager::InitAllowList()
             if (staticSubscribers_.find(bundleName) == staticSubscribers_.end()) {
                 std::set<std::string> s = {};
                 s.emplace(e);
-                staticSubscribers_.insert(std::make_pair(bundleName, s));
+                StaticSubscriber subscriber = { .events = s, .enable = true };
+                staticSubscribers_.insert(std::make_pair(bundleName, subscriber));
             } else {
-                staticSubscribers_[bundleName].emplace(e);
+                staticSubscribers_[bundleName].events.emplace(e);
             }
         }
     }
@@ -88,8 +93,9 @@ bool StaticSubscriberManager::InitValidSubscribers()
         if (staticSubscribers_.find(extension.bundleName) == staticSubscribers_.end()) {
             continue;
         }
+        InitDisableStaticSubscribersStates(extension.bundleName);
         EVENT_LOGD("find legal extension, bundlename = %{public}s", extension.bundleName.c_str());
-        AddSubscriber(extension);
+        AddSubscriber(extension, staticSubscribers_[extension.bundleName].enable);
     }
     hasInitValidSubscribers_ = true;
     return true;
@@ -125,6 +131,11 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     if (targetSubscribers != validSubscribers_.end()) {
         for (auto subscriber : targetSubscribers->second) {
             EVENT_LOGW("subscriber.userId = %{public}d, userId = %{public}d", subscriber.userId, userId);
+            if (!subscriber.enable) {
+                EVENT_LOGW("current subscriber is disable, subscriber.userId = %{public}d", subscriber.userId);
+                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+                continue;
+            }
             if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
                 EVENT_LOGW("subscriber userId is invalid, subscriber.userId = %{public}d", subscriber.userId);
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
@@ -198,7 +209,7 @@ bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bund
 }
 
 void StaticSubscriberManager::ParseEvents(const std::string &extensionName, const std::string &extensionBundleName,
-    const int32_t &extensionUserId, const std::string &profile)
+    const int32_t &extensionUserId, const std::string &profile, bool enable)
 {
     EVENT_LOGD("enter, subscriber name = %{public}s, bundle name = %{public}s, userId = %{public}d",
         extensionName.c_str(), extensionBundleName.c_str(), extensionUserId);
@@ -246,19 +257,23 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
         }
 
         for (auto e : commonEventObj[JSON_KEY_EVENTS]) {
-            if (e.is_null() || !e.is_string()
-                || (staticSubscribers_[extensionBundleName].find(e) == staticSubscribers_[extensionBundleName].end())) {
+            if (e.is_null() || !e.is_string() ||
+                (staticSubscribers_[extensionBundleName].events.find(e) ==
+                    staticSubscribers_[extensionBundleName].events.end())) {
                 EVENT_LOGW("invalid event obj");
                 continue;
             }
-            StaticSubscriberInfo subscriber = { .name = extensionName, .bundleName = extensionBundleName,
-                .userId = extensionUserId, .permission = commonEventObj[JSON_KEY_PERMISSION].get<std::string>() };
+            StaticSubscriberInfo subscriber = { .name = extensionName,
+                .bundleName = extensionBundleName,
+                .userId = extensionUserId,
+                .permission = commonEventObj[JSON_KEY_PERMISSION].get<std::string>(),
+                .enable = enable };
             AddToValidSubscribers(e.get<std::string>(), subscriber);
         }
     }
 }
 
-void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension)
+void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension, bool enable)
 {
     EVENT_LOGD("enter, subscriber bundlename = %{public}s", extension.bundleName.c_str());
 
@@ -274,7 +289,7 @@ void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityIn
             EVENT_LOGE("GetOsAccountLocalIdFromUid failed, uid = %{public}d", extension.applicationInfo.uid);
             return;
         }
-        ParseEvents(extension.name, extension.bundleName, userId, profile);
+        ParseEvents(extension.name, extension.bundleName, userId, profile, enable);
     }
 }
 
@@ -311,7 +326,7 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
     for (auto extension : extensions) {
         if ((extension.bundleName == bundleName) &&
             staticSubscribers_.find(extension.bundleName) != staticSubscribers_.end()) {
-            AddSubscriber(extension);
+            AddSubscriber(extension, staticSubscribers_[bundleName].enable);
         }
     }
 }
@@ -390,6 +405,54 @@ void StaticSubscriberManager::SendStaticEventProcErrHiSysEvent(int32_t userId, c
     eventInfo.subscriberName = subscriberName;
     eventInfo.eventName = eventName;
     EventReport::SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
+}
+
+int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
+{
+    int32_t result;
+    uid_t uid = IPCSkeleton::GetCallingUid();
+    std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
+    EVENT_LOGI("current bundleName:%{public}s, enable:%{public}d.", bundleName.c_str(), enable);
+    if (staticSubscribers_.find(bundleName) != staticSubscribers_.end()) {
+        staticSubscribers_[bundleName].enable = enable;
+    }
+    for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
+        for (auto subIt = it->second.begin(); subIt != it->second.end();) {
+            if (subIt->bundleName == bundleName) {
+                EVENT_LOGI("validSubscribers_ bundleName:%{public}s, enable:%{public}d.",
+                    bundleName.c_str(), enable);
+                subIt->enable = enable;
+            }
+            subIt++;
+        }
+        it++;
+    }
+    if (enable) {
+        result =
+            DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->DeleteDisableStaticSubscribeData(bundleName);
+    } else {
+        result =
+            DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->InsertDisableStaticSubscribeData(bundleName);
+    }
+    return result;
+}
+
+void StaticSubscriberManager::InitDisableStaticSubscribersStates(const std::string &bundleName)
+{
+    std::set<std::string> disableStaticSubscribeAllData;
+    int32_t ret = DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->QueryDisableStaticSubscribeAllData(
+        disableStaticSubscribeAllData);
+    if (ret) {
+        EVENT_LOGW("Query disable static subscribe data failed.");
+        return;
+    }
+    if (disableStaticSubscribeAllData.find(bundleName) != disableStaticSubscribeAllData.end()) {
+        if (staticSubscribers_.find(bundleName) != staticSubscribers_.end()) {
+            staticSubscribers_[bundleName].enable = false;
+            EVENT_LOGI("Current static subscriber bundleName:%{public}s is disable.", bundleName.c_str());
+            return;
+        }
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS

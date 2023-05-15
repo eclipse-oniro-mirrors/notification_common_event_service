@@ -18,6 +18,8 @@
 
 #include "common_event_constant.h"
 #include "common_event_manager.h"
+#include "js_error_utils.h"
+#include "js_runtime_utils.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
@@ -40,6 +42,17 @@ struct AsyncCallbackInfoSubscribe;
 struct subscriberInstanceInfo {
     std::vector<AsyncCallbackInfoSubscribe *> asyncCallbackInfo;
     std::shared_ptr<AsyncCommonEventResult> commonEventResult = nullptr;
+};
+
+class NapiStaticSubscribe {
+public:
+    NapiStaticSubscribe() = default;
+    ~NapiStaticSubscribe() = default;
+    static void Finalizer(NativeEngine *engine, void *data, void *hint);
+    static NativeValue *SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info);
+
+private:
+    NativeValue *OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info);
 };
 
 static thread_local napi_ref g_CommonEventSubscriber = nullptr;

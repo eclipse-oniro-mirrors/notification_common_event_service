@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -452,6 +452,31 @@ int32_t CommonEventProxy::RemoveStickyCommonEvent(const std::string &event)
 
     MessageParcel reply;
     bool ret = SendRequest(ICommonEvent::Message::CES_REMOVE_STICKY_COMMON_EVENT, data, reply);
+    if (!ret) {
+        return ERR_NOTIFICATION_SEND_ERROR;
+    }
+
+    EVENT_LOGD("end");
+    return reply.ReadInt32();
+}
+
+int32_t CommonEventProxy::SetStaticSubscriberState(bool enable)
+{
+    EVENT_LOGD("start");
+
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    if (!data.WriteBool(enable)) {
+        EVENT_LOGE("Failed to write bool enable");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    MessageParcel reply;
+    bool ret = SendRequest(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBER_STATE, data, reply);
     if (!ret) {
         return ERR_NOTIFICATION_SEND_ERROR;
     }

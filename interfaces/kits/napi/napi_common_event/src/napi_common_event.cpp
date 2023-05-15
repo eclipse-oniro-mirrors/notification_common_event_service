@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,10 +17,10 @@
 
 #include <uv.h>
 
+#include "ces_inner_error_code.h"
 #include "event_log_wrapper.h"
 #include "napi_common.h"
 #include "support.h"
-#include "ces_inner_error_code.h"
 
 namespace OHOS {
 namespace EventManagerFwkNapi {
@@ -44,10 +44,10 @@ static const int32_t CLEAR_ABORT_MAX_PARA = 1;
 static const int32_t GET_ABORT_MAX_PARA = 1;
 static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t ARGS_TWO_EVENT = 2;
-static const int32_t PARAM0_EVENT = 0;
-static const int32_t PARAM1_EVENT = 1;
 static const int32_t ARGS_DATA_TWO = 2;
-
+static const int32_t INDEX_ZERO = 0;
+static const int32_t INDEX_ONE = 1;
+static const int32_t ARGC_ONE = 1;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
@@ -67,6 +67,30 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
     {ERR_NOTIFICATION_CESM_ERROR, "Failed to read the data."},
     {ERR_NOTIFICATION_SYS_ERROR, "System error."}
 };
+
+static NativeValue *NapiStaicSubscribeInit(NativeEngine *engine, NativeValue *exports)
+{
+    EVENT_LOGD("called");
+    if (engine == nullptr || exports == nullptr) {
+        EVENT_LOGD("Invalid input parameters");
+        return nullptr;
+    }
+
+    NativeObject *object = AbilityRuntime::ConvertNativeValueTo<NativeObject>(exports);
+    if (object == nullptr) {
+        EVENT_LOGD("object is nullptr");
+        return nullptr;
+    }
+
+    std::unique_ptr<NapiStaticSubscribe> napiStaicSubscribe = std::make_unique<NapiStaticSubscribe>();
+    object->SetNativePointer(napiStaicSubscribe.release(), NapiStaticSubscribe::Finalizer, nullptr);
+
+    const char *moduleName = "NapiStaticSubscribe";
+    AbilityRuntime::BindNativeFunction(
+        *engine, *object, "setStaticSubscriberState", moduleName, NapiStaticSubscribe::SetStaticSubscriberState);
+
+    return exports;
+}
 
 AsyncCallbackInfoUnsubscribe::AsyncCallbackInfoUnsubscribe()
 {
@@ -202,10 +226,10 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
     napi_get_reference_value(commonEventDataWorkerData->env, commonEventDataWorkerData->ref, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
-    results[PARAM0_EVENT] = GetCallbackErrorValue(commonEventDataWorkerData->env, NO_ERROR);
-    results[PARAM1_EVENT] = result;
+    results[INDEX_ZERO] = GetCallbackErrorValue(commonEventDataWorkerData->env, NO_ERROR);
+    results[INDEX_ONE] = result;
     napi_call_function(
-        commonEventDataWorkerData->env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout);
+        commonEventDataWorkerData->env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout);
 
     napi_close_handle_scope(commonEventDataWorkerData->env, scope);
     delete commonEventDataWorkerData;
@@ -340,11 +364,11 @@ void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int32_t 
     napi_get_reference_value(env, callbackIn, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
-    results[PARAM0_EVENT] = GetCallbackErrorValue(env, errorCode);
-    results[PARAM1_EVENT] = result;
+    results[INDEX_ZERO] = GetCallbackErrorValue(env, errorCode);
+    results[INDEX_ONE] = result;
 
     NAPI_CALL_RETURN_VOID(env,
-        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout));
+        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout));
 }
 
 void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_value &result)
@@ -357,11 +381,11 @@ void SetCallback(const napi_env &env, const napi_ref &callbackIn, const napi_val
     napi_get_reference_value(env, callbackIn, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
-    results[PARAM0_EVENT] = GetCallbackErrorValue(env, NO_ERROR);
-    results[PARAM1_EVENT] = result;
+    results[INDEX_ZERO] = GetCallbackErrorValue(env, NO_ERROR);
+    results[INDEX_ONE] = result;
 
     NAPI_CALL_RETURN_VOID(env,
-        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout));
+        napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout));
 }
 
 void SetPromise(const napi_env &env, const napi_deferred &deferred, const int32_t &errorCode, const napi_value &result)
@@ -2438,6 +2462,59 @@ napi_value Publish(napi_env env, napi_callback_info info)
     return NapiGetNull(env);
 }
 
+void NapiStaticSubscribe::Finalizer(NativeEngine *engine, void *data, void *hint)
+{
+    EVENT_LOGD("called");
+    delete static_cast<NapiStaticSubscribe *>(data);
+}
+
+NativeValue *NapiStaticSubscribe::SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info)
+{
+    NapiStaticSubscribe *me = AbilityRuntime::CheckParamsAndGetThis<NapiStaticSubscribe>(engine, info);
+    return (me != nullptr) ? me->OnSetStaticSubscriberState(*engine, *info) : nullptr;
+}
+
+NativeValue *NapiStaticSubscribe::OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info)
+{
+    EVENT_LOGD("called");
+
+    if (info.argc < ARGC_ONE) {
+        EVENT_LOGE("The param is invalid.");
+        AbilityRuntime::ThrowTooFewParametersError(engine);
+        return engine.CreateUndefined();
+    }
+
+    bool enable;
+    if (!AbilityRuntime::ConvertFromJsValue(engine, info.argv[INDEX_ZERO], enable)) {
+        EVENT_LOGE("Parse type failed");
+        AbilityRuntime::ThrowError(engine, AbilityRuntime::AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
+        return engine.CreateUndefined();
+    }
+
+    auto complete = [enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
+        auto ret = CommonEventManager::SetStaticSubscriberState(enable);
+        if (ret == ERR_OK) {
+            task.Resolve(engine, engine.CreateUndefined());
+        } else {
+            if (ret != ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP && ret != ERR_NOTIFICATION_SEND_ERROR) {
+                ret = ERR_NOTIFICATION_CESM_ERROR;
+            }
+            task.Reject(engine, AbilityRuntime::CreateJsError(engine, ret, "SetStaticSubscriberState failed"));
+        }
+    };
+
+    NativeValue *callback = nullptr;
+    if (info.argc > ARGC_ONE) {
+        if (info.argv[INDEX_ONE] && (info.argv[INDEX_ONE]->TypeOf() == NATIVE_FUNCTION)) {
+            callback = info.argv[INDEX_ONE];
+        }
+    }
+    NativeValue *result = nullptr;
+    AbilityRuntime::AsyncTask::Schedule("NapiStaticSubscribe::OnSetStaticSubscriberState", engine,
+        AbilityRuntime::CreateAsyncTaskWithLastParam(engine, callback, nullptr, std::move(complete), &result));
+    return result;
+}
+
 napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value (&argv)[PUBLISH_MAX_PARA_BY_USERID],
     const size_t &argc, std::string &event, int32_t &userId, CommonEventPublishDataByjs &commonEventPublishData,
     napi_ref &callback)
@@ -3174,7 +3251,8 @@ napi_value CommonEventManagerInit(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
     OHOS::EventFwkNapi::SupportInit(env, exports);
-    return exports;
+    return reinterpret_cast<napi_value>(NapiStaicSubscribeInit(reinterpret_cast<NativeEngine*>(env),
+        reinterpret_cast<NativeValue*>(exports)));
 }
 }  // namespace EventManagerFwkNapi
 }  // namespace OHOS
