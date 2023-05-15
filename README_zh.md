@@ -576,6 +576,7 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_FOUNDATION_READY                                | common.event.FOUNDATION_READY                               | ohos.permission.RECEIVER_STARTUP_COMPLETED     |
 | COMMON_EVENT_AIRPLANE_MODE_CHANGED                           | usual.event.AIRPLANE_MODE                                   | 无                                             |
 | COMMON_EVENT_QUICK_FIX_APPLY_RESULT<sup>9+<sup> | usual.event.QUICK_FIX_APPLY_RESULT | 无 |
+| COMMON_EVENT_QUICK_FIX_REVOKE_RESULT<sup>9+<sup> | usual.event.QUICK_FIX_REVOKE_RESULT | 无 |
 
 ## 相关仓
 

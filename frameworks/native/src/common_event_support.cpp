@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1280,6 +1280,12 @@ const std::string CommonEventSupport::COMMON_EVENT_INCOMING_CALL_MISSED = "usual
 const std::string CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT = "usual.event.QUICK_FIX_APPLY_RESULT";
 
 /**
+ * Indicate the result of quick fix revoke.
+ * This common event can be triggered only by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_QUICK_FIX_REVOKE_RESULT = "usual.event.QUICK_FIX_REVOKE_RESULT";
+
+/**
  * Indicates the action of a common event that radio state change.
  * To subscribe to this protected common event that can only be sent by system.
  */
@@ -1530,6 +1536,8 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_INCOMING_CALL_MISSED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_QUICK_FIX_APPLY_RESULT);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_QUICK_FIX_REVOKE_RESULT);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE);
 
