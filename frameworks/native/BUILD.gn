@@ -65,5 +65,6 @@ ohos_shared_library("cesfwk_innerkits") {
   ]
 
   subsystem_name = "notification"
+  innerapi_tags = [ "platformsdk" ]
   part_name = "common_event_service"
 }
