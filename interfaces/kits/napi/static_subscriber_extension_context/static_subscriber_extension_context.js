@@ -13,16 +13,16 @@
  * limitations under the License.
  */
 
-var ExtensionContext = requireNapi("application.ExtensionContext")
+var ExtensionContext = requireNapi("application.ExtensionContext");
 
 class StaticSubscriberExtensionContext extends ExtensionContext {
-    constructor(obj) {
-        super(obj);
-    }
+  constructor(obj) {
+    super(obj);
+  }
 
-    startAbility(want, callback) {
-        return this.__context_impl__.startAbility(want, callback)
-    }
+  startAbility(want, callback) {
+    return this.__context_impl__.startAbility(want, callback);
+  }
 }
 
-export default StaticSubscriberExtensionContext
+export default StaticSubscriberExtensionContext;
