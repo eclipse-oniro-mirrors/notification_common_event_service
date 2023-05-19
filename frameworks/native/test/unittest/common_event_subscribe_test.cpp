@@ -495,6 +495,39 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level1)
 }
 
 /*
+ * tc.number: CommonEventManager_004
+ * tc.name: test Freeze
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: Invoke PublishCommonEventAsUser interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_004, TestSize.Level1)
+{
+    CommonEventManager commonEventManager;
+    CommonEventData data;
+    int32_t userId = 10;
+    bool result = commonEventManager.PublishCommonEventAsUser(data, userId);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: CommonEventManager_005
+ * tc.name: test Freeze
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: Invoke PublishCommonEventAsUser interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_005, TestSize.Level1)
+{
+    CommonEventManager commonEventManager;
+    CommonEventData data;
+    int32_t userId = 10;
+    CommonEventPublishInfo publishInfo;
+    bool result = commonEventManager.PublishCommonEventAsUser(data, publishInfo, userId);
+    EXPECT_EQ(result, false);
+}
+
+/*
  * tc.number: CommonEventPublishInfo_001
  * tc.name: test ReadFromParcel
  * tc.type: FUNC

@@ -120,4 +120,6 @@ HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_005, TestSize.Level1)
     commonEventListener->runner_ =  OHOS::AppExecFwk::EventRunner::Create("CesFwkListener");
     commonEventListener->handler_ = std::make_shared< OHOS::AppExecFwk::EventHandler>(commonEventListener->runner_);
     commonEventListener->Stop();
+    CommonEventData data;
+    commonEventListener->NotifyEvent(data, true, true);
 }

@@ -595,3 +595,18 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_021, TestSize.Level1)
     int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_NE(OHOS::ERR_INVALID_VALUE, result);
 }
+
+/*
+ * tc.number: RemoveStickyCommonEvent_0001
+ * tc.name: test RemoveStickyCommonEvent
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventStubTest, RemoveStickyCommonEvent_0001, TestSize.Level1)
+{
+    CommonEventStub commonEventStub;
+    std::string event = "this is event";
+    int32_t result = commonEventStub.RemoveStickyCommonEvent(event);
+    EXPECT_EQ(result, OHOS::ERR_OK);
+}
