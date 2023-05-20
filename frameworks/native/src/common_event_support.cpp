@@ -801,7 +801,8 @@ const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED = "u
  * Indicates the action of a common event that the list of exempt applications is updated in the idle mode.
  * This is a protected common event, which can be sent only by the system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED = "usual.event.DEVICE_IDLE_EXEMPTION_LIST_UPDATED";
+const std::string CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED =
+    "usual.event.DEVICE_IDLE_EXEMPTION_LIST_UPDATED";
 
 /**
  * Indicates the action of a common event that the power save mode of the system has changed.
