@@ -46,7 +46,7 @@ static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t ARGS_DATA_TWO = 2;
 static const int32_t INDEX_ZERO = 0;
-static const int32_t INDEX_ONE = 1;
+static const uint32_t INDEX_ONE = 1;
 static const int32_t ARGC_ONE = 1;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
