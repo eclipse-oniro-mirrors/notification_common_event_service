@@ -175,10 +175,6 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_003, Level1)
     struct tm recordTime = {0};
     GetSystemCurrentTime(&recordTime);
 
-    std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(1);
-
-    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
-
     int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
     const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
     EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
@@ -224,13 +220,11 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_004, Level1)
  * @tc.require: I582Y4
  */
 HWTEST_F(CommonEventManagerServiceTest, GetStickyCommonEvent_001, Level1)
-{   
-    CommonEventManagerService commonEventManagerService;
-    CommonEventData eventData;
-
+{ 
     const std::string event = "this is an event";
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
 
+    CommonEventData eventData;
     bool ret = innerCommonEventManager_->GetStickyCommonEvent(event, eventData);
     EXPECT_EQ(false, ret);
 }
@@ -244,8 +238,6 @@ HWTEST_F(CommonEventManagerServiceTest, GetStickyCommonEvent_001, Level1)
 HWTEST_F(CommonEventManagerServiceTest, FinishReceiver_001, Level1)
 {   
     GTEST_LOG_(INFO) << "FinishReceiver_001 start";
-    CommonEventManagerService commonEventManagerService;
-    CommonEventData eventData;
 
     const std::string event = "this is an event";
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
@@ -268,8 +260,6 @@ HWTEST_F(CommonEventManagerServiceTest, FinishReceiver_001, Level1)
 HWTEST_F(CommonEventManagerServiceTest, Unfreeze_001, Level1)
 {   
     GTEST_LOG_(INFO) << "Unfreeze_001 start";
-    CommonEventManagerService commonEventManagerService;
-    CommonEventData eventData;
 
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     ASSERT_NE(nullptr, innerCommonEventManager);
@@ -288,8 +278,6 @@ HWTEST_F(CommonEventManagerServiceTest, Unfreeze_001, Level1)
 HWTEST_F(CommonEventManagerServiceTest, UnfreezeAll_001, Level1)
 {   
     GTEST_LOG_(INFO) << "UnfreezeAll_001 start";
-    CommonEventManagerService commonEventManagerService;
-    CommonEventData eventData;
 
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     ASSERT_NE(nullptr, innerCommonEventManager);
