@@ -20,6 +20,7 @@
 #include <set>
 #include <string>
 
+#include "distributed_kv_data_manager.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -37,7 +38,14 @@ public:
     int32_t QueryDisableStaticSubscribeAllData(std::set<std::string> &disableStaticSubscribeAllData);
 
 private:
-    static std::mutex dataMutex_;
+    DistributedKv::Status GetKvStore();
+    bool CheckKvStore();
+
+    const DistributedKv::AppId appId_ { "static_subscriber_storage" };
+    const DistributedKv::StoreId storeId_ { "static_subscriber_infos" };
+    DistributedKv::DistributedKvDataManager dataManager_;
+    std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_;
+    mutable std::mutex kvStorePtrMutex_;
 };
 } // namespace EventFwk
 } // namespace OHOS
