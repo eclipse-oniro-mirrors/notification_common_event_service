@@ -18,6 +18,7 @@ group("fuzztest") {
 
   deps = [
     "asynccommoneventresult_fuzzer:AsyncCommonEventResultFuzzTest",
+    "commoneventmanagerservice_fuzzer:CommonEventManagerServiceFuzzTest",
     "commoneventproxy_fuzzer:CommonEventProxyFuzzTest",
     "commoneventpublishinfo_fuzzer:CommonEventPublishInfoFuzzTest",
     "commoneventstub_fuzzer:CommonEventStubFuzzTest",
