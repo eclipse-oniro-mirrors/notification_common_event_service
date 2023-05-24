@@ -259,6 +259,7 @@ ohos_unittest("static_subscriber_manager_unit_test") {
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "kv_store:distributeddata_inner",
   ]
 }
 

@@ -88,12 +88,17 @@ bool StaticSubscriberManager::InitValidSubscribers()
         EVENT_LOGE("QueryExtensionInfos failed");
         return false;
     }
+    std::set<std::string> disableStaticSubscribeAllData;
+    int32_t ret = DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->QueryDisableStaticSubscribeAllData(
+        disableStaticSubscribeAllData);
     // filter legal extensions and add them to valid map
     for (auto extension : extensions) {
         if (staticSubscribers_.find(extension.bundleName) == staticSubscribers_.end()) {
             continue;
         }
-        InitDisableStaticSubscribersStates(extension.bundleName);
+        if (ret == ERR_OK) {
+            InitDisableStaticSubscribersStates(disableStaticSubscribeAllData, extension.bundleName);
+        }
         EVENT_LOGD("find legal extension, bundlename = %{public}s", extension.bundleName.c_str());
         AddSubscriber(extension, staticSubscribers_[extension.bundleName].enable);
     }
@@ -409,8 +414,7 @@ void StaticSubscriberManager::SendStaticEventProcErrHiSysEvent(int32_t userId, c
 
 int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
 {
-    int32_t result;
-    auto uid = IPCSkeleton::GetCallingUid();
+    uid_t uid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
     EVENT_LOGI("current bundleName:%{public}s, enable:%{public}d.", bundleName.c_str(), enable);
     if (staticSubscribers_.find(bundleName) != staticSubscribers_.end()) {
@@ -419,14 +423,14 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
     for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
         for (auto subIt = it->second.begin(); subIt != it->second.end();) {
             if (subIt->bundleName == bundleName) {
-                EVENT_LOGI("validSubscribers_ bundleName:%{public}s, enable:%{public}d.",
-                    bundleName.c_str(), enable);
+                EVENT_LOGI("validSubscribers_ bundleName:%{public}s, enable:%{public}d.", bundleName.c_str(), enable);
                 subIt->enable = enable;
             }
             subIt++;
         }
         it++;
     }
+    int32_t result = 0;
     if (enable) {
         result =
             DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->DeleteDisableStaticSubscribeData(bundleName);
@@ -437,15 +441,9 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
     return result;
 }
 
-void StaticSubscriberManager::InitDisableStaticSubscribersStates(const std::string &bundleName)
+void StaticSubscriberManager::InitDisableStaticSubscribersStates(
+    const std::set<std::string> &disableStaticSubscribeAllData, const std::string &bundleName)
 {
-    std::set<std::string> disableStaticSubscribeAllData;
-    int32_t ret = DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->QueryDisableStaticSubscribeAllData(
-        disableStaticSubscribeAllData);
-    if (ret) {
-        EVENT_LOGW("Query disable static subscribe data failed.");
-        return;
-    }
     if (disableStaticSubscribeAllData.find(bundleName) != disableStaticSubscribeAllData.end()) {
         if (staticSubscribers_.find(bundleName) != staticSubscribers_.end()) {
             staticSubscribers_[bundleName].enable = false;
