@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_ABILITY_MANAGER_HELPER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_ABILITY_MANAGER_HELPER_H
 
+#include <shared_mutex>
 #include "ability_connect_callback_interface.h"
 #include "ability_manager_interface.h"
 #include "ability_manager_death_recipient.h"
@@ -68,8 +69,7 @@ private:
     bool GetAbilityMgrProxy();
     void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection);
 
-    std::mutex mutex_;
-    std::mutex connectionMutex_;
+    mutable std::shared_mutex mutex_;
     sptr<AAFwk::IAbilityManager> abilityMgr_;
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

@@ -33,7 +33,7 @@ int AbilityManagerHelper::ConnectAbility(
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter, target bundle = %{public}s", want.GetBundle().c_str());
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::unique_lock<std::shared_mutex> guard(mutex_);
 
     if (!GetAbilityMgrProxy()) {
         EVENT_LOGE("failed to get ability manager proxy!");
@@ -47,7 +47,6 @@ int AbilityManagerHelper::ConnectAbility(
     }
     int32_t result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
     if (result == ERR_OK) {
-        std::lock_guard<std::mutex> lock(connectionMutex_);
         subscriberConnection_.emplace(connection);
     }
     return result;
@@ -92,7 +91,7 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
 void AbilityManagerHelper::Clear()
 {
     EVENT_LOGI("enter");
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::unique_lock<std::shared_mutex> guard(mutex_);
 
     if ((abilityMgr_ != nullptr) && (abilityMgr_->AsObject() != nullptr)) {
         abilityMgr_->AsObject()->RemoveDeathRecipient(deathRecipient_);
@@ -113,7 +112,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
     }
 
     {
-        std::lock_guard<std::mutex> lock(connectionMutex_);
+        std::shared_lock<std::shared_mutex> guard(mutex_);
         if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
             EVENT_LOGE("failed to find connection!");
             return;
@@ -127,7 +126,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
 void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> lock(connectionMutex_);
+    std::unique_lock<std::shared_mutex> guard(mutex_);
     if (connection == nullptr) {
         EVENT_LOGE("connection is nullptr");
         return;
