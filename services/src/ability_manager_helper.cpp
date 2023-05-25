@@ -111,14 +111,6 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         return;
     }
 
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
-            EVENT_LOGE("failed to find connection!");
-            return;
-        }
-    }
-
     auto task = [connection]() { AbilityManagerHelper::GetInstance()->DisconnectAbility(connection); };
     eventHandler_->PostTask(task, DISCONNECT_DELAY_TIME);
 }
@@ -131,6 +123,12 @@ void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnecti
         EVENT_LOGE("connection is nullptr");
         return;
     }
+
+    if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
+        EVENT_LOGE("failed to find connection!");
+        return;
+    }
+
     if (!GetAbilityMgrProxy()) {
         EVENT_LOGE("failed to get ability manager proxy!");
         return;
