@@ -47,6 +47,7 @@ int AbilityManagerHelper::ConnectAbility(
     }
     int32_t result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
     if (result == ERR_OK) {
+        std::lock_guard<std::mutex> lock(connectionMutex_);
         subscriberConnection_.emplace(connection);
     }
     return result;
@@ -112,7 +113,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
     }
 
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<std::mutex> lock(connectionMutex_);
         if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
             EVENT_LOGE("failed to find connection!");
             return;
@@ -126,7 +127,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
 void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(connectionMutex_);
     if (connection == nullptr) {
         EVENT_LOGE("connection is nullptr");
         return;

@@ -69,6 +69,7 @@ private:
     void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection);
 
     std::mutex mutex_;
+    std::mutex connectionMutex_;
     sptr<AAFwk::IAbilityManager> abilityMgr_;
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
