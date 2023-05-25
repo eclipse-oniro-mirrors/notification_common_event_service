@@ -33,7 +33,7 @@ int AbilityManagerHelper::ConnectAbility(
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter, target bundle = %{public}s", want.GetBundle().c_str());
-    std::unique_lock<std::shared_mutex> guard(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetAbilityMgrProxy()) {
         EVENT_LOGE("failed to get ability manager proxy!");
@@ -91,7 +91,7 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
 void AbilityManagerHelper::Clear()
 {
     EVENT_LOGI("enter");
-    std::unique_lock<std::shared_mutex> guard(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     if ((abilityMgr_ != nullptr) && (abilityMgr_->AsObject() != nullptr)) {
         abilityMgr_->AsObject()->RemoveDeathRecipient(deathRecipient_);
@@ -111,14 +111,6 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         return;
     }
 
-    {
-        std::shared_lock<std::shared_mutex> guard(mutex_);
-        if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
-            EVENT_LOGE("failed to find connection!");
-            return;
-        }
-    }
-
     auto task = [connection]() { AbilityManagerHelper::GetInstance()->DisconnectAbility(connection); };
     eventHandler_->PostTask(task, DISCONNECT_DELAY_TIME);
 }
@@ -126,11 +118,17 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
 void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
 {
     EVENT_LOGD("enter");
-    std::unique_lock<std::shared_mutex> guard(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
     if (connection == nullptr) {
         EVENT_LOGE("connection is nullptr");
         return;
     }
+
+    if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
+        EVENT_LOGE("failed to find connection!");
+        return;
+    }
+
     if (!GetAbilityMgrProxy()) {
         EVENT_LOGE("failed to get ability manager proxy!");
         return;
