@@ -38,7 +38,8 @@ public:
     MessageParcel() = default;
     virtual ~MessageParcel() = default;
 
-    bool WriteInterfaceToken(std::string descriptor) {
+    bool WriteInterfaceToken(std::string descriptor)
+    {
         if (flag_) {
             return true;
         }
