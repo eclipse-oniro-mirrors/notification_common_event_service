@@ -14,7 +14,7 @@
 import("//build/ohos/sa_profile/sa_profile.gni")
 
 ohos_sa_profile("event_sa_profile") {
-  sources = [ "3299.xml" ]
+  sources = [ "3299.json" ]
 
   part_name = "common_event_service"
 }
