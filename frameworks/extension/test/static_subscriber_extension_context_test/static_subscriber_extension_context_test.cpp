@@ -27,7 +27,7 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace EventFwk {
-class static_subscriber_extension_context_test : public testing::Test {
+class StaticSubscriberExtensionContextTest : public testing::Test {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -35,24 +35,24 @@ public:
     void TearDown();
 };
 
-void static_subscriber_extension_context_test::SetUpTestCase()
+void StaticSubscriberExtensionContextTest::SetUpTestCase()
 {}
 
-void static_subscriber_extension_context_test::TearDownTestCase()
+void StaticSubscriberExtensionContextTest::TearDownTestCase()
 {}
 
-void static_subscriber_extension_context_test::SetUp()
+void StaticSubscriberExtensionContextTest::SetUp()
 {}
 
-void static_subscriber_extension_context_test::TearDown()
+void StaticSubscriberExtensionContextTest::TearDown()
 {}
 
 /**
  * @tc.name  : test CheckCallerIsSystemApp
- * @tc.number: static_subscriber_extension_context_test_0100
+ * @tc.number: StaticSubscriberExtensionContextTest_0100
  * @tc.desc  : test CheckCallerIsSystemApp failed
  */
-HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_context_test_0100, TestSize.Level1)
+HWTEST_F(StaticSubscriberExtensionContextTest, StaticSubscriberExtensionContextTest_0100, TestSize.Level1)
 {
     auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
     EXPECT_FALSE(staticSubscriberExtensionContext->CheckCallerIsSystemApp());
@@ -60,10 +60,10 @@ HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_c
 
 /**
  * @tc.name  : test StartAbility
- * @tc.number: static_subscriber_extension_context_test_0200
+ * @tc.number: StaticSubscriberExtensionContextTest_0200
  * @tc.desc  : test StartAbility failed
  */
-HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_context_test_0200, TestSize.Level1)
+HWTEST_F(StaticSubscriberExtensionContextTest, StaticSubscriberExtensionContextTest_0200, TestSize.Level1)
 {
     auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
     AAFwk::Want want;
@@ -73,10 +73,10 @@ HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_c
 
 /**
  * @tc.name  : test VerifyCallingPermission
- * @tc.number: static_subscriber_extension_context_test_0300
+ * @tc.number: StaticSubscriberExtensionContextTest_0300
  * @tc.desc  : test VerifyCallingPermission failed
  */
-HWTEST_F(static_subscriber_extension_context_test, static_subscriber_extension_context_test_0300, TestSize.Level1)
+HWTEST_F(StaticSubscriberExtensionContextTest, StaticSubscriberExtensionContextTest_0300, TestSize.Level1)
 {
     auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
     EXPECT_FALSE(staticSubscriberExtensionContext->VerifyCallingPermission("permission"));
