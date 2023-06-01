@@ -249,7 +249,7 @@ void SetPromise(const napi_env &env, const napi_deferred &deferred, const int8_t
 
 void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info, const napi_value &result);
 
-void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env, const size_t &argc,
+void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env,
     AsyncCallbackInfoCreate *&asynccallbackinfo, const napi_ref &callback, napi_value &promise);
 
 napi_value CreateSubscriber(napi_env env, napi_callback_info info);
