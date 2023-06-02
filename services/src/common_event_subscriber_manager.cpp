@@ -32,6 +32,7 @@ CommonEventSubscriberManager::CommonEventSubscriberManager()
 
 CommonEventSubscriberManager::~CommonEventSubscriberManager()
 {
+    EVENT_LOGI("~CommonEventSubscriberManager");
 }
 
 std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubscriber(
@@ -351,8 +352,11 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
     bool isSystemApp = (eventRecord.eventRecordInfo.isSystemApp || eventRecord.eventRecordInfo.isSubsystem) &&
         !eventRecord.eventRecordInfo.isProxy;
 
-    std::multiset<SubscriberRecordPtr> subscriberRecords = recordsItem->second;
-    for (auto it = subscriberRecords.begin(); it != subscriberRecords.end(); it++) {
+    for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
+        if (*it == nullptr) {
+            continue;
+        }
+
         if (!(*it)->eventSubscribeInfo->GetMatchingSkills().Match(eventRecord.commonEventData->GetWant())) {
             continue;
         }

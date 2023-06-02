@@ -48,7 +48,7 @@ public:
      */
     explicit CommonEventSubscribeInfo(const CommonEventSubscribeInfo &commonEventSubscribeInfo);
 
-    ~CommonEventSubscribeInfo();
+    virtual ~CommonEventSubscribeInfo();
 
     /**
      * Sets the subscriber priority for this CommonEventSubscribeInfo object.

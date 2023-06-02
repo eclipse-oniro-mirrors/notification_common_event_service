@@ -44,6 +44,7 @@ CommonEventSubscribeInfo::CommonEventSubscribeInfo(const CommonEventSubscribeInf
 
 CommonEventSubscribeInfo::~CommonEventSubscribeInfo()
 {
+    EVENT_LOGI("~CommonEventSubscribeInfo");
 }
 
 void CommonEventSubscribeInfo::SetPriority(const int32_t &priority)
