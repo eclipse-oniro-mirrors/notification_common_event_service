@@ -353,7 +353,7 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         !eventRecord.eventRecordInfo.isProxy;
 
     for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
-        if (*it == nullptr) {
+        if ((*it)->eventSubscribeInfo == nullptr) {
             continue;
         }
 
