@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_PROXY_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_PROXY_H
 
+#include "common_event_service_ipc_interface_code.h"
 #include "icommon_event.h"
 #include "iremote_proxy.h"
 
@@ -150,7 +151,7 @@ public:
     int32_t SetStaticSubscriberState(bool enable) override;
 
 private:
-    bool SendRequest(ICommonEvent::Message code, MessageParcel &data, MessageParcel &reply);
+    bool SendRequest(CommonEventInterfaceCode code, MessageParcel &data, MessageParcel &reply);
 
 private:
     static inline BrokerDelegator<CommonEventProxy> delegator_;

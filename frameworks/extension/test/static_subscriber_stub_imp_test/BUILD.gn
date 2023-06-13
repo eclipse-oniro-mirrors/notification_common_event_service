@@ -43,7 +43,9 @@ ohos_unittest("static_subscriber_stub_imp_test") {
     "ability_runtime:napi_common",
     "ability_runtime:runtime",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "hilog:libhilog",
+    "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
 }

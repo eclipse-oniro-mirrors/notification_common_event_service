@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_STUB_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_STUB_H
 
+#include "common_event_service_ipc_interface_code.h"
 #include "icommon_event.h"
 #include "iremote_stub.h"
 #include "nocopyable.h"

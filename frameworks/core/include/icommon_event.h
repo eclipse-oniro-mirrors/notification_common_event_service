@@ -144,23 +144,6 @@ public:
      * @return Returns ERR_OK if success; otherwise failed.
      */
     virtual int32_t SetStaticSubscriberState(bool enable) = 0;
-
-    enum class Message {
-        CES_PUBLISH_COMMON_EVENT = 0,
-        CES_PUBLISH_COMMON_EVENT2,
-        CES_SUBSCRIBE_COMMON_EVENT,
-        CES_UNSUBSCRIBE_COMMON_EVENT,
-        CES_GET_STICKY_COMMON_EVENT,
-        CES_FINISH_RECEIVER,
-        CES_FREEZE,
-        CES_UNFREEZE,
-        CES_UNFREEZE_ALL,
-        CES_REMOVE_STICKY_COMMON_EVENT,
-        CES_SET_STATIC_SUBSCRIBER_STATE,
-        // ipc id 2001-3000 for tools
-        // ipc id for dumping Subscribe State (2001)
-        CES_DUMP_STATE = 2001,
-    };
 };
 }  // namespace EventFwk
 }  // namespace OHOS
