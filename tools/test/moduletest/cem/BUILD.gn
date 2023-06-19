@@ -53,7 +53,7 @@ ohos_moduletest("common_event_command_dump_module_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 }
@@ -92,7 +92,7 @@ ohos_moduletest("common_event_command_publish_module_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 }

@@ -27,7 +27,7 @@ ohos_unittest("EventLogTest") {
 
   deps = [ "//third_party/googletest:gtest_main" ]
 
-  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  external_deps = [ "hilog:libhilog" ]
 }
 
 group("unittest") {
