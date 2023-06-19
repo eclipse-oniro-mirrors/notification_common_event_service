@@ -52,8 +52,6 @@ DistributedKv::Status StaticSubscriberDataManager::GetKvStore()
     DistributedKv::Status status = dataManager_.GetSingleKvStore(options, appId_, storeId_, kvStorePtr_);
     if (status != DistributedKv::Status::SUCCESS) {
         EVENT_LOGE("return error: %{public}d", status);
-    } else {
-        EVENT_LOGI("get kvStore success");
     }
     return status;
 }
@@ -99,15 +97,16 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
         std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
         status = kvStorePtr_->Put(key, value);
     }
+    int32_t result = ERR_OK;
     if (status != DistributedKv::Status::SUCCESS) {
-        EVENT_LOGE("insert data to kvStore error: %{public}d", status);
-        return ERR_INVALID_OPERATION;
+        EVENT_LOGE("insert data [%{public}s] to kvStore failed. error code: %{public}d", bundleName.c_str(), status);
+        result = ERR_INVALID_OPERATION;
     }
 
     dataManager_.CloseKvStore(appId_, kvStorePtr_);
     kvStorePtr_ = nullptr;
 
-    return ERR_OK;
+    return result;
 }
 
 int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std::string &bundleName)
@@ -132,15 +131,16 @@ int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std:
         std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
         status = kvStorePtr_->Delete(key);
     }
+    int32_t result = ERR_OK;
     if (status != DistributedKv::Status::SUCCESS) {
-        EVENT_LOGE("delete data from kvStore error: %{public}d", status);
-        return ERR_INVALID_OPERATION;
+        EVENT_LOGE("delete data [%{public}s] from kvStore failed. error code: %{public}d", bundleName.c_str(), status);
+        result = ERR_INVALID_OPERATION;
     }
 
     dataManager_.CloseKvStore(appId_, kvStorePtr_);
     kvStorePtr_ = nullptr;
 
-    return ERR_OK;
+    return result;
 }
 
 int32_t StaticSubscriberDataManager::QueryDisableStaticSubscribeAllData(
@@ -156,20 +156,23 @@ int32_t StaticSubscriberDataManager::QueryDisableStaticSubscribeAllData(
 
     std::vector<DistributedKv::Entry> allEntries;
     DistributedKv::Status status = kvStorePtr_->GetEntries(nullptr, allEntries);
+    int32_t result = ERR_OK;
     if (status != DistributedKv::Status::SUCCESS) {
-        EVENT_LOGE("get entries error: %{public}d", status);
-        return ERR_INVALID_VALUE;
+        EVENT_LOGE("get entries failed, error code: %{public}d", status);
+        result = ERR_INVALID_OPERATION;
     }
 
-    for (const auto &item : allEntries) {
-        disableStaticSubscribeAllData.emplace(item.key.ToString());
-        EVENT_LOGI("current disable static subscriber bundle name: %{public}s", item.key.ToString().c_str());
+    if (!allEntries.empty()) {
+        for (const auto &item : allEntries) {
+            disableStaticSubscribeAllData.emplace(item.key.ToString());
+            EVENT_LOGI("current disable static subscriber bundle name: %{public}s", item.key.ToString().c_str());
+        }
     }
 
     dataManager_.CloseKvStore(appId_, kvStorePtr_);
     kvStorePtr_ = nullptr;
 
-    return ERR_OK;
+    return result;
 }
 } // namespace EventFwk
 } // namespace OHOS
