@@ -55,7 +55,7 @@
         "deps": {
             "components": [
                 "bundle_framework",
-                "hicollie_native",
+                "hicollie",
                 "hisysevent",
                 "hitrace",
                 "ipc",
