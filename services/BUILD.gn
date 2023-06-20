@@ -85,8 +85,8 @@ ohos_shared_library("cesfwk_services") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hicollie_native:libhicollie",
-    "hitrace_native:hitrace_meter",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
+    "hitrace:hitrace_meter",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
@@ -99,7 +99,7 @@ ohos_shared_library("cesfwk_services") {
 
   if (has_hisysevent_part) {
     cflags_cc += [ "-DHAS_HISYSEVENT_PART" ]
-    external_deps += [ "hisysevent_native:libhisysevent" ]
+    external_deps += [ "hisysevent:libhisysevent" ]
   }
 
   subsystem_name = "notification"
@@ -132,8 +132,8 @@ ohos_static_library("cesfwk_services_static") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hicollie_native:libhicollie",
-    "hitrace_native:hitrace_meter",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
+    "hitrace:hitrace_meter",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
@@ -146,7 +146,7 @@ ohos_static_library("cesfwk_services_static") {
 
   if (has_hisysevent_part) {
     cflags_cc += [ "-DHAS_HISYSEVENT_PART" ]
-    external_deps += [ "hisysevent_native:libhisysevent" ]
+    external_deps += [ "hisysevent:libhisysevent" ]
   }
 
   subsystem_name = "notification"

@@ -41,7 +41,7 @@ ohos_unittest("matching_skills_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 }
