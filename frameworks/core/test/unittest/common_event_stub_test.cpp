@@ -610,3 +610,17 @@ HWTEST_F(CommonEventStubTest, RemoveStickyCommonEvent_0001, TestSize.Level1)
     int32_t result = commonEventStub.RemoveStickyCommonEvent(event);
     EXPECT_EQ(result, OHOS::ERR_OK);
 }
+
+/*
+ * tc.number: SetStaticSubscriberState_001
+ * tc.name: test SetStaticSubscriberState
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventStubTest, SetStaticSubscriberState_001, TestSize.Level1)
+{
+    CommonEventStub commonEventStub;
+    int32_t result = commonEventStub.SetStaticSubscriberState(true);
+    EXPECT_EQ(result, OHOS::ERR_OK);
+}
