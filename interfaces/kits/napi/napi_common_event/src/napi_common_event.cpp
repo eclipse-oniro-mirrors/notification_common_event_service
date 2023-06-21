@@ -3157,7 +3157,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         return NapiGetNull(env);
     }
-
+    subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {
         EVENT_LOGE("wrapper is null");
