@@ -42,7 +42,7 @@ DistributedKv::Status StaticSubscriberDataManager::GetKvStore()
     DistributedKv::Options options = {
         .createIfMissing = true,
         .encrypt = false,
-        .autoSync = true,
+        .autoSync = false,
         .syncable = false,
         .area = DistributedKv::EL1,
         .kvStoreType = DistributedKv::KvStoreType::SINGLE_VERSION,
@@ -80,7 +80,7 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
         EVENT_LOGW("invalid value!");
         return ERR_INVALID_VALUE;
     }
-
+    DistributedKv::Status status;
     EVENT_LOGD("bundleName: %{public}s", bundleName.c_str());
     {
         std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
@@ -88,13 +88,8 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
             EVENT_LOGE("kvStore is nullptr");
             return ERR_NO_INIT;
         }
-    }
-
-    DistributedKv::Key key(bundleName);
-    DistributedKv::Value value(STATIC_SUBSCRIBER_VALUE_DEFAULT);
-    DistributedKv::Status status;
-    {
-        std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
+        DistributedKv::Key key(bundleName);
+        DistributedKv::Value value(STATIC_SUBSCRIBER_VALUE_DEFAULT);
         status = kvStorePtr_->Put(key, value);
     }
     int32_t result = ERR_OK;
@@ -115,7 +110,7 @@ int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std:
         EVENT_LOGW("invalid value!");
         return ERR_INVALID_VALUE;
     }
-
+    DistributedKv::Status status;
     EVENT_LOGD("bundleName: %{public}s", bundleName.c_str());
     {
         std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
@@ -123,12 +118,7 @@ int32_t StaticSubscriberDataManager::DeleteDisableStaticSubscribeData(const std:
             EVENT_LOGE("kvStore is nullptr");
             return ERR_NO_INIT;
         }
-    }
-
-    DistributedKv::Key key(bundleName);
-    DistributedKv::Status status;
-    {
-        std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
+        DistributedKv::Key key(bundleName);
         status = kvStorePtr_->Delete(key);
     }
     int32_t result = ERR_OK;
