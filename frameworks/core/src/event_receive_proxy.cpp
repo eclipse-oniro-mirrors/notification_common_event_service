@@ -63,7 +63,7 @@ void EventReceiveProxy::NotifyEvent(const CommonEventData &commonEventData, cons
     }
 
     int32_t result = remote->SendRequest(
-        static_cast<uint32_t>(IEventReceive::Message::CES_NOTIFY_COMMON_EVENT), data, reply, option);
+        static_cast<uint32_t>(CommonEventInterfaceCode::CES_NOTIFY_COMMON_EVENT), data, reply, option);
     if (result != OHOS::NO_ERROR) {
         EVENT_LOGE("Failed to SendRequest, error code: %{public}d", result);
         return;

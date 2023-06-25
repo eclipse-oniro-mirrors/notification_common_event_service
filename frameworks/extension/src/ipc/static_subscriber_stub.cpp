@@ -25,7 +25,7 @@ int StaticSubscriberStub::OnRemoteRequest(uint32_t code, MessageParcel& data, Me
     }
 
     switch (code) {
-        case COMMAND_ON_RECEIVE_EVENT: {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::COMMAND_ON_RECEIVE_EVENT): {
             ErrCode ec = OnReceiveEvent(data.ReadParcelable<CommonEventData>());
             reply.WriteInt32(ec);
             return ERR_NONE;

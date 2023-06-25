@@ -79,7 +79,7 @@ int32_t CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT, data, reply);
     if (!ret) {
         EVENT_LOGE("Failed to send request");
         return ERR_NOTIFICATION_SEND_ERROR;
@@ -145,7 +145,7 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
         return false;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT2, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT2, data, reply);
     if (ret) {
         ret = reply.ReadBool();
     }
@@ -189,7 +189,7 @@ int32_t CommonEventProxy::SubscribeCommonEvent(
         }
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT, data, reply);
     if (!ret) {
         EVENT_LOGE("Failed to send request");
         return ERR_NOTIFICATION_SEND_ERROR;
@@ -228,7 +228,7 @@ int32_t CommonEventProxy::UnsubscribeCommonEvent(const sptr<IRemoteObject> &comm
         }
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_UNSUBSCRIBE_COMMON_EVENT, data, reply);
     if (!ret) {
         EVENT_LOGE("Failed to send request");
         return ERR_NOTIFICATION_SEND_ERROR;
@@ -255,7 +255,7 @@ bool CommonEventProxy::GetStickyCommonEvent(const std::string &event, CommonEven
         return false;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_GET_STICKY_COMMON_EVENT, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_GET_STICKY_COMMON_EVENT, data, reply);
     if (ret) {
         ret = reply.ReadBool();
         if (ret) {
@@ -296,7 +296,7 @@ bool CommonEventProxy::DumpState(const uint8_t &dumpType, const std::string &eve
         return false;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_DUMP_STATE, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_DUMP_STATE, data, reply);
     if (ret) {
         int32_t stackNum = reply.ReadInt32();
         stackNum = stackNum > MAX_HISTORY_SIZE ? MAX_HISTORY_SIZE : stackNum;
@@ -353,7 +353,7 @@ bool CommonEventProxy::FinishReceiver(
         return false;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_FINISH_RECEIVER, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_FINISH_RECEIVER, data, reply);
     if (ret) {
         ret = reply.ReadBool();
     }
@@ -379,7 +379,7 @@ bool CommonEventProxy::Freeze(const uid_t &uid)
         return false;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_FREEZE, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_FREEZE, data, reply);
     if (ret) {
         ret = reply.ReadBool();
     }
@@ -405,7 +405,7 @@ bool CommonEventProxy::Unfreeze(const uid_t &uid)
         return false;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_UNFREEZE, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_UNFREEZE, data, reply);
     if (ret) {
         ret = reply.ReadBool();
     }
@@ -426,7 +426,7 @@ bool CommonEventProxy::UnfreezeAll()
         return false;
     }
 
-    bool ret = SendRequest(ICommonEvent::Message::CES_UNFREEZE_ALL, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_UNFREEZE_ALL, data, reply);
     if (ret) {
         ret = reply.ReadBool();
     }
@@ -451,7 +451,7 @@ int32_t CommonEventProxy::RemoveStickyCommonEvent(const std::string &event)
     }
 
     MessageParcel reply;
-    bool ret = SendRequest(ICommonEvent::Message::CES_REMOVE_STICKY_COMMON_EVENT, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_REMOVE_STICKY_COMMON_EVENT, data, reply);
     if (!ret) {
         return ERR_NOTIFICATION_SEND_ERROR;
     }
@@ -476,7 +476,7 @@ int32_t CommonEventProxy::SetStaticSubscriberState(bool enable)
     }
 
     MessageParcel reply;
-    bool ret = SendRequest(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBER_STATE, data, reply);
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_SET_STATIC_SUBSCRIBER_STATE, data, reply);
     if (!ret) {
         return ERR_NOTIFICATION_SEND_ERROR;
     }
@@ -485,7 +485,7 @@ int32_t CommonEventProxy::SetStaticSubscriberState(bool enable)
     return reply.ReadInt32();
 }
 
-bool CommonEventProxy::SendRequest(ICommonEvent::Message code, MessageParcel &data, MessageParcel &reply)
+bool CommonEventProxy::SendRequest(CommonEventInterfaceCode code, MessageParcel &data, MessageParcel &reply)
 {
     EVENT_LOGD("start");
 

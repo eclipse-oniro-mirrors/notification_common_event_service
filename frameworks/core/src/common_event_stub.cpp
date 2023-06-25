@@ -37,7 +37,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
     }
 
     switch (code) {
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT): {
             std::unique_ptr<CommonEventData> event(data.ReadParcelable<CommonEventData>());
             std::unique_ptr<CommonEventPublishInfo> publishinfo(data.ReadParcelable<CommonEventPublishInfo>());
             sptr<IRemoteObject> commonEventListener = nullptr;
@@ -61,7 +61,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT2): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT2): {
             std::unique_ptr<CommonEventData> event(data.ReadParcelable<CommonEventData>());
             std::unique_ptr<CommonEventPublishInfo> publishinfo(data.ReadParcelable<CommonEventPublishInfo>());
             sptr<IRemoteObject> commonEventListener = nullptr;
@@ -87,7 +87,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT): {
             std::unique_ptr<CommonEventSubscribeInfo> subscribeInfo(data.ReadParcelable<CommonEventSubscribeInfo>());
             if (!subscribeInfo) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventSubscribeInfo>");
@@ -110,7 +110,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNSUBSCRIBE_COMMON_EVENT): {
             bool hasSubscriber = data.ReadBool();
             if (!hasSubscriber) {
                 EVENT_LOGE("no valid commonEventListener!");
@@ -128,7 +128,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_GET_STICKY_COMMON_EVENT): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_GET_STICKY_COMMON_EVENT): {
             std::string event = Str16ToStr8(data.ReadString16());
             CommonEventData eventData;
             bool ret = GetStickyCommonEvent(event, eventData);
@@ -142,7 +142,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_DUMP_STATE): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_DUMP_STATE): {
             std::vector<std::string> result;
             uint8_t dumpType = data.ReadUint8();
             std::string event = Str16ToStr8(data.ReadString16());
@@ -154,7 +154,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_FINISH_RECEIVER): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_FINISH_RECEIVER): {
             bool hasPorxy = data.ReadBool();
             if (!hasPorxy) {
                 EVENT_LOGE("no valid proxy!");
@@ -175,7 +175,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_FREEZE): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_FREEZE): {
             int32_t uid = data.ReadInt32();
             bool ret = Freeze(uid);
             if (!reply.WriteBool(ret)) {
@@ -184,7 +184,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE): {
             int32_t uid = data.ReadInt32();
             bool ret = Unfreeze(uid);
             if (!reply.WriteBool(ret)) {
@@ -193,7 +193,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE_ALL): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE_ALL): {
             bool ret = UnfreezeAll();
             if (!reply.WriteBool(ret)) {
                 EVENT_LOGE("Failed to write reply");
@@ -201,7 +201,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_REMOVE_STICKY_COMMON_EVENT): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_REMOVE_STICKY_COMMON_EVENT): {
             std::string event = Str16ToStr8(data.ReadString16());
             int32_t ret = RemoveStickyCommonEvent(event);
             if (!reply.WriteInt32(ret)) {
@@ -210,7 +210,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
-        case static_cast<uint32_t>(ICommonEvent::Message::CES_SET_STATIC_SUBSCRIBER_STATE): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_SET_STATIC_SUBSCRIBER_STATE): {
             bool enable = data.ReadBool();
             int32_t ret = SetStaticSubscriberState(enable);
             if (!reply.WriteInt32(ret)) {

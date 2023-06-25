@@ -126,7 +126,8 @@ HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_003, Tes
     MessageParcel reply;
     MessageOption option;
     EXPECT_TRUE(data.WriteInterfaceToken(u"OHOS.AppExecFwk.IStaticSubscriber"));
-    EXPECT_EQ(object->OnRemoteRequest(MockStaticSubscriber::COMMAND_ON_RECEIVE_EVENT, data, reply, option), ERR_NONE);
+    EXPECT_EQ(object->OnRemoteRequest(static_cast<uint32_t>(CommonEventInterfaceCode::COMMAND_ON_RECEIVE_EVENT),
+        data, reply, option), ERR_NONE);
     GTEST_LOG_(INFO) << "StaticSubscriberStub_OnRemoteRequest_003 end.";
 }
 } // namespace EventFwk

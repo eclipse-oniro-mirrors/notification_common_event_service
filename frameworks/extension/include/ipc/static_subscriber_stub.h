@@ -17,6 +17,7 @@
 #define OHOS_COMMON_EVENT_SERVICE_STATIC_SUBSCRIBER_STUB_H
 
 #include <iremote_stub.h>
+#include "common_event_service_ipc_interface_code.h"
 #include "istatic_subscriber.h"
 
 namespace OHOS {
@@ -27,9 +28,6 @@ public:
     virtual ~StaticSubscriberStub() = default;
 
     int OnRemoteRequest(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option) override;
-
-private:
-    static constexpr int COMMAND_ON_RECEIVE_EVENT = MIN_TRANSACTION_ID;
 };
 } // namespace EventFwk
 } // namespace OHOS
