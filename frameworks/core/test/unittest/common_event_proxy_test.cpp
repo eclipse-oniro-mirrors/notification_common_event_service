@@ -345,3 +345,20 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_008, TestSize.Level1)
     bool result = commonEventProxy.DumpState(dumpType, event, userId, state);
     EXPECT_EQ(true, result);
 }
+
+/*
+ * tc.number: SetStaticSubscriberState_001
+ * tc.name: test SetStaticSubscriberState
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, SetStaticSubscriberState_001, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    int32_t result = commonEventProxy.SetStaticSubscriberState(true);
+    EXPECT_EQ(OHOS::ERR_OK, result);
+}
