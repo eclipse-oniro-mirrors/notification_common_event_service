@@ -19,7 +19,7 @@ cflags = []
 config("ces_services_config") {
   visibility = [ ":*" ]
 
-  include_dirs = []
+  include_dirs = [ "${ffrt_path}/interfaces/kits" ]
 
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
@@ -29,7 +29,10 @@ config("ces_services_config") {
 config("ces_services_public_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${ces_services_path}/include" ]
+  include_dirs = [
+    "${ces_services_path}/include",
+    "${ffrt_path}/interfaces/kits",
+  ]
 }
 
 cesfwk_services_sources = [
@@ -84,6 +87,7 @@ ohos_shared_library("cesfwk_services") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hitrace:hitrace_meter",
@@ -131,6 +135,7 @@ ohos_static_library("cesfwk_services_static") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hitrace:hitrace_meter",

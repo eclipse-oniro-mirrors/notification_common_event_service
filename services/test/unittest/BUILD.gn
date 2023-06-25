@@ -22,6 +22,7 @@ config("cesfwk_services_config") {
   include_dirs = [
     "${common_event_service_path}/test/mock/include",
     "${services_path}/include",
+    "${ffrt_path}/interfaces/kits",
   ]
 
   cflags = []
@@ -673,6 +674,7 @@ ohos_unittest("common_event_manager_service_new_branch_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
@@ -746,6 +748,7 @@ ohos_unittest("common_event_control_manager_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]

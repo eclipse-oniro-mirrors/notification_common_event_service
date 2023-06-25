@@ -71,7 +71,7 @@ ErrCode CommonEventListener::Init()
         } else if (threadMode == CommonEventSubscribeInfo::COMMON) {
             runner_ = GetCommonRunner();
         } else {
-            runner_ = EventRunner::Create("CesFwkListener");
+            runner_ = GetCommonRunner();
         }
         if (!runner_) {
             EVENT_LOGE("Failed to init due to create runner error");

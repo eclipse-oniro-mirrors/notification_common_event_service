@@ -19,6 +19,7 @@
 #include <singleton.h>
 #include "common_event_stub.h"
 #include "event_handler.h"
+#include "ffrt.h"
 #include "inner_common_event_manager.h"
 #include "nocopyable.h"
 
@@ -164,6 +165,7 @@ private:
     ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;
     std::shared_ptr<EventRunner> runner_;
     std::shared_ptr<EventHandler> handler_;
+    std::shared_ptr<ffrt::queue> commonEventSrvQueue_ = nullptr;
 
     DISALLOW_COPY_AND_MOVE(CommonEventManagerService);
 };
