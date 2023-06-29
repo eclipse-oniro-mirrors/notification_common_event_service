@@ -528,6 +528,20 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_005, TestSize.Level1)
 }
 
 /*
+ * tc.number: CommonEventManager_006
+ * tc.name: test SetStaticSubscriberState
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke Unfreeze interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_006, TestSize.Level1)
+{
+    CommonEventManager commonEventManager;
+    int32_t ret = commonEventManager.SetStaticSubscriberState(true);
+    EXPECT_NE(ret, OHOS::ERR_OK);
+}
+
+/*
  * tc.number: CommonEventPublishInfo_001
  * tc.name: test ReadFromParcel
  * tc.type: FUNC
