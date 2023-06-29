@@ -125,8 +125,7 @@ void CommonEventControlManager::PublishFrozenEventsInner(const FrozenRecords &fr
                 }
                 control->NotifyFreezeEvents(subscriberRecord, eventRecord);
             };
-
-            handler_->PostImmediateTask(innerCallback);
+            unorderedImmediateQueue_->submit(innerCallback);
         }
     }
 }
@@ -166,19 +165,15 @@ bool CommonEventControlManager::NotifyFreezeEvents(
 
 bool CommonEventControlManager::GetUnorderedEventHandler()
 {
-    if (!handler_) {
-        handler_ = std::make_shared<EventHandler>(EventRunner::Create("CesSrvUnorderEventHandler"));
-        if (!handler_) {
-            EVENT_LOGE("Failed to create UnorderedEventHandler");
-            return false;
-        }
+    if (!unorderedQueue_) {
+        unorderedQueue_ = std::make_shared<ffrt::queue>("unordered_common_event");
     }
-    if (handler_->GetEventRunner() != nullptr) {
-        std::string threadName = handler_->GetEventRunner()->GetRunnerThreadName();
-        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_) != 0) {
-            EVENT_LOGE("Failed to Add handler Thread");
-        }
+
+    if (!unorderedImmediateQueue_) {
+        unorderedImmediateQueue_ = std::make_shared<ffrt::queue>("unordered_immediate_common_event",
+            ffrt::queue_attr().qos(ffrt::qos_utility));
     }
+
     return true;
 }
 
@@ -279,9 +274,9 @@ bool CommonEventControlManager::ProcessUnorderedEvent(
     };
 
     if (eventRecord.isSystemEvent) {
-        ret = handler_->PostImmediateTask(innerCallback);
+        unorderedImmediateQueue_->submit(innerCallback);
     } else {
-        ret = handler_->PostTask(innerCallback);
+        unorderedQueue_->submit(innerCallback);
     }
 
     return ret;
@@ -306,19 +301,8 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::GetMatchingOrdere
 
 bool CommonEventControlManager::GetOrderedEventHandler()
 {
-    if (!handlerOrdered_) {
-        handlerOrdered_ = std::make_shared<OrderedEventHandler>(
-            EventRunner::Create("CesSrvOrderEventHandler"), shared_from_this());
-        if (!handlerOrdered_) {
-            EVENT_LOGE("Failed to create OrderedEventHandler");
-            return false;
-        }
-    }
-    if (handlerOrdered_->GetEventRunner() != nullptr) {
-        std::string threadName = handlerOrdered_->GetEventRunner()->GetRunnerThreadName();
-        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handlerOrdered_) != 0) {
-            EVENT_LOGE("Failed to Add Ordered Thread");
-        }
+    if (!orderedQueue_) {
+        orderedQueue_ = std::make_shared<ffrt::queue>("ordered_common_event");
     }
     return true;
 }
@@ -456,7 +440,16 @@ bool CommonEventControlManager::ScheduleOrderedCommonEvent()
 
     scheduled_ = true;
 
-    return handlerOrdered_->SendEvent(InnerEvent::Get(OrderedEventHandler::ORDERED_EVENT_START));
+    std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
+    orderedQueue_->submit([weak]() {
+        auto manager = weak.lock();
+        if (manager == nullptr) {
+            EVENT_LOGE("CommonEventControlManager is null");
+            return;
+        }
+        manager->ProcessNextOrderedEvent(true);
+    });
+    return true;
 }
 
 bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index)
@@ -601,7 +594,15 @@ bool CommonEventControlManager::SetTimeout(int64_t timeoutTime)
 
     if (!pendingTimeoutMessage_) {
         pendingTimeoutMessage_ = true;
-        ret = handlerOrdered_->SendTimingEvent(OrderedEventHandler::ORDERED_EVENT_TIMEOUT, timeoutTime);
+        std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
+        orderedHandler = orderedQueue_->submit_h([weak]() {
+            auto manager = weak.lock();
+            if (manager == nullptr) {
+                EVENT_LOGE("CommonEventControlManager is null");
+                return;
+            }
+            manager->CurrentOrderedEventTimeout(true);
+        }, ffrt::task_attr().delay(timeoutTime * 1000));
     }
 
     return ret;
@@ -613,7 +614,7 @@ bool CommonEventControlManager::CancelTimeout()
 
     if (pendingTimeoutMessage_) {
         pendingTimeoutMessage_ = false;
-        handlerOrdered_->RemoveEvent(OrderedEventHandler::ORDERED_EVENT_TIMEOUT);
+        orderedQueue_->cancel(orderedHandler);
     }
 
     return true;

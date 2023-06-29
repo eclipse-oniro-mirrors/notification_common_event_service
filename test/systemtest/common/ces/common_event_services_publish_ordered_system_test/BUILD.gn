@@ -26,6 +26,7 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
   include_dirs = [
     "${services_path}/include",
     "${ability_runtime_services_path}/abilitymgr/include/",
+    "${ffrt_path}/interfaces/kits",
   ]
 
   cflags = []
@@ -46,6 +47,7 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
     "access_token:libaccesstoken_sdk",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
