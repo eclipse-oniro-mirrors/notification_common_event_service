@@ -482,6 +482,11 @@ public:
     {
         return 1;
     }
+
+    int32_t ReportDrawnCompleted(const sptr<IRemoteObject> &callerToken) override
+    {
+        return 1;
+    }
 };
 
 /**
