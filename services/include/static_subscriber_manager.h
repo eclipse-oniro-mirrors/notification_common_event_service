@@ -92,7 +92,8 @@ private:
         const std::string &permission);
     void SendStaticEventProcErrHiSysEvent(int32_t userId, const std::string &publisherName,
         const std::string &subscriberName, const std::string &eventName);
-    void InitDisableStaticSubscribersStates(const std::string &bundleName);
+    void InitDisableStaticSubscribersStates(
+        const std::set<std::string> &disableStaticSubscribeAllData, const std::string &bundleName);
 
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
     std::map<std::string, StaticSubscriber> staticSubscribers_;
