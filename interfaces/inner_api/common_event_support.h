@@ -91,7 +91,7 @@ public:
      * services can do some business on the background.
      * This common event can only be published by the system.
      */
-    static const std::string COMMON_EVENT_CHARGE_IDLE;
+    static const std::string COMMON_EVENT_CHARGE_IDLE_MODE_CHANGED;
     /**
      * Indicates the action of a common event that the user unlocks the device.
      * This common event can only be published by the system.

@@ -96,8 +96,8 @@ const std::string CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED =
  * services can do some business on the background.
  * This common event can only be published by the system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_CHARGE_IDLE =
-        "usual.event.CHARGE_IDLE";
+const std::string CommonEventSupport::COMMON_EVENT_CHARGE_IDLE_MODE_CHANGED =
+        "usual.event.CHARGE_IDLE_MODE_CHANGED";
 /**
  * Indicates the action of a common event that the user unlocks the device.
  * This common event can only be published by the system.
@@ -1381,7 +1381,7 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_OFF);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_ON);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGE_IDLE);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGE_IDLE_MODE_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_PRESENT);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPLIT_SCREEN);
 
