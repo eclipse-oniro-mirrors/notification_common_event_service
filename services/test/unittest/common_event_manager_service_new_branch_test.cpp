@@ -362,3 +362,23 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1700, Level1)
     EXPECT_EQ(OHOS::ERR_OK, comm->Dump(fd, args));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1700 end";
 }
+
+/**
+ * @tc.name: CommonEventManagerService_1800
+ * @tc.desc: test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1800, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventManagerService_1800 start";
+    std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
+    ASSERT_NE(nullptr, comm);
+    // set VerifyNativeToken is true
+    MockVerifyNativeToken(true);
+    // set IsReady is true
+    comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    comm->runner_ = EventRunner::Create("CesSrvMain");
+    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, comm->SetStaticSubscriberState(true));
+    GTEST_LOG_(INFO) << "CommonEventManagerService_1800 end";
+}

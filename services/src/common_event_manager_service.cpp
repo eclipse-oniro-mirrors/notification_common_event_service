@@ -55,24 +55,7 @@ ErrCode CommonEventManagerService::Init()
         return ERR_INVALID_OPERATION;
     }
 
-    runner_ = EventRunner::Create("CesSrvMain");
-    if (!runner_) {
-        EVENT_LOGE("Failed to init due to create runner error");
-        return ERR_INVALID_OPERATION;
-    }
-    handler_ = std::make_shared<EventHandler>(runner_);
-    if (!handler_) {
-        EVENT_LOGE("Failed to init due to create handler error");
-        return ERR_INVALID_OPERATION;
-    }
-    AbilityManagerHelper::GetInstance()->SetEventHandler(handler_);
-    if (handler_->GetEventRunner() != nullptr) {
-        std::string threadName = handler_->GetEventRunner()->GetRunnerThreadName();
-        if (HiviewDFX::Watchdog::GetInstance().AddThread(threadName, handler_) != 0) {
-            EVENT_LOGE("Failed to Add main Thread");
-        }
-    }
-
+    commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     serviceRunningState_ = ServiceRunningState::STATE_RUNNING;
 
     return ERR_OK;
@@ -85,8 +68,8 @@ bool CommonEventManagerService::IsReady() const
         return false;
     }
 
-    if (!handler_) {
-        EVENT_LOGE("handler is null");
+    if (!commonEventSrvQueue_) {
+        EVENT_LOGE("queue object is null");
         return false;
     }
 
@@ -207,7 +190,9 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
             EVENT_LOGE("failed to publish event %{public}s", event.GetWant().GetAction().c_str());
         }
     };
-    return handler_->PostTask(publishCommonEventFunc) ? ERR_OK : ERR_NOTIFICATION_CESM_ERROR;
+
+    commonEventSrvQueue_->submit(publishCommonEventFunc);
+    return ERR_OK;
 }
 
 int32_t CommonEventManagerService::SubscribeCommonEvent(
@@ -256,7 +241,9 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(
             EVENT_LOGE("failed to subscribe event");
         }
     };
-    return handler_->PostTask(subscribeCommonEventFunc) ? ERR_OK : ERR_NOTIFICATION_CESM_ERROR;
+
+    commonEventSrvQueue_->submit(subscribeCommonEventFunc);
+    return ERR_OK;
 }
 
 int32_t CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
@@ -281,8 +268,9 @@ int32_t CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObje
             EVENT_LOGE("failed to unsubscribe event");
         }
     };
-    
-    return handler_->PostTask(unsubscribeCommonEventFunc) ? ERR_OK : ERR_NOTIFICATION_CESM_ERROR;
+
+    commonEventSrvQueue_->submit(unsubscribeCommonEventFunc);
+    return ERR_OK;
 }
 
 bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
@@ -351,8 +339,9 @@ bool CommonEventManagerService::FinishReceiver(
         }
         innerCommonEventManager->FinishReceiver(proxy, code, receiverData, abortEvent);
     };
-    
-    return handler_->PostTask(finishReceiverFunc);
+
+    commonEventSrvQueue_->submit(finishReceiverFunc);
+    return true;
 }
 
 bool CommonEventManagerService::Freeze(const uid_t &uid)
@@ -376,7 +365,9 @@ bool CommonEventManagerService::Freeze(const uid_t &uid)
         }
         innerCommonEventManager->Freeze(uid);
     };
-    return handler_->PostImmediateTask(freezeFunc);
+
+    commonEventSrvQueue_->submit(freezeFunc);
+    return true;
 }
 
 bool CommonEventManagerService::Unfreeze(const uid_t &uid)
@@ -401,8 +392,9 @@ bool CommonEventManagerService::Unfreeze(const uid_t &uid)
         }
         innerCommonEventManager->Unfreeze(uid);
     };
-    
-    return handler_->PostImmediateTask(unfreezeFunc);
+
+    commonEventSrvQueue_->submit(unfreezeFunc);
+    return true;
 }
 
 bool CommonEventManagerService::UnfreezeAll()
@@ -428,7 +420,8 @@ bool CommonEventManagerService::UnfreezeAll()
         innerCommonEventManager->UnfreezeAll();
     };
 
-    return handler_->PostImmediateTask(unfreezeAllFunc);
+    commonEventSrvQueue_->submit(unfreezeAllFunc);
+    return true;
 }
 
 int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &args)

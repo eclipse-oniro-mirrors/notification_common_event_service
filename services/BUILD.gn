@@ -19,7 +19,7 @@ cflags = []
 config("ces_services_config") {
   visibility = [ ":*" ]
 
-  include_dirs = []
+  include_dirs = [ "${ffrt_path}/interfaces/kits" ]
 
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
@@ -29,7 +29,10 @@ config("ces_services_config") {
 config("ces_services_public_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${ces_services_path}/include" ]
+  include_dirs = [
+    "${ces_services_path}/include",
+    "${ffrt_path}/interfaces/kits",
+  ]
 }
 
 cesfwk_services_sources = [
@@ -84,9 +87,10 @@ ohos_shared_library("cesfwk_services") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hicollie_native:libhicollie",
-    "hitrace_native:hitrace_meter",
-    "hiviewdfx_hilog_native:libhilog",
+    "ffrt:libffrt",
+    "hicollie:libhicollie",
+    "hilog:libhilog",
+    "hitrace:hitrace_meter",
     "ipc:ipc_core",
     "kv_store:distributeddata_inner",
     "safwk:system_ability_fwk",
@@ -100,7 +104,7 @@ ohos_shared_library("cesfwk_services") {
 
   if (has_hisysevent_part) {
     cflags_cc += [ "-DHAS_HISYSEVENT_PART" ]
-    external_deps += [ "hisysevent_native:libhisysevent" ]
+    external_deps += [ "hisysevent:libhisysevent" ]
   }
 
   subsystem_name = "notification"
@@ -132,9 +136,10 @@ ohos_static_library("cesfwk_services_static") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hicollie_native:libhicollie",
-    "hitrace_native:hitrace_meter",
-    "hiviewdfx_hilog_native:libhilog",
+    "ffrt:libffrt",
+    "hicollie:libhicollie",
+    "hilog:libhilog",
+    "hitrace:hitrace_meter",
     "ipc:ipc_core",
     "kv_store:distributeddata_inner",
     "safwk:system_ability_fwk",
@@ -148,7 +153,7 @@ ohos_static_library("cesfwk_services_static") {
 
   if (has_hisysevent_part) {
     cflags_cc += [ "-DHAS_HISYSEVENT_PART" ]
-    external_deps += [ "hisysevent_native:libhisysevent" ]
+    external_deps += [ "hisysevent:libhisysevent" ]
   }
 
   subsystem_name = "notification"

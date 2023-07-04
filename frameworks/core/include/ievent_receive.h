@@ -34,10 +34,6 @@ public:
      *
      */
     virtual void NotifyEvent(const CommonEventData &data, const bool &ordered, const bool &sticky) = 0;
-
-    enum class Message {
-        CES_NOTIFY_COMMON_EVENT = 1,
-    };
 };
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -50,6 +50,19 @@ void BundleManagerHelperTest::SetUp(void)
 void BundleManagerHelperTest::TearDown(void)
 {}
 
+using IBundleMgr = OHOS::AppExecFwk::IBundleMgr;
+
+class TestIBundleMgr : public IBundleMgr {
+public:
+    TestIBundleMgr() = default;
+    virtual ~TestIBundleMgr()
+    {};
+    sptr<IRemoteObject> AsObject() override
+    {
+        return nullptr;
+    }
+};
+
 /**
  * @tc.name: BundleManagerHelper_0200
  * @tc.desc: test ClearBundleManagerHelper function and sptrBundleMgr_ is nullptr.
@@ -73,8 +86,7 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0300, Level1)
 {
     GTEST_LOG_(INFO) << "BundleManagerHelper_0300 start";
     BundleManagerHelper bundleManagerHelper;
-    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
-    bundleManagerHelper.sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
+    bundleManagerHelper.sptrBundleMgr_ = new (std::nothrow) TestIBundleMgr();
     EXPECT_EQ(true, bundleManagerHelper.GetBundleMgrProxy());
     GTEST_LOG_(INFO) << "BundleManagerHelper_0300 end";
 }

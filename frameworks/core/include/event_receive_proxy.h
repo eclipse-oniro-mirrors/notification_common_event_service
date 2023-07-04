@@ -17,6 +17,7 @@
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_EVENT_RECEIVE_PROXY_H
 
 #include "common_event_data.h"
+#include "common_event_service_ipc_interface_code.h"
 #include "ievent_receive.h"
 #include "iremote_proxy.h"
 

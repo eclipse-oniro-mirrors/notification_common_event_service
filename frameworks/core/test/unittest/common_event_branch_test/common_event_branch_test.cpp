@@ -329,3 +329,15 @@ HWTEST_F(CommonEventTest, CommonEvent_017, TestSize.Level1)
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
     EXPECT_EQ(false, commonEvent.PublishCommonEvent(data, publishInfo, subscriber));
 }
+
+/*
+ * tc.number: SetStaticSubscriberState_001
+ * tc.name: SetStaticSubscriberState
+ * tc.type: FUNC
+ * tc.desc: test SetStaticSubscriberState function.
+ */
+HWTEST_F(CommonEventTest, SetStaticSubscriberState_001, TestSize.Level1)
+{
+    CommonEvent commonEvent;
+    EXPECT_EQ(OHOS::ERR_OK, commonEvent.SetStaticSubscriberState(true));
+}

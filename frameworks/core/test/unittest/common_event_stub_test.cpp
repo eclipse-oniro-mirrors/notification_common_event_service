@@ -148,7 +148,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_001, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_002, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -172,7 +172,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_002, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_003, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -195,7 +195,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_003, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_004, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT2);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT2);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -220,7 +220,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_004, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_005, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_PUBLISH_COMMON_EVENT2);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT2);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -242,7 +242,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_005, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_006, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_FINISH_RECEIVER);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FINISH_RECEIVER);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -264,7 +264,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_006, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_007, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -286,7 +286,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_007, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_008, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -309,7 +309,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_008, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_009, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_FREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -332,7 +332,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_009, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_010, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_FREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -354,7 +354,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_010, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_011, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -379,7 +379,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_011, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_012, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -401,7 +401,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_012, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_013, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE_ALL);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE_ALL);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -425,7 +425,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_013, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_014, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_UNFREEZE_ALL);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE_ALL);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -448,7 +448,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_014, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_015, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_GET_STICKY_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_GET_STICKY_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -470,7 +470,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_015, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_016, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_UNSUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNSUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -491,7 +491,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_016, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_017, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -514,7 +514,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_017, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_018, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -536,7 +536,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_018, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_019, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -558,7 +558,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_019, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_020, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -583,7 +583,7 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_020, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_021, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEvent::Message::CES_FINISH_RECEIVER);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FINISH_RECEIVER);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
@@ -608,5 +608,19 @@ HWTEST_F(CommonEventStubTest, RemoveStickyCommonEvent_0001, TestSize.Level1)
     CommonEventStub commonEventStub;
     std::string event = "this is event";
     int32_t result = commonEventStub.RemoveStickyCommonEvent(event);
+    EXPECT_EQ(result, OHOS::ERR_OK);
+}
+
+/*
+ * tc.number: SetStaticSubscriberState_001
+ * tc.name: test SetStaticSubscriberState
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: Invoke CommonEventStub interface verify whether it is normal
+ */
+HWTEST_F(CommonEventStubTest, SetStaticSubscriberState_001, TestSize.Level1)
+{
+    CommonEventStub commonEventStub;
+    int32_t result = commonEventStub.SetStaticSubscriberState(true);
     EXPECT_EQ(result, OHOS::ERR_OK);
 }

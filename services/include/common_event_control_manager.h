@@ -21,6 +21,7 @@
 #include "history_event_record.h"
 #include "ordered_event_handler.h"
 #include "ordered_event_record.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -194,6 +195,11 @@ private:
     std::mutex unorderedMutex_;
     std::mutex historyMutex_;
     const size_t HISTORY_MAX_SIZE = 100;
+
+    std::shared_ptr<ffrt::queue> orderedQueue_ = nullptr;
+    std::shared_ptr<ffrt::queue> unorderedQueue_ = nullptr;
+    std::shared_ptr<ffrt::queue> unorderedImmediateQueue_ = nullptr;
+    ffrt::task_handle orderedHandler  = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

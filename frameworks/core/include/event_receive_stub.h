@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_EVENT_RECEIVE_STUB_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_EVENT_RECEIVE_STUB_H
 
+#include "common_event_service_ipc_interface_code.h"
 #include "ievent_receive.h"
 #include "iremote_stub.h"
 

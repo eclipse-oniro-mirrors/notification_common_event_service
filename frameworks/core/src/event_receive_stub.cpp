@@ -35,7 +35,7 @@ int EventReceiveStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
         return ERR_TRANSACTION_FAILED;
     }
     switch (code) {
-        case static_cast<uint32_t>(IEventReceive::Message::CES_NOTIFY_COMMON_EVENT): {
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_NOTIFY_COMMON_EVENT): {
             std::unique_ptr<CommonEventData> eventData(data.ReadParcelable<CommonEventData>());
             bool ordered = data.ReadBool();
             bool sticky = data.ReadBool();

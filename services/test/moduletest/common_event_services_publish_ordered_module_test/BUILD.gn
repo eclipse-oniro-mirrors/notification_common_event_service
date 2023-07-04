@@ -34,6 +34,7 @@ ohos_moduletest("CesPublishOrderedEventModuleTest") {
     "${services_path}/include",
     "${common_event_service_path}/test/mock/include",
     "//third_party/json/include",
+    "${ffrt_path}/interfaces/kits",
   ]
 
   cflags = []
@@ -57,8 +58,9 @@ ohos_moduletest("CesPublishOrderedEventModuleTest") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hitrace_native:hitrace_meter",
-    "hiviewdfx_hilog_native:libhilog",
+    "ffrt:libffrt",
+    "hilog:libhilog",
+    "hitrace:hitrace_meter",
     "ipc:ipc_core",
     "ipc:libdbinder",
     "samgr:samgr_proxy",

@@ -94,8 +94,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         if (!comeFrom.isSystemApp && !comeFrom.isSubsystem && !comeFrom.isCemShell) {
             EVENT_LOGE(
                 "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
-                ", userId = %{public}d",
-            bundleName.c_str(), pid, uid, userId);
+                ", userId = %{public}d", bundleName.c_str(), pid, uid, userId);
             SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
             return false;
         }

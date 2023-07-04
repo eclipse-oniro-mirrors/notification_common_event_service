@@ -294,8 +294,8 @@ napi_value ParseParametersByCreateSubscriber(
     if (argc >= CREATE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
-            EVENT_LOGE("Wrong argument type. Function expected.");
-            return nullptr;
+            EVENT_LOGE("Callback is not function. Execute promise.");
+            return NapiGetNull(env);
         }
         napi_create_reference(env, argv[1], 1, &callback);
     }
@@ -357,12 +357,12 @@ void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info,
     }
 }
 
-void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env, const size_t &argc,
+void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env,
     AsyncCallbackInfoCreate *&asyncCallbackInfo, const napi_ref &callback, napi_value &promise)
 {
     EVENT_LOGD("PaddingAsyncCallbackInfoCreateSubscriber start");
 
-    if (argc >= CREATE_MAX_PARA) {
+    if (callback) {
         asyncCallbackInfo->info.callback = callback;
         asyncCallbackInfo->info.isCallback = true;
     } else {
@@ -399,7 +399,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     }
     napi_value promise = nullptr;
 
-    PaddingAsyncCallbackInfoCreateSubscriber(env, argc, asyncCallbackInfo, callback, promise);
+    PaddingAsyncCallbackInfoCreateSubscriber(env, asyncCallbackInfo, callback, promise);
 
     napi_create_reference(env, argv[0], 1, &asyncCallbackInfo->subscribeInfo);
 

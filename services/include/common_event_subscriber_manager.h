@@ -50,6 +50,13 @@ struct FrozenEventRecord {
 
 inline bool operator<(const std::shared_ptr<EventSubscriberRecord> &a, const std::shared_ptr<EventSubscriberRecord> &b)
 {
+    if (a == nullptr || a->eventSubscribeInfo == nullptr) {
+        return true;
+    }
+
+    if (b == nullptr || b->eventSubscribeInfo == nullptr) {
+        return false;
+    }
     return a->eventSubscribeInfo->GetPriority() > b->eventSubscribeInfo->GetPriority();
 }
 

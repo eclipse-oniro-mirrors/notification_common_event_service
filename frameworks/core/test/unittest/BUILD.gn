@@ -53,7 +53,7 @@ ohos_unittest("common_event_branch_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
@@ -112,7 +112,7 @@ ohos_unittest("common_event_stub_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 }
@@ -133,7 +133,7 @@ ohos_unittest("common_event_proxy_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 }
@@ -156,7 +156,7 @@ ohos_unittest("event_receive_stub_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 }

@@ -17,6 +17,7 @@
 #define OHOS_COMMON_EVENT_SERVICE_STATIC_SUBSCRIBER_PROXY_H
 
 #include <iremote_proxy.h>
+#include "common_event_service_ipc_interface_code.h"
 #include "istatic_subscriber.h"
 
 namespace OHOS {
@@ -30,8 +31,6 @@ public:
     ErrCode OnReceiveEvent(CommonEventData* inData) override;
 
 private:
-    static constexpr int COMMAND_ON_RECEIVE_EVENT = MIN_TRANSACTION_ID;
-
     static inline BrokerDelegator<StaticSubscriberProxy> delegator_;
 };
 } // namespace EventFwk

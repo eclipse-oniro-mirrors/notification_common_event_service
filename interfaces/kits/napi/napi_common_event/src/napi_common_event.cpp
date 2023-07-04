@@ -344,8 +344,8 @@ napi_value ParseParametersByCreateSubscriber(
     if (argc >= CREATE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
-            EVENT_LOGE("Wrong argument type. Function expected.");
-            return nullptr;
+            EVENT_LOGE("Callback is not function. Execute promise.");
+            return NapiGetNull(env);
         }
         napi_create_reference(env, argv[1], 1, &callback);
     }
@@ -408,12 +408,12 @@ void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info,
     }
 }
 
-void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env, const size_t &argc,
+void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env,
     AsyncCallbackInfoCreate *&asyncCallbackInfo, const napi_ref &callback, napi_value &promise)
 {
     EVENT_LOGD("PaddingAsyncCallbackInfoCreateSubscriber start");
 
-    if (argc >= CREATE_MAX_PARA) {
+    if (callback) {
         asyncCallbackInfo->info.callback = callback;
         asyncCallbackInfo->info.isCallback = true;
     } else {
@@ -466,7 +466,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     }
     napi_value promise = nullptr;
 
-    PaddingAsyncCallbackInfoCreateSubscriber(env, argc, asyncCallbackInfo, callback, promise);
+    PaddingAsyncCallbackInfoCreateSubscriber(env, asyncCallbackInfo, callback, promise);
 
     napi_create_reference(env, argv[0], 1, &asyncCallbackInfo->subscribeInfo);
 
@@ -2849,21 +2849,31 @@ napi_value ParseParametersByRemoveSticky(const napi_env &env,
     // argv[0]: event
     napi_valuetype valuetype = napi_undefined;
     NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valuetype));
-    if (valuetype != napi_string) {
+    if (valuetype != napi_string && valuetype != napi_number && valuetype != napi_boolean) {
         EVENT_LOGE("Wrong argument type. String expected.");
         return nullptr;
     }
-    size_t strLen = 0;
-    char str[STR_MAX_SIZE] = {0};
-    NAPI_CALL(env, napi_get_value_string_utf8(env, argv[PARAM0], str, STR_MAX_SIZE - 1, &strLen));
-    event = str;
+    if (valuetype == napi_string) {
+        size_t strLen = 0;
+        char str[STR_MAX_SIZE] = {0};
+        NAPI_CALL(env, napi_get_value_string_utf8(env, argv[PARAM0], str, STR_MAX_SIZE - 1, &strLen));
+        event = str;
+    } else if (valuetype == napi_number) {
+        int64_t number = 0;
+        NAPI_CALL(env, napi_get_value_int64(env, argv[PARAM0], &number));
+        event = std::to_string(number);
+    } else {
+        bool result = false;
+        NAPI_CALL(env, napi_get_value_bool(env, argv[PARAM0], &result));
+        event = std::to_string(result);
+    }
 
     // argv[1]:callback
     if (argc >= REMOVE_STICKY_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[PARAM1], &valuetype));
         if (valuetype != napi_function) {
-            EVENT_LOGE("Wrong argument type. Function expected.");
-            return nullptr;
+            EVENT_LOGE("Callback is not function excute promise.");
+            return NapiGetNull(env);
         }
         napi_create_reference(env, argv[PARAM1], 1, &params.callback);
     }
@@ -3147,7 +3157,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         return NapiGetNull(env);
     }
-
+    subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {
         EVENT_LOGE("wrapper is null");

@@ -55,19 +55,22 @@
         "deps": {
             "components": [
                 "bundle_framework",
-                "hicollie_native",
-                "hisysevent_native",
-                "hitrace_native",
+                "hicollie",
+                "hisysevent",
+                "hitrace",
                 "ipc",
                 "access_token",
                 "safwk",
                 "ability_base",
                 "ability_runtime",
                 "eventhandler",
-                "hiviewdfx_hilog_native",
+                "hilog",
                 "napi",
                 "samgr",
-                "os_account"
+                "os_account",
+                "c_utils",
+                "ace_engine",
+                "ffrt"
             ],
             "third_party": [
                 "libuv"
