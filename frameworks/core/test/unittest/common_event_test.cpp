@@ -466,6 +466,6 @@ HWTEST_F(CommonEventTest, CommonEventSubscriber_0100, Function | MediumTest | Le
 HWTEST_F(CommonEventTest, SetStaticSubscriberState_0100, Function | SmallTest | Level1)
 {
     CommonEvent commonEvent;
-    bool result = commonEvent.SetStaticSubscriberState(true);
-    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+    int32_t result = commonEvent.SetStaticSubscriberState(true);
+    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP, result);
 }
