@@ -280,7 +280,7 @@ int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("failed to get commonEventProxy");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
     return commonEventProxy_->RemoveStickyCommonEvent(event);
 }
@@ -291,7 +291,7 @@ int32_t CommonEvent::SetStaticSubscriberState(bool enable)
 
     if (!GetCommonEventProxy()) {
         EVENT_LOGE("failed to get commonEventProxy");
-        return false;
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
     return commonEventProxy_->SetStaticSubscriberState(enable);
 }

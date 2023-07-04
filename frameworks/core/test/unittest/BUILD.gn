@@ -66,7 +66,10 @@ ohos_unittest("common_event_test") {
 
   configs = [ ":kits_natvie_config" ]
 
-  deps = [ "${ces_core_path}:cesfwk_core" ]
+  deps = [
+    "${ces_common_path}:libevent_common",
+    "${ces_core_path}:cesfwk_core",
+  ]
 
   external_deps = [
     "ability_base:want",
