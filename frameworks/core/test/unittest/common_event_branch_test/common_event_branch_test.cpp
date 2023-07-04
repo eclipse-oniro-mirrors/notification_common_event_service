@@ -24,6 +24,7 @@
 #include "common_event_publish_info.h"
 #include "matching_skills.h"
 #undef private
+#include "ces_inner_error_code.h"
 #include "mock_common_event_stub.h"
 #include "want.h"
 
@@ -339,5 +340,6 @@ HWTEST_F(CommonEventTest, CommonEvent_017, TestSize.Level1)
 HWTEST_F(CommonEventTest, SetStaticSubscriberState_001, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    EXPECT_EQ(OHOS::ERR_OK, commonEvent.SetStaticSubscriberState(true));
+    EXPECT_EQ(
+        OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, commonEvent.SetStaticSubscriberState(true));
 }
