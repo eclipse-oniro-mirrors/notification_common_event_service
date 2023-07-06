@@ -354,6 +354,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED, "COMMON_EVENT_CHARGE_TYPE_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_CHARGE_IDLE_MODE_CHANGED,
+        "COMMON_EVENT_CHARGE_IDLE_MODE_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED,
         "COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED");
     SetNamedPropertyByStr(env,
