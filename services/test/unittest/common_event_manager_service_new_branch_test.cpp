@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 #define private public
 #include "common_event_manager_service.h"
 #undef private
+#include "ffrt.h"
 
 extern void MockVerifyNativeToken(bool mockRet);
 extern void MockVerifyAccessToken(bool mockRet);
@@ -79,8 +80,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0200, Level1)
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyNativeToken is true
     MockVerifyNativeToken(true);
     // test PublishCommonEvent
@@ -105,8 +105,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0500, Level1)
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set event is empty
     std::string event = "";
     CommonEventData eventData;
@@ -126,8 +125,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0600, Level1)
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyAccessToken is false
     MockVerifyAccessToken(false);
     // test GetStickyCommonEvent function
@@ -174,8 +172,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0800, Level1)
     MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test DumpState function
     uint8_t dumpType = 1;
     std::string event = "dump state";
@@ -197,8 +194,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0900, Level1)
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test FinishReceiver function
     int32_t code = 1;
     std::string receiverData = "finish receiver";
@@ -238,8 +234,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1100, Level1)
     MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test Freeze function
     uid_t uid = 1;
     EXPECT_EQ(true, comm->Freeze(uid));
@@ -277,8 +272,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1300, Level1)
     MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test Unfreeze function
     uid_t uid = 1;
     EXPECT_EQ(true, comm->Unfreeze(uid));
@@ -315,8 +309,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1500, Level1)
     MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test UnfreezeAll function
     EXPECT_EQ(true, comm->UnfreezeAll());
     GTEST_LOG_(INFO) << "CommonEventManagerService_1500 end";
@@ -354,8 +347,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1700, Level1)
     MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test Dump function.
     int fd = 1;
     std::vector<std::u16string> args;
@@ -377,8 +369,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1800, Level1)
     MockVerifyNativeToken(true);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     EXPECT_EQ(OHOS::ERR_INVALID_VALUE, comm->SetStaticSubscriberState(true));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1800 end";
 }

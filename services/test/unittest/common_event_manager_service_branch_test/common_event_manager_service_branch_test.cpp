@@ -19,6 +19,7 @@
 #include "common_event_manager_service.h"
 #undef private
 #include "ces_inner_error_code.h"
+#include "ffrt.h"
 
 extern void MockVerifyNativeToken(bool mockRet);
 extern void MockIsSystemApp(bool mockRet);
@@ -68,8 +69,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyNativeToken is true
     MockVerifyNativeToken(true);
     // set IsDlpHap is false
@@ -156,8 +156,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0500, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyNativeToken is false
     MockVerifyNativeToken(false);
     // set IsSystemApp is false
@@ -185,8 +184,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0600, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyNativeToken is false
     MockVerifyNativeToken(true);
     // set IsSystemApp is false
@@ -216,8 +214,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0700, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsDlpHap is true
     MockIsDlpHap(true);
     // test PublishCommonEvent function
@@ -243,8 +240,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0800, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsDlpHap is true
     MockIsDlpHap(true);
     // test PublishCommonEvent function
@@ -270,8 +266,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0900, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsDlpHap is true
     MockIsDlpHap(true);
     // test PublishCommonEvent function
@@ -351,8 +346,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1200, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test SubscribeCommonEvent function
     CommonEventSubscribeInfo subscribeInfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
@@ -467,8 +461,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1700, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     EXPECT_EQ(ERR_OK, comm->UnsubscribeCommonEvent(nullptr));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1700 end";
 }
