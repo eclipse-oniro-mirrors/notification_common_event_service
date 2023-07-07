@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,15 +13,16 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
+
+#include "ces_inner_error_code.h"
 #include "common_event.h"
 #include "common_event_death_recipient.h"
+#include "common_event_publish_info.h"
 #include "common_event_stub.h"
 #include "common_event_subscriber.h"
 #include "event_receive_proxy.h"
-#include "common_event_publish_info.h"
 #include "matching_skills.h"
-
-#include <gtest/gtest.h>
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -455,4 +456,16 @@ HWTEST_F(CommonEventTest, CommonEventSubscriber_0100, Function | MediumTest | Le
     commonEventDeathRecipient.OnRemoteDied(nullptr);
     bool result = CommonEventTest::IsStickyCommonEvent();
     EXPECT_EQ(false, result);
+}
+
+/*
+ * @tc.number: SetStaticSubscriberState_0100
+ * @tc.name: verify SetStaticSubscriberState
+ * @tc.desc: Invoke SetStaticSubscriberState interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, SetStaticSubscriberState_0100, Function | SmallTest | Level1)
+{
+    CommonEvent commonEvent;
+    int32_t result = commonEvent.SetStaticSubscriberState(true);
+    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP, result);
 }
