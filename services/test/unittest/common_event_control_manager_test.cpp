@@ -169,8 +169,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_0800, Level1)
     GTEST_LOG_(INFO) << "CommonEventControlManager_0800 start";
     CommonEventControlManager commonEventControlManager;
     commonEventControlManager.pendingTimeoutMessage_ = true;
-    int64_t timeoutTime = 1;
-    EXPECT_EQ(true, commonEventControlManager.SetTimeout(timeoutTime));
+    EXPECT_EQ(true, commonEventControlManager.SetTimeout());
     GTEST_LOG_(INFO) << "CommonEventControlManager_0800 end";
 }
 

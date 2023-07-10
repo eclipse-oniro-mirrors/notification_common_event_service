@@ -140,7 +140,7 @@ private:
 
     void SetTime(size_t recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage);
 
-    bool SetTimeout(int64_t timeoutTime);
+    bool SetTimeout();
 
     bool CancelTimeout();
 
