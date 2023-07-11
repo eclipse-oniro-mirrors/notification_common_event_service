@@ -92,11 +92,6 @@ public:
         return 1;
     }
 
-    int TerminateAbilityByCaller(const sptr<IRemoteObject> &callerToken, int requestCode) override
-    {
-        return 1;
-    }
-
     int CloseAbility(const sptr<IRemoteObject> &token, int resultCode = DEFAULT_INVAL_VALUE,
         const Want *resultWant = nullptr) override
     {
@@ -172,11 +167,6 @@ public:
     void DumpSysState(
         const std::string& args, std::vector<std::string>& state, bool isClient, bool isUserID, int UserID) override
     {}
-
-    int TerminateAbilityResult(const sptr<IRemoteObject> &token, int startId) override
-    {
-        return 1;
-    }
 
     int StopServiceAbility(const Want &want, int32_t userId, const sptr<IRemoteObject> &token = nullptr) override
     {
