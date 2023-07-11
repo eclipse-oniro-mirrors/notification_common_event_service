@@ -581,12 +581,11 @@ void CommonEventControlManager::SetTime(size_t recIdx, std::shared_ptr<OrderedEv
     }
 
     if (!timeoutMessage) {
-        int64_t timeoutTime = sp->receiverTime + TIMEOUT;
-        SetTimeout(timeoutTime);
+        SetTimeout();
     }
 }
 
-bool CommonEventControlManager::SetTimeout(int64_t timeoutTime)
+bool CommonEventControlManager::SetTimeout()
 {
     EVENT_LOGD("enter");
 
@@ -602,7 +601,7 @@ bool CommonEventControlManager::SetTimeout(int64_t timeoutTime)
                 return;
             }
             manager->CurrentOrderedEventTimeout(true);
-        }, ffrt::task_attr().delay(timeoutTime * 1000));
+        }, ffrt::task_attr().delay(TIMEOUT * 1000));
     }
 
     return ret;
@@ -639,7 +638,7 @@ void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
     if (isFromMsg) {
         int64_t timeoutTime = sp->receiverTime + TIMEOUT;
         if (timeoutTime > nowSysTime) {
-            SetTimeout(timeoutTime);
+            SetTimeout();
             return;
         }
     }
