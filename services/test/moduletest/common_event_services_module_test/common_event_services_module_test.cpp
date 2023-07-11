@@ -79,9 +79,6 @@ void cesModuleTest::SetUpTestCase()
 {
     commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance().get();
     commonEventManagerService_->Init();
-    handlerPtr = std::make_shared<EventHandler>(EventRunner::Create(true));
-    auto task = []() { EventRunner::GetMainEventRunner()->Run(); };
-    handlerPtr->PostTask(task);
 
     bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
@@ -90,9 +87,6 @@ void cesModuleTest::SetUpTestCase()
 
 void cesModuleTest::TearDownTestCase()
 {
-    commonEventManagerService_->runner_->Stop();
-    commonEventManagerService_ = nullptr;
-    EventRunner::GetMainEventRunner()->Stop();
 }
 
 void cesModuleTest::SetUp()
@@ -1300,7 +1294,6 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level1)
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
     EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
