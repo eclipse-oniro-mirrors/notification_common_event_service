@@ -106,9 +106,20 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         EVENT_LOGE("connection is nullptr");
         return;
     }
-    if (eventHandler_ == nullptr) {
-        EVENT_LOGE("eventHandler_ is nullptr");
-        return;
+
+    if(!eventHandler_) {
+        EVENT_LOGD("ready to create eventHandler");
+        auto runner = AppExecFwk::EventRunner::Create("AbilityManagerHelper");
+        if (!runner) {
+            EVENT_LOGE("Failed to init due to create runner error");
+            return;
+        }
+
+        eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
+        if (!eventHandler_) {
+            EVENT_LOGE("Failed to init due to create handler error");
+            return;
+        }
     }
 
     auto task = [connection]() { AbilityManagerHelper::GetInstance()->DisconnectAbility(connection); };
