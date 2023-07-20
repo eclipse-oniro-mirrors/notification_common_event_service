@@ -138,7 +138,15 @@ int32_t CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubsc
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
     if (subscribeState == INITIAL_SUBSCRIPTION) {
         EVENT_LOGD("before SubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
-        return commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
+        auto res = commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
+        if (res != ERR_OK) {
+            EVENT_LOGD("subscribe common event failed, remove event listener");
+            auto eventListener = eventListeners_.find(subscriber);
+            if (eventListener != eventListeners_.end()) {
+                eventListeners_.erase(eventListener);
+            }
+        }
+        return res;
     } else if (subscribeState == ALREADY_SUBSCRIBED) {
         return ERR_OK;
     } else {
