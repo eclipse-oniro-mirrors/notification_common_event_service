@@ -186,6 +186,7 @@ ohos_unittest("ability_manager_death_recipient_unit_test") {
   external_deps = [
     "ability_runtime:ability_manager",
     "c_utils:utils",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
@@ -256,6 +257,7 @@ ohos_unittest("static_subscriber_manager_unit_test") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "ffrt:libffrt",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hitrace:hitrace_meter",
@@ -290,6 +292,7 @@ ohos_unittest("static_subscriber_connection_unit_test") {
     "ability_base:want",
     "ability_runtime:ability_manager",
     "c_utils:utils",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
