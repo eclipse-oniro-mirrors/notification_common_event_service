@@ -107,7 +107,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         return;
     }
 
-    if(!eventHandler_) {
+    if (!eventHandler_) {
         EVENT_LOGD("ready to create eventHandler");
         auto runner = AppExecFwk::EventRunner::Create("AbilityManagerHelper");
         if (!runner) {
