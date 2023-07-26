@@ -18,6 +18,8 @@
 
 namespace OHOS {
 namespace EventFwk {
+std::mutex EventReceiveStub::mutex_;
+
 EventReceiveStub::EventReceiveStub()
 {
     EVENT_LOGD("event receive stub instance is created");
@@ -30,6 +32,7 @@ EventReceiveStub::~EventReceiveStub()
 
 int EventReceiveStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
+    std::lock_guard<std::mutex> lock(mutex_);
     if (data.ReadInterfaceToken() != GetDescriptor()) {
         EVENT_LOGE("local descriptor is not equal to remote");
         return ERR_TRANSACTION_FAILED;
