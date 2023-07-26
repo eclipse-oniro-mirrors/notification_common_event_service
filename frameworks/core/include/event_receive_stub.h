@@ -16,6 +16,8 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_EVENT_RECEIVE_STUB_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_EVENT_RECEIVE_STUB_H
 
+#include <mutex>
+
 #include "common_event_service_ipc_interface_code.h"
 #include "ievent_receive.h"
 #include "iremote_stub.h"
@@ -39,6 +41,9 @@ public:
      */
     virtual int OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+
+private:
+    static std::mutex mutex_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
