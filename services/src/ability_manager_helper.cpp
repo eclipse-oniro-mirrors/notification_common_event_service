@@ -107,23 +107,15 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         return;
     }
 
-    if (!eventHandler_) {
-        EVENT_LOGD("ready to create eventHandler");
-        auto runner = AppExecFwk::EventRunner::Create("AbilityManagerHelper");
-        if (!runner) {
-            EVENT_LOGE("Failed to init due to create runner error");
-            return;
-        }
-
-        eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
-        if (!eventHandler_) {
-            EVENT_LOGE("Failed to init due to create handler error");
-            return;
-        }
+    if (!ffrt_) {
+        EVENT_LOGD("ready to create ffrt");
+        ffrt_ = std::make_shared<ffrt::queue>("AbilityManagerHelper");
     }
 
-    auto task = [connection]() { AbilityManagerHelper::GetInstance()->DisconnectAbility(connection); };
-    eventHandler_->PostTask(task, DISCONNECT_DELAY_TIME);
+    std::function<void()> task = [connection]() {
+        AbilityManagerHelper::GetInstance()->DisconnectAbility(connection);
+    };
+    ffrt_->submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * 1000));
 }
 
 void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)

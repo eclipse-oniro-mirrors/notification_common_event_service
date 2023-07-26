@@ -21,6 +21,7 @@
 #include "ability_manager_death_recipient.h"
 #include "common_event_data.h"
 #include "event_handler.h"
+#include "ffrt.h"
 #include "singleton.h"
 #include "static_subscriber_connection.h"
 
@@ -73,6 +74,7 @@ private:
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     std::set<sptr<StaticSubscriberConnection>> subscriberConnection_;
+    std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
