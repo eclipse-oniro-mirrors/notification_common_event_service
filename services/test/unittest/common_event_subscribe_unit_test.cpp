@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,6 +34,7 @@
 #include "common_event_manager_service.h"
 
 using namespace testing::ext;
+using namespace OHOS;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
 
@@ -106,6 +107,434 @@ public:
         const std::string &receiverData, const bool &abortEvent)
     {
         return false;
+    }
+};
+
+using TestAbilityManager = AAFwk::IAbilityManager;
+
+class TestAbilityMgr : public TestAbilityManager {
+public:
+    TestAbilityMgr() = default;
+    virtual ~TestAbilityMgr()
+    {};
+    sptr<IRemoteObject> AsObject() override
+    {
+        return nullptr;
+    }
+
+    int StartAbility(const Want &want, int32_t userId, int requestCode) override
+    {
+        return 1;
+    }
+
+    int StartAbility(
+        const Want &want, const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode) override
+    {
+        return 1;
+    }
+
+    int StartAbility(const Want &want, const AbilityStartSetting &abilityStartSetting,
+        const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode) override
+    {
+        return 1;
+    }
+
+    int StartAbility(const Want &want, const StartOptions &startOptions,
+        const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode) override
+    {
+        return 1;
+    }
+
+    int TerminateAbility(
+        const sptr<IRemoteObject> &token, int resultCode, const Want *resultWant = nullptr) override
+    {
+        return 1;
+    }
+
+    int CloseAbility(const sptr<IRemoteObject> &token, int resultCode = DEFAULT_INVAL_VALUE,
+        const Want *resultWant = nullptr) override
+    {
+        return 1;
+    }
+
+    int MinimizeAbility(const sptr<IRemoteObject> &token, bool fromUser = false) override
+    {
+        return 1;
+    }
+
+    int ConnectAbility(const Want &want, const sptr<IAbilityConnection> &connect,
+        const sptr<IRemoteObject> &callerToken, int32_t userId) override
+    {
+        return 2097177;
+    }
+
+    int DisconnectAbility(const sptr<IAbilityConnection> &connect) override
+    {
+        return 1;
+    }
+
+    sptr<IAbilityScheduler> AcquireDataAbility(
+        const Uri &uri, bool tryBind, const sptr<IRemoteObject> &callerToken) override
+    {
+        return nullptr;
+    }
+
+    int ReleaseDataAbility(
+        sptr<IAbilityScheduler> dataAbilityScheduler, const sptr<IRemoteObject> &callerToken) override
+    {
+        return 1;
+    }
+
+    int AttachAbilityThread(const sptr<IAbilityScheduler> &scheduler, const sptr<IRemoteObject> &token) override
+    {
+        return 1;
+    }
+
+    int AbilityTransitionDone(const sptr<IRemoteObject> &token, int state, const PacMap &saveData)override
+    {
+        return 1;
+    }
+
+    int ScheduleConnectAbilityDone(
+        const sptr<IRemoteObject> &token, const sptr<IRemoteObject> &remoteObject) override
+    {
+        return 1;
+    }
+
+    int ScheduleDisconnectAbilityDone(const sptr<IRemoteObject> &token) override
+    {
+        return 1;
+    }
+
+    int ScheduleCommandAbilityDone(const sptr<IRemoteObject> &token) override
+    {
+        return 1;
+    }
+
+    int ScheduleCommandAbilityWindowDone(
+        const sptr<IRemoteObject> &token,
+        const sptr<AAFwk::SessionInfo> &sessionInfo,
+        AAFwk::WindowCommand winCmd,
+        AAFwk::AbilityCommand abilityCmd) override
+    {
+        return 1;
+    }
+
+    void DumpState(const std::string &args, std::vector<std::string> &state) override
+    {}
+
+    void DumpSysState(
+        const std::string& args, std::vector<std::string>& state, bool isClient, bool isUserID, int UserID) override
+    {}
+
+    int StopServiceAbility(const Want &want, int32_t userId, const sptr<IRemoteObject> &token = nullptr) override
+    {
+        return 1;
+    }
+
+    int KillProcess(const std::string &bundleName) override
+    {
+        return 1;
+    }
+
+    int ClearUpApplicationData(const std::string &bundleName) override
+    {
+        return 1;
+    }
+
+    int UninstallApp(const std::string &bundleName, int32_t uid) override
+    {
+        return 1;
+    }
+
+    sptr<IWantSender> GetWantSender(
+        const WantSenderInfo &wantSenderInfo, const sptr<IRemoteObject> &callerToken) override
+    {
+        return nullptr;
+    }
+
+    int SendWantSender(const sptr<IWantSender> &target, const SenderInfo &senderInfo) override
+    {
+        return 1;
+    }
+
+    void CancelWantSender(const sptr<IWantSender> &sender) override
+    {}
+
+    int GetPendingWantUid(const sptr<IWantSender> &target) override
+    {
+        return 1;
+    }
+
+    int GetPendingWantUserId(const sptr<IWantSender> &target) override
+    {
+        return 1;
+    }
+
+    std::string GetPendingWantBundleName(const sptr<IWantSender> &target) override
+    {
+        return "";
+    }
+
+    int GetPendingWantCode(const sptr<IWantSender> &target) override
+    {
+        return 1;
+    }
+
+    int GetPendingWantType(const sptr<IWantSender> &target) override
+    {
+        return 1;
+    }
+
+    void RegisterCancelListener(const sptr<IWantSender> &sender, const sptr<IWantReceiver> &receiver) override
+    {}
+
+    void UnregisterCancelListener(const sptr<IWantSender> &sender, const sptr<IWantReceiver> &receiver) override
+    {}
+
+    int GetPendingRequestWant(const sptr<IWantSender> &target, std::shared_ptr<Want> &want) override
+    {
+        return 1;
+    }
+
+    int GetWantSenderInfo(const sptr<IWantSender> &target, std::shared_ptr<WantSenderInfo> &info) override
+    {
+        return 1;
+    }
+
+    int ContinueMission(const std::string &srcDeviceId, const std::string &dstDeviceId, int32_t missionId,
+        const sptr<IRemoteObject> &callBack, AAFwk::WantParams &wantParams) override
+    {
+        return 1;
+    }
+
+    int ContinueAbility(const std::string &deviceId, int32_t missionId, uint32_t versionCode) override
+    {
+        return 1;
+    }
+
+    int StartContinuation(const Want &want, const sptr<IRemoteObject> &abilityToken, int32_t status) override
+    {
+        return 1;
+    }
+
+    void NotifyCompleteContinuation(const std::string &deviceId, int32_t sessionId, bool isSuccess) override
+    {}
+
+    int NotifyContinuationResult(int32_t missionId, int32_t result) override
+    {
+        return 1;
+    }
+
+    int LockMissionForCleanup(int32_t missionId) override
+    {
+        return 1;
+    }
+
+    int UnlockMissionForCleanup(int32_t missionId) override
+    {
+        return 1;
+    }
+
+    int RegisterMissionListener(const sptr<IMissionListener> &listener) override
+    {
+        return 1;
+    }
+
+    int UnRegisterMissionListener(const sptr<IMissionListener> &listener) override
+    {
+        return 1;
+    }
+
+    int GetMissionInfos(
+        const std::string &deviceId, int32_t numMax, std::vector<MissionInfo> &missionInfos) override
+    {
+        return 1;
+    }
+
+    int GetMissionInfo(const std::string &deviceId, int32_t missionId, MissionInfo &missionInfo) override
+    {
+        return 1;
+    }
+
+    int GetMissionSnapshot(const std::string& deviceId, int32_t missionId,
+        MissionSnapshot& snapshot, bool isLowResolution) override
+    {
+        return 1;
+    }
+
+    int CleanMission(int32_t missionId) override
+    {
+        return 1;
+    }
+
+    int CleanAllMissions() override
+    {
+        return 1;
+    }
+
+    int MoveMissionToFront(int32_t missionId) override
+    {
+        return 1;
+    }
+
+    int MoveMissionToFront(int32_t missionId, const StartOptions &startOptions) override
+    {
+        return 1;
+    }
+
+    int StartAbilityByCall(const Want &want, const sptr<IAbilityConnection> &connect,
+        const sptr<IRemoteObject> &callerToken, int32_t accountId) override
+    {
+        return 1;
+    }
+
+    int ReleaseCall(const sptr<IAbilityConnection> &connect, const AppExecFwk::ElementName &element) override
+    {
+        return 1;
+    }
+
+    int StartUser(int userId) override
+    {
+        return 1;
+    }
+
+    int StopUser(int userId, const sptr<IStopUserCallback> &callback) override
+    {
+        return 1;
+    }
+
+    int SetMissionLabel(const sptr<IRemoteObject> &abilityToken, const std::string &label) override
+    {
+        return 1;
+    }
+
+    int SetMissionIcon(const sptr<IRemoteObject> &token,
+        const std::shared_ptr<OHOS::Media::PixelMap> &icon) override
+    {
+        return 1;
+    }
+
+    int RegisterWindowManagerServiceHandler(const sptr<IWindowManagerServiceHandler>& handler) override
+    {
+        return 1;
+    }
+
+    void CompleteFirstFrameDrawing(const sptr<IRemoteObject> &abilityToken) override
+    {}
+
+    int GetAbilityRunningInfos(std::vector<AbilityRunningInfo> &info) override
+    {
+        return 1;
+    }
+
+    int GetExtensionRunningInfos(int upperLimit, std::vector<ExtensionRunningInfo> &info) override
+    {
+        return 1;
+    }
+
+    int GetProcessRunningInfos(std::vector<AppExecFwk::RunningProcessInfo> &info) override
+    {
+        return 1;
+    }
+
+    int StartSyncRemoteMissions(const std::string &devId, bool fixConflict, int64_t tag) override
+    {
+        return 1;
+    }
+
+    int StopSyncRemoteMissions(const std::string &devId) override
+    {
+        return 1;
+    }
+
+    int RegisterMissionListener(const std::string &deviceId, const sptr<IRemoteMissionListener> &listener) override
+    {
+        return 1;
+    }
+
+    int UnRegisterMissionListener(const std::string &deviceId,
+        const sptr<IRemoteMissionListener> &listener) override
+    {
+        return 1;
+    }
+
+    int SetAbilityController(const sptr<AppExecFwk::IAbilityController> &abilityController,
+        bool imAStabilityTest) override
+    {
+        return 1;
+    }
+
+    bool IsRunningInStabilityTest() override
+    {
+        return false;
+    }
+
+    int RegisterSnapshotHandler(const sptr<ISnapshotHandler>& handler) override
+    {
+        return 1;
+    }
+
+    int StartUserTest(const Want &want, const sptr<IRemoteObject> &observer) override
+    {
+        return 1;
+    }
+
+    int FinishUserTest(const std::string &msg, const int64_t &resultCode, const std::string &bundleName) override
+    {
+        return 1;
+    }
+
+    int GetTopAbility(sptr<IRemoteObject> &token) override
+    {
+        return 1;
+    }
+
+    int DelegatorDoAbilityForeground(const sptr<IRemoteObject> &token) override
+    {
+        return 1;
+    }
+
+    int DelegatorDoAbilityBackground(const sptr<IRemoteObject> &token) override
+    {
+        return 1;
+    }
+
+    int DoAbilityForeground(const sptr<IRemoteObject> &token, uint32_t flag) override
+    {
+        return 1;
+    }
+
+    int DoAbilityBackground(const sptr<IRemoteObject> &token, uint32_t flag) override
+    {
+        return 1;
+    }
+
+    int SendANRProcessID(int pid) override
+    {
+        return 1;
+    }
+
+    int32_t GetMissionIdByToken(const sptr<IRemoteObject> &token) override
+    {
+        return 1;
+    }
+
+    void GetAbilityTokenByCalleeObj(const sptr<IRemoteObject> &callStub, sptr<IRemoteObject> &token) override
+    {}
+
+    void UpdateMissionSnapShot(const sptr<IRemoteObject>& token) override
+    {}
+
+    int32_t IsValidMissionIds(
+        const std::vector<int32_t> &missionIds, std::vector<MissionVaildResult> &results) override
+    {
+        return 1;
+    }
+
+    int32_t ReportDrawnCompleted(const sptr<IRemoteObject> &callerToken) override
+    {
+        return 1;
     }
 };
 
@@ -446,6 +875,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1200, Functi
 HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0001, Function | MediumTest | Level1)
 {
     AbilityManagerHelper abilityManagerHelper;
+    abilityManagerHelper.abilityMgr_ = new (std::nothrow) TestAbilityMgr();
     bool result = abilityManagerHelper.GetAbilityMgrProxy();
     abilityManagerHelper.Clear();
     EXPECT_EQ(result, true);
@@ -468,6 +898,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | Med
     OHOS::sptr<OHOS::IRemoteObject> callerToken(nullptr);
     int32_t userId = 1;
     AbilityManagerHelper abilityManagerHelper;
+    abilityManagerHelper.abilityMgr_ = new (std::nothrow) TestAbilityMgr();
     int result = abilityManagerHelper.ConnectAbility(want, event, callerToken, userId);
     EXPECT_EQ(result, 2097177);
 }
