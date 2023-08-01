@@ -120,7 +120,6 @@ ohos_shared_library("static_subscriber_extension_module") {
   external_deps = [
     "ability_base:configuration",
     "ability_base:session_info",
-    "ace_engine:ace_uicontent",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
