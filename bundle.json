@@ -69,7 +69,6 @@
                 "samgr",
                 "os_account",
                 "c_utils",
-                "ace_engine",
                 "ffrt"
             ],
             "third_party": [
