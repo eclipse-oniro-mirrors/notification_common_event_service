@@ -611,3 +611,102 @@ HWTEST_F(CommonEventSubscribeTest, MatchingSkills_001, TestSize.Level1)
     bool result = matchingSkills.ReadFromParcel(parcel);
     EXPECT_EQ(result, true);
 }
+
+/*
+ * tc.number: CommonEventSubscriber_001
+ * tc.name: test SetCode
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: when SetCode return false
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_001, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    subscriber->SetAsyncCommonEventResult(nullptr);
+    EXPECT_EQ(subscriber->CheckSynchronous(), false);
+    bool result = subscriber->SetCode(1);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: CommonEventSubscriber_002
+ * tc.name: test GetCode
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: when GetCode return false
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_002, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    subscriber->SetAsyncCommonEventResult(nullptr);
+    EXPECT_EQ(subscriber->CheckSynchronous(), false);
+    bool result = subscriber->GetCode();
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: CommonEventSubscriber_003
+ * tc.name: test SetData
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: when SetData return false
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_003, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    subscriber->SetAsyncCommonEventResult(nullptr);
+    EXPECT_EQ(subscriber->CheckSynchronous(), false);
+    std::string data = "this is data";
+    bool result = subscriber->SetData(data);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * tc.number: CommonEventSubscriber_004
+ * tc.name: test GetData
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: when GetData return null
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_004, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    subscriber->SetAsyncCommonEventResult(nullptr);
+    EXPECT_EQ(subscriber->CheckSynchronous(), false);
+    std::string result = subscriber->GetData();
+    std::string ret = "";
+    EXPECT_EQ(result, ret);
+}
+
+/*
+ * tc.number: CommonEventSubscriber_005
+ * tc.name: test SetCodeAndData
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: when SetCodeAndData return false
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_005, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    subscriber->SetAsyncCommonEventResult(nullptr);
+    EXPECT_EQ(subscriber->CheckSynchronous(), false);
+    int32_t code = 1;
+    std::string data = "this is data";
+    bool result = subscriber->SetCodeAndData(code, data);
+    EXPECT_EQ(result, false);
+}
