@@ -20,12 +20,12 @@
 #define protected public
 #include "bundle_manager_helper.h"
 #include "common_event_control_manager.h"
+#include "inner_common_event_manager.h"
 #undef private
 #undef protected
 
 #include "common_event_listener.h"
 #include "common_event_subscriber.h"
-#include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
 
 using namespace testing::ext;
@@ -41,7 +41,6 @@ const std::string ACTION = "acion";
 std::mutex mtx;
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
 InnerCommonEventManager innerCommonEventManager;
-std::shared_ptr<CommonEventControlManager> commonEventControlManager = std::make_shared<CommonEventControlManager>();
 std::shared_ptr<EventHandler> handler_;
 }  // namespace
 
@@ -55,7 +54,11 @@ public:
     static void TearDownTestCase(void);
     void SetUp();
     void TearDown();
+    static std::shared_ptr<CommonEventControlManager> commonEventControlManager;
 };
+
+std::shared_ptr<CommonEventControlManager>
+    CommonEventPublishOrderedEventUnitTest::commonEventControlManager = nullptr;
 
 class SubscriberTest : public CommonEventSubscriber {
 public:
@@ -83,11 +86,30 @@ void CommonEventPublishOrderedEventUnitTest::SetUpTestCase(void)
     bundleObject = new MockBundleMgrService();
     OHOS::DelayedSingleton<BundleManagerHelper>::GetInstance()->sptrBundleMgr_ =
         OHOS::iface_cast<OHOS::AppExecFwk::IBundleMgr>(bundleObject);
+    commonEventControlManager = std::make_shared<CommonEventControlManager>();
 }
 
 void CommonEventPublishOrderedEventUnitTest::TearDownTestCase(void)
 {
     EventRunner::GetMainEventRunner()->Stop();
+    if (commonEventControlManager != nullptr) {
+        if (commonEventControlManager->orderedQueue_ != nullptr) {
+            commonEventControlManager->orderedQueue_.reset();
+        }
+        if (commonEventControlManager->unorderedQueue_ != nullptr) {
+            commonEventControlManager->unorderedQueue_.reset();
+        }
+        if (commonEventControlManager->unorderedImmediateQueue_ != nullptr) {
+            commonEventControlManager->unorderedImmediateQueue_.reset();
+        }
+    }
+
+    if (innerCommonEventManager.controlPtr_ != nullptr) {
+        innerCommonEventManager.controlPtr_.reset();
+    }
+    if (innerCommonEventManager.staticSubscriberManager_ != nullptr) {
+        innerCommonEventManager.staticSubscriberManager_.reset();
+    }
 }
 
 void CommonEventPublishOrderedEventUnitTest::SetUp(void)

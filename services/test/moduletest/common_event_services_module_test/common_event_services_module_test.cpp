@@ -77,7 +77,7 @@ sptr<CommonEventManagerService> cesModuleTest::commonEventManagerService_ = null
 
 void cesModuleTest::SetUpTestCase()
 {
-    commonEventManagerService_ = DelayedSingleton<CommonEventManagerService>::GetInstance().get();
+    commonEventManagerService_ = new CommonEventManagerService();
     commonEventManagerService_->Init();
 
     bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
@@ -87,6 +87,16 @@ void cesModuleTest::SetUpTestCase()
 
 void cesModuleTest::TearDownTestCase()
 {
+    if (commonEventManagerService_ != nullptr) {
+        if (commonEventManagerService_->innerCommonEventManager_ != nullptr) {
+            commonEventManagerService_->innerCommonEventManager_.reset();
+            commonEventManagerService_->innerCommonEventManager_ = nullptr;
+        }
+        if (commonEventManagerService_->commonEventSrvQueue_ != nullptr) {
+            commonEventManagerService_->commonEventSrvQueue_.reset();
+            commonEventManagerService_->commonEventSrvQueue_ = nullptr;
+        }
+    }
 }
 
 void cesModuleTest::SetUp()
