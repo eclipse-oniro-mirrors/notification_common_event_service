@@ -18,13 +18,13 @@
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
+#include "inner_common_event_manager.h"
 #undef private
 #undef protected
 
 #include "common_event_constant.h"
 #include "common_event_listener.h"
 #include "datetime_ex.h"
-#include "inner_common_event_manager.h"
 #include "mock_bundle_manager.h"
 
 using namespace testing::ext;
@@ -313,7 +313,16 @@ void CommonEventDumpTest::SetUp(void)
 }
 
 void CommonEventDumpTest::TearDown(void)
-{}
+{
+    if (innerCommonEventManager_ != nullptr) {
+        if (innerCommonEventManager_->controlPtr_ != nullptr) {
+            innerCommonEventManager_->controlPtr_.reset();
+        }
+        if (innerCommonEventManager_->staticSubscriberManager_ != nullptr) {
+            innerCommonEventManager_->staticSubscriberManager_.reset();
+        }
+    }
+}
 
 bool CommonEventDumpTest::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber,
     uid_t callingUid, OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
