@@ -404,3 +404,121 @@ HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_001, TestSize.Level1)
     asyncCommonEventResult.finished_ = true;
     EXPECT_EQ(false, asyncCommonEventResult.FinishCommonEvent());
 }
+
+/*
+ * @tc.number: AsyncCommonEventResult_002
+ * @tc.name: AsyncCommonEventResult CheckSynchronous
+ * @tc.desc: test SetCode function
+ */
+
+HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_002, TestSize.Level1)
+{
+    int32_t resultCode = 1;
+    std::string resultData = "aa";
+    bool ordered = false;
+    bool sticky = true;
+    sptr<IRemoteObject> token = nullptr;
+    AsyncCommonEventResult asyncCommonEventResult(resultCode, resultData, ordered, sticky, token);
+    EXPECT_EQ(asyncCommonEventResult.CheckSynchronous(), false);
+    int32_t code = 1;
+    bool result = asyncCommonEventResult.SetCode(code);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * @tc.number: AsyncCommonEventResult_003
+ * @tc.name: AsyncCommonEventResult SetData
+ * @tc.desc: test SetData function
+ */
+
+HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_003, TestSize.Level1)
+{
+    int32_t resultCode = 1;
+    std::string resultData = "aa";
+    bool ordered = false;
+    bool sticky = true;
+    sptr<IRemoteObject> token = nullptr;
+    AsyncCommonEventResult asyncCommonEventResult(resultCode, resultData, ordered, sticky, token);
+    EXPECT_EQ(asyncCommonEventResult.CheckSynchronous(), false);
+    std::string data = "this is data";
+    bool result = asyncCommonEventResult.SetData(data);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * @tc.number: AsyncCommonEventResult_004
+ * @tc.name: AsyncCommonEventResult SetCodeAndData
+ * @tc.desc: test SetCodeAndData function
+ */
+
+HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_004, TestSize.Level1)
+{
+    int32_t resultCode = 1;
+    std::string resultData = "aa";
+    bool ordered = false;
+    bool sticky = true;
+    sptr<IRemoteObject> token = nullptr;
+    AsyncCommonEventResult asyncCommonEventResult(resultCode, resultData, ordered, sticky, token);
+    EXPECT_EQ(asyncCommonEventResult.CheckSynchronous(), false);
+    int32_t code = 1;
+    std::string data = "this is data";
+    bool result = asyncCommonEventResult.SetCodeAndData(code, data);
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * @tc.number: AsyncCommonEventResult_005
+ * @tc.name: AsyncCommonEventResult AbortCommonEvent
+ * @tc.desc: test AbortCommonEvent function
+ */
+
+HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_005, TestSize.Level1)
+{
+    int32_t resultCode = 1;
+    std::string resultData = "aa";
+    bool ordered = false;
+    bool sticky = true;
+    sptr<IRemoteObject> token = nullptr;
+    AsyncCommonEventResult asyncCommonEventResult(resultCode, resultData, ordered, sticky, token);
+    EXPECT_EQ(asyncCommonEventResult.CheckSynchronous(), false);
+    bool result = asyncCommonEventResult.AbortCommonEvent();
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * @tc.number: AsyncCommonEventResult_006
+ * @tc.name: AsyncCommonEventResult ClearAbortCommonEvent
+ * @tc.desc: test ClearAbortCommonEvent function
+ */
+
+HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_006, TestSize.Level1)
+{
+    int32_t resultCode = 1;
+    std::string resultData = "aa";
+    bool ordered = false;
+    bool sticky = true;
+    sptr<IRemoteObject> token = nullptr;
+    AsyncCommonEventResult asyncCommonEventResult(resultCode, resultData, ordered, sticky, token);
+    EXPECT_EQ(asyncCommonEventResult.CheckSynchronous(), false);
+    bool result = asyncCommonEventResult.ClearAbortCommonEvent();
+    EXPECT_EQ(result, false);
+}
+
+/*
+ * @tc.number: AsyncCommonEventResult_007
+ * @tc.name: AsyncCommonEventResult FinishCommonEvent
+ * @tc.desc: test FinishCommonEvent function
+ */
+
+HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_007, TestSize.Level1)
+{
+    int32_t resultCode = 1;
+    std::string resultData = "aa";
+    bool ordered = false;
+    bool sticky = true;
+    sptr<IRemoteObject> token = nullptr;
+    AsyncCommonEventResult asyncCommonEventResult(resultCode, resultData, ordered, sticky, token);
+    EXPECT_EQ(asyncCommonEventResult.CheckSynchronous(), false);
+    bool result = asyncCommonEventResult.FinishCommonEvent();
+    EXPECT_EQ(result, false);
+}

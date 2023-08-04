@@ -162,6 +162,40 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0500, Le
 }
 
 /**
+ * @tc.name: CommonEventSubscriberManager_0501
+ * @tc.desc: test DumpDetailed function and userId is ALL_USER.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0501, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0501 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
+    std::string title = "aa";
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    MatchingSkills matchingSkills_;
+    record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    int32_t userId = ALL_USER;
+    record->eventSubscribeInfo->SetUserId(userId);
+
+    MatchingSkills matchSkills;
+    std::string event = "event.unit.test";
+    matchSkills.AddEvent(event);
+    EXPECT_EQ(1, matchSkills.CountEvent());
+    std::string entity = "event.unit.test";
+    matchSkills.AddEntity(entity);
+    EXPECT_EQ(1, matchSkills.CountEntities());
+    std::string shceme = "event.unit.test";
+    matchSkills.AddScheme(shceme);
+    EXPECT_EQ(1, matchSkills.CountSchemes());
+    std::string format = "aa";
+    std::string dumpInfo = "aa";
+    commonEventSubscriberManager->DumpDetailed(title, record, format, dumpInfo);
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0501 end";
+}
+
+/**
  * @tc.name: CommonEventSubscriberManager_0600
  * @tc.desc: test DumpDetailed function and userId is 100.
  * @tc.type: FUNC
@@ -487,6 +521,68 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2200, Le
     commonEventSubscriberManager->frozenEvents_.emplace(uids, frozenRecord);
     commonEventSubscriberManager->RemoveFrozenEventsBySubscriber(subscriberRecord);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2200 end";
+}
+
+/**
+ * @tc.name: CommonEventSubscriberManager_2300
+ * @tc.desc: test DumpState function when records.size()>0.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2300, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2300 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
+    std::string event = "";
+    int32_t userId = 100;
+    std::vector<SubscriberRecordPtr> records;
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    MatchingSkills matchingSkills_;
+    record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    record->eventSubscribeInfo->SetUserId(userId);
+    commonEventSubscriberManager->subscribers_.emplace_back(record);
+    commonEventSubscriberManager->GetSubscriberRecordsByEvent(event, userId, records);
+    EXPECT_EQ(1, records.size());
+    std::vector<std::string> state;
+    commonEventSubscriberManager->DumpState(event, userId, state);
+    commonEventSubscriberManager->UpdateAllFreezeInfos(true, 1);
+    commonEventSubscriberManager->UpdateAllFreezeInfos(false, 1);
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2300 end";
+}
+
+/**
+ * @tc.name: CommonEventSubscriberManager_2400
+ * @tc.desc: test DumpState function when record is nullptr..
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2400, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2400 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    CommonEventRecord eventRecord;
+    commonEventSubscriberManager->InsertFrozenEvents(subscriberRecord, eventRecord);
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2400 end";
+}
+
+/**
+ * @tc.name: CommonEventSubscriberManager_2500
+ * @tc.desc: test DumpState function when record not nullptr..
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2500, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2500 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    ASSERT_NE(nullptr, commonEventSubscriberManager);
+    SubscriberRecordPtr subscriberRecord = nullptr;
+    CommonEventRecord eventRecord;
+    commonEventSubscriberManager->InsertFrozenEvents(subscriberRecord, eventRecord);
+    GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2500 end";
 }
 
 /**

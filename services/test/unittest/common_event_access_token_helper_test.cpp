@@ -18,6 +18,7 @@
 
 #include "access_token_helper.h"
 #include "mock_constant.h"
+#include "tokenid_kit.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -129,6 +130,44 @@ HWTEST_F(CommonEventAccessTokenHelperTest, AccessTokenHelper_0200, Level1)
     std::string event = "aa";
     accessTokenHelper->RecordSensitivePermissionUsage(callerToken, event);
     GTEST_LOG_(INFO) << "AccessTokenHelper_0200 end";
+}
+
+/**
+ * @tc.name: IsSystemApp_0100
+ * @tc.desc: Judge DLP accessToken
+ * @tc.type: FUNC
+ * @tc.require: I582VA
+ */
+HWTEST_F(CommonEventAccessTokenHelperTest, IsSystemApp_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "IsSystemApp_0100 start";
+    std::shared_ptr<AccessTokenHelper> accessTokenHelper = std::make_shared<AccessTokenHelper>();
+    ASSERT_NE(nullptr, accessTokenHelper);
+    AccessTokenID callerToken = DLP_PERMISSION_GRANTED;
+    EXPECT_TRUE(AccessTokenHelper::IsDlpHap(callerToken));
+    bool result = AccessTokenHelper::IsSystemApp();
+    EXPECT_EQ(result, false);
+
+    GTEST_LOG_(INFO) << "IsSystemApp_0100 end";
+}
+
+/**
+ * @tc.name: IsSystemApp_0200
+ * @tc.desc: Judge DLP accessToken
+ * @tc.type: FUNC
+ * @tc.require: I582VA
+ */
+HWTEST_F(CommonEventAccessTokenHelperTest, IsSystemApp_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "IsSystemApp_0200 start";
+
+    std::shared_ptr<AccessTokenHelper> accessTokenHelper = std::make_shared<AccessTokenHelper>();
+    ASSERT_NE(nullptr, accessTokenHelper);
+    AccessTokenID callerToken = PERMISSION_GRANTED;
+    EXPECT_FALSE(AccessTokenHelper::IsDlpHap(callerToken));
+    bool result = AccessTokenHelper::IsSystemApp();
+    EXPECT_EQ(result, false);
+    GTEST_LOG_(INFO) << "IsSystemApp_0200 end";
 }
 }
 }
