@@ -512,3 +512,58 @@ HWTEST_F(CommonEventStickyTest, RemoveStickyCommonEvent_1100, Function | MediumT
     EXPECT_FALSE(
         OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT, Stickydata));
 }
+
+/*
+ * @tc.number: DumpState_0100
+ * @tc.name: DumpState
+ * @tc.desc: Found events would be pushed into common event records.
+ */
+HWTEST_F(CommonEventStickyTest, DumpState_0100, TestSize.Level1)
+{
+    // make matching skills
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(STRING_EVENT);
+
+    // make subscriber info
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    auto subscribeInfoPtr = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
+
+    // make a vector of records
+    std::vector<std::shared_ptr<CommonEventRecord>> records;
+    // check size of the records
+    EXPECT_EQ((int)records.size(), 0);
+
+    // make a want
+    Want want;
+    want.SetAction(STRING_EVENT);
+
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+
+    // make a publish info and set it unordered
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetOrdered(false);
+
+    // make a record
+    auto recordPtr = std::make_shared<CommonEventRecord>();
+    recordPtr->commonEventData = std::make_shared<CommonEventData>(data);
+    recordPtr->publishInfo = std::make_shared<CommonEventPublishInfo>(publishInfo);
+
+    // get common event sticky manager
+    auto stickyManagerPtr = OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance();
+    // add a record in common event sticky manager
+    stickyManagerPtr->commonEventRecords_[STRING_EVENT] = recordPtr;
+
+    // find sticky events
+    int result = stickyManagerPtr->FindStickyEvents(subscribeInfoPtr, records);
+    // check result of finding sticky events
+    EXPECT_EQ(result, OHOS::ERR_OK);
+    // check size of the records
+    EXPECT_EQ((int)records.size(), 1);
+
+    std::string event = "this is event";
+    int32_t userId = 1;
+    std::vector<std::string> state;
+    stickyManagerPtr->DumpState(event, userId, state);
+}
