@@ -69,7 +69,8 @@
                 "samgr",
                 "os_account",
                 "c_utils",
-                "ffrt"
+                "ffrt",
+                "kv_store"
             ],
             "third_party": [
                 "libuv"
