@@ -464,9 +464,6 @@ public:
     void GetAbilityTokenByCalleeObj(const sptr<IRemoteObject> &callStub, sptr<IRemoteObject> &token) override
     {}
 
-    void UpdateMissionSnapShot(const sptr<IRemoteObject>& token) override
-    {}
-
     int32_t IsValidMissionIds(
         const std::vector<int32_t> &missionIds, std::vector<MissionVaildResult> &results) override
     {
