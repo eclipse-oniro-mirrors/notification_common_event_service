@@ -18,6 +18,7 @@
 
 #include <map>
 #include <mutex>
+#include <thread>
 
 #include "common_event_listener.h"
 #include "icommon_event.h"
@@ -200,6 +201,7 @@ private:
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
 private:
+    friend class CommonEventDeathRecipient;
     bool isProxyValid_ = false;
     std::mutex mutex_;
     std::mutex eventListenersMutex_;
@@ -210,6 +212,20 @@ private:
     static const uint8_t ALREADY_SUBSCRIBED = 0;
     static const uint8_t INITIAL_SUBSCRIPTION = 1;
     static const uint8_t SUBSCRIBE_FAILED = 2;
+
+    /**
+     * Reconnect common event manager service once per 1000 milliseconds,
+     * until the connection succeeds or reaching the max retry times.
+     *
+     * @return Returns true if successful; false otherwise.
+     */
+    bool Reconnect();
+
+    /**
+     * Resubscribe after common event manager service restarts.
+     *
+     */
+    void Resubscribe();
 };
 }  // namespace EventFwk
 }  // namespace OHOS
