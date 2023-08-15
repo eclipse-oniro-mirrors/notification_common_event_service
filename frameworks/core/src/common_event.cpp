@@ -24,6 +24,11 @@
 
 namespace OHOS {
 namespace EventFwk {
+namespace {
+const int32_t MAX_RETRY_TIME = 30;
+const int32_t SLEEP_TIME = 1000;
+}
+
 using namespace OHOS::Notification;
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -141,6 +146,7 @@ int32_t CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubsc
         auto res = commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
         if (res != ERR_OK) {
             EVENT_LOGD("subscribe common event failed, remove event listener");
+            std::lock_guard<std::mutex> lock(eventListenersMutex_);
             auto eventListener = eventListeners_.find(subscriber);
             if (eventListener != eventListeners_.end()) {
                 eventListeners_.erase(eventListener);
@@ -373,6 +379,43 @@ uint8_t CommonEvent::CreateCommonEventListener(
     }
 
     return INITIAL_SUBSCRIPTION;
+}
+
+bool CommonEvent::Reconnect()
+{
+    EVENT_LOGD("enter");
+    for (int32_t i = 0; i < MAX_RETRY_TIME; i++) {
+        // Sleep 1000 milliseconds before reconnect.
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+
+        // try to connect ces
+        if (!GetCommonEventProxy()) {
+            EVENT_LOGE("get ces proxy fail, try again.");
+            continue;
+        }
+
+        EVENT_LOGD("get ces proxy success.");
+        return true;
+    }
+
+    return false;
+}
+
+void CommonEvent::Resubscribe()
+{
+    EVENT_LOGD("enter");
+    if (commonEventProxy_ != nullptr) {
+        std::lock_guard<std::mutex> lock(eventListenersMutex_);
+        for (auto it = eventListeners_.begin(); it != eventListeners_.end(); it++) {
+            auto subscriber = it->first;
+            auto listener = it->second;
+            int32_t res = commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), listener);
+            if (res != ERR_OK) {
+                EVENT_LOGW("subscribe common event failed, remove event listener");
+                eventListeners_.erase(it);
+            }
+        }
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS

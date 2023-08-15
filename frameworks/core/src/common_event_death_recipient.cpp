@@ -24,7 +24,13 @@ void CommonEventDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
 {
     EVENT_LOGI("common event service died, remove the proxy object");
 
-    DelayedSingleton<CommonEvent>::GetInstance()->ResetCommonEventProxy();
+    auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
+
+    commonEvent->ResetCommonEventProxy();
+
+    if (commonEvent->Reconnect()) {
+        commonEvent->Resubscribe();
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS
