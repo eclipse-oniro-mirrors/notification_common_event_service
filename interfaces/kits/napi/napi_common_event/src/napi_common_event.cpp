@@ -48,6 +48,7 @@ static const int32_t ARGS_DATA_TWO = 2;
 static const int32_t INDEX_ZERO = 0;
 static const uint32_t INDEX_ONE = 1;
 static const int32_t ARGC_ONE = 1;
+static const int32_t ARGC_TWO = 2;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
@@ -517,6 +518,51 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     }
 }
 
+napi_value CreateSubscriberSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("CreateSubscriberSync start");
+
+    size_t argc = ARGC_ONE;
+    napi_value argv[ARGC_ONE] = {nullptr};
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
+    if (argc < 1) {
+        EVENT_LOGE("Wrong number of arguments");
+        return NapiGetNull(env);
+    }
+
+    napi_valuetype valuetype;
+
+    // argv[0]:CommonEventSubscribeInfo
+    NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
+    if (valuetype != napi_object) {
+        EVENT_LOGE("Wrong argument type. object expected.");
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        return NapiGetNull(env);
+    }
+
+    napi_ref subscribeInfo = nullptr;
+    napi_create_reference(env, argv[0], 1, &subscribeInfo);
+
+    napi_value result = nullptr;
+    napi_value constructor = nullptr;
+    napi_value subscribeInfoRefValue = nullptr;
+    napi_get_reference_value(env, subscribeInfo, &subscribeInfoRefValue);
+    napi_get_reference_value(env, g_CommonEventSubscriber, &constructor);
+    napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &result);
+
+    if (result == nullptr) {
+        EVENT_LOGE("create subscriber instance failed");
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        return NapiGetNull(env);
+    }
+
+    if (subscribeInfo != nullptr) {
+        napi_delete_reference(env, subscribeInfo);
+    }
+
+    return result;
+}
+
 napi_value ParseParametersByGetSubscribeInfo(
     const napi_env &env, const size_t &argc, const napi_value (&argv)[1], napi_ref &callback)
 {
@@ -549,6 +595,7 @@ void SetEventsResult(const napi_env &env, const std::vector<std::string> &events
         }
         size_t index = 0;
         for (auto event : events) {
+            EVENT_LOGD("SetEventsResult event = %{public}s", event.c_str());
             napi_create_string_utf8(env, event.c_str(), NAPI_AUTO_LENGTH, &value);
             napi_set_element(env, nEvents, index, value);
             index++;
@@ -639,6 +686,17 @@ void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *as
     SetPublisherPriorityResult(env, asyncCallbackInfo->priority, result);
 }
 
+void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscribeInfo, napi_value &result)
+{
+    EVENT_LOGD("SetNapiResult start");
+
+    SetEventsResult(env, subscribeInfo.GetMatchingSkills().GetEvents(), result);
+    SetPublisherPermissionResult(env, subscribeInfo.GetPermission(), result);
+    SetPublisherDeviceIdResult(env, subscribeInfo.GetDeviceId(), result);
+    SetPublisherUserIdResult(env, subscribeInfo.GetUserId(), result);
+    SetPublisherPriorityResult(env, subscribeInfo.GetPriority(), result);
+}
+
 napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
 {
     EVENT_LOGD("GetSubscribeInfo start");
@@ -709,6 +767,27 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
     } else {
         return promise;
     }
+}
+
+napi_value GetSubscribeInfoSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("GetSubscribeInfoSync start");
+
+    size_t argc = 1;
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    napi_value res = nullptr;
+    napi_create_object(env, &res);
+    SetNapiResult(env, subscriber->GetSubscribeInfo(), res);
+
+    return res;
 }
 
 napi_value ParseParametersByIsOrderedCommonEvent(
@@ -841,6 +920,34 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
     }
 }
 
+napi_value IsOrderedCommonEventSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("isOrderedCommonEventSync start");
+
+    size_t argc = 0;
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+    bool isOrdered = false;
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        isOrdered = asyncResult->IsOrderedCommonEvent();
+    } else {
+        isOrdered = subscriber->IsOrderedCommonEvent();
+    }
+
+    napi_value result = nullptr;
+    napi_get_boolean(env, isOrdered, &result);
+
+    return result;
+}
+
 napi_value ParseParametersByIsStickyCommonEvent(
     const napi_env &env, const napi_value (&argv)[1], size_t argc, napi_ref &callback)
 {
@@ -956,6 +1063,36 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
         return promise;
     }
 }
+
+napi_value IsStickyCommonEventSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("isStickyCommonEventSync start");
+
+    size_t argc = 0;
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    bool isSticky = false;
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        isSticky = asyncResult->IsStickyCommonEvent();
+    } else {
+        isSticky = subscriber->IsStickyCommonEvent();
+    }
+
+    napi_value result = nullptr;
+    napi_get_boolean(env, isSticky, &result);
+
+    return result;
+}
+
 napi_value ParseParametersByGetCode(const napi_env &env, const napi_value (&argv)[1], size_t argc, napi_ref &callback)
 {
     napi_valuetype valuetype;
@@ -1035,8 +1172,10 @@ napi_value GetCode(napi_env env, napi_callback_info info)
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
                     asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
+                    EVENT_LOGD("get code success");
                     asyncCallbackInfo->code = asyncResult->GetCode();
                 } else {
+                    EVENT_LOGD("get code failed");
                     asyncCallbackInfo->code = 0;
                 }
             }
@@ -1066,6 +1205,34 @@ napi_value GetCode(napi_env env, napi_callback_info info)
     } else {
         return promise;
     }
+}
+
+napi_value GetCodeSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("getCodeSync start");
+    size_t argc = 1;
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    int32_t code = 0;
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        EVENT_LOGD("get asyncResult success");
+        code = asyncResult->GetCode();
+    } else {
+        EVENT_LOGD("get asyncResult failed");
+        code = 0;
+    }
+    napi_value res = nullptr;
+    napi_create_int32(env, code, &res);
+    return res;
 }
 
 napi_value ParseParametersBySetCode(
@@ -1186,6 +1353,34 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     }
 }
 
+napi_value SetCodeSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("setCodeSync start");
+    size_t argc = ARGC_ONE;
+    napi_value argv[ARGC_ONE] = {nullptr};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+
+    
+    int32_t code = 0;
+    NAPI_CALL(env, napi_get_value_int32(env, argv[0], &code));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        asyncResult->SetCode(code);
+    } else {
+        EVENT_LOGE("asyncResult is nullptr");
+    }
+
+    return NapiGetNull(env);
+}
+
 napi_value ParseParametersByGetData(const napi_env &env, const napi_value (&argv)[1], size_t argc, napi_ref &callback)
 {
     napi_valuetype valuetype;
@@ -1296,6 +1491,32 @@ napi_value GetData(napi_env env, napi_callback_info info)
     } else {
         return promise;
     }
+}
+
+napi_value GetDataSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("getDataSync start");
+    size_t argc = 1;
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    std::string data;
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        data = asyncResult->GetData();
+    } else {
+        data = std::string();
+    }
+    napi_value res = nullptr;
+    napi_create_string_utf8(env, data.c_str(), NAPI_AUTO_LENGTH, &res);
+    return res;
 }
 
 napi_value ParseParametersBySetData(
@@ -1423,6 +1644,39 @@ napi_value SetData(napi_env env, napi_callback_info info)
     } else {
         return promise;
     }
+}
+
+napi_value SetDataSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("setDataSync start");
+    size_t argc = ARGC_ONE;
+    napi_value argv[ARGC_ONE] = {nullptr};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+
+    char str[STR_DATA_MAX_SIZE] = {0};
+    size_t strLen = 0;
+    std::string data;
+    NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], str, STR_DATA_MAX_SIZE, &strLen));
+    if (strLen > STR_DATA_MAX_SIZE - 1) {
+        EVENT_LOGE("data over size");
+        return NapiGetNull(env);;
+    }
+    data = str;
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        return NapiGetNull(env);
+    }
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        asyncResult->SetData(data);
+    }
+
+    return NapiGetNull(env);
 }
 
 napi_value ParseParametersBySetCodeAndData(
@@ -1562,6 +1816,41 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     }
 }
 
+napi_value SetCodeAndDataSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("setCodeAndDataSync start");
+    size_t argc = ARGC_TWO;
+    napi_value argv[ARGC_TWO] = {nullptr};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+
+    int32_t code = 0;
+    NAPI_CALL(env, napi_get_value_int32(env, argv[0], &code));
+
+    char str[STR_DATA_MAX_SIZE] = {0};
+    size_t strLen = 0;
+    std::string data;
+    NAPI_CALL(env, napi_get_value_string_utf8(env, argv[1], str, STR_DATA_MAX_SIZE, &strLen));
+    if (strLen > STR_DATA_MAX_SIZE - 1) {
+        EVENT_LOGE("data over size");
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        return NapiGetNull(env);;
+    }
+    data = str;
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        asyncResult->SetCodeAndData(code, data);
+    }
+    return NapiGetNull(env);
+}
+
 napi_value ParseParametersByAbort(const napi_env &env, const napi_value (&argv)[1], size_t argc, napi_ref &callback)
 {
     napi_valuetype valuetype;
@@ -1667,6 +1956,27 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
     } else {
         return promise;
     }
+}
+
+napi_value AbortCommonEventSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("abortCommonEventSync start");
+    size_t argc = 0;
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        asyncResult->AbortCommonEvent();
+    }
+
+    return NapiGetNull(env);
 }
 
 napi_value ParseParametersByClearAbort(
@@ -1779,6 +2089,28 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
     }
 }
 
+napi_value ClearAbortCommonEventSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("clearAbortCommonEventSync start");
+    size_t argc = 1;
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        asyncResult->ClearAbortCommonEvent();
+    }
+
+    return NapiGetNull(env);
+}
+
 napi_value ParseParametersByGetAbort(const napi_env &env, const napi_value (&argv)[1], size_t argc, napi_ref &callback)
 {
     napi_valuetype valuetype;
@@ -1889,6 +2221,35 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
     } else {
         return promise;
     }
+}
+
+napi_value GetAbortCommonEventSync(napi_env env, napi_callback_info info)
+{
+    EVENT_LOGD("GetAbortCommonEventSync start");
+    size_t argc = 1;
+    
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
+
+    std::shared_ptr<SubscriberInstance> subscriber = GetSubscriber(env, thisVar);
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is nullptr");
+        return NapiGetNull(env);
+    }
+
+    bool abortEvent = false;
+
+    std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
+    if (asyncResult) {
+        abortEvent = asyncResult->GetAbortCommonEvent();
+    } else {
+        abortEvent = false;
+    }
+
+    napi_value result = nullptr;
+    napi_get_boolean(env, abortEvent, &result);
+
+    return result;
 }
 
 napi_value ParseParametersByFinish(const napi_env &env, const napi_value (&argv)[1], size_t argc, napi_ref &callback)
@@ -3218,16 +3579,27 @@ napi_value CommonEventSubscriberInit(napi_env env, napi_value exports)
     napi_value constructor = nullptr;
     napi_property_descriptor properties[] = {
         DECLARE_NAPI_FUNCTION("getSubscribeInfo", GetSubscribeInfo),
+        DECLARE_NAPI_FUNCTION("getSubscribeInfoSync", GetSubscribeInfoSync),
         DECLARE_NAPI_FUNCTION("isOrderedCommonEvent", IsOrderedCommonEvent),
+        DECLARE_NAPI_FUNCTION("isOrderedCommonEventSync", IsOrderedCommonEventSync),
         DECLARE_NAPI_FUNCTION("isStickyCommonEvent", IsStickyCommonEvent),
+        DECLARE_NAPI_FUNCTION("isStickyCommonEventSync", IsStickyCommonEventSync),
         DECLARE_NAPI_FUNCTION("getCode", GetCode),
+        DECLARE_NAPI_FUNCTION("getCodeSync", GetCodeSync),
         DECLARE_NAPI_FUNCTION("setCode", SetCode),
+        DECLARE_NAPI_FUNCTION("setCodeSync", SetCodeSync),
         DECLARE_NAPI_FUNCTION("getData", GetData),
+        DECLARE_NAPI_FUNCTION("getDataSync", GetDataSync),
         DECLARE_NAPI_FUNCTION("setData", SetData),
+        DECLARE_NAPI_FUNCTION("setDataSync", SetDataSync),
         DECLARE_NAPI_FUNCTION("setCodeAndData", SetCodeAndData),
+        DECLARE_NAPI_FUNCTION("setCodeAndDataSync", SetCodeAndDataSync),
         DECLARE_NAPI_FUNCTION("abortCommonEvent", AbortCommonEvent),
+        DECLARE_NAPI_FUNCTION("abortCommonEventSync", AbortCommonEventSync),
         DECLARE_NAPI_FUNCTION("clearAbortCommonEvent", ClearAbortCommonEvent),
+        DECLARE_NAPI_FUNCTION("clearAbortCommonEventSync", ClearAbortCommonEventSync),
         DECLARE_NAPI_FUNCTION("getAbortCommonEvent", GetAbortCommonEvent),
+        DECLARE_NAPI_FUNCTION("getAbortCommonEventSync", GetAbortCommonEventSync),
         DECLARE_NAPI_FUNCTION("finishCommonEvent", FinishCommonEvent),
     };
 
@@ -3254,6 +3626,7 @@ napi_value CommonEventManagerInit(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("publish", Publish),
         DECLARE_NAPI_FUNCTION("publishAsUser", PublishAsUser),
         DECLARE_NAPI_FUNCTION("createSubscriber", CreateSubscriber),
+        DECLARE_NAPI_FUNCTION("createSubscriberSync", CreateSubscriberSync),
         DECLARE_NAPI_FUNCTION("subscribe", Subscribe),
         DECLARE_NAPI_FUNCTION("unsubscribe", Unsubscribe),
         DECLARE_NAPI_FUNCTION("removeStickyCommonEvent", RemoveStickyCommonEvent),
