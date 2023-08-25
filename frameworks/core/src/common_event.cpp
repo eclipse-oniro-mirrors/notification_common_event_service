@@ -369,7 +369,7 @@ uint8_t CommonEvent::CreateCommonEventListener(
             return SUBSCRIBE_FAILED;
         }
 
-        sptr<CommonEventListener> listener = new CommonEventListener(subscriber);
+        sptr<CommonEventListener> listener = new (std::nothrow) CommonEventListener(subscriber);
         if (!listener) {
             EVENT_LOGE("the common event listener is null");
             return SUBSCRIBE_FAILED;

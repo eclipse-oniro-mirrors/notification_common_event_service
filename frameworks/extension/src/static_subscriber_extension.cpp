@@ -26,7 +26,7 @@ using namespace OHOS::AppExecFwk;
 StaticSubscriberExtension* StaticSubscriberExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
     if (!runtime) {
-        return new StaticSubscriberExtension();
+        return new (std::nothrow) StaticSubscriberExtension();
     }
 
     EVENT_LOGI("Create runtime");
@@ -34,7 +34,7 @@ StaticSubscriberExtension* StaticSubscriberExtension::Create(const std::unique_p
         case AbilityRuntime::Runtime::Language::JS:
             return JsStaticSubscriberExtension::Create(runtime);
         default:
-            return new StaticSubscriberExtension();
+            return new (std::nothrow) StaticSubscriberExtension();
     }
 }
 
