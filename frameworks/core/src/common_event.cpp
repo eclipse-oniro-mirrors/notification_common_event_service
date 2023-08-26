@@ -406,13 +406,15 @@ void CommonEvent::Resubscribe()
     EVENT_LOGD("enter");
     if (commonEventProxy_ != nullptr) {
         std::lock_guard<std::mutex> lock(eventListenersMutex_);
-        for (auto it = eventListeners_.begin(); it != eventListeners_.end(); it++) {
+        for (auto it = eventListeners_.begin(); it != eventListeners_.end();) {
             auto subscriber = it->first;
             auto listener = it->second;
             int32_t res = commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), listener);
             if (res != ERR_OK) {
                 EVENT_LOGW("subscribe common event failed, remove event listener");
-                eventListeners_.erase(it);
+                it = eventListeners_.erase(it);
+            } else {
+                it++;
             }
         }
     }
