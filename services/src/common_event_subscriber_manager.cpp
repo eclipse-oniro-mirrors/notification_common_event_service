@@ -26,7 +26,7 @@ constexpr int32_t LENGTH = 80;
 static constexpr int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
-    : death_(sptr<IRemoteObject::DeathRecipient>(new SubscriberDeathRecipient()))
+    : death_(sptr<IRemoteObject::DeathRecipient>(new (std::nothrow) SubscriberDeathRecipient()))
 {
 }
 

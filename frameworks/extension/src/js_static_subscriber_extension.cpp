@@ -67,7 +67,7 @@ NativeValue* AttachStaticSubscriberExtensionContext(NativeEngine* engine, void* 
 JsStaticSubscriberExtension* JsStaticSubscriberExtension::Create(
     const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
-    return new JsStaticSubscriberExtension(static_cast<AbilityRuntime::JsRuntime&>(*runtime));
+    return new (std::nothrow) JsStaticSubscriberExtension(static_cast<AbilityRuntime::JsRuntime&>(*runtime));
 }
 
 JsStaticSubscriberExtension::JsStaticSubscriberExtension(AbilityRuntime::JsRuntime& jsRuntime)
