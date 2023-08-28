@@ -104,25 +104,25 @@ napi_value SetCommonEventData(const CommonEventDataWorker *commonEventDataWorker
 
     napi_value value = nullptr;
 
-    // event
+    // get event
     napi_create_string_utf8(commonEventDataWorkerData->env,
         commonEventDataWorkerData->want.GetAction().c_str(),
         NAPI_AUTO_LENGTH,
         &value);
     napi_set_named_property(commonEventDataWorkerData->env, result, "event", value);
 
-    // bundleName
+    // get bundleName
     napi_create_string_utf8(commonEventDataWorkerData->env,
         commonEventDataWorkerData->want.GetBundle().c_str(),
         NAPI_AUTO_LENGTH,
         &value);
     napi_set_named_property(commonEventDataWorkerData->env, result, "bundleName", value);
 
-    // code
+    // get code
     napi_create_int32(commonEventDataWorkerData->env, commonEventDataWorkerData->code, &value);
     napi_set_named_property(commonEventDataWorkerData->env, result, "code", value);
 
-    // data
+    // get data
     napi_create_string_utf8(
         commonEventDataWorkerData->env, commonEventDataWorkerData->data.c_str(), NAPI_AUTO_LENGTH, &value);
     napi_set_named_property(commonEventDataWorkerData->env, result, "data", value);
@@ -219,7 +219,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         return;
     }
     commonEventDataWorker->want = data.GetWant();
-    EVENT_LOGD("OnReceiveEvent() action = %{public}s", data.GetWant().GetAction().c_str());
+    EVENT_LOGD("OnReceiveEvent() action: %{public}s.", data.GetWant().GetAction().c_str());
     commonEventDataWorker->code = data.GetCode();
     commonEventDataWorker->data = data.GetData();
     commonEventDataWorker->env = env_;
@@ -448,6 +448,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete create callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -641,6 +642,7 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
             delete asyncCallbackInfo;
             asyncCallbackInfo = nullptr;
+            EVENT_LOGD("delete asyncCallbackInfo");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -648,6 +650,7 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete GetSubscribeInfo callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -774,6 +777,7 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
             delete asyncCallbackInfo;
             asyncCallbackInfo = nullptr;
+            EVENT_LOGD("asyncCallbackInfo is null");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -781,6 +785,7 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete IsOrderedCommonEvent callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -893,6 +898,7 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
             delete asyncCallbackInfo;
             asyncCallbackInfo = nullptr;
+            EVENT_LOGD("asyncCallbackInfo is nullptr");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -900,6 +906,7 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete isStickyCommonEvent callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1013,6 +1020,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete GetCode callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1036,7 +1044,7 @@ napi_value ParseParametersBySetCode(
     if (argc >= SET_CODE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
-            EVENT_LOGE("Wrong argument type. Function expected.");
+            EVENT_LOGE("Wrong Parameter type. Function expected.");
             return nullptr;
         }
         napi_create_reference(env, argv[1], 1, &callback);
@@ -1132,6 +1140,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete SetCode callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1245,6 +1254,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete GetData callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1373,6 +1383,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete SetData callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1511,6 +1522,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete SetCodeAndData callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1619,6 +1631,7 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete Abort callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1729,6 +1742,7 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete ClearAbort callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1842,6 +1856,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete GetAbort callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -1951,6 +1966,7 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
+        EVENT_LOGD("Delete Finish callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -2416,6 +2432,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo) {
                 SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
                 if (asyncCallbackInfo->callback != nullptr) {
+                    EVENT_LOGD("Delete cancel callback reference");
                     napi_delete_reference(env, asyncCallbackInfo->callback);
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
@@ -2560,7 +2577,7 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "Publish", NAPI_AUTO_LENGTH, &resourceName);
 
-    // Asynchronous function call
+    // Calling Asynchronous functions
     napi_create_async_work(env,
         nullptr,
         resourceName,
@@ -2568,7 +2585,7 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
             EVENT_LOGD("Publish napi_create_async_work start");
             AsyncCallbackInfoPublish *asyncCallbackInfo = static_cast<AsyncCallbackInfoPublish *>(data);
             if (asyncCallbackInfo == nullptr) {
-                EVENT_LOGE("asyncCallbackInfo is null");
+                EVENT_LOGE("asyncCallbackInfo is nullptr");
                 return;
             }
             asyncCallbackInfo->errorCode = CommonEventManager::PublishCommonEventAsUser(
