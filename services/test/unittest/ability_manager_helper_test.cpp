@@ -465,7 +465,7 @@ public:
     {}
 
     int32_t IsValidMissionIds(
-        const std::vector<int32_t> &missionIds, std::vector<MissionVaildResult> &results) override
+        const std::vector<int32_t> &missionIds, std::vector<MissionValidResult> &results) override
     {
         return 1;
     }
