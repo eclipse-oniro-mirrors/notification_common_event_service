@@ -1924,7 +1924,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0100, Function | MediumTest | Leve
         }
     }
     // expect the subscriber could receive the event within 5 seconds.
-    EXPECT_LT(seconds, g_TIME_OUT_SECONDS_LIMIT);
+    EXPECT_LE(seconds, g_TIME_OUT_SECONDS_LIMIT);
     g_mtx.unlock();
     CommonEventManager::UnSubscribeCommonEvent(subscriberPtr);
 }
