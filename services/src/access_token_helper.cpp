@@ -49,7 +49,6 @@ void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &call
     }
     Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
     if (!permission.isSensitive || permission.names.empty()) {
-        EVENT_LOGE("permission denied");
         return;
     }
     for (const auto &permissionName : permission.names) {
