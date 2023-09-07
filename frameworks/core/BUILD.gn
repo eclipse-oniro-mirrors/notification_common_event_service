@@ -36,6 +36,17 @@ config("cesfwk_core_public_config") {
 }
 
 ohos_shared_library("cesfwk_core") {
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+    blocklist = "./cfi_blocklist.txt"
+  }
+  stack_protector_ret = true
+
   sources = [
     "${ces_core_path}/src/common_event.cpp",
     "${ces_core_path}/src/common_event_death_recipient.cpp",
