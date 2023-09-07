@@ -295,7 +295,7 @@ napi_value ParseParametersByCreateSubscriber(
     if (argc >= CREATE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
-            EVENT_LOGE("Callback is not function. Execute promise.");
+            EVENT_LOGE("Callback does not work. Execute promise.");
             return NapiGetNull(env);
         }
         napi_create_reference(env, argv[1], 1, &callback);
@@ -1008,6 +1008,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete GetCode callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -1242,6 +1243,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete GetData callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -1712,7 +1714,7 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
-            EVENT_LOGD("ClearAbort napi_create_async_work start");
+            EVENT_LOGD("Excute create async ClearAbort");
             AsyncCallbackInfoClearAbort *asyncCallbackInfo = static_cast<AsyncCallbackInfoClearAbort *>(data);
             if (asyncCallbackInfo == nullptr) {
                 EVENT_LOGE("asyncCallbackInfo is null");
@@ -1844,6 +1846,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                EVENT_LOGD("Delete GetAbort callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -2602,6 +2605,7 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
+                EVENT_LOGD("Delete PublishAsUser callback reference.");
             }
         },
         (void *)asyncCallbackInfo,
@@ -2737,7 +2741,7 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
-            EVENT_LOGD("Unsubscribe napi_create_async_work start");
+            EVENT_LOGD("Excute create async Unsubscribe");
             AsyncCallbackInfoUnsubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoUnsubscribe *>(data);
             if (asyncCallbackInfo == nullptr) {
                 EVENT_LOGE("asyncCallbackInfo is null");
@@ -2803,12 +2807,12 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
         napi_get_element(env, eventsNapi, i, &event);
         NAPI_CALL(env, napi_typeof(env, event, &valuetype));
         if (valuetype != napi_string) {
-            EVENT_LOGE("Wrong argument type. String expected.");
+            EVENT_LOGE("Wrong parameter type. String expected.");
             return nullptr;
         }
         char str[STR_MAX_SIZE] = {0};
         NAPI_CALL(env, napi_get_value_string_utf8(env, event, str, STR_MAX_SIZE - 1, &strLen));
-        EVENT_LOGD("event = %{public}s", str);
+        EVENT_LOGD("event: %{public}s", str);
         events.emplace_back(str);
     }
 
@@ -2818,7 +2822,7 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
 napi_value GetPublisherPermissionByCreateSubscriber(
     const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD("GetPublisherPermissionByCreateSubscriber start");
 
     bool hasProperty = false;
     napi_value result = nullptr;
@@ -2832,7 +2836,7 @@ napi_value GetPublisherPermissionByCreateSubscriber(
         napi_get_named_property(env, argv, "publisherPermission", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_string) {
-            EVENT_LOGE("Wrong argument type. String expected.");
+            EVENT_LOGE("Wrong parameter type. String expected.");
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
@@ -2845,7 +2849,7 @@ napi_value GetPublisherPermissionByCreateSubscriber(
 napi_value GetPublisherDeviceIdByCreateSubscriber(
     const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD("GetPublisherDeviceIdByCreateSubscriber start");
 
     bool hasProperty = false;
     napi_value result = nullptr;
@@ -2859,7 +2863,7 @@ napi_value GetPublisherDeviceIdByCreateSubscriber(
         napi_get_named_property(env, argv, "publisherDeviceId", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_string) {
-            EVENT_LOGE("Wrong argument type. String expected.");
+            EVENT_LOGE("Wrong parameter type. String expected.");
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
@@ -2871,7 +2875,7 @@ napi_value GetPublisherDeviceIdByCreateSubscriber(
 
 napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD("GetUserIdByCreateSubscriber start");
 
     bool hasUserId = false;
     napi_value result = nullptr;
@@ -2884,7 +2888,7 @@ napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &ar
         napi_get_named_property(env, argv, "userId", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_number) {
-            EVENT_LOGE("Wrong argument type. Number expected.");
+            EVENT_LOGE("Wrong parameter type. Number expected.");
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_int32(env, result, &value));
@@ -2896,7 +2900,7 @@ napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &ar
 
 napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD("GetPriorityByCreateSubscriber start");
 
     bool hasProperty = false;
     napi_value result = nullptr;
@@ -2909,7 +2913,7 @@ napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &
         napi_get_named_property(env, argv, "priority", &result);
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_number) {
-            EVENT_LOGE("Wrong argument type. Number expected.");
+            EVENT_LOGE("Wrong parameter type. Number expected.");
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_int32(env, result, &value));
@@ -2922,12 +2926,12 @@ napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &
 napi_value ParseParametersConstructor(
     const napi_env &env, const napi_callback_info &info, napi_value &thisVar, CommonEventSubscribeInfo &params)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD("ParseParametersConstructor start");
     size_t argc = 1;
     napi_value argv[1] = {nullptr};
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr));
     if (argc < 1) {
-        EVENT_LOGE("Wrong number of arguments");
+        EVENT_LOGE("Wrong number of parameters");
         return nullptr;
     }
 

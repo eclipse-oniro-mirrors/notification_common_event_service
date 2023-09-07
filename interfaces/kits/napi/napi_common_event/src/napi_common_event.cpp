@@ -752,6 +752,7 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete napiGetSubscribeInfo callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -904,6 +905,7 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete napiIsOrderedCommonEvent callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -1049,6 +1051,7 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete napiisStickyCommonEvent callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -1193,6 +1196,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete napiGetCode callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -1482,6 +1486,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete napiGetData callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -2199,7 +2204,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
-            EVENT_LOGD("GetAbort napi_create_async_work start");
+            EVENT_LOGD("Excute create async GetAbort");
             AsyncCallbackInfoGetAbort *asyncCallbackInfo = static_cast<AsyncCallbackInfoGetAbort *>(data);
             if (asyncCallbackInfo) {
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
@@ -2220,6 +2225,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
+                    EVENT_LOGD("Delete napiGetAbort callback reference.");
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
@@ -3047,6 +3053,7 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
+                EVENT_LOGD("Delete napiPublishAsUser callback reference.");
             }
         },
         (void *)asyncCallbackInfo,
@@ -3348,7 +3355,7 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
     // get events
     NAPI_CALL(env, napi_has_named_property(env, argv, "events", &hasProperty));
     if (!hasProperty) {
-        EVENT_LOGE("Property events expected.");
+        EVENT_LOGE("Property events expected");
         return nullptr;
     }
     napi_get_named_property(env, argv, "events", &eventsNapi);

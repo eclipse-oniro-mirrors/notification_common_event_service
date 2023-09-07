@@ -100,7 +100,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
             if (commonEventListener == nullptr) {
-                EVENT_LOGE("Failed to ReadParcelable<IRemoteObject>");
+                EVENT_LOGE("Error to ReadParcelable<IRemoteObject>");
                 return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
             int32_t ret = SubscribeCommonEvent(*subscribeInfo, commonEventListener);
