@@ -81,11 +81,11 @@ int32_t StaticSubscriberDataManager::InsertDisableStaticSubscribeData(const std:
         return ERR_INVALID_VALUE;
     }
     DistributedKv::Status status;
-    EVENT_LOGD("bundleName: %{public}s", bundleName.c_str());
+    EVENT_LOGD("bundleName = %{public}s", bundleName.c_str());
     {
         std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
         if (!CheckKvStore()) {
-            EVENT_LOGE("kvStore is nullptr");
+            EVENT_LOGE("kvStore is null");
             return ERR_NO_INIT;
         }
         DistributedKv::Key key(bundleName);

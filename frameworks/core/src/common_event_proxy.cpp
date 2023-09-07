@@ -168,23 +168,23 @@ int32_t CommonEventProxy::SubscribeCommonEvent(
     }
 
     if (!data.WriteParcelable(&subscribeInfo)) {
-        EVENT_LOGE("Failed to write parcelable subscribeInfo");
+        EVENT_LOGE("error to write parcelable subscribeInfo");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (commonEventListener != nullptr) {
         if (!data.WriteBool(true)) {
-            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            EVENT_LOGE("error to write parcelable hasSubscriber");
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
         if (!data.WriteRemoteObject(commonEventListener)) {
-            EVENT_LOGE("Failed to write parcelable commonEventListener");
+            EVENT_LOGE("error to write parcelable commonEventListener");
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     } else {
         EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
-            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            EVENT_LOGE("error to write parcelable hasSubscriber");
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     }
@@ -364,18 +364,18 @@ bool CommonEventProxy::FinishReceiver(
 
 bool CommonEventProxy::Freeze(const uid_t &uid)
 {
-    EVENT_LOGD("start");
+    EVENT_LOGD("Freeze start");
 
     MessageParcel data;
     MessageParcel reply;
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
-        EVENT_LOGE("Failed to write InterfaceToken");
+        EVENT_LOGE("Error to write InterfaceToken");
         return false;
     }
 
     if (!data.WriteInt32(uid)) {
-        EVENT_LOGE("Failed to write int uid");
+        EVENT_LOGE("Error to write int uid");
         return false;
     }
 

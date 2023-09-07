@@ -40,6 +40,7 @@ std::string EventLogWrapper::GetBriefFileName(const char* str)
         return std::string();
     }
     return fullPath.substr(pos + 1);
+    EVENT_LOGD("GetBriefFileName end");
 }
 }  // namespace EventFwk
 }  // namespace OHOS
