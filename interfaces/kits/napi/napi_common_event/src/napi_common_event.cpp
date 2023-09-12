@@ -505,6 +505,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("CreateSubscriber work complete end");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -716,7 +717,7 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
     AsyncCallbackInfoSubscribeInfo *asyncCallbackInfo =
         new (std::nothrow) AsyncCallbackInfoSubscribeInfo {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGE("asyncCallbackInfo failed");
         return NapiGetNull(env);
     }
 
@@ -758,6 +759,7 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiGetSubscribeInfo work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -861,7 +863,7 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
     AsyncCallbackInfoOrderedCommonEvent *asyncCallbackInfo = new (std::nothrow)
         AsyncCallbackInfoOrderedCommonEvent {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGD("asyncCallbackInfo failed");
         return NapiGetNull(env);
     }
 
@@ -911,6 +913,7 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiIsOrderedCommonEvent work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1007,7 +1010,7 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
     AsyncCallbackInfoStickyCommonEvent *asyncCallbackInfo = new (std::nothrow)
         AsyncCallbackInfoStickyCommonEvent {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGE("Failed to create asyncCallbackInfo.");
         return NapiGetNull(env);
     }
 
@@ -1057,6 +1060,7 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiisStickyCommonEvent work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1158,7 +1162,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE("GetSubscriber failed.");
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -1202,6 +1206,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiGetCode work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1261,7 +1266,7 @@ napi_value ParseParametersBySetCode(
     if (argc >= SET_CODE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
-            EVENT_LOGE("Parameter type error. Function expected.");
+            EVENT_LOGE("Parameter type is error. Function expected.");
             return nullptr;
         }
         napi_create_reference(env, argv[1], 1, &callback);
@@ -1305,7 +1310,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     AsyncCallbackInfoSetCode *asyncCallbackInfo = new (std::nothrow)
         AsyncCallbackInfoSetCode {.env = env, .asyncWork = nullptr, .code = code};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is null");
+        EVENT_LOGE("Create asyncCallbackInfo is defeat.");
         return NapiGetNull(env);
     }
 
@@ -1348,7 +1353,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
-                EVENT_LOGD("asyncCallbackInfo is nullptr");
+                EVENT_LOGD("NapiSetCode work complete end.");
             }
         },
         (void *)asyncCallbackInfo,
@@ -1450,7 +1455,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE("Failed to getSubscriber.");
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -1492,6 +1497,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiGetData work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1602,7 +1608,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
     AsyncCallbackInfoSetData *asyncCallbackInfo = new (std::nothrow)
         AsyncCallbackInfoSetData {.env = env, .asyncWork = nullptr, .data = data};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGE("asyncCallbackInfo is defeat");
         return NapiGetNull(env);
     }
 
@@ -1646,6 +1652,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiSetData work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -1779,7 +1786,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE("subscriber is defeat");
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -1960,7 +1967,7 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
-                EVENT_LOGD("asyncCallbackInfo is nullptr");
+                EVENT_LOGD("NapiAbort work complete end.");
             }
         },
         (void *)asyncCallbackInfo,
@@ -2050,7 +2057,7 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
     AsyncCallbackInfoClearAbort *asyncCallbackInfo =
         new (std::nothrow) AsyncCallbackInfoClearAbort {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGE("Create asyncCallbackInfo defeat");
         return NapiGetNull(env);
     }
 
@@ -2093,7 +2100,7 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
-                EVENT_LOGD("asyncCallbackInfo is nullptr");
+                EVENT_LOGD("NapiClearAbort work complete end.");
             }
         },
         (void *)asyncCallbackInfo,
@@ -2183,7 +2190,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
     AsyncCallbackInfoGetAbort *asyncCallbackInfo =
         new (std::nothrow) AsyncCallbackInfoGetAbort {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGE("Create asyncCallbackInfo is failed");
         return NapiGetNull(env);
     }
 
@@ -2231,6 +2238,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiGetAbort work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -2368,7 +2376,7 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
-                EVENT_LOGD("asyncCallbackInfo is nullptr");
+                EVENT_LOGD("NapiFinish work complete end.");
             }
         },
         (void *)asyncCallbackInfo,
@@ -2767,7 +2775,7 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
 void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asyncCallbackInfo,
     const CommonEventPublishDataByjs &commonEventPublishDatajs)
 {
-    EVENT_LOGD("PaddingCallbackInfoPublish start");
+    EVENT_LOGD("NapiPaddingCallbackInfoPublish start");
     want.SetParams(commonEventPublishDatajs.wantParams);
     asyncCallbackInfo->commonEventData.SetCode(commonEventPublishDatajs.code);
     asyncCallbackInfo->commonEventData.SetData(commonEventPublishDatajs.data);
@@ -2779,7 +2787,7 @@ void PaddingCallbackInfoPublish(Want &want, AsyncCallbackInfoPublish *&asyncCall
 
 napi_value Publish(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGD("Publish start");
+    EVENT_LOGD("NapiPublish start");
 
     size_t argc = PUBLISH_MAX_PARA_BY_PUBLISHDATA;
     napi_value argv[PUBLISH_MAX_PARA_BY_PUBLISHDATA] = {nullptr};
@@ -2801,7 +2809,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
     AsyncCallbackInfoPublish *asyncCallbackInfo =
         new (std::nothrow) AsyncCallbackInfoPublish {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGD("Create asyncCallbackInfo is fail.");
         return NapiGetNull(env);
     }
     asyncCallbackInfo->callback = callback;
@@ -2830,16 +2838,19 @@ napi_value Publish(napi_env env, napi_callback_info info)
             }
         },
         [](napi_env env, napi_status status, void *data) {
+            EVENT_LOGD("NapiPublish work complete.");
             AsyncCallbackInfoPublish *asyncCallbackInfo = static_cast<AsyncCallbackInfoPublish *>(data);
             if (asyncCallbackInfo) {
                 SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
                 if (asyncCallbackInfo->callback != nullptr) {
+                    EVENT_LOGD("Delete napiPublish callback reference.");
                     napi_delete_reference(env, asyncCallbackInfo->callback);
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
+            EVENT_LOGD("NapiPublish work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -3044,17 +3055,19 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
             }
         },
         [](napi_env env, napi_status status, void *data) {
+            EVENT_LOGD("NapiPublishAsUser work complete.");
             AsyncCallbackInfoPublish *asyncCallbackInfo = static_cast<AsyncCallbackInfoPublish *>(data);
             if (asyncCallbackInfo) {
                 SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
                 if (asyncCallbackInfo->callback != nullptr) {
+                    EVENT_LOGD("Delete NapiPublishAsUser callback reference.");
                     napi_delete_reference(env, asyncCallbackInfo->callback);
                 }
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
-                EVENT_LOGD("Delete napiPublishAsUser callback reference.");
             }
+            EVENT_LOGD("NapiPublishAsUser work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
