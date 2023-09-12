@@ -44,7 +44,6 @@ void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &call
     EVENT_LOGD("enter");
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
     if (tokenType != ATokenTypeEnum::TOKEN_HAP) {
-        EVENT_LOGE("tokenType != ATokenTypeEnum::TOKEN_HAP");
         return;
     }
     Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
