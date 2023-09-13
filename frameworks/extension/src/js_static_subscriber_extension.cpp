@@ -229,7 +229,7 @@ void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData
         nativeEngine.CallFunction(value, method, argv, ARGC_ONE);
         EVENT_LOGD("JsStaticSubscriberExtension js receive event called.");
     };
-    handler_->PostTask(task);
+    handler_->PostTask(task, "CommonEvent" + data->GetWant().GetAction());
 }
 } // namespace EventFwk
 } // namespace OHOS
