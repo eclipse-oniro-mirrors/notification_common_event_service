@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include "event_log_wrapper.h"
 #include "static_subscriber_proxy.h"
 
 namespace OHOS {
@@ -29,7 +30,13 @@ ErrCode StaticSubscriberProxy::OnReceiveEvent(CommonEventData* inData)
 
     data.WriteParcelable(inData);
 
-    int32_t st = Remote()->SendRequest(static_cast<uint32_t>(CommonEventInterfaceCode::COMMAND_ON_RECEIVE_EVENT),
+    sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        EVENT_LOGE("Remote is NULL");
+        return ERR_TRANSACTION_FAILED;
+    }
+
+    int32_t st = remote->SendRequest(static_cast<uint32_t>(CommonEventInterfaceCode::COMMAND_ON_RECEIVE_EVENT),
         data, reply, option);
     if (st != ERR_NONE) {
         return st;

@@ -24,13 +24,26 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
     EVENT_LOGI("enter");
-    proxy_ = new (std::nothrow) StaticSubscriberProxy(remoteObject);
-    if (proxy_ == nullptr) {
-        EVENT_LOGE("failed to create obj!");
+    auto proxy = GetProxy(remoteObject);
+    if (proxy) {
+        ErrCode ec = proxy->OnReceiveEvent(&event_);
+        EVENT_LOGI("end, errorCode = %d", ec);
     }
-    ErrCode ec = proxy_->OnReceiveEvent(&event_);
-    EVENT_LOGI("end, errorCode = %d", ec);
     AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(this);
+}
+
+sptr<StaticSubscriberProxy> StaticSubscriberConnection::GetProxy(const sptr<IRemoteObject> &remoteObject)
+{
+    if (proxy_ == nullptr) {
+        std::lock_guard<std::mutex> lock(proxyMutex_);
+        if (proxy_ == nullptr) {
+            proxy_ = new (std::nothrow) StaticSubscriberProxy(remoteObject);
+            if (proxy_ == nullptr) {
+                EVENT_LOGE("failed to create StaticSubscriberProxy!");
+            }
+        }
+    }
+    return proxy_;
 }
 
 void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
