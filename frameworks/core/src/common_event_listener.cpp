@@ -50,7 +50,7 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
         }
         sThis->OnReceiveEvent(commonEventData, ordered, sticky);
     };
-    handler_->PostTask(onReceiveEventFunc);
+    handler_->PostTask(onReceiveEventFunc, "CommonEvent" + commonEventData.GetWant().GetAction());
 }
 
 ErrCode CommonEventListener::Init()
