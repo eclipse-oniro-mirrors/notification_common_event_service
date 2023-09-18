@@ -109,12 +109,12 @@ void CommonEventControlManager::PublishFrozenEventsInner(const FrozenRecords &fr
 {
     for (auto record : frozenRecords) {
         for (auto vec : record.second) {
-            if (!record.first || !vec) {
+            if (!vec) {
                 EVENT_LOGW("failed to find record");
                 continue;
             }
 
-            EventSubscriberRecord subscriberRecord = *(record.first);
+            EventSubscriberRecord subscriberRecord = record.first;
             CommonEventRecord eventRecord = *vec;
             std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
             auto innerCallback = [weak, subscriberRecord, eventRecord]() {

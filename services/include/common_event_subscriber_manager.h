@@ -19,6 +19,7 @@
 #include "common_event_constant.h"
 #include "common_event_record.h"
 #include "common_event_subscribe_info.h"
+#include "event_log_wrapper.h"
 #include "iremote_object.h"
 #include "singleton.h"
 
@@ -38,6 +39,19 @@ struct EventSubscriberRecord {
           isFreeze(false),
           freezeTime(0)
     {}
+
+    bool operator<(const EventSubscriberRecord &other) const {
+        if (commonEventListener == nullptr) {
+            EVENT_LOGE("commonEventListener is null");
+            return false;
+        }
+
+        if (other.commonEventListener == nullptr) {
+            EVENT_LOGE("other's commonEventListener is null");
+            return true;
+        }
+        return commonEventListener < other.commonEventListener;
+    }
 };
 
 struct FrozenEventRecord {
@@ -63,7 +77,7 @@ inline bool operator<(const std::shared_ptr<EventSubscriberRecord> &a, const std
 using SubscriberRecordPtr = std::shared_ptr<EventSubscriberRecord>;
 using SubscribeInfoPtr = std::shared_ptr<CommonEventSubscribeInfo>;
 using EventRecordPtr = std::shared_ptr<CommonEventRecord>;
-using FrozenRecords = std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>>;
+using FrozenRecords = std::map<EventSubscriberRecord, std::vector<EventRecordPtr>>;
 
 class CommonEventSubscriberManager : public DelayedSingleton<CommonEventSubscriberManager> {
 public:

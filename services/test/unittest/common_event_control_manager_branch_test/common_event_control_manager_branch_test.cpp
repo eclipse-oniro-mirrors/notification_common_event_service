@@ -64,8 +64,8 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0100, Le
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
         std::make_shared<CommonEventControlManager>();
     ASSERT_NE(nullptr, commonEventControlManager);
-    std::map<std::shared_ptr<EventSubscriberRecord>, std::vector<std::shared_ptr<CommonEventRecord>>> frozenRecords;
-    std::shared_ptr<EventSubscriberRecord> rec = nullptr;
+    std::map<EventSubscriberRecord, std::vector<std::shared_ptr<CommonEventRecord>>> frozenRecords;
+    EventSubscriberRecord rec;
     std::vector<std::shared_ptr<CommonEventRecord>> com;
     std::shared_ptr<CommonEventRecord> eve = nullptr;
     com.emplace_back(eve);
