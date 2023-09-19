@@ -48,11 +48,11 @@ class NapiStaticSubscribe {
 public:
     NapiStaticSubscribe() = default;
     ~NapiStaticSubscribe() = default;
-    static void Finalizer(NativeEngine *engine, void *data, void *hint);
-    static NativeValue *SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info);
+    static void Finalizer(napi_env env, void *data, void *hint);
+    static napi_value SetStaticSubscriberState(napi_env env, napi_callback_info info);
 
 private:
-    NativeValue *OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info);
+    napi_value OnSetStaticSubscriberState(napi_env env, const napi_callback_info info);
 };
 
 static thread_local napi_ref g_CommonEventSubscriber = nullptr;

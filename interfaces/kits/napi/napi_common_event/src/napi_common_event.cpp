@@ -69,26 +69,19 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
     {ERR_NOTIFICATION_SYS_ERROR, "System error."}
 };
 
-static NativeValue *NapiStaicSubscribeInit(NativeEngine *engine, NativeValue *exports)
+static napi_value NapiStaicSubscribeInit(napi_env env, napi_value exports)
 {
     EVENT_LOGD("called");
-    if (engine == nullptr || exports == nullptr) {
+    if (env == nullptr || exports == nullptr) {
         EVENT_LOGD("Invalid input parameters");
         return nullptr;
     }
 
-    NativeObject *object = AbilityRuntime::ConvertNativeValueTo<NativeObject>(exports);
-    if (object == nullptr) {
-        EVENT_LOGD("object is nullptr");
-        return nullptr;
-    }
-
     std::unique_ptr<NapiStaticSubscribe> napiStaicSubscribe = std::make_unique<NapiStaticSubscribe>();
-    object->SetNativePointer(napiStaicSubscribe.release(), NapiStaticSubscribe::Finalizer, nullptr);
-
+    napi_wrap(env, exports, napiStaicSubscribe.release(), NapiStaticSubscribe::Finalizer, nullptr, nullptr);
     const char *moduleName = "NapiStaticSubscribe";
     AbilityRuntime::BindNativeFunction(
-        *engine, *object, "setStaticSubscriberState", moduleName, NapiStaticSubscribe::SetStaticSubscriberState);
+        env, exports, "setStaticSubscriberState", moduleName, NapiStaticSubscribe::SetStaticSubscriberState);
 
     return exports;
 }
@@ -2860,56 +2853,71 @@ napi_value Publish(napi_env env, napi_callback_info info)
     return NapiGetNull(env);
 }
 
-void NapiStaticSubscribe::Finalizer(NativeEngine *engine, void *data, void *hint)
+void NapiStaticSubscribe::Finalizer(napi_env env, void *data, void *hint)
 {
     EVENT_LOGD("called");
     delete static_cast<NapiStaticSubscribe *>(data);
 }
 
-NativeValue *NapiStaticSubscribe::SetStaticSubscriberState(NativeEngine *engine, NativeCallbackInfo *info)
+napi_value NapiStaticSubscribe::SetStaticSubscriberState(napi_env env, napi_callback_info info)
 {
-    NapiStaticSubscribe *me = AbilityRuntime::CheckParamsAndGetThis<NapiStaticSubscribe>(engine, info);
-    return (me != nullptr) ? me->OnSetStaticSubscriberState(*engine, *info) : nullptr;
+    NapiStaticSubscribe *me = AbilityRuntime::CheckParamsAndGetThis<NapiStaticSubscribe>(env, info);
+    return (me != nullptr) ? me->OnSetStaticSubscriberState(env, info) : nullptr;
 }
 
-NativeValue *NapiStaticSubscribe::OnSetStaticSubscriberState(NativeEngine &engine, const NativeCallbackInfo &info)
+napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const napi_callback_info info)
 {
     EVENT_LOGD("called");
 
-    if (info.argc < ARGC_ONE) {
+    size_t argc = ARGC_TWO;
+    napi_value argv[ARGC_TWO] = {nullptr};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    if (argc < ARGC_ONE) {
         EVENT_LOGE("The param is invalid.");
-        AbilityRuntime::ThrowTooFewParametersError(engine);
-        return engine.CreateUndefined();
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        napi_value undefined = nullptr;
+        napi_get_undefined(env, &undefined);
+        return undefined;
     }
 
-    bool enable;
-    if (!AbilityRuntime::ConvertFromJsValue(engine, info.argv[INDEX_ZERO], enable)) {
+    napi_valuetype valueType = napi_undefined;
+    NAPI_CALL(env, napi_typeof(env, argv[INDEX_ZERO], &valueType));
+    if (valueType != napi_boolean) {
         EVENT_LOGE("Parse type failed");
-        AbilityRuntime::ThrowError(engine, AbilityRuntime::AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
-        return engine.CreateUndefined();
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        napi_value undefined = nullptr;
+        napi_get_undefined(env, &undefined);
+        return undefined;
     }
+    bool enable;
+    NAPI_CALL(env, napi_get_value_bool(env, argv[INDEX_ZERO], &enable));
 
-    auto complete = [enable](NativeEngine &engine, AbilityRuntime::AsyncTask &task, int32_t status) {
+    auto complete = [enable](napi_env env, AbilityRuntime::NapiAsyncTask &task, int32_t status) {
         auto ret = CommonEventManager::SetStaticSubscriberState(enable);
         if (ret == ERR_OK) {
-            task.Resolve(engine, engine.CreateUndefined());
+            napi_value undefined = nullptr;
+            napi_get_undefined(env, &undefined);
+            task.Resolve(env, undefined);
         } else {
             if (ret != ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP && ret != ERR_NOTIFICATION_SEND_ERROR) {
                 ret = ERR_NOTIFICATION_CESM_ERROR;
             }
-            task.Reject(engine, AbilityRuntime::CreateJsError(engine, ret, "SetStaticSubscriberState failed"));
+            task.Reject(env, AbilityRuntime::CreateJsError(env, ret, "SetStaticSubscriberState failed"));
         }
     };
 
-    NativeValue *callback = nullptr;
-    if (info.argc > ARGC_ONE) {
-        if (info.argv[INDEX_ONE] && (info.argv[INDEX_ONE]->TypeOf() == NATIVE_FUNCTION)) {
-            callback = info.argv[INDEX_ONE];
+    napi_value callback = nullptr;
+    if (argc > ARGC_ONE) {
+        napi_valuetype callbackValueType = napi_undefined;
+        NAPI_CALL(env, napi_typeof(env, argv[INDEX_ONE], &callbackValueType));
+        if (callbackValueType == napi_function) {
+            callback = argv[INDEX_ONE];
         }
     }
-    NativeValue *result = nullptr;
-    AbilityRuntime::AsyncTask::Schedule("NapiStaticSubscribe::OnSetStaticSubscriberState", engine,
-        AbilityRuntime::CreateAsyncTaskWithLastParam(engine, callback, nullptr, std::move(complete), &result));
+    napi_value result = nullptr;
+    AbilityRuntime::NapiAsyncTask::Schedule("NapiStaticSubscribe::OnSetStaticSubscriberState", env,
+        AbilityRuntime::CreateAsyncTaskWithLastParam(env, callback, nullptr, std::move(complete), &result));
     return result;
 }
 
@@ -3675,8 +3683,7 @@ napi_value CommonEventManagerInit(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
     OHOS::EventFwkNapi::SupportInit(env, exports);
-    return reinterpret_cast<napi_value>(NapiStaicSubscribeInit(reinterpret_cast<NativeEngine*>(env),
-        reinterpret_cast<NativeValue*>(exports)));
+    return NapiStaicSubscribeInit(env, exports);
 }
 }  // namespace EventManagerFwkNapi
 }  // namespace OHOS
