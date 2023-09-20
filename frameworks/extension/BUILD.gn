@@ -31,11 +31,15 @@ ohos_shared_library("static_subscriber_ipc") {
   configs = []
   public_configs = [ ":static_subscriber_ipc_public_config" ]
 
-  deps = [ "${ces_native_path}:cesfwk_innerkits" ]
+  deps = [
+    "${ces_common_path}:libevent_common",
+    "${ces_native_path}:cesfwk_innerkits",
+  ]
 
   external_deps = [
     "ability_base:want",
     "c_utils:utils",
+    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 

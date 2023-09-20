@@ -50,7 +50,10 @@ public:
     void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode) override;
 
 private:
+    sptr<StaticSubscriberProxy> GetProxy(const sptr<IRemoteObject> &remoteObject);
     sptr<StaticSubscriberProxy> proxy_ = nullptr;
+    std::mutex proxyMutex_;
+
     CommonEventData event_;
 };
 }  // namespace EventFwk
