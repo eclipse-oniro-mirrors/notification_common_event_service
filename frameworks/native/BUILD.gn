@@ -36,6 +36,17 @@ config("cesfwk_innerkits_public_config") {
 }
 
 ohos_shared_library("cesfwk_innerkits") {
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+    blocklist = "./cfi_blocklist.txt"
+  }
+  stack_protector_ret = true
+
   sources = [
     "${ces_native_path}/src/async_common_event_result.cpp",
     "${ces_native_path}/src/common_event_data.cpp",
