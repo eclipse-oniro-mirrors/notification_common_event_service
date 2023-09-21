@@ -18,7 +18,7 @@ import("//build/test.gni")
 
 ##############################fuzztest##########################################
 ohos_fuzztest("PublishCommonEventFuzzTest") {
-  module_out_path = common_fuzz_test_output_path
+  module_out_path = common_fuzz_test_path
   fuzz_config_file =
       "${common_event_service_path}/test/fuzztest/publishcommonevent_fuzzer"
 
