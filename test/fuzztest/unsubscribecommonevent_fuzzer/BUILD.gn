@@ -15,11 +15,10 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/config/features.gni")
 import("//build/test.gni")
-module_output_path = "common_event_service/services"
 
 ##############################fuzztest##########################################
 ohos_fuzztest("UnSubscribeCommonEventFuzzTest") {
-  module_out_path = module_output_path
+  module_out_path = common_fuzz_test_path
   fuzz_config_file =
       "${common_event_service_path}/test/fuzztest/unsubscribecommonevent_fuzzer"
 
