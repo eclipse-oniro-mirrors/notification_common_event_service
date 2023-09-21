@@ -452,7 +452,7 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
     std::lock_guard<std::mutex> lock(mutex_);
     auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {
-        auto eventRecordsItem = frozenRecordsItem->second.find(subscriberRecord);
+        auto eventRecordsItem = frozenRecordsItem->second.find(*subscriberRecord);
         if (eventRecordsItem != frozenRecordsItem->second.end()) {
             eventRecordsItem->second.emplace_back(record);
             time_t backRecordTime = mktime(&eventRecordsItem->second.back()->recordTime);
@@ -464,23 +464,23 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
         } else {
             std::vector<EventRecordPtr> EventRecords;
             EventRecords.emplace_back(record);
-            frozenRecordsItem->second[subscriberRecord] = EventRecords;
+            frozenRecordsItem->second[*subscriberRecord] = EventRecords;
         }
     } else {
-        std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> frozenRecords;
+        std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenRecords;
         std::vector<EventRecordPtr> EventRecords;
         EventRecords.emplace_back(record);
-        frozenRecords[subscriberRecord] = EventRecords;
+        frozenRecords[*subscriberRecord] = EventRecords;
         frozenEvents_[subscriberRecord->eventRecordInfo.uid] = frozenRecords;
     }
 }
 
-std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> CommonEventSubscriberManager::GetFrozenEvents(
+std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscriberManager::GetFrozenEvents(
     const uid_t &uid)
 {
     EVENT_LOGD("enter");
 
-    std::map<SubscriberRecordPtr, std::vector<EventRecordPtr>> frozenEvents;
+    std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenEvents;
     std::lock_guard<std::mutex> lock(mutex_);
     auto infoItem = frozenEvents_.find(uid);
     if (infoItem != frozenEvents_.end()) {
@@ -514,9 +514,9 @@ void CommonEventSubscriberManager::RemoveFrozenEventsBySubscriber(const Subscrib
 
     auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {
-        auto eventRecordsItems = frozenRecordsItem->second.find(subscriberRecord);
+        auto eventRecordsItems = frozenRecordsItem->second.find(*subscriberRecord);
         if (eventRecordsItems != frozenRecordsItem->second.end()) {
-            frozenRecordsItem->second.erase(subscriberRecord);
+            frozenRecordsItem->second.erase(*subscriberRecord);
         }
     }
 }
