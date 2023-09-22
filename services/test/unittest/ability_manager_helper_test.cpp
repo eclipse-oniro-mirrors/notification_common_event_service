@@ -477,7 +477,7 @@ public:
 
     int32_t RegisterAppDebugListener(const sptr<AppExecFwk::IAppDebugListener> &listener) override
     {
-       return 1;
+        return 1;
     }
 
     int32_t UnregisterAppDebugListener(const sptr<AppExecFwk::IAppDebugListener> &listener) override
