@@ -533,6 +533,26 @@ public:
     {
         return 1;
     }
+
+    int32_t RegisterAppDebugListener(const sptr<AppExecFwk::IAppDebugListener> &listener) override
+    {
+        return 1;
+    }
+
+    int32_t UnregisterAppDebugListener(const sptr<AppExecFwk::IAppDebugListener> &listener) override
+    {
+        return 1;
+    }
+
+    int32_t AttachAppDebug(const std::string &bundleName) override
+    {
+        return 1;
+    }
+
+    int32_t DetachAppDebug(const std::string &bundleName) override
+    {
+        return 1;
+    }
 };
 
 class EventReceiveStubTest : public EventReceiveStub {
