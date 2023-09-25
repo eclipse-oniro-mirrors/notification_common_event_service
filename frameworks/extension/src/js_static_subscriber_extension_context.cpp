@@ -29,47 +29,55 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 constexpr size_t ARGC_ZERO = 0;
+constexpr size_t ARGC_ONE = 1;
+constexpr size_t ARGC_TWO = 2;
 class JsStaticSubscriberExtensionContext final {
 public:
     explicit JsStaticSubscriberExtensionContext(const std::shared_ptr<StaticSubscriberExtensionContext>& context)
         : context_(context) {}
     ~JsStaticSubscriberExtensionContext() = default;
 
-    static void Finalizer(NativeEngine* engine, void* data, void* hint)
+    static void Finalizer(napi_env env, void* data, void* hint)
     {
         EVENT_LOGI("Finalizer is called");
         std::unique_ptr<JsStaticSubscriberExtensionContext>(
             static_cast<JsStaticSubscriberExtensionContext*>(data));
     }
 
-    static NativeValue* StartAbility(NativeEngine* engine, NativeCallbackInfo* info);
+    static napi_value StartAbility(napi_env env, napi_callback_info info);
 private:
-    NativeValue* OnStartAbility(NativeEngine& engine, NativeCallbackInfo& info, bool isStartRecent = false);
+    napi_value OnStartAbility(napi_env env, napi_callback_info info, bool isStartRecent = false);
     std::weak_ptr<StaticSubscriberExtensionContext> context_;
 };
 } // namespace
 
-NativeValue* JsStaticSubscriberExtensionContext::StartAbility(NativeEngine* engine, NativeCallbackInfo* info)
+napi_value JsStaticSubscriberExtensionContext::StartAbility(napi_env env, napi_callback_info info)
 {
     EVENT_LOGD("called.");
     JsStaticSubscriberExtensionContext* me =
-        AbilityRuntime::CheckParamsAndGetThis<JsStaticSubscriberExtensionContext>(engine, info);
-    return (me != nullptr) ? me->OnStartAbility(*engine, *info) : nullptr;
+        AbilityRuntime::CheckParamsAndGetThis<JsStaticSubscriberExtensionContext>(env, info);
+    return (me != nullptr) ? me->OnStartAbility(env, info) : nullptr;
 }
 
-NativeValue* JsStaticSubscriberExtensionContext::OnStartAbility(NativeEngine& engine, NativeCallbackInfo& info,
+napi_value JsStaticSubscriberExtensionContext::OnStartAbility(napi_env env, napi_callback_info info,
     bool isStartRecent)
 {
     EVENT_LOGD("called.");
-    if (info.argc == ARGC_ZERO) {
+    napi_value undefined = nullptr;
+    napi_get_undefined(env, &undefined);
+
+    size_t argc = ARGC_TWO;
+    napi_value argv[ARGC_TWO] = {nullptr};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    if (argc == ARGC_ZERO) {
         EVENT_LOGE("Not enough params");
-        AbilityRuntime::ThrowTooFewParametersError(engine);
-        return engine.CreateUndefined();
+        AbilityRuntime::ThrowTooFewParametersError(env);
+        return undefined;
     }
 
     AAFwk::Want want;
-    AppExecFwk::UnwrapWant(reinterpret_cast<napi_env>(&engine), reinterpret_cast<napi_value>(info.argv[0]), want);
-    decltype(info.argc) unwrapArgc = 1;
+    AppExecFwk::UnwrapWant(env, argv[0], want);
     EVENT_LOGI("Start ability, ability name is %{public}s.", want.GetElement().GetAbilityName().c_str());
 
     auto innerErrorCode = std::make_shared<int32_t>(ERR_OK);
@@ -83,25 +91,27 @@ NativeValue* JsStaticSubscriberExtensionContext::OnStartAbility(NativeEngine& en
         *innerErrorCode = context->StartAbility(want);
     };
 
-    AbilityRuntime::AsyncTask::CompleteCallback complete =
-        [innerErrorCode](NativeEngine& engine, AbilityRuntime::AsyncTask& task, int32_t status) {
+    AbilityRuntime::NapiAsyncTask::CompleteCallback complete =
+        [innerErrorCode](napi_env env, AbilityRuntime::NapiAsyncTask& task, int32_t status) {
             if (*innerErrorCode == ERR_OK) {
-                task.Resolve(engine, engine.CreateUndefined());
+                napi_value taskUndefined = nullptr;
+                napi_get_undefined(env, &taskUndefined);
+                task.Resolve(env, taskUndefined);
             } else {
-                task.Reject(engine, AbilityRuntime::CreateJsErrorByNativeErr(engine, *innerErrorCode));
+                task.Reject(env, AbilityRuntime::CreateJsErrorByNativeErr(env, *innerErrorCode));
             }
         };
 
-    NativeValue* lastParam = (info.argc > unwrapArgc) ? info.argv[unwrapArgc] : nullptr;
-    NativeValue* result = nullptr;
+    napi_value lastParam = (argc > ARGC_ONE) ? argv[ARGC_ONE] : nullptr;
+    napi_value result = nullptr;
 
-    AbilityRuntime::AsyncTask::Schedule("JsStaticSubscriberExtensionContext::OnStartAbility", engine,
-        CreateAsyncTaskWithLastParam(engine, lastParam, std::move(execute), std::move(complete), &result));
+    AbilityRuntime::NapiAsyncTask::Schedule("JsStaticSubscriberExtensionContext::OnStartAbility", env,
+        CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
 
     return result;
 }
 
-NativeValue* CreateJsStaticSubscriberExtensionContext(NativeEngine& engine,
+napi_value CreateJsStaticSubscriberExtensionContext(napi_env env,
     std::shared_ptr<StaticSubscriberExtensionContext> context)
 {
     EVENT_LOGI("Create js static subscriber extension context");
@@ -110,15 +120,13 @@ NativeValue* CreateJsStaticSubscriberExtensionContext(NativeEngine& engine,
         abilityInfo = context->GetAbilityInfo();
     }
 
-    NativeValue* objValue = CreateJsExtensionContext(engine, context, abilityInfo);
-    NativeObject* object = AbilityRuntime::ConvertNativeValueTo<NativeObject>(objValue);
-
+    napi_value objValue = CreateJsExtensionContext(env, context, abilityInfo);
     std::unique_ptr<JsStaticSubscriberExtensionContext> jsContext =
         std::make_unique<JsStaticSubscriberExtensionContext>(context);
-    object->SetNativePointer(jsContext.release(), JsStaticSubscriberExtensionContext::Finalizer, nullptr);
+    napi_wrap(env, objValue, jsContext.release(), JsStaticSubscriberExtensionContext::Finalizer, nullptr, nullptr);
 
     const char* moduleName = "JsStaticSubscriberExtensionContext";
-    AbilityRuntime::BindNativeFunction(engine, *object, "startAbility", moduleName,
+    AbilityRuntime::BindNativeFunction(env, objValue, "startAbility", moduleName,
         JsStaticSubscriberExtensionContext::StartAbility);
     return objValue;
 }

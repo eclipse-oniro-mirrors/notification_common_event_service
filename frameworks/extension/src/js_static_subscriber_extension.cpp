@@ -35,7 +35,7 @@ constexpr size_t ARGC_ONE = 1;
 
 using namespace OHOS::AppExecFwk;
 
-NativeValue* AttachStaticSubscriberExtensionContext(NativeEngine* engine, void* value, void*)
+napi_value AttachStaticSubscriberExtensionContext(napi_env env, void* value, void*)
 {
     EVENT_LOGD("AttachStaticSubscriberExtensionContext");
     if (value == nullptr) {
@@ -49,19 +49,19 @@ NativeValue* AttachStaticSubscriberExtensionContext(NativeEngine* engine, void* 
         return nullptr;
     }
 
-    NativeValue* object = CreateJsStaticSubscriberExtensionContext(*engine, ptr);
-    auto contextObj = AbilityRuntime::JsRuntime::LoadSystemModuleByEngine(engine,
-        "application.StaticSubscriberExtensionContext", &object, 1)->Get();
-    NativeObject* nObject = AbilityRuntime::ConvertNativeValueTo<NativeObject>(contextObj);
-    nObject->ConvertToNativeBindingObject(engine,
-        AbilityRuntime::DetachCallbackFunc, AttachStaticSubscriberExtensionContext, value, nullptr);
+    napi_value object = CreateJsStaticSubscriberExtensionContext(env, ptr);
+    auto napiContextObj = AbilityRuntime::JsRuntime::LoadSystemModuleByEngine(env,
+        "application.StaticSubscriberExtensionContext", &object, 1)->GetNapiValue();
+    napi_coerce_to_native_binding_object(env, napiContextObj, AbilityRuntime::DetachCallbackFunc,
+        AttachStaticSubscriberExtensionContext, value, nullptr);
     auto workContext = new (std::nothrow) std::weak_ptr<StaticSubscriberExtensionContext>(ptr);
-    nObject->SetNativePointer(workContext,
-        [](NativeEngine*, void* data, void*) {
+
+    napi_wrap(env, napiContextObj, workContext,
+        [](napi_env, void* data, void*) {
             EVENT_LOGI("Finalizer for weak_ptr static subscriber extension context is called");
             delete static_cast<std::weak_ptr<StaticSubscriberExtensionContext>*>(data);
-        }, nullptr);
-    return contextObj;
+        }, nullptr, nullptr);
+    return napiContextObj;
 }
 
 JsStaticSubscriberExtension* JsStaticSubscriberExtension::Create(
@@ -103,7 +103,7 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
     moduleName.append("::").append(abilityInfo_->name);
     EVENT_LOGD("moduleName: %{public}s, srcPath: %{public}s.", moduleName.c_str(), srcPath.c_str());
     AbilityRuntime::HandleScope handleScope(jsRuntime_);
-    auto& engine = jsRuntime_.GetNativeEngine();
+    napi_env env = jsRuntime_.GetNapiEnv();
 
     jsObj_ = jsRuntime_.LoadModule(moduleName, srcPath, abilityInfo_->hapPath,
         abilityInfo_->compileMode == CompileMode::ES_MODULE);
@@ -111,8 +111,7 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
         EVENT_LOGE("Failed to load module");
         return;
     }
-
-    NativeObject* obj = AbilityRuntime::ConvertNativeValueTo<NativeObject>(jsObj_->Get());
+    napi_value obj = jsObj_->GetNapiValue();
     if (obj == nullptr) {
         EVENT_LOGE("Failed to get static subscriber extension object");
         return;
@@ -124,28 +123,27 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
         return;
     }
 
-    NativeValue* contextObj = CreateJsStaticSubscriberExtensionContext(engine, context);
+    napi_value contextObj = CreateJsStaticSubscriberExtensionContext(env, context);
     auto shellContextRef = AbilityRuntime::JsRuntime::LoadSystemModuleByEngine(
-        &engine, "application.StaticSubscriberExtensionContext", &contextObj, ARGC_ONE);
-    contextObj = shellContextRef->Get();
-    NativeObject* nativeObj = AbilityRuntime::ConvertNativeValueTo<NativeObject>(contextObj);
+        env, "application.StaticSubscriberExtensionContext", &contextObj, ARGC_ONE);
+    napi_value nativeObj = shellContextRef->GetNapiValue();
     if (nativeObj == nullptr) {
         EVENT_LOGE("Failed to get context native object");
         return;
     }
 
     auto workContext = new (std::nothrow) std::weak_ptr<StaticSubscriberExtensionContext>(context);
-    nativeObj->ConvertToNativeBindingObject(&engine, AbilityRuntime::DetachCallbackFunc,
+    napi_coerce_to_native_binding_object(env, nativeObj, AbilityRuntime::DetachCallbackFunc,
         AttachStaticSubscriberExtensionContext, workContext, nullptr);
     context->Bind(jsRuntime_, shellContextRef.release());
-    obj->SetProperty("context", contextObj);
+    napi_set_named_property(env, obj, "context", contextObj);
 
     EVENT_LOGD("Set static subscriber extension context");
-    nativeObj->SetNativePointer(workContext,
-        [](NativeEngine*, void* data, void*) {
-            EVENT_LOGI("Finalizer for weak_ptr static subscriber extension context is called");
-            delete static_cast<std::weak_ptr<StaticSubscriberExtensionContext>*>(data);
-        }, nullptr);
+    napi_wrap(env, nativeObj, workContext,
+        [](napi_env, void* data, void*) {
+        EVENT_LOGI("Finalizer for weak_ptr static subscriber extension context is called");
+        delete static_cast<std::weak_ptr<StaticSubscriberExtensionContext>*>(data);
+        }, nullptr, nullptr);
 
     EVENT_LOGI("Init end.");
 }
@@ -197,36 +195,41 @@ void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData
         }
 
         AbilityRuntime::HandleScope handleScope(jsRuntime_);
-        NativeEngine& nativeEngine = jsRuntime_.GetNativeEngine();
-        NativeValue* jCommonEventData = nativeEngine.CreateObject();
-        NativeObject* commonEventData = AbilityRuntime::ConvertNativeValueTo<NativeObject>(jCommonEventData);
+        napi_env env = jsRuntime_.GetNapiEnv();
+        napi_value commonEventData = nullptr;
+        napi_create_object(env, &commonEventData);
         Want want = data->GetWant();
-        commonEventData->SetProperty("event",
-            nativeEngine.CreateString(want.GetAction().c_str(), want.GetAction().size()));
-        commonEventData->SetProperty("bundleName",
-            nativeEngine.CreateString(want.GetBundle().c_str(), want.GetBundle().size()));
-        commonEventData->SetProperty("code", nativeEngine.CreateNumber(data->GetCode()));
-        commonEventData->SetProperty("data",
-            nativeEngine.CreateString(data->GetData().c_str(), data->GetData().size()));
-        napi_value napiParams = AppExecFwk::WrapWantParams(
-            reinterpret_cast<napi_env>(&nativeEngine), want.GetParams());
-        NativeValue* nativeParams = reinterpret_cast<NativeValue*>(napiParams);
-        commonEventData->SetProperty("parameters", nativeParams);
 
-        NativeValue* argv[] = {jCommonEventData};
-        NativeValue* value = jsObj_->Get();
-        NativeObject* obj = AbilityRuntime::ConvertNativeValueTo<NativeObject>(value);
+        napi_value wantAction = nullptr;
+        napi_create_string_utf8(env, want.GetAction().c_str(), want.GetAction().size(), &wantAction);
+        napi_set_named_property(env, commonEventData, "event", wantAction);
+        napi_value wantBundle = nullptr;
+        napi_create_string_utf8(env, want.GetBundle().c_str(), want.GetBundle().size(), &wantBundle);
+        napi_set_named_property(env, commonEventData, "bundleName", wantAction);
+        napi_value dataCode = nullptr;
+        napi_create_int32(env, data->GetCode(), &dataCode);
+        napi_set_named_property(env, commonEventData, "code", dataCode);
+        napi_value dataNapi = nullptr;
+        napi_create_string_utf8(env, data->GetData().c_str(), data->GetData().size(), &dataNapi);
+        napi_set_named_property(env, commonEventData, "data", dataNapi);
+        napi_value napiParams = AppExecFwk::WrapWantParams(
+            env, want.GetParams());
+        napi_set_named_property(env, commonEventData, "parameters", napiParams);
+
+        napi_value argv[] = {commonEventData};
+        napi_value obj = jsObj_->GetNapiValue();
         if (obj == nullptr) {
             EVENT_LOGE("Failed to get StaticSubscriberExtension object");
             return;
         }
 
-        NativeValue* method = obj->GetProperty("onReceiveEvent");
+        napi_value method = nullptr;
+        napi_get_named_property(env, obj, "onReceiveEvent", &method);
         if (method == nullptr) {
             EVENT_LOGE("Failed to get onReceiveEvent from StaticSubscriberExtension object");
             return;
         }
-        nativeEngine.CallFunction(value, method, argv, ARGC_ONE);
+        napi_call_function(env, obj, method, ARGC_ONE, argv, nullptr);
         EVENT_LOGD("JsStaticSubscriberExtension js receive event called.");
     };
     handler_->PostTask(task);
