@@ -23,7 +23,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-NativeValue* CreateJsStaticSubscriberExtensionContext(NativeEngine& engine,
+napi_value CreateJsStaticSubscriberExtensionContext(napi_env env,
     std::shared_ptr<StaticSubscriberExtensionContext> context);
 } // namespace EventFwk
 } // namespace OHOS
