@@ -524,7 +524,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2500, Level1)
     ASSERT_NE(nullptr, commonEventControlManager);
     std::string event = "";
     int32_t userId = ALL_USER;
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     commonEventControlManager->GetHistoryEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2500 end";
 }
@@ -542,7 +542,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2600, Level1)
     ASSERT_NE(nullptr, commonEventControlManager);
     std::string event = "";
     int32_t userId = ALL_USER - 1;
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = ALL_USER - 1;
     commonEventControlManager->historyEventRecords_.emplace_back();
@@ -563,7 +563,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2700, Level1)
     ASSERT_NE(nullptr, commonEventControlManager);
     std::string event = "";
     int32_t userId = ALL_USER + 1;
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = ALL_USER + 2;
     commonEventControlManager->historyEventRecords_.emplace_back();
@@ -584,7 +584,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2800, Level1)
     ASSERT_NE(nullptr, commonEventControlManager);
     std::string event = "aa";
     int32_t userId = ALL_USER + 1;
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = ALL_USER + 2;
     commonEventControlManager->historyEventRecords_.emplace_back();
@@ -605,7 +605,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2900, Level1)
     ASSERT_NE(nullptr, commonEventControlManager);
     std::string event = "aa";
     int32_t userId = ALL_USER + 1;
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = ALL_USER + 1;
     commonEventControlManager->historyEventRecords_.emplace_back();

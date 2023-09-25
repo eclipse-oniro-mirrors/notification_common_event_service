@@ -490,7 +490,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1900, Le
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
         std::make_shared<CommonEventControlManager>();
     ASSERT_NE(nullptr, commonEventControlManager);
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = 100;
     commonEventControlManager->historyEventRecords_.emplace_back(historyEventRecord);
@@ -511,7 +511,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2000, Le
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
         std::make_shared<CommonEventControlManager>();
     ASSERT_NE(nullptr, commonEventControlManager);
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = 100;
     commonEventControlManager->historyEventRecords_.emplace_back(historyEventRecord);
@@ -534,7 +534,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2100, Le
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
         std::make_shared<CommonEventControlManager>();
     ASSERT_NE(nullptr, commonEventControlManager);
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     HistoryEventRecord historyEventRecord;
     historyEventRecord.userId = 90;
     commonEventControlManager->historyEventRecords_.emplace_back(historyEventRecord);

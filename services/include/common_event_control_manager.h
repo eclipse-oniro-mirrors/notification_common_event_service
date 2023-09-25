@@ -16,6 +16,8 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_CONTROL_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_CONTROL_MANAGER_H
 
+#include <list>
+
 #include "common_event_permission_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "history_event_record.h"
@@ -166,7 +168,7 @@ private:
         const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
 
     void GetHistoryEventRecords(
-        const std::string &event, const int32_t &userId, std::vector<HistoryEventRecord> &records);
+        const std::string &event, const int32_t &userId, std::list<HistoryEventRecord> &records);
 
     void DumpStateByCommonEventRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 
@@ -187,7 +189,7 @@ private:
     std::shared_ptr<OrderedEventHandler> handlerOrdered_;
     std::vector<std::shared_ptr<OrderedEventRecord>> orderedEventQueue_;
     std::vector<std::shared_ptr<OrderedEventRecord>> unorderedEventQueue_;
-    std::vector<HistoryEventRecord> historyEventRecords_;
+    std::list<HistoryEventRecord> historyEventRecords_;
     bool pendingTimeoutMessage_;
     bool scheduled_;
     const int64_t TIMEOUT = 10000;  // How long we allow a receiver to run before giving up on it. Unit: ms
