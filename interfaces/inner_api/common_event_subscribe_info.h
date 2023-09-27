@@ -132,6 +132,34 @@ public:
     const MatchingSkills &GetMatchingSkills() const;
 
     /**
+     * Sets the publisher bundle name for this CommonEventSubscribeInfo object.
+     *
+     * @param publisherBundleName Indicates the bundle name of the publisher.
+     */
+    void SetPublisherBundleName(const std::string &publisherBundleName);
+
+    /**
+     * Obtains the publisher bundle name of this CommonEventSubscribeInfo object.
+     *
+     * @return Returns the bundle name of the publisher.
+     */
+    std::string GetPublisherBundleName() const;
+
+    /**
+     * Sets the publisher uid for this CommonEventSubscribeInfo object.
+     *
+     * @param publisherUid Indicates the uid of the publisher.
+     */
+    void SetPublisherUid(int32_t publisherUid);
+
+    /**
+     * Obtains the publisher uid of this CommonEventSubscribeInfo object.
+     *
+     * @return Returns the uid of the publisher.
+     */
+    int32_t GetPublisherUid() const;
+
+    /**
      * Marshals a subscriber info object into a Parcel.
      *
      * @param parcel Indicates specified Parcel object.
@@ -162,6 +190,8 @@ private:
     std::string permission_;
     std::string deviceId_;
     CommonEventSubscribeInfo::ThreadMode threadMode_;
+    std::string publisherBundleName_;
+    int32_t publisherUid_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

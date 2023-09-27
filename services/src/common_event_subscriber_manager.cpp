@@ -352,6 +352,9 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
     bool isSystemApp = (eventRecord.eventRecordInfo.isSystemApp || eventRecord.eventRecordInfo.isSubsystem) &&
         !eventRecord.eventRecordInfo.isProxy;
 
+    auto bundleName = eventRecord.eventRecordInfo.bundleName;
+    auto uid = eventRecord.eventRecordInfo.uid;
+
     for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
         if ((*it)->eventSubscribeInfo == nullptr) {
             continue;
@@ -363,6 +366,16 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
         if (!eventRecord.publishInfo->GetBundleName().empty() &&
             eventRecord.publishInfo->GetBundleName() != (*it)->eventRecordInfo.bundleName) {
+            continue;
+        }
+
+        auto publisherBundleName = (*it)->eventSubscribeInfo->GetPublisherBundleName();
+        if (!publisherBundleName.empty() && publisherBundleName != bundleName) {
+            continue;
+        }
+
+        auto publisherUid = (*it)->eventSubscribeInfo->GetPublisherUid();
+        if (publisherUid > 0 && uid > 0 && publisherUid != uid) {
             continue;
         }
 

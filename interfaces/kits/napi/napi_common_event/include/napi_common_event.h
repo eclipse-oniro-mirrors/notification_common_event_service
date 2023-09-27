@@ -95,6 +95,7 @@ struct AsyncCallbackInfoSubscribeInfo {
     int32_t userId = UNDEFINED_USER;
     int32_t priority = 0;
     CallbackPromiseInfo info;
+    std::string publisherBundleName;
 };
 
 struct AsyncCallbackInfoOrderedCommonEvent {
@@ -289,6 +290,9 @@ void SetPublisherUserIdResult(const napi_env &env, const int32_t &userId, napi_v
 
 void SetPublisherPriorityResult(const napi_env &env, const int32_t &priority, napi_value &commonEventSubscribeInfo);
 
+void SetPublisherBundleNameResult(
+    const napi_env &env, const std::string &publisherBundleName, napi_value &commonEventSubscribeInfo);
+
 void PaddingAsyncCallbackInfoGetSubscribeInfo(const napi_env &env, const size_t &argc,
     AsyncCallbackInfoSubscribeInfo *&asynccallbackinfo, const napi_ref &callback, napi_value &promise);
 
@@ -441,6 +445,9 @@ napi_value GetPublisherDeviceIdByCreateSubscriber(
 napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info);
 
 napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &argv, int &priority, bool &hasProperty);
+
+napi_value GetPublisherBundleNameByCreateSubscriber(
+    const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info);
 
 napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info info);
 

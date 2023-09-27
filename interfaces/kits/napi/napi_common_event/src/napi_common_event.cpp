@@ -659,6 +659,16 @@ void PaddingAsyncCallbackInfoGetSubscribeInfo(const napi_env &env, const size_t 
     }
 }
 
+void SetPublisherBundleNameResult(
+    const napi_env &env, const std::string &publisherBundleName, napi_value &commonEventSubscribeInfo)
+{
+    EVENT_LOGD("Called.");
+    napi_value value = nullptr;
+    napi_create_string_utf8(env, publisherBundleName.c_str(), NAPI_AUTO_LENGTH, &value);
+
+    napi_set_named_property(env, commonEventSubscribeInfo, "publisherBundleName", value);
+}
+
 void PaddingNapiCreateAsyncWorkCallbackInfo(AsyncCallbackInfoSubscribeInfo *&asyncCallbackInfo)
 {
     EVENT_LOGD("PaddingNapiCreateAsyncWorkCallbackInfo excute");
@@ -668,6 +678,7 @@ void PaddingNapiCreateAsyncWorkCallbackInfo(AsyncCallbackInfoSubscribeInfo *&asy
     asyncCallbackInfo->deviceId = asyncCallbackInfo->subscriber->GetSubscribeInfo().GetDeviceId();
     asyncCallbackInfo->userId = asyncCallbackInfo->subscriber->GetSubscribeInfo().GetUserId();
     asyncCallbackInfo->priority = asyncCallbackInfo->subscriber->GetSubscribeInfo().GetPriority();
+    asyncCallbackInfo->publisherBundleName = asyncCallbackInfo->subscriber->GetSubscribeInfo().GetPublisherBundleName();
 }
 
 void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *asyncCallbackInfo, napi_value &result)
@@ -679,6 +690,7 @@ void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *as
     SetPublisherDeviceIdResult(env, asyncCallbackInfo->deviceId, result);
     SetPublisherUserIdResult(env, asyncCallbackInfo->userId, result);
     SetPublisherPriorityResult(env, asyncCallbackInfo->priority, result);
+    SetPublisherBundleNameResult(env, asyncCallbackInfo->publisherBundleName, result);
 }
 
 void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscribeInfo, napi_value &result)
@@ -690,6 +702,7 @@ void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscrib
     SetPublisherDeviceIdResult(env, subscribeInfo.GetDeviceId(), result);
     SetPublisherUserIdResult(env, subscribeInfo.GetUserId(), result);
     SetPublisherPriorityResult(env, subscribeInfo.GetPriority(), result);
+    SetPublisherBundleNameResult(env, subscribeInfo.GetPublisherBundleName(), result);
 }
 
 napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
@@ -3511,6 +3524,32 @@ napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &
     return NapiGetNull(env);
 }
 
+napi_value GetPublisherBundleNameByCreateSubscriber(
+    const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info)
+{
+    EVENT_LOGD("Called.");
+    bool hasPublisherBundleName = false;
+    napi_value result = nullptr;
+    napi_valuetype valuetype = napi_undefined;
+    size_t strLen = 0;
+    char str[STR_MAX_SIZE] = {0};
+
+    // publisherBundleName
+    NAPI_CALL(env, napi_has_named_property(env, argv, "publisherBundleName", &hasPublisherBundleName));
+    if (hasPublisherBundleName) {
+        napi_get_named_property(env, argv, "publisherBundleName", &result);
+        NAPI_CALL(env, napi_typeof(env, result, &valuetype));
+        if (valuetype != napi_string) {
+            EVENT_LOGE("Wrong argument type. String expected.");
+            return nullptr;
+        }
+        NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
+        info.SetPublisherBundleName(str);
+    }
+
+    return NapiGetNull(env);
+}
+
 napi_value ParseParametersConstructor(
     const napi_env &env, const napi_callback_info &info, napi_value &thisVar, CommonEventSubscribeInfo &params)
 {
@@ -3551,6 +3590,11 @@ napi_value ParseParametersConstructor(
 
     // priority?: number
     if (!GetPriorityByCreateSubscriber(env, argv[0], subscribeInfo)) {
+        return nullptr;
+    }
+
+    // publisherBundleName?: string
+    if (!GetPublisherBundleNameByCreateSubscriber(env, argv[0], subscribeInfo)) {
         return nullptr;
     }
 
