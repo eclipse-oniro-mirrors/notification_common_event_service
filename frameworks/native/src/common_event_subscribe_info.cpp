@@ -23,12 +23,12 @@ namespace OHOS {
 namespace EventFwk {
 CommonEventSubscribeInfo::CommonEventSubscribeInfo(const MatchingSkills &matchingSkills)
     : matchingSkills_(matchingSkills), priority_(0), userId_(UNDEFINED_USER),
-      threadMode_(CommonEventSubscribeInfo::ASYNC)
+    threadMode_(CommonEventSubscribeInfo::ASYNC), publisherUid_(0)
 {
 }
 
 CommonEventSubscribeInfo::CommonEventSubscribeInfo()
-    : priority_(0), userId_(UNDEFINED_USER), threadMode_(CommonEventSubscribeInfo::ASYNC)
+    : priority_(0), userId_(UNDEFINED_USER), threadMode_(CommonEventSubscribeInfo::ASYNC), publisherUid_(0)
 {
 }
 
@@ -40,6 +40,8 @@ CommonEventSubscribeInfo::CommonEventSubscribeInfo(const CommonEventSubscribeInf
     permission_ = commonEventSubscribeInfo.permission_;
     deviceId_ = commonEventSubscribeInfo.deviceId_;
     threadMode_ = commonEventSubscribeInfo.threadMode_;
+    publisherBundleName_ = commonEventSubscribeInfo.publisherBundleName_;
+    publisherUid_ = commonEventSubscribeInfo.publisherUid_;
 }
 
 CommonEventSubscribeInfo::~CommonEventSubscribeInfo()
@@ -102,6 +104,26 @@ const MatchingSkills &CommonEventSubscribeInfo::GetMatchingSkills() const
     return matchingSkills_;
 }
 
+void CommonEventSubscribeInfo::SetPublisherBundleName(const std::string &publisherBundleName)
+{
+    publisherBundleName_ = publisherBundleName;
+}
+
+std::string CommonEventSubscribeInfo::GetPublisherBundleName() const
+{
+    return publisherBundleName_;
+}
+
+void CommonEventSubscribeInfo::SetPublisherUid(int32_t publisherUid)
+{
+    publisherUid_ = publisherUid;
+}
+
+int32_t CommonEventSubscribeInfo::GetPublisherUid() const
+{
+    return publisherUid_;
+}
+
 bool CommonEventSubscribeInfo::Marshalling(Parcel &parcel) const
 {
     // write permission
@@ -140,6 +162,18 @@ bool CommonEventSubscribeInfo::Marshalling(Parcel &parcel) const
         return false;
     }
 
+    // write publisherBundleName
+    if (!parcel.WriteString(publisherBundleName_)) {
+        EVENT_LOGE("Failed to write publisherBundleName");
+        return false;
+    }
+
+    // write publisherUid
+    if (!parcel.WriteInt32(publisherUid_)) {
+        EVENT_LOGE("Failed to write publisherUid");
+        return false;
+    }
+
     return true;
 }
 
@@ -169,6 +203,12 @@ bool CommonEventSubscribeInfo::ReadFromParcel(Parcel &parcel)
         EVENT_LOGE("Failed to read matchingSkills");
         return false;
     }
+
+    // read publisherBundleName
+    publisherBundleName_ = parcel.ReadString();
+
+    // read publisherUid
+    publisherUid_ = parcel.ReadInt32();
 
     return true;
 }
