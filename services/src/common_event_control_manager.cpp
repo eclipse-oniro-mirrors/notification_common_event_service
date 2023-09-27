@@ -425,9 +425,9 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
 
     std::lock_guard<std::mutex> lock(historyMutex_);
     if (historyEventRecords_.size() == HISTORY_MAX_SIZE) {
-        historyEventRecords_.erase(historyEventRecords_.begin());
+        historyEventRecords_.pop_front();
     }
-    historyEventRecords_.emplace_back(record);
+    historyEventRecords_.push_back(record);
 }
 
 bool CommonEventControlManager::ScheduleOrderedCommonEvent()
@@ -914,7 +914,7 @@ void CommonEventControlManager::GetOrderedEventRecords(
 }
 
 void CommonEventControlManager::GetHistoryEventRecords(
-    const std::string &event, const int32_t &userId, std::vector<HistoryEventRecord> &records)
+    const std::string &event, const int32_t &userId, std::list<HistoryEventRecord> &records)
 {
     EVENT_LOGD("enter");
     if (event.empty() && userId == ALL_USER) {
@@ -922,19 +922,19 @@ void CommonEventControlManager::GetHistoryEventRecords(
     } else if (event.empty()) {
         for (auto vec : historyEventRecords_) {
             if (vec.userId == userId) {
-                records.emplace_back(vec);
+                records.push_back(vec);
             }
         }
     } else if (userId == ALL_USER) {
         for (auto vec : historyEventRecords_) {
             if (vec.want.GetAction() == event) {
-                records.emplace_back(vec);
+                records.push_back(vec);
             }
         }
     } else {
         for (auto vec : historyEventRecords_) {
             if (vec.want.GetAction() == event && vec.userId == userId) {
-                records.emplace_back(vec);
+                records.push_back(vec);
             }
         }
     }
@@ -1332,7 +1332,7 @@ void CommonEventControlManager::DumpHistoryState(
 {
     EVENT_LOGD("enter");
 
-    std::vector<HistoryEventRecord> records;
+    std::list<HistoryEventRecord> records;
     std::lock_guard<std::mutex> lock(historyMutex_);
     GetHistoryEventRecords(event, userId, records);
 
