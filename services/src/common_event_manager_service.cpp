@@ -141,12 +141,9 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
         return ERR_NOTIFICATION_SYS_ERROR;
     }
 
-    std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
-
     if (DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(uid)) {
-        EVENT_LOGE("Too many common events have been sent in a short period from %{public}s (pid = %{public}d, uid = "
+        EVENT_LOGE("Too many common events have been sent in a short period from (pid = %{public}d, uid = "
                    "%{public}d, userId = %{public}d)",
-            bundleName.c_str(),
             pid,
             uid,
             userId);
@@ -164,13 +161,13 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
         uid,
         clientToken,
         userId,
-        bundleName,
         weakThis] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
             EVENT_LOGE("innerCommonEventManager not exist");
             return;
         }
+        std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
         sptr<CommonEventManagerService> commonEventManagerService = weakThis.promote();
         if (commonEventManagerService == nullptr) {
             EVENT_LOGE("CommonEventManager not exist");
