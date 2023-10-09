@@ -1,1 +1,0 @@
-src:*/notification/common_event_service/frameworks/native/src/*
