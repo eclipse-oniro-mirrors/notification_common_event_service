@@ -44,7 +44,7 @@ ohos_shared_library("cesfwk_innerkits") {
     cfi_cross_dso = true
     debug = false
   }
-  stack_protector_ret = true
+  branch_protector_ret = "pac_ret"
 
   sources = [
     "${ces_native_path}/src/async_common_event_result.cpp",

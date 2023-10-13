@@ -69,7 +69,7 @@ ohos_shared_library("cesfwk_services") {
     cfi_cross_dso = true
     debug = false
   }
-  stack_protector_ret = true
+  branch_protector_ret = "pac_ret"
 
   shlib_type = "sa"
   version_script = "libcesfwk_services.map"

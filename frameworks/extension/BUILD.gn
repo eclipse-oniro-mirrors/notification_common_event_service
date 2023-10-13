@@ -29,7 +29,7 @@ ohos_shared_library("static_subscriber_ipc") {
     cfi_cross_dso = true
     debug = false
   }
-  stack_protector_ret = true
+  branch_protector_ret = "pac_ret"
 
   include_dirs = []
 
@@ -72,7 +72,7 @@ ohos_shared_library("static_subscriber_extension") {
     cfi_cross_dso = true
     debug = false
   }
-  stack_protector_ret = true
+  branch_protector_ret = "pac_ret"
 
   include_dirs = [
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
@@ -132,7 +132,7 @@ ohos_shared_library("static_subscriber_extension_module") {
     cfi_cross_dso = true
     debug = false
   }
-  stack_protector_ret = true
+  branch_protector_ret = "pac_ret"
 
   include_dirs = [
     "${ability_runtime_path}/interfaces/kits/native/ability/native",
