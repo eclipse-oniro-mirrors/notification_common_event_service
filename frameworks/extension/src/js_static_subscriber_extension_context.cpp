@@ -81,7 +81,7 @@ napi_value JsStaticSubscriberExtensionContext::OnStartAbility(napi_env env, napi
     EVENT_LOGI("Start ability, ability name is %{public}s.", want.GetElement().GetAbilityName().c_str());
 
     auto innerErrorCode = std::make_shared<int32_t>(ERR_OK);
-    AbilityRuntime::AsyncTask::ExecuteCallback execute = [weak = context_, want, innerErrorCode]() {
+    AbilityRuntime::NapiAsyncTask::ExecuteCallback execute = [weak = context_, want, innerErrorCode]() {
         auto context = weak.lock();
         if (!context) {
             EVENT_LOGW("context is released");
