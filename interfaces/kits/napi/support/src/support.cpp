@@ -580,6 +580,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_HTTP_PROXY_CHANGE");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE,
+        "COMMON_EVENT_CONNECTIVITY_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED,
         "COMMON_EVENT_SCREEN_LOCKED");
     SetNamedPropertyByStr(env,
