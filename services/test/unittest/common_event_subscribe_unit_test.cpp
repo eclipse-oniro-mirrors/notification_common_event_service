@@ -553,6 +553,12 @@ public:
     {
         return 1;
     }
+
+    int32_t ExecuteIntent(uint64_t key, const sptr<IRemoteObject> &callerToken,
+        const InsightIntentExecuteParam &param) override
+    {
+        return 1;
+    }
 };
 
 class EventReceiveStubTest : public EventReceiveStub {
