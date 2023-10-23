@@ -46,8 +46,8 @@ DistributedKv::Status StaticSubscriberDataManager::GetKvStore()
         .syncable = false,
         .area = DistributedKv::EL1,
         .kvStoreType = DistributedKv::KvStoreType::SINGLE_VERSION,
-        .baseDir = STATIC_SUBSCRIBER_STORAGE_DIR,
-        .securityLevel = DistributedKv::SecurityLevel::S1
+        .securityLevel = DistributedKv::SecurityLevel::S1,
+        .baseDir = STATIC_SUBSCRIBER_STORAGE_DIR
     };
 
     DistributedKv::Status status = dataManager_.GetSingleKvStore(options, appId_, storeId_, kvStorePtr_);
