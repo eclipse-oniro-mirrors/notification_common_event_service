@@ -139,6 +139,12 @@ public:
         return 1;
     }
 
+    int32_t StartAbilityByInsightIntent(const Want &want, const sptr<IRemoteObject> &callerToken,
+        uint64_t intentId, int32_t userId = DEFAULT_INVAL_VALUE) override
+    {
+        return 1;
+    }
+
     int StartAbility(const Want &want, const StartOptions &startOptions,
         const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode) override
     {
