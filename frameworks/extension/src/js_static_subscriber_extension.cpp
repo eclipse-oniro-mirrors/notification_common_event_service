@@ -136,7 +136,7 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
     napi_coerce_to_native_binding_object(env, nativeObj, AbilityRuntime::DetachCallbackFunc,
         AttachStaticSubscriberExtensionContext, workContext, nullptr);
     context->Bind(jsRuntime_, shellContextRef.release());
-    napi_set_named_property(env, obj, "context", contextObj);
+    napi_set_named_property(env, obj, "context", nativeObj);
 
     EVENT_LOGD("Set static subscriber extension context");
     napi_wrap(env, nativeObj, workContext,
