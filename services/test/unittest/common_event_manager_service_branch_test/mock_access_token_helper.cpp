@@ -20,6 +20,7 @@ namespace {
     bool g_mockIsSystemAppRet = true;
     bool g_mockIsDlpHapRet = true;
     bool g_mockVerifyShellTokenRet = true;
+    bool g_mockVerifyAccessTokenRet = true;
 }
 
 void MockVerifyNativeToken(bool mockRet)
@@ -40,6 +41,11 @@ void MockIsDlpHap(bool mockRet)
 void MockVerifyShellToken(bool mockRet)
 {
     g_mockVerifyShellTokenRet = mockRet;
+}
+
+void MockVerifyAccessToken(bool mockRet)
+{
+    g_mockVerifyAccessTokenRet = mockRet;
 }
 
 using namespace OHOS::Security::AccessToken;
@@ -64,6 +70,12 @@ bool AccessTokenHelper::IsDlpHap(const AccessTokenID &callerToken)
 bool AccessTokenHelper::VerifyShellToken(const AccessTokenID &callerToken)
 {
     return g_mockVerifyShellTokenRet;
+}
+
+bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
+    const std::string &permission)
+{
+    return g_mockVerifyAccessTokenRet;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

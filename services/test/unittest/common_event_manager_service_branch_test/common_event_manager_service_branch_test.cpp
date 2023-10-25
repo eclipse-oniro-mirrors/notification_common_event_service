@@ -22,6 +22,7 @@
 #include "ffrt.h"
 
 extern void MockVerifyNativeToken(bool mockRet);
+extern void MockVerifyAccessToken(bool mockRet);
 extern void MockIsSystemApp(bool mockRet);
 extern void MockIsDlpHap(bool mockRet);
 extern void MockVerifyShellToken(bool mockRet);
@@ -464,4 +465,94 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1700, Le
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     EXPECT_EQ(ERR_OK, comm->UnsubscribeCommonEvent(nullptr));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1700 end";
+}
+
+/**
+ * @tc.name: CommonEventManagerServiceBranch_0201
+ * @tc.desc: test RemoveStickyCommonEvent function and IsReady is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0201, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0201 start";
+    std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
+    ASSERT_NE(nullptr, comm);
+    // set IsReady is false
+    comm->innerCommonEventManager_ = nullptr;
+    // test RemoveStickyCommonEvent
+    std::string event = "this is event";
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CESM_ERROR, comm->RemoveStickyCommonEvent(event));
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0201 end";
+}
+
+/**
+ * @tc.name: CommonEventManagerServiceBranch_0202
+ * @tc.desc: test RemoveStickyCommonEvent function and IsReady is true.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0202, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0202 start";
+    std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
+    ASSERT_NE(nullptr, comm);
+    // set IsReady is true
+    comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
+    // set VerifyNativeToken is true
+    MockVerifyNativeToken(false);
+    // set IsSystemApp is false
+    MockIsSystemApp(false);
+    // test RemoveStickyCommonEvent
+    std::string event = "this is event";
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP, comm->RemoveStickyCommonEvent(event));
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0202 end";
+}
+
+/**
+ * @tc.name: CommonEventManagerServiceBranch_0203
+ * @tc.desc: test RemoveStickyCommonEvent function and IsReady is true.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0203, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0203 start";
+    std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
+    ASSERT_NE(nullptr, comm);
+    // set IsReady is true
+    comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
+    // set VerifyNativeToken is false
+    MockVerifyNativeToken(false);
+    // set IsSystemApp is true
+    MockIsSystemApp(true);
+    // set VerifyAccessToken is false
+    MockVerifyAccessToken(false);
+    // test RemoveStickyCommonEvent
+    std::string event = "this is event";
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED, comm->RemoveStickyCommonEvent(event));
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0203 end";
+}
+
+/**
+ * @tc.name: CommonEventManagerServiceBranch_0204
+ * @tc.desc: test SetStaticSubscriberState function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0204 start";
+    std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
+    ASSERT_NE(nullptr, comm);
+    // set IsSystemApp is true
+    MockIsSystemApp(true);
+    // set IsReady is true
+    comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
+    int32_t ret = comm->SetStaticSubscriberState(true);
+    comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    EXPECT_EQ(ret, comm->SetStaticSubscriberState(true));
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0204 end";
 }
