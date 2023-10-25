@@ -44,9 +44,9 @@ DistributedKv::Status StaticSubscriberDataManager::GetKvStore()
         .encrypt = false,
         .autoSync = false,
         .syncable = false,
+        .securityLevel = DistributedKv::SecurityLevel::S1,
         .area = DistributedKv::EL1,
         .kvStoreType = DistributedKv::KvStoreType::SINGLE_VERSION,
-        .securityLevel = DistributedKv::SecurityLevel::S1,
         .baseDir = STATIC_SUBSCRIBER_STORAGE_DIR
     };
 
