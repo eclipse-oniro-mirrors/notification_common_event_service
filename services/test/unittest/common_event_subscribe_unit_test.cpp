@@ -565,6 +565,12 @@ public:
     {
         return 1;
     }
+
+    int32_t ExecuteInsightIntentDone(const sptr<IRemoteObject> &token, uint64_t intentId,
+        const InsightIntentExecuteResult &result) override
+    {
+        return 1;
+    }
 };
 
 class EventReceiveStubTest : public EventReceiveStub {
