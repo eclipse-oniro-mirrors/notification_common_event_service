@@ -205,7 +205,7 @@ void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData
         napi_set_named_property(env, commonEventData, "event", wantAction);
         napi_value wantBundle = nullptr;
         napi_create_string_utf8(env, want.GetBundle().c_str(), want.GetBundle().size(), &wantBundle);
-        napi_set_named_property(env, commonEventData, "bundleName", wantAction);
+        napi_set_named_property(env, commonEventData, "bundleName", wantBundle);
         napi_value dataCode = nullptr;
         napi_create_int32(env, data->GetCode(), &dataCode);
         napi_set_named_property(env, commonEventData, "code", dataCode);
