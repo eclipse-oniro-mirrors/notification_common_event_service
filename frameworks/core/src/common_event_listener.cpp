@@ -93,7 +93,7 @@ ErrCode CommonEventListener::Init()
 std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::GetCommonRunner()
 {
     if (CommonEventListener::commonRunner_ == nullptr) {
-        CommonEventListener::commonRunner_ = EventRunner::Create("CesComListener");
+        CommonEventListener::commonRunner_ = EventRunner::Create("OS_cesComLstnr");
     }
 
     return CommonEventListener::commonRunner_;
