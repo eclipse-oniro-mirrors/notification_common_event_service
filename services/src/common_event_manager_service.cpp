@@ -22,7 +22,7 @@
 #include "common_event_constant.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
-#include "hitrace_meter.h"
+#include "hitrace_meter_adapter.h"
 #include "ipc_skeleton.h"
 #include "publish_manager.h"
 #include "system_ability_definition.h"

@@ -66,6 +66,8 @@ ohos_shared_library("cesfwk_core") {
 
   public_configs = [ ":cesfwk_core_public_config" ]
 
+  defines = []
+
   deps = [ "${ces_common_path}:libevent_common" ]
 
   external_deps = [
@@ -73,10 +75,14 @@ ohos_shared_library("cesfwk_core") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
-    "hitrace:hitrace_meter",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
+
+  if (ces_hitrace_usage) {
+    external_deps += [ "hitrace:hitrace_meter" ]
+    defines += [ "HITRACE_METER_ENABLE" ]
+  }
 
   subsystem_name = "notification"
   innerapi_tags = [ "platformsdk" ]

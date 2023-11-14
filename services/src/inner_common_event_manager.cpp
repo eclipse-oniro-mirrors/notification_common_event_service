@@ -24,7 +24,7 @@
 #include "common_event_support_mapper.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
-#include "hitrace_meter.h"
+#include "hitrace_meter_adapter.h"
 #include "ipc_skeleton.h"
 #include "nlohmann/json.hpp"
 #include "os_account_manager_helper.h"

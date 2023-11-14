@@ -16,7 +16,7 @@
 #include "ability_manager_helper.h"
 
 #include "event_log_wrapper.h"
-#include "hitrace_meter.h"
+#include "hitrace_meter_adapter.h"
 #include "in_process_call_wrapper.h"
 #include "iservice_registry.h"
 #include "static_subscriber_connection.h"

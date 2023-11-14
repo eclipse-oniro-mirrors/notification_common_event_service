@@ -22,7 +22,7 @@
 #include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
-#include "hitrace_meter.h"
+#include "hitrace_meter_adapter.h"
 #include "ievent_receive.h"
 #include "system_time.h"
 #include "xcollie/watchdog.h"
