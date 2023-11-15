@@ -15,7 +15,7 @@
 
 #include "common_event_listener.h"
 #include "event_log_wrapper.h"
-#include "hitrace_meter.h"
+#include "hitrace_meter_adapter.h"
 
 namespace OHOS {
 namespace EventFwk {

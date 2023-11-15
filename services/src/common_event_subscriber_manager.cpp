@@ -17,7 +17,7 @@
 
 #include "event_log_wrapper.h"
 #include "event_report.h"
-#include "hitrace_meter.h"
+#include "hitrace_meter_adapter.h"
 #include "subscriber_death_recipient.h"
 
 namespace OHOS {

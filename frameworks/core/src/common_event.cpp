@@ -17,7 +17,7 @@
 #include "common_event_constant.h"
 #include "common_event_death_recipient.h"
 #include "event_log_wrapper.h"
-#include "hitrace_meter.h"
+#include "hitrace_meter_adapter.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
 #include "ces_inner_error_code.h"
