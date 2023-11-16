@@ -259,7 +259,7 @@ public:
         return nullptr;
     }
 
-    int SendWantSender(const sptr<IWantSender> &target, const SenderInfo &senderInfo) override
+    int SendWantSender(sptr<IWantSender> target, const SenderInfo &senderInfo) override
     {
         return 1;
     }
