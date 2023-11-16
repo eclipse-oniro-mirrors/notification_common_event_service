@@ -24,6 +24,7 @@
 #include "event_log_wrapper.h"
 #include "hitrace_meter_adapter.h"
 #include "ipc_skeleton.h"
+#include "parameters.h"
 #include "publish_manager.h"
 #include "system_ability_definition.h"
 #include "xcollie/watchdog.h"
@@ -31,6 +32,10 @@
 
 namespace OHOS {
 namespace EventFwk {
+namespace {
+const std::string NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION = "notification.support.check.sa.permission";
+}  // namespace
+
 using namespace OHOS::Notification;
 
 CommonEventManagerService::CommonEventManagerService()
@@ -38,6 +43,7 @@ CommonEventManagerService::CommonEventManagerService()
       runner_(nullptr),
       handler_(nullptr)
 {
+    supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION, "false");
     EVENT_LOGD("instance created");
 }
 
@@ -462,7 +468,7 @@ int32_t CommonEventManagerService::RemoveStickyCommonEvent(const std::string &ev
 
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool ret = AccessTokenHelper::VerifyAccessToken(tokenId, permission);
-    if (!ret && !isSubsystem) {
+    if (!ret && (!isSubsystem || supportCheckSaPermission_.compare("true") == 0)) {
         EVENT_LOGE("No permission.");
         return ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED;
     }

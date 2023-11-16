@@ -172,6 +172,7 @@ private:
     std::shared_ptr<StaticSubscriberManager> staticSubscriberManager_;
     DISALLOW_COPY_AND_MOVE(InnerCommonEventManager);
     time_t sysEventTime = 0;
+    std::string supportCheckSaPermission_ = "false";
 };
 }  // namespace EventFwk
 }  // namespace OHOS
