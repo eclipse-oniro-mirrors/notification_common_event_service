@@ -1234,6 +1234,13 @@ public:
     */
     static const std::string COMMON_EVENT_SPECIAL_CODE;
 
+    /**
+     * Indicates the action of a common event about reminder
+     * When the user clicks the button and the application (creator)
+     * is in the foreground, a event is sent. event data is: button type,reminder id
+     */
+    static const std::string COMMON_EVENT_REMINDER_STATUS_CHANGE;
+
 public:
     CommonEventSupport();
 
