@@ -187,7 +187,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
             EVENT_LOGE("failed to publish event %{public}s", event.GetWant().GetAction().c_str());
         }
     };
-
+    EVENT_LOGD("start to submit publish commonEvent <%{public}d>", uid);
     commonEventSrvQueue_->submit(publishCommonEventFunc);
     return ERR_OK;
 }
@@ -239,6 +239,7 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(
         }
     };
 
+    EVENT_LOGD("start to submit subscribe commonEvent <%{public}d>", callingUid);
     commonEventSrvQueue_->submit(subscribeCommonEventFunc);
     return ERR_OK;
 }
