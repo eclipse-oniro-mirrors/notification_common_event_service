@@ -310,7 +310,7 @@ int32_t CommonEvent::SetStaticSubscriberState(bool enable)
     return commonEventProxy_->SetStaticSubscriberState(enable);
 }
 
-bool CommonEvent::GetCommonEventProxy()
+bool CommonEvent::GetCommonEventProxy() __attribute__((no_sanitize("cfi")))
 {
     EVENT_LOGD("enter");
 
