@@ -571,6 +571,11 @@ public:
     {
         return 1;
     }
+
+    int32_t GetForegroundUIAbilities(std::vector<AppExecFwk::AbilityStateData> &list) override
+    {
+        return 1;
+    }
 };
 
 class EventReceiveStubTest : public EventReceiveStub {
