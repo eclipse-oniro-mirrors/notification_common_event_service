@@ -481,12 +481,12 @@ public:
         return 1;
     }
 
-    int32_t RegisterAppDebugListener(const sptr<AppExecFwk::IAppDebugListener> &listener) override
+    int32_t RegisterAppDebugListener(sptr<AppExecFwk::IAppDebugListener> listener) override
     {
         return 1;
     }
 
-    int32_t UnregisterAppDebugListener(const sptr<AppExecFwk::IAppDebugListener> &listener) override
+    int32_t UnregisterAppDebugListener(sptr<AppExecFwk::IAppDebugListener> listener) override
     {
         return 1;
     }
@@ -521,6 +521,11 @@ public:
     int32_t CancelApplicationAutoStartupByEDM(const AutoStartupInfo &info, bool flag) override
     {
         return 0;
+    }
+
+    int32_t GetForegroundUIAbilities(std::vector<AppExecFwk::AbilityStateData> &list) override
+    {
+        return 1;
     }
 };
 
