@@ -375,7 +375,7 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         }
 
         auto publisherUid = (*it)->eventSubscribeInfo->GetPublisherUid();
-        if (publisherUid > 0 && uid > 0 && publisherUid != uid) {
+        if (publisherUid > 0 && uid > 0 && static_cast<uid_t>(publisherUid) != uid) {
             continue;
         }
 
