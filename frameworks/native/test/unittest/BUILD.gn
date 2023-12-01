@@ -69,6 +69,7 @@ ohos_unittest("common_event_subscribe_test") {
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
   ]
 }
@@ -96,6 +97,7 @@ ohos_unittest("common_event_unsubscribe_test") {
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
   ]
 }

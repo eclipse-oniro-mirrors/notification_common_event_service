@@ -166,6 +166,7 @@ private:
     std::shared_ptr<EventRunner> runner_;
     std::shared_ptr<EventHandler> handler_;
     std::shared_ptr<ffrt::queue> commonEventSrvQueue_ = nullptr;
+    std::string supportCheckSaPermission_ = "false";
 
     DISALLOW_COPY_AND_MOVE(CommonEventManagerService);
 };

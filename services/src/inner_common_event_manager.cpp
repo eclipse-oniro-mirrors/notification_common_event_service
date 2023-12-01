@@ -28,16 +28,23 @@
 #include "ipc_skeleton.h"
 #include "nlohmann/json.hpp"
 #include "os_account_manager_helper.h"
+#include "parameters.h"
 #include "system_time.h"
 #include "want.h"
 
 namespace OHOS {
 namespace EventFwk {
+namespace {
+const std::string NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION = "notification.support.check.sa.permission";
+}  // namespace
+
 static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
 
 InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_shared<CommonEventControlManager>()),
     staticSubscriberManager_(std::make_shared<StaticSubscriberManager>())
-{}
+{
+    supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION, "false");
+}
 
 constexpr char HIDUMPER_HELP_MSG[] =
     "Usage:dump <command> [options]\n"
@@ -351,7 +358,8 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     }
 
     comeFrom.isSubsystem = AccessTokenHelper::VerifyNativeToken(callerToken);
-    if (!comeFrom.isSubsystem) {
+
+    if (!comeFrom.isSubsystem || supportCheckSaPermission_.compare("true") == 0) {
         if (AccessTokenHelper::VerifyShellToken(callerToken)) {
             const std::string permission = "ohos.permission.PUBLISH_SYSTEM_COMMON_EVENT";
             comeFrom.isCemShell = AccessTokenHelper::VerifyAccessToken(callerToken, permission);

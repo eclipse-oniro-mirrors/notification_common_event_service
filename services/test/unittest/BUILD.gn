@@ -852,6 +852,7 @@ ohos_unittest("inner_common_event_manager_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
   ]
 }
