@@ -1359,6 +1359,13 @@ const std::string CommonEventSupport::COMMON_EVENT_AUDIO_QUALITY_CHANGE =
  */
 const std::string CommonEventSupport::COMMON_EVENT_SPECIAL_CODE = "common.event.SPECIAL_CODE";
 
+/**
+ * Indicates the action of a common event about reminder
+ * When the user clicks the button and the application (creator)
+ * is in the foreground, a event is sent. event data is: button type,reminder id
+ */
+const std::string CommonEventSupport::COMMON_EVENT_REMINDER_STATUS_CHANGE = "usual.event.REMINDER_STATUS_CHANGE";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -1697,6 +1704,8 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_AUDIO_QUALITY_CHANGE);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPECIAL_CODE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_REMINDER_STATUS_CHANGE);
 
     return;
 }
