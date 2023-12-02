@@ -35,7 +35,7 @@
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION = "notification.support.check.sa.permission";
+const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check.sa.permission";
 }  // namespace
 
 static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
@@ -43,7 +43,7 @@ static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
 InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_shared<CommonEventControlManager>()),
     staticSubscriberManager_(std::make_shared<StaticSubscriberManager>())
 {
-    supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION, "false");
+    supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_CES_CHECK_SA_PERMISSION, "false");
 }
 
 constexpr char HIDUMPER_HELP_MSG[] =

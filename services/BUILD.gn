@@ -86,6 +86,8 @@ ohos_shared_library("cesfwk_services") {
     "${ces_core_path}:cesfwk_core",
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
+    "../services:ces.para",
+    "../services:ces.para.dac",
   ]
 
   external_deps = [
@@ -178,6 +180,20 @@ ohos_static_library("cesfwk_services_static") {
     defines += [ "HITRACE_METER_ENABLE" ]
   }
 
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+}
+
+ohos_prebuilt_etc("ces.para") {
+  source = "etc/ces.para"
+  relative_install_dir = "param"
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+}
+
+ohos_prebuilt_etc("ces.para.dac") {
+  source = "etc/ces.para.dac"
+  relative_install_dir = "param"
   subsystem_name = "notification"
   part_name = "common_event_service"
 }
