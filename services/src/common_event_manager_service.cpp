@@ -33,7 +33,7 @@
 namespace OHOS {
 namespace EventFwk {
 namespace {
-const std::string NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION = "notification.support.check.sa.permission";
+const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check.sa.permission";
 }  // namespace
 
 using namespace OHOS::Notification;
@@ -43,7 +43,7 @@ CommonEventManagerService::CommonEventManagerService()
       runner_(nullptr),
       handler_(nullptr)
 {
-    supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_SUPPORT_CHECK_SA_PERMISSION, "false");
+    supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_CES_CHECK_SA_PERMISSION, "false");
     EVENT_LOGD("instance created");
 }
 
