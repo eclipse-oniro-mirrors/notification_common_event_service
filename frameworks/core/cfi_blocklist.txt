@@ -1,2 +1,4 @@
 src:*/notification/common_event_service/frameworks/core/src/*
 src:*/notification/common_event_service/frameworks/native/src/*
+src:*commonlibrary/c_utils/base/*
+src:*refbase.h
