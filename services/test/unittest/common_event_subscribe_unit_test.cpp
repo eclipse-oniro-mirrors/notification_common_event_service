@@ -31,6 +31,7 @@
 #include "mock_bundle_manager.h"
 #include "bundle_manager_helper.h"
 #include "common_event_manager_service.h"
+#include "ces_inner_error_code.h"
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -571,5 +572,5 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0004, Function 
     std::vector<std::u16string> args;
     CommonEventManagerService commonEventManagerService;
     int result = commonEventManagerService.Dump(fd, args);
-    EXPECT_EQ(result, int(OHOS::ERR_OK));
+    EXPECT_EQ(result, int(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED));
 }
