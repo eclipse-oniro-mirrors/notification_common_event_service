@@ -602,10 +602,6 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_REMINDER_STATUS_CHANGE,
         "COMMON_EVENT_REMINDER_STATUS_CHANGE");
-    SetNamedPropertyByStr(env,
-        obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_PRIVACY_STATE_CHANGED,
-        "COMMON_EVENT_PRIVACY_STATE_CHANGED");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 

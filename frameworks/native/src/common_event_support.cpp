@@ -1366,13 +1366,6 @@ const std::string CommonEventSupport::COMMON_EVENT_SPECIAL_CODE = "common.event.
  */
 const std::string CommonEventSupport::COMMON_EVENT_REMINDER_STATUS_CHANGE = "usual.event.REMINDER_STATUS_CHANGE";
 
-/**
- * Indicates that the privacy status is changed.
- * This is a protected common event that can only be sent by system.
- */
-const std::string CommonEventSupport::COMMON_EVENT_PRIVACY_STATE_CHANGED = "usual.event.PRIVACY_STATE_CHANGED";
-
-
 CommonEventSupport::CommonEventSupport()
 {
     Init();
