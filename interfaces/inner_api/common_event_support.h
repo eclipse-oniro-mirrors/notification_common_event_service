@@ -1241,6 +1241,12 @@ public:
      */
     static const std::string COMMON_EVENT_REMINDER_STATUS_CHANGE;
 
+    /**
+     * Indicates that the privacy status is changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_PRIVACY_STATE_CHANGED;
+
 public:
     CommonEventSupport();
 
