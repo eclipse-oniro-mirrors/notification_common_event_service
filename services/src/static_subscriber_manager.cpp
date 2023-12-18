@@ -135,7 +135,8 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     auto targetSubscribers = validSubscribers_.find(data.GetWant().GetAction());
     if (targetSubscribers != validSubscribers_.end()) {
         for (auto subscriber : targetSubscribers->second) {
-            EVENT_LOGW("subscriber.userId = %{public}d, userId = %{public}d", subscriber.userId, userId);
+            EVENT_LOGI("subscriber.userId = %{public}d, userId = %{public}d, event = %{public}s", subscriber.userId,
+                userId, data.GetWant().GetAction().c_str());
             if (!subscriber.enable) {
                 EVENT_LOGW("current subscriber is disable, subscriber.userId = %{public}d", subscriber.userId);
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
