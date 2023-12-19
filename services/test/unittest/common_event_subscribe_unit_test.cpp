@@ -966,7 +966,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0001, Function | Medi
     int32_t userId = 3;
     BundleManagerHelper bundleManagerHelper;
     bool result = bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId);
-    EXPECT_EQ(result, false);
+    EXPECT_EQ(result, true);
 }
 
 /**

@@ -68,8 +68,8 @@ ohos_unittest("common_event_dump_test") {
   module_out_path = module_output_path
 
   sources = [
-    "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
     "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
+    "./mock/mock_access_token_kit.cpp",
     "common_event_dump_test.cpp",
   ]
 
@@ -302,8 +302,8 @@ ohos_unittest("common_event_sticky_test") {
   module_out_path = module_output_path
 
   sources = [
-    "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
     "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
+    "./mock/mock_access_token_kit.cpp",
     "common_event_sticky_test.cpp",
   ]
 
@@ -433,8 +433,8 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
   module_out_path = module_output_path
 
   sources = [
-    "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
     "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
+    "./mock/mock_access_token_kit.cpp",
     "common_event_publish_permission_event_unit_test.cpp",
   ]
 
@@ -660,8 +660,9 @@ ohos_unittest("common_event_manager_service_branch_test") {
   module_out_path = module_output_path
 
   sources = [
+    "././mock/mock_access_token_kit.cpp",
+    "././mock/mock_token_id_kit.cpp",
     "common_event_manager_service_branch_test/common_event_manager_service_branch_test.cpp",
-    "common_event_manager_service_branch_test/mock_access_token_helper.cpp",
   ]
 
   configs = [ ":cesfwk_services_config" ]
@@ -679,6 +680,8 @@ ohos_unittest("common_event_manager_service_branch_test") {
     "ability_base:want",
     "ability_runtime:ability_manager",
     "access_token:libaccesstoken_sdk",
+    "access_token:libnativetoken",
+    "access_token:libtoken_setproc",
     "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
@@ -694,8 +697,9 @@ ohos_unittest("common_event_manager_service_new_branch_test") {
   module_out_path = module_output_path
 
   sources = [
+    "./mock/mock_access_token_kit.cpp",
+    "./mock/mock_token_id_kit.cpp",
     "common_event_manager_service_new_branch_test.cpp",
-    "mock/mock_access_token_helper.cpp",
   ]
 
   configs = [ ":cesfwk_services_config" ]
@@ -713,6 +717,8 @@ ohos_unittest("common_event_manager_service_new_branch_test") {
     "ability_base:want",
     "ability_runtime:ability_manager",
     "access_token:libaccesstoken_sdk",
+    "access_token:libnativetoken",
+    "access_token:libtoken_setproc",
     "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
@@ -731,10 +737,11 @@ ohos_unittest("common_event_control_manager_branch_test") {
 
   sources = [
     "${tools_path}/test/mock/mock_common_event_stub.cpp",
+    "././mock/mock_access_token_kit.cpp",
+    "././mock/mock_token_id_kit.cpp",
     "common_event_control_manager_branch_test/common_event_control_manager_branch_test.cpp",
     "common_event_control_manager_branch_test/mock_common_event_permission_manager.cpp",
     "common_event_control_manager_branch_test/mock_want.cpp",
-    "mock/mock_access_token_helper.cpp",
   ]
 
   configs = [ ":cesfwk_services_config" ]
@@ -753,6 +760,8 @@ ohos_unittest("common_event_control_manager_branch_test") {
     "ability_base:want",
     "ability_runtime:ability_manager",
     "access_token:libaccesstoken_sdk",
+    "access_token:libnativetoken",
+    "access_token:libtoken_setproc",
     "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
@@ -768,7 +777,7 @@ ohos_unittest("common_event_control_manager_test") {
 
   sources = [
     "common_event_control_manager_test.cpp",
-    "mock/mock_access_token_helper.cpp",
+    "mock/mock_access_token_kit.cpp",
     "mock/mock_common_event_permission_manager.cpp",
   ]
 

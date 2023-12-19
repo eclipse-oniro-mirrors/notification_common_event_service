@@ -31,7 +31,7 @@ std::string Want::GetAction() const
     if (false == g_mockGetActionRet) {
         return "aa";
     }
-    return "bb";
+    return "usual.event.BOOT_COMPLETED";
 }
 }  // namespace AAFwk
 }  // namespace OHOS
