@@ -553,5 +553,5 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Le
     EXPECT_EQ(ret, comm->SetStaticSubscriberState(true));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0204 end";
 }
-}  
+}
 }
