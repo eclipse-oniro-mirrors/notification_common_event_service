@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include "access_token.h"
 #include <gtest/gtest.h>
 #include <numeric>
 #define private public
@@ -21,17 +22,18 @@
 #include "ces_inner_error_code.h"
 #include "ffrt.h"
 
-extern void MockVerifyNativeToken(bool mockRet);
-extern void MockVerifyAccessToken(bool mockRet);
-extern void MockIsSystemApp(bool mockRet);
-extern void MockIsDlpHap(bool mockRet);
-extern void MockVerifyShellToken(bool mockRet);
-
 using namespace testing::ext;
 using namespace OHOS;
-using namespace OHOS::EventFwk;
 using namespace OHOS::Notification;
 using namespace OHOS::AppExecFwk;
+using namespace OHOS::Security::AccessToken;
+
+namespace OHOS {
+namespace EventFwk {
+extern void MockIsVerfyPermisson(bool mockRet);
+extern void MockIsSystemApp(bool mockRet);
+extern void MockGetTokenTypeFlag(ATokenTypeEnum mockRet);
+extern void MockDlpType(DlpType mockRet);
 
 class CommonEventManagerServiceTest : public testing::Test {
 public:
@@ -72,9 +74,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyNativeToken is true
-    MockVerifyNativeToken(true);
-    // set IsDlpHap is false
-    MockIsDlpHap(false);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_NATIVE);
     // test PublishCommonEvent
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -98,6 +98,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0200, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is false
     comm->innerCommonEventManager_ = nullptr;
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test SubscribeCommonEvent
     CommonEventSubscribeInfo subscribeInfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
@@ -118,6 +119,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0300, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is false
     comm->innerCommonEventManager_ = nullptr;
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test SubscribeCommonEvent
     sptr<IRemoteObject> commonEventListener = nullptr;
     EXPECT_EQ(
@@ -137,6 +139,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0400, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is false
     comm->innerCommonEventManager_ = nullptr;
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test SubscribeCommonEvent
     std::string event = "aa";
     CommonEventData eventData;
@@ -158,15 +161,13 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0500, Le
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    // set VerifyNativeToken is false
-    MockVerifyNativeToken(false);
-    // set IsSystemApp is false
-    MockIsSystemApp(false);
     // test PublishCommonEvent function
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
     int32_t userId = 1;
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
+    MockIsSystemApp(false);
     EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP,
         comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0500 end";
@@ -186,12 +187,11 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0600, Le
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    // set VerifyNativeToken is false
-    MockVerifyNativeToken(true);
     // set IsSystemApp is false
     MockIsSystemApp(true);
     // set IsDlpHap is true
-    MockIsDlpHap(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
+    MockDlpType(DlpType::DLP_READ);
     // test PublishCommonEvent function
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -217,7 +217,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0700, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsDlpHap is true
-    MockIsDlpHap(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
+    MockDlpType(DlpType::DLP_READ);
     // test PublishCommonEvent function
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -243,7 +244,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0800, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsDlpHap is true
-    MockIsDlpHap(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
+    MockDlpType(DlpType::DLP_READ);
     // test PublishCommonEvent function
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -269,7 +271,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0900, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsDlpHap is true
-    MockIsDlpHap(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
+    MockDlpType(DlpType::DLP_READ);
     // test PublishCommonEvent function
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -295,8 +298,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1000, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->runner_ = EventRunner::Create("CesSrvMain");
     comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
-    // set VerifyNativeToken is false
-    MockVerifyNativeToken(false);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test PublishCommonEvent function
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -319,8 +321,10 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1100, Le
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1100 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
     ASSERT_NE(nullptr, comm);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsDlpHap is true
-    MockIsDlpHap(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);(ATokenTypeEnum::TOKEN_NATIVE);
+    MockDlpType(DlpType::DLP_READ);
     // test PublishCommonEventDetailed function
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
@@ -366,10 +370,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1300, Le
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1300 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
     ASSERT_NE(nullptr, comm);
-    // set VerifyNativeToken is false
-    MockVerifyNativeToken(false);
-    // set VerifyShellToken is false
-    MockVerifyShellToken(false);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test SubscribeCommonEvent function
     uint8_t dumpType = 1;
     std::string event = "<event>";
@@ -391,10 +392,9 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1400, Le
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1400 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
     ASSERT_NE(nullptr, comm);
-    // set VerifyNativeToken is true
-    MockVerifyNativeToken(true);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyShellToken is true
-    MockVerifyShellToken(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_SHELL);
     // test SubscribeCommonEvent function
     uint8_t dumpType = 1;
     std::string event = "<event>";
@@ -416,11 +416,9 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1500, Le
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1500 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
     ASSERT_NE(nullptr, comm);
-    // set VerifyNativeToken is false
-    MockVerifyNativeToken(false);
-    // set VerifyShellToken is false
-    MockVerifyShellToken(false);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test SubscribeCommonEvent function
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
     int fd = 1;
     std::vector<std::u16string> args;
     EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED, comm->Dump(fd, args));
@@ -438,10 +436,11 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1600, Le
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1600 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
     ASSERT_NE(nullptr, comm);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set VerifyNativeToken is true
-    MockVerifyNativeToken(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_NATIVE);
     // set VerifyShellToken is true
-    MockVerifyShellToken(true);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_SHELL);
     // test SubscribeCommonEvent function
     int fd = 1;
     std::vector<std::u16string> args;
@@ -477,6 +476,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0201, Le
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0201 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // set IsReady is false
     comm->innerCommonEventManager_ = nullptr;
     // test RemoveStickyCommonEvent
@@ -499,8 +499,6 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0202, Le
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    // set VerifyNativeToken is true
-    MockVerifyNativeToken(false);
     // set IsSystemApp is false
     MockIsSystemApp(false);
     // test RemoveStickyCommonEvent
@@ -523,12 +521,11 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0203, Le
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    // set VerifyNativeToken is false
-    MockVerifyNativeToken(false);
     // set IsSystemApp is true
     MockIsSystemApp(true);
     // set VerifyAccessToken is false
-    MockVerifyAccessToken(false);
+    MockIsVerfyPermisson(false);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
     // test RemoveStickyCommonEvent
     std::string event = "this is event";
     EXPECT_EQ(
@@ -555,4 +552,6 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     EXPECT_EQ(ret, comm->SetStaticSubscriberState(true));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0204 end";
+}
+}
 }

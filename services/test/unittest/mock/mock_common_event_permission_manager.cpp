@@ -24,13 +24,12 @@ namespace {
     bool g_mockGetEventPermissionRet = true;
 }
 
+namespace OHOS {
+namespace EventFwk {
 void MockGetEventPermission(bool mockRet)
 {
     g_mockGetEventPermissionRet = mockRet;
 }
-
-namespace OHOS {
-namespace EventFwk {
 Permission CommonEventPermissionManager::GetEventPermission(const std::string &event)
 {   
     Permission per;
