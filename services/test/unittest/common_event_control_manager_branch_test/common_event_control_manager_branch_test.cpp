@@ -628,31 +628,31 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2300, Le
  * @tc.desc: test DumpStateByCommonEventRecord and permissionNum == 0 and permissionNum == 1.
  * @tc.type: FUNC
  */
-// HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Level1)
-// {
-//     GTEST_LOG_(INFO) << "CommonEventControlManager_2400 start";
-//     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-//         std::make_shared<CommonEventControlManager>();
-//     ASSERT_NE(nullptr, commonEventControlManager);
-//     std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
-//     record->userId = 100;
-//     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
-//     record->publishInfo = publishInfo;
-//     // set subscriberPermissions_
-//     std::vector<std::string> subscriberPermissions;
-//     std::string bb = "bb";
-//     std::string cc = "cc";
-//     subscriberPermissions.emplace_back(bb);
-//     subscriberPermissions.emplace_back(cc);
-//     record->publishInfo->SetSubscriberPermissions(subscriberPermissions);
-//     // set record->commonEventData
-//     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
-//     record->commonEventData = commonEventData;
-//     std::string dumpInfo = "aa";
-//     // test DumpStateByCommonEventRecord
-//     commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
-//     GTEST_LOG_(INFO) << "CommonEventControlManager_2400 end";
-// }
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_2400 start";
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->userId = 100;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    record->publishInfo = publishInfo;
+    // set subscriberPermissions_
+    std::vector<std::string> subscriberPermissions;
+    std::string bb = "bb";
+    std::string cc = "cc";
+    subscriberPermissions.emplace_back(bb);
+    subscriberPermissions.emplace_back(cc);
+    record->publishInfo->SetSubscriberPermissions(subscriberPermissions);
+    // set record->commonEventData
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    record->commonEventData = commonEventData;
+    std::string dumpInfo = "aa";
+    // test DumpStateByCommonEventRecord
+    commonEventControlManager->DumpStateByCommonEventRecord(record, dumpInfo);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_2400 end";
+}
 
 /**
  * @tc.name: CommonEventControlManager_2500
@@ -769,22 +769,22 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2900, Le
  * @tc.desc: test DumpHistoryStateByCommonEventRecord and permissionNum is 1.
  * @tc.type: FUNC
  */
-// HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3000, Level1)
-// {
-//     GTEST_LOG_(INFO) << "CommonEventControlManager_3000 start";
-//     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-//         std::make_shared<CommonEventControlManager>();
-//     ASSERT_NE(nullptr, commonEventControlManager);
-//     HistoryEventRecord record;
-//     record.userId = UNDEFINED_USER;
-//     std::string bb = "bb";
-//     std::string cc = "cc";
-//     record.subscriberPermissions.emplace_back(bb);
-//     record.subscriberPermissions.emplace_back(cc);
-//     std::string dumpInfo = "aa";
-//     commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
-//     GTEST_LOG_(INFO) << "CommonEventControlManager_3000 end";
-// }
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3000, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_3000 start";
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, commonEventControlManager);
+    HistoryEventRecord record;
+    record.userId = UNDEFINED_USER;
+    std::string bb = "bb";
+    std::string cc = "cc";
+    record.subscriberPermissions.emplace_back(bb);
+    record.subscriberPermissions.emplace_back(cc);
+    std::string dumpInfo = "aa";
+    commonEventControlManager->DumpHistoryStateByCommonEventRecord(record, dumpInfo);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_3000 end";
+}
 
 /**
  * @tc.name: CommonEventControlManager_3100
