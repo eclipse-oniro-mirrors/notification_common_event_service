@@ -367,7 +367,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1800, Level1)
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
     ASSERT_NE(nullptr, comm);
     // mock ATokenTypeEnum type
-     MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
