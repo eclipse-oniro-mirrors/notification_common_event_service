@@ -1131,6 +1131,18 @@ public:
     static const std::string COMMON_EVENT_SIM_CARD_DEFAULT_MAIN_SUBSCRIPTION_CHANGED;
 
     /**
+     * Indicates the action of a common event that the status of setting primary slot has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SET_PRIMARY_SLOT_STATUS;
+
+    /**
+     * Indicates the action of a common event that the roaming status of main card has been changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_PRIMARY_SLOT_ROAMING;
+
+    /**
      * Indicates the action of a common event that the cellular data state has been changed.
      * This is a protected common event that can only be sent by system.
      */

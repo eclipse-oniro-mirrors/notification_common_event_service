@@ -1240,6 +1240,18 @@ const std::string CommonEventSupport::COMMON_EVENT_SIM_CARD_DEFAULT_MAIN_SUBSCRI
     "usual.event.SIM.DEFAULT_MAIN_SUBSCRIPTION_CHANGED";
 
 /**
+ * Indicates the action of a common event that the status of setting primary slot has been changed.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SET_PRIMARY_SLOT_STATUS = "usual.event.SET_PRIMARY_SLOT_STATUS";
+
+/**
+ * Indicates the action of a common event that the roaming status of main card has been changed.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_PRIMARY_SLOT_ROAMING = "usual.event.PRIMARY_SLOT_ROAMING";
+
+/**
  * Indicates the action of a common event that the call state has been changed.
  * To subscribe to this protected common event, your application must have the ohos.permission.GET_TELEPHONY_STATE
  * permission.
@@ -1541,6 +1553,10 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CALL_STATE_CHANGED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SIM_CARD_DEFAULT_MAIN_SUBSCRIPTION_CHANGED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SET_PRIMARY_SLOT_STATUS);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PRIMARY_SLOT_ROAMING);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CELLULAR_DATA_STATE_CHANGED);
 

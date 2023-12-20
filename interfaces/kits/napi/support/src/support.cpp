@@ -528,6 +528,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_SIM_CARD_DEFAULT_MAIN_SUBSCRIPTION_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SET_PRIMARY_SLOT_STATUS,
+        "COMMON_EVENT_SET_PRIMARY_SLOT_STATUS");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_PRIMARY_SLOT_ROAMING,
+        "COMMON_EVENT_PRIMARY_SLOT_ROAMING");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SIM_CARD_DEFAULT_VOICE_SUBSCRIPTION_CHANGED,
         "COMMON_EVENT_SIM_CARD_DEFAULT_VOICE_SUBSCRIPTION_CHANGED");
     SetNamedPropertyByStr(env,
