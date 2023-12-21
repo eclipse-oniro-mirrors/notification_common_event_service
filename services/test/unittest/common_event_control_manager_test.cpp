@@ -19,12 +19,12 @@
 #include "common_event_control_manager.h"
 #undef private
 
-extern void MockGetEventPermission(bool mockRet);
-extern void MockVerifyAccessToken(bool mockRet);
-
 using namespace testing::ext;
-using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
+namespace OHOS {
+namespace EventFwk {
+extern void MockIsVerfyPermisson(bool isVerify);
+extern void MockGetEventPermission(bool mockRet);
 
 class CommonEventControlManagerTest : public testing::Test {
 public:
@@ -228,7 +228,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_1100, Level1)
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     eventRecord.commonEventData = commonEventData;
     MockGetEventPermission(true);
-    MockVerifyAccessToken(true);
+    MockIsVerfyPermisson(true);
     EXPECT_EQ(true, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_1100 end";
 }
@@ -248,9 +248,12 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_1200, Level1)
     subscriberRecord.eventRecordInfo.isSystemApp = false;
     CommonEventRecord eventRecord;
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
     eventRecord.commonEventData = commonEventData;
     MockGetEventPermission(true);
-    MockVerifyAccessToken(false);
+    MockIsVerfyPermisson(false);
     EXPECT_EQ(false, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_1200 end";
 }
@@ -611,4 +614,7 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2900, Level1)
     commonEventControlManager->historyEventRecords_.emplace_back();
     commonEventControlManager->GetHistoryEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2900 end";
+}
+
+}
 }

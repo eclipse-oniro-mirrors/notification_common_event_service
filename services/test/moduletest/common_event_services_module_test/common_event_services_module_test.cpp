@@ -1384,7 +1384,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
     EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     IPCSkeleton::SetCallingTokenID(1);
-    EXPECT_NE(commonEventManagerService_->PublishCommonEvent(
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     IPCSkeleton::SetCallingTokenID(0);
     EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
