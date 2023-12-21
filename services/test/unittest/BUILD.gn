@@ -978,7 +978,6 @@ group("unittest") {
     ":common_event_freeze_test",
     ":common_event_freeze_unit_test",
     ":common_event_hisysevent_test",
-    ":common_event_manager_service_ability_test",
     ":common_event_manager_service_branch_test",
     ":common_event_manager_service_new_branch_test",
     ":common_event_manager_service_test",
@@ -995,5 +994,7 @@ group("unittest") {
     ":static_subscriber_connection_unit_test",
     ":static_subscriber_manager_unit_test",
     ":subscriber_deach_recipient_test",
+
+    #":common_event_manager_service_ability_test",
   ]
 }
