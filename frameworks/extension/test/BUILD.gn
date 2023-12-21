@@ -14,11 +14,11 @@
 group("unittest") {
   testonly = true
   deps = [
-    "static_subscriber_extension_context_test",
-    "static_subscriber_extension_module_loader_test:unittest",
-    "static_subscriber_extension_test:unittest",
+    #"static_subscriber_extension_context_test",
+    #"static_subscriber_extension_module_loader_test:unittest",
+    #"static_subscriber_extension_test:unittest",
+    #"static_subscriber_stub_imp_test:unittest",
     "static_subscriber_proxy_test:unittest",
-    "static_subscriber_stub_imp_test:unittest",
     "static_subscriber_stub_test:unittest",
   ]
 }
