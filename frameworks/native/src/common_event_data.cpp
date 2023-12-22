@@ -35,7 +35,6 @@ CommonEventData::CommonEventData(const Want &want, const int32_t &code, const st
 
 CommonEventData::~CommonEventData()
 {
-    EVENT_LOGI("~CommonEventData");
 }
 
 void CommonEventData::SetCode(const int32_t &code)
@@ -60,7 +59,7 @@ std::string CommonEventData::GetData() const
 
 void CommonEventData::SetWant(const Want &want)
 {
-    EVENT_LOGI("set want");
+    EVENT_LOGD("set want");
     want_ = want;
 }
 
