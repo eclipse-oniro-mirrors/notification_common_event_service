@@ -13,7 +13,7 @@
  */
 
 #include "napi_common_event.h"
-
+#include "event_log_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 

@@ -429,7 +429,8 @@ napi_value GetSubscriberByUnsubscribe(
 napi_value ParseParametersByUnsubscribe(const napi_env &env, const size_t &argc,
     const napi_value (&argv)[UNSUBSCRIBE_MAX_PARA], std::shared_ptr<SubscriberInstance> &subscriber,
     napi_ref &callback);
-
+napi_value ParseParametersConstructor(
+    const napi_env &env, const napi_callback_info &info, napi_value &thisVar, CommonEventSubscribeInfo &params);
 void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance> &subscriber);
 
 napi_value Unsubscribe(napi_env env, napi_callback_info info);
