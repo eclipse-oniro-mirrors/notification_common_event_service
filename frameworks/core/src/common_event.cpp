@@ -324,7 +324,7 @@ bool CommonEvent::GetCommonEventProxy() __attribute__((no_sanitize("cfi")))
                 return false;
             }
 
-            sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(COMMON_EVENT_SERVICE_ID);
+            sptr<IRemoteObject> remoteObject = systemAbilityManager->CheckSystemAbility(COMMON_EVENT_SERVICE_ID);
             if (!remoteObject) {
                 EVENT_LOGE("Failed to get COMMON Event Manager.");
                 return false;
