@@ -63,7 +63,7 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
             return false;
         }
 
-        sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(ABILITY_MGR_SERVICE_ID);
+        sptr<IRemoteObject> remoteObject = systemAbilityManager->CheckSystemAbility(ABILITY_MGR_SERVICE_ID);
         if (remoteObject == nullptr) {
             EVENT_LOGE("Failed to get ability manager service.");
             return false;

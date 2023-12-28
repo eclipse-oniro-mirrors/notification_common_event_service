@@ -166,7 +166,7 @@ bool BundleManagerHelper::GetBundleMgrProxy()
         }
 
         sptr<IRemoteObject> remoteObject =
-            systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+            systemAbilityManager->CheckSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
         if (!remoteObject) {
             EVENT_LOGE("Failed to get bundle manager service.");
             return false;
