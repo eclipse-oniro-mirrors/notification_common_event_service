@@ -48,6 +48,8 @@ ohos_shared_library("commoneventmanager") {
 
   sources = [
     "${interfaces_path}/kits/napi/support/src/support.cpp",
+    "src/common_event_parse.cpp",
+    "src/common_event_set_param.cpp",
     "src/init.cpp",
     "src/napi_common_event.cpp",
   ]
