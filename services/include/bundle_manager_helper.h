@@ -99,6 +99,8 @@ public:
 
 private:
     bool GetBundleMgrProxy();
+    bool GetBundleMgrProxyAsync();
+    bool GetBundleMgrProxyInner(bool isAsync);
 
 private:
     sptr<IBundleMgr> sptrBundleMgr_;

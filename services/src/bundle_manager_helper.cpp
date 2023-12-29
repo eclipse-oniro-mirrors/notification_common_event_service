@@ -43,7 +43,7 @@ std::string BundleManagerHelper::GetBundleName(uid_t uid)
     std::lock_guard<std::mutex> lock(mutex_);
     std::string bundleName = "";
 
-    if (!GetBundleMgrProxy()) {
+    if (!GetBundleMgrProxyAsync()) {
         EVENT_LOGE("failed to get bms proxy");
         return bundleName;
     }
@@ -153,9 +153,20 @@ bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundle
     return isSystemApp;
 }
 
+bool BundleManagerHelper::GetBundleMgrProxyAsync()
+{
+    return GetBundleMgrProxyInner(true);
+}
+
 bool BundleManagerHelper::GetBundleMgrProxy()
 {
+    return GetBundleMgrProxyInner(false);
+}
+
+bool BundleManagerHelper::GetBundleMgrProxyInner(bool isAsync)
+{
     EVENT_LOGD("enter");
+    sptr<IRemoteObject> remoteObject;
 
     if (!sptrBundleMgr_) {
         sptr<ISystemAbilityManager> systemAbilityManager =
@@ -165,8 +176,12 @@ bool BundleManagerHelper::GetBundleMgrProxy()
             return false;
         }
 
-        sptr<IRemoteObject> remoteObject =
-            systemAbilityManager->CheckSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+        if (isAsync) {
+            remoteObject = systemAbilityManager->CheckSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+        } else {
+            remoteObject = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+        }
+
         if (!remoteObject) {
             EVENT_LOGE("Failed to get bundle manager service.");
             return false;
