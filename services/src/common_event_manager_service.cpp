@@ -429,7 +429,7 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
         EVENT_LOGE("Not subsystem or shell request");
-        return ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED;
+        return false;
     }
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");

@@ -20,7 +20,6 @@
 #define private public
 #define protected public
 #include "bundle_manager_helper.h"
-#include "ces_inner_error_code.h"
 #include "common_event_control_manager.h"
 #include "common_event.h"
 #include "common_event_manager.h"
