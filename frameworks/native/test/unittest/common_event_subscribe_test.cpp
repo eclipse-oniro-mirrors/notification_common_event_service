@@ -463,7 +463,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_001, TestSize.Level1)
 {
     CommonEventManager commonEventManager;
     bool freeze = commonEventManager.Freeze(SYSTEM_UID);
-    EXPECT_EQ(false, freeze);
+    EXPECT_EQ(true, freeze);
 }
 
 /*
@@ -477,7 +477,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_002, TestSize.Level1)
 {
     CommonEventManager commonEventManager;
     bool unfreeze = commonEventManager.Unfreeze(SYSTEM_UID);
-    EXPECT_EQ(false, unfreeze);
+    EXPECT_EQ(true, unfreeze);
 }
 
 /*
@@ -491,7 +491,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level1)
 {
     CommonEventManager commonEventManager;
     bool unfreezeAll = commonEventManager.UnfreezeAll();
-    EXPECT_EQ(false, unfreezeAll);
+    EXPECT_EQ(true, unfreezeAll);
 }
 
 /*

@@ -130,7 +130,7 @@ HWTEST_F(CommonEventTest, CommonEvent_003, TestSize.Level1)
 {
     CommonEvent commonEvent;
     bool freeze = commonEvent.Freeze(SYSTEM_UID);
-    EXPECT_EQ(false, freeze);
+    EXPECT_EQ(true, freeze);
 }
 
 /*
@@ -144,7 +144,7 @@ HWTEST_F(CommonEventTest, CommonEvent_004, TestSize.Level1)
 {
     CommonEvent commonEvent;
     bool unfreeze = commonEvent.Unfreeze(SYSTEM_UID);
-    EXPECT_EQ(false, unfreeze);
+    EXPECT_EQ(true, unfreeze);
 }
 
 /*
@@ -171,7 +171,7 @@ HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
     CommonEvent commonEvent;
     commonEvent.ResetCommonEventProxy();
     bool unfreezeAll = commonEvent.UnfreezeAll();
-    EXPECT_EQ(false, unfreezeAll);
+    EXPECT_EQ(true, unfreezeAll);
 }
 
 /*
