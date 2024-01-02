@@ -14,7 +14,6 @@
  */
 
 #include "common_event.h"
-
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
