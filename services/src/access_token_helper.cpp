@@ -72,11 +72,5 @@ AccessTokenID AccessTokenHelper::GetHapTokenID(int userID,
 {
     return AccessTokenKit::GetHapTokenID(userID, bundleName, instIndex);
 }
-
-bool AccessTokenHelper::VerifyShellToken(const AccessTokenID &callerToken)
-{
-    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
-    return (tokenType == ATokenTypeEnum::TOKEN_SHELL);
-}
 }  // namespace EventFwk
 }  // namespace OHOS

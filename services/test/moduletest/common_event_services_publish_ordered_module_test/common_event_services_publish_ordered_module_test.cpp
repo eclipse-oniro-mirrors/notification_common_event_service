@@ -23,6 +23,7 @@
 #include "common_event_control_manager.h"
 #include "common_event.h"
 #include "common_event_manager.h"
+#include "ces_inner_error_code.h"
 #include "common_event_manager_service.h"
 #include "inner_common_event_manager.h"
 #undef private
@@ -1251,7 +1252,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0300, Funct
     int fd = 22;
     std::vector<std::u16string> args;
     int result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Dump(fd, args);
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
+    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED, result);
 }
 
 /*
