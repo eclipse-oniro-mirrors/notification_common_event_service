@@ -309,8 +309,7 @@ bool CommonEventManagerService::DumpState(const uint8_t &dumpType, const std::st
 {
     EVENT_LOGI("enter");
 
-    auto callerToken = IPCSkeleton::GetCallingTokenID();
-    if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
         EVENT_LOGE("Not subsystem or shell request");
         return false;
     }
@@ -426,8 +425,7 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
 {
     EVENT_LOGI("enter");
 
-    auto callerToken = IPCSkeleton::GetCallingTokenID();
-    if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
         EVENT_LOGE("Not subsystem or shell request");
         return false;
     }

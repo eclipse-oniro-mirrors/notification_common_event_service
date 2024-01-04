@@ -2140,7 +2140,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0600, Function | MediumTest | Leve
         }
     }
     // The publisher sets the Entity, the receiver must set it, otherwise the receiver will not receive the information
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     g_mtx.unlock();
     CommonEventManager::UnSubscribeCommonEvent(subscriberPtr);
 }
