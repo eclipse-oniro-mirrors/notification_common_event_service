@@ -55,6 +55,7 @@ constexpr char HELP_MSG_NO_EVENT_OPTION[] = "error: you must specify an event na
 constexpr char STRING_PUBLISH_COMMON_EVENT_OK[] = "publish the common event successfully.\n";
 constexpr char STRING_PUBLISH_COMMON_EVENT_NG[] = "error: failed to publish the common event.\n";
 constexpr char STRING_DUMP_COMMON_EVENT_NG[] = "error: failed to dump the common event(s).\n";
+constexpr char USER_PUBLISH_COMMON_EVENT_NG[] = "error: user version cannot publish common events.\n";
 }  // namespace
 
 struct PublishCmdInfo {

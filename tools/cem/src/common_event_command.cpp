@@ -70,6 +70,10 @@ ErrCode CommonEventCommand::RunAsHelpCommand()
 
 ErrCode CommonEventCommand::RunAsPublishCommand()
 {
+#ifdef CEM_BUILD_VARIANT_USER
+     resultReceiver_.append(USER_PUBLISH_COMMON_EVENT_NG);
+     return ERR_INVALID_VALUE;
+#endif
     EVENT_LOGI("enter");
     ErrCode result = ERR_OK;
     PublishCmdInfo cmdInfo;
