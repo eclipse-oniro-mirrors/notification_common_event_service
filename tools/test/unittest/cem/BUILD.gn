@@ -147,8 +147,8 @@ group("unittest") {
   testonly = true
 
   deps = [
-    #":common_event_command_dump_test",
-    #":common_event_command_publish_test",
+    ":common_event_command_dump_test",
+    ":common_event_command_publish_test",
     ":common_event_command_test",
   ]
 }

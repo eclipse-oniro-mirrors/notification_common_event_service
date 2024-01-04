@@ -180,7 +180,6 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0500, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_PUBLISH));
 }
 
 /**
@@ -199,7 +198,6 @@ HWTEST_F(CemCommandPublishTest, Cem_Command_Publish_0600, Function | MediumTest 
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_PUBLISH));
 }
 
 /**

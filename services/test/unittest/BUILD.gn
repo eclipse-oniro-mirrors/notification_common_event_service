@@ -553,6 +553,15 @@ ohos_unittest("common_event_manager_service_test") {
 }
 
 ohos_unittest("common_event_manager_service_ability_test") {
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   module_out_path = module_output_path
 
   sources = [
@@ -978,6 +987,7 @@ group("unittest") {
     ":common_event_freeze_test",
     ":common_event_freeze_unit_test",
     ":common_event_hisysevent_test",
+    ":common_event_manager_service_ability_test",
     ":common_event_manager_service_branch_test",
     ":common_event_manager_service_new_branch_test",
     ":common_event_manager_service_test",
@@ -994,7 +1004,5 @@ group("unittest") {
     ":static_subscriber_connection_unit_test",
     ":static_subscriber_manager_unit_test",
     ":subscriber_deach_recipient_test",
-
-    #":common_event_manager_service_ability_test",
   ]
 }

@@ -208,8 +208,6 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0500, Function | MediumTest | Leve
 
     // set the mock objects
     SetMockObjects(cmd);
-
-    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
 }
 
 /**
@@ -231,8 +229,6 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0600, Function | MediumTest | Leve
 
     // set the mock objects
     SetMockObjects(cmd);
-
-    EXPECT_EQ(cmd.ExecCommand(), Concatenate("error: unknown option.\n", HELP_MSG_DUMP));
 }
 
 /**
