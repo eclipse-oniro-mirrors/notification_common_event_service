@@ -38,6 +38,11 @@ ohos_source_set("tools_cem_source_set") {
     "${ces_native_path}:cesfwk_innerkits",
   ]
 
+  defines = []
+  if (build_variant == "user") {
+    defines += [ "CEM_BUILD_VARIANT_USER" ]
+  }
+
   external_deps = [
     "ability_base:want",
     "c_utils:utils",
