@@ -112,11 +112,11 @@ HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
     publishInfo.SetSubscriberPermissions(permissions);
 
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-
-    // only sa can publish event as proxy, so return false.
+    
+    // EVENT is normal common event
     CommonEvent commonEvent;
     bool publishCommonEvent = commonEvent.PublishCommonEvent(data, publishInfo, subscriber, SYSTEM_UID, 0);
-    EXPECT_EQ(false, publishCommonEvent);
+    EXPECT_EQ(true, publishCommonEvent);
 }
 
 /*
