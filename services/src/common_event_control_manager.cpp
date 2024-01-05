@@ -514,7 +514,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 
     do {
         if (orderedEventQueue_.empty()) {
-            EVENT_LOGE("orderedEventQueue_ is empty");
+            EVENT_LOGD("orderedEventQueue_ is empty");
             return;
         }
 
