@@ -119,7 +119,7 @@ public:
         return 1;
     }
 
-    int DisconnectAbility(const sptr<IAbilityConnection> &connect) override
+    int DisconnectAbility(sptr<IAbilityConnection> connect) override
     {
         return 1;
     }
