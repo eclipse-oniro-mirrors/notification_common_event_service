@@ -67,7 +67,6 @@ int32_t CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
     } else {
-        EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscrbier");
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
