@@ -175,7 +175,7 @@ public:
         return 2097177;
     }
 
-    int DisconnectAbility(const sptr<IAbilityConnection> &connect) override
+    int DisconnectAbility(sptr<IAbilityConnection> connect) override
     {
         return 1;
     }
