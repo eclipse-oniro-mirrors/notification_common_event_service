@@ -96,7 +96,7 @@ int32_t CommonEventManagerService::PublishCommonEvent(const CommonEventData &eve
     if (userId != ALL_USER && userId != CURRENT_USER && userId != UNDEFINED_USER) {
         bool isSubsystem = AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID());
         if (!isSubsystem && !AccessTokenHelper::IsSystemApp()) {
-            EVENT_LOGE("publish to special user must to system application.");
+            EVENT_LOGE("publish to special user must be system application.");
             return ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
         }
     }
