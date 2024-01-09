@@ -81,20 +81,20 @@ private:
     static EventLogLevel level_;
 };
 
-#define PRINT_LOG(LEVEL, Level, fmt, ...)                    \
+#define PRINT_LOG(LEVEL, level, fmt, ...)                    \
     if (EventLogWrapper::JudgeLevel(EventLogLevel::LEVEL))   \
-    OHOS::HiviewDFX::HiLog::Level(Event_LABEL,               \
+    HILOG_IMPL(LOG_CORE, level, EVENT_LOG_DOMAIN, EVENT_LOG_TAG  \
         "[%{public}s:(%{public}s):%{public}d] " fmt,         \
         EventLogWrapper::GetBriefFileName(__FILE__).c_str(), \
         __FUNCTION__,                                        \
         __LINE__,                                            \
         ##__VA_ARGS__)
 
-#define EVENT_LOGD(fmt, ...) PRINT_LOG(DEBUG, Debug, fmt, ##__VA_ARGS__)
-#define EVENT_LOGI(fmt, ...) PRINT_LOG(INFO, Info, fmt, ##__VA_ARGS__)
-#define EVENT_LOGW(fmt, ...) PRINT_LOG(WARN, Warn, fmt, ##__VA_ARGS__)
-#define EVENT_LOGE(fmt, ...) PRINT_LOG(ERROR, Error, fmt, ##__VA_ARGS__)
-#define EVENT_LOGF(fmt, ...) PRINT_LOG(FATAL, Fatal, fmt, ##__VA_ARGS__)
+#define EVENT_LOGD(fmt, ...) PRINT_LOG(DEBUG, LOG_DEBUG, fmt, ##__VA_ARGS__)
+#define EVENT_LOGI(fmt, ...) PRINT_LOG(INFO, LOG_INFO, fmt, ##__VA_ARGS__)
+#define EVENT_LOGW(fmt, ...) PRINT_LOG(WARN, LOG_WARN, fmt, ##__VA_ARGS__)
+#define EVENT_LOGE(fmt, ...) PRINT_LOG(ERROR, LOG_ERROR, fmt, ##__VA_ARGS__)
+#define EVENT_LOGF(fmt, ...) PRINT_LOG(FATAL, LOG_FATAL, fmt, ##__VA_ARGS__)
 }  // namespace EventFwk
 }  // namespace OHOS
 #endif  // FOUNDATION_EVENT_COMMON_LOG_INCLUDE_EVENT_LOG_WRAPPER_H
