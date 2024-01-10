@@ -33,7 +33,6 @@ ohos_source_set("tools_cem_source_set") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
   ]

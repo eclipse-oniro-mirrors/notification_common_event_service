@@ -49,7 +49,6 @@ ohos_unittest("common_event_command_test") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gmock_main",
@@ -88,7 +87,6 @@ ohos_unittest("common_event_command_dump_test") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gmock_main",
@@ -127,7 +125,6 @@ ohos_unittest("common_event_command_publish_test") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gmock_main",

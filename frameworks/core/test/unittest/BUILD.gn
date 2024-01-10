@@ -43,7 +43,6 @@ ohos_unittest("common_event_branch_test") {
   configs = [ ":kits_natvie_config" ]
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gmock_main",
@@ -66,10 +65,7 @@ ohos_unittest("common_event_test") {
 
   configs = [ ":kits_natvie_config" ]
 
-  deps = [
-    "${ces_common_path}:libevent_common",
-    "${ces_core_path}:cesfwk_core",
-  ]
+  deps = [ "${ces_core_path}:cesfwk_core" ]
 
   external_deps = [
     "ability_base:want",
@@ -103,10 +99,7 @@ ohos_unittest("common_event_stub_test") {
 
   configs = [ ":kits_natvie_config" ]
 
-  deps = [
-    "${ces_common_path}:libevent_common",
-    "${ces_core_path}:cesfwk_core",
-  ]
+  deps = [ "${ces_core_path}:cesfwk_core" ]
 
   external_deps = [
     "ability_base:want",
@@ -124,10 +117,7 @@ ohos_unittest("common_event_proxy_test") {
 
   configs = [ ":kits_natvie_config" ]
 
-  deps = [
-    "${ces_common_path}:libevent_common",
-    "${ces_core_path}:cesfwk_core",
-  ]
+  deps = [ "${ces_core_path}:cesfwk_core" ]
 
   external_deps = [
     "ability_base:want",
@@ -147,10 +137,7 @@ ohos_unittest("event_receive_stub_test") {
 
   configs = [ ":kits_natvie_config" ]
 
-  deps = [
-    "${ces_common_path}:libevent_common",
-    "${ces_core_path}:cesfwk_core",
-  ]
+  deps = [ "${ces_core_path}:cesfwk_core" ]
 
   external_deps = [
     "ability_base:want",

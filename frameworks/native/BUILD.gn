@@ -62,10 +62,7 @@ ohos_shared_library("cesfwk_innerkits") {
 
   public_configs = [ ":cesfwk_innerkits_public_config" ]
 
-  deps = [
-    "${ces_common_path}:libevent_common",
-    "${ces_core_path}:cesfwk_core",
-  ]
+  deps = [ "${ces_core_path}:cesfwk_core" ]
 
   external_deps = [
     "ability_base:want",

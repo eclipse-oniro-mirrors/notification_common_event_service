@@ -33,7 +33,6 @@ ohos_systemtest("common_event_command_dump_system_test") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
@@ -64,7 +63,6 @@ ohos_systemtest("common_event_command_publish_system_test") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",

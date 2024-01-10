@@ -37,7 +37,6 @@ ohos_systemtest("ActsCESCESpublishInfoTest") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",
     "//third_party/googletest:gtest_main",
