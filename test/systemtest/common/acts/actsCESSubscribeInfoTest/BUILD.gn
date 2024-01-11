@@ -36,7 +36,6 @@ ohos_systemtest("ActsCESSubscribeInfoTest") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
   ]

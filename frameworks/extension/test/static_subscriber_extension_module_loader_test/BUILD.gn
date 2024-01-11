@@ -25,6 +25,7 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
     "${ability_runtime_services_path}/common/include",
     "${ces_extension_path}/include/loader",
+    "${ces_core_path}/include",
   ]
 
   sources = [
@@ -35,7 +36,6 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
   configs = []
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_extension_path}:static_subscriber_extension",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",

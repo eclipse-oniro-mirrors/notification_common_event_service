@@ -69,8 +69,6 @@ ohos_shared_library("cesfwk_core") {
 
   defines = []
 
-  deps = [ "${ces_common_path}:libevent_common" ]
-
   external_deps = [
     "ability_base:want",
     "c_utils:utils",

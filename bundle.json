@@ -83,7 +83,6 @@
 
                 ],
                 "fwk_group": [
-                    "//base/notification/common_event_service/frameworks/common:libevent_common",
                     "//base/notification/common_event_service/frameworks/core:cesfwk_core",
                     "//base/notification/common_event_service/frameworks/native:cesfwk_innerkits",
                     "//base/notification/common_event_service/frameworks/extension:cesfwk_extension",
@@ -132,7 +131,6 @@
                 }
             ],
             "test": [
-                "//base/notification/common_event_service/frameworks/common/test:unittest",
                 "//base/notification/common_event_service/frameworks/core/test/unittest:unittest",
                 "//base/notification/common_event_service/frameworks/extension/test:unittest",
                 "//base/notification/common_event_service/frameworks/native/test/unittest:unittest",

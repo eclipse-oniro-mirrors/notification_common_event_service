@@ -54,7 +54,6 @@ ohos_unittest("common_event_subscribe_test") {
   configs = [ ":kits_natvie_config" ]
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
@@ -82,7 +81,6 @@ ohos_unittest("common_event_unsubscribe_test") {
   configs = [ ":kits_natvie_config" ]
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",

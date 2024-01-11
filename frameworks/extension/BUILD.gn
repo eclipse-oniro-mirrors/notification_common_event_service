@@ -41,10 +41,7 @@ ohos_shared_library("static_subscriber_ipc") {
   configs = []
   public_configs = [ ":static_subscriber_ipc_public_config" ]
 
-  deps = [
-    "${ces_common_path}:libevent_common",
-    "${ces_native_path}:cesfwk_innerkits",
-  ]
+  deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
   external_deps = [
     "ability_base:want",
@@ -92,7 +89,6 @@ ohos_shared_library("static_subscriber_extension") {
 
   deps = [
     ":static_subscriber_ipc",
-    "${ces_common_path}:libevent_common",
     "${ces_native_path}:cesfwk_innerkits",
   ]
 
@@ -139,6 +135,7 @@ ohos_shared_library("static_subscriber_extension_module") {
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
     "${ability_runtime_services_path}/common/include",
+    "${ces_core_path}/include",
   ]
 
   sources = [ "${ces_extension_path}/src/loader/static_subscriber_extension_module_loader.cpp" ]
@@ -146,10 +143,7 @@ ohos_shared_library("static_subscriber_extension_module") {
   configs = []
   public_configs = [ ":static_subscriber_extension_module_public_config" ]
 
-  deps = [
-    ":static_subscriber_extension",
-    "${ces_common_path}:libevent_common",
-  ]
+  deps = [ ":static_subscriber_extension" ]
 
   external_deps = [
     "ability_base:configuration",

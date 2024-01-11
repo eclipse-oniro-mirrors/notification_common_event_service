@@ -32,7 +32,6 @@ ohos_shared_library("cesfwk_kits_test") {
   }
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services",

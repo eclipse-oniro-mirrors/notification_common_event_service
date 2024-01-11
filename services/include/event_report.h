@@ -17,6 +17,7 @@
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_EVENT_REPORT_H
 
 #include <unordered_map>
+#include <string>
 
 #ifdef HAS_HISYSEVENT_PART
 #include "hisysevent.h"

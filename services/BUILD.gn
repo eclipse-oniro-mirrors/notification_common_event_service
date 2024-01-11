@@ -83,7 +83,6 @@ ohos_shared_library("cesfwk_services") {
   public_configs = [ ":ces_services_public_config" ]
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
@@ -142,7 +141,6 @@ ohos_static_library("cesfwk_services_static") {
   defines = []
 
   deps = [
-    "${ces_common_path}:libevent_common",
     "${ces_core_path}:cesfwk_core",
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
