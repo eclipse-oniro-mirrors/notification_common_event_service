@@ -139,7 +139,6 @@ bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundle
     bool isSystemApp = false;
 
     if (!GetBundleMgrProxy()) {
-        EVENT_LOGE("failed to get bms proxy");
         return isSystemApp;
     }
     std::string identity = IPCSkeleton::ResetCallingIdentity();

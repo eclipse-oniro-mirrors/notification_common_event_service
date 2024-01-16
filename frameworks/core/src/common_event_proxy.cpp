@@ -122,7 +122,6 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
             return false;
         }
     } else {
-        EVENT_LOGW("invalid commonEventListener");
         if (!data.WriteBool(false)) {
             EVENT_LOGE("Failed to write parcelable hasLastSubscriber");
             return false;
