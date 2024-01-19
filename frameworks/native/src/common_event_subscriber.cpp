@@ -122,7 +122,6 @@ bool CommonEventSubscriber::GetAbortCommonEvent() const
 std::shared_ptr<AsyncCommonEventResult> CommonEventSubscriber::GoAsyncCommonEvent()
 {
     std::shared_ptr<AsyncCommonEventResult> res = result_;
-    result_ = nullptr;
     return res;
 }
 
