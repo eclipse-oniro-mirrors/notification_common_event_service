@@ -38,6 +38,7 @@ public:
 
     /**
      * Calls back when the application receives a new common event.
+     * Don't call other common event interface such as UnSubscribeCommonEvent() in the callback
      *
      * @param data Indicates the common event data.
      */
