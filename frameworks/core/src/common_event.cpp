@@ -178,7 +178,7 @@ int32_t CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSub
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
     auto eventListener = eventListeners_.find(subscriber);
     if (eventListener != eventListeners_.end()) {
-        EVENT_LOGD("before UnsubscribeCommonEvent proxy valid state is %{public}d, listeners size is %{public}d", 
+        EVENT_LOGD("before UnsubscribeCommonEvent proxy valid state is %{public}d, listeners size is %{public}d",
             isProxyValid_, eventListeners_.size());
         if (commonEventProxy_->UnsubscribeCommonEvent(eventListener->second->AsObject()) == ERR_OK) {
             eventListener->second->Stop();
