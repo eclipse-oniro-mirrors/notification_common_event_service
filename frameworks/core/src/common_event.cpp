@@ -181,7 +181,9 @@ int32_t CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSub
         EVENT_LOGD("before UnsubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
         if (commonEventProxy_->UnsubscribeCommonEvent(eventListener->second->AsObject()) == ERR_OK) {
             eventListener->second->Stop();
+            EVENT_LOGD("erase listener start.");
             eventListeners_.erase(eventListener);
+            EVENT_LOGD("erase listener end.");
             return ERR_OK;
         }
         return ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT;
