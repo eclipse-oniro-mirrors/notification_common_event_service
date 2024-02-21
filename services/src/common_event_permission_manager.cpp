@@ -229,6 +229,7 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED,
     CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED,
+    CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED,
     CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED
 };
 
