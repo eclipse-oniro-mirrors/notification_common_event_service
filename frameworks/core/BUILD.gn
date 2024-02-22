@@ -32,6 +32,7 @@ config("cesfwk_core_public_config") {
   include_dirs = [
     "${ces_core_path}/include",
     "${ces_innerkits_path}",
+    "${ffrt_path}/interfaces/kits",
   ]
 }
 
@@ -73,6 +74,7 @@ ohos_shared_library("cesfwk_core") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
     "samgr:samgr_proxy",

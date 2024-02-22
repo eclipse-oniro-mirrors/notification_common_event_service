@@ -33,6 +33,7 @@ ohos_benchmarktest("Common_Event_Publish_Test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "ipc:ipc_core",
   ]
   subsystem_name = "notification"
