@@ -19,7 +19,7 @@ module_output_path = "common_event_service/frameworks/core"
 config("kits_natvie_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${ffrt_path}/interfaces/kits" ]
+  include_dirs = []
 
   cflags = []
 
@@ -31,10 +31,7 @@ config("kits_natvie_config") {
 ohos_unittest("common_event_branch_test") {
   module_out_path = module_output_path
 
-  include_dirs = [
-    "${tools_path}/test/mock",
-    "${ffrt_path}/interfaces/kits",
-  ]
+  include_dirs = [ "${tools_path}/test/mock" ]
 
   sources = [
     "${tools_path}/test/mock/mock_common_event_stub.cpp",
@@ -55,7 +52,6 @@ ohos_unittest("common_event_branch_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
     "samgr:samgr_proxy",

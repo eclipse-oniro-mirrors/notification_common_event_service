@@ -16,12 +16,11 @@
 #include "common_event_listener.h"
 #include "event_log_wrapper.h"
 #include "hitrace_meter_adapter.h"
-#include "ffrt.h"
 
 namespace OHOS {
 namespace EventFwk {
 std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::commonRunner_ = nullptr;
-static std::shared_ptr<ffrt::queue> listenerQueue_ = nullptr;
+
 CommonEventListener::CommonEventListener(const std::shared_ptr<CommonEventSubscriber> &commonEventSubscriber)
     : commonEventSubscriber_(commonEventSubscriber)
 {
@@ -36,6 +35,7 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGD("enter");
 
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!IsReady()) {
         EVENT_LOGE("not ready");
         return;
@@ -50,27 +50,43 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
         }
         sThis->OnReceiveEvent(commonEventData, ordered, sticky);
     };
-
-    if (EventFwk::listenerQueue_) {
-        EventFwk::listenerQueue_->submit(onReceiveEventFunc);
-    }
+    handler_->PostTask(onReceiveEventFunc, "CommonEvent" + commonEventData.GetWant().GetAction());
 }
 
 ErrCode CommonEventListener::Init()
 {
     EVENT_LOGD("ready to init");
+
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!commonEventSubscriber_) {
-        EVENT_LOGE("Failed to init with CommonEventSubscriber nullptr");
-        return ERR_INVALID_OPERATION;
+    if (runner_ == nullptr) {
+        if (!commonEventSubscriber_) {
+            EVENT_LOGE("Failed to init with CommonEventSubscriber nullptr");
+            return ERR_INVALID_OPERATION;
+        }
+
+        auto threadMode = commonEventSubscriber_->GetSubscribeInfo().GetThreadMode();
+        EVENT_LOGD("thread mode: %{public}d", threadMode);
+        if (threadMode == CommonEventSubscribeInfo::HANDLER) {
+            runner_ = EventRunner::GetMainEventRunner();
+        } else if (threadMode == CommonEventSubscribeInfo::COMMON) {
+            runner_ = GetCommonRunner();
+        } else {
+            runner_ = GetCommonRunner();
+        }
+        if (!runner_) {
+            EVENT_LOGE("Failed to init due to create runner error");
+            return ERR_INVALID_OPERATION;
+        }
     }
-    auto threadMode = commonEventSubscriber_->GetSubscribeInfo().GetThreadMode();
-    EVENT_LOGD("thread mode: %{public}d", threadMode);
-    InitListenerQueue();
-    if (EventFwk::listenerQueue_ == nullptr) {
-        EVENT_LOGE("Failed to init due to create ffrt queue error");
-        return ERR_INVALID_OPERATION;
+
+    if (handler_ == nullptr) {
+        handler_ = std::make_shared<EventHandler>(runner_);
+        if (!handler_) {
+            EVENT_LOGE("Failed to init due to create handler error");
+            return ERR_INVALID_OPERATION;
+        }
     }
+
     return ERR_OK;
 }
 
@@ -83,20 +99,18 @@ std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::GetCommonRunner()
     return CommonEventListener::commonRunner_;
 }
 
-void CommonEventListener::InitListenerQueue()
-{
-    if (EventFwk::listenerQueue_ == nullptr) {
-        EventFwk::listenerQueue_ = std::make_shared<ffrt::queue>("common_event_listener");
-    }
-    return;
-}
-
 bool CommonEventListener::IsReady()
 {
-    if (EventFwk::listenerQueue_ == nullptr) {
-        EVENT_LOGE("ffrt queue is not ready");
+    if (runner_ == nullptr) {
+        EVENT_LOGE("runner is not ready");
         return false;
     }
+
+    if (handler_ == nullptr) {
+        EVENT_LOGE("handler is not ready");
+        return false;
+    }
+
     return true;
 }
 
@@ -105,6 +119,8 @@ void CommonEventListener::OnReceiveEvent(
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGD("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
+
+    std::lock_guard<std::mutex> lock(mutex_);
 
     int32_t code = commonEventData.GetCode();
     std::string data = commonEventData.GetData();
