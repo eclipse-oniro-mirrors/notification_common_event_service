@@ -64,6 +64,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_CLOSE_SYSTEM_DIALOGS, "COMMON_EVENT_CLOSE_SYSTEM_DIALOGS");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED, "COMMON_EVENT_PACKAGE_ADDED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED,
+        "COMMON_EVENT_PACKAGE_INSTALLATION_STARTED");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED, "COMMON_EVENT_PACKAGE_REPLACED");
     SetNamedPropertyByStr(

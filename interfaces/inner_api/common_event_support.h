@@ -136,6 +136,11 @@ public:
      */
     static const std::string COMMON_EVENT_PACKAGE_ADDED;
     /**
+     * This commonEvent means when a new application package start to install on the device.
+     * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_PACKAGE_INSTALLATION_STARTED;
+    /**
      * Indicates the action of a common event that a new version of an installed application package has replaced
      * the previous one on the device.
      * This common event can only be published by the system.

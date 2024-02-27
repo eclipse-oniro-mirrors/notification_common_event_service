@@ -147,6 +147,13 @@ const std::string CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED = "usual
 const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED = "usual.event.PACKAGE_ADDED";
 
 /**
+ * This commonEvent means when a new application package start to install on the device.
+ * This is a protected common event that can only be sent by system.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED  =
+    "usual.event.PACKAGE_INSTALLATION_STARTED";
+
+/**
  * Indicates the action of a common event that a new version of an installed application package has replaced
  * the previous one on the device.
  * This common event can only be published by the system.
@@ -1420,6 +1427,7 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MY_PACKAGE_REPLACED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED);
