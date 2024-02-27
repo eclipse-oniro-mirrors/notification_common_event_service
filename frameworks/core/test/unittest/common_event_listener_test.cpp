@@ -18,7 +18,9 @@
 #undef private
 #include "common_event_subscriber.h"
 #include "common_event_publish_info.h"
+#include "common_event_subscribe_info.h"
 #include "matching_skills.h"
+
 
 #include <gtest/gtest.h>
 
@@ -31,6 +33,19 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
+};
+
+class ListenerSubscriberTest : public CommonEventSubscriber {
+public:
+    explicit ListenerSubscriberTest(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    {}
+
+    ~ListenerSubscriberTest()
+    {}
+
+    virtual void OnReceiveEvent(const CommonEventData &data)
+    {
+    }
 };
 
 void CommonEventListenerTest::SetUpTestCase()
@@ -63,29 +78,15 @@ HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_001, TestSize.Level1)
  * tc.number: CommonEventListenerTest_002
  * tc.name: test Init
  * tc.type: FUNC
- * tc.desc: test init function and runner_ is not nullptr and handler_ is not nullptr.
+ * tc.desc: test init function commonEventSubscriber is not nullptr.
  */
 HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_002, TestSize.Level1)
 {
-    std::shared_ptr<CommonEventSubscriber> commonEventSubscriber = nullptr;
-    CommonEventListener commonEventListener(commonEventSubscriber);
-    commonEventListener.runner_ =  OHOS::AppExecFwk::EventRunner::Create("CesFwkListener");
-    commonEventListener.handler_ = std::make_shared< OHOS::AppExecFwk::EventHandler>(commonEventListener.runner_);
-    EXPECT_EQ(OHOS::ERR_OK, commonEventListener.Init());
-}
-
-/*
- * tc.number: CommonEventListenerTest_003
- * tc.name: test Init
- * tc.type: FUNC
- * tc.desc: test init function and runner_ is not nullptr and handler_ is nullptr.
- */
-HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_003, TestSize.Level1)
-{
-    std::shared_ptr<CommonEventSubscriber> commonEventSubscriber = nullptr;
-    CommonEventListener commonEventListener(commonEventSubscriber);
-    commonEventListener.runner_ =  OHOS::AppExecFwk::EventRunner::Create("CesFwkListener");
-    commonEventListener.handler_ = nullptr;
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent("EVENT");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<ListenerSubscriberTest> subscriber = std::make_shared<ListenerSubscriberTest>(subscribeInfo);
+    CommonEventListener commonEventListener(subscriber);
     EXPECT_EQ(OHOS::ERR_OK, commonEventListener.Init());
 }
 
