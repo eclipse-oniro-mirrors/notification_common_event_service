@@ -57,8 +57,6 @@ private:
     ErrCode Init();
 
     std::shared_ptr<EventRunner> GetCommonRunner();
-    
-    void InitListenerQueue();
 
     bool IsReady();
 
