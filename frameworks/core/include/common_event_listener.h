@@ -58,6 +58,8 @@ private:
 
     std::shared_ptr<EventRunner> GetCommonRunner();
 
+    void InitListenerQueue();
+
     bool IsReady();
 
     void OnReceiveEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky);
@@ -70,6 +72,7 @@ private:
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber_;
     std::shared_ptr<EventRunner> runner_;
     std::shared_ptr<EventHandler> handler_;
+    void *listenerQueue_ = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
