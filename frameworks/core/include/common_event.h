@@ -171,6 +171,20 @@ public:
      */
     int32_t SetStaticSubscriberState(bool enable);
 
+    /**
+     * Reconnect common event manager service once per 1000 milliseconds,
+     * until the connection succeeds or reaching the max retry times.
+     *
+     * @return Returns true if successful; false otherwise.
+     */
+    bool Reconnect();
+
+    /**
+     * Resubscribe after common event manager service restarts.
+     *
+     */
+    void Resubscribe();
+
 private:
     /**
      * Gets common event proxy.
@@ -201,31 +215,15 @@ private:
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
 private:
-    friend class CommonEventDeathRecipient;
     bool isProxyValid_ = false;
     std::mutex mutex_;
     std::mutex eventListenersMutex_;
     sptr<ICommonEvent> commonEventProxy_;
     std::map<std::shared_ptr<CommonEventSubscriber>, sptr<CommonEventListener>> eventListeners_;
-    sptr<IRemoteObject::DeathRecipient> recipient_;
     const size_t SUBSCRIBER_MAX_SIZE = 200;
     static const uint8_t ALREADY_SUBSCRIBED = 0;
     static const uint8_t INITIAL_SUBSCRIPTION = 1;
     static const uint8_t SUBSCRIBE_FAILED = 2;
-
-    /**
-     * Reconnect common event manager service once per 1000 milliseconds,
-     * until the connection succeeds or reaching the max retry times.
-     *
-     * @return Returns true if successful; false otherwise.
-     */
-    bool Reconnect();
-
-    /**
-     * Resubscribe after common event manager service restarts.
-     *
-     */
-    void Resubscribe();
 };
 }  // namespace EventFwk
 }  // namespace OHOS

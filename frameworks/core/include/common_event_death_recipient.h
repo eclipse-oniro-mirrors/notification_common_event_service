@@ -16,22 +16,34 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
 
-#include "iremote_object.h"
+#include <singleton.h>
+
+#include "system_ability_status_change_stub.h"
 
 namespace OHOS {
 namespace EventFwk {
-class CommonEventDeathRecipient : public IRemoteObject::DeathRecipient {
+class CommonEventDeathRecipient : public DelayedSingleton<CommonEventDeathRecipient> {
 public:
     CommonEventDeathRecipient() = default;
 
-    virtual ~CommonEventDeathRecipient() = default;
+    ~CommonEventDeathRecipient() = default;
 
-    /**
-     * Called back when the remote object is died.
-     *
-     * @param remote Indicates the died object.
-     */
-    virtual void OnRemoteDied(const wptr<IRemoteObject>& remote);
+    void SubscribeSAManager();
+
+    bool GetIsSubscribeSAManager();
+private:
+    class SystemAbilityStatusChangeListener : public SystemAbilityStatusChangeStub {
+    public:
+        SystemAbilityStatusChangeListener() = default;
+        ~SystemAbilityStatusChangeListener() = default;
+        void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
+        void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
+
+    private:
+        bool isSAOffline = false;
+    };
+
+    sptr<ISystemAbilityStatusChange> statusChangeListener_ = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

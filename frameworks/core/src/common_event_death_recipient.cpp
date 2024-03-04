@@ -14,23 +14,58 @@
  */
 
 #include "common_event_death_recipient.h"
+
 #include "common_event.h"
+#include "iservice_registry.h"
 #include "event_log_wrapper.h"
-#include "singleton.h"
+#include "system_ability_definition.h"
 
 namespace OHOS {
 namespace EventFwk {
-void CommonEventDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
+void CommonEventDeathRecipient::SubscribeSAManager()
 {
-    EVENT_LOGI("common event service died, remove the proxy object");
+    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    statusChangeListener_ = new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
+    if (samgrProxy == nullptr || statusChangeListener_ == nullptr) {
+        EVENT_LOGI("GetSystemAbilityManager failed or new SystemAbilityStatusChangeListener failed");
+        delete statusChangeListener_;
+        statusChangeListener_ = nullptr;
+        return;
+    }
+    int32_t ret = samgrProxy->SubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, statusChangeListener_);
+    if (ret != ERR_OK) {
+        EVENT_LOGI("SubscribeSystemAbility to sa manager failed");
+        delete statusChangeListener_;
+        statusChangeListener_ = nullptr;
+    }
+}
 
+bool CommonEventDeathRecipient::GetIsSubscribeSAManager()
+{
+    return statusChangeListener_ != nullptr;
+}
+
+void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAbility(
+    int32_t systemAbilityId, const std::string& deviceId)
+{
+    if (!isSAOffline) {
+        return;
+    }
+    EVENT_LOGI("Common event service restore, try to reconnect");
     auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
-
-    commonEvent->ResetCommonEventProxy();
-
     if (commonEvent->Reconnect()) {
         commonEvent->Resubscribe();
+        isSAOffline = false;
     }
+}
+
+void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(
+    int32_t systemAbilityId, const std::string& deviceId)
+{
+    EVENT_LOGI("Common event service died");
+    isSAOffline = true;
+    auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
+    commonEvent->ResetCommonEventProxy();
 }
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -246,11 +246,6 @@ void CommonEvent::ResetCommonEventProxy()
     EVENT_LOGD("enter");
     std::lock_guard<std::mutex> lock(mutex_);
     isProxyValid_ = false;
-    if ((commonEventProxy_ == nullptr) || (commonEventProxy_->AsObject() == nullptr)) {
-        EVENT_LOGE("invalid proxy state");
-        return;
-    }
-    commonEventProxy_->AsObject()->RemoveDeathRecipient(recipient_);
 }
 
 bool CommonEvent::Freeze(const uid_t &uid)
@@ -337,12 +332,10 @@ bool CommonEvent::GetCommonEventProxy() __attribute__((no_sanitize("cfi")))
                 return false;
             }
 
-            recipient_ = new (std::nothrow) CommonEventDeathRecipient();
-            if (!recipient_) {
-                EVENT_LOGE("Failed to create death Recipient ptr CommonEventDeathRecipient!");
-                return false;
+            auto commonEventDeathRecipient = DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+            if (!commonEventDeathRecipient->GetIsSubscribeSAManager()) {
+                commonEventDeathRecipient->SubscribeSAManager();
             }
-            commonEventProxy_->AsObject()->AddDeathRecipient(recipient_);
             isProxyValid_ = true;
         }
     }
@@ -386,11 +379,10 @@ bool CommonEvent::Reconnect()
 {
     EVENT_LOGD("enter");
     for (int32_t i = 0; i < MAX_RETRY_TIME; i++) {
-        // Sleep 1000 milliseconds before reconnect.
-        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
-
         // try to connect ces
         if (!GetCommonEventProxy()) {
+            // Sleep 1000 milliseconds before reconnect.
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
             EVENT_LOGE("get ces proxy fail, try again.");
             continue;
         }
