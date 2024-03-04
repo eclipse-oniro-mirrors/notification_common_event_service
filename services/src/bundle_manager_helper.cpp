@@ -44,7 +44,7 @@ std::string BundleManagerHelper::GetBundleName(uid_t uid)
     std::string bundleName = "";
 
     if (!GetBundleMgrProxyAsync()) {
-        EVENT_LOGE("failed to get bms proxy");
+        EVENT_LOGE_LIMIT("failed to get bms proxy");
         return bundleName;
     }
     std::string identity = IPCSkeleton::ResetCallingIdentity();
