@@ -178,6 +178,10 @@ void CommonEventCommand::CheckPublishOpt()
 
 ErrCode CommonEventCommand::RunAsDumpCommand()
 {
+#ifdef CEM_BUILD_VARIANT_USER
+     resultReceiver_.append(USER_DUMP_COMMON_EVENT_NG);
+     return ERR_INVALID_VALUE;
+#endif
     EVENT_LOGI("enter");
     ErrCode result = ERR_OK;
     bool hasOption = false;
