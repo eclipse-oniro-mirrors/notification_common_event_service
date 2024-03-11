@@ -16,8 +16,10 @@
 #include <gtest/gtest.h>
 
 #include "ces_inner_error_code.h"
+#define private public
 #include "common_event.h"
 #include "common_event_death_recipient.h"
+#undef private
 #include "common_event_publish_info.h"
 #include "common_event_stub.h"
 #include "common_event_subscriber.h"
@@ -82,7 +84,7 @@ HWTEST_F(CommonEventTest, CommonEvent_001, TestSize.Level1)
     publishInfo.SetSubscriberPermissions(permissions);
 
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
-    
+
     CommonEvent commonEvent;
     bool publishCommonEvent = commonEvent.PublishCommonEvent(data, publishInfo, subscriber);
     EXPECT_EQ(true, publishCommonEvent);
@@ -389,7 +391,7 @@ HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level1)
         actionU16Scheme.emplace_back(OHOS::Str8ToStr16("test"));
     }
     result->WriteVectorInfo(parcel, actionU16Scheme);
-    
+
     if (nullptr == result->Unmarshalling(parcel)) {
         unmarshalling = false;
     }
@@ -447,13 +449,41 @@ HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest |
 
 /*
  * @tc.number: CommonEventSubscriber_0100
- * @tc.name: verify IsStickyCommonEvent
- * @tc.desc: Invoke IsStickyCommonEvent interface verify whether it is normal
+ * @tc.name: verify GetIsSubscribeSAManager
+ * @tc.desc: Invoke SubscribeSAManager interface verify whether it is normal
  */
 HWTEST_F(CommonEventTest, CommonEventSubscriber_0100, Function | MediumTest | Level1)
 {
-    CommonEventDeathRecipient commonEventDeathRecipient;
-    commonEventDeathRecipient.OnRemoteDied(nullptr);
+    auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+    commonEventDeathRecipient->SubscribeSAManager();
+    EXPECT_EQ(true, commonEventDeathRecipient->GetIsSubscribeSAManager());
+}
+
+/*
+ * @tc.number: CommonEventSubscriber_0101
+ * @tc.name: verify isProxyValid_
+ * @tc.desc: Invoke OnRemoveSystemAbility interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventSubscriber_0101, Function | MediumTest | Level1)
+{
+    auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+    commonEventDeathRecipient->SubscribeSAManager();
+    commonEventDeathRecipient->statusChangeListener_->OnRemoveSystemAbility(0, "");
+    auto commonEvent = OHOS::DelayedSingleton<CommonEvent>::GetInstance();
+    EXPECT_EQ(false, commonEvent->isProxyValid_);
+}
+
+/*
+ * @tc.number: CommonEventSubscriber_0102
+ * @tc.name: verify IsStickyCommonEvent
+ * @tc.desc: Invoke OnAddSystemAbility interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventSubscriber_0102, Function | MediumTest | Level1)
+{
+    auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+    commonEventDeathRecipient->SubscribeSAManager();
+    commonEventDeathRecipient->statusChangeListener_->OnRemoveSystemAbility(0, "");
+    commonEventDeathRecipient->statusChangeListener_->OnAddSystemAbility(0, "");
     bool result = CommonEventTest::IsStickyCommonEvent();
     EXPECT_EQ(false, result);
 }
