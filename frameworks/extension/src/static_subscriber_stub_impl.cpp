@@ -26,7 +26,7 @@ ErrCode StaticSubscriberStubImpl::OnReceiveEvent(CommonEventData* data)
     std::shared_ptr<CommonEventData> commonEventData(data);
     if (extension != nullptr) {
         extension->OnReceiveEvent(commonEventData);
-        EVENT_LOGI("OnReceiveEvent end successed.");
+        EVENT_LOGI_LIMIT("OnReceiveEvent end successed.");
         return 0;
     }
     EVENT_LOGE("OnReceiveEvent end failed.");
