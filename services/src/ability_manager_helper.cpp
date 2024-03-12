@@ -54,7 +54,7 @@ int AbilityManagerHelper::ConnectAbility(
 
 bool AbilityManagerHelper::GetAbilityMgrProxy()
 {
-    EVENT_LOGI("GetAbilityMgrProxy enter");
+    EVENT_LOGI_LIMIT("GetAbilityMgrProxy enter");
     if (abilityMgr_ == nullptr) {
         sptr<ISystemAbilityManager> systemAbilityManager =
             SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();

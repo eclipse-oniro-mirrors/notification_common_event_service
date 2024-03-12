@@ -23,7 +23,7 @@ namespace EventFwk {
 void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI_LIMIT("enter");
     auto proxy = GetProxy(remoteObject);
     if (proxy) {
         ErrCode ec = proxy->OnReceiveEvent(&event_);
@@ -48,7 +48,7 @@ sptr<StaticSubscriberProxy> StaticSubscriberConnection::GetProxy(const sptr<IRem
 
 void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI_LIMIT("enter");
 }
 }  // namespace EventFwk
 }  // namespace OHOS
