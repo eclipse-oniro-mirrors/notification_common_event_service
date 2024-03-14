@@ -177,20 +177,16 @@ bool CommonEventControlManager::GetUnorderedEventHandler()
     return true;
 }
 
-bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)
+void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<OrderedEventRecord> &eventRecord)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGD("enter");
-    if (!eventRecord) {
-        EVENT_LOGD("Invalid event record.");
-        return false;
-    }
     std::lock_guard<std::mutex> lock(unorderedMutex_);
-    EVENT_LOGD("event = %{public}s, receivers size = %{public}zu",
-        eventRecord->commonEventData->GetWant().GetAction().c_str(), eventRecord->receivers.size());
+    int32_t succCnt = 0;
+    int32_t failCnt = 0;
+    int32_t freezeCnt = 0;
     for (auto vec : eventRecord->receivers) {
         if (vec == nullptr) {
             EVENT_LOGE("invalid vec");
+            failCnt++;
             continue;
         }
         size_t index = eventRecord->nextReceiver++;
@@ -198,11 +194,14 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
         if (vec->isFreeze) {
             eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(vec, *eventRecord);
+            freezeCnt++;
         } else {
             sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(vec->commonEventListener);
             if (!commonEventListenerProxy) {
                 eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
-                EVENT_LOGE("Failed to get IEventReceive proxy");
+                EVENT_LOGE("Failed to get IEventReceive proxy, suscriberID = %{public}s",
+                    vec->eventRecordInfo.subId.c_str());
+                failCnt++;
                 continue;
             }
             int8_t ret = CheckPermission(*vec, *eventRecord);
@@ -212,12 +211,33 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
                 commonEventListenerProxy->NotifyEvent(
                     *(eventRecord->commonEventData), false, eventRecord->publishInfo->IsSticky());
                 eventRecord->state = OrderedEventRecord::RECEIVED;
+                succCnt++;
                 AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
                     eventRecord->commonEventData->GetWant().GetAction());
+            } else {
+                failCnt++;
+                EVENT_LOGE("NotifyUnorderedEvent = %{public}s fail, subscriberCnt = %{public}zu,"
+                    "suscriberID = %{public}s", eventRecord->commonEventData->GetWant().GetAction().c_str(),
+                    eventRecord->receivers.size(), vec->eventRecordInfo.subId.c_str());
             }
         }
     }
+    EVENT_LOGI("NotifyUnorderedEvent = %{public}s end, subscriberCnt = %{public}zu, succCnt = %{public}d,"
+        "failCnt = %{public}d, freezeCnt = %{public}d",
+        eventRecord->commonEventData->GetWant().GetAction().c_str(),
+        eventRecord->receivers.size(), succCnt, failCnt, freezeCnt);
+}
 
+bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)
+{
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    if (!eventRecord) {
+        EVENT_LOGD("Invalid event record.");
+        return false;
+    }
+    
+    NotifyUnorderedEventLocked(eventRecord);
+    
     EnqueueHistoryEventRecord(eventRecord, false);
 
     auto it = std::find(unorderedEventQueue_.begin(), unorderedEventQueue_.end(), eventRecord);

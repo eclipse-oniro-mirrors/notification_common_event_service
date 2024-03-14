@@ -195,6 +195,16 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     eventRecordInfo.isSystemApp = comeFrom.isSystemApp;
     eventRecordInfo.isProxy = comeFrom.isProxy;
 
+    // generate subscriber id : pid_uid_subCount_time
+    int64_t now = SystemTime::GetNowSysTime();
+    std::string subId = std::to_string(pid) + "_" + std::to_string(uid) + "_" +
+        std::to_string(subCount.load()) + "_" + std::to_string(now);
+    subCount.fetch_add(1);
+    eventRecordInfo.subId = subId;
+    EVENT_LOGI("SubscribeCommonEvent %{public}s(pid = %{public}d, uid = %{public}d, "
+        "userId = %{public}d, subId = %{public}s)", bundleName.c_str(), pid, uid,
+        subscribeInfo.GetUserId(), subId.c_str());
+
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
 

@@ -291,6 +291,7 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
             RemoveFrozenEventsBySubscriber((*it));
             (*it)->commonEventListener = nullptr;
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
+            EVENT_LOGI("Unsubscribe subscriberID: %{public}s", (*it)->eventRecordInfo.subId.c_str());
             subscribers_.erase(it);
             break;
         }
