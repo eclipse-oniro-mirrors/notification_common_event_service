@@ -173,6 +173,7 @@ private:
     DISALLOW_COPY_AND_MOVE(InnerCommonEventManager);
     time_t sysEventTime = 0;
     std::string supportCheckSaPermission_ = "false";
+    std::atomic<int> subCount = 0;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

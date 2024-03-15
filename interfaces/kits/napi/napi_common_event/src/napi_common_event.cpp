@@ -837,6 +837,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
     napi_wrap(env, thisVar, wrapper,
         [](napi_env env, void *data, void *hint) {
             auto *wrapper = reinterpret_cast<SubscriberInstanceWrapper *>(data);
+            EVENT_LOGD("Constructor destroy");
             std::lock_guard<std::mutex> lock(subscriberInsMutex);
             for (auto subscriberInstance : subscriberInstances) {
                 if (subscriberInstance.first.get() == wrapper->GetSubscriber().get()) {

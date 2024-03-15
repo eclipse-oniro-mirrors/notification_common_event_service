@@ -31,6 +31,7 @@ struct EventRecordInfo {
     bool isSubsystem;
     bool isSystemApp;
     bool isProxy;
+    std::string subId;
 
     EventRecordInfo() : pid(0), uid(0), callerToken(0), isSubsystem(false), isSystemApp(false), isProxy(false) {}
 };
