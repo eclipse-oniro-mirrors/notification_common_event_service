@@ -230,7 +230,8 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED,
     CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_EXEMPTION_LIST_UPDATED,
     CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED,
-    CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED
+    CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED,
+    CommonEventSupport::COMMON_EVENT_DYNAMIC_ICON_CHANGED
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {

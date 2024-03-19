@@ -154,6 +154,13 @@ const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED 
     "usual.event.PACKAGE_INSTALLATION_STARTED";
 
 /**
+ * This common event means an application package enables or disables a dynamic icon.
+ * This is a protected common event that can only be sent by system.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_DYNAMIC_ICON_CHANGED  =
+    "usual.event.DYNAMIC_ICON_CHANGED";
+
+/**
  * Indicates the action of a common event that a new version of an installed application package has replaced
  * the previous one on the device.
  * This common event can only be published by the system.
@@ -1428,6 +1435,7 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DYNAMIC_ICON_CHANGED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MY_PACKAGE_REPLACED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED);

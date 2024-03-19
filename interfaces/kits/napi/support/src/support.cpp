@@ -68,6 +68,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED,
         "COMMON_EVENT_PACKAGE_INSTALLATION_STARTED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DYNAMIC_ICON_CHANGED,
+        "COMMON_EVENT_DYNAMIC_ICON_CHANGED");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED, "COMMON_EVENT_PACKAGE_REPLACED");
     SetNamedPropertyByStr(
