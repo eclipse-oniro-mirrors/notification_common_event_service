@@ -517,11 +517,6 @@ public:
         return 1;
     }
 
-    int SendANRProcessID(int pid) override
-    {
-        return 1;
-    }
-
     int32_t GetMissionIdByToken(const sptr<IRemoteObject> &token) override
     {
         return 1;
