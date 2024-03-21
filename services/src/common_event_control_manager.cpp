@@ -179,7 +179,6 @@ bool CommonEventControlManager::GetUnorderedEventHandler()
 
 void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<OrderedEventRecord> &eventRecord)
 {
-    std::lock_guard<std::mutex> lock(unorderedMutex_);
     int32_t succCnt = 0;
     int32_t failCnt = 0;
     int32_t freezeCnt = 0;
@@ -236,6 +235,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
         return false;
     }
     
+    std::lock_guard<std::mutex> lock(unorderedMutex_);
     NotifyUnorderedEventLocked(eventRecord);
     
     EnqueueHistoryEventRecord(eventRecord, false);
