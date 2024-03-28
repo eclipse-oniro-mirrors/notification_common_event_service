@@ -138,14 +138,17 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
         return;
     }
     CommonEventDataWorker *commonEventDataWorkerData = static_cast<CommonEventDataWorker *>(work->data);
-    if (commonEventDataWorkerData == nullptr || commonEventDataWorkerData->ref == nullptr) {
-        EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData or ref is null");
+    if (commonEventDataWorkerData == nullptr) {
+        EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData is nullptr");
         delete work;
         work = nullptr;
         return;
     }
-    if ((commonEventDataWorkerData->valid == nullptr) || *(commonEventDataWorkerData->valid) == false) {
-        EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData or ref is invalid which may be freed before");
+    if (commonEventDataWorkerData->ref == nullptr ||
+        (commonEventDataWorkerData->valid == nullptr) || *(commonEventDataWorkerData->valid) == false) {
+        EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData ref is null or invalid which may be previously released");
+        delete commonEventDataWorkerData;
+        commonEventDataWorkerData = nullptr;
         delete work;
         work = nullptr;
         return;

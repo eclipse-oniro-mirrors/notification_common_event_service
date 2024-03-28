@@ -63,6 +63,7 @@ ohos_moduletest("cesModuleTest") {
     "ffrt:libffrt",
     "hilog:libhilog",
     "hitrace:hitrace_meter",
+    "init:libbegetutil",
     "ipc:ipc_core",
     "ipc:libdbinder",
     "samgr:samgr_proxy",
