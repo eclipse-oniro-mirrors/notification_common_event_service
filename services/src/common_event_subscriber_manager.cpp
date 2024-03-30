@@ -578,7 +578,7 @@ void CommonEventSubscriberManager::SendSubscriberExceedMaximumHiSysEvent(int32_t
 bool CommonEventSubscriberManager::CheckSubscriberCountReachedMaxinum()
 {
     uint32_t subscriberCount = subscribers_.size();
-    uint32_t maxSubscriberNum = GetUintParameter("notification.ces.max_subscriber_num",
+    uint32_t maxSubscriberNum = GetUintParameter("hiviewdfx.ces.subscriber_limit",
         DEFAULT_MAX_SUBSCRIBER_NUM_ALL_APP);
     if (subscriberCount == (uint32_t)(maxSubscriberNum * WARNING_REPORT_PERCENTAGE)) {
         EVENT_LOGW("subscribers reaches the alarm threshold");
