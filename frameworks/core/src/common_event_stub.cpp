@@ -130,7 +130,9 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         }
         case static_cast<uint32_t>(CommonEventInterfaceCode::CES_GET_STICKY_COMMON_EVENT): {
             std::string event = Str16ToStr8(data.ReadString16());
-            CommonEventData eventData;
+            AAFwk::Want want;
+            CommonEventData eventData(want, 0, "");
+
             bool ret = GetStickyCommonEvent(event, eventData);
             if (!reply.WriteBool(ret)) {
                 EVENT_LOGE("Failed to write reply ret!");
