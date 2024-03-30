@@ -45,6 +45,7 @@ ohos_systemtest("ActsCESSubscribeInfoTest") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "hilog:libhilog",
+    "init:libbegetutil",
   ]
 }
 

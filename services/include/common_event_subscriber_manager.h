@@ -16,11 +16,15 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 
+#include <utility>
+#include <vector>
+
 #include "common_event_constant.h"
 #include "common_event_record.h"
 #include "common_event_subscribe_info.h"
 #include "event_log_wrapper.h"
 #include "iremote_object.h"
+#include "parameter.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -201,6 +205,12 @@ private:
 
     void SendSubscriberExceedMaximumHiSysEvent(int32_t userId, const std::string &eventName, uint32_t subscriberNum);
 
+    bool CheckSubscriberCountReachedMaxinum();
+
+    std::vector<std::pair<pid_t, uint32_t>> GetTopSubscriberCounts(size_t topNum = 10);
+
+    void PrintSubscriberCounts(std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts);
+
 private:
     std::mutex mutex_;
     sptr<IRemoteObject::DeathRecipient> death_;
@@ -208,6 +218,7 @@ private:
     std::vector<SubscriberRecordPtr> subscribers_;
     std::map<uid_t, FrozenRecords> frozenEvents_;
     const time_t FREEZE_EVENT_TIMEOUT = 30; // How long we keep records. Unit: second
+    std::map<pid_t, uint32_t> subscriberCounts_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

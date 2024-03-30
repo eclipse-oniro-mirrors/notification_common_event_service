@@ -51,6 +51,7 @@ ohos_systemtest("ActsCESCESpublishInfoTest") {
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
   ]
 }

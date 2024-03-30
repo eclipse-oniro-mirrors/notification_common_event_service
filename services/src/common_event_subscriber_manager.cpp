@@ -13,8 +13,13 @@
  * limitations under the License.
  */
 
-#include "common_event_subscriber_manager.h"
+#include <csignal>
+#include <utility>
+#include <vector>
+#include <set>
 
+#include "ability_manager_client.h"
+#include "common_event_subscriber_manager.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
 #include "hitrace_meter_adapter.h"
@@ -23,6 +28,7 @@
 namespace OHOS {
 namespace EventFwk {
 constexpr int32_t LENGTH = 80;
+constexpr int32_t SIGNAL_KILL = 9;
 static constexpr int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
@@ -255,6 +261,27 @@ bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
 
     std::lock_guard<std::mutex> lock(mutex_);
 
+    pid_t pid = record->eventRecordInfo.pid;
+
+    if (CheckSubscriberCountReachedMaxinum()) {
+        std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts = GetTopSubscriberCounts(1);
+        pid_t killedPid = (*vtSubscriberCounts.begin()).first;
+
+        AAFwk::ExitReason reason = { AAFwk::REASON_RESOURCE_CONTROL, "Kill Reason: CES Register exceed limit"};
+        AAFwk::AbilityManagerClient::GetInstance()->RecordProcessExitReason(killedPid, reason);
+
+        int32_t killRes = kill(killedPid, SIGNAL_KILL);
+        if (killRes < 0) {
+            EVENT_LOGE("kill pid=%{public}d which has the most subscribers failed", killedPid);
+        } else {
+            EVENT_LOGI("kill pid=%{public}d which has the most subscribers successfully", killedPid);
+        }
+
+        if (pid == killedPid) {
+            return false;
+        }
+    }
+
     for (auto event : events) {
         auto infoItem = eventSubscribers_.find(event);
         if (infoItem != eventSubscribers_.end()) {
@@ -272,6 +299,7 @@ bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
     }
 
     subscribers_.emplace_back(record);
+    subscriberCounts_[pid]++;
 
     return true;
 }
@@ -293,6 +321,8 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
             EVENT_LOGI("Unsubscribe subscriberID: %{public}s", (*it)->eventRecordInfo.subId.c_str());
             subscribers_.erase(it);
+            pid_t pid = (*it)->eventRecordInfo.pid;
+            subscriberCounts_[pid] > 1 ? subscriberCounts_[pid]-- : subscriberCounts_.erase(pid);
             break;
         }
     }
@@ -543,6 +573,59 @@ void CommonEventSubscriberManager::SendSubscriberExceedMaximumHiSysEvent(int32_t
     eventInfo.eventName = eventName;
     eventInfo.subscriberNum = subscriberNum;
     EventReport::SendHiSysEvent(SUBSCRIBER_EXCEED_MAXIMUM, eventInfo);
+}
+
+bool CommonEventSubscriberManager::CheckSubscriberCountReachedMaxinum()
+{
+    uint32_t subscriberCount = subscribers_.size();
+    uint32_t maxSubscriberNum = GetUintParameter("hiviewdfx.ces.subscriber_limit",
+        DEFAULT_MAX_SUBSCRIBER_NUM_ALL_APP);
+    if (subscriberCount == (uint32_t)(maxSubscriberNum * WARNING_REPORT_PERCENTAGE)) {
+        EVENT_LOGW("subscribers reaches the alarm threshold");
+        PrintSubscriberCounts(GetTopSubscriberCounts());
+        return false;
+    }
+    if (subscriberCount == maxSubscriberNum) {
+        EVENT_LOGE("subscribers reaches the maxinum");
+        PrintSubscriberCounts(GetTopSubscriberCounts());
+        return true;
+    }
+    return false;
+}
+
+std::vector<std::pair<pid_t, uint32_t>> CommonEventSubscriberManager::GetTopSubscriberCounts(size_t topNum)
+{
+    topNum = subscriberCounts_.size() < topNum ? subscriberCounts_.size() : topNum;
+
+    std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts;
+    std::set<pid_t> pidSet;
+    for (size_t i = 0; i < topNum; i++) {
+        std::pair<pid_t, uint32_t> curPair;
+        for (auto it = subscriberCounts_.begin(); it != subscriberCounts_.end(); it++) {
+            pid_t pid = it->first;
+            uint32_t count = it->second;
+            if (pidSet.find(pid) != pidSet.end()) {
+                continue;
+            }
+            if (curPair.second < count) {
+                curPair = std::make_pair(pid, count);
+            }
+        }
+        pidSet.insert(curPair.first);
+        vtSubscriberCounts.push_back(curPair);
+    }
+
+    return vtSubscriberCounts;
+}
+
+void CommonEventSubscriberManager::PrintSubscriberCounts(std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts)
+{
+    EVENT_LOGI("Start to print top App by subscribers in descending order");
+    int index = 1;
+    for (auto vtIt = vtSubscriberCounts.begin(); vtIt != vtSubscriberCounts.end(); vtIt++) {
+        EVENT_LOGI("top%{public}d pid=%{public}d subscribers=%{public}d", index, vtIt->first, vtIt->second);
+        index++;
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS
