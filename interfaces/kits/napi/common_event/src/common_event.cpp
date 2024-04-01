@@ -1450,7 +1450,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
     if (argc < PUBLISH_MAX_PARA) {
         EVENT_LOGE("Error number of arguments.");
-        NapiGetNull(env);
+        return NapiGetNull(env);
     }
 
     std::string event;
