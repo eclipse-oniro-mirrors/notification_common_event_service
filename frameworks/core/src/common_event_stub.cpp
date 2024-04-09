@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,7 +22,9 @@
 namespace OHOS {
 namespace EventFwk {
 using namespace OHOS::Notification;
-
+namespace {
+constexpr int32_t VECTOR_MAX_SIZE = 1000;
+}
 CommonEventStub::CommonEventStub()
 {}
 
@@ -219,6 +221,21 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_SET_STATIC_SUBSCRIBER_EVENTS_STATE): {
+            std::vector<std::string> events;
+            data.ReadStringVector(&events);
+            if (events.size() > VECTOR_MAX_SIZE) {
+                EVENT_LOGE("Events size exceeds the max size.");
+                return ERR_INVALID_VALUE;
+            }
+            bool enable = data.ReadBool();
+            int32_t ret = SetStaticSubscriberState(events, enable);
+            if (!reply.WriteInt32(ret)) {
+                EVENT_LOGE("Failed to write reply.");
+                return ERR_INVALID_VALUE;
+            }
+            break;
+        }
         default:
             EVENT_LOGW("unknown, code = %{public}u, flags= %{public}u", code, option.GetFlags());
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -314,6 +331,12 @@ int32_t CommonEventStub::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD("called");
 
+    return ERR_OK;
+}
+
+int32_t CommonEventStub::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
+{
+    EVENT_LOGD("Called.");
     return ERR_OK;
 }
 }  // namespace EventFwk

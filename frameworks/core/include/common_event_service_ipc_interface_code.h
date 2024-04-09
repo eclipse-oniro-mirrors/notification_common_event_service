@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,6 +31,7 @@ enum class CommonEventInterfaceCode {
     CES_UNFREEZE_ALL,
     CES_REMOVE_STICKY_COMMON_EVENT,
     CES_SET_STATIC_SUBSCRIBER_STATE,
+    CES_SET_STATIC_SUBSCRIBER_EVENTS_STATE,
     CES_NOTIFY_COMMON_EVENT,
     COMMAND_ON_RECEIVE_EVENT,
     // ipc id 2001-3000 for tools

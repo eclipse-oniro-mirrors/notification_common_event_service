@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -498,4 +498,18 @@ HWTEST_F(CommonEventTest, SetStaticSubscriberState_0100, Function | SmallTest | 
     CommonEvent commonEvent;
     int32_t result = commonEvent.SetStaticSubscriberState(true);
     EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP, result);
+}
+
+/*
+ * @tc.number: SetStaticSubscriberStateWithTwoParameters_0100
+ * @tc.name: verify SetStaticSubscriberState
+ * @tc.desc: Failed to call SetStaticSubscriberState API to obtain proxy
+ */
+HWTEST_F(CommonEventTest, SetStaticSubscriberStateWithTwoParameters_0100, Function | SmallTest | Level1)
+{
+    CommonEvent commonEvent;
+    std::vector<std::string> events;
+    events.push_back("StaticCommonEventA");
+    int32_t result = commonEvent.SetStaticSubscriberState(events, true);
+    EXPECT_EQ(result, OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 #define protected public
 #include "common_event_manager_service.h"
 
+#include "ces_inner_error_code.h"
 #include "common_event.h"
 #include "common_event_death_recipient.h"
 #include "common_event_stub.h"
@@ -284,4 +285,18 @@ HWTEST_F(CommonEventManagerServiceTest, UnfreezeAll_001, Level1)
 
     innerCommonEventManager->UnfreezeAll();
     GTEST_LOG_(INFO) << "UnfreezeAll_001 end";
+}
+
+/**
+ * @tc.name: SetStaticSubscriberStateWithTwoParameters_0100
+ * @tc.desc: Test the SetStaticSubscriberState function, test whether it is a system application.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventManagerServiceTest, SetStaticSubscriberStateWithTwoParameters_0100, Level1)
+{
+    CommonEventManagerService commonEventManagerService;
+    std::vector<std::string> events;
+    events.push_back("StaticCommonEventA");
+    int32_t result = commonEventManagerService.SetStaticSubscriberState(events, true);
+    EXPECT_EQ(result, OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP);
 }

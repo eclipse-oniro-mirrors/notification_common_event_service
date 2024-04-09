@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -129,7 +129,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0100, Function | Mediu
     string expectEventName = "usual.event.TIME_TICK";
     std::set<std::string> events;
     events.insert(expectEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -617,7 +617,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1600, Function | Mediu
     std::set<std::string> events;
     events.insert(expectEventName0);
     events.insert(expectEventName1);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -682,7 +682,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1700, Function | Mediu
     string expectEventName1 = "usual.event.TIME_TICK1";
     std::set<std::string> events;
     events.insert(expectEventName1);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -787,7 +787,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1900, Function | Mediu
     string expectEventName0 = "usual.event.TIME_TICK0";
     std::set<std::string> events;
     events.insert(expectEventName0);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -841,7 +841,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2000, Function | Mediu
     string expectEventName0 = "usual.event.TIME_TICK0";
     std::set<std::string> events;
     events.insert(expectEventName0);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
@@ -1297,7 +1297,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0100, Functio
     std::string bundleName = "com.ohos.systemui";
     std::set<std::string> events;
     events.insert(testEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1334,7 +1334,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0200, Functio
     std::string bundleName = "com.ohos.systemui";
     std::set<std::string> events;
     events.insert(testEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1408,7 +1408,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0500, Functio
     std::string bundleName = "com.ohos.systemui";
     std::set<std::string> events;
     events.insert(testEventName0);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1440,7 +1440,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0600, Functio
     std::string bundleName = "com.ohos.systemui";
     std::set<std::string> events;
     events.insert(testEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1472,7 +1472,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0700, Functio
     std::string bundleName = "com.ohos.systemui";
     std::set<std::string> events;
     events.insert(testEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
@@ -1560,7 +1560,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0200, Function | 
     std::string testEventName = "usual.event.TIME_TICK";
     std::set<std::string> events;
     events.insert(testEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->UpdateSubscriber(testEventData);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1611,7 +1611,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, Function | 
     std::string testEventName = "usual.event.TIME_TICK";
     std::set<std::string> events;
     events.insert(testEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->UpdateSubscriber(testEventData);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1782,7 +1782,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0100, Function | Med
     string expectEventName = "usual.event.TIME_TICK";
     std::set<std::string> events;
     events.insert(expectEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(info0.bundleName, subscribers);
     manager->AddSubscriber(info0);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1859,7 +1859,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0400, Function | Med
     string expectEventName = "usual.event.TIME_TICK";
     std::set<std::string> events;
     events.insert(expectEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(info0.bundleName, subscribers);
     manager->AddSubscriber(info0);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1890,7 +1890,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0100, 
     std::string testEventName = "usual.event.TIME_TICK";
     std::set<std::string> events;
     events.insert(testEventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->AddSubscriberWithBundleName(testBundleName, testUserId);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1990,7 +1990,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0500, 
     string expectEventName = "usual.event.TIME_TICK";
     std::set<std::string> events;
     events.insert(expectEventName);
-    StaticSubscriber subscriber = { .events = events, .enable = true };
+    StaticSubscriber subscriber = { .events = events };
     manager->staticSubscribers_.emplace(testBundleName, subscriber);
     manager->AddSubscriberWithBundleName(testBundleName, testUserId);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -2203,8 +2203,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0200, Function 
         .name = "StaticSubscriber",
         .bundleName = "com.ohos.systemui",
         .userId = 100,
-        .permission = "permission1",
-        .enable = true
+        .permission = "permission1"
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
@@ -2808,7 +2807,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1400, Function 
     // set staticSubscribers_ value
     std::set<std::string> events;
     events.insert(eventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     // expect time_tick and add event both have subscriber
@@ -2878,7 +2877,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1500, Function 
     // set staticSubscribers_ value
     std::set<std::string> events;
     events.insert(eventName);
-    StaticSubscriber subscribers = { .events = events, .enable = true };
+    StaticSubscriber subscribers = { .events = events };
     manager->staticSubscribers_.emplace(testBundleName, subscribers);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     // expect time_tick and add event both have subscriber
@@ -3261,6 +3260,65 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2200, Function 
 }
 
 /*
+ * @tc.name: PublishCommonEventTest_2300
+ * @tc.desc: test if StaticSubscriberManager's PublishCommonEvent function executed as expected
+ *           test function isDisableEvent returns a value of false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2300, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    // mock that allowlist has already inited
+    manager->hasInitAllowList_ = true;
+    // mock that valid subscribers has already inited
+    manager->hasInitValidSubscribers_ = true;
+    std::string eventName = "usual.event.TIME_TICK";
+    StaticSubscriberManager::StaticSubscriberInfo testInfo = {
+        .name = "StaticSubscriber",
+        .bundleName = "com.ohos.systemui",
+        .userId = 100,
+        .permission = "permission1",
+    };
+    std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
+    info0.emplace_back(testInfo);
+    manager->validSubscribers_.insert(make_pair(eventName, info0));
+    // construct common event data
+    Want testWant;
+    std::string testNormalEventName = "usual.event.TIME_TICK";
+    testWant.SetAction(testNormalEventName);
+    std::string testBundleName = "com.ohos.systemui";
+    std::string testAbilityName = "StaticSubscriber";
+    testWant.SetElementName(testBundleName, testAbilityName);
+    CommonEventData testEventData;
+    testEventData.SetWant(testWant);
+    // construct common event publish info,mock that publishinfo's bundlename is the same with subscriber
+    // and permission verify successfully.
+    CommonEventPublishInfo testPublishInfo;
+    testPublishInfo.SetBundleName(testBundleName);
+    // construct other params, not important
+    Security::AccessToken::AccessTokenID testCallerToken = 100;
+    int32_t testUserId = 100;
+    sptr<IRemoteObject> service = nullptr;
+    std::string bundleName = "com.ohos.systemui";
+    // mock that QueryExtensionInfos success
+    MockQueryExtensionInfos(true, 1);
+    // mock that GetResConfigFile success
+    MockGetResConfigFile(true, 1);
+    // mock that all VerifyAccessToken operation success
+    MockVerifyAccessToken(true);
+    // mock that GetOsAccountLocalIdFromUid success
+    MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
+    manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    // expect that targer event has two subscribers
+    auto subscribers = manager->validSubscribers_[testNormalEventName];
+    EXPECT_EQ(1, subscribers.size());
+    EXPECT_TRUE(IsConnectAbilityCalled());
+    ResetAbilityManagerHelperState();
+}
+
+/*
  * @tc.name: SetStaticSubscriberState_0100
  * @tc.desc: Test SetStaticSubscriberState function.
  * @tc.type: FUNC
@@ -3273,6 +3331,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, Functio
         << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
+    StaticSubscriber subscriber;
+    subscriber.events.emplace("event1");
+    manager->staticSubscribers_.emplace("testBundleName", subscriber);
     SetBundleNameMock();
     auto ret = manager->SetStaticSubscriberState(true);
     EXPECT_EQ(0, ret);
@@ -3291,6 +3352,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, Functio
         << "StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, TestSize.Level1";
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
+    StaticSubscriber subscriber;
+    subscriber.events.emplace("event1");
+    manager->staticSubscribers_.emplace("testBundleName", subscriber);
     SetBundleNameMock();
     auto ret = manager->SetStaticSubscriberState(false);
     EXPECT_EQ(0, ret);
@@ -3310,7 +3374,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0300, Functio
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     auto ret = manager->SetStaticSubscriberState(true);
-    EXPECT_EQ(ERR_INVALID_VALUE, ret);
+    EXPECT_EQ(ERR_INVALID_OPERATION, ret);
 }
 
 /*
@@ -3327,5 +3391,197 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0400, Functio
     std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     auto ret = manager->SetStaticSubscriberState(false);
-    EXPECT_EQ(ERR_INVALID_VALUE, ret);
+    EXPECT_EQ(ERR_INVALID_OPERATION, ret);
+}
+
+/*
+ * @tc.name: SetStaticSubscriberStateWithTwoParameters_0100
+ * @tc.desc: Test SetStaticSubscriberState function to get bundlename successfully.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberStateWithTwoParameters_0100, Function | SmallTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    manager->disableEvents_.emplace("testBundleName", events);
+    SetBundleNameMock();
+    auto ret = manager->SetStaticSubscriberState(events, true);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: SetStaticSubscriberStateWithTwoParameters_0200
+ * @tc.desc: Failed to test SetStaticSubscriberState function to get bundlename.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberStateWithTwoParameters_0200, Function | SmallTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    auto ret = manager->SetStaticSubscriberState(events, true);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: UpdateDisableEvents_0100
+ * @tc.desc: Test the UpdateDisableEvents function, disableEvents_ is empty and enable is true.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0100, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bunaleName = "testBundleName";
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    bool enable = true;
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: UpdateDisableEvents_0200
+ * @tc.desc: Test the UpdateDisableEvents function, disableEvents_ is empty and add event.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0200, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bunaleName = "testBundleName";
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    bool enable = false;
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: UpdateDisableEvents_0300
+ * @tc.desc: Test the UpdateDisableEvents function, disableEvents_ is not empty and delete event.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0300, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bunaleName = "testBundleName";
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    bool enable = true;
+    manager->disableEvents_.emplace(bunaleName, events);
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: UpdateDisableEvents_0400
+ * @tc.desc: Test the UpdateDisableEvents function, disableEvents_ is not empty and delete events.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0400, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bunaleName = "testBundleName";
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    events.emplace_back("event2");
+    bool enable = true;
+    manager->disableEvents_.emplace(bunaleName, events);
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: UpdateDisableEvents_0500
+ * @tc.desc: Test the UpdateDisableEvents function, the events of disableEvents_ is empty and add events.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0500, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bunaleName = "testBundleName";
+    std::vector<std::string> events;
+    std::vector<std::string> events1;
+    events.emplace_back("event1");
+    bool enable = false;
+    manager->disableEvents_.emplace(bunaleName, events1);
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    EXPECT_EQ(0, ret);
+}
+
+/*
+ * @tc.name: RemoveSubscriberWithBundleName_0100
+ * @tc.desc: Test the RemoveSubscriberWithBundleName function, delete events disableEvents_ through bundlename,
+ *           there is no bundlename.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleName_0100, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bundleName = "testBundleName";
+    int32_t userId = 1000;
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    manager->disableEvents_.emplace(bundleName, events);
+    manager->RemoveSubscriberWithBundleName(bundleName, userId);
+    EXPECT_EQ(manager->disableEvents_.end(), manager->disableEvents_.find(bundleName));
+}
+
+/*
+ * @tc.name: RemoveSubscriberWithBundleName_0200
+ * @tc.desc: Test the RemoveSubscriberWithBundleName function, delete events disableEvents_ through bundlename,
+ *           there is no bundlename.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleName_0200, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bundleName = "testBundleName";
+    int32_t userId = 1000;
+    std::vector<std::string> events;
+    events.emplace_back("event1");
+    manager->RemoveSubscriberWithBundleName(bundleName, userId);
+    EXPECT_EQ(manager->disableEvents_.end(), manager->disableEvents_.find(bundleName));
+}
+
+/*
+ * @tc.name: IsDisableEvent_0100
+ * @tc.desc: Test the isDisableEvent function, bundlename with input parameters in disableEvents_.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, IsDisableEvent_0100, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bundleName = "testBundleName";
+    std::string event = "event1";
+    std::vector<std::string> events;
+    events.emplace_back(event);
+    manager->disableEvents_.emplace(bundleName, events);
+    auto ret = manager->IsDisableEvent(bundleName, event);
+    EXPECT_EQ(true, ret);
+}
+
+/*
+ * @tc.name: IsDisableEvent_0200
+ * @tc.desc: Test the isDisableEvent function, bundlename with no parameters passed in the disableEvents_.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, IsDisableEvent_0200, Function | MediumTest | Level1)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string bundleName = "testBundleName";
+    std::string event = "event1";
+    auto ret = manager->IsDisableEvent(bundleName, event);
+    EXPECT_EQ(false, ret);
 }

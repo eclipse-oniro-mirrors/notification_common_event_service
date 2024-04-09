@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -371,7 +371,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1800, Level1)
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, comm->SetStaticSubscriberState(true));
+    EXPECT_EQ(OHOS::ERR_INVALID_OPERATION, comm->SetStaticSubscriberState(true));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1800 end";
 }
 }

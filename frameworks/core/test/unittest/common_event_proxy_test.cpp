@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -361,4 +361,20 @@ HWTEST_F(CommonEventProxyTest, SetStaticSubscriberState_001, TestSize.Level1)
     CommonEventProxy commonEventProxy(object);
     int32_t result = commonEventProxy.SetStaticSubscriberState(true);
     EXPECT_EQ(OHOS::ERR_OK, result);
+}
+
+/*
+ * tc.number: SetStaticSubscriberStateWithTwoParameters_0100
+ * tc.name: test SetStaticSubscriberState
+ * tc.type: FUNC
+ * tc.desc: Successful verification by calling SetStaticSubscriberState API.
+ */
+HWTEST_F(CommonEventProxyTest, SetStaticSubscriberStateWithTwoParameters_0100, TestSize.Level1)
+{
+    auto object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    std::vector<std::string> events;
+    events.push_back("StaticCommonEventA");
+    int32_t result = commonEventProxy.SetStaticSubscriberState(events, true);
+    EXPECT_EQ(result, OHOS::ERR_OK);
 }

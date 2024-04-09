@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -239,6 +239,7 @@ ohos_unittest("static_subscriber_manager_unit_test") {
   deps = [
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 
@@ -255,6 +256,31 @@ ohos_unittest("static_subscriber_manager_unit_test") {
     "hilog:libhilog",
     "hitrace:hitrace_meter",
     "ipc:ipc_core",
+    "kv_store:distributeddata_inner",
+  ]
+}
+
+ohos_unittest("static_subscriber_data_manager_unit_test") {
+  module_out_path = module_output_path
+
+  include_dirs = [
+    "${ces_innerkits_path}",
+    "${services_path}/include",
+    "//third_party/json/include/nlohmann",
+  ]
+
+  sources = [
+    "${services_path}/src/static_subscriber_data_manager.cpp",
+    "static_subscriber_data_manager_unit_test/static_subscriber_data_manager_unit_test.cpp",
+  ]
+
+  deps = [
+    "${ces_native_path}:cesfwk_innerkits",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "hilog:libhilog",
     "kv_store:distributeddata_inner",
   ]
 }
@@ -976,6 +1002,7 @@ group("unittest") {
     ":inner_common_event_manager_test",
     ":ordered_event_handler_test",
     ":static_subscriber_connection_unit_test",
+    ":static_subscriber_data_manager_unit_test",
     ":static_subscriber_manager_unit_test",
     ":subscriber_deach_recipient_test",
   ]

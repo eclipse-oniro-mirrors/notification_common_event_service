@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,8 @@
 #include "napi_common_event.h"
 #include "event_log_wrapper.h"
 #include "ces_inner_error_code.h"
+#include "napi_common_util.h"
+
 namespace OHOS {
 namespace EventManagerFwkNapi {
 using namespace OHOS::EventFwk;
@@ -441,40 +443,82 @@ void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info,
     }
 }
 
+bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info info, std::vector<std::string> &events,
+    bool &fromBundle, napi_value &lastParam)
+{
+    EVENT_LOGD("Called.");
+    napi_value thisVar = nullptr;
+    size_t argc = ARGC_TWO;
+    napi_value argv[ARGC_TWO] = { nullptr };
+    NAPI_CALL_BASE(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL), false);
+    if (argc == ARGC_ONE) {
+        return true;
+    }
+    napi_valuetype valueType = napi_undefined;
+    NAPI_CALL_BASE(env, napi_typeof(env, argv[INDEX_ONE], &valueType), false);
+    if (valueType == napi_function) {
+        lastParam = argv[INDEX_ONE];
+        return true;
+    }
+    fromBundle = true;
+    uint32_t arraySize = 0;
+    NAPI_CALL_BASE(env, napi_get_array_length(env, argv[INDEX_ONE], &arraySize), false);
+    napi_value jsValue = nullptr;
+    for (uint32_t index = 0; index < arraySize; index++) {
+        if (napi_get_element(env, argv[INDEX_ONE], index, &jsValue) != napi_ok) {
+            EVENT_LOGE("Get element failed.");
+            return false;
+        }
+        std::string event;
+        if (!AppExecFwk::UnwrapStringFromJS2(env, jsValue, event)) {
+            EVENT_LOGE("Failed to convert value to string.");
+            return false;
+        }
+        events.push_back(event);
+    }
+    return true;
+}
+
 napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const napi_callback_info info)
 {
-    EVENT_LOGD("called");
-
+    EVENT_LOGD("Called.");
+    napi_value argv[ARGC_TWO] = { nullptr };
+    napi_value result = nullptr;
     size_t argc = ARGC_TWO;
-    napi_value argv[ARGC_TWO] = {nullptr};
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
     if (argc < ARGC_ONE) {
         EVENT_LOGE("The param is invalid.");
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
-        napi_value undefined = nullptr;
-        napi_get_undefined(env, &undefined);
-        return undefined;
+        napi_get_undefined(env, &result);
+        return result;
     }
-
     napi_valuetype valueType = napi_undefined;
     NAPI_CALL(env, napi_typeof(env, argv[INDEX_ZERO], &valueType));
     if (valueType != napi_boolean) {
-        EVENT_LOGE("Parse type failed");
+        EVENT_LOGE("Parse type failed.");
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
-        napi_value undefined = nullptr;
-        napi_get_undefined(env, &undefined);
-        return undefined;
+        napi_get_undefined(env, &result);
+        return result;
     }
     bool enable;
     NAPI_CALL(env, napi_get_value_bool(env, argv[INDEX_ZERO], &enable));
-
-    auto complete = [enable](napi_env env, AbilityRuntime::NapiAsyncTask &task, int32_t status) {
-        auto ret = CommonEventManager::SetStaticSubscriberState(enable);
+    napi_value lastParam = nullptr;
+    std::vector<std::string> events;
+    bool fromBundle = false;
+    if (!ParseSetStaticSubscriberStateParam(env, info, events, fromBundle, lastParam)) {
+        EVENT_LOGE("Parameter judgment error.");
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        napi_get_undefined(env, &result);
+        return result;
+    }
+    auto complete = [enable, events, fromBundle](napi_env env, AbilityRuntime::NapiAsyncTask &task, int32_t status) {
+        auto ret = fromBundle ? CommonEventManager::SetStaticSubscriberState(events, enable)
+                              : CommonEventManager::SetStaticSubscriberState(enable);
         if (ret == ERR_OK) {
-            napi_value undefined = nullptr;
-            napi_get_undefined(env, &undefined);
-            task.Resolve(env, undefined);
+            napi_value result = nullptr;
+            napi_get_undefined(env, &result);
+            task.Resolve(env, result);
         } else {
             if (ret != ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP && ret != ERR_NOTIFICATION_SEND_ERROR) {
                 ret = ERR_NOTIFICATION_CESM_ERROR;
@@ -482,20 +526,9 @@ napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const n
             task.Reject(env, AbilityRuntime::CreateJsError(env, ret, "SetStaticSubscriberState failed"));
         }
     };
-
-    napi_value callback = nullptr;
-    if (argc > ARGC_ONE) {
-        napi_valuetype callbackValueType = napi_undefined;
-        NAPI_CALL(env, napi_typeof(env, argv[INDEX_ONE], &callbackValueType));
-        if (callbackValueType == napi_function) {
-            callback = argv[INDEX_ONE];
-        }
-    }
-    napi_value result = nullptr;
     AbilityRuntime::NapiAsyncTask::Schedule("NapiStaticSubscribe::OnSetStaticSubscriberState", env,
-        AbilityRuntime::CreateAsyncTaskWithLastParam(env, callback, nullptr, std::move(complete), &result));
+        AbilityRuntime::CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
     return result;
 }
-
 }
 }
