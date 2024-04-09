@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,24 +57,31 @@ public:
      */
     int32_t SetStaticSubscriberState(bool enable);
 
+    /**
+     * Set static subscriber state.
+     *
+     * @param events Static subscriber event name.
+     * @param enable Static subscriber state.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable);
+
 private:
     struct StaticSubscriberInfo {
         std::string name;
         std::string bundleName;
         int32_t userId = -1;
         std::string permission;
-        bool enable = true;
 
         bool operator==(const StaticSubscriberInfo &that) const
         {
             return (name == that.name) && (bundleName == that.bundleName) && (userId == that.userId) &&
-                (permission == that.permission) && (enable == that.enable);
+                (permission == that.permission);
         }
     };
 
     struct StaticSubscriber {
         std::set<std::string> events;
-        bool enable;
     };
 
     bool InitAllowList();
@@ -82,7 +89,7 @@ private:
     void UpdateSubscriber(const CommonEventData &data);
     void ParseEvents(const std::string &extensionName, const std::string &extensionBundleName,
         const int32_t &extensionUid, const std::string &profile, bool enable = true);
-    void AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension, bool enable = true);
+    void AddSubscriber(const AppExecFwk::ExtensionAbilityInfo &extension);
     void AddToValidSubscribers(const std::string &eventName, const StaticSubscriberInfo &extension);
     void AddSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId);
     void RemoveSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId);
@@ -92,11 +99,13 @@ private:
         const std::string &permission);
     void SendStaticEventProcErrHiSysEvent(int32_t userId, const std::string &publisherName,
         const std::string &subscriberName, const std::string &eventName);
-    void InitDisableStaticSubscribersStates(
-        const std::set<std::string> &disableStaticSubscribeAllData, const std::string &bundleName);
+    bool IsDisableEvent(const std::string &bundleName, const std::string &event);
+    int32_t UpdateDisableEvents(const std::string &bundleName, const std::vector<std::string> &events, bool enable);
 
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
     std::map<std::string, StaticSubscriber> staticSubscribers_;
+    // key is bundle, value is eventNames
+    std::map<std::string, std::vector<std::string>> disableEvents_;
     bool hasInitAllowList_ = false;
     bool hasInitValidSubscribers_ = false;
     std::mutex subscriberMutex_;

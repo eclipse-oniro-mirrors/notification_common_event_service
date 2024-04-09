@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,9 @@ namespace OHOS {
 namespace EventFwk {
 using namespace OHOS::AppExecFwk;
 using namespace OHOS::Notification;
-
+namespace {
+constexpr int32_t VECTOR_MAX_SIZE = 1000;
+}
 CommonEventProxy::CommonEventProxy(const sptr<IRemoteObject> &object) : IRemoteProxy<ICommonEvent>(object)
 {
     EVENT_LOGD("CommonEventProxy instance created");
@@ -480,6 +482,39 @@ int32_t CommonEventProxy::SetStaticSubscriberState(bool enable)
     }
 
     EVENT_LOGD("end");
+    return reply.ReadInt32();
+}
+
+int32_t CommonEventProxy::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
+{
+    EVENT_LOGD("Called.");
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write interface token.");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    if (events.size() > VECTOR_MAX_SIZE) {
+        EVENT_LOGE("Events size exceeds the max size.");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    if (!data.WriteStringVector(events)) {
+        EVENT_LOGE("Failed to write event.");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    if (!data.WriteBool(enable)) {
+        EVENT_LOGE("Failed to write enable.");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    MessageParcel reply;
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_SET_STATIC_SUBSCRIBER_EVENTS_STATE, data, reply);
+    if (!ret) {
+        return ERR_NOTIFICATION_SEND_ERROR;
+    }
+
     return reply.ReadInt32();
 }
 

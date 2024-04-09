@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -184,6 +184,15 @@ public:
      *
      */
     void Resubscribe();
+
+    /**
+     * Set static subscriber state.
+     *
+     * @param events Static subscriber event name.
+     * @param enable Static subscriber state.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable);
 
 private:
     /**

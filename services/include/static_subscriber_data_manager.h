@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,15 +31,18 @@ public:
 
     virtual ~StaticSubscriberDataManager();
 
-    int32_t InsertDisableStaticSubscribeData(const std::string &bundleName);
+    int32_t UpdateStaticSubscriberState(const std::map<std::string, std::vector<std::string>> &disableEvents);
 
-    int32_t DeleteDisableStaticSubscribeData(const std::string &bundleName);
+    int32_t QueryStaticSubscriberStateData(
+        std::map<std::string, std::vector<std::string>> &disableEvents, std::set<std::string> &bundleList);
 
-    int32_t QueryDisableStaticSubscribeAllData(std::set<std::string> &disableStaticSubscribeAllData);
+    int32_t DeleteDisableEventElementByBundleName(const std::string &bundleName);
 
 private:
     DistributedKv::Status GetKvStore();
     bool CheckKvStore();
+    DistributedKv::Value ConvertEventsToValue(const std::vector<std::string> &events);
+    bool ConvertValueToEvents(const DistributedKv::Value &value, std::vector<std::string> &events);
 
     const DistributedKv::AppId appId_ { "static_subscriber_storage" };
     const DistributedKv::StoreId storeId_ { "static_subscriber_infos" };

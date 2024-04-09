@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -445,4 +445,21 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_2100, Level1)
     std::string result = "";
     innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_2100 end";
+}
+
+/**
+ * @tc.name: SetStaticSubscriberStateWithTwoParameters_0100
+ * @tc.desc: Failed to call SetStaticSubscriberState API to obtain commonEventproxy.
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, SetStaticSubscriberStateWithTwoParameters_0100, Level1)
+{
+    auto innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
+    ASSERT_NE(nullptr, innerCommonEventManager);
+    innerCommonEventManager->staticSubscriberManager_ = nullptr;
+    std::vector<std::string> events;
+    events.push_back("StaticCommonEventA");
+    const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
+    int32_t result = innerCommonEventManager->SetStaticSubscriberState(events, true);
+    EXPECT_EQ(result, ERR_NOTIFICATION_CESM_ERROR);
 }
