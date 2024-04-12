@@ -53,6 +53,10 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
         sThis->OnReceiveEvent(commonEventData, ordered, sticky);
     };
 
+    if (handler_) {
+        handler_->PostTask(onReceiveEventFunc, "CommonEvent" + commonEventData.GetWant().GetAction());
+    }
+
     if (listenerQueue_) {
         static_cast<ffrt::queue*>(listenerQueue_)->submit(onReceiveEventFunc);
     }
@@ -68,10 +72,27 @@ ErrCode CommonEventListener::Init()
     }
     auto threadMode = commonEventSubscriber_->GetSubscribeInfo().GetThreadMode();
     EVENT_LOGD("thread mode: %{public}d", threadMode);
-    InitListenerQueue();
-    if (listenerQueue_ == nullptr) {
-        EVENT_LOGE("Failed to init due to create ffrt queue error");
-        return ERR_INVALID_OPERATION;
+    if (threadMode == CommonEventSubscribeInfo::HANDLER) {
+        if (!runner_) {
+            runner_ = EventRunner::GetMainEventRunner();
+            if (!runner_) {
+                EVENT_LOGE("Failed to init due to create runner error");
+                return ERR_INVALID_OPERATION;
+            }
+        }
+        if (!handler_) {
+            handler_ = std::make_shared<EventHandler>(runner_);
+            if (!handler_) {
+                EVENT_LOGE("Failed to init due to create handler error");
+                return ERR_INVALID_OPERATION;
+            }
+        }
+    } else {
+        InitListenerQueue();
+        if (listenerQueue_ == nullptr) {
+            EVENT_LOGE("Failed to init due to create ffrt queue error");
+            return ERR_INVALID_OPERATION;
+        }
     }
     return ERR_OK;
 }
@@ -89,7 +110,7 @@ void CommonEventListener::InitListenerQueue()
 {
     if (listenerQueue_ == nullptr) {
         ffrtIndex.fetch_add(1);
-        std::string id = "cse_queue_" + std::to_string(ffrtIndex.load());
+        std::string id = "ces_queue_" + std::to_string(ffrtIndex.load());
         listenerQueue_ = static_cast<void*>(new ffrt::queue(id.c_str()));
     }
     return;
@@ -97,7 +118,7 @@ void CommonEventListener::InitListenerQueue()
 
 bool CommonEventListener::IsReady()
 {
-    if (listenerQueue_ == nullptr) {
+    if (!listenerQueue_ && !handler_) {
         EVENT_LOGE("ffrt queue is not ready");
         return false;
     }
