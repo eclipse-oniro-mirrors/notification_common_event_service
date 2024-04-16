@@ -131,7 +131,6 @@ ohos_shared_library("static_subscriber_extension_module") {
   branch_protector_ret = "pac_ret"
 
   include_dirs = [
-    "${ability_runtime_path}/interfaces/inner_api/ability_manager/include",
     "${ability_runtime_path}/interfaces/kits/native/ability/native",
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
@@ -149,6 +148,7 @@ ohos_shared_library("static_subscriber_extension_module") {
   external_deps = [
     "ability_base:configuration",
     "ability_base:session_info",
+    "ability_runtime:ability_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
