@@ -119,7 +119,7 @@ bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const Commo
     return true;
 }
 
-int32_t CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
+__attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGD("enter");

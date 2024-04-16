@@ -1,2 +1,0 @@
-src:*commonlibrary/c_utils/base/*
-src:*refbase.h
