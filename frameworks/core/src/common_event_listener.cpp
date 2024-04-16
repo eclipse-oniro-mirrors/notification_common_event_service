@@ -62,7 +62,7 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
     }
 }
 
-ErrCode CommonEventListener::Init()
+__attribute__((no_sanitize("cfi"))) ErrCode CommonEventListener::Init()
 {
     EVENT_LOGD("ready to init");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -125,7 +125,7 @@ bool CommonEventListener::IsReady()
     return true;
 }
 
-void CommonEventListener::OnReceiveEvent(
+__attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
