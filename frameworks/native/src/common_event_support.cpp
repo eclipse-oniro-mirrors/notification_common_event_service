@@ -763,6 +763,19 @@ const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSINK_AUDIO_STAT
     "usual.event.bluetooth.a2dpsink.AUDIO_STATE_UPDATE";
 
 /**
+ * Indicates the status of the Bluetooth device connect status has been changed.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CONNECT_STATUS_VALUE =
+    "usual.event.bluetooth.remotedevice.CONNECT_STATUS_VALUE";
+
+
+/**
+ *  Indicates the status of the Bluetooth device battery value has been changed.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE =
+    "usual.event.bluetooth.remotedevice.BATTERY_VALUE";
+
+/**
  * Indicates the action of a common event that the state of the device NFC adapter has changed.
  * This is a protected common event, which can be sent only by the system.
  */
@@ -1717,6 +1730,10 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSINK_PLAYING_STATE_UPDATE);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSINK_AUDIO_STATE_UPDATE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CONNECT_STATUS_VALUE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_ADDED);
 
