@@ -405,7 +405,7 @@ bool CommonEvent::Reconnect()
     return false;
 }
 
-void CommonEvent::Resubscribe()
+__attribute__((no_sanitize("cfi"))) void CommonEvent::Resubscribe()
 {
     EVENT_LOGD("enter");
     if (commonEventProxy_ != nullptr) {
