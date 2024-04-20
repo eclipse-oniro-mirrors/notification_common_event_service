@@ -28,14 +28,12 @@ void CommonEventDeathRecipient::SubscribeSAManager()
     statusChangeListener_ = new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
     if (samgrProxy == nullptr || statusChangeListener_ == nullptr) {
         EVENT_LOGI("GetSystemAbilityManager failed or new SystemAbilityStatusChangeListener failed");
-        delete statusChangeListener_;
         statusChangeListener_ = nullptr;
         return;
     }
     int32_t ret = samgrProxy->SubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, statusChangeListener_);
     if (ret != ERR_OK) {
         EVENT_LOGI("SubscribeSystemAbility to sa manager failed");
-        delete statusChangeListener_;
         statusChangeListener_ = nullptr;
     }
 }
