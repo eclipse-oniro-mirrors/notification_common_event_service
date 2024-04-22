@@ -425,7 +425,8 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
 
 napi_value CommonEventSubscriberInit(napi_env env, napi_value exports);
 
-napi_value ParseParametersConstructor(const napi_env &env, const napi_callback_info &info, napi_value &thisVar, CommonEventSubscribeInfo &params);
+napi_value ParseParametersConstructor(const napi_env &env, const napi_callback_info &info, napi_value &thisVar,
+    CommonEventSubscribeInfo &params);
 
 napi_value CommonEventInit(napi_env env, napi_value exports);
 }  // namespace EventFwkNapi

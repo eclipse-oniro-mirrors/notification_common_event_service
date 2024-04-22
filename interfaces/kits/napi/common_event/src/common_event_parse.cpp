@@ -40,6 +40,7 @@ static const int32_t CLEAR_ABORT_MAX_PARA = 1;
 static const int32_t GET_ABORT_MAX_PARA = 1;
 static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
+static const int32_t COMMON_EVENT_PUBLISH_PARAM = 2;
 
 napi_value NapiGetNull(napi_env env)
 {
@@ -912,38 +913,41 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
 
     // argv[2]: CommonEventPublishData
     if (argc == PUBLISH_MAX_PARA_BY_USERID) {
-        NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
+        NAPI_CALL(env, napi_typeof(env, argv[COMMON_EVENT_PUBLISH_PARAM], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
             return nullptr;
         }
 
         // argv[2]: CommonEventPublishData:bundlename
-        if (GetBundlenameByPublish(env, argv[2], commonEventPublishData.bundleName) == nullptr) {
+        if (GetBundlenameByPublish(env, argv[COMMON_EVENT_PUBLISH_PARAM], commonEventPublishData.bundleName)
+            == nullptr) {
             return nullptr;
         }
         // argv[2]: CommonEventPublishData:data
-        if (GetDataByPublish(env, argv[2], commonEventPublishData.data) == nullptr) {
+        if (GetDataByPublish(env, argv[COMMON_EVENT_PUBLISH_PARAM], commonEventPublishData.data) == nullptr) {
             return nullptr;
         }
         // argv[2]: CommonEventPublishData:code
-        if (GetCodeByPublish(env, argv[2], commonEventPublishData.code) == nullptr) {
+        if (GetCodeByPublish(env, argv[COMMON_EVENT_PUBLISH_PARAM], commonEventPublishData.code) == nullptr) {
             return nullptr;
         }
         // argv[2]: CommonEventPublishData:permissions
-        if (GetSubscriberPermissionsByPublish(env, argv[2], commonEventPublishData.subscriberPermissions) == nullptr) {
+        if (GetSubscriberPermissionsByPublish(env, argv[COMMON_EVENT_PUBLISH_PARAM],
+            commonEventPublishData.subscriberPermissions) == nullptr) {
             return nullptr;
         }
         // argv[2]: CommonEventPublishData:isOrdered
-        if (GetIsOrderedByPublish(env, argv[2], commonEventPublishData.isOrdered) == nullptr) {
+        if (GetIsOrderedByPublish(env, argv[COMMON_EVENT_PUBLISH_PARAM], commonEventPublishData.isOrdered) == nullptr) {
             return nullptr;
         }
         // argv[2]: CommonEventPublishData:isSticky
-        if (GetIsStickyByPublish(env, argv[2], commonEventPublishData.isSticky) == nullptr) {
+        if (GetIsStickyByPublish(env, argv[COMMON_EVENT_PUBLISH_PARAM], commonEventPublishData.isSticky) == nullptr) {
             return nullptr;
         }
         // argv[2]: CommonEventPublishData:parameters
-        if (GetParametersByPublish(env, argv[2], commonEventPublishData.wantParams) == nullptr) {
+        if (GetParametersByPublish(env, argv[COMMON_EVENT_PUBLISH_PARAM], commonEventPublishData.wantParams)
+            == nullptr) {
             return nullptr;
         }
     }
@@ -957,12 +961,12 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
         }
         napi_create_reference(env, argv[PUBLISH_MAX_PARA_AS_USER], 1, &callback);
     } else {
-        NAPI_CALL(env, napi_typeof(env, argv[2], &valuetype));
+        NAPI_CALL(env, napi_typeof(env, argv[COMMON_EVENT_PUBLISH_PARAM], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
             return nullptr;
         }
-        napi_create_reference(env, argv[2], 1, &callback);
+        napi_create_reference(env, argv[COMMON_EVENT_PUBLISH_PARAM], 1, &callback);
     }
 
     return NapiGetNull(env);

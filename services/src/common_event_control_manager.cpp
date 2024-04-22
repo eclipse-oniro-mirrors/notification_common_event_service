@@ -32,6 +32,7 @@ namespace EventFwk {
 constexpr int32_t LENGTH = 80;
 constexpr int32_t DOUBLE = 2;
 const std::string CONNECTOR = " or ";
+static const int32_t TIME_UNIT_SIZE = 1000;
 
 CommonEventControlManager::CommonEventControlManager()
     : handler_(nullptr), handlerOrdered_(nullptr), pendingTimeoutMessage_(false), scheduled_(false)
@@ -621,7 +622,7 @@ bool CommonEventControlManager::SetTimeout()
                 return;
             }
             manager->CurrentOrderedEventTimeout(true);
-        }, ffrt::task_attr().delay(TIMEOUT * 1000));
+        }, ffrt::task_attr().delay(TIMEOUT * TIME_UNIT_SIZE));
     }
 
     return ret;
