@@ -22,6 +22,7 @@
 #include "common_event_subscriber_manager.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
+#include "hisysevent.h"
 #include "hitrace_meter_adapter.h"
 #include "subscriber_death_recipient.h"
 
@@ -30,6 +31,7 @@ namespace EventFwk {
 constexpr int32_t LENGTH = 80;
 constexpr int32_t SIGNAL_KILL = 9;
 static constexpr int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
+static constexpr char CES_REGISTER_EXCEED_LIMIT[] = "Kill Reason: CES Register exceed limit";
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
     : death_(sptr<IRemoteObject::DeathRecipient>(new (std::nothrow) SubscriberDeathRecipient()))
@@ -266,20 +268,25 @@ bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
     if (CheckSubscriberCountReachedMaxinum()) {
         std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts = GetTopSubscriberCounts(1);
         pid_t killedPid = (*vtSubscriberCounts.begin()).first;
+        if (pid == killedPid) {
+            return false;
+        }
 
         AAFwk::ExitReason reason = { AAFwk::REASON_RESOURCE_CONTROL, "Kill Reason: CES Register exceed limit"};
         AAFwk::AbilityManagerClient::GetInstance()->RecordProcessExitReason(killedPid, reason);
 
-        int32_t killRes = kill(killedPid, SIGNAL_KILL);
-        if (killRes < 0) {
+        if (kill(killedPid, SIGNAL_KILL) < 0) {
             EVENT_LOGE("kill pid=%{public}d which has the most subscribers failed", killedPid);
         } else {
             EVENT_LOGI("kill pid=%{public}d which has the most subscribers successfully", killedPid);
         }
-
-        if (pid == killedPid) {
-            return false;
-        }
+        
+        int result = HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::FRAMEWORK, "PROCESS_KILL",
+            HiviewDFX::HiSysEvent::EventType::FAULT, "PID", killedPid, "PROCESS_NAME",
+            record->eventRecordInfo.bundleName, "MSG", CES_REGISTER_EXCEED_LIMIT);
+        EVENT_LOGE("hisysevent write result=%{public}d, send event [FRAMEWORK,PROCESS_KILL], pid=%{public}d,"
+            " bundleName=%{public}s, msg=%{public}s", result, killedPid, record->eventRecordInfo.bundleName.c_str(),
+            CES_REGISTER_EXCEED_LIMIT);
     }
 
     for (auto event : events) {
