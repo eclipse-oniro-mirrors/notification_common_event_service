@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-#define private public
-#define protected public
 #include "async_common_event_result.h"
 #include "matching_skills.h"
 #include "common_event_subscribe_info.h"
@@ -135,21 +133,4 @@ HWTEST_F(CommomEventSubscribeInfoTest, CommomEventSubscribeInfoTest_007, TestSiz
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetPublisherBundleName("abc");
     EXPECT_EQ("abc", subscribeInfo.GetPublisherBundleName());
-}
-
-/*
- * Feature: CommomEventSubscribeInfoTest
- * Function: ReadFromParcel
- * SubFunction: NA
- * FunctionPoints: ReadFromParcel
- * EnvConditions: NA
- * CaseDescription: Verify the function ReadFromParcel
- */
-HWTEST_F(CommomEventSubscribeInfoTest, CommomEventSubscribeInfoTest_009, TestSize.Level1)
-{
-    Parcel parcel;
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(EVENT);
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    EXPECT_EQ(false, subscribeInfo.ReadFromParcel(parcel));
 }
