@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <memory>
 #define private public
 #include "common_event.h"
 #include "common_event_data.h"
@@ -34,6 +35,19 @@ using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::AAFwk;
 using namespace OHOS::EventFwk;
+
+class DreivedSubscriber : public CommonEventSubscriber {
+public:
+    explicit DreivedSubscriber(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+    {}
+
+    ~DreivedSubscriber()
+    {}
+
+    virtual void OnReceiveEvent(const CommonEventData &data)
+    {}
+};
+
 
 class CommonEventTest : public testing::Test {
 public:
@@ -82,7 +96,7 @@ HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
     auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
     commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
     commonEvent.isProxyValid_ = true;
-    EXPECT_EQ(true, commonEvent.GetCommonEventProxy());
+    EXPECT_EQ(commonEvent.commonEventProxy_, commonEvent.GetCommonEventProxy());
 }
 
 /*
@@ -96,7 +110,7 @@ HWTEST_F(CommonEventTest, CommonEvent_003, TestSize.Level1)
     CommonEvent commonEvent;
     commonEvent.commonEventProxy_ = nullptr;
     commonEvent.isProxyValid_ = false;
-    EXPECT_EQ(false, commonEvent.GetCommonEventProxy());
+    EXPECT_EQ(nullptr, commonEvent.GetCommonEventProxy());
 }
 
 /*
@@ -111,7 +125,7 @@ HWTEST_F(CommonEventTest, CommonEvent_004, TestSize.Level1)
     auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
     commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
     commonEvent.isProxyValid_ = false;
-    EXPECT_EQ(false, commonEvent.GetCommonEventProxy());
+    EXPECT_EQ(nullptr, commonEvent.GetCommonEventProxy());
 }
 
 /*
@@ -125,7 +139,7 @@ HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
     CommonEvent commonEvent;
     commonEvent.commonEventProxy_ = nullptr;
     commonEvent.isProxyValid_ = true;
-    EXPECT_EQ(false, commonEvent.GetCommonEventProxy());
+    EXPECT_EQ(nullptr, commonEvent.GetCommonEventProxy());
 }
 
 /*
@@ -137,8 +151,9 @@ HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
 HWTEST_F(CommonEventTest, CommonEvent_006, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = true;
+    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
+    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
+    commonEvent.isProxyValid_ = false;
     EXPECT_EQ(false, commonEvent.UnfreezeAll());
 }
 
@@ -257,34 +272,33 @@ HWTEST_F(CommonEventTest, CommonEvent_013, TestSize.Level1)
 }
 
 /*
- * tc.number: CommonEvent_014
+ * tc.number: PublishParameterCheck_001
  * tc.name: PublishParameterCheck
  * tc.type: FUNC
  * tc.desc: test PublishParameterCheck function.
  */
-HWTEST_F(CommonEventTest, CommonEvent_014, TestSize.Level1)
+HWTEST_F(CommonEventTest, PublishParameterCheck_001, TestSize.Level1)
 {
     CommonEvent commonEvent;
     CommonEventData data;
     CommonEventPublishInfo publishInfo;
-    publishInfo.SetOrdered(true);
-    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    publishInfo.SetOrdered(false);
+    MatchingSkills matchingSkills_;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
     sptr<IRemoteObject> commonEventListener = nullptr;
     EXPECT_EQ(false, commonEvent.PublishParameterCheck(data, publishInfo, subscriber, commonEventListener));
 }
 
 /*
- * tc.number: CommonEvent_015
+ * tc.number: PublishParameterCheck_002
  * tc.name: PublishParameterCheck
  * tc.type: FUNC
  * tc.desc: test PublishParameterCheck function.
  */
-HWTEST_F(CommonEventTest, CommonEvent_015, TestSize.Level1)
+HWTEST_F(CommonEventTest, PublishParameterCheck_002, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent.isProxyValid_ = true;
     CommonEventData data;
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
