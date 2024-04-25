@@ -26,6 +26,7 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 constexpr int32_t DISCONNECT_DELAY_TIME = 15000; // ms
+constexpr int32_t TIME_UNIT_SIZE = 1000;
 }
 
 int AbilityManagerHelper::ConnectAbility(
@@ -115,7 +116,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
     std::function<void()> task = [connection]() {
         AbilityManagerHelper::GetInstance()->DisconnectAbility(connection);
     };
-    ffrt_->submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * 1000));
+    ffrt_->submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * TIME_UNIT_SIZE));
 }
 
 void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
