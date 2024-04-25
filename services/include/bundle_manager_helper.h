@@ -43,7 +43,7 @@ public:
      * @param uid Indicates the uid of the application.
      * @return Returns true if successful; false otherwise.
      */
-    bool CheckIsSystemAppByUid(uid_t uid);
+    bool CheckIsSystemAppByUid(const uid_t uid);
 
     bool CheckIsSystemAppByBundleName(const std::string &bundleName, const int32_t &userId);
 
@@ -53,7 +53,7 @@ public:
      * @param uid Indicates the uid of the application.
      * @return Returns the bundle name.
      */
-    std::string GetBundleName(uid_t uid);
+    std::string GetBundleName(const uid_t uid);
 
     /**
      * Queries extension information.
