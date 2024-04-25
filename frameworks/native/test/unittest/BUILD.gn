@@ -100,11 +100,39 @@ ohos_unittest("common_event_unsubscribe_test") {
   ]
 }
 
+ohos_unittest("common_event_subscribe_info_test") {
+  module_out_path = module_output_path
+
+  sources = [ "common_event_subscribe_info_test.cpp" ]
+
+  configs = [ ":kits_natvie_config" ]
+
+  deps = [
+    "${ces_core_path}:cesfwk_core",
+    "${ces_native_path}:cesfwk_innerkits",
+    "${services_path}:cesfwk_services_static",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "access_token:libaccesstoken_sdk",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "ffrt:libffrt",
+    "hilog:libhilog",
+    "init:libbegetutil",
+    "ipc:ipc_core",
+  ]
+}
+
 group("unittest") {
   testonly = true
   deps = []
 
   deps += [
+    ":common_event_subscribe_info_test",
     ":common_event_subscribe_test",
     ":common_event_unsubscribe_test",
     ":matching_skills_test",
