@@ -14,6 +14,7 @@
  */
 
 // redefine private and protected since testcase need to invoke and test private function
+#include "errors.h"
 #define private public
 #define protected public
 #include "common_event.h"
