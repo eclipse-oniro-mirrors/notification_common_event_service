@@ -115,7 +115,7 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0500, Level1)
     GTEST_LOG_(INFO) << "BundleManagerHelper_0500 start";
     BundleManagerHelper bundleManagerHelper;
     bundleManagerHelper.sptrBundleMgr_ = nullptr;
-    uid_t uid = 1;
+    const uid_t uid = 1;
     EXPECT_EQ("", bundleManagerHelper.GetBundleName(uid));
     GTEST_LOG_(INFO) << "BundleManagerHelper_0500 end";
 }
@@ -131,7 +131,7 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_0600, Level1)
     BundleManagerHelper bundleManagerHelper;
     bundleManagerHelper.sptrBundleMgr_ = nullptr;
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
-    int32_t userId = 1;
+    const int32_t userId = 1;
     EXPECT_EQ(false, bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId));
     GTEST_LOG_(INFO) << "BundleManagerHelper_0600 end";
 }
@@ -193,7 +193,7 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1000, Level1)
     GTEST_LOG_(INFO) << "BundleManagerHelper_1000 start";
     BundleManagerHelper bundleManagerHelper;
     bundleManagerHelper.sptrBundleMgr_ = nullptr;
-    uid_t uid = 1;
+    const uid_t uid = 1;
     EXPECT_EQ(false, bundleManagerHelper.CheckIsSystemAppByUid(uid));
     GTEST_LOG_(INFO) << "BundleManagerHelper_1000 end";
 }
@@ -209,7 +209,7 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1100, Level1)
     BundleManagerHelper bundleManagerHelper;
     bundleManagerHelper.sptrBundleMgr_ = nullptr;
     std::string bundleName = "aa";
-    int32_t userId = 1;
+    const int32_t userId = 1;
     EXPECT_EQ(false, bundleManagerHelper.CheckIsSystemAppByBundleName(bundleName, userId));
     GTEST_LOG_(INFO) << "BundleManagerHelper_1100 end";
 }

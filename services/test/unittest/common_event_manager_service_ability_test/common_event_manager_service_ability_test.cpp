@@ -58,7 +58,7 @@ void CommonEventManagerServiceAbilityTest::TearDown(void)
 HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_0100, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0100 start";
-    int32_t systemAbilityId = 1;
+    const int32_t systemAbilityId = 1;
     bool runOnCreate = true;
     std::shared_ptr<CommonEventManagerServiceAbility> commonEventManagerServiceAbility =
         std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
@@ -76,7 +76,7 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
 HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_0200, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0200 start";
-    int32_t systemAbilityId = 1;
+    const int32_t systemAbilityId = 1;
     bool runOnCreate = true;
     std::shared_ptr<CommonEventManagerServiceAbility> commonEventManagerServiceAbility =
         std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
@@ -95,7 +95,7 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
 HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_0300, Level1)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0300 start";
-    int32_t systemAbilityId = 1;
+    const int32_t systemAbilityId = 1;
     bool runOnCreate = true;
     std::shared_ptr<CommonEventManagerServiceAbility> commonEventManagerServiceAbility =
         std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);

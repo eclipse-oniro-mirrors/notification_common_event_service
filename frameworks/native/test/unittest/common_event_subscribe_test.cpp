@@ -412,7 +412,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_012, TestSize.Level1)
  * SubFunction: Subscribe common event
  * FunctionPoints: test is ready
  * EnvConditions: system run normally
- * CaseDescription:  1. ready fail because runner is null
+ * CaseDescription:  1. ready true because handler is null but ThreadMode is not handler
  */
 HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_014, TestSize.Level1)
 {
@@ -426,7 +426,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_014, TestSize.Level1)
 
     bool result = commonEventListener.IsReady();
 
-    EXPECT_EQ(false, result);
+    EXPECT_EQ(true, result);
 }
 
 /*
@@ -435,12 +435,13 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_014, TestSize.Level1)
  * SubFunction: Subscribe common event
  * FunctionPoints: test is ready
  * EnvConditions: system run normally
- * CaseDescription:  1. ready fail because handler is null
+ * CaseDescription:  1. ready fail because handler is null and threadMode is handler
  */
 HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_015, TestSize.Level1)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::HANDLER);
     std::shared_ptr<CommonEventSubscribeInfo> commonEventSubscribeInfo =
         std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -627,7 +628,8 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_001, TestSize.Level1)
 
     subscriber->SetAsyncCommonEventResult(nullptr);
     EXPECT_EQ(subscriber->CheckSynchronous(), false);
-    bool result = subscriber->SetCode(1);
+    const int code = 1;
+    bool result = subscriber->SetCode(code);
     EXPECT_EQ(result, false);
 }
 
@@ -665,7 +667,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_003, TestSize.Level1)
 
     subscriber->SetAsyncCommonEventResult(nullptr);
     EXPECT_EQ(subscriber->CheckSynchronous(), false);
-    std::string data = "this is data";
+    const std::string data = "this is data";
     bool result = subscriber->SetData(data);
     EXPECT_EQ(result, false);
 }
@@ -705,8 +707,8 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_005, TestSize.Level1)
 
     subscriber->SetAsyncCommonEventResult(nullptr);
     EXPECT_EQ(subscriber->CheckSynchronous(), false);
-    int32_t code = 1;
-    std::string data = "this is data";
+    const int32_t code = 1;
+    const std::string data = "this is data";
     bool result = subscriber->SetCodeAndData(code, data);
     EXPECT_EQ(result, false);
 }
