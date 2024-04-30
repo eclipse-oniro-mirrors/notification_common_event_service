@@ -115,7 +115,7 @@ HWTEST_F(SubscriberDeathRecipientTest, SubscriberDeathRecipient_0100, Level1)
     GTEST_LOG_(INFO) << "SubscriberDeathRecipient_0100 start";
     std::shared_ptr<SubscriberDeathRecipient> subscriberDeathRecipient = std::make_shared<SubscriberDeathRecipient>();
     ASSERT_NE(nullptr, subscriberDeathRecipient);
-    wptr<MockIRemoteObject> remote = nullptr;
+    const wptr<MockIRemoteObject> remote = nullptr;
     subscriberDeathRecipient->OnRemoteDied(remote);
     GTEST_LOG_(INFO) << "SubscriberDeathRecipient_0100 end";
 }
@@ -131,7 +131,7 @@ HWTEST_F(SubscriberDeathRecipientTest, SubscriberDeathRecipient_0200, Level1)
     SubscriberDeathRecipient subscriberDeathRecipient;
     sptr<MockIRemoteObject> sptrDeath = new (std::nothrow) MockIRemoteObject();
     ASSERT_NE(nullptr, sptrDeath);
-    wptr<MockIRemoteObject> remote = sptrDeath;
+    const wptr<MockIRemoteObject> remote = sptrDeath;
     subscriberDeathRecipient.OnRemoteDied(remote);
     GTEST_LOG_(INFO) << "SubscriberDeathRecipient_0200 end";
 }

@@ -578,7 +578,7 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0300, Level1)
     Want want;
     CommonEventData event;
     sptr<IRemoteObject> callerToken = nullptr;
-    int32_t userId = 1;
+    const int32_t userId = 1;
     EXPECT_EQ(-1, abilityManagerHelper.ConnectAbility(want, event, callerToken, userId));
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0300 end";
 }
