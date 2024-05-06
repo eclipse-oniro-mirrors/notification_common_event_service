@@ -1772,6 +1772,9 @@ void CommonEventSupport::Init()
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED);
 
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SANDBOX_PACKAGE_ADDED);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SANDBOX_PACKAGE_REMOVED);
     return;
 }
 

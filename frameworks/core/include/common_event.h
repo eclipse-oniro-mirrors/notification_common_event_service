@@ -200,7 +200,7 @@ private:
      *
      * @return Returns get common event proxy success or not.
      */
-    bool GetCommonEventProxy();
+    sptr<ICommonEvent> GetCommonEventProxy();
 
     /**
      * Gets common evenet listener.

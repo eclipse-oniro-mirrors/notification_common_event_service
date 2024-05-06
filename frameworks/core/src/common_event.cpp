@@ -18,7 +18,9 @@
 #include "common_event_death_recipient.h"
 #include "event_log_wrapper.h"
 #include "hitrace_meter_adapter.h"
+#include "icommon_event.h"
 #include "iservice_registry.h"
+#include "refbase.h"
 #include "system_ability_definition.h"
 #include "ces_inner_error_code.h"
 
@@ -41,8 +43,13 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
         EVENT_LOGE("failed to check publish parameter");
         return false;
     }
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return false;
+    }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->PublishCommonEvent(
+    return proxy->PublishCommonEvent(
         data, publishInfo, commonEventListener, UNDEFINED_USER) == ERR_OK ? true : false;
 }
 
@@ -56,8 +63,13 @@ int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const
         EVENT_LOGE("failed to check publish parameter");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, userId);
+    return proxy->PublishCommonEvent(data, publishInfo, commonEventListener, userId);
 }
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -70,8 +82,13 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
         EVENT_LOGE("failed to check publish parameter");
         return false;
     }
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return false;
+    }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken,
+    return proxy->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken,
         UNDEFINED_USER);
 }
 
@@ -86,8 +103,13 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
         EVENT_LOGE("failed to check publish parameter");
         return false;
     }
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return false;
+    }
     EVENT_LOGD("before PublishCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken, userId);
+    return proxy->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken, userId);
 }
 
 bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -101,11 +123,6 @@ bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const Commo
 
     if (!publishInfo.IsOrdered() && (subscriber != nullptr)) {
         EVENT_LOGE("When publishing unordered events, the subscriber object is not required.");
-        return false;
-    }
-
-    if (!GetCommonEventProxy()) {
-        EVENT_LOGE("the commonEventProxy_ is null");
         return false;
     }
 
@@ -135,16 +152,16 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
-    if (!GetCommonEventProxy()) {
-        EVENT_LOGE("the commonEventProxy_ is null");
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
-
     sptr<IRemoteObject> commonEventListener = nullptr;
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
     if (subscribeState == INITIAL_SUBSCRIPTION) {
         EVENT_LOGD("before SubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
-        auto res = commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
+        sptr<ICommonEvent> proxy = GetCommonEventProxy();
+        if (!proxy) {
+            EVENT_LOGE("the commonEventProxy is null");
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        }
+        auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
         if (res != ERR_OK) {
             EVENT_LOGD("subscribe common event failed, remove event listener");
             std::lock_guard<std::mutex> lock(eventListenersMutex_);
@@ -161,7 +178,8 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     }
 }
 
-int32_t CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
+__attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
+    const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGD("enter");
@@ -170,18 +188,17 @@ int32_t CommonEvent::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSub
         EVENT_LOGE("the subscriber is null");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-
-    if (!GetCommonEventProxy()) {
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
         EVENT_LOGE("the commonEventProxy is null");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
     auto eventListener = eventListeners_.find(subscriber);
     if (eventListener != eventListeners_.end()) {
         EVENT_LOGD("before UnsubscribeCommonEvent proxy valid state is %{public}d, listeners size is %{public}zu",
             isProxyValid_, eventListeners_.size());
-        if (commonEventProxy_->UnsubscribeCommonEvent(eventListener->second->AsObject()) == ERR_OK) {
+        if (proxy->UnsubscribeCommonEvent(eventListener->second->AsObject()) == ERR_OK) {
             eventListener->second->Stop();
             eventListeners_.erase(eventListener);
             return ERR_OK;
@@ -198,17 +215,17 @@ bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData
 {
     EVENT_LOGD("enter");
 
-    if (!GetCommonEventProxy()) {
-        EVENT_LOGE("the commonEventProxy is null");
-        return false;
-    }
-
     if (event.empty()) {
         EVENT_LOGE("event is empty");
         return false;
     }
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return false;
+    }
     EVENT_LOGD("before GetStickyCommonEvent proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->GetStickyCommonEvent(event, eventData);
+    return proxy->GetStickyCommonEvent(event, eventData);
 }
 
 bool CommonEvent::FinishReceiver(
@@ -220,13 +237,13 @@ bool CommonEvent::FinishReceiver(
         EVENT_LOGE("the proxy is null");
         return false;
     }
-
-    if (!GetCommonEventProxy()) {
+    sptr<ICommonEvent> cesProxy = GetCommonEventProxy();
+    if (!cesProxy) {
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
     EVENT_LOGD("before FinishReceiver proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->FinishReceiver(proxy, code, data, abortEvent);
+    return cesProxy->FinishReceiver(proxy, code, data, abortEvent);
 }
 
 bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
@@ -234,12 +251,13 @@ bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, c
 {
     EVENT_LOGD("enter");
 
-    if (!GetCommonEventProxy()) {
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
     EVENT_LOGD("before DumpState proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->DumpState(dumpType, event, userId, state);
+    return proxy->DumpState(dumpType, event, userId, state);
 }
 
 void CommonEvent::ResetCommonEventProxy()
@@ -253,58 +271,62 @@ bool CommonEvent::Freeze(const uid_t &uid)
 {
     EVENT_LOGD("enter");
 
-    if (!GetCommonEventProxy()) {
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
     EVENT_LOGD("before Freeze proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->Freeze(uid);
+    return proxy->Freeze(uid);
 }
 
 bool CommonEvent::Unfreeze(const uid_t &uid)
 {
     EVENT_LOGD("enter");
 
-    if (!GetCommonEventProxy()) {
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
     EVENT_LOGD("before Unfreeze proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->Unfreeze(uid);
+    return proxy->Unfreeze(uid);
 }
 
 bool CommonEvent::UnfreezeAll()
 {
     EVENT_LOGD("enter");
 
-    if (!GetCommonEventProxy()) {
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
         EVENT_LOGE("the commonEventProxy is null");
         return false;
     }
     EVENT_LOGD("before UnfreezeAll proxy valid state is %{public}d", isProxyValid_);
-    return commonEventProxy_->UnfreezeAll();
+    return proxy->UnfreezeAll();
 }
 
 int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
 {
     EVENT_LOGD("enter");
 
-    if (!GetCommonEventProxy()) {
-        EVENT_LOGE("failed to get commonEventProxy");
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-    return commonEventProxy_->RemoveStickyCommonEvent(event);
+    return proxy->RemoveStickyCommonEvent(event);
 }
 
 int32_t CommonEvent::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD("enter");
-
-    if (!GetCommonEventProxy()) {
+    sptr<ICommonEvent> proxy_ = GetCommonEventProxy();
+    if (!proxy_) {
         EVENT_LOGE("failed to get commonEventProxy");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-    return commonEventProxy_->SetStaticSubscriberState(enable);
+    return proxy_->SetStaticSubscriberState(enable);
 }
 
 int32_t CommonEvent::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
@@ -317,40 +339,39 @@ int32_t CommonEvent::SetStaticSubscriberState(const std::vector<std::string> &ev
     return commonEventProxy_->SetStaticSubscriberState(events, enable);
 }
 
-bool CommonEvent::GetCommonEventProxy() __attribute__((no_sanitize("cfi")))
+sptr<ICommonEvent> CommonEvent::GetCommonEventProxy() __attribute__((no_sanitize("cfi")))
 {
     EVENT_LOGD("enter");
-
+    sptr<ICommonEvent> proxy = nullptr;
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!commonEventProxy_ || !isProxyValid_) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (!commonEventProxy_ || !isProxyValid_) {
-            sptr<ISystemAbilityManager> systemAbilityManager =
-                SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-            if (!systemAbilityManager) {
-                EVENT_LOGE("Failed to get system ability mgr.");
-                return false;
-            }
-
-            sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(COMMON_EVENT_SERVICE_ID);
-            if (!remoteObject) {
-                EVENT_LOGE("Failed to get COMMON Event Manager.");
-                return false;
-            }
-
-            commonEventProxy_ = iface_cast<ICommonEvent>(remoteObject);
-            if ((!commonEventProxy_) || (!commonEventProxy_->AsObject())) {
-                EVENT_LOGE("Failed to get COMMON Event Manager's proxy");
-                return false;
-            }
-
-            auto commonEventDeathRecipient = DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
-            if (!commonEventDeathRecipient->GetIsSubscribeSAManager()) {
-                commonEventDeathRecipient->SubscribeSAManager();
-            }
-            isProxyValid_ = true;
+        sptr<ISystemAbilityManager> systemAbilityManager =
+            SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+        if (!systemAbilityManager) {
+            EVENT_LOGE("Failed to get system ability mgr.");
+            return proxy;
         }
+
+        sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(COMMON_EVENT_SERVICE_ID);
+        if (!remoteObject) {
+            EVENT_LOGE("Failed to get COMMON Event Manager.");
+            return proxy;
+        }
+
+        commonEventProxy_ = iface_cast<ICommonEvent>(remoteObject);
+        if ((!commonEventProxy_) || (!commonEventProxy_->AsObject())) {
+            EVENT_LOGE("Failed to get COMMON Event Manager's proxy");
+            return proxy;
+        }
+
+        auto commonEventDeathRecipient = DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+        if (!commonEventDeathRecipient->GetIsSubscribeSAManager()) {
+            commonEventDeathRecipient->SubscribeSAManager();
+        }
+        isProxyValid_ = true;
     }
-    return true;
+    proxy = commonEventProxy_;
+    return proxy;
 }
 
 uint8_t CommonEvent::CreateCommonEventListener(

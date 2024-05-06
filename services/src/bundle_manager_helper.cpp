@@ -36,7 +36,7 @@ BundleManagerHelper::BundleManagerHelper() : sptrBundleMgr_(nullptr), bmsDeath_(
 BundleManagerHelper::~BundleManagerHelper()
 {}
 
-std::string BundleManagerHelper::GetBundleName(uid_t uid)
+std::string BundleManagerHelper::GetBundleName(const uid_t uid)
 {
     EVENT_LOGD("enter");
 
@@ -112,7 +112,7 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
     return client.GetResConfigFile(extension, META_NAME_STATIC_SUBSCRIBER, profileInfos);
 }
 
-bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
+bool BundleManagerHelper::CheckIsSystemAppByUid(const uid_t uid)
 {
     EVENT_LOGD("enter");
 

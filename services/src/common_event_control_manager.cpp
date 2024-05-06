@@ -190,7 +190,6 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
             continue;
         }
         size_t index = eventRecord->nextReceiver++;
-        eventRecord->curReceiver = vec->commonEventListener;
         if (vec->isFreeze) {
             eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(vec, *eventRecord);

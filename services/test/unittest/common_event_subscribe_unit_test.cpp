@@ -644,8 +644,10 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0300, Functi
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     InnerCommonEventManager innerCommonEventManager;
+    const pid_t pid = 0;
+    const uid_t uid = 0;
     EXPECT_TRUE(innerCommonEventManager.SubscribeCommonEvent(
-        subscribeInfo, commonEventListenerPtr, curTime, 0, 0, tokenID, ""));
+        subscribeInfo, commonEventListenerPtr, curTime, pid, uid, tokenID, ""));
 }
 
 /*
@@ -670,8 +672,10 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0400, Functi
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     InnerCommonEventManager innerCommonEventManager;
+    const pid_t pid = 0;
+    const uid_t uid = 0;
     EXPECT_FALSE(innerCommonEventManager.SubscribeCommonEvent(
-        subscribeInfo, commonEventListenerPtr, curTime, 0, 0, tokenID, ""));
+        subscribeInfo, commonEventListenerPtr, curTime, pid, uid, tokenID, ""));
 }
 
 /*
@@ -693,7 +697,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0500, Functi
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     InnerCommonEventManager innerCommonEventManager;
-    EXPECT_FALSE(innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, sp, curTime, 0, 0, tokenID, ""));
+    const pid_t pid = 0;
+    const uid_t uid = 0;
+    EXPECT_FALSE(innerCommonEventManager.SubscribeCommonEvent(subscribeInfo, sp, curTime, pid, uid, tokenID, ""));
 }
 
 /*
@@ -951,7 +957,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | Med
     // make common event data
     CommonEventData event;
     OHOS::sptr<OHOS::IRemoteObject> callerToken(nullptr);
-    int32_t userId = 1;
+    const int32_t userId = 1;
     AbilityManagerHelper abilityManagerHelper;
     abilityManagerHelper.abilityMgr_ = new (std::nothrow) TestAbilityMgr();
     int result = abilityManagerHelper.ConnectAbility(want, event, callerToken, userId);
@@ -967,7 +973,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | Med
 HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0001, Function | MediumTest | Level1)
 {
     std::vector<OHOS::AppExecFwk::ExtensionAbilityInfo> extensionInfos;
-    int32_t userId = 3;
+    const int32_t userId = 3;
     BundleManagerHelper bundleManagerHelper;
     bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId);
 }
@@ -1003,9 +1009,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function 
     // make publish info
     CommonEventPublishInfo publishinfo;
     OHOS::sptr<OHOS::IRemoteObject> commonEventListener(nullptr);
-    uid_t uid = 1;
-    int32_t userId = 1;
-    int32_t tokenId = 0;
+    const uid_t uid = 1;
+    const int32_t userId = 1;
+    const int32_t tokenId = 0;
     CommonEventManagerService commonEventManagerService;
     bool result = commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid,
         tokenId, userId);
@@ -1022,7 +1028,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function 
 {
     uint8_t dumpType = 1;
     std::string event = "Event";
-    int32_t userId =2;
+    const int32_t userId =2;
     std::vector<std::string> state;
     CommonEventManagerService commonEventManagerService;
     bool result = commonEventManagerService.DumpState(dumpType, event, userId, state);
