@@ -134,3 +134,20 @@ HWTEST_F(CommomEventSubscribeInfoTest, CommomEventSubscribeInfoTest_007, TestSiz
     subscribeInfo.SetPublisherBundleName("abc");
     EXPECT_EQ("abc", subscribeInfo.GetPublisherBundleName());
 }
+
+/*
+ * Feature: CommomEventSubscribeInfoTest
+ * Function: SetPublisherUid/GetPublisherUid
+ * SubFunction: NA
+ * FunctionPoints: SetPublisherUid/GetPublisherUid
+ * EnvConditions: NA
+ * CaseDescription: Verify the function when after set SetPublisherUid can get GetPublisherUid
+ */
+HWTEST_F(CommomEventSubscribeInfoTest, CommomEventSubscribeInfoTest_008, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(EVENT);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPublisherUid(1);
+    EXPECT_EQ(1, subscribeInfo.GetPublisherUid());
+}
