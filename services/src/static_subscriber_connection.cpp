@@ -17,6 +17,7 @@
 
 #include "ability_manager_helper.h"
 #include "event_log_wrapper.h"
+#include "event_report.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -49,6 +50,12 @@ sptr<StaticSubscriberProxy> StaticSubscriberConnection::GetProxy(const sptr<IRem
 void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
 {
     EVENT_LOGI_LIMIT("enter");
+    EventInfo eventInfo;
+    eventInfo.publisherName = element.GetAbilityName();
+    eventInfo.subscriberName = element.GetBundleName();
+    eventInfo.eventName = event_.GetWant().GetAction();
+    eventInfo.resultCode = resultCode;
+    EventReport::SendHiSysEvent(STATIC_SUBSCRIBER_RUNTIME, eventInfo);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

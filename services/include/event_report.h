@@ -34,18 +34,21 @@ constexpr char PUBLISH_ERROR[] = "PUBLISH_ERROR";
 constexpr char SUBSCRIBE[] = "SUBSCRIBE";
 constexpr char UNSUBSCRIBE[] = "UNSUBSCRIBE";
 constexpr char PUBLISH[] = "PUBLISH";
+constexpr char STATIC_SUBSCRIBER_START[] = "STATIC_SUBSCRIBER_START";
+constexpr char STATIC_SUBSCRIBER_RUNTIME[] = "STATIC_SUBSCRIBER_RUNTIME";
 } // namespace
 
 struct EventInfo {
     int32_t userId;
     int32_t pid;
     int32_t uid;
+    int32_t resultCode;
     uint32_t subscriberNum;
     std::string publisherName;
     std::string subscriberName;
     std::string eventName;
 
-    EventInfo() : userId(-1), pid(0), uid(0), subscriberNum(0) {}
+    EventInfo() : userId(-1), pid(0), uid(0), resultCode(0), subscriberNum(0) {}
 };
 
 class EventReport {
@@ -70,6 +73,8 @@ private:
     static void InnerSendSubscribeEvent(const EventInfo &eventInfo);
     static void InnerSendUnSubscribeEvent(const EventInfo &eventInfo);
     static void InnerSendPublishEvent(const EventInfo &eventInfo);
+    static void InnerSendStaticSubStartEvent(const EventInfo &eventInfo);
+    static void InnerSendStaticSubRunEvent(const EventInfo &eventInfo);
 
     template<typename... Types>
     static void InnerEventWrite(const std::string &eventName,

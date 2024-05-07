@@ -101,6 +101,13 @@ private:
         const std::string &subscriberName, const std::string &eventName);
     bool IsDisableEvent(const std::string &bundleName, const std::string &event);
     int32_t UpdateDisableEvents(const std::string &bundleName, const std::vector<std::string> &events, bool enable);
+    void PublishCommonEventConnecAbility(const CommonEventData &data, const sptr<IRemoteObject> &service,
+        const int32_t &userId, const std::string &bundleName, const std::string &abilityName);
+    void PublishCommonEventInner(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
+        const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId,
+        const sptr<IRemoteObject> &service, const std::string &bundleName);
+    void SendStaticSubscriberStartHiSysEvent(int32_t userId, const std::string &publisherName,
+        const std::string &subscriberName, const std::string &eventName);
 
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
     std::map<std::string, StaticSubscriber> staticSubscribers_;
