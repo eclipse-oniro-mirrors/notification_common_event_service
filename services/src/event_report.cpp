@@ -27,6 +27,8 @@ const std::string EVENT_PARAM_SUBSCRIBER_NUM = "SUBSCRIBER_NUM";
 const std::string EVENT_PARAM_BUNDLE_NAME_OF_PUBLISHER = "BUNDLE_NAME_OF_PUBLISHER";
 const std::string EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER = "BUNDLE_NAME_OF_SUBSCRIBER";
 const std::string EVENT_PARAM_EVENT_NAME = "EVENT_NAME";
+const std::string EVENT_PARAM_ABILITY_NAME = "ABILITY_NAME";
+const std::string EVENT_PARAM_RESULT_CODE = "RESULT_CODE";
 } // namespace
 
 void EventReport::SendHiSysEvent(const std::string &eventName, const EventInfo &eventInfo)
@@ -65,6 +67,12 @@ std::unordered_map<std::string, void (*)(const EventInfo& eventInfo)> EventRepor
     }},
     {PUBLISH, [](const EventInfo& eventInfo) {
         InnerSendPublishEvent(eventInfo);
+    }},
+    {STATIC_SUBSCRIBER_START, [](const EventInfo& eventInfo) {
+        InnerSendStaticSubStartEvent(eventInfo);
+    }},
+    {STATIC_SUBSCRIBER_RUNTIME, [](const EventInfo& eventInfo) {
+        InnerSendStaticSubRunEvent(eventInfo);
     }},
 };
 
@@ -146,6 +154,33 @@ void EventReport::InnerSendPublishEvent(const EventInfo &eventInfo)
         EVENT_PARAM_BUNDLE_NAME_OF_PUBLISHER, eventInfo.publisherName,
         EVENT_PARAM_PID, eventInfo.pid,
         EVENT_PARAM_UID, eventInfo.uid,
+        EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
+}
+
+void EventReport::InnerSendStaticSubStartEvent(const EventInfo &eventInfo)
+{
+    InnerEventWrite(
+        STATIC_SUBSCRIBER_START,
+        HiviewDFX::HiSysEvent::EventType::STATISTIC,
+        EVENT_PARAM_USER_ID, eventInfo.userId,
+        EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER, eventInfo.subscriberName,
+        EVENT_PARAM_ABILITY_NAME, eventInfo.publisherName,
+        EVENT_PARAM_PID, eventInfo.pid,
+        EVENT_PARAM_UID, eventInfo.uid,
+        EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
+}
+
+void EventReport::InnerSendStaticSubRunEvent(const EventInfo &eventInfo)
+{
+    InnerEventWrite(
+        STATIC_SUBSCRIBER_RUNTIME,
+        HiviewDFX::HiSysEvent::EventType::STATISTIC,
+        EVENT_PARAM_USER_ID, eventInfo.userId,
+        EVENT_PARAM_BUNDLE_NAME_OF_SUBSCRIBER, eventInfo.subscriberName,
+        EVENT_PARAM_ABILITY_NAME, eventInfo.publisherName,
+        EVENT_PARAM_PID, eventInfo.pid,
+        EVENT_PARAM_UID, eventInfo.uid,
+        EVENT_PARAM_RESULT_CODE, eventInfo.resultCode,
         EVENT_PARAM_EVENT_NAME, eventInfo.eventName);
 }
 

@@ -138,32 +138,22 @@ bool StaticSubscriberManager::IsDisableEvent(const std::string &bundleName, cons
     return false;
 }
 
-void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
+void StaticSubscriberManager::PublishCommonEventConnecAbility(const CommonEventData &data,
+    const sptr<IRemoteObject> &service, const int32_t &userId,
+    const std::string &bundleName, const std::string &abilityName)
+{
+    AAFwk::Want want;
+    want.SetElementName(bundleName, abilityName);
+    EVENT_LOGD("Ready to connect to subscriber %{public}s in bundle %{public}s",
+        abilityName.c_str(), bundleName.c_str());
+    DelayedSingleton<AbilityManagerHelper>::GetInstance()->ConnectAbility(want, data, service, userId);
+    SendStaticSubscriberStartHiSysEvent(userId, abilityName, bundleName, data.GetWant().GetAction());
+}
+
+void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &data,
     const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGD("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
-
-    std::lock_guard<std::mutex> lock(subscriberMutex_);
-    if (!hasInitAllowList_ && !InitAllowList()) {
-        EVENT_LOGE("failed to init subscriber list");
-        return;
-    }
-
-    if ((!hasInitValidSubscribers_ ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_SWITCHED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_UID_REMOVED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_STARTED) &&
-        !InitValidSubscribers()) {
-        EVENT_LOGE("failed to init Init valid subscribers map!");
-        return;
-    }
-
-    UpdateSubscriber(data);
-
     auto targetSubscribers = validSubscribers_.find(data.GetWant().GetAction());
     if (targetSubscribers != validSubscribers_.end()) {
         for (auto subscriber : targetSubscribers->second) {
@@ -209,14 +199,38 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
                     "bundleName = %{public}s", subscriber.bundleName.c_str(), publishInfo.GetBundleName().c_str());
                 continue;
             }
-            AAFwk::Want want;
-            want.SetElementName(subscriber.bundleName, subscriber.name);
-            EVENT_LOGD("Ready to connect to subscriber %{public}s in bundle %{public}s",
-                subscriber.name.c_str(), subscriber.bundleName.c_str());
-            DelayedSingleton<AbilityManagerHelper>::GetInstance()->
-                ConnectAbility(want, data, service, subscriber.userId);
+            PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
         }
     }
+}
+
+void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
+    const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
+    const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
+{
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    EVENT_LOGD("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
+
+    std::lock_guard<std::mutex> lock(subscriberMutex_);
+    if (!hasInitAllowList_ && !InitAllowList()) {
+        EVENT_LOGE("failed to init subscriber list");
+        return;
+    }
+
+    if ((!hasInitValidSubscribers_ ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_SWITCHED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_UID_REMOVED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_STARTED) &&
+        !InitValidSubscribers()) {
+        EVENT_LOGE("failed to init Init valid subscribers map!");
+        return;
+    }
+
+    UpdateSubscriber(data);
+
+    PublishCommonEventInner(data, publishInfo, callerToken, userId, service, bundleName);
 }
 
 bool StaticSubscriberManager::VerifyPublisherPermission(const Security::AccessToken::AccessTokenID &callerToken,
@@ -455,6 +469,17 @@ void StaticSubscriberManager::SendStaticEventProcErrHiSysEvent(int32_t userId, c
     eventInfo.subscriberName = subscriberName;
     eventInfo.eventName = eventName;
     EventReport::SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
+}
+
+void StaticSubscriberManager::SendStaticSubscriberStartHiSysEvent(int32_t userId, const std::string &publisherName,
+    const std::string &subscriberName, const std::string &eventName)
+{
+    EventInfo eventInfo;
+    eventInfo.userId = userId;
+    eventInfo.publisherName = publisherName;
+    eventInfo.subscriberName = subscriberName;
+    eventInfo.eventName = eventName;
+    EventReport::SendHiSysEvent(STATIC_SUBSCRIBER_START, eventInfo);
 }
 
 int32_t StaticSubscriberManager::UpdateDisableEvents(

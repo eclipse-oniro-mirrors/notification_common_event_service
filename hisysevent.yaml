@@ -67,3 +67,22 @@ PUBLISH:
   PID: {type: INT32, desc: publisher pid}
   UID: {type: INT32, desc: publisher uid}
   EVENT_NAME: {type: STRING, desc: published event name}
+
+STATIC_SUBSCRIBER_START:
+  __BASE: {type: STATISTIC, level: MINOR, desc: static subscriber ability start}
+  USER_ID: {type: INT32, desc: userId}
+  BUNDLE_NAME_OF_SUBSCRIBER: {type: STRING, desc: bundle name of subscriber}
+  PID: {type: INT32, desc: subscriber pid}
+  UID: {type: INT32, desc: subscriber uid}
+  EVENT_NAME: {type: STRING, desc: subscribed event name}
+  ABILITY_NAME: {type: STRING, desc: the name of ability}
+
+STATIC_SUBSCRIBER_RUNTIME:
+  __BASE: {type: STATISTIC, level: MINOR, desc: static subscriber ability run time}
+  USER_ID: {type: INT32, desc: userId}
+  BUNDLE_NAME_OF_SUBSCRIBER: {type: STRING, desc: bundle name of subscriber}
+  PID: {type: INT32, desc: subscriber pid}
+  UID: {type: INT32, desc: subscriber uid}
+  EVENT_NAME: {type: STRING, desc: subscribed event name}
+  ABILITY_NAME: {type: STRING, desc: the name of ability}
+  RESULT_CODE: {type: INT32, desc: ability disconnect result}
