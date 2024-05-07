@@ -1411,6 +1411,13 @@ const std::string CommonEventSupport::COMMON_EVENT_REMINDER_STATUS_CHANGE = "usu
  */
 const std::string CommonEventSupport::COMMON_EVENT_PRIVACY_STATE_CHANGED = "usual.event.PRIVACY_STATE_CHANGED";
 
+/**
+ * Indicates that the file access state is changed.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED =
+    "usual.event.SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED";
+
 
 CommonEventSupport::CommonEventSupport()
 {
@@ -1762,6 +1769,8 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SPECIAL_CODE);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_REMINDER_STATUS_CHANGE);
+
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED);
 
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SANDBOX_PACKAGE_ADDED);
 

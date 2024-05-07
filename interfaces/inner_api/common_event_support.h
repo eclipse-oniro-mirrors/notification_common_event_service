@@ -1279,6 +1279,12 @@ public:
      */
     static const std::string COMMON_EVENT_PRIVACY_STATE_CHANGED;
 
+    /**
+     * Indicates that the file access state is changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED;
+
 public:
     CommonEventSupport();
 
