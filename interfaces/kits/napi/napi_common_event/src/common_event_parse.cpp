@@ -478,7 +478,7 @@ napi_value ParseParametersBySetData(
         EVENT_LOGE("data over size");
         std::string msg = "Parameter verification failed. cannot exceed ";
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
-        msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
+            msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
         return nullptr;
     }
 
@@ -530,7 +530,7 @@ napi_value ParseParametersBySetCodeAndData(
         EVENT_LOGE("data exceed size");
         std::string msg = "Parameter verification failed. cannot exceed ";
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
-        msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
+            msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
         return nullptr;
     }
 
@@ -787,7 +787,7 @@ napi_value GetDataByPublish(const napi_env &env, const napi_value &value, std::s
             EVENT_LOGE("data exceed size");
             std::string msg = "Parameter verification failed. cannot exceed ";
             NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
-            msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
+                msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
             return nullptr;
         }
 
