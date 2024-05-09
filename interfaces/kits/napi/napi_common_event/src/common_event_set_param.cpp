@@ -492,7 +492,6 @@ napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const n
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
     if (argc < ARGC_ONE) {
-        EVENT_LOGE("The param is invalid.");
         std::string msg = "Mandatory parameters are left unspecified.";
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         napi_get_undefined(env, &result);
@@ -501,7 +500,6 @@ napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const n
     napi_valuetype valueType = napi_undefined;
     NAPI_CALL(env, napi_typeof(env, argv[INDEX_ZERO], &valueType));
     if (valueType != napi_boolean) {
-        EVENT_LOGE("Parse type failed.");
         std::string msg = "Incorrect parameter types.The type of param must be boolean.";
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         napi_get_undefined(env, &result);
