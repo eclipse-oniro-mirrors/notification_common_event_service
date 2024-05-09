@@ -16,6 +16,9 @@ import("//build/ohos.gni")
 
 ohos_shared_library("cj_common_event_manager_ffi") {
   sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
     cfi = true
     cfi_cross_dso = true
     debug = false
@@ -27,14 +30,21 @@ ohos_shared_library("cj_common_event_manager_ffi") {
   ]
 
   if (product_name != "ohos-sdk") {
-    deps = [ "../../../frameworks/core:cesfwk_core" ]
+    deps = [
+      "../../../frameworks/core:cesfwk_core",
+      "../../../frameworks/native:cesfwk_innerkits",
+    ]
 
     external_deps = [
+      "ability_base:base",
+      "ability_base:want",
       "ability_runtime:ability_manager",
       "ability_runtime:abilitykit_native",
       "ability_runtime:napi_base_context",
+      "c_utils:utils",
       "hilog:libhilog",
       "napi:cj_bind_ffi",
+      "napi:cj_bind_native",
     ]
 
     sources = [
@@ -49,7 +59,7 @@ ohos_shared_library("cj_common_event_manager_ffi") {
     sources = [ "src/common_event_manager_mock.cpp" ]
   }
 
-  relative_install_dir = "module"
+  innerapi_tags = [ "platformsdk" ]
   subsystem_name = "notification"
   part_name = "common_event_service"
 }
