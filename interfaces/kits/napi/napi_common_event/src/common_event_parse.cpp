@@ -83,7 +83,7 @@ void NapiThrow(napi_env env, int32_t errCode, std::string &msg)
     auto iter = ErrorCodeToMsg.find(errCode);
     std::string errMsg = iter != ErrorCodeToMsg.end() ? iter->second : "";
     napi_value message = nullptr;
-    napi_create_string_utf8(env, errMsg.append(msg).c_str(), NAPI_AUTO_LENGTH, &message);
+    napi_create_string_utf8(env, errMsg.append(" ").append(msg).c_str(), NAPI_AUTO_LENGTH, &message);
 
     napi_value error = nullptr;
     napi_create_error(env, nullptr, message, &error);
