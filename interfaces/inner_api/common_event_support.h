@@ -1285,6 +1285,18 @@ public:
      */
     static const std::string COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED;
 
+    /**
+     * This common event means that minors mode is enabled.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_MINORSMODE_ON;
+
+    /**
+     * This common event means that minors mode is disabled.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_MINORSMODE_OFF;
+
 public:
     CommonEventSupport();
 

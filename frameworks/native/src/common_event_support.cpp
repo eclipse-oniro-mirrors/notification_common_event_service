@@ -1418,6 +1418,17 @@ const std::string CommonEventSupport::COMMON_EVENT_PRIVACY_STATE_CHANGED = "usua
 const std::string CommonEventSupport::COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED =
     "usual.event.SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED";
 
+/**
+ * This common event means that minors mode is enabled.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_MINORSMODE_ON = "usual.event.MINORSMODE_ON";
+
+/**
+ * This common event means that minors mode is disabled.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_MINORSMODE_OFF = "usual.event.MINORSMODE_OFF";
 
 CommonEventSupport::CommonEventSupport()
 {
@@ -2690,6 +2701,18 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED);
+
+    /**
+     * This common event means that minors mode is enabled.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MINORSMODE_ON);
+
+    /**
+     * This common event means that minors mode is disabled.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MINORSMODE_OFF);
     return;
 }
 
