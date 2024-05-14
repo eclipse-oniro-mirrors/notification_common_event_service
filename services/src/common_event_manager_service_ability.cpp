@@ -15,7 +15,9 @@
 
 #include "common_event_manager_service_ability.h"
 
+#include "common_event_manager_service.h"
 #include "event_log_wrapper.h"
+#include <new>
 
 namespace OHOS {
 namespace EventFwk {
@@ -38,14 +40,14 @@ void CommonEventManagerServiceAbility::OnStart()
         return;
     }
 
-    service_ = DelayedSingleton<CommonEventManagerService>::GetInstance();
+    service_ = CommonEventManagerService::GetInstance();
     ErrCode errorCode = service_->Init();
     if (errorCode != ERR_OK) {
         EVENT_LOGE("Failed to init the commonEventManagerService instance.");
         return;
     }
     
-    if (!Publish(service_.get())) {
+    if (!Publish(service_)) {
         EVENT_LOGE("Failed to publish CommonEventManagerService to SystemAbilityMgr");
         return;
     }

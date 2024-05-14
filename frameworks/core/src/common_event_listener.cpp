@@ -172,8 +172,8 @@ void CommonEventListener::Stop()
         EVENT_LOGE("commonEventSubscriber_ == nullptr");
         return;
     }
-    EVENT_LOGD("event size: %{public}u",
-        (uint32_t)commonEventSubscriber_->GetSubscribeInfo().GetMatchingSkills().CountEntities());
+    EVENT_LOGD("event size: %{public}zu",
+        commonEventSubscriber_->GetSubscribeInfo().GetMatchingSkills().CountEvent());
     if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
         EVENT_LOGD("stop listener in HANDLER mode");
         return;

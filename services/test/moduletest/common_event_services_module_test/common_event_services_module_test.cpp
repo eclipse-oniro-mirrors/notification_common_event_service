@@ -77,7 +77,7 @@ sptr<CommonEventManagerService> cesModuleTest::commonEventManagerService_ = null
 
 void cesModuleTest::SetUpTestCase()
 {
-    commonEventManagerService_ = new CommonEventManagerService();
+    commonEventManagerService_ = CommonEventManagerService::GetInstance();
     commonEventManagerService_->Init();
 
     bundleObject = new OHOS::AppExecFwk::MockBundleMgrService();
