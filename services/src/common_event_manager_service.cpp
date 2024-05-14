@@ -26,9 +26,12 @@
 #include "ipc_skeleton.h"
 #include "parameters.h"
 #include "publish_manager.h"
+#include "refbase.h"
 #include "system_ability_definition.h"
 #include "xcollie/watchdog.h"
 #include "ces_inner_error_code.h"
+#include <mutex>
+#include <new>
 
 namespace OHOS {
 namespace EventFwk {
@@ -37,6 +40,22 @@ const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check
 }  // namespace
 
 using namespace OHOS::Notification;
+
+sptr<CommonEventManagerService> CommonEventManagerService::instance_;
+std::mutex CommonEventManagerService::instanceMutex_;
+
+sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
+{
+    std::lock_guard<std::mutex> lock(instanceMutex_);
+    if (instance_ == nullptr) {
+        instance_ = new (std::nothrow) CommonEventManagerService();
+        if (instance_ == nullptr) {
+            EVENT_LOGE("Failed to create CommonEventManagerService instance.");
+            return nullptr;
+        }
+    }
+    return instance_;
+}
 
 CommonEventManagerService::CommonEventManagerService()
     : serviceRunningState_(ServiceRunningState::STATE_NOT_START),
