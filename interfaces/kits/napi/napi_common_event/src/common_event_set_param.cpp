@@ -467,11 +467,15 @@ bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info i
     for (uint32_t index = 0; index < arraySize; index++) {
         if (napi_get_element(env, argv[INDEX_ONE], index, &jsValue) != napi_ok) {
             EVENT_LOGE("Get element failed.");
+            std::string msg = "Mandatory parameters are left unspecified.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return false;
         }
         std::string event;
         if (!AppExecFwk::UnwrapStringFromJS2(env, jsValue, event)) {
             EVENT_LOGE("Failed to convert value to string.");
+            std::string msg = "Incorrect parameter types.The type of param must be string.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return false;
         }
         events.push_back(event);
@@ -489,7 +493,8 @@ napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const n
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
     if (argc < ARGC_ONE) {
         EVENT_LOGE("The param is invalid.");
-        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        std::string msg = "Mandatory parameters are left unspecified.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         napi_get_undefined(env, &result);
         return result;
     }
@@ -497,7 +502,8 @@ napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const n
     NAPI_CALL(env, napi_typeof(env, argv[INDEX_ZERO], &valueType));
     if (valueType != napi_boolean) {
         EVENT_LOGE("Parse type failed.");
-        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        std::string msg = "Incorrect parameter types.The type of param must be boolean.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         napi_get_undefined(env, &result);
         return result;
     }

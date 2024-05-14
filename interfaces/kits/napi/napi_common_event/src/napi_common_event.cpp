@@ -353,7 +353,8 @@ napi_value CreateSubscriberSync(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_object) {
         EVENT_LOGE("Wrong argument type. object expected.");
-        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        std::string msg = "Incorrect parameter types.The type of param must be object.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return NapiGetNull(env);
     }
 
@@ -1059,7 +1060,9 @@ napi_value SetCodeAndDataSync(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_value_string_utf8(env, argv[1], str, STR_DATA_MAX_SIZE, &strLen));
     if (strLen > STR_DATA_MAX_SIZE - 1) {
         EVENT_LOGE("data over size");
-        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
+        std::string msg = "Parameter verification failed. cannot exceed ";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
+            msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
         return NapiGetNull(env);;
     }
     data = str;
