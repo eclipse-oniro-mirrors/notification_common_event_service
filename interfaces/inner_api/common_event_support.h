@@ -1296,6 +1296,14 @@ public:
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_MINORSMODE_OFF;
+    
+    /**
+     * Indicates the action of a common event that the bundle resources have been changed.
+     * To subscribe to this common event, your application must have the ohos.permission.GET_BUNDLE_RESOURCES
+     * permission.
+     * This is a protected common event, which can be sent only by the system.
+     */
+    static const std::string COMMON_EVENT_BUNDLE_RESOURCES_CHANGED;
 
 public:
     CommonEventSupport();
