@@ -24,6 +24,7 @@
 #include "array_wrapper.h"
 #include "want_params_wrapper.h"
 #include "securec.h"
+#include <cinttypes>
 
 namespace OHOS::CommonEventManager {
     const char *FD = "FD";
@@ -408,7 +409,7 @@ namespace OHOS::CommonEventManager {
         std::map<std::string, sptr<OHOS::AAFwk::IInterface>> paramsMap = wantP.GetParams();
         int count = 0;
         auto size = static_cast<int64_t>(paramsMap.size());
-        LOGI("paramsMap size = %{public}lld", size);
+        LOGI("paramsMap size = %{public}" PRId64, size);
         cData.parameters.head = static_cast<CParameters *>(malloc(sizeof(CParameters) * size));
         if (cData.parameters.head == nullptr) {
             return;
