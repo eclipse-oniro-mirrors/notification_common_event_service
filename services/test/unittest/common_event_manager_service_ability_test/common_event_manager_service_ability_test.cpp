@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include "refbase.h"
 #include <gtest/gtest.h>
 #include <numeric>
 #define private public
@@ -63,7 +64,7 @@ HWTEST_F(CommonEventManagerServiceAbilityTest, CommonEventManagerServiceAbility_
     std::shared_ptr<CommonEventManagerServiceAbility> commonEventManagerServiceAbility =
         std::make_shared<CommonEventManagerServiceAbility>(systemAbilityId, runOnCreate);
     ASSERT_NE(nullptr, commonEventManagerServiceAbility);
-    commonEventManagerServiceAbility->service_ = std::make_shared<CommonEventManagerService>();
+    commonEventManagerServiceAbility->service_ = sptr<CommonEventManagerService>();
     commonEventManagerServiceAbility->OnStart();
     GTEST_LOG_(INFO) << "CommonEventManagerServiceAbility_0100 end";
 }
