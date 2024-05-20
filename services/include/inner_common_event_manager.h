@@ -23,6 +23,7 @@
 
 namespace OHOS {
 namespace EventFwk {
+#define EXPORT __attribute__((visibility ("default")))
 struct EventComeFrom {
     bool isSubsystem = false;
     bool isSystemApp = false;
@@ -32,7 +33,7 @@ struct EventComeFrom {
 
 class InnerCommonEventManager {
 public:
-    InnerCommonEventManager();
+    EXPORT InnerCommonEventManager();
 
     virtual ~InnerCommonEventManager() {};
 
@@ -51,7 +52,7 @@ public:
      * @param service Indicates the common event service.
      * @return Returns true if successful; false otherwise.
      */
-    bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishinfo,
+    EXPORT bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
         const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId, const std::string &bundleName,
         const sptr<IRemoteObject> &service = nullptr);
@@ -68,7 +69,7 @@ public:
      * @param bundleName Indicates the name of bundle.
      * @return Returns true if successful; false otherwise.
      */
-    bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    EXPORT bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
         const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName);
 
@@ -78,7 +79,7 @@ public:
      * @param commonEventListener Indicates the common event subscriber.
      * @return Returns true if successful; false otherwise.
      */
-    bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener);
+    EXPORT bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener);
 
     /**
      * Gets the current sticky common event
@@ -87,7 +88,7 @@ public:
      * @param eventData Indicates the common event data.
      * @return Returns true if successful; false otherwise.
      */
-    bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
+    EXPORT bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
 
     /**
      * Dumps state of common event service.
@@ -97,7 +98,7 @@ public:
      * @param userId Indicates the user ID.
      * @param state Indicates the state of common event service.
      */
-    void DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+    EXPORT void DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
         std::vector<std::string> &state);
 
     /**
@@ -108,7 +109,7 @@ public:
      * @param data Indicates the data of a common event.
      * @param abortEvent Indicates Whether to cancel the current common event.
      */
-    void FinishReceiver(
+    EXPORT void FinishReceiver(
         const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent);
 
     /**
@@ -116,19 +117,19 @@ public:
      *
      * @param uid Indicates the uid of application.
      */
-    void Freeze(const uid_t &uid);
+    EXPORT void Freeze(const uid_t &uid);
 
     /**
      * Unfreezes application.
      *
      * @param uid Indicates the uid of application.
      */
-    void Unfreeze(const uid_t &uid);
+    EXPORT void Unfreeze(const uid_t &uid);
 
     /**
      * Unfreezes all frozen applications.
      */
-    void UnfreezeAll();
+    EXPORT void UnfreezeAll();
 
     /**
      * dump event for hidumper.
@@ -145,7 +146,7 @@ public:
      * @param callerUid caller uid.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    int32_t RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid);
+    EXPORT int32_t RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid);
 
     /**
      * Set Static Subscriber State.

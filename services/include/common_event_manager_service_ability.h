@@ -31,15 +31,15 @@ public:
      * @param systemAbilityId Indicates the system ability id.
      * @param runOnCreate Run the system ability on created.
      */
-    CommonEventManagerServiceAbility(const int32_t systemAbilityId, bool runOnCreate);
+    EXPORT CommonEventManagerServiceAbility(const int32_t systemAbilityId, bool runOnCreate);
 
     /**
      * @brief The destructor.
      */
-    virtual ~CommonEventManagerServiceAbility() final;
+    EXPORT virtual ~CommonEventManagerServiceAbility() final;
 
 private:
-    void OnStart() final;
+    EXPORT void OnStart() final;
     void OnStop() final;
 
     DISALLOW_COPY_AND_MOVE(CommonEventManagerServiceAbility);

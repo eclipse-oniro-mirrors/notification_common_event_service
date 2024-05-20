@@ -29,6 +29,7 @@
 
 namespace OHOS {
 namespace EventFwk {
+#define EXPORT __attribute__((visibility ("default")))
 struct EventSubscriberRecord {
     std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo;
     sptr<IRemoteObject> commonEventListener;
@@ -85,9 +86,9 @@ using FrozenRecords = std::map<EventSubscriberRecord, std::vector<EventRecordPtr
 
 class CommonEventSubscriberManager : public DelayedSingleton<CommonEventSubscriberManager> {
 public:
-    CommonEventSubscriberManager();
+    EXPORT CommonEventSubscriberManager();
 
-    virtual ~CommonEventSubscriberManager() override;
+    EXPORT virtual ~CommonEventSubscriberManager() override;
 
     /**
      * Inserts a specific subscriber.
@@ -98,7 +99,7 @@ public:
      * @param eventRecordInfo Indicates the information of event record.
      * @return Returns the subscribe record.
      */
-    std::shared_ptr<EventSubscriberRecord> InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
+    EXPORT std::shared_ptr<EventSubscriberRecord> InsertSubscriber(const SubscribeInfoPtr &eventSubscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime,
         const EventRecordInfo &eventRecordInfo);
 
@@ -108,7 +109,7 @@ public:
      * @param commonEventListener Indicates the subscriber object.
      * @return Returns the result code.
      */
-    int RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener);
+    EXPORT int RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener);
 
     /**
      * Gets subscriber records.
@@ -187,9 +188,9 @@ public:
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
-    bool InsertSubscriberRecordLocked(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
+    EXPORT bool InsertSubscriberRecordLocked(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
 
-    int RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener);
+    EXPORT int RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener);
 
     bool CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId);
 

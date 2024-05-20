@@ -29,13 +29,14 @@
 
 namespace OHOS {
 namespace EventFwk {
+#define EXPORT __attribute__((visibility ("default")))
 class BundleManagerHelper : public DelayedSingleton<BundleManagerHelper> {
 public:
     using IBundleMgr = OHOS::AppExecFwk::IBundleMgr;
 
-    BundleManagerHelper();
+    EXPORT BundleManagerHelper();
 
-    virtual ~BundleManagerHelper();
+    EXPORT virtual ~BundleManagerHelper();
 
     /**
      * Checks whether it is system application.
@@ -70,7 +71,8 @@ public:
      * @param userId Indicates the ID of user.
      * @return Returns true if successful; false otherwise.
      */
-    bool QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos, const int32_t &userId);
+    EXPORT bool QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos,
+        const int32_t &userId);
 
     /**
      * Gets res config file.
@@ -79,7 +81,8 @@ public:
      * @param profileInfos Indicates the profile information.
      * @return Returns true if successful; false otherwise.
      */
-    bool GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension, std::vector<std::string> &profileInfos);
+    EXPORT bool GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension,
+        std::vector<std::string> &profileInfos);
 
     /**
      * Clears bundle manager helper.

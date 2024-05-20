@@ -24,6 +24,7 @@
 
 namespace OHOS {
 namespace EventFwk {
+#define EXPORT __attribute__((visibility ("default")))
 enum class PermissionState {
     DEFAULT,
     AND,
@@ -40,7 +41,7 @@ struct Permission {
 
 class CommonEventPermissionManager : public DelayedSingleton<CommonEventPermissionManager> {
 public:
-    CommonEventPermissionManager();
+    EXPORT CommonEventPermissionManager();
 
     ~CommonEventPermissionManager() = default;
 
@@ -55,7 +56,7 @@ public:
      *
      * @param event Indicates the event name
      */
-    Permission GetEventPermission(const std::string &event);
+    EXPORT Permission GetEventPermission(const std::string &event);
 
     bool IsSystemAPIEvent(const std::string &event);
 
