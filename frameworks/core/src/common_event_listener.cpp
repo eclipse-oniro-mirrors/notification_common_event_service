@@ -158,29 +158,35 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
 void CommonEventListener::Stop()
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (listenerQueue_) {
-        delete static_cast<ffrt::queue*>(listenerQueue_);
-        listenerQueue_ = nullptr;
-    }
+    void *queue = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (listenerQueue_) {
+            queue = listenerQueue_;
+            listenerQueue_ = nullptr;
+        }
 
-    if (handler_) {
-        handler_.reset();
-    }
+        if (handler_) {
+            handler_.reset();
+        }
 
-    if (commonEventSubscriber_ == nullptr) {
-        EVENT_LOGE("commonEventSubscriber_ == nullptr");
-        return;
-    }
-    EVENT_LOGD("event size: %{public}zu",
-        commonEventSubscriber_->GetSubscribeInfo().GetMatchingSkills().CountEvent());
-    if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
-        EVENT_LOGD("stop listener in HANDLER mode");
-        return;
-    }
+        if (commonEventSubscriber_ == nullptr) {
+            EVENT_LOGE("commonEventSubscriber_ == nullptr");
+            return;
+        }
+        EVENT_LOGD("event size: %{public}zu",
+            commonEventSubscriber_->GetSubscribeInfo().GetMatchingSkills().CountEvent());
+        if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
+            EVENT_LOGD("stop listener in HANDLER mode");
+            return;
+        }
 
-    if (runner_) {
-        runner_.reset();
+        if (runner_) {
+            runner_.reset();
+        }
+    }
+    if (queue) {
+        delete static_cast<ffrt::queue*>(queue);
     }
 }
 }  // namespace EventFwk
