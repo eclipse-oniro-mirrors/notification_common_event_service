@@ -27,11 +27,12 @@
 
 namespace OHOS {
 namespace EventFwk {
+#define EXPORT __attribute__((visibility ("default")))
 class CommonEventControlManager : public std::enable_shared_from_this<CommonEventControlManager> {
 public:
-    CommonEventControlManager();
+    EXPORT CommonEventControlManager();
 
-    ~CommonEventControlManager();
+    EXPORT ~CommonEventControlManager();
 
     /**
      * Publishes the common event.
@@ -40,7 +41,8 @@ public:
      * @param commonEventListener Indicates the last subscriber object.
      * @return Returns true if success; false otherwise.
      */
-    bool PublishCommonEvent(const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener);
+    EXPORT bool PublishCommonEvent(const CommonEventRecord &eventRecord,
+        const sptr<IRemoteObject> &commonEventListener);
 
     /**
      * Publishes the sticky common event.
@@ -49,7 +51,7 @@ public:
      * @param subscriberRecord Indicates the subscriber object.
      * @return Returns true if success; false otherwise.
      */
-    bool PublishStickyCommonEvent(
+    EXPORT bool PublishStickyCommonEvent(
         const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord);
 
     /**
@@ -69,7 +71,7 @@ public:
      * @param abortEvent Indicates whether to cancel the current common event.
      * @return Returns true if success; false otherwise.
      */
-    bool FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
+    EXPORT bool FinishReceiverAction(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
         const std::string &receiverData, const bool &abortEvent);
 
     /**
@@ -77,7 +79,7 @@ public:
      *
      * @param isFromMsg Indicates whether triggered by message.
      */
-    void CurrentOrderedEventTimeout(bool isFromMsg);
+    EXPORT void CurrentOrderedEventTimeout(bool isFromMsg);
 
     /**
      * Processes the next ordered event.
@@ -125,64 +127,66 @@ private:
 
     bool GetUnorderedEventHandler();
 
-    bool NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord);
+    EXPORT bool NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord);
 
-    bool ProcessOrderedEvent(
+    EXPORT bool ProcessOrderedEvent(
         const CommonEventRecord &commonEventRecord, const sptr<IRemoteObject> &commonEventListener);
 
-    bool GetOrderedEventHandler();
+    EXPORT bool GetOrderedEventHandler();
 
-    bool EnqueueOrderedRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr);
+    EXPORT bool EnqueueOrderedRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr);
 
-    bool EnqueueUnorderedRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr);
+    EXPORT bool EnqueueUnorderedRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr);
 
-    bool ScheduleOrderedCommonEvent();
+    EXPORT bool ScheduleOrderedCommonEvent();
 
-    bool NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index);
+    EXPORT bool NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index);
 
     void SetTime(size_t recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage);
 
-    bool SetTimeout();
+    EXPORT bool SetTimeout();
 
-    bool CancelTimeout();
+    EXPORT bool CancelTimeout();
 
-    bool FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
+    EXPORT bool FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
         const std::string &receiverData, const bool &abortEvent);
 
-    int8_t CheckPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
+    EXPORT int8_t CheckPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
-    bool CheckSubscriberPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
+    EXPORT bool CheckSubscriberPermission(const EventSubscriberRecord &subscriberRecord,
+        const CommonEventRecord &eventRecord);
 
     bool CheckSubscriberRequiredPermission(const std::string &subscriberRequiredPermission,
         const CommonEventRecord &eventRecord, const EventSubscriberRecord &subscriberRecord);
 
-    bool CheckPublisherRequiredPermissions(const std::vector<std::string> &publisherRequiredPermissions,
+    EXPORT bool CheckPublisherRequiredPermissions(const std::vector<std::string> &publisherRequiredPermissions,
         const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
-    bool NotifyFreezeEvents(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
+    EXPORT bool NotifyFreezeEvents(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
-    void GetOrderedEventRecords(
+    EXPORT void GetOrderedEventRecords(
         const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
 
-    void GetUnorderedEventRecords(
+    EXPORT void GetUnorderedEventRecords(
         const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
 
-    void GetHistoryEventRecords(
+    EXPORT void GetHistoryEventRecords(
         const std::string &event, const int32_t &userId, std::list<HistoryEventRecord> &records);
 
-    void DumpStateByCommonEventRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
+    EXPORT void DumpStateByCommonEventRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 
-    void DumpStateBySubscriberRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
+    EXPORT void DumpStateBySubscriberRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 
-    void DumpHistoryStateBySubscriberRecord(const HistoryEventRecord &record, std::string &dumpInfo);
+    EXPORT void DumpHistoryStateBySubscriberRecord(const HistoryEventRecord &record, std::string &dumpInfo);
 
-    void DumpHistoryStateByCommonEventRecord(const HistoryEventRecord &record, std::string &dumpInfo);
+    EXPORT void DumpHistoryStateByCommonEventRecord(const HistoryEventRecord &record, std::string &dumpInfo);
 
-    void EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr, bool hasLastSubscribe);
+    EXPORT void EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr,
+        bool hasLastSubscribe);
 
-    void PublishFrozenEventsInner(const FrozenRecords &frozenEventRecords);
+    EXPORT void PublishFrozenEventsInner(const FrozenRecords &frozenEventRecords);
 
-    void SendOrderedEventProcTimeoutHiSysEvent(const std::shared_ptr<EventSubscriberRecord> &subscriberRecord,
+    EXPORT void SendOrderedEventProcTimeoutHiSysEvent(const std::shared_ptr<EventSubscriberRecord> &subscriberRecord,
         const std::string &eventName);
     
     void NotifyUnorderedEventLocked(std::shared_ptr<OrderedEventRecord> &eventRecord);

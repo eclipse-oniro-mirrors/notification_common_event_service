@@ -27,6 +27,7 @@
 
 namespace OHOS {
 namespace EventFwk {
+#define EXPORT __attribute__((visibility ("default")))
 class AbilityManagerHelper : public DelayedSingleton<AbilityManagerHelper> {
 public:
     AbilityManagerHelper() {}
@@ -51,14 +52,14 @@ public:
      * @param userId Indicates the ID of user.
      * @return Returns result code.
      */
-    int ConnectAbility(const AAFwk::Want &want, const CommonEventData &event,
+    EXPORT int ConnectAbility(const AAFwk::Want &want, const CommonEventData &event,
         const sptr<IRemoteObject> &callerToken, const int32_t &userId);
 
     /**
      * Clears ability manager service remote object.
      *
      */
-    void Clear();
+    EXPORT void Clear();
 
     /**
      * @brief Disconnect ability delay.
@@ -66,7 +67,7 @@ public:
      */
     void DisconnectServiceAbilityDelay(const sptr<StaticSubscriberConnection> &connection);
 private:
-    bool GetAbilityMgrProxy();
+    EXPORT bool GetAbilityMgrProxy();
     void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection);
 
     std::mutex mutex_;
