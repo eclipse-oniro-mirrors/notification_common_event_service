@@ -348,7 +348,8 @@ bool CommonEventDumpTest::SubscribeCommonEvent(const std::shared_ptr<CommonEvent
         callingPid,
         callingUid,
         tokenID,
-        bundleName);
+        bundleName,
+        0);
     return handler_->PostTask(SubscribeCommonEventFunc);
 }
 

@@ -45,10 +45,11 @@ public:
      *
      * @param subscribeInfo the subscribe information.
      * @param commonEventListener the subscriber object.
+     * @param instanceKey Indicates the instance key
      * @return Returns true if success; false otherwise.
      */
-    int32_t SubscribeCommonEvent(
-        const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
+    int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+        const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) override;
 
     /**
      * Dumps the state for common event service.

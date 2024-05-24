@@ -71,7 +71,8 @@ public:
      */
     EXPORT bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
-        const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName);
+        const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName,
+        const int32_t instanceKey = 0);
 
     /**
      * Unsubscribes from common events.
@@ -164,6 +165,15 @@ public:
      * @return Returns ERR_OK if success; otherwise failed.
      */
     int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable);
+
+    /**
+    * Set freeze status of process.
+    *
+    * @param pidList Indicates the list of process id.
+    * @param isFreeze Indicates wheather the process is freezed.
+    * @return Returns true if successful; false otherwise.
+    */
+    bool SetFreezeStatus(std::set<int> pidList, bool isFreeze);
 
 private:
     bool ProcessStickyEvent(const CommonEventRecord &record);

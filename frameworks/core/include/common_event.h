@@ -194,6 +194,15 @@ public:
      */
     int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable);
 
+    /**
+    * Set freeze status of process.
+    *
+    * @param pidList Indicates the list of process id.
+    * @param isFreeze Indicates wheather the process is freezed.
+    * @return Returns true if successful; false otherwise.
+    */
+    bool SetFreezeStatus(std::set<int> pidList, bool isFreeze);
+
 private:
     /**
      * Gets common event proxy.

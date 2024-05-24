@@ -65,10 +65,11 @@ public:
      *
      * @param subscribeInfo Indicates the subscribe information
      * @param commonEventListener Indicates the subscriber object
+     * @param instanceKey Indicates the instance key
      * @return Returns true if successful; false otherwise.
      */
-    int32_t SubscribeCommonEvent(
-        const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
+    int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+        const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) override;
 
     /**
      * Unsubscribes from common events.
@@ -158,6 +159,15 @@ public:
      * @return Returns ERR_OK if success; otherwise failed.
      */
     int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable) override;
+
+    /**
+    * Set freeze status of process.
+    *
+    * @param pidList Indicates the list of process id.
+    * @param isFreeze Indicates wheather the process is freezed.
+    * @return Returns true if successful; false otherwise.
+    */
+    bool SetFreezeStatus(std::set<int> pidList, bool isFreeze) override;
 
 private:
     bool SendRequest(CommonEventInterfaceCode code, MessageParcel &data, MessageParcel &reply);

@@ -25,8 +25,8 @@ int32_t MockCommonEventStub::PublishCommonEvent(const CommonEventData &event, co
     return ERR_OK;
 }
 
-int32_t MockCommonEventStub::SubscribeCommonEvent(
-    const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
+int32_t MockCommonEventStub::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
 {
     EVENT_LOGI("enter");
 

@@ -160,7 +160,8 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
     if (subscribeState == INITIAL_SUBSCRIPTION) {
         EVENT_LOGD("before SubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
-        auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
+        auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
+        commonEventListener, UNDEFINED_INSTANCE_KEY);
         if (res != ERR_OK) {
             EVENT_LOGD("subscribe common event failed, remove event listener");
             std::lock_guard<std::mutex> lock(eventListenersMutex_);
@@ -338,6 +339,17 @@ int32_t CommonEvent::SetStaticSubscriberState(const std::vector<std::string> &ev
     return commonEventProxy_->SetStaticSubscriberState(events, enable);
 }
 
+bool CommonEvent::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
+{
+    EVENT_LOGD("enter");
+    sptr<ICommonEvent> proxy_ = GetCommonEventProxy();
+    if (!proxy_) {
+        EVENT_LOGE("failed to get commonEventProxy");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+    return proxy_->SetFreezeStatus(pidList, isFreeze);
+}
+
 sptr<ICommonEvent> CommonEvent::GetCommonEventProxy() __attribute__((no_sanitize("cfi")))
 {
     EVENT_LOGD("enter");
@@ -433,7 +445,8 @@ __attribute__((no_sanitize("cfi"))) void CommonEvent::Resubscribe()
         for (auto it = eventListeners_.begin(); it != eventListeners_.end();) {
             auto subscriber = it->first;
             auto listener = it->second;
-            int32_t res = commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), listener);
+            int32_t res = commonEventProxy_->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
+                listener, UNDEFINED_INSTANCE_KEY);
             if (res != ERR_OK) {
                 EVENT_LOGW("subscribe common event failed, remove event listener");
                 it = eventListeners_.erase(it);

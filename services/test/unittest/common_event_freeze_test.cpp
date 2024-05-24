@@ -299,7 +299,8 @@ bool CommonEventFreezeTest::SubscribeCommonEvent(const std::shared_ptr<CommonEve
         callingPid,
         callingUid,
         tokenID,
-        bundleName);
+        bundleName,
+        0);
     return handler_->PostTask(SubscribeCommonEventFunc);
 }
 

@@ -324,6 +324,7 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
     for (auto it = subscribers_.begin(); it != subscribers_.end(); ++it) {
         if (commonEventListener == (*it)->commonEventListener) {
             RemoveFrozenEventsBySubscriber((*it));
+            RemoveFrozenEventsMapBySubscriber((*it));
             (*it)->commonEventListener = nullptr;
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
             EVENT_LOGI("Unsubscribe subscriberID: %{public}s", (*it)->eventRecordInfo.subId.c_str());
@@ -473,6 +474,28 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
     }
 }
 
+void CommonEventSubscriberManager::UpdateFreezeInfo(
+    std::set<int> pidList, const bool &freezeState, const int64_t &freezeTime)
+{
+    EVENT_LOGD("enter");
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto recordPtr : subscribers_) {
+        for (auto it = pidList.begin(); it != pidList.end(); it++) {
+            if (recordPtr->eventRecordInfo.pid == *it) {
+                if (freezeState) {
+                    recordPtr->freezeTime = freezeTime;
+                } else {
+                    recordPtr->freezeTime = 0;
+                }
+                recordPtr->isFreeze = freezeState;
+                EVENT_LOGD("recordPtr->pid: %{public}d, recordPtr->isFreeze: %{public}d",
+                    recordPtr->eventRecordInfo.pid, recordPtr->isFreeze);
+            }
+        }
+    }
+}
+
 void CommonEventSubscriberManager::UpdateAllFreezeInfos(const bool &freezeState, const int64_t &freezeTime)
 {
     EVENT_LOGD("enter");
@@ -565,6 +588,89 @@ void CommonEventSubscriberManager::RemoveFrozenEventsBySubscriber(const Subscrib
 
     auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {
+        auto eventRecordsItems = frozenRecordsItem->second.find(*subscriberRecord);
+        if (eventRecordsItems != frozenRecordsItem->second.end()) {
+            frozenRecordsItem->second.erase(*subscriberRecord);
+        }
+    }
+}
+
+void CommonEventSubscriberManager::InsertFrozenEventsMap(
+    const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
+{
+    EVENT_LOGD("enter");
+
+    if (subscriberRecord == nullptr) {
+        EVENT_LOGE("subscriberRecord is null");
+        return;
+    }
+
+    auto record = std::make_shared<CommonEventRecord>(eventRecord);
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto frozenRecordsItem = frozenEventsMap_.find(subscriberRecord->eventRecordInfo.pid);
+    if (frozenRecordsItem != frozenEventsMap_.end()) {
+        auto eventRecordsItem = frozenRecordsItem->second.find(*subscriberRecord);
+        if (eventRecordsItem != frozenRecordsItem->second.end()) {
+            eventRecordsItem->second.emplace_back(record);
+            time_t backRecordTime = mktime(&eventRecordsItem->second.back()->recordTime);
+            time_t frontRecordTime = mktime(&eventRecordsItem->second.front()->recordTime);
+            time_t timeDiff = backRecordTime - frontRecordTime;
+            if (timeDiff > FREEZE_EVENT_TIMEOUT) {
+                eventRecordsItem->second.erase(eventRecordsItem->second.begin());
+            }
+        } else {
+            std::vector<EventRecordPtr> EventRecords;
+            EventRecords.emplace_back(record);
+            frozenRecordsItem->second[*subscriberRecord] = EventRecords;
+        }
+    } else {
+        std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenRecords;
+        std::vector<EventRecordPtr> EventRecords;
+        EventRecords.emplace_back(record);
+        frozenRecords[*subscriberRecord] = EventRecords;
+        frozenEventsMap_[subscriberRecord->eventRecordInfo.pid] = frozenRecords;
+    }
+}
+
+std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscriberManager::GetFrozenEventsMapByPid(
+    const pid_t &pid)
+{
+    EVENT_LOGD("enter");
+
+    std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenEvents;
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto infoItem = frozenEventsMap_.find(pid);
+    if (infoItem != frozenEventsMap_.end()) {
+        frozenEvents = infoItem->second;
+    }
+
+    RemoveFrozenEventsMapByPid(pid);
+
+    return frozenEvents;
+}
+
+std::map<pid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEventsMap()
+{
+    EVENT_LOGD("enter");
+    std::lock_guard<std::mutex> lock(mutex_);
+    return std::move(frozenEventsMap_);
+}
+
+void CommonEventSubscriberManager::RemoveFrozenEventsMapByPid(const pid_t &pid)
+{
+    EVENT_LOGD("enter");
+    auto infoItem = frozenEventsMap_.find(pid);
+    if (infoItem != frozenEventsMap_.end()) {
+        frozenEventsMap_.erase(pid);
+    }
+}
+
+void CommonEventSubscriberManager::RemoveFrozenEventsMapBySubscriber(const SubscriberRecordPtr &subscriberRecord)
+{
+    EVENT_LOGD("enter");
+
+    auto frozenRecordsItem = frozenEventsMap_.find(subscriberRecord->eventRecordInfo.pid);
+    if (frozenRecordsItem != frozenEventsMap_.end()) {
         auto eventRecordsItems = frozenRecordsItem->second.find(*subscriberRecord);
         if (eventRecordsItems != frozenRecordsItem->second.end()) {
             frozenRecordsItem->second.erase(*subscriberRecord);

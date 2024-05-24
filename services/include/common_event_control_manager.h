@@ -97,6 +97,14 @@ public:
     bool PublishFreezeCommonEvent(const uid_t &uid);
 
     /**
+    * Publishes freeze common event.
+    *
+    * @param uid Indicates the list of process id.
+    * @return Returns true if success; false otherwise.
+    */
+    bool PublishFreezeCommonEvent(std::set<int> pidList);
+
+    /**
      * Publishes all freeze common events.
      *
      * @return Returns true if success; false otherwise.

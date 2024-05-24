@@ -217,8 +217,8 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
     return ERR_OK;
 }
 
-int32_t CommonEventManagerService::SubscribeCommonEvent(
-    const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
+int32_t CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGD("enter");
@@ -246,7 +246,8 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(
         callingPid,
         callingUid,
         callerToken,
-        bundleName] () {
+        bundleName,
+        instanceKey] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
             EVENT_LOGE("innerCommonEventManager not exist");
@@ -258,7 +259,8 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(
             callingPid,
             callingUid,
             callerToken,
-            bundleName);
+            bundleName,
+            instanceKey);
         if (!ret) {
             EVENT_LOGE("failed to subscribe event");
         }
@@ -513,6 +515,33 @@ int32_t CommonEventManagerService::SetStaticSubscriberState(const std::vector<st
         return ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
     }
     return innerCommonEventManager_->SetStaticSubscriberState(events, enable);
+}
+
+bool CommonEventManagerService::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
+{
+    EVENT_LOGD("enter");
+
+    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+        EVENT_LOGE("Not subsystem request");
+        return false;
+    }
+    if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
+        return false;
+    }
+
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> setFreezeStatusFunc = [wp, pidList, isFreeze] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        innerCommonEventManager->SetFreezeStatus(pidList, isFreeze);
+    };
+
+    commonEventSrvQueue_->submit(setFreezeStatusFunc);
+    return true;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
