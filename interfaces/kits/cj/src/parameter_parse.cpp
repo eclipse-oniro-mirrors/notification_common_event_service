@@ -274,10 +274,14 @@ namespace OHOS::CommonEventManager {
         p->value = static_cast<void *>(arrP);
     }
 
-    void ClearParametersPtr(CParameters *p, int count)
+    void ClearParametersPtr(CParameters *p, int count, bool isKey)
     {
         for (int i = 0; i < count; i++) {
+            free((p + i)->key);
             free((p + i)->value);
+        }
+        if (!isKey) {
+            free((p + count)->key);
         }
         free(p);
     }
@@ -418,6 +422,9 @@ namespace OHOS::CommonEventManager {
         for (auto iter = paramsMap.begin(); iter != paramsMap.end(); iter++) {
             auto ptr = cData.parameters.head + count;
             ptr->key = MallocCString(iter->first);
+            if (ptr->key == nullptr) {
+                return ClearParametersPtr(cData.parameters.head, count, true);
+            }
             ptr->value = nullptr;
             if (AAFwk::IString::Query(iter->second) != nullptr) {
                 InnerWrapWantParamsString(wantP, ptr);
@@ -437,8 +444,8 @@ namespace OHOS::CommonEventManager {
                 sptr<AAFwk::IArray> array(ao);
                 InnerWrapWantParamsArray(wantP, array, ptr);
             }
-            if (ptr == nullptr) {
-                return ClearParametersPtr(cData.parameters.head, count);
+            if (ptr->value == nullptr) {
+                return ClearParametersPtr(cData.parameters.head, count, false);
             }
             count++;
         }
