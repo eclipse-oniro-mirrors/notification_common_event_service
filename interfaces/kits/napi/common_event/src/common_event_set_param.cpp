@@ -23,9 +23,9 @@ namespace OHOS {
 namespace EventFwkNapi {
 using namespace OHOS::EventFwk;
 
-static const int32_t SET_CODE_MAX_PARA = 2;
-static const int32_t SET_DATA_MAX_PARA = 2;
-static const int32_t SET_CODE_AND_DATA_MAX_PARA = 3;
+static const uint32_t SET_CODE_MAX_PARA = 2;
+static const uint32_t SET_DATA_MAX_PARA = 2;
+static const uint32_t SET_CODE_AND_DATA_MAX_PARA = 3;
 static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;

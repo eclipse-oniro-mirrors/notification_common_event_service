@@ -31,8 +31,8 @@ static const int32_t PUBLISH_MAX_PARA = 2;
 static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t INDEX_ZERO = 0;
 static const uint32_t INDEX_ONE = 1;
-static const int32_t ARGC_ONE = 1;
-static const int32_t ARGC_TWO = 2;
+static const uint32_t ARGC_ONE = 1;
+static const uint32_t ARGC_TWO = 2;
 static const int32_t PUBLISH_MAX_PARA_AS_USER = 3;
 static const int32_t STR_DATA_MAX_SIZE = 64 * 1024;  // 64KB
 
