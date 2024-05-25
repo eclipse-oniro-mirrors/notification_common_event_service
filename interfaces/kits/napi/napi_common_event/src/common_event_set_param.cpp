@@ -23,14 +23,14 @@ namespace EventManagerFwkNapi {
 using namespace OHOS::EventFwk;
 using namespace OHOS::Notification;
 
-static const int32_t SET_CODE_MAX_PARA = 2;
-static const int32_t SET_DATA_MAX_PARA = 2;
-static const int32_t SET_CODE_AND_DATA_MAX_PARA = 3;
+static const uint32_t SET_CODE_MAX_PARA = 2;
+static const uint32_t SET_DATA_MAX_PARA = 2;
+static const uint32_t SET_CODE_AND_DATA_MAX_PARA = 3;
 static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t INDEX_ZERO = 0;
 static const uint32_t INDEX_ONE = 1;
-static const int32_t ARGC_ONE = 1;
-static const int32_t ARGC_TWO = 2;
+static const uint32_t ARGC_ONE = 1;
+static const uint32_t ARGC_TWO = 2;
 
 void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status status, void *data)
 {
