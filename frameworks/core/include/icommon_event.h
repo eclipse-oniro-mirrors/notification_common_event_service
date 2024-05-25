@@ -60,10 +60,11 @@ public:
      *
      * @param subscribeInfo Indicates the subscribe information.
      * @param commonEventListener Indicates the subscriber object.
+     * @param instanceKey Indicates the instance key
      * @return Returns true if successful; false otherwise.
      */
-    virtual int32_t SubscribeCommonEvent(
-        const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) = 0;
+    virtual int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+        const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) = 0;
 
     /**
      * Unsubscribes from common events.
@@ -153,6 +154,15 @@ public:
      * @return Returns ERR_OK if success; otherwise failed.
      */
     virtual int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable) = 0;
+
+    /**
+    * Set freeze status of process.
+    *
+    * @param pidList Indicates the list of process id.
+    * @param isFreeze Indicates wheather the process is freezed.
+    * @return Returns true if successful; false otherwise.
+    */
+    virtual bool SetFreezeStatus(std::set<int> pidList, bool isFreeze) = 0;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

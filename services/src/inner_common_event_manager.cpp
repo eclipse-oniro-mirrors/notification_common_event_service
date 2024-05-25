@@ -159,8 +159,9 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 }
 
 bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
-    const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
-    const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName)
+    const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime,
+    const pid_t &pid, const uid_t &uid, const Security::AccessToken::AccessTokenID &callerToken,
+    const std::string &bundleName, const int32_t instanceKey)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGD("enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
@@ -198,12 +199,12 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     // generate subscriber id : pid_uid_subCount_time
     int64_t now = SystemTime::GetNowSysTime();
     std::string subId = std::to_string(pid) + "_" + std::to_string(uid) + "_" +
-        std::to_string(subCount.load()) + "_" + std::to_string(now);
+        std::to_string(instanceKey) + "_" + std::to_string(subCount.load()) + "_" + std::to_string(now);
     subCount.fetch_add(1);
     eventRecordInfo.subId = subId;
     EVENT_LOGI("SubscribeCommonEvent %{public}s(pid = %{public}d, uid = %{public}d, "
-        "userId = %{public}d, subId = %{public}s)", bundleName.c_str(), pid, uid,
-        subscribeInfo.GetUserId(), subId.c_str());
+        "userId = %{public}d, instanceKey = %{public}d, subId = %{public}s)",
+        bundleName.c_str(), pid, uid, subscribeInfo.GetUserId(), instanceKey, subId.c_str());
 
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
@@ -326,6 +327,21 @@ void InnerCommonEventManager::Unfreeze(const uid_t &uid)
         return;
     }
     controlPtr_->PublishFreezeCommonEvent(uid);
+}
+
+bool InnerCommonEventManager::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
+{
+    EVENT_LOGD("enter");
+    DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(
+        pidList, isFreeze, SystemTime::GetNowSysTime());
+    if (!isFreeze) {
+        if (!controlPtr_) {
+            EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+            return false;
+        }
+        return controlPtr_->PublishFreezeCommonEvent(pidList);
+    }
+    return true;
 }
 
 void InnerCommonEventManager::UnfreezeAll()

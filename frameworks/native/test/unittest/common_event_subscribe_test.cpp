@@ -100,8 +100,8 @@ public:
         return ERR_COMMON;
     }
 
-    virtual int32_t SubscribeCommonEvent(
-        const CommonEventSubscribeInfo &subscribeInfo, const OHOS::sptr<IRemoteObject> &commonEventListener)
+    virtual int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
     {
         return ERR_COMMON;
     }

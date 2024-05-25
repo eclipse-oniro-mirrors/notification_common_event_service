@@ -154,8 +154,8 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
     return ret;
 }
 
-int32_t CommonEventProxy::SubscribeCommonEvent(
-    const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
+int32_t CommonEventProxy::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
 {
     EVENT_LOGD("start");
 
@@ -187,6 +187,11 @@ int32_t CommonEventProxy::SubscribeCommonEvent(
             EVENT_LOGE("error to write parcelable hasSubscriber");
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
+    }
+
+    if (!data.WriteInt32(instanceKey)) {
+        EVENT_LOGE("Failed to write parcelable instanceKey");
+        return false;
     }
 
     bool ret = SendRequest(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT, data, reply);
@@ -516,6 +521,44 @@ int32_t CommonEventProxy::SetStaticSubscriberState(const std::vector<std::string
     }
 
     return reply.ReadInt32();
+}
+
+bool CommonEventProxy::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
+{
+    EVENT_LOGD("start");
+
+    MessageParcel data;
+    MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return false;
+    }
+
+    if (!data.WriteInt32(pidList.size())) {
+        EVENT_LOGE("Failed to write int pidList size");
+        return false;
+    }
+
+    for (auto it = pidList.begin(); it != pidList.end(); it++) {
+        if (!data.WriteInt32(*it)) {
+            EVENT_LOGE("Failed to write int pidList");
+            return false;
+        }
+    }
+
+    if (!data.WriteBool(isFreeze)) {
+        EVENT_LOGE("Failed to write isFreeze");
+        return false;
+    }
+
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_SET_FREEZE_STATUS, data, reply);
+    if (ret) {
+        ret = reply.ReadBool();
+    }
+
+    EVENT_LOGD("end");
+    return ret;
 }
 
 bool CommonEventProxy::SendRequest(CommonEventInterfaceCode code, MessageParcel &data, MessageParcel &reply)

@@ -137,6 +137,15 @@ public:
     void UpdateFreezeInfo(const uid_t &uid, const bool &freezeState, const int64_t &freezeTime = 0);
 
     /**
+    * Updates freeze information.
+    *
+    * @param pidList Indicates the list of process id.
+    * @param freezeState Indicates the freeze state.
+    * @param freezeTime Indicates the freeze time.
+    */
+    void UpdateFreezeInfo(std::set<int> pidList, const bool &freezeState, const int64_t &freezeTime = 0);
+
+    /**
      * Updates freeze information of all applications.
      *
      * @param freezeState Indicates the freeze state.
@@ -166,6 +175,29 @@ public:
      * @return Returns all frozen events.
      */
     std::map<uid_t, FrozenRecords> GetAllFrozenEvents();
+
+    /**
+    * Inserts freeze events.
+    *
+    * @param eventListener Indicates the subscriber object.
+    * @param eventRecord Indicates the event record.
+    */
+    void InsertFrozenEventsMap(const SubscriberRecordPtr &eventListener, const CommonEventRecord &eventRecord);
+
+    /**
+    * Gets the frozen events.
+    *
+    * @param pid Indicates the process id.
+    * @return Returns the frozen events.
+    */
+    FrozenRecords GetFrozenEventsMapByPid(const pid_t &pid);
+
+    /**
+    * Gets all frozen events.
+    *
+    * @return Returns all frozen events.
+    */
+    std::map<pid_t, FrozenRecords> GetAllFrozenEventsMap();
 
     /**
      * Dumps detailed information for specific subscriber record info.
@@ -204,6 +236,10 @@ private:
 
     void RemoveFrozenEvents(const uid_t &uid);
 
+    void RemoveFrozenEventsMapBySubscriber(const SubscriberRecordPtr &subscriberRecord);
+
+    void RemoveFrozenEventsMapByPid(const pid_t &pid);
+
     void SendSubscriberExceedMaximumHiSysEvent(int32_t userId, const std::string &eventName, uint32_t subscriberNum);
 
     bool CheckSubscriberCountReachedMaxinum();
@@ -220,6 +256,7 @@ private:
     std::map<uid_t, FrozenRecords> frozenEvents_;
     const time_t FREEZE_EVENT_TIMEOUT = 30; // How long we keep records. Unit: second
     std::map<pid_t, uint32_t> subscriberCounts_;
+    std::map<pid_t, FrozenRecords> frozenEventsMap_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

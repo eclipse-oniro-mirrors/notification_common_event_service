@@ -66,10 +66,11 @@ public:
      *
      * @param subscribeInfo Indicates the subscribe info.
      * @param commonEventListener Indicates the common event subscriber.
+     * @param instanceKey Indicates the instance key
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT int32_t SubscribeCommonEvent(
-        const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener) override;
+    EXPORT int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+        const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) override;
 
     /**
      * Unsubscribes from common events.
@@ -159,6 +160,15 @@ public:
      * @return Returns ERR_OK if success; otherwise failed.
      */
     EXPORT int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable) override;
+
+    /**
+    * Set freeze status of process.
+    *
+    * @param pidList Indicates the list of process id.
+    * @param isFreeze Indicates wheather the process is freezed.
+    * @return Returns true if successful; false otherwise.
+    */
+    bool SetFreezeStatus(std::set<int> pidList, bool isFreeze) override;
 
     EXPORT int Dump(int fd, const std::vector<std::u16string> &args) override;
 

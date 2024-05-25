@@ -146,5 +146,10 @@ int32_t CommonEventManager::SetStaticSubscriberState(const std::vector<std::stri
 {
     return DelayedSingleton<CommonEvent>::GetInstance()->SetStaticSubscriberState(events, enable);
 }
+
+bool CommonEventManager::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
+{
+    return DelayedSingleton<CommonEvent>::GetInstance()->SetFreezeStatus(pidList, isFreeze);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

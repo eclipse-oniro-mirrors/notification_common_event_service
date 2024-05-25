@@ -88,6 +88,22 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
     return true;
 }
 
+bool CommonEventControlManager::PublishFreezeCommonEvent(std::set<int> pidList)
+{
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    EVENT_LOGD("enter");
+
+    if (!GetUnorderedEventHandler()) {
+        EVENT_LOGE("failed to get eventhandler");
+        return false;
+    }
+    for (auto it = pidList.begin(); it != pidList.end(); it++) {
+        PublishFrozenEventsInner(
+            DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetFrozenEventsMapByPid(*it));
+    }
+    return true;
+}
+
 bool CommonEventControlManager::PublishAllFreezeCommonEvents()
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
@@ -101,6 +117,12 @@ bool CommonEventControlManager::PublishAllFreezeCommonEvents()
     std::map<uid_t, FrozenRecords> frozenEventRecords =
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetAllFrozenEvents();
     for (auto record : frozenEventRecords) {
+        PublishFrozenEventsInner(record.second);
+    }
+
+    std::map<pid_t, FrozenRecords> frozenEventRecordsMap =
+        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetAllFrozenEventsMap();
+    for (auto record : frozenEventRecordsMap) {
         PublishFrozenEventsInner(record.second);
     }
     return true;
@@ -193,6 +215,8 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
         if (vec->isFreeze) {
             eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(vec, *eventRecord);
+            DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
+                vec, *eventRecord);
             freezeCnt++;
         } else {
             sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(vec->commonEventListener);
@@ -494,6 +518,8 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         if (eventRecordPtr->receivers[index]->isFreeze) {
             EVENT_LOGD("vec isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
+                eventRecordPtr->receivers[index], *eventRecordPtr);
+            DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
                 eventRecordPtr->receivers[index], *eventRecordPtr);
             eventRecordPtr->deliveryState[index] = OrderedEventRecord::SKIPPED;
             eventRecordPtr->curReceiver = nullptr;

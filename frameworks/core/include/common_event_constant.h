@@ -27,6 +27,7 @@ constexpr int8_t SUBSCRIBE_USER_SYSTEM_BEGIN = 0;
 constexpr int8_t SUBSCRIBE_USER_SYSTEM_END = 99;
 constexpr int8_t UNDEFINED_PID = -1;
 constexpr int8_t MAX_HISTORY_SIZE = 100;
+constexpr int8_t UNDEFINED_INSTANCE_KEY = -1;
 constexpr int16_t MAX_SUBSCRIBER_NUM_PER_EVENT = 255;
 constexpr uint32_t DEFAULT_MAX_SUBSCRIBER_NUM_ALL_APP = 5000;
 constexpr double WARNING_REPORT_PERCENTAGE = 0.8;

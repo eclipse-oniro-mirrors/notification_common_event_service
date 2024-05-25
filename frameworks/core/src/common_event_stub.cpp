@@ -105,7 +105,8 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
                 EVENT_LOGE("Error to ReadParcelable<IRemoteObject>");
                 return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
-            int32_t ret = SubscribeCommonEvent(*subscribeInfo, commonEventListener);
+            int32_t instanceKey = data.ReadInt32();
+            int32_t ret = SubscribeCommonEvent(*subscribeInfo, commonEventListener, instanceKey);
             if (!reply.WriteInt32(ret)) {
                 EVENT_LOGE("Failed to write reply");
                 return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
@@ -238,6 +239,20 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_SET_FREEZE_STATUS): {
+            std::set<int> pidList;
+            int size = data.ReadInt32();
+            for (int i = 0; i < size; i++) {
+                pidList.insert(data.ReadInt32());
+            }
+            bool isFreeze = data.ReadBool();
+            bool ret = SetFreezeStatus(pidList, isFreeze);
+            if (!reply.WriteBool(ret)) {
+                EVENT_LOGE("Failed to write reply");
+                return ERR_INVALID_VALUE;
+            }
+            break;
+        }
         default:
             EVENT_LOGW("unknown, code = %{public}u, flags= %{public}u", code, option.GetFlags());
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -263,8 +278,8 @@ bool CommonEventStub::PublishCommonEvent(const CommonEventData &event, const Com
     return true;
 }
 
-int32_t CommonEventStub::SubscribeCommonEvent(
-    const CommonEventSubscribeInfo &subscribeInfo, const sptr<IRemoteObject> &commonEventListener)
+int32_t CommonEventStub::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
 {
     EVENT_LOGD("called");
 
@@ -337,6 +352,12 @@ int32_t CommonEventStub::SetStaticSubscriberState(bool enable)
 }
 
 int32_t CommonEventStub::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
+{
+    EVENT_LOGD("Called.");
+    return ERR_OK;
+}
+
+bool CommonEventStub::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
 {
     EVENT_LOGD("Called.");
     return ERR_OK;
