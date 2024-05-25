@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "errors.h"
 #define private public
 #define protected public
 #include "common_event_manager_service.h"
@@ -39,6 +40,7 @@
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
 using namespace OHOS;
+using namespace OHOS::Notification;
 
 class CommonEventManagerServiceTest : public testing::Test {
 public:
@@ -102,7 +104,6 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_001, Level1)
     CommonEventPublishInfo publishInfo;
 
     int32_t userId = 1;
-    const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
     int32_t result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
     EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, result);
 }
@@ -125,6 +126,23 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_002, Level1)
 }
 
 /**
+ * @tc.name: PublishCommonEvent_003
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_003, Level1)
+{
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData event;
+    CommonEventPublishInfo publishInfo;
+
+    int32_t userId = 1098;
+    bool result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_USERID_INVALID, result);
+}
+
+/**
  * @tc.name: SubscribeCommonEvent_001
  * @tc.desc: Test CommonEventManagerService_
  * @tc.type: FUNC
@@ -137,7 +155,6 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_001, Level1)
     CommonEventSubscribeInfo subscribeInfo;
 
     int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
-    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
     EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
 }
 
@@ -170,15 +187,13 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_002, Level1)
 HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_003, Level1)
 {   
     CommonEventManagerService commonEventManagerService;
+    commonEventManagerService.Init();
     CommonEventData event;
     CommonEventSubscribeInfo subscribeInfo;
-
-    struct tm recordTime = {0};
-    GetSystemCurrentTime(&recordTime);
+    subscribeInfo.SetUserId(1098);
 
     int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
-    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_USERID_INVALID, result);
 }
 
 /**
@@ -190,6 +205,7 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_003, Level1)
 HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_004, Level1)
 {   
     CommonEventManagerService commonEventManagerService;
+    commonEventManagerService.Init();
     CommonEventData event;
     CommonEventSubscribeInfo subscribeInfo;
 
@@ -209,9 +225,8 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_004, Level1)
             bundleName);
    
     int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
-    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
     EXPECT_EQ(false, ret);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+    EXPECT_EQ(ERR_OK, result);
 }
 
 /**
