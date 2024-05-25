@@ -30,6 +30,7 @@
 #include "system_ability_definition.h"
 #include "xcollie/watchdog.h"
 #include "ces_inner_error_code.h"
+#include "system_time.h"
 #include <mutex>
 #include <new>
 
@@ -239,6 +240,7 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
     std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    int64_t startTime = SystemTime::GetNowSysTime();
     std::function<void()> subscribeCommonEventFunc = [wp,
         subscribeInfo,
         commonEventListener,
@@ -247,7 +249,8 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
         callingUid,
         callerToken,
         bundleName,
-        instanceKey] () {
+        instanceKey,
+        startTime] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
             EVENT_LOGE("innerCommonEventManager not exist");
@@ -260,7 +263,8 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
             callingUid,
             callerToken,
             bundleName,
-            instanceKey);
+            instanceKey,
+            startTime);
         if (!ret) {
             EVENT_LOGE("failed to subscribe event");
         }

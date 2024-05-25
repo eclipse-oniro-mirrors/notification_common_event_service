@@ -161,9 +161,10 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime,
     const pid_t &pid, const uid_t &uid, const Security::AccessToken::AccessTokenID &callerToken,
-    const std::string &bundleName, const int32_t instanceKey)
+    const std::string &bundleName, const int32_t instanceKey, const int64_t startTime)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    int64_t taskStartTime = SystemTime::GetNowSysTime();
     EVENT_LOGD("enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
         bundleName.c_str(), pid, uid, subscribeInfo.GetUserId());
 
@@ -203,8 +204,10 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     subCount.fetch_add(1);
     eventRecordInfo.subId = subId;
     EVENT_LOGI("SubscribeCommonEvent %{public}s(pid = %{public}d, uid = %{public}d, "
-        "userId = %{public}d, instanceKey = %{public}d, subId = %{public}s)",
-        bundleName.c_str(), pid, uid, subscribeInfo.GetUserId(), instanceKey, subId.c_str());
+        "userId = %{public}d, instanceKey = %{public}d, subId = %{public}s, "
+        "ffrtCost = %{public}s, taskCost = %{public}s",
+        bundleName.c_str(), pid, uid, subscribeInfo.GetUserId(), instanceKey, subId.c_str(),
+        std::to_string(taskStartTime - startTime).c_str(), std::to_string(now - taskStartTime).c_str());
 
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);

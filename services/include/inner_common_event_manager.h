@@ -72,7 +72,7 @@ public:
     EXPORT bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
         const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName,
-        const int32_t instanceKey = 0);
+        const int32_t instanceKey = 0, const int64_t startTime = 0);
 
     /**
      * Unsubscribes from common events.
