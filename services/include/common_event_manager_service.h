@@ -182,6 +182,7 @@ private:
         const int32_t &clientToken, const int32_t &userId);
 
     void GetHidumpInfo(const std::vector<std::u16string> &args, std::string &result);
+    int32_t CheckUserIdParams(const int32_t &userId);
 private:
     static sptr<CommonEventManagerService> instance_;
     static std::mutex instanceMutex_;

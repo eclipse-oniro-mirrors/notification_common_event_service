@@ -555,6 +555,7 @@ ohos_unittest("common_event_manager_service_test") {
     "${common_event_service_path}/test/mock/mock_access_token_helper.cpp",
     "${common_event_service_path}/test/mock/mock_bundle_manager.cpp",
     "common_event_manager_service_test.cpp",
+    "mock_common_event_subscriber.cpp",
   ]
 
   configs = [ ":cesfwk_services_config" ]

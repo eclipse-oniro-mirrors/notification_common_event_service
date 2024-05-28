@@ -28,6 +28,7 @@
 #include "publish_manager.h"
 #include "refbase.h"
 #include "system_ability_definition.h"
+#include "os_account_manager_helper.h"
 #include "xcollie/watchdog.h"
 #include "ces_inner_error_code.h"
 #include "system_time.h"
@@ -162,6 +163,10 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
         EVENT_LOGE("Failed to GetSystemCurrentTime");
         return ERR_NOTIFICATION_SYS_ERROR;
     }
+    int32_t errCode = CheckUserIdParams(userId);
+    if (errCode != ERR_OK) {
+        return errCode;
+    }
 
     if (DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(uid)) {
         EVENT_LOGE("Too many common events have been sent in a short period from (pid = %{public}d, uid = "
@@ -229,6 +234,11 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
     if (!GetSystemCurrentTime(&recordTime)) {
         EVENT_LOGE("Failed to GetSystemCurrentTime");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    int32_t errCode = CheckUserIdParams(subscribeInfo.GetUserId());
+    if (errCode != ERR_OK) {
+        return errCode;
     }
 
     auto callingUid = IPCSkeleton::GetCallingUid();
@@ -542,6 +552,17 @@ bool CommonEventManagerService::SetFreezeStatus(std::set<int> pidList, bool isFr
 
     commonEventSrvQueue_->submit(setFreezeStatusFunc);
     return true;
+}
+
+int32_t CommonEventManagerService::CheckUserIdParams(const int32_t &userId)
+{
+    if (OsAccountManagerHelper::IsSystemAccount(userId)) {
+        if (!OsAccountManagerHelper::GetInstance()->CheckUserExists(userId)) {
+            EVENT_LOGE("UserId %{public}d is not exists in OsAccount", userId);
+            return ERR_NOTIFICATION_CES_USERID_INVALID;
+        }
+    }
+    return ERR_OK;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

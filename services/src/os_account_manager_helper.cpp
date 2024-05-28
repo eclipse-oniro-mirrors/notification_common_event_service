@@ -14,9 +14,11 @@
  */
 
 #include "os_account_manager_helper.h"
+#include "event_log_wrapper.h"
 
 #ifdef HAS_OS_ACCOUNT_PART
 #include "os_account_manager.h"
+#include "os_account_constants.h"
 #endif // HAS_OS_ACCOUNT_PART
 
 namespace OHOS {
@@ -46,6 +48,21 @@ ErrCode OsAccountManagerHelper::GetOsAccountLocalIdFromUid(const int32_t uid, in
 #else
     return AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(uid, id);
 #endif // HAS_OS_ACCOUNT_PART
+}
+
+bool OsAccountManagerHelper::CheckUserExists(const int32_t &userId)
+{
+    bool isAccountExists = false;
+    int32_t ret = OHOS::AccountSA::OsAccountManager::IsOsAccountExists(userId, isAccountExists);
+    if (ret != ERR_OK) {
+        EVENT_LOGE("Failed to call AccountSA::IsOsAccountExists, code is %{public}d", ret);
+    }
+    return isAccountExists;
+}
+
+bool OsAccountManagerHelper::IsSystemAccount(int32_t userId)
+{
+    return userId >= AccountSA::Constants::START_USER_ID && userId <= AccountSA::Constants::MAX_USER_ID;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
