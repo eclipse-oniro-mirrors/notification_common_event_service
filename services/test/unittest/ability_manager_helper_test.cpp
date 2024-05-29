@@ -183,7 +183,7 @@ public:
         return 1;
     }
 
-    int KillProcess(const std::string &bundleName, const clearPageStack) override
+    int KillProcess(const std::string &bundleName, const bool clearPageStack) override
     {
         return 1;
     }
