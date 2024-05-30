@@ -151,16 +151,15 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
         EVENT_LOGE("the subscriber has no event");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
     sptr<IRemoteObject> commonEventListener = nullptr;
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
     if (subscribeState == INITIAL_SUBSCRIPTION) {
         EVENT_LOGD("before SubscribeCommonEvent proxy valid state is %{public}d", isProxyValid_);
-        sptr<ICommonEvent> proxy = GetCommonEventProxy();
-        if (!proxy) {
-            EVENT_LOGE("the commonEventProxy is null");
-            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
         auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(), commonEventListener);
         if (res != ERR_OK) {
             EVENT_LOGD("subscribe common event failed, remove event listener");
