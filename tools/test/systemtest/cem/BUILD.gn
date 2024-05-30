@@ -49,6 +49,14 @@ ohos_systemtest("common_event_command_dump_system_test") {
 }
 
 ohos_systemtest("common_event_command_publish_system_test") {
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
   module_out_path = module_output_path
 
   include_dirs = [ "${ability_runtime_path}/tools/test/systemtest/aa" ]

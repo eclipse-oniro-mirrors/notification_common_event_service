@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_ABILITY_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_ABILITY_H
 
+#include "refbase.h"
 #include "system_ability.h"
 
 #include "common_event_manager_service.h"
@@ -45,7 +46,7 @@ private:
     DECLARE_SYSTEM_ABILITY(CommonEventManagerServiceAbility);
 
 private:
-    std::shared_ptr<CommonEventManagerService> service_;
+    sptr<CommonEventManagerService> service_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

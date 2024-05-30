@@ -16,12 +16,13 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
 
-#include <singleton.h>
 #include "common_event_stub.h"
 #include "event_handler.h"
 #include "ffrt.h"
 #include "inner_common_event_manager.h"
 #include "nocopyable.h"
+#include "refbase.h"
+#include <mutex>
 
 namespace OHOS {
 namespace EventFwk {
@@ -29,6 +30,7 @@ enum class ServiceRunningState { STATE_NOT_START, STATE_RUNNING };
 
 class CommonEventManagerService : public CommonEventStub {
 public:
+    static sptr<CommonEventManagerService> GetInstance();
     CommonEventManagerService();
     virtual ~CommonEventManagerService();
     /**
@@ -170,6 +172,9 @@ private:
 
     void GetHidumpInfo(const std::vector<std::u16string> &args, std::string &result);
 private:
+    static sptr<CommonEventManagerService> instance_;
+    static std::mutex instanceMutex_;
+
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
     ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;
     std::shared_ptr<EventRunner> runner_;
