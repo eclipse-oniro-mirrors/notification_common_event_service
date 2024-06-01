@@ -62,7 +62,7 @@ namespace OHOS::CommonEventManager {
         {
             return GetClassType();
         }
-        SubscriberManager(std::shared_ptr<CommonEventSubscribeInfo> sp, int64_t infoId);
+        SubscriberManager(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId);
         ~SubscriberManager() override;
 
         std::shared_ptr<SubscriberImpl> GetSubscriber();

@@ -174,24 +174,24 @@ namespace OHOS::CommonEventManager {
             } else if (head->valueType == FD_TYPE) { // "FD"
                 SetFdData(key, static_cast<int *>(head->value), wantP);
             } else if (head->valueType == CHAR_PTR_TYPE) { // char**
-                char **strPtr = (char **)head->value;
+                char **strPtr = static_cast<char **>(head->value);
                 std::vector<std::string> strVec;
                 charPtrToVector(strPtr, head->size, strVec);
                 InnerSetWantParamsArrayString(key, strVec, wantP);
             } else if (head->valueType == I32_PTR_TYPE) { // int32_t*
-                int *intArr = (int *)head->value;
+                int *intArr = static_cast<int *>(head->value);
                 std::vector<int> intVec(intArr, intArr + head->size);
                 InnerSetWantParamsArrayInt(key, intVec, wantP);
             } else if (head->valueType == I64_PTR_TYPE) { // int64_t*
-                long *longArr = (long *)head->value;
+                long *longArr = static_cast<long *>(head->value);
                 std::vector<long> longVec(longArr, longArr + head->size);
                 InnerSetWantParamsArrayLong(key, longVec, wantP);
             } else if (head->valueType == BOOL_PTR_TYPE) { // bool*
-                bool *boolArr = (bool *)head->value;
+                bool *boolArr = static_cast<bool *>(head->value);
                 std::vector<bool> boolVec(boolArr, boolArr + head->size);
                 InnerSetWantParamsArrayBool(key, boolVec, wantP);
             } else if (head->valueType == DOUBLE_PTR_TYPE) { // double*
-                double *doubleArr = (double *)head->value;
+                double *doubleArr = static_cast<double *>(head->value);
                 std::vector<double> doubleVec(doubleArr, doubleArr + head->size);
                 InnerSetWantParamsArrayDouble(key, doubleVec, wantP);
             } else if (head->valueType == FD_PTR_TYPE) { // FD*
@@ -208,7 +208,7 @@ namespace OHOS::CommonEventManager {
             return nullptr;
         }
         auto len = origin.length() + 1;
-        char *res = (char *)malloc(sizeof(char) * len);
+        char *res = static_cast<char *>(malloc(sizeof(char) * len));
         if (res == nullptr) {
             return nullptr;
         }

@@ -39,7 +39,7 @@ namespace OHOS::CommonEventManager {
     void SetSubscribeInfo(std::shared_ptr<SubscriberImpl> subscriber,
         const std::function<void(CCommonEventData)> &callback);
 
-    void SetSubscriber(int64_t id, std::shared_ptr<OHOS::CommonEventManager::SubscriberImpl> newSubscriber);
+    int64_t GetManagerId(int64_t id, bool &haveId);
 
     void DeleteSubscribe(std::shared_ptr<SubscriberImpl> subscriber);
 
@@ -47,7 +47,7 @@ namespace OHOS::CommonEventManager {
 
     int32_t SetSubscriberCode(std::shared_ptr<SubscriberImpl> subscriber, int32_t code);
 
-    void GetSubscriberData(std::shared_ptr<SubscriberImpl> subscriber, char *data);
+    std::string GetSubscriberData(std::shared_ptr<SubscriberImpl> subscriber);
 
     int32_t SetSubscriberData(std::shared_ptr<SubscriberImpl> subscriber, const char *data);
 

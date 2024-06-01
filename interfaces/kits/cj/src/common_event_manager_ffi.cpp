@@ -58,10 +58,10 @@ namespace OHOS::CommonEventManager {
 
         int64_t CJ_CreateSubscriber(int64_t id)
         {
-            std::shared_ptr<OHOS::CommonEventManager::SubscriberImpl> newSubscriber = nullptr;
-            SetSubscriber(id, newSubscriber);
-            if (newSubscriber) {
-                return newSubscriber->GetSubscriberManagerId();
+            bool haveId = false;
+            int64_t managerId = GetManagerId(id, haveId);
+            if (haveId) {
+                return managerId;
             }
             auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
             if (!instance) {
@@ -132,7 +132,7 @@ namespace OHOS::CommonEventManager {
                 return ret;
             }
             auto subscriber = instance->GetSubscriber();
-            GetSubscriberData(subscriber, ret.data);
+            ret.data = MallocCString(GetSubscriberData(subscriber));
             ret.code = NO_ERROR;
             return ret;
         }
