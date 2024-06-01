@@ -145,6 +145,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     },
     {CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED,
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVE_SMS"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED,
+        {PermissionState::DEFAULT, {"ohos.permission.GET_BUNDLE_RESOURCES"}}
     }
 };
 
