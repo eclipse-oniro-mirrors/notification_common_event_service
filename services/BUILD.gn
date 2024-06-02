@@ -17,6 +17,14 @@ import("//build/ohos.gni")
 cflags = [
   "-fvisibility=hidden",
   "-fvisibility-inlines-hidden",
+  "-fno-math-errno",
+  "-fno-unroll-loops",
+  "-fmerge-all-constants",
+  "-fno-ident",
+  "-Oz",
+  "-flto",
+  "-ffunction-sections",
+  "-fdata-sections",
 ]
 
 config("ces_services_config") {
