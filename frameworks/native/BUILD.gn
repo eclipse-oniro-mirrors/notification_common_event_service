@@ -19,7 +19,6 @@ cflags = [
   "-fno-unroll-loops",
   "-fmerge-all-constants",
   "-fno-ident",
-  "-Oz",
   "-flto",
   "-ffunction-sections",
   "-fdata-sections",
