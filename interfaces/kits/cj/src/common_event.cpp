@@ -62,13 +62,13 @@ namespace OHOS::CommonEventManager {
     {
         LOGI("Set subscriberImpls.")
         subscriber->SetCallback(callback);
-        AsyncCallbackInfoSubscribe *asyncCallbackInfo =
-            new (std::nothrow) AsyncCallbackInfoSubscribe{.callback = callback, .subscriber = subscriber};
+        AsyncCallbackInfoSubscribe *asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfoSubscribe{
+            .callback = callback, .subscriber = subscriber};
         std::lock_guard<std::mutex> lock(subscriberImplMutex);
         subscriberImpls[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
     }
 
-    void DeleteCallBack(std::vector<AsyncCallbackInfoSubscribe *> &asyncCallbackInfos)
+    void DeleteCallBack(const std::vector<AsyncCallbackInfoSubscribe *> &asyncCallbackInfos)
     {
         for (auto asyncCallbackInfo : asyncCallbackInfos) {
             delete asyncCallbackInfo;
@@ -76,20 +76,21 @@ namespace OHOS::CommonEventManager {
         }
     }
 
-    void SetSubscriber(int64_t id, std::shared_ptr<OHOS::CommonEventManager::SubscriberImpl> newSubscriber)
+    int64_t GetManagerId(int64_t id, bool &haveId)
     {
         std::lock_guard<std::mutex> lock(subscriberImplMutex);
         for (auto subscriberImpl : subscriberImpls) {
             if (subscriberImpl.first->GetSubscribeInfoId() == id) {
-                newSubscriber = subscriberImpl.first;
+                std::shared_ptr<OHOS::CommonEventManager::SubscriberImpl> newSubscriber = subscriberImpl.first;
                 DeleteCallBack(subscriberImpl.second.asyncCallbackInfo);
                 newSubscriber->SetCallback(nullptr);
                 OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(newSubscriber);
                 subscriberImpls.erase(newSubscriber);
-                LOGI("Execution complete");
-                break;
+                haveId = true;
+                return newSubscriber->GetSubscriberManagerId();
             }
         }
+        return 0;
     }
 
     void DeleteSubscribe(std::shared_ptr<SubscriberImpl> subscriber)
@@ -126,16 +127,14 @@ namespace OHOS::CommonEventManager {
         return NO_ERROR;
     }
 
-    void GetSubscriberData(std::shared_ptr<SubscriberImpl> subscriber, char *data)
+    std::string GetSubscriberData(std::shared_ptr<SubscriberImpl> subscriber)
     {
         std::shared_ptr<AsyncCommonEventResult> result = GetAsyncResult(subscriber.get());
-        std::string str;
         if (result) {
-            str = result->GetData();
+            return result->GetData();
         } else {
-            str = std::string();
+            return std::string();
         }
-        data = MallocCString(str);
     }
 
     int32_t SetSubscriberData(std::shared_ptr<SubscriberImpl> subscriber, const char *data)

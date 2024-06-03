@@ -27,7 +27,7 @@ namespace OHOS::CommonEventManager {
         {
             return GetClassType();
         }
-        explicit CommonEventSubscribeInfoImpl(std::shared_ptr<CommonEventSubscribeInfo> info);
+        explicit CommonEventSubscribeInfoImpl(std::shared_ptr<CommonEventSubscribeInfo> info): info_(info){};
         void SetPriority(int32_t &priority);
         int32_t GetPriority();
         void SetUserId(int32_t &userId);

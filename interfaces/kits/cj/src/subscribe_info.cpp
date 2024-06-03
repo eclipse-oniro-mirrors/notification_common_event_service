@@ -19,11 +19,6 @@
 
 namespace OHOS::CommonEventManager {
     // CommonEventSubscribeInfoImpl
-    CommonEventSubscribeInfoImpl::CommonEventSubscribeInfoImpl(std::shared_ptr<CommonEventSubscribeInfo> info)
-    {
-        info_ = info;
-    }
-
     void CommonEventSubscribeInfoImpl::SetPriority(int32_t &priority)
     {
         return info_->SetPriority(priority);
