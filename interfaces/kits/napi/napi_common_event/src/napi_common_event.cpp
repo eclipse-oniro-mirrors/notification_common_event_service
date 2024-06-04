@@ -76,6 +76,7 @@ SubscriberInstance::~SubscriberInstance()
 {
     EVENT_LOGD("destroy SubscriberInstance[%{public}llu]", id_.load());
     *valid_ = false;
+    napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
 }
 
 unsigned long long SubscriberInstance::GetID()
@@ -148,17 +149,12 @@ napi_value SetCommonEventData(const CommonEventDataWorker *commonEventDataWorker
     return NapiGetNull(commonEventDataWorkerData->env);
 }
 
-void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
+void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void* data)
 {
-    EVENT_LOGD("OnReceiveEvent uv_work_t excute");
-    if (work == nullptr) {
-        return;
-    }
-    CommonEventDataWorker *commonEventDataWorkerData = static_cast<CommonEventDataWorker *>(work->data);
+    EVENT_LOGD("OnReceiveEvent ThreadSafeCallback excute");
+    CommonEventDataWorker *commonEventDataWorkerData = static_cast<CommonEventDataWorker *>(data);
     if (commonEventDataWorkerData == nullptr) {
         EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData is nullptr");
-        delete work;
-        work = nullptr;
         return;
     }
     if (commonEventDataWorkerData->ref == nullptr ||
@@ -166,8 +162,6 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
         EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData ref is null or invalid which may be previously released");
         delete commonEventDataWorkerData;
         commonEventDataWorkerData = nullptr;
-        delete work;
-        work = nullptr;
         return;
     }
     napi_handle_scope scope;
@@ -177,8 +171,6 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
     napi_create_object(commonEventDataWorkerData->env, &result);
     if (SetCommonEventData(commonEventDataWorkerData, result) == nullptr) {
         napi_close_handle_scope(commonEventDataWorkerData->env, scope);
-        delete work;
-        work = nullptr;
         delete commonEventDataWorkerData;
         commonEventDataWorkerData = nullptr;
         return;
@@ -200,32 +192,12 @@ void UvQueueWorkOnReceiveEvent(uv_work_t *work, int status)
     napi_close_handle_scope(commonEventDataWorkerData->env, scope);
     delete commonEventDataWorkerData;
     commonEventDataWorkerData = nullptr;
-    delete work;
-    work = nullptr;
 }
 
 void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 {
     EVENT_LOGD("OnReceiveEvent excute");
-    uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env_, &loop);
-    if (loop == nullptr) {
-        EVENT_LOGE("loop instance is null");
-        return;
-    }
-
-    uv_work_t *work = new (std::nothrow) uv_work_t;
-    if (work == nullptr) {
-        EVENT_LOGE("work is nullptr");
-        return;
-    }
     CommonEventDataWorker *commonEventDataWorker = new (std::nothrow) CommonEventDataWorker();
-    if (commonEventDataWorker == nullptr) {
-        EVENT_LOGE("commonEventDataWorker is nullptr");
-        delete work;
-        work = nullptr;
-        return;
-    }
     commonEventDataWorker->want = data.GetWant();
     EVENT_LOGD("OnReceiveEvent() action = %{public}s", data.GetWant().GetAction().c_str());
     commonEventDataWorker->code = data.GetCode();
@@ -233,8 +205,6 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
     commonEventDataWorker->env = env_;
     commonEventDataWorker->ref = ref_;
     commonEventDataWorker->valid = valid_;
-
-    work->data = reinterpret_cast<void *>(commonEventDataWorker);
 
     if (this->IsOrderedCommonEvent()) {
         std::lock_guard<std::mutex> lock(subscriberInsMutex);
@@ -245,16 +215,15 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
             }
         }
     }
-
-    int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
-        UvQueueWorkOnReceiveEvent, uv_qos_user_initiated);
-    if (ret != 0) {
-        delete commonEventDataWorker;
-        commonEventDataWorker = nullptr;
-        delete work;
-        work = nullptr;
-    }
+    napi_acquire_threadsafe_function(tsfn_);
+    napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
+    napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
     EVENT_LOGD("OnReceiveEvent complete");
+}
+
+void ThreadFinished(napi_env env, void* data, [[maybe_unused]] void* context)
+{
+    EVENT_LOGD("ThreadFinished");
 }
 
 napi_value CreateSubscriber(napi_env env, napi_callback_info info)
@@ -444,7 +413,8 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
 
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "Subscribe", NAPI_AUTO_LENGTH, &resourceName);
-
+    napi_create_threadsafe_function(env, argv[1], nullptr, resourceName, 0, 1, asyncCallbackInfo->callback,
+        ThreadFinished, nullptr, ThreadSafeCallback, &(asyncCallbackInfo->tsfn));
     // Calling asynchronous functions
     napi_create_async_work(env,
         nullptr,
@@ -455,6 +425,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo) {
                 asyncCallbackInfo->subscriber->SetEnv(env);
                 asyncCallbackInfo->subscriber->SetCallbackRef(asyncCallbackInfo->callback);
+                asyncCallbackInfo->subscriber->SetThreadSafeFunction(asyncCallbackInfo->tsfn);
                 asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(
                     asyncCallbackInfo->subscriber);
             }
