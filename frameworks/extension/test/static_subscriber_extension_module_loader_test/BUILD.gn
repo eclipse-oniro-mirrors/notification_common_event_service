@@ -45,6 +45,7 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
     "ability_base:configuration",
     "ability_base:session_info",
     "ability_runtime:ability_manager",
+    "ability_runtime:extensionkit_native",
     "ace_engine:ace_uicontent",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
@@ -52,7 +53,6 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
     "hilog:libhilog",
     "ipc:ipc_core",
     "napi:ace_napi",
-    "window_manager:libwm",
   ]
 }
 

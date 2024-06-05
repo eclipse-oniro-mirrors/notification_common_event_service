@@ -71,8 +71,7 @@
                 "os_account",
                 "c_utils",
                 "ffrt",
-                "kv_store",
-                "window_manager"
+                "kv_store"
             ],
             "third_party": [
                 "libuv"

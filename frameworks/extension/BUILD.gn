@@ -149,13 +149,13 @@ ohos_shared_library("static_subscriber_extension_module") {
     "ability_base:configuration",
     "ability_base:session_info",
     "ability_runtime:ability_manager",
+    "ability_runtime:extensionkit_native",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
     "napi:ace_napi",
-    "window_manager:libwm",
   ]
 
   relative_install_dir = "extensionability"

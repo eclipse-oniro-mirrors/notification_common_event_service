@@ -28,7 +28,7 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
     {ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT, "Capability not supported."},
     {ERR_NOTIFICATION_CES_WANT_ACTION_IS_NULL, "The action field in the want parameter is null."},
     {ERR_NOTIFICATION_CES_SANDBOX_NOT_SUPPORT, "A sandbox application cannot send common events."},
-    {ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH, "Too many common events are send in a short period of time."},
+    {ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH, "Too many common events are sent in a short period of time."},
     {ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, "A third-party application cannot send system common events."},
     {ERR_NOTIFICATION_CES_NO_SUBSCRIBER, "The subscriber is not found."},
     {ERR_NOTIFICATION_CES_USERID_INVALID, "Invalid userId."},
