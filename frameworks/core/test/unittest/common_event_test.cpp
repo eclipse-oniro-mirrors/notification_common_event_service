@@ -178,6 +178,21 @@ HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
 }
 
 /*
+ * tc.number: CommonEvent_006
+ * tc.name: test SetFreezeStatus
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke SetFreezeStatus interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEvent_006, TestSize.Level1)
+{
+    CommonEvent commonEvent;
+    std::set<int> pidList = {1000};
+    bool freeze = commonEvent.SetFreezeStatus(pidList, true);
+    EXPECT_EQ(false, freeze);
+}
+
+/*
  * tc.number: CommonEventStub_001
  * tc.name: test PublishCommonEvent
  * tc.type: FUNC
@@ -353,6 +368,20 @@ HWTEST_F(CommonEventTest, CommonEventStub_009, TestSize.Level1)
     CommonEventStub commonEventStub;
     int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
+}
+
+/*
+ * tc.number: CommonEventStub_0010
+ * tc.name: test SetFreezeStatus
+ * tc.type: FUNC
+ * tc.desc: Invoke SetFreezeStatus interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_0010, TestSize.Level1)
+{
+    CommonEventStub commonEventStub;
+    std::set<int> pidList = {1000};
+    bool result = commonEventStub.SetFreezeStatus(pidList, true);
+    EXPECT_EQ(false, result);
 }
 
 /*

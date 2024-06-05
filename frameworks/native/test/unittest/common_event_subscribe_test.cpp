@@ -543,6 +543,20 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_006, TestSize.Level1)
 }
 
 /*
+ * tc.number: CommonEventManager_007
+ * tc.name: test SetFreezeStatus
+ * tc.type: FUNC
+ * tc.desc: Invoke SetFreezeStatus interface verify whether it is normal
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_007, TestSize.Level1)
+{
+    CommonEventManager commonEventManager;
+    std::set<int> pidList = {1000};
+    bool result = commonEventManager.SetFreezeStatus(pidList, true);
+    EXPECT_EQ(false, result);
+}
+
+/*
  * tc.number: CommonEventPublishInfo_001
  * tc.name: test ReadFromParcel
  * tc.type: FUNC

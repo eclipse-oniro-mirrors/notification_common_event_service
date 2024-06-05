@@ -378,3 +378,21 @@ HWTEST_F(CommonEventProxyTest, SetStaticSubscriberStateWithTwoParameters_0100, T
     int32_t result = commonEventProxy.SetStaticSubscriberState(events, true);
     EXPECT_EQ(result, OHOS::ERR_OK);
 }
+
+/*
+ * tc.number: SetFreezeStatus_001
+ * tc.name: test SetFreezeStatus
+ * tc.type: FUNC
+ * tc.require: issueI5NGO7
+ * tc.desc: Invoke CommonEventProxy interface verify whether it is normal
+ */
+HWTEST_F(CommonEventProxyTest, SetFreezeStatus_001, TestSize.Level1)
+{
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
+    CommonEventProxy commonEventProxy(object);
+    std::set<int> pidList = {1000};
+    bool result = commonEventProxy.SetFreezeStatus(pidList, true);
+    EXPECT_EQ(false, result);
+}
