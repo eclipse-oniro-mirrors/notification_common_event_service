@@ -356,6 +356,11 @@ void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
     *valid_ = ref_ != nullptr ? true : false;
 }
 
+void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
+{
+    tsfn_ = tsfn;
+}
+
 void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int8_t &errorCode, const napi_value &result)
 {
     napi_value undefined = nullptr;
