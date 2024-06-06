@@ -58,6 +58,7 @@ struct AsyncCallbackInfoSubscribe {
     napi_ref callback = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int8_t errorCode = NO_ERROR;
+    napi_threadsafe_function tsfn = nullptr;
 };
 
 struct AsyncCallbackInfoUnsubscribe {
@@ -215,6 +216,7 @@ public:
 
     void SetEnv(const napi_env &env);
     void SetCallbackRef(const napi_ref &ref);
+    void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
     unsigned long long GetID();
 
 private:
@@ -223,6 +225,7 @@ private:
     std::shared_ptr<bool> valid_;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
+    napi_threadsafe_function tsfn_ = nullptr;
 };
 
 class SubscriberInstanceWrapper {
