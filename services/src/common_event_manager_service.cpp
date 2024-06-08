@@ -556,11 +556,10 @@ bool CommonEventManagerService::SetFreezeStatus(std::set<int> pidList, bool isFr
 
 int32_t CommonEventManagerService::CheckUserIdParams(const int32_t &userId)
 {
-    if (OsAccountManagerHelper::IsSystemAccount(userId)) {
-        if (!OsAccountManagerHelper::GetInstance()->CheckUserExists(userId)) {
-            EVENT_LOGE("UserId %{public}d is not exists in OsAccount", userId);
-            return ERR_NOTIFICATION_CES_USERID_INVALID;
-        }
+    if (userId != ALL_USER && userId != CURRENT_USER && userId != UNDEFINED_USER
+        && !OsAccountManagerHelper::GetInstance()->CheckUserExists(userId)) {
+        EVENT_LOGE("UserId %{public}d is not exists in OsAccount", userId);
+        return ERR_NOTIFICATION_CES_USERID_INVALID;
     }
     return ERR_OK;
 }
