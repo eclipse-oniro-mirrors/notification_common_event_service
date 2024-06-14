@@ -461,6 +461,8 @@ void PaddingCallbackPromiseInfo(const napi_env &env, const napi_ref &callback,
 
 void NapiThrow(napi_env env, int32_t errCode);
 
+void NapiThrow(napi_env env, int32_t errCode, std::string &msg);
+
 napi_value ParseParametersByRemoveSticky(const napi_env &env,
     const napi_callback_info &info, std::string &event, CallbackPromiseInfo &params);
 

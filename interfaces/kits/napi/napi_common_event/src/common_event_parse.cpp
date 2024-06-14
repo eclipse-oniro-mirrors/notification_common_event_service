@@ -73,6 +73,24 @@ void NapiThrow(napi_env env, int32_t errCode)
     napi_throw(env, error);
 }
 
+void NapiThrow(napi_env env, int32_t errCode, std::string &msg)
+{
+    EVENT_LOGD("enter");
+
+    napi_value code = nullptr;
+    napi_create_int32(env, errCode, &code);
+    
+    auto iter = ErrorCodeToMsg.find(errCode);
+    std::string errMsg = iter != ErrorCodeToMsg.end() ? iter->second : "";
+    napi_value message = nullptr;
+    napi_create_string_utf8(env, errMsg.append(" ").append(msg).c_str(), NAPI_AUTO_LENGTH, &message);
+
+    napi_value error = nullptr;
+    napi_create_error(env, nullptr, message, &error);
+    napi_set_named_property(env, error, "code", code);
+    napi_throw(env, error);
+}
+
 napi_value NapiGetNull(napi_env env)
 {
     napi_value result = nullptr;
@@ -109,6 +127,8 @@ napi_value ParseParametersByCreateSubscriber(
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_object) {
         EVENT_LOGE("Parameter type error. object expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be object.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
 
@@ -167,6 +187,8 @@ napi_value ParseParametersByGetSubscribeInfo(
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
 
@@ -202,6 +224,8 @@ napi_value ParseParametersByIsOrderedCommonEvent(
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong Parameter type. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -236,6 +260,8 @@ napi_value ParseParametersByIsStickyCommonEvent(
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -271,6 +297,8 @@ napi_value ParseParametersByGetCode(const napi_env &env, const napi_value (&argv
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -306,6 +334,8 @@ napi_value ParseParametersBySetCode(
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_number) {
         EVENT_LOGE("Parameter type error. Number expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be number.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     NAPI_CALL(env, napi_get_value_int32(env, argv[0], &code));
@@ -315,6 +345,8 @@ napi_value ParseParametersBySetCode(
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type is error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[1], 1, &callback);
@@ -397,6 +429,8 @@ napi_value ParseParametersByGetData(const napi_env &env, const napi_value (&argv
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -434,12 +468,17 @@ napi_value ParseParametersBySetData(
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_string) {
         EVENT_LOGE("Wrong argument type. String expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be string.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], str, STR_DATA_MAX_SIZE, &strLen));
 
     if (strLen > STR_DATA_MAX_SIZE - 1) {
         EVENT_LOGE("data over size");
+        std::string msg = "Parameter verification failed. cannot exceed ";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
+            msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
         return nullptr;
     }
 
@@ -450,6 +489,8 @@ napi_value ParseParametersBySetData(
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[1], 1, &callback);
@@ -469,6 +510,8 @@ napi_value ParseParametersBySetCodeAndData(
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_number) {
         EVENT_LOGE("Parameter type error. Number expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be function.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     NAPI_CALL(env, napi_get_value_int32(env, argv[0], &code));
@@ -477,12 +520,17 @@ napi_value ParseParametersBySetCodeAndData(
     NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
     if (valuetype != napi_string) {
         EVENT_LOGE("Parameter type error. String expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be string.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     NAPI_CALL(env, napi_get_value_string_utf8(env, argv[1], str, STR_DATA_MAX_SIZE, &strLen));
 
     if (strLen > STR_DATA_MAX_SIZE - 1) {
         EVENT_LOGE("data exceed size");
+        std::string msg = "Parameter verification failed. cannot exceed ";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
+            msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
         return nullptr;
     }
 
@@ -493,6 +541,8 @@ napi_value ParseParametersBySetCodeAndData(
         NAPI_CALL(env, napi_typeof(env, argv[SET_CODE_AND_DATA_MAX_PARA - 1], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[SET_CODE_AND_DATA_MAX_PARA - 1], 1, &callback);
@@ -510,6 +560,8 @@ napi_value ParseParametersByClearAbort(
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -545,6 +597,8 @@ napi_value ParseParametersByAbort(const napi_env &env, const napi_value (&argv)[
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Function expected. Wrong argument type.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -580,6 +634,8 @@ napi_value ParseParametersByGetAbort(const napi_env &env, const napi_value (&arg
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -615,6 +671,8 @@ napi_value ParseParametersByFinish(const napi_env &env, const napi_value (&argv)
         NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong parameter type. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[0], 1, &callback);
@@ -651,11 +709,15 @@ napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&ar
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_object) {
         EVENT_LOGE("Subscribe expected. Wrong argument type for arg0.");
+        std::string msg = "Incorrect parameter types.The type of param must be object.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     subscriber = GetSubscriber(env, argv[0]);
     if (subscriber == nullptr) {
         EVENT_LOGE("subscriber is null");
+        std::string msg = "Mandatory parameters are left unspecified.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
 
@@ -663,6 +725,8 @@ napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&ar
     NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
     if (valuetype != napi_function) {
         EVENT_LOGE("Parameter type error. Function expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be function.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     napi_create_reference(env, argv[1], 1, &callback);
@@ -686,6 +750,8 @@ napi_value GetBundlenameByPublish(const napi_env &env, const napi_value &value, 
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_string) {
             EVENT_LOGE("Parameter type error. String expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be string.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
@@ -711,12 +777,17 @@ napi_value GetDataByPublish(const napi_env &env, const napi_value &value, std::s
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_string) {
             EVENT_LOGE("Parameter type error. String expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be string.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_DATA_MAX_SIZE, &strLen));
 
         if (strLen > STR_DATA_MAX_SIZE - 1) {
             EVENT_LOGE("data exceed size");
+            std::string msg = "Parameter verification failed. cannot exceed ";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
+                msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
             return nullptr;
         }
 
@@ -740,6 +811,8 @@ napi_value GetCodeByPublish(const napi_env &env, const napi_value &value, int32_
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_number) {
             EVENT_LOGE("Parameter type error. Number expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be number.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_get_value_int32(env, result, &code);
@@ -774,10 +847,14 @@ napi_value GetSubscriberPermissionsByPublish(
                     NAPI_CALL(env, napi_typeof(env, nSubscriberPermission, &valuetype));
                     if (valuetype != napi_string) {
                         EVENT_LOGE("Parameter type error. String expected.");
+                        std::string msg = "Incorrect parameter types.The type of param must be string.";
+                        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
                         return nullptr;
                     }
                     if (memset_s(str, STR_MAX_SIZE, 0, STR_MAX_SIZE) != 0) {
                         EVENT_LOGE("memset_s failed");
+                        std::string msg = "Parameter verification failed.";
+                        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
                         return nullptr;
                     }
                     NAPI_CALL(
@@ -805,6 +882,8 @@ napi_value GetIsOrderedByPublish(const napi_env &env, const napi_value &value, b
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_boolean) {
             EVENT_LOGE("Parameter type error. Boolean expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be boolean.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_get_value_bool(env, result, &isOrdered);
@@ -827,6 +906,8 @@ napi_value GetIsStickyByPublish(const napi_env &env, const napi_value &value, bo
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_boolean) {
             EVENT_LOGE("Parameter type error. Boolean expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be boolean.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_get_value_bool(env, result, &isSticky);
@@ -849,9 +930,13 @@ napi_value GetParametersByPublish(const napi_env &env, const napi_value &value, 
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Parameter type error. Object expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be object.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         if (!OHOS::AppExecFwk::UnwrapWantParams(env, result, wantParams)) {
+            std::string msg = "Parameter verification failed.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
     }
@@ -869,6 +954,8 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_string) {
         EVENT_LOGE("Parameter type error. String expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be string.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
 
@@ -883,6 +970,8 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be object.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
 
@@ -919,6 +1008,8 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
         NAPI_CALL(env, napi_typeof(env, argv[PUBLISH_MAX_PARA], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[PUBLISH_MAX_PARA], 1, &callback);
@@ -926,6 +1017,8 @@ napi_value ParseParametersByPublish(const napi_env &env, const napi_value (&argv
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[1], 1, &callback);
@@ -958,6 +1051,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_string) {
         EVENT_LOGE("Wrong Parameter type. String expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be string.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
 
@@ -971,6 +1066,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
     NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
     if (valuetype != napi_number) {
         EVENT_LOGE("Wrong Parameter type. Number expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be number.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     napi_get_value_int32(env, argv[1], &userId);
@@ -981,6 +1078,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
         NAPI_CALL(env, napi_typeof(env, argv[ARGS_DATA_TWO], &valuetype));
         if (valuetype != napi_object) {
             EVENT_LOGE("Wrong argument type. Object expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be object.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
 
@@ -1018,6 +1117,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
         NAPI_CALL(env, napi_typeof(env, argv[PUBLISH_MAX_PARA_AS_USER], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[PUBLISH_MAX_PARA_AS_USER], 1, &callback);
@@ -1025,6 +1126,8 @@ napi_value ParseParametersByPublishAsUser(const napi_env &env, const napi_value 
         NAPI_CALL(env, napi_typeof(env, argv[ARGS_DATA_TWO], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Wrong argument type. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[ARGS_DATA_TWO], 1, &callback);
@@ -1044,6 +1147,8 @@ napi_value ParseParametersByUnsubscribe(const napi_env &env, const size_t &argc,
     NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype));
     if (valuetype != napi_object) {
         EVENT_LOGE("Parameter type error for arg0. Subscribe expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be subscribe.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
 
@@ -1057,6 +1162,8 @@ napi_value ParseParametersByUnsubscribe(const napi_env &env, const size_t &argc,
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be function.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         napi_create_reference(env, argv[1], 1, &callback);
@@ -1077,6 +1184,8 @@ napi_value ParseParametersByRemoveSticky(const napi_env &env,
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
     if (argc < REMOVE_STICKY_MAX_PARA - 1) {
         EVENT_LOGE("Wrong number of arguments.");
+        std::string msg = "Incorrect parameter types.The type of param must be number.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
 
@@ -1085,6 +1194,8 @@ napi_value ParseParametersByRemoveSticky(const napi_env &env,
     NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valuetype));
     if (valuetype != napi_string && valuetype != napi_number && valuetype != napi_boolean) {
         EVENT_LOGE("Wrong argument type. String expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be string.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     if (valuetype == napi_string) {
@@ -1128,17 +1239,23 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
     NAPI_CALL(env, napi_has_named_property(env, argv, "events", &hasProperty));
     if (!hasProperty) {
         EVENT_LOGE("Property events expected");
+        std::string msg = "Incorrect parameter types.The type of param must be events.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     napi_get_named_property(env, argv, "events", &eventsNapi);
     napi_is_array(env, eventsNapi, &isArray);
     if (!isArray) {
         EVENT_LOGE("Parameter type error . Array expected.");
+        std::string msg = "Incorrect parameter types.The type of param must be array.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     napi_get_array_length(env, eventsNapi, &length);
     if (length == 0) {
         EVENT_LOGE("The array is empty.");
+        std::string msg = "Parameter verification failed.The array is empty.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
     for (size_t i = 0; i < length; i++) {
@@ -1147,6 +1264,8 @@ napi_value GetEventsByCreateSubscriber(const napi_env &env, const napi_value &ar
         NAPI_CALL(env, napi_typeof(env, event, &valuetype));
         if (valuetype != napi_string) {
             EVENT_LOGE("Wrong argument type. String expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be string.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         char str[STR_MAX_SIZE] = {0};
@@ -1176,6 +1295,8 @@ napi_value GetPublisherPermissionByCreateSubscriber(
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_string) {
             EVENT_LOGE("Wrong argument type. String expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be string.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
@@ -1203,6 +1324,8 @@ napi_value GetPublisherDeviceIdByCreateSubscriber(
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_string) {
             EVENT_LOGE("Wrong argument type. String expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be string.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
@@ -1228,6 +1351,8 @@ napi_value GetUserIdByCreateSubscriber(const napi_env &env, const napi_value &ar
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_number) {
             EVENT_LOGE("Wrong argument type. Number expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be number.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_int32(env, result, &value));
@@ -1253,6 +1378,8 @@ napi_value GetPriorityByCreateSubscriber(const napi_env &env, const napi_value &
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_number) {
             EVENT_LOGE("Wrong argument type. Number expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be number.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_int32(env, result, &value));
@@ -1279,6 +1406,8 @@ napi_value GetPublisherBundleNameByCreateSubscriber(
         NAPI_CALL(env, napi_typeof(env, result, &valuetype));
         if (valuetype != napi_string) {
             EVENT_LOGE("Wrong argument type. String expected.");
+            std::string msg = "Incorrect parameter types.The type of param must be string.";
+            NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return nullptr;
         }
         NAPI_CALL(env, napi_get_value_string_utf8(env, result, str, STR_MAX_SIZE - 1, &strLen));
@@ -1297,6 +1426,8 @@ napi_value ParseParametersConstructor(
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr));
     if (argc < 1) {
         EVENT_LOGE("Wrong number of arguments");
+        std::string msg = "Incorrect parameter types.The type of param must be number.";
+        NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
 
