@@ -23,6 +23,7 @@
 #include "runtime.h"
 #include "static_subscriber_extension.h"
 #include "static_subscriber_extension_context.h"
+#include "js_static_subscriber_extension.h"
 #undef private
 #undef protected
 
@@ -213,6 +214,26 @@ HWTEST_F(StaticSubscriberExtensionTest, OnReceiveEvent_001, TestSize.Level1)
 
     EXPECT_TRUE(testObject->flag);
     GTEST_LOG_(INFO) << "OnReceiveEvent_001 end.";
+}
+
+/*
+* @tc.number: jsExtension_001
+* @tc.name: OnReceiveEvent
+* @tc.desc: Verify function OnReceiveEvent normal branch, OnReceiveEvent called
+*/
+HWTEST_F(StaticSubscriberExtensionTest, jsExtension_001, TestSize.Level1)
+{
+    AbilityRuntime::JsRuntime jsRuntime;
+    AAFwk::Want want;
+    want.SetBundle("BundleName");
+    auto testObject = std::make_shared<JsStaticSubscriberExtension>(jsRuntime);
+    testObject->Create(nullptr);
+    testObject->OnStart(want);
+    testObject->OnConnect(want);
+    testObject->OnDisconnect(want);
+    testObject->OnStop();
+    std::shared_ptr<CommonEventData> data = nullptr;
+    testObject->OnReceiveEvent(data);
 }
 } // namespace EventFwk
 } // namespace OHOS
