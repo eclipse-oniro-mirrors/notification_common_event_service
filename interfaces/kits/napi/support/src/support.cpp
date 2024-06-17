@@ -350,10 +350,6 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CONNECT_STATUS_VALUE");
     SetNamedPropertyByStr(env,
         obj,
-        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE,
-        "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE");
-    SetNamedPropertyByStr(env,
-        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_NFC_ACTION_ADAPTER_STATE_CHANGED,
         "COMMON_EVENT_NFC_ACTION_ADAPTER_STATE_CHANGED");
     SetNamedPropertyByStr(env,

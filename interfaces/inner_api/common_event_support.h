@@ -675,11 +675,6 @@ public:
      */
     static const std::string COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CONNECT_STATUS_VALUE;
 
-     /**
-     * Indicates the status of the Bluetooth device battery value has been changed.
-     */
-    static const std::string COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE;
-
     /**
      * Indicates the action of a common event that the state of the device NFC adapter has changed.
      * This is a protected common event, which can be sent only by the system.
