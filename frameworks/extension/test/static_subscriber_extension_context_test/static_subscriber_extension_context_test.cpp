@@ -19,6 +19,7 @@
 #define private public
 #define protected public
 #include "static_subscriber_extension_context.h"
+#include "js_static_subscriber_extension_context.h"
 #undef private
 #undef protected
 
@@ -80,6 +81,17 @@ HWTEST_F(StaticSubscriberExtensionContextTest, StaticSubscriberExtensionContextT
 {
     auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
     EXPECT_FALSE(staticSubscriberExtensionContext->VerifyCallingPermission("permission"));
+}
+
+/**
+ * @tc.name  : test JsStaticSubscriberExtensionContext
+ * @tc.number: JsStaticSubscriberExtensionContextTest_001
+ * @tc.desc  : test JsStaticSubscriberExtensionContext failed
+ */
+HWTEST_F(StaticSubscriberExtensionContextTest, JsStaticSubscriberExtensionContextTest_001, TestSize.Level1)
+{
+    auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
+    CreateJsStaticSubscriberExtensionContext(nullptr, staticSubscriberExtensionContext);
 }
 } // namespace EventFwk
 } // namespace OHOS
