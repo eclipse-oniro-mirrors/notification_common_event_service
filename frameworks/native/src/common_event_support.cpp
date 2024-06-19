@@ -1431,6 +1431,12 @@ const std::string CommonEventSupport::COMMON_EVENT_MINORSMODE_OFF = "usual.event
  */
 const std::string CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED = "usual.event.BUNDLE_RESOURCES_CHANGED";
 
+/**
+ * This common event means that datashare is ready.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DATA_SHARE_READY = "usual.event.DATA_SHARE_READY";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2716,6 +2722,12 @@ void CommonEventSupport::Init()
      * This is a protected common event, which can be sent only by the system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED);
+
+    /**
+     * This common event means that datashare is ready.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DATA_SHARE_READY);
     return;
 }
 
