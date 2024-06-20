@@ -26,10 +26,6 @@ using namespace OHOS;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
 
-namespace {
-constexpr int32_t DEFAULT_INVAL_USRE = -1;
-}  // namespace
-
 class AbilityManagerHelperTest : public testing::Test {
 public:
     AbilityManagerHelperTest()
@@ -184,11 +180,6 @@ public:
     }
 
     int KillProcess(const std::string &bundleName, const bool clearPageStack) override
-    {
-        return 1;
-    }
-
-    int ClearUpApplicationData(const std::string &bundleName, const int32_t userId = DEFAULT_INVAL_USRE) override
     {
         return 1;
     }
