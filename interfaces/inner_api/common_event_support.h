@@ -1300,6 +1300,12 @@ public:
      */
     static const std::string COMMON_EVENT_BUNDLE_RESOURCES_CHANGED;
 
+    /**
+     * This common event means that datashare is ready.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_DATA_SHARE_READY;
+    
 public:
     CommonEventSupport();
 
