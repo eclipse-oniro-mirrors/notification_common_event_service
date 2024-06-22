@@ -88,7 +88,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0200, Level1)
     CommonEventData event;
     CommonEventPublishInfo publishinfo;
     uid_t uid = 1;
-    int32_t userId = 2;
+    int32_t userId = 100;
     int32_t callerToken = 0;
     EXPECT_EQ(true, comm->PublishCommonEvent(event, publishinfo, nullptr, uid, callerToken, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0200 end";

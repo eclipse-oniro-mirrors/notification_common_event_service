@@ -1261,7 +1261,7 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpTest_2000, TestSize.Level1)
         count++;
     }
     usleep(500000);
-
+    
     std::vector<std::string> state;
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
     DumpInfoCount(state, DUMP_STICKY_COUNT_TWO, DUMP_STICKY_COUNT_TWO, 0, DUMP_HISTORY_COUNT_MAX);
