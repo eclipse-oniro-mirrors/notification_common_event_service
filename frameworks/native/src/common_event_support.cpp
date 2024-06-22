@@ -15,6 +15,7 @@
 
 #include "common_event_support.h"
 #include "event_log_wrapper.h"
+#include <algorithm>
 
 namespace OHOS {
 namespace EventFwk {
