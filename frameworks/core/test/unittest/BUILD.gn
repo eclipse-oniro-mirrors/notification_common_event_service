@@ -47,7 +47,7 @@ ohos_unittest("common_event_branch_test") {
 
   deps = [
     "${ces_core_path}:cesfwk_core",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gmock_main",
   ]
 

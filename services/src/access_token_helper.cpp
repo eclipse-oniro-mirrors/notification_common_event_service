@@ -25,20 +25,20 @@ using namespace OHOS::Security::AccessToken;
 
 namespace OHOS {
 namespace EventFwk {
-bool AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
+bool __attribute__((weak)) AccessTokenHelper::VerifyNativeToken(const AccessTokenID &callerToken)
 {
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
     return (tokenType == ATokenTypeEnum::TOKEN_NATIVE);
 }
 
-bool AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
+bool __attribute__((weak)) AccessTokenHelper::VerifyAccessToken(const AccessTokenID &callerToken,
     const std::string &permission)
 {
     return (AccessTokenKit::VerifyAccessToken(callerToken, permission) ==
         AccessToken::PermissionState::PERMISSION_GRANTED);
 }
 
-void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &callerToken,
+void __attribute__((weak)) AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &callerToken,
     const std::string &event)
 {
     EVENT_LOGD("enter");
@@ -55,7 +55,7 @@ void AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &call
     }
 }
 
-bool AccessTokenHelper::IsDlpHap(const AccessTokenID &callerToken)
+bool __attribute__((weak)) AccessTokenHelper::IsDlpHap(const AccessTokenID &callerToken)
 {
     ATokenTypeEnum type = AccessTokenKit::GetTokenTypeFlag(callerToken);
     if (type == ATokenTypeEnum::TOKEN_HAP) {
@@ -78,7 +78,7 @@ bool AccessTokenHelper::VerifyShellToken(const AccessTokenID &callerToken)
     return (tokenType == ATokenTypeEnum::TOKEN_SHELL);
 }
 
-bool AccessTokenHelper::IsSystemApp()
+bool __attribute__((weak)) AccessTokenHelper::IsSystemApp()
 {
     AccessTokenID tokenId = IPCSkeleton::GetCallingTokenID();
     ATokenTypeEnum type = AccessTokenKit::GetTokenTypeFlag(tokenId);

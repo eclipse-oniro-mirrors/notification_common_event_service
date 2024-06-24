@@ -23,7 +23,7 @@ config("cesfwk_kits_test_config") {
 ohos_shared_library("actscesfwk_kits_test") {
   sources = []
 
-  configs = [ ":cesfwk_kits_test_config" ]
+  configs = []
 
   cflags = []
   if (target_cpu == "arm") {
@@ -33,7 +33,7 @@ ohos_shared_library("actscesfwk_kits_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
   ]
 
   external_deps = [

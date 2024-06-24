@@ -37,7 +37,7 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/benchmark:benchmark",
   ]
 

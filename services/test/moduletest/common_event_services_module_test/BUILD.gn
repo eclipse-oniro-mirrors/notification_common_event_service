@@ -30,10 +30,6 @@ ohos_moduletest("cesModuleTest") {
   configs = [ "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config" ]
 
   include_dirs = [
-    "${ability_runtime_inner_api_path}/ability_manager/include",
-    "${ability_runtime_services_path}/abilitymgr/include/",
-    "${ability_runtime_services_path}/common/include",
-    "${services_path}/include",
     "${common_event_service_path}/test/mock/include",
     "//third_party/json/include",
     "${ffrt_path}/interfaces/kits",
@@ -48,7 +44,7 @@ ohos_moduletest("cesModuleTest") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 

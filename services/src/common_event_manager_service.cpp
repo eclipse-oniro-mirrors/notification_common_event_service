@@ -69,7 +69,7 @@ CommonEventManagerService::~CommonEventManagerService()
     EVENT_LOGD("instance destroyed");
 }
 
-ErrCode CommonEventManagerService::Init()
+ErrCode __attribute__((weak)) CommonEventManagerService::Init()
 {
     EVENT_LOGD("ready to init");
     innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();

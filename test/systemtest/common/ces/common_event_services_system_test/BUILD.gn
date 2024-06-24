@@ -25,6 +25,7 @@ ohos_systemtest("cesSystemTest") {
     cfi_cross_dso = true
     debug = false
   }
+
   module_out_path = module_output_path
 
   sources = [ "common_event_services_system_test.cpp" ]
@@ -42,7 +43,7 @@ ohos_systemtest("cesSystemTest") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 

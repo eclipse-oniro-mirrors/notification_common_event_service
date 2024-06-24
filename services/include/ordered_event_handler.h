@@ -20,7 +20,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-#define EXPORT __attribute__((visibility ("default")))
 using EventHandler = OHOS::AppExecFwk::EventHandler;
 using EventRunner = OHOS::AppExecFwk::EventRunner;
 using InnerEvent = OHOS::AppExecFwk::InnerEvent;
@@ -35,7 +34,7 @@ public:
      * @param runner Indicates the EventRunner object
      * @param controlManager Indicates the CommonEventControlManager object
      */
-    EXPORT OrderedEventHandler(
+    OrderedEventHandler(
         const std::shared_ptr<EventRunner> &runner, const std::shared_ptr<CommonEventControlManager> &controlManager);
 
     virtual ~OrderedEventHandler() override;
