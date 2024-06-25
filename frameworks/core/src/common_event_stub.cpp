@@ -242,6 +242,10 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
         case static_cast<uint32_t>(CommonEventInterfaceCode::CES_SET_FREEZE_STATUS): {
             std::set<int> pidList;
             int size = data.ReadInt32();
+            if (size > VECTOR_MAX_SIZE) {
+                EVENT_LOGE("PidList size exceeds the max size.");
+                return ERR_INVALID_VALUE;
+            }
             for (int i = 0; i < size; i++) {
                 pidList.insert(data.ReadInt32());
             }
