@@ -63,7 +63,7 @@ struct PublishCmdInfo {
     bool isSticky = false;
     bool isOrdered = false;
     int32_t code = 0;
-    int32_t userId = ALL_USER;
+    int32_t userId = UNDEFINED_USER;
     std::string action;
     std::string data;
 };
