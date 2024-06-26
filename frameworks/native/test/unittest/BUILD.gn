@@ -16,24 +16,12 @@ import("//build/test.gni")
 
 module_output_path = "common_event_service/frameworks/native"
 
-config("kits_natvie_config") {
-  visibility = [ ":*" ]
-
-  include_dirs = [ "${ffrt_path}/interfaces/kits" ]
-
-  cflags = []
-
-  if (target_cpu == "arm") {
-    cflags += [ "-DBINDER_IPC_32BIT" ]
-  }
-}
-
 ohos_unittest("matching_skills_test") {
   module_out_path = module_output_path
 
   sources = [ "matching_skills_test.cpp" ]
 
-  configs = [ ":kits_natvie_config" ]
+  configs = []
 
   deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
@@ -51,7 +39,7 @@ ohos_unittest("common_event_subscribe_test") {
 
   sources = [ "common_event_subscribe_test.cpp" ]
 
-  configs = [ ":kits_natvie_config" ]
+  configs = []
 
   deps = [
     "${ces_core_path}:cesfwk_core",
@@ -78,7 +66,7 @@ ohos_unittest("common_event_unsubscribe_test") {
 
   sources = [ "common_event_unsubscribe_test.cpp" ]
 
-  configs = [ ":kits_natvie_config" ]
+  configs = []
 
   deps = [
     "${ces_core_path}:cesfwk_core",
@@ -105,7 +93,7 @@ ohos_unittest("common_event_subscribe_info_test") {
 
   sources = [ "common_event_subscribe_info_test.cpp" ]
 
-  configs = [ ":kits_natvie_config" ]
+  configs = []
 
   deps = [
     "${ces_core_path}:cesfwk_core",

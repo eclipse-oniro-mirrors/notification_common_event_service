@@ -187,7 +187,7 @@ void CommonEventPermissionManager::Init()
     }
 }
 
-Permission CommonEventPermissionManager::GetEventPermission(const std::string &event)
+Permission __attribute__((weak)) CommonEventPermissionManager::GetEventPermission(const std::string &event)
 {
     EVENT_LOGD("enter");
     if (eventMap_.find(event) != eventMap_.end()) {

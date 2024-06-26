@@ -535,9 +535,10 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
             return false;
         }
         eventRecordPtr->state = OrderedEventRecord::RECEIVED;
-        EVENT_LOGD("NotifyOrderedEvent event = %{public}s",
-            eventRecordPtr->commonEventData->GetWant().GetAction().c_str());
         receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true, eventRecordPtr->publishInfo->IsSticky());
+        EVENT_LOGD("NotifyOrderedEvent index = %{public}d event = %{public}s success, subId = %{public}s", index,
+            eventRecordPtr->commonEventData->GetWant().GetAction().c_str(),
+            eventRecordPtr->receivers[index]->eventRecordInfo.subId.c_str());
         AccessTokenHelper::RecordSensitivePermissionUsage(
             eventRecordPtr->receivers[index]->eventRecordInfo.callerToken,
             eventRecordPtr->commonEventData->GetWant().GetAction());
@@ -595,7 +596,8 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
                 receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
                 sp->resultTo = nullptr;
             }
-
+            EVENT_LOGI("NotifyOrderedEvent = %{public}s end, success: %{public}d, total: %{public}d",
+                sp->commonEventData->GetWant().GetAction().c_str(), sp->nextReceiver, numReceivers);
             CancelTimeout();
 
             EnqueueHistoryEventRecord(sp, hasLastSubscribe);

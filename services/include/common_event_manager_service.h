@@ -26,14 +26,13 @@
 
 namespace OHOS {
 namespace EventFwk {
-#define EXPORT __attribute__((visibility ("default")))
 enum class ServiceRunningState { STATE_NOT_START, STATE_RUNNING };
 
 class CommonEventManagerService : public CommonEventStub {
 public:
-    EXPORT static sptr<CommonEventManagerService> GetInstance();
-    EXPORT CommonEventManagerService();
-    EXPORT virtual ~CommonEventManagerService();
+    static sptr<CommonEventManagerService> GetInstance();
+    CommonEventManagerService();
+    virtual ~CommonEventManagerService();
     /**
      * Publishes a common event.
      *
@@ -43,7 +42,7 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
 
     /**
@@ -57,7 +56,7 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &callerToken,
         const int32_t &userId) override;
 
@@ -69,7 +68,7 @@ public:
      * @param instanceKey Indicates the instance key
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) override;
 
     /**
@@ -87,7 +86,7 @@ public:
      * @param eventData Indicates the common event data.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
+    bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
 
     /**
      * Dumps state of common event service.
@@ -98,7 +97,7 @@ public:
      * @param state Indicates the state of common event service.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+    bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
         std::vector<std::string> &state) override;
 
     /**
@@ -110,7 +109,7 @@ public:
      * @param abortEvent Indicates Whether to cancel the current common event.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData,
+    bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData,
         const bool &abortEvent) override;
 
     /**
@@ -134,7 +133,7 @@ public:
      *
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool UnfreezeAll() override;
+    bool UnfreezeAll() override;
 
     /**
      * Remove sticky common event.
@@ -159,7 +158,7 @@ public:
      * @param enable Static subscriber state.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    EXPORT int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable) override;
+    int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable) override;
 
     /**
     * Set freeze status of process.
@@ -170,14 +169,14 @@ public:
     */
     bool SetFreezeStatus(std::set<int> pidList, bool isFreeze) override;
 
-    EXPORT int Dump(int fd, const std::vector<std::u16string> &args) override;
+    int Dump(int fd, const std::vector<std::u16string> &args) override;
 
-    EXPORT ErrCode Init();
+    ErrCode Init();
 
 private:
-    EXPORT bool IsReady() const;
+    bool IsReady() const;
 
-    EXPORT int32_t PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+    int32_t PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const pid_t &pid, const uid_t &uid,
         const int32_t &clientToken, const int32_t &userId);
 

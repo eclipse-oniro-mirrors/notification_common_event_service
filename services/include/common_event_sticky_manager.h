@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-#define EXPORT __attribute__((visibility ("default")))
 class CommonEventStickyManager : public DelayedSingleton<CommonEventStickyManager> {
 public:
     using CommonEventRecordPtr = std::shared_ptr<CommonEventRecord>;
@@ -37,7 +36,7 @@ public:
      * @param commonEventRecords Indicates the records of sticky common event.
      * @return Returns result code.
      */
-    EXPORT int FindStickyEvents(const SubscribeInfoPtr &subscribeInfo,
+    int FindStickyEvents(const SubscribeInfoPtr &subscribeInfo,
         std::vector<CommonEventRecordPtr> &commonEventRecords);
 
     /**
@@ -47,7 +46,7 @@ public:
      * @param eventData Indicates the common event data.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
+    bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
 
     /**
      * Updates the sticky events.
@@ -55,7 +54,7 @@ public:
      * @param eventRecord Indicates the record of sticky common event.
      * @return Returns result code.
      */
-    EXPORT int UpdateStickyEvent(const CommonEventRecord &eventRecord);
+    int UpdateStickyEvent(const CommonEventRecord &eventRecord);
 
     /**
      * Dumps the state of the sticky events.
@@ -64,7 +63,7 @@ public:
      * @param userId Indicates the user ID.
      * @param state Indicates the state of common event service.
      */
-    EXPORT void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
+    void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
     /**
      * Remove sticky common event.
@@ -73,7 +72,7 @@ public:
      * @param callerUid caller uid.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    EXPORT int32_t RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid);
+    int32_t RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid);
 
 private:
     void FindStickyEventsLocked(

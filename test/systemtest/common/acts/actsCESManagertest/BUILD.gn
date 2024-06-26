@@ -39,7 +39,7 @@ ohos_systemtest("ActsCESManagertest") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
     "//third_party/googletest:gtest_main",
   ]
 

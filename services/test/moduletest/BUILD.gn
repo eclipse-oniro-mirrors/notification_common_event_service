@@ -12,20 +12,6 @@
 # limitations under the License.
 
 import("//base/notification/common_event_service/event.gni")
-cflags = []
-
-config("module_test_config") {
-  include_dirs = [
-    "${common_event_service_path}/test/mock/include",
-    "//third_party/json/include",
-  ]
-
-  configs = []
-
-  if (target_cpu == "arm") {
-    cflags += [ "-DBINDER_IPC_32BIT" ]
-  }
-}
 
 group("moduletest") {
   testonly = true

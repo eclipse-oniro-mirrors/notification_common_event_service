@@ -121,8 +121,10 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_002, Level1)
     CommonEventPublishInfo publishInfo;
 
     int32_t userId = 1;
-    bool result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
-    EXPECT_EQ(true, result);
+    uid_t uid = 1;
+    int32_t callerToken = 2;
+    bool result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, uid, callerToken, userId);
+    EXPECT_EQ(false, result);
 }
 
 /**
@@ -138,8 +140,8 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_003, Level1)
     CommonEventPublishInfo publishInfo;
 
     int32_t userId = 1098;
-    bool result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_USERID_INVALID, result);
+    int32_t result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
+    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, result);
 }
 
 /**
@@ -174,7 +176,6 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_002, Level1)
     GetSystemCurrentTime(&recordTime);
 
     int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
-    const int32_t ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID = 401;
     EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
 }
 

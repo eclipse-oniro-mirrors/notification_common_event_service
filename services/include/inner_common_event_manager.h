@@ -23,7 +23,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-#define EXPORT __attribute__((visibility ("default")))
 struct EventComeFrom {
     bool isSubsystem = false;
     bool isSystemApp = false;
@@ -33,7 +32,7 @@ struct EventComeFrom {
 
 class InnerCommonEventManager {
 public:
-    EXPORT InnerCommonEventManager();
+    InnerCommonEventManager();
 
     virtual ~InnerCommonEventManager() {};
 
@@ -52,7 +51,7 @@ public:
      * @param service Indicates the common event service.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishinfo,
+    bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
         const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId, const std::string &bundleName,
         const sptr<IRemoteObject> &service = nullptr);
@@ -69,7 +68,7 @@ public:
      * @param bundleName Indicates the name of bundle.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    bool SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
         const Security::AccessToken::AccessTokenID &callerToken, const std::string &bundleName,
         const int32_t instanceKey = 0, const int64_t startTime = 0);
@@ -80,7 +79,7 @@ public:
      * @param commonEventListener Indicates the common event subscriber.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener);
+    bool UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener);
 
     /**
      * Gets the current sticky common event
@@ -89,7 +88,7 @@ public:
      * @param eventData Indicates the common event data.
      * @return Returns true if successful; false otherwise.
      */
-    EXPORT bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
+    bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
 
     /**
      * Dumps state of common event service.
@@ -99,7 +98,7 @@ public:
      * @param userId Indicates the user ID.
      * @param state Indicates the state of common event service.
      */
-    EXPORT void DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+    void DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
         std::vector<std::string> &state);
 
     /**
@@ -110,7 +109,7 @@ public:
      * @param data Indicates the data of a common event.
      * @param abortEvent Indicates Whether to cancel the current common event.
      */
-    EXPORT void FinishReceiver(
+    void FinishReceiver(
         const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent);
 
     /**
@@ -118,19 +117,19 @@ public:
      *
      * @param uid Indicates the uid of application.
      */
-    EXPORT void Freeze(const uid_t &uid);
+    void Freeze(const uid_t &uid);
 
     /**
      * Unfreezes application.
      *
      * @param uid Indicates the uid of application.
      */
-    EXPORT void Unfreeze(const uid_t &uid);
+    void Unfreeze(const uid_t &uid);
 
     /**
      * Unfreezes all frozen applications.
      */
-    EXPORT void UnfreezeAll();
+    void UnfreezeAll();
 
     /**
      * dump event for hidumper.
@@ -147,7 +146,7 @@ public:
      * @param callerUid caller uid.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    EXPORT int32_t RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid);
+    int32_t RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid);
 
     /**
      * Set Static Subscriber State.

@@ -28,7 +28,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     auto proxy = GetProxy(remoteObject);
     if (proxy) {
         ErrCode ec = proxy->OnReceiveEvent(&event_);
-        EVENT_LOGI("end, errorCode = %d", ec);
+        EVENT_LOGI("end, errorCode = %{public}d", ec);
     }
     AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(this);
 }

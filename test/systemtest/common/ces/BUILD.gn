@@ -34,7 +34,7 @@ ohos_shared_library("cesfwk_kits_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "${services_path}:cesfwk_services",
+    "${services_path}:cesfwk_services_static",
   ]
 
   external_deps = [
