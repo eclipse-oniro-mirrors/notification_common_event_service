@@ -92,6 +92,21 @@ const std::string CommonEventSupport::COMMON_EVENT_SCREEN_ON = "usual.event.SCRE
  */
 const std::string CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED =
     "usual.event.THERMAL_LEVEL_CHANGED";
+
+/**
+ * Indicates the action of a common event that the device is about to enter the sleep mode.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_ENTER_SLEEP =
+    "usual.event.ENTER_SLEEP";
+
+/**
+ * Indicates the action of a common event that the device exits the sleep mode.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_EXIT_SLEEP =
+    "usual.event.EXIT_SLEEP";
+
 /**
  * Indicates the action of a common event that the device is idle and charging,
  * services can do some business on the background.
@@ -1448,7 +1463,7 @@ CommonEventSupport::~CommonEventSupport()
 
 void CommonEventSupport::Init()
 {
-        /**
+    /**
      * Indicates the action of a common event that the user has finished booting and the system has been loaded.
      * To subscribe to this common event, your application must have the ohos.permission.RECEIVER_STARTUP_COMPLETED
      * permission.
@@ -1511,6 +1526,16 @@ void CommonEventSupport::Init()
      * This common event can only be published by the system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED);
+    /**
+     * Indicates the action of a common event that the device is about to enter the sleep mode.
+     * This common event can only be published by the system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ENTER_SLEEP);
+    /**
+     * Indicates the action of a common event that the device exits the sleep mode.
+     * This common event can only be published by the system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_EXIT_SLEEP);
     /**
      * Indicates the action of a common event that the device is idle and charging,
      * services can do some business on the background.
