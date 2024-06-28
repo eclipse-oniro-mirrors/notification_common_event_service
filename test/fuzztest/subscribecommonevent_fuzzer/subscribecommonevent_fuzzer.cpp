@@ -20,8 +20,8 @@
 #undef protected
 
 #include "subscribecommonevent_fuzzer.h"
-#include "securec.h"
 #include "common_event_manager.h"
+#include "fuzz_data.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -40,9 +40,9 @@ public:
 
 constexpr size_t U32_AT_SIZE = 4;
 
-bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
+bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
-    std::string stringData(data);
+    std::string stringData = fuzzData.GenerateRandomString();
 
     EventFwk::MatchingSkills matchingSkills;
     Parcel parcel;
@@ -50,17 +50,18 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     matchingSkills.AddEntity(stringData);
     matchingSkills.AddScheme(stringData);
     // set CommonEventSubscribeInfo and test CommonEventSubscribeInfo class function
-    uint8_t mode = *data % U32_AT_SIZE;
+    uint8_t mode = fuzzData.GetData<uint8_t>();
     EventFwk::CommonEventSubscribeInfo::ThreadMode threadMode =
         EventFwk::CommonEventSubscribeInfo::ThreadMode(mode);
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    int32_t priority = U32_AT(reinterpret_cast<const uint8_t*>(data));
+    int32_t priority = fuzzData.GenerateRandomInt32();
     subscribeInfo.ReadFromParcel(parcel);
     subscribeInfo.Unmarshalling(parcel);
     subscribeInfo.SetPriority(priority);
     subscribeInfo.SetPermission(stringData);
     subscribeInfo.SetDeviceId(stringData);
     subscribeInfo.SetThreadMode(threadMode);
+    subscribeInfo.SetPublisherBundleName(fuzzData.GenerateRandomString());
     subscribeInfo.GetPriority();
     subscribeInfo.SetUserId(priority);
     subscribeInfo.GetUserId();
@@ -90,21 +91,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (size < OHOS::U32_AT_SIZE) {
         return 0;
     }
-
-    char* ch = (char *)malloc(size + 1);
-    if (ch == nullptr) {
-        return 0;
-    }
-
-    (void)memset_s(ch, size + 1, 0x00, size + 1);
-    if (memcpy_s(ch, size, data, size) != EOK) {
-        free(ch);
-        ch = nullptr;
-        return 0;
-    }
-
-    OHOS::DoSomethingInterestingWithMyAPI(ch, size);
-    free(ch);
-    ch = nullptr;
+    OHOS::FuzzData fuzzData(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
 }

@@ -14,8 +14,8 @@
  */
 
 #include "unsubscribecommonevent_fuzzer.h"
-#include "securec.h"
 #include "common_event_manager.h"
+#include "fuzz_data.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -33,10 +33,9 @@ public:
 }  // namespace EventFwk
 
 constexpr size_t U32_AT_SIZE = 4;
-
-bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
+bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
-    std::string stringData(data);
+    std::string stringData = fuzzData.GenerateRandomString();
 
     EventFwk::MatchingSkills matchingSkills;
     matchingSkills.AddEvent(stringData);
@@ -44,7 +43,7 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     matchingSkills.AddScheme(stringData);
 
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    int32_t priority = U32_AT(reinterpret_cast<const uint8_t*>(data));
+    int32_t priority = fuzzData.GenerateRandomInt32();
     subscribeInfo.SetPriority(priority);
     subscribeInfo.SetPermission(stringData);
     subscribeInfo.SetDeviceId(stringData);
@@ -66,21 +65,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (size < OHOS::U32_AT_SIZE) {
         return 0;
     }
-
-    char* ch = (char *)malloc(size + 1);
-    if (ch == nullptr) {
-        return 0;
-    }
-
-    (void)memset_s(ch, size + 1, 0x00, size + 1);
-    if (memcpy_s(ch, size, data, size) != EOK) {
-        free(ch);
-        ch = nullptr;
-        return 0;
-    }
-
-    OHOS::DoSomethingInterestingWithMyAPI(ch, size);
-    free(ch);
-    ch = nullptr;
+    OHOS::FuzzData fuzzData(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
 }

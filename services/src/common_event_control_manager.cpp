@@ -536,7 +536,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         }
         eventRecordPtr->state = OrderedEventRecord::RECEIVED;
         receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true, eventRecordPtr->publishInfo->IsSticky());
-        EVENT_LOGD("NotifyOrderedEvent index = %{public}d event = %{public}s success, subId = %{public}s", index,
+        EVENT_LOGD("NotifyOrderedEvent index = %{public}zu event = %{public}s success, subId = %{public}s", index,
             eventRecordPtr->commonEventData->GetWant().GetAction().c_str(),
             eventRecordPtr->receivers[index]->eventRecordInfo.subId.c_str());
         AccessTokenHelper::RecordSensitivePermissionUsage(
@@ -596,7 +596,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
                 receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
                 sp->resultTo = nullptr;
             }
-            EVENT_LOGI("NotifyOrderedEvent = %{public}s end, success: %{public}d, total: %{public}d",
+            EVENT_LOGI("NotifyOrderedEvent = %{public}s end, success: %{public}zu, total: %{public}zu",
                 sp->commonEventData->GetWant().GetAction().c_str(), sp->nextReceiver, numReceivers);
             CancelTimeout();
 
