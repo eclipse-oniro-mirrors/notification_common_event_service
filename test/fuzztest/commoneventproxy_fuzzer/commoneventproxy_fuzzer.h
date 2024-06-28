@@ -17,13 +17,4 @@
 #define TEST_FUZZTEST_COMMONEVENTPROXY_FUZZER_COMMONEVENTPROXY_FUZZER_H
 
 #define FUZZ_PROJECT_NAME "commoneventproxy_fuzzer"
-
-#include <cstdint>
-
-uint32_t U32_AT(const uint8_t *ptr)
-{
-    // convert fuzz input data to an integer
-    return (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | ptr[3];
-}
-
 #endif // TEST_FUZZTEST_COMMONEVENTPROXY_FUZZER_COMMONEVENTPROXY_FUZZER_H

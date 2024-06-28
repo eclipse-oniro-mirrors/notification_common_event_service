@@ -16,30 +16,29 @@
 #include "common_event_manager_service.h"
 #include "common_event_data.h"
 #include "commoneventmanagerservice_fuzzer.h"
-#include "securec.h"
+#include "refbase.h"
+#include "fuzz_data.h"
 
 namespace OHOS {
 namespace {
     constexpr size_t U32_AT_SIZE = 4;
-    constexpr uint8_t ENABLE = 2;
 }
-bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
+bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
-    std::string stringData(data);
-    int32_t code = U32_AT(reinterpret_cast<const uint8_t*>(data));
-    bool enabled = *data % ENABLE;
+    std::string stringData = fuzzData.GenerateRandomString();
+    int32_t code = fuzzData.GetData<int32_t>();
+    bool enabled = fuzzData.GenerateRandomBool();
     MessageParcel dataParcel;
     MessageParcel reply;
     MessageOption option;
-    EventFwk::CommonEventManagerService commonEventManagerService;
+    sptr<EventFwk::CommonEventManagerService> service = EventFwk::CommonEventManagerService::GetInstance();
+    service->Init();
     AAFwk::Want want;
     EventFwk::CommonEventData commonEventData;
     commonEventData.SetWant(want);
     commonEventData.SetCode(code);
     commonEventData.SetData(stringData);
-    commonEventData.GetWant();
-    commonEventData.GetCode();
-    commonEventData.GetData();
+
     Parcel p;
     commonEventData.Marshalling(p);
     commonEventData.Unmarshalling(p);
@@ -48,24 +47,24 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     permissions.emplace_back(stringData);
     commonEventPublishInfo.SetSubscriberPermissions(permissions);
     sptr<IRemoteObject> commonEventListener = nullptr;
-    commonEventManagerService.PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener, code);
-    commonEventManagerService.PublishCommonEvent(
+    service->PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener, code);
+    service->PublishCommonEvent(
         commonEventData, commonEventPublishInfo, commonEventListener, code, code, code);
     EventFwk::MatchingSkills matchingSkills;
     matchingSkills.AddEvent(stringData);
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetPriority(code);
-    commonEventManagerService.SubscribeCommonEvent(subscribeInfo, commonEventListener);
-    commonEventManagerService.UnsubscribeCommonEvent(commonEventListener);
-    commonEventManagerService.GetStickyCommonEvent(stringData, commonEventData);
-    uint8_t dumpType = *data;
+    service->SubscribeCommonEvent(subscribeInfo, commonEventListener);
+    service->UnsubscribeCommonEvent(commonEventListener);
+    service->GetStickyCommonEvent(stringData, commonEventData);
+    uint8_t dumpType = fuzzData.GetData<uint8_t>();
     std::vector<std::string> state;
     state.emplace_back(stringData);
-    commonEventManagerService.DumpState(dumpType, stringData, code, state);
-    commonEventManagerService.FinishReceiver(commonEventListener, code, stringData, enabled);
-    commonEventManagerService.Freeze(code);
-    commonEventManagerService.Unfreeze(code);
-    return commonEventManagerService.UnfreezeAll();
+    service->DumpState(dumpType, stringData, code, state);
+    service->FinishReceiver(commonEventListener, code, stringData, enabled);
+    service->Freeze(code);
+    service->Unfreeze(code);
+    return service->UnfreezeAll();
 }
 }
 
@@ -80,21 +79,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (size < OHOS::U32_AT_SIZE) {
         return 0;
     }
-
-    char* ch = (char *)malloc(size + 1);
-    if (ch == nullptr) {
-        return 0;
-    }
-
-    (void)memset_s(ch, size + 1, 0x00, size + 1);
-    if (memcpy_s(ch, size, data, size) != EOK) {
-        free(ch);
-        ch = nullptr;
-        return 0;
-    }
-
-    OHOS::DoSomethingInterestingWithMyAPI(ch, size);
-    free(ch);
-    ch = nullptr;
+    OHOS::FuzzData fuzzData(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
 }

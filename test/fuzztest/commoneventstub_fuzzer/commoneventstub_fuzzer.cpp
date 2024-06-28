@@ -16,18 +16,17 @@
 #include "common_event_stub.h"
 #include "common_event_data.h"
 #include "commoneventstub_fuzzer.h"
-#include "securec.h"
+#include "fuzz_data.h"
 
 namespace OHOS {
 namespace {
     constexpr size_t U32_AT_SIZE = 4;
-    constexpr uint8_t ENABLE = 2;
 }
-bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
+bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
-    std::string stringData(data);
-    int32_t code = U32_AT(reinterpret_cast<const uint8_t*>(data));
-    bool enabled = *data % ENABLE;
+    std::string stringData = fuzzData.GenerateRandomString();
+    int32_t code = fuzzData.GetData<int32_t>();
+    bool enabled = fuzzData.GenerateRandomBool();
     MessageParcel dataParcel;
     MessageParcel reply;
     MessageOption option;
@@ -63,7 +62,7 @@ bool DoSomethingInterestingWithMyAPI(const char* data, size_t size)
     // test GetStickyCommonEvent function
     commonEventStub.GetStickyCommonEvent(stringData, commonEventData);
     // test DumpState function
-    uint8_t dumpType = *data;
+    uint8_t dumpType = fuzzData.GetData<uint8_t>();
     std::vector<std::string> state;
     state.emplace_back(stringData);
     commonEventStub.DumpState(dumpType, stringData, code, state);
@@ -91,20 +90,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
         return 0;
     }
 
-    char* ch = (char *)malloc(size + 1);
-    if (ch == nullptr) {
-        return 0;
-    }
-
-    (void)memset_s(ch, size + 1, 0x00, size + 1);
-    if (memcpy_s(ch, size, data, size) != EOK) {
-        free(ch);
-        ch = nullptr;
-        return 0;
-    }
-
-    OHOS::DoSomethingInterestingWithMyAPI(ch, size);
-    free(ch);
-    ch = nullptr;
+    OHOS::FuzzData fuzzData(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
 }
