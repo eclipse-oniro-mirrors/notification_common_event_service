@@ -173,7 +173,7 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         EVENT_LOGE("commonEventData == nullptr");
         return false;
     }
-    EVENT_LOGD("Send common event %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) "
+    EVENT_LOGI("Send common event %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) "
                 "when unfreezed",
         eventRecord.commonEventData->GetWant().GetAction().c_str(),
         subscriberRecord.eventRecordInfo.bundleName.c_str(),
@@ -217,6 +217,8 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(vec, *eventRecord);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
                 vec, *eventRecord);
+            EVENT_LOGE("NotifyUnorderedEvent = %{public}s freeze, suscriberID = %{public}s",
+                eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             freezeCnt++;
         } else {
             sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(vec->commonEventListener);
@@ -239,15 +241,13 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
                     eventRecord->commonEventData->GetWant().GetAction());
             } else {
                 failCnt++;
-                EVENT_LOGE("NotifyUnorderedEvent = %{public}s fail, subscriberCnt = %{public}zu,"
-                    "suscriberID = %{public}s", eventRecord->commonEventData->GetWant().GetAction().c_str(),
-                    eventRecord->receivers.size(), vec->eventRecordInfo.subId.c_str());
+                EVENT_LOGE("NotifyUnorderedEvent = %{public}s fail, suscriberID = %{public}s",
+                    eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             }
         }
     }
     EVENT_LOGI("NotifyUnorderedEvent = %{public}s end, subscriberCnt = %{public}zu, succCnt = %{public}d,"
-        "failCnt = %{public}d, freezeCnt = %{public}d",
-        eventRecord->commonEventData->GetWant().GetAction().c_str(),
+        "failCnt = %{public}d, freezeCnt = %{public}d", eventRecord->commonEventData->GetWant().GetAction().c_str(),
         eventRecord->receivers.size(), succCnt, failCnt, freezeCnt);
 }
 

@@ -98,9 +98,11 @@ bool StaticSubscriberManager::InitValidSubscribers()
     // filter legal extensions and add them to valid map
     for (auto extension : extensions) {
         if (staticSubscribers_.find(extension.bundleName) == staticSubscribers_.end()) {
+            EVENT_LOGI("StaticExtension exists, but allowCommonEvent not found, bundlename = %{public}s",
+                extension.bundleName.c_str());
             continue;
         }
-        EVENT_LOGD("find legal extension, bundlename = %{public}s", extension.bundleName.c_str());
+        EVENT_LOGI("StaticExtension exists, bundlename = %{public}s", extension.bundleName.c_str());
         AddSubscriber(extension);
     }
 
@@ -157,30 +159,27 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
     auto targetSubscribers = validSubscribers_.find(data.GetWant().GetAction());
     if (targetSubscribers != validSubscribers_.end()) {
         for (auto subscriber : targetSubscribers->second) {
-            EVENT_LOGI("subscriber.userId = %{public}d, userId = %{public}d, event = %{public}s", subscriber.userId,
-                userId, data.GetWant().GetAction().c_str());
             if (IsDisableEvent(subscriber.bundleName, targetSubscribers->first)) {
-                EVENT_LOGD("Current subscriber is disable, subscriber.userId = %{public}d.", subscriber.userId);
-                SendStaticEventProcErrHiSysEvent(
-                    userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+                EVENT_LOGW("subscriber %{public}s is disable.", subscriber.bundleName.c_str());
+                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
             if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
-                EVENT_LOGW("subscriber userId is invalid, subscriber.userId = %{public}d", subscriber.userId);
+                EVENT_LOGW("subscriber %{public}s userId is invalid, subscriber.userId = %{public}d",
+                    subscriber.bundleName.c_str(), subscriber.userId);
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
             if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
                 && (subscriber.userId != userId)) {
-                EVENT_LOGW("subscriber userId is not match, subscriber.userId = %{public}d, userId = %{public}d",
-                    subscriber.userId, userId);
+                EVENT_LOGW("subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
+                    "userId = %{public}d", subscriber.bundleName.c_str(), subscriber.userId, userId);
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
-            // judge if app is system app.
             if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->
                 CheckIsSystemAppByBundleName(subscriber.bundleName, subscriber.userId)) {
-                EVENT_LOGW("subscriber is not system app, not allow.");
+                EVENT_LOGW("subscriber %{public}s is not system app, not allow.", subscriber.bundleName.c_str());
                 continue;
             }
             if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
@@ -190,7 +189,7 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             }
             if (!VerifySubscriberPermission(subscriber.bundleName, subscriber.userId,
                 publishInfo.GetSubscriberPermissions())) {
-                EVENT_LOGW("subscriber does not have required permissions");
+                EVENT_LOGW("subscriber %{public}s does not have required permissions", subscriber.bundleName.c_str());
                 SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
                 continue;
             }
@@ -200,6 +199,8 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
                 continue;
             }
             PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
+            EVENT_LOGI("Notify %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
+                subscriber.bundleName.c_str());
         }
     }
 }

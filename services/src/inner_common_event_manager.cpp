@@ -74,9 +74,6 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     const sptr<IRemoteObject> &service)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
-    EVENT_LOGD("enter %{public}s(pid = %{public}d, uid = %{public}d), event = %{public}s to userId = %{public}d",
-        bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str(), userId);
-
     if (data.GetWant().GetAction().empty()) {
         EVENT_LOGE("the commonEventdata action is null");
         return false;
@@ -106,6 +103,9 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
             return false;
         }
     }
+    
+    EVENT_LOGI("%{public}s(pid = %{public}d, uid = %{public}d), publish event = %{public}s to userId = %{public}d",
+        bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str(), userId);
 
     if (staticSubscriberManager_ != nullptr) {
         staticSubscriberManager_->PublishCommonEvent(data, publishInfo, callerToken, user, service, bundleName);
