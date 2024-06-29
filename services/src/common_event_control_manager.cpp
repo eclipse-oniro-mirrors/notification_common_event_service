@@ -471,7 +471,7 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
     if (historyEventRecords_.size() == HISTORY_MAX_SIZE) {
         historyEventRecords_.pop_front();
     }
-    historyEventRecords_.push_back(record);
+    historyEventRecords_.emplace_back(record);
 }
 
 bool CommonEventControlManager::ScheduleOrderedCommonEvent()
