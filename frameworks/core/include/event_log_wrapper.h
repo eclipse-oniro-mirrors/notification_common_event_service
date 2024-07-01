@@ -19,7 +19,7 @@
 #include "hilog/log.h"
 
 #ifndef EVENT_LOG_DOMAIN
-#define EVENT_LOG_DOMAIN 0xD001200
+#define EVENT_LOG_DOMAIN 0xD001202
 #endif
 #ifndef EVENT_LOG_TAG
 #define EVENT_LOG_TAG "Ces"
