@@ -185,6 +185,7 @@ private:
     void SendUnSubscribeHiSysEvent(const sptr<IRemoteObject> &commonEventListener);
     void SendPublishHiSysEvent(int32_t userId, const std::string &publisherName, int32_t pid, int32_t uid,
         const std::string &events, bool succeed);
+    void SetSystemUserId(const uid_t &uid, EventComeFrom &comeFrom, int32_t &userId);
 
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;

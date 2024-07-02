@@ -375,6 +375,22 @@ bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record
     }
 }
 
+void InnerCommonEventManager::SetSystemUserId(const uid_t &uid, EventComeFrom &comeFrom, int32_t &userId)
+{
+    if (userId == CURRENT_USER) {
+        DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
+    } else if (userId == UNDEFINED_USER) {
+        if (comeFrom.isSubsystem) {
+            userId = ALL_USER;
+        } else {
+            DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
+            if (userId >= SUBSCRIBE_USER_SYSTEM_BEGIN && userId <= SUBSCRIBE_USER_SYSTEM_END) {
+                userId = ALL_USER;
+            }
+        }
+    }
+}
+
 bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, EventComeFrom &comeFrom, int32_t &userId)
 {
@@ -393,11 +409,7 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     }
     comeFrom.isProxy = pid == UNDEFINED_PID;
     if ((comeFrom.isSystemApp || comeFrom.isSubsystem || comeFrom.isCemShell) && !comeFrom.isProxy) {
-        if (userId == CURRENT_USER) {
-            DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
-        } else if (userId == UNDEFINED_USER) {
-            userId = ALL_USER;
-        }
+        SetSystemUserId(uid, comeFrom, userId);
     } else {
         if (userId == UNDEFINED_USER) {
             DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
