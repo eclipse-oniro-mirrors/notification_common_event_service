@@ -16,6 +16,9 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
 
+#include "cpp/queue.h"
+#include "ffrt.h"
+#include <memory>
 #include <singleton.h>
 
 #include "system_ability_status_change_stub.h"
@@ -34,13 +37,14 @@ public:
 private:
     class SystemAbilityStatusChangeListener : public SystemAbilityStatusChangeStub {
     public:
-        SystemAbilityStatusChangeListener() = default;
-        ~SystemAbilityStatusChangeListener() = default;
+        SystemAbilityStatusChangeListener();
+        ~SystemAbilityStatusChangeListener();
         void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
         void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
     private:
-        bool isSAOffline = false;
+        bool isSAOffline_ = false;
+        std::shared_ptr<ffrt::queue> queue_ = nullptr;
     };
 
     sptr<ISystemAbilityStatusChange> statusChangeListener_ = nullptr;

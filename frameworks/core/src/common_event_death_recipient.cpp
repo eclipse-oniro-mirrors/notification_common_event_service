@@ -19,6 +19,7 @@
 #include "iservice_registry.h"
 #include "event_log_wrapper.h"
 #include "system_ability_definition.h"
+#include <memory>
 
 namespace OHOS {
 namespace EventFwk {
@@ -43,25 +44,38 @@ bool CommonEventDeathRecipient::GetIsSubscribeSAManager()
     return statusChangeListener_ != nullptr;
 }
 
+CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SystemAbilityStatusChangeListener()
+{
+    queue_ = std::make_shared<ffrt::queue>("cesResubMain");
+}
+
+CommonEventDeathRecipient::SystemAbilityStatusChangeListener::~SystemAbilityStatusChangeListener()
+{
+    queue_ = nullptr;
+}
+
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
-    if (!isSAOffline) {
-        return;
-    }
-    EVENT_LOGI("Common event service restore, try to reconnect");
-    auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
-    if (commonEvent->Reconnect()) {
-        commonEvent->Resubscribe();
-        isSAOffline = false;
-    }
+    auto reconnectFunc = [this] () {
+        if (!isSAOffline_) {
+            return;
+        }
+        EVENT_LOGI("Common event service restore, try to reconnect");
+        auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
+        if (commonEvent->Reconnect()) {
+            commonEvent->Resubscribe();
+            isSAOffline_ = false;
+        }
+    };
+    queue_->submit(reconnectFunc);
 }
 
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
     EVENT_LOGI("Common event service died");
-    isSAOffline = true;
+    isSAOffline_ = true;
     auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
     commonEvent->ResetCommonEventProxy();
 }
