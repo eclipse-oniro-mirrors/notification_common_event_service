@@ -108,7 +108,7 @@ public:
 private:
     void ProcessSubscriberTestCase1(CommonEventData data)
     {
-        GTEST_LOG_(INFO) << "Subscriber1: Type:  " << data.GetWant().GetType();
+        EVENT_LOGI("Subscriber1: Type:  %{public}s", data.GetWant().GetType().c_str());
         if (!IsOrderedCommonEvent()) {
             return;
         }
@@ -120,7 +120,7 @@ private:
     }
     void ProcessSubscriberTestCase2(CommonEventData data)
     {
-        GTEST_LOG_(INFO) << "Subscriber1: Type:  " << data.GetWant().GetType();
+        EVENT_LOGI("Subscriber1: Type: %{public}s ", data.GetWant().GetType().c_str());
         EXPECT_EQ(INNITCODE, data.GetCode());
         EXPECT_EQ(INNITDATA, data.GetData());
     }
@@ -158,7 +158,7 @@ public:
 private:
     void ProcessSubscriberTest2Case1(CommonEventData data)
     {
-        GTEST_LOG_(INFO) << "Subscriber2: Type:  " << data.GetWant().GetType();
+        EVENT_LOGI("Subscriber2: Type:  %{public}s", data.GetWant().GetType().c_str());
         if (!IsOrderedCommonEvent()) {
             return;
         }
@@ -175,7 +175,7 @@ private:
     }
     void ProcessSubscriberTest2Case2(CommonEventData data)
     {
-        GTEST_LOG_(INFO) << "Subscriber2: Type:  " << data.GetWant().GetType();
+        EVENT_LOGI("Subscriber2: Type: %{public}s ", data.GetWant().GetType().c_str());
         EXPECT_EQ(INNITCODE, data.GetCode());
         EXPECT_EQ(INNITDATA, data.GetData());
     }
@@ -218,7 +218,7 @@ public:
 private:
     void ProcessSubscriberTestLastCase1(CommonEventData data)
     {
-        GTEST_LOG_(INFO) << "SubscriberLast: Type:  " << data.GetWant().GetType();
+        EVENT_LOGI("SubscriberLast: Type: %{public}s ", data.GetWant().GetType().c_str());
         if (!isFreeze_uid2) {
             EXPECT_EQ(CHANGECODE2, data.GetCode());
             EXPECT_EQ(CHANGEDATA2, data.GetData());
@@ -366,18 +366,18 @@ void CommonEventFreezeTest::AsyncProcess()
     isFreeze_uid = false;
     isFreeze_uid2 = false;
     sleep(FREEZE_SLEEP);
-    GTEST_LOG_(INFO) << "Subscriber1 Freeze";
+    EVENT_LOGI("Subscriber1 Freeze");
     Freeze(UID);
-    GTEST_LOG_(INFO) << "Subscriber2 Freeze";
+    EVENT_LOGI("Subscriber2 Freeze");
     Freeze(UID2);
     isFreeze_uid = true;
     isFreeze_uid2 = true;
     sleep(FREEZE_SLEEP);
-    GTEST_LOG_(INFO) << "Subscriber1 Unfreeze";
+    EVENT_LOGI("Subscriber1 Unfreeze");
     Unfreeze(UID);
     isFreeze_uid = false;
     sleep(FREEZE_SLEEP2);
-    GTEST_LOG_(INFO) << "Subscriber2 Unfreeze";
+    EVENT_LOGI("Subscriber2 Unfreeze");
     Unfreeze(UID2);
     isFreeze_uid2 = false;
     sleep(FREEZE_SLEEP);
@@ -427,7 +427,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
         want.SetAction(EVENTCASE1);
         i++;
         want.SetType(std::to_string(i));
-        GTEST_LOG_(INFO) << "PublishCommonEvent: Type:  " << std::to_string(i);
+        EVENT_LOGI("PublishCommonEvent: Type: %{public}s ", std::to_string(i).c_str());
         // make common event data
         CommonEventData data;
         data.SetWant(want);
@@ -489,7 +489,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
         want.SetAction(EVENTCASE2);
         i++;
         want.SetType(std::to_string(i));
-        GTEST_LOG_(INFO) << "PublishCommonEvent: Type:  " << std::to_string(i);
+        EVENT_LOGI("PublishCommonEvent: Type: %{public}s ", std::to_string(i).c_str());
         // make common event data
         CommonEventData data;
         data.SetWant(want);

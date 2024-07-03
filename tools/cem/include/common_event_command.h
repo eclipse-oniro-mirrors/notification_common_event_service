@@ -81,7 +81,6 @@ public:
 
 private:
     ErrCode CreateCommandMap() override;
-    ErrCode Init() override;
     ErrCode RunAsHelpCommand();
     ErrCode RunAsPublishCommand();
     ErrCode RunAsDumpCommand();
@@ -90,8 +89,6 @@ private:
     void CheckDumpOpt();
     void SetDumpCmdInfo(DumpCmdInfo &cmdInfo, ErrCode &result, bool &hasOption);
     void CheckDumpEventType(DumpCmdInfo &cmdInfo, ErrCode &result);
-
-    std::shared_ptr<CommonEvent> commonEventPtr_ = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

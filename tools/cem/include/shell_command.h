@@ -71,13 +71,6 @@ public:
      */
     virtual ErrCode CreateCommandMap() = 0;
 
-    /**
-     * Inits.
-     *
-     * @return Returns result code.
-     */
-    virtual ErrCode Init() = 0;
-
 protected:
     int argc_;
     char **argv_;

@@ -128,7 +128,7 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0100, Function | 
 HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0200, Function | MediumTest | Level1)
 {
     // dump all subscribers for an event
-    std::string command = "cem dump -e " + STRING_EVENT;
+    std::string command = "cem dump -e " + STRING_EVENT + ".test";
     std::string commandResult = ExecuteCommand(command);
 
     EXPECT_EQ(commandResult, STRING_NO_SUBSCRIBERS);

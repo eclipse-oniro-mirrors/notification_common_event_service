@@ -49,11 +49,7 @@ ErrCode ShellCommand::OnCommand()
         resultReceiver_.append(GetCommandErrorMsg());
         respond = commandMap_["help"];
     }
-    if (Init() == OHOS::ERR_OK) {
-        respond();
-    } else {
-        result = OHOS::ERR_INVALID_VALUE;
-    }
+    respond();
     return result;
 }
 
