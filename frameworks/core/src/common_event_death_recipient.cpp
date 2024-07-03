@@ -18,6 +18,7 @@
 #include "common_event.h"
 #include "iservice_registry.h"
 #include "event_log_wrapper.h"
+#include "refbase.h"
 #include "system_ability_definition.h"
 #include <memory>
 
@@ -57,15 +58,20 @@ CommonEventDeathRecipient::SystemAbilityStatusChangeListener::~SystemAbilityStat
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
-    auto reconnectFunc = [this] () {
-        if (!isSAOffline_) {
+    wptr<CommonEventDeathRecipient::SystemAbilityStatusChangeListener> listenerWptr = this;
+    auto reconnectFunc = [listenerWptr] () {
+        sptr<CommonEventDeathRecipient::SystemAbilityStatusChangeListener> listenerSptr = listenerWptr.promote();
+        if (listenerSptr == nullptr) {
+            return;
+        }
+        if (!listenerSptr->isSAOffline_) {
             return;
         }
         EVENT_LOGI("Common event service restore, try to reconnect");
         auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
         if (commonEvent->Reconnect()) {
             commonEvent->Resubscribe();
-            isSAOffline_ = false;
+            listenerSptr->isSAOffline_ = false;
         }
     };
     queue_->submit(reconnectFunc);
