@@ -44,6 +44,7 @@ const time_t TIME_OUT_SECONDS_LIMIT = 3;
 static OHOS::sptr<OHOS::AppExecFwk::MockBundleMgrService> bundleObject = nullptr;
 std::shared_ptr<EventHandler> handlerPtr;
 constexpr int32_t ERR_OK = 0;
+constexpr int32_t ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP = 1500004;
 }  // namespace
 
 class CommonEventServicesModuleTest : public CommonEventSubscriber {
@@ -1385,7 +1386,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
     EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     IPCSkeleton::SetCallingTokenID(1);
     EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
+        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP);
     IPCSkeleton::SetCallingTokenID(0);
     EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
