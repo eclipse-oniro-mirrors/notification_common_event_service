@@ -91,7 +91,8 @@ HWTEST_F(StaticSubscriberExtensionContextTest, StaticSubscriberExtensionContextT
 HWTEST_F(StaticSubscriberExtensionContextTest, JsStaticSubscriberExtensionContextTest_001, TestSize.Level1)
 {
     auto staticSubscriberExtensionContext = std::make_shared<StaticSubscriberExtensionContext>();
-    CreateJsStaticSubscriberExtensionContext(nullptr, staticSubscriberExtensionContext);
+    napi_value val = CreateJsStaticSubscriberExtensionContext(nullptr, staticSubscriberExtensionContext);
+    EXPECT_EQ(nullptr, val);
 }
 } // namespace EventFwk
 } // namespace OHOS

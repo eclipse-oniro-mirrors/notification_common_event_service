@@ -971,7 +971,8 @@ HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0001, Function | Medi
     std::vector<OHOS::AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     const int32_t userId = 3;
     BundleManagerHelper bundleManagerHelper;
-    bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId);
+    bool result = bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId);
+    EXPECT_EQ(result, true);
 }
 
 /**
