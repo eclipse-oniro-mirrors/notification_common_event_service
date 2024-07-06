@@ -56,6 +56,8 @@ ohos_shared_library("cesfwk_core") {
   }
   branch_protector_ret = "pac_ret"
 
+  version_script = "libcesfwk_core.map"
+
   sources = [
     "${ces_core_path}/src/common_event.cpp",
     "${ces_core_path}/src/common_event_death_recipient.cpp",
