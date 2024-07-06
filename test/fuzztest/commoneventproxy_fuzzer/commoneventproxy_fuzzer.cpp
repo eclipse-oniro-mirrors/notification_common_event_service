@@ -16,7 +16,7 @@
 #include "common_event_proxy.h"
 #include "common_event_listener.h"
 #include "commoneventproxy_fuzzer.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
 
 namespace OHOS {
 namespace {

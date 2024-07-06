@@ -16,7 +16,7 @@
 #include "common_event_stub.h"
 #include "common_event_data.h"
 #include "commoneventstub_fuzzer.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
 
 namespace OHOS {
 namespace {

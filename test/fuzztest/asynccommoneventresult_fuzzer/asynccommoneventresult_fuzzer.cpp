@@ -15,7 +15,7 @@
 
 #include "async_common_event_result.h"
 #include "asynccommoneventresult_fuzzer.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
 
 namespace OHOS {
 namespace {

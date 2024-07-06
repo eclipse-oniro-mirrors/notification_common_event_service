@@ -14,7 +14,7 @@
  */
 
 #include "matchingskills_fuzzer.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
 #define private public
 #define protected public
 #include "matching_skills.h"
