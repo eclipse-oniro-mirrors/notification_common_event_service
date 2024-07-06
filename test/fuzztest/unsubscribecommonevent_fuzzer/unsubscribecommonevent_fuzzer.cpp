@@ -15,7 +15,7 @@
 
 #include "unsubscribecommonevent_fuzzer.h"
 #include "common_event_manager.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
 
 namespace OHOS {
 namespace EventFwk {

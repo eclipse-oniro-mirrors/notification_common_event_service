@@ -15,7 +15,7 @@
 
 #include "eventreceiveproxy_fuzzer.h"
 #include "event_receive_proxy.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
 
 namespace OHOS {
 namespace EventFwk {

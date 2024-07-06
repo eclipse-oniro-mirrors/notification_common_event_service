@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-#include "commoneventsubscriber_fuzzer.h"
+#include "commonevent_fuzzer.h"
 #include "common_event.h"
 #include "common_event_subscriber.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -55,6 +55,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     commonEventPublishInfo.SetSubscriberPermissions(permissions);
     commonEventPublishInfo.IsSticky();
     commonEventPublishInfo.GetSubscriberPermissions();
+    commonEventPublishInfo.SetOrdered(fuzzData.GenerateRandomBool());
     commonEventPublishInfo.SetBundleName(stringData);
     commonEventPublishInfo.GetBundleName();
     // make CommonEventSubscriber info
@@ -82,6 +83,8 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
     // test PublishCommonEvent and four paramter
     commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber, code, code);
+    commonEvent.PublishCommonEventAsUser(commonEventData, commonEventPublishInfo, nullptr, code);
+    commonEvent.PublishCommonEventAsUser(commonEventData, commonEventPublishInfo, nullptr, code, code, code);
     // test DumpState function
     return commonEvent.DumpState(dumpType, stringData, code, state);
 }
@@ -98,6 +101,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (size < OHOS::U32_AT_SIZE) {
         return 0;
     }
+    std::vector<std::string> permissions;
+    NativeTokenGet(permissions);
     OHOS::FuzzData fuzzData(data, size);
     OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;

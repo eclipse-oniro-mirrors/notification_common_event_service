@@ -20,10 +20,9 @@
 #include "securec.h"
 
 namespace OHOS {
-namespace {
-static constexpr uint32_t BOOL_MODULO_NUM = 2;
-}
+constexpr uint32_t BOOL_MODULO_NUM = 2;
 using namespace std;
+
 class FuzzData {
 public:
     explicit FuzzData(const uint8_t *data, const size_t size) : pos_(0), data_(data), size_(size) {}

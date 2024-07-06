@@ -17,7 +17,9 @@
 #include "securec.h"
 #include "common_event_manager.h"
 #include "common_event_support.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
+#include <string>
+#include <vector>
 
 
 constexpr int8_t FUZZ_DATA_LEN = 3;
@@ -45,15 +47,16 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 
     // test pubilshCommonEvent function and two paramter
     EventFwk::CommonEventManager::PublishCommonEvent(commonEventData, commonEventPublishInfo);
+    EventFwk::CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
 
     if (fuzzData.GetSize() < FUZZ_DATA_LEN) {
-        return EventFwk::CommonEventManager::PublishCommonEvent(
-            commonEventData, commonEventPublishInfo, subscriber);
+        EventFwk::CommonEventManager::PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
     } else {
         int32_t uid = fuzzData.GenerateRandomInt32();
-        return EventFwk::CommonEventManager::PublishCommonEvent(
+        EventFwk::CommonEventManager::PublishCommonEvent(
             commonEventData, commonEventPublishInfo, subscriber, uid, code);
     }
+    return true;
 }
 }
 
@@ -68,6 +71,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (size < OHOS::U32_AT_SIZE) {
         return 0;
     }
+    std::vector<std::string> permissions;
+    NativeTokenGet(permissions);
     OHOS::FuzzData fuzzData(data, size);
     OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;

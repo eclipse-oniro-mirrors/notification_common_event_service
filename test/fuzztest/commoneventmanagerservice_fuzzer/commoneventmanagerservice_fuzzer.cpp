@@ -16,12 +16,15 @@
 #include "common_event_manager_service.h"
 #include "common_event_data.h"
 #include "commoneventmanagerservice_fuzzer.h"
+#include "out/rk3568/obj/third_party/musl/intermidiates/linux/musl_src_ported/include/unistd.h"
 #include "refbase.h"
-#include "fuzz_data.h"
+#include "fuzz_common_base.h"
+#include <string>
+#include <vector>
 
 namespace OHOS {
 namespace {
-    constexpr size_t U32_AT_SIZE = 4;
+    constexpr size_t U32_AT_SIZE = 3;
 }
 bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
@@ -64,7 +67,8 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     service->FinishReceiver(commonEventListener, code, stringData, enabled);
     service->Freeze(code);
     service->Unfreeze(code);
-    return service->UnfreezeAll();
+    service->UnfreezeAll();
+    return true;
 }
 }
 
@@ -79,6 +83,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (size < OHOS::U32_AT_SIZE) {
         return 0;
     }
+    std::vector<std::string> permissions;
+    NativeTokenGet(permissions);
     OHOS::FuzzData fuzzData(data, size);
     OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
