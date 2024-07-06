@@ -43,25 +43,6 @@ AsyncCallbackInfoUnsubscribe::~AsyncCallbackInfoUnsubscribe()
     EVENT_LOGD("destructor AsyncCallbackInfoUnsubscribe");
 }
 
-SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
-{
-    id_ = ++subscriberID_;
-    EVENT_LOGD("constructor SubscriberInstance");
-    valid_ = std::make_shared<bool>(false);
-}
-
-SubscriberInstance::~SubscriberInstance()
-{
-    EVENT_LOGD("destructor SubscriberInstance[%{public}llu]", id_.load());
-    *valid_ = false;
-    napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-}
-
-unsigned long long SubscriberInstance::GetID()
-{
-    return id_.load();
-}
-
 SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info)
 {
     EVENT_LOGD("enter");
@@ -204,11 +185,12 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
             }
         }
     }
-
-    napi_acquire_threadsafe_function(tsfn_);
-    napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
-    napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-    EVENT_LOGD("OnReceiveEvent end");
+    if (env_ != nullptr && tsfn_ != nullptr) {
+        napi_acquire_threadsafe_function(tsfn_);
+        napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
+        napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
+        EVENT_LOGD("OnReceiveEvent end");
+    }
 }
 
 void ThreadFinished(napi_env env, void* data, [[maybe_unused]] void* context)

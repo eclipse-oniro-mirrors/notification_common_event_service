@@ -215,6 +215,7 @@ public:
     virtual void OnReceiveEvent(const CommonEventData &data) override;
 
     void SetEnv(const napi_env &env);
+    void ClearEnv();
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
     unsigned long long GetID();
