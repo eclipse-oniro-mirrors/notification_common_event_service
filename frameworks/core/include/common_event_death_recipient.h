@@ -41,9 +41,9 @@ private:
         ~SystemAbilityStatusChangeListener();
         void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
         void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
-
-    private:
+    public:
         bool isSAOffline_ = false;
+    private:
         std::shared_ptr<ffrt::queue> queue_ = nullptr;
     };
 
