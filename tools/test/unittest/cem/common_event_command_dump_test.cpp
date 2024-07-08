@@ -43,12 +43,10 @@ public:
     void SetUp() override;
     void TearDown() override;
 
-    void MakeMockObjects();
     void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "dump";
     std::string toolName_ = TOOL_NAME;
-    sptr<ICommonEvent> proxyPtr_;
 };
 
 void CemCommandDumpTest::SetUpTestCase()
@@ -61,27 +59,11 @@ void CemCommandDumpTest::SetUp()
 {
     // reset optind to 0
     optind = 0;
-
-    // make mock objects
-    MakeMockObjects();
 }
 
 void CemCommandDumpTest::TearDown()
 {}
 
-void CemCommandDumpTest::MakeMockObjects()
-{
-    // mock a stub
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-
-    // mock a proxy
-    proxyPtr_ = iface_cast<ICommonEvent>(stubPtr);
-
-    // set the mock proxy
-    auto commonEventPtr = DelayedSingleton<CommonEvent>::GetInstance();
-    commonEventPtr->isProxyValid_ = true;
-    commonEventPtr->commonEventProxy_ = proxyPtr_;
-}
 
 void CemCommandDumpTest::SetMockObjects(const CommonEventCommand &cmd) const
 {}
@@ -293,9 +275,6 @@ HWTEST_F(CemCommandDumpTest, Cem_Command_Dump_0900, Function | MediumTest | Leve
     int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     CommonEventCommand cmd(argc, argv);
-
-    // set the mock objects
-    SetMockObjects(cmd);
 
     EXPECT_EQ(cmd.ExecCommand(), "");
 }

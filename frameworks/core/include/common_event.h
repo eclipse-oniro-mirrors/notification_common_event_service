@@ -128,11 +128,6 @@ public:
         std::vector<std::string> &state);
 
     /**
-     * Resets Common Event Proxy.
-     */
-    void ResetCommonEventProxy();
-
-    /**
      * Freezes application.
      *
      * @param uid Indicates the uid of application.
@@ -183,7 +178,7 @@ public:
      * Resubscribe after common event manager service restarts.
      *
      */
-    void Resubscribe();
+    bool Resubscribe();
 
     /**
      * Set static subscriber state.
@@ -233,10 +228,7 @@ private:
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
 private:
-    bool isProxyValid_ = false;
-    std::mutex mutex_;
     std::mutex eventListenersMutex_;
-    sptr<ICommonEvent> commonEventProxy_;
     std::map<std::shared_ptr<CommonEventSubscriber>, sptr<CommonEventListener>> eventListeners_;
     const size_t SUBSCRIBER_MAX_SIZE = 200;
     static const uint8_t ALREADY_SUBSCRIBED = 0;

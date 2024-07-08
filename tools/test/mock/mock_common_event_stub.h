@@ -17,14 +17,17 @@
 #define BASE_NOTIFICATION_CES_STANDARD_CESFWK_TOOLS_TEST_MOCK_MOCK_COMMON_EVENT_STUB_H
 
 #include "gmock/gmock.h"
+#include <mutex>
 
 #include "common_event_stub.h"
 #include "event_log_wrapper.h"
+#include "refbase.h"
 
 namespace OHOS {
 namespace EventFwk {
 class MockCommonEventStub : public CommonEventStub {
 public:
+    static sptr<MockCommonEventStub> GetInstance();
     MOCK_METHOD4(FinishReceiver, bool(const sptr<IRemoteObject> &proxy, const int32_t &code,
                                      const std::string &receiverData, const bool &abortEvent));
 
@@ -63,6 +66,8 @@ public:
         std::vector<std::string> &state) override;
 
 private:
+    static std::mutex instanceMutex_;
+    static sptr<MockCommonEventStub> instance_;
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr;
 };
 }  // namespace EventFwk

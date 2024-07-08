@@ -23,8 +23,10 @@ config("tools_cem_config_mock") {
   ]
 }
 
-tools_cem_mock_sources =
-    [ "${tools_path}/test/mock/mock_common_event_stub.cpp" ]
+tools_cem_mock_sources = [
+  "${tools_path}/test/mock/mock_common_event_stub.cpp",
+  "${tools_path}/test/mock/mock_service_registry.cpp",
+]
 
 ohos_unittest("common_event_command_test") {
   module_out_path = module_output_path
@@ -36,12 +38,8 @@ ohos_unittest("common_event_command_test") {
     "${tools_path}/cem/src/shell_command.cpp",
     "common_event_command_test.cpp",
   ]
-  sources += tools_cem_mock_sources
 
-  configs = [
-    "${tools_path}/cem:tools_cem_config",
-    ":tools_cem_config_mock",
-  ]
+  configs = [ "${tools_path}/cem:tools_cem_config" ]
 
   cflags = []
   if (target_cpu == "arm") {
@@ -98,7 +96,9 @@ ohos_unittest("common_event_command_dump_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
+    "samgr:samgr_proxy",
   ]
 }
 
@@ -136,7 +136,9 @@ ohos_unittest("common_event_command_publish_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
+    "samgr:samgr_proxy",
   ]
 }
 

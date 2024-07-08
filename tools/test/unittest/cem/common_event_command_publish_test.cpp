@@ -45,8 +45,6 @@ public:
     static void TearDownTestCase();
     void SetUp() override;
     void TearDown() override;
-
-    void MakeMockObjects();
     void SetMockObjects(const CommonEventCommand &cmd) const;
 
     std::string cmd_ = "publish";
@@ -64,27 +62,10 @@ void CemCommandPublishTest::SetUp()
 {
     // reset optind to 0
     optind = 0;
-
-    // make mock objects
-    MakeMockObjects();
 }
 
 void CemCommandPublishTest::TearDown()
 {}
-
-void CemCommandPublishTest::MakeMockObjects()
-{
-    // mock a stub
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-
-    // mock a proxy
-    proxyPtr_ = iface_cast<ICommonEvent>(stubPtr);
-
-    // set the mock proxy
-    auto commonEventPtr = DelayedSingleton<CommonEvent>::GetInstance();
-    commonEventPtr->isProxyValid_ = true;
-    commonEventPtr->commonEventProxy_ = proxyPtr_;
-}
 
 void CemCommandPublishTest::SetMockObjects(const CommonEventCommand &cmd) const
 {}
