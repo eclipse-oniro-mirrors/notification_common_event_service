@@ -802,11 +802,6 @@ bool CommonEventControlManager::CheckSubscriberPermission(
         return true;
     }
 
-    if (!subscriberRecord.eventRecordInfo.isProxy && (subscriberRecord.eventRecordInfo.isSubsystem
-        || subscriberRecord.eventRecordInfo.isSystemApp)) {
-        return true;
-    }
-
     if (permission.names.size() == 1) {
         ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, permission.names[0]);
         lackPermission = permission.names[0];
@@ -847,7 +842,7 @@ bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::str
 {
     bool ret = false;
 
-    if (subscriberRequiredPermission.empty() || eventRecord.eventRecordInfo.isSubsystem) {
+    if (subscriberRequiredPermission.empty()) {
         return true;
     }
 
@@ -878,7 +873,7 @@ bool CommonEventControlManager::CheckPublisherRequiredPermissions(
 {
     bool ret = false;
 
-    if (publisherRequiredPermissions.empty() || subscriberRecord.eventRecordInfo.isSubsystem) {
+    if (publisherRequiredPermissions.empty()) {
         return true;
     }
 
