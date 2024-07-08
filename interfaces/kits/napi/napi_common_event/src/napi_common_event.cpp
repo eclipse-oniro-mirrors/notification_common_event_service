@@ -20,6 +20,7 @@
 #include "ces_inner_error_code.h"
 #include "event_log_wrapper.h"
 #include "napi_common.h"
+#include "node_api.h"
 #include "support.h"
 
 namespace OHOS {
@@ -65,24 +66,6 @@ AsyncCallbackInfoUnsubscribe::~AsyncCallbackInfoUnsubscribe()
     EVENT_LOGD("exit");
 }
 
-SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
-{
-    id_ = ++subscriberID_;
-    EVENT_LOGD("Create SubscriberInstance[%{public}llu]", id_.load());
-    valid_ = std::make_shared<bool>(false);
-}
-
-SubscriberInstance::~SubscriberInstance()
-{
-    EVENT_LOGD("destroy SubscriberInstance[%{public}llu]", id_.load());
-    *valid_ = false;
-    napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-}
-
-unsigned long long SubscriberInstance::GetID()
-{
-    return id_.load();
-}
 
 SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info)
 {
@@ -215,10 +198,12 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
             }
         }
     }
-    napi_acquire_threadsafe_function(tsfn_);
-    napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
-    napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-    EVENT_LOGD("OnReceiveEvent complete");
+    if (env_ != nullptr && tsfn_ != nullptr) {
+        napi_acquire_threadsafe_function(tsfn_);
+        napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
+        napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
+        EVENT_LOGD("OnReceiveEvent complete");
+    }
 }
 
 void ThreadFinished(napi_env env, void* data, [[maybe_unused]] void* context)
