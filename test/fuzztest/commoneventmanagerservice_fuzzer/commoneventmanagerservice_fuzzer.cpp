@@ -31,7 +31,9 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     MessageParcel dataParcel;
     MessageParcel reply;
     MessageOption option;
-    sptr<EventFwk::CommonEventManagerService> service = EventFwk::CommonEventManagerService::GetInstance();
+    EventFwk::CommonEventManagerService::GetInstance();
+    sptr<EventFwk::CommonEventManagerService> service =
+        sptr<EventFwk::CommonEventManagerService>(new EventFwk::CommonEventManagerService());
     service->Init();
     AAFwk::Want want;
     EventFwk::CommonEventData commonEventData;
