@@ -95,7 +95,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 
     if (isSystemEvent) {
         EVENT_LOGD("System common event");
-        if (!comeFrom.isSystemApp && !comeFrom.isSubsystem && !comeFrom.isCemShell) {
+        if (!comeFrom.isSystemApp && !comeFrom.isSubsystem) {
             EVENT_LOGE(
                 "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
                 ", userId = %{public}d", bundleName.c_str(), pid, uid, userId);
@@ -405,7 +405,12 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     comeFrom.isSubsystem = AccessTokenHelper::VerifyNativeToken(callerToken);
 
     if (!comeFrom.isSubsystem || supportCheckSaPermission_.compare("true") == 0) {
-        comeFrom.isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
+        if (AccessTokenHelper::VerifyShellToken(callerToken)) {
+            const std::string permission = "ohos.permission.PUBLISH_SYSTEM_COMMON_EVENT";
+            comeFrom.isCemShell = AccessTokenHelper::VerifyAccessToken(callerToken, permission);
+        } else {
+            comeFrom.isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
+        }
     }
     comeFrom.isProxy = pid == UNDEFINED_PID;
     if ((comeFrom.isSystemApp || comeFrom.isSubsystem || comeFrom.isCemShell) && !comeFrom.isProxy) {
