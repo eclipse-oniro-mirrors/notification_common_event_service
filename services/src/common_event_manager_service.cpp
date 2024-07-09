@@ -153,7 +153,6 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
 
-    EVENT_LOGD("clientToken = %{public}d", clientToken);
     if (AccessTokenHelper::IsDlpHap(clientToken)) {
         EVENT_LOGE("DLP hap not allowed to send common event");
         return ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP;
@@ -170,10 +169,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
 
     if (DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(uid)) {
         EVENT_LOGE("Too many common events have been sent in a short period from (pid = %{public}d, uid = "
-                   "%{public}d, userId = %{public}d)",
-            pid,
-            uid,
-            userId);
+                   "%{public}d, userId = %{public}d)", pid, uid, userId);
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
