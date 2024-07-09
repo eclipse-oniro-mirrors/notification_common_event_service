@@ -181,7 +181,9 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
         bool dumpResult = DelayedSingleton<CommonEvent>::GetInstance()->DumpState(
             static_cast<int32_t>(cmdInfo.eventType), cmdInfo.action, cmdInfo.userId, dumpResults);
         if (dumpResult) {
+            EVENT_LOGI("event size %{public}zu", dumpResults.size());
             for (const auto &it : dumpResults) {
+                EVENT_LOGI("event %{public}s", it.c_str());
                 resultReceiver_.append(it + "\n");
             }
         } else {

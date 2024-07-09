@@ -172,7 +172,6 @@ HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
     }
 
     CommonEvent commonEvent;
-    commonEvent.ResetCommonEventProxy();
     bool unfreezeAll = commonEvent.UnfreezeAll();
     EXPECT_EQ(false, unfreezeAll);
 }
@@ -486,20 +485,6 @@ HWTEST_F(CommonEventTest, CommonEventSubscriber_0100, Function | MediumTest | Le
     auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
     commonEventDeathRecipient->SubscribeSAManager();
     EXPECT_EQ(true, commonEventDeathRecipient->GetIsSubscribeSAManager());
-}
-
-/*
- * @tc.number: CommonEventSubscriber_0101
- * @tc.name: verify isProxyValid_
- * @tc.desc: Invoke OnRemoveSystemAbility interface verify whether it is normal
- */
-HWTEST_F(CommonEventTest, CommonEventSubscriber_0101, Function | MediumTest | Level1)
-{
-    auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
-    commonEventDeathRecipient->SubscribeSAManager();
-    commonEventDeathRecipient->statusChangeListener_->OnRemoveSystemAbility(0, "");
-    auto commonEvent = OHOS::DelayedSingleton<CommonEvent>::GetInstance();
-    EXPECT_EQ(false, commonEvent->isProxyValid_);
 }
 
 /*

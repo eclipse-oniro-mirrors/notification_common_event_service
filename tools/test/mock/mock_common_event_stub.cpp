@@ -14,8 +14,26 @@
  */
 
 #include "mock_common_event_stub.h"
+#include "refbase.h"
+namespace OHOS {
+namespace EventFwk {
 
-using namespace OHOS::EventFwk;
+sptr<MockCommonEventStub> MockCommonEventStub::instance_;
+std::mutex MockCommonEventStub::instanceMutex_;
+
+OHOS::sptr<MockCommonEventStub> MockCommonEventStub::GetInstance()
+{
+    std::lock_guard<std::mutex> lock(instanceMutex_);
+
+    if (instance_ == nullptr) {
+        instance_ = new (std::nothrow) MockCommonEventStub();
+        if (instance_ == nullptr) {
+            return nullptr;
+        }
+    }
+
+    return instance_;
+}
 
 int32_t MockCommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
     const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
@@ -45,6 +63,7 @@ bool MockCommonEventStub::DumpState(const uint8_t &dumpType, const std::string &
         auto matchingSkills = subscribeInfoPtr->GetMatchingSkills();
         // get events
         auto events = matchingSkills.GetEvents();
+        EVENT_LOGI("event size %{public}zu", events.size());
 
         for (auto it : events) {
             state.emplace_back(it);
@@ -57,3 +76,5 @@ bool MockCommonEventStub::DumpState(const uint8_t &dumpType, const std::string &
 
     return true;
 }
+} // namespace EventFwk
+} // namespace OHOS

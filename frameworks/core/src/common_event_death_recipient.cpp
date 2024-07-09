@@ -29,13 +29,13 @@ void CommonEventDeathRecipient::SubscribeSAManager()
     auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     statusChangeListener_ = new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
     if (samgrProxy == nullptr || statusChangeListener_ == nullptr) {
-        EVENT_LOGI("GetSystemAbilityManager failed or new SystemAbilityStatusChangeListener failed");
+        EVENT_LOGE("GetSystemAbilityManager failed or new SystemAbilityStatusChangeListener failed");
         statusChangeListener_ = nullptr;
         return;
     }
     int32_t ret = samgrProxy->SubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, statusChangeListener_);
     if (ret != ERR_OK) {
-        EVENT_LOGI("SubscribeSystemAbility to sa manager failed");
+        EVENT_LOGE("SubscribeSystemAbility to sa manager failed");
         statusChangeListener_ = nullptr;
     }
 }
@@ -52,7 +52,9 @@ CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SystemAbilityStatu
 
 CommonEventDeathRecipient::SystemAbilityStatusChangeListener::~SystemAbilityStatusChangeListener()
 {
-    queue_ = nullptr;
+    if (queue_ != nullptr) {
+        queue_.reset();
+    }
 }
 
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAbility(
@@ -82,8 +84,6 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSyste
 {
     EVENT_LOGI("Common event service died");
     isSAOffline_ = true;
-    auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
-    commonEvent->ResetCommonEventProxy();
 }
 }  // namespace EventFwk
 }  // namespace OHOS

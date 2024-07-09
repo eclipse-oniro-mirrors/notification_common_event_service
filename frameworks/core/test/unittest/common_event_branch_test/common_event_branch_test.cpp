@@ -49,7 +49,7 @@ public:
 };
 
 
-class CommonEventTest : public testing::Test {
+class CommonEventBranchTest : public testing::Test {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -57,16 +57,16 @@ public:
     void TearDown();
 };
 
-void CommonEventTest::SetUpTestCase()
+void CommonEventBranchTest::SetUpTestCase()
 {}
 
-void CommonEventTest::TearDownTestCase()
+void CommonEventBranchTest::TearDownTestCase()
 {}
 
-void CommonEventTest::SetUp()
+void CommonEventBranchTest::SetUp()
 {}
 
-void CommonEventTest::TearDown()
+void CommonEventBranchTest::TearDown()
 {}
 
 /*
@@ -75,7 +75,7 @@ void CommonEventTest::TearDown()
  * tc.type: FUNC
  * tc.desc: test CreateCommonEventListener function and subscriber is nullptr.
  */
-HWTEST_F(CommonEventTest, CommonEvent_001, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_001, TestSize.Level1)
 {
     uint8_t subscribeFailed = 2;
     CommonEvent commonEvent;
@@ -90,55 +90,10 @@ HWTEST_F(CommonEventTest, CommonEvent_001, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test GetCommonEventProxy function and commonEventProxy_ is not nullptr.
  */
-HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_002, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent.isProxyValid_ = true;
-    EXPECT_EQ(commonEvent.commonEventProxy_, commonEvent.GetCommonEventProxy());
-}
-
-/*
- * tc.number: CommonEvent_003
- * tc.name: GetCommonEventProxy
- * tc.type: FUNC
- * tc.desc: test GetCommonEventProxy function and commonEventProxy_ is nullptr.
- */
-HWTEST_F(CommonEventTest, CommonEvent_003, TestSize.Level1)
-{
-    CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = false;
-    EXPECT_EQ(nullptr, commonEvent.GetCommonEventProxy());
-}
-
-/*
- * tc.number: CommonEvent_004
- * tc.name: GetCommonEventProxy
- * tc.type: FUNC
- * tc.desc: test GetCommonEventProxy function.
- */
-HWTEST_F(CommonEventTest, CommonEvent_004, TestSize.Level1)
-{
-    CommonEvent commonEvent;
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent.isProxyValid_ = false;
-    EXPECT_EQ(nullptr, commonEvent.GetCommonEventProxy());
-}
-
-/*
- * tc.number: CommonEvent_005
- * tc.name: GetCommonEventProxy
- * tc.type: FUNC
- * tc.desc: test GetCommonEventProxy function.
- */
-HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
-{
-    CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = true;
+    
     EXPECT_EQ(nullptr, commonEvent.GetCommonEventProxy());
 }
 
@@ -148,12 +103,10 @@ HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test UnfreezeAll function and GetCommonEventProxy is false.
  */
-HWTEST_F(CommonEventTest, CommonEvent_006, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_006, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent.isProxyValid_ = false;
+    
     EXPECT_EQ(false, commonEvent.UnfreezeAll());
 }
 
@@ -163,11 +116,9 @@ HWTEST_F(CommonEventTest, CommonEvent_006, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test Unfreeze function and GetCommonEventProxy is false.
  */
-HWTEST_F(CommonEventTest, CommonEvent_007, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_007, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = true;
     uid_t uid = 1;
     EXPECT_EQ(false, commonEvent.Unfreeze(uid));
 }
@@ -178,11 +129,9 @@ HWTEST_F(CommonEventTest, CommonEvent_007, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test Unfreeze function and GetCommonEventProxy is false.
  */
-HWTEST_F(CommonEventTest, CommonEvent_008, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_008, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = true;
     uid_t uid = 1;
     EXPECT_EQ(false, commonEvent.Freeze(uid));
 }
@@ -193,13 +142,10 @@ HWTEST_F(CommonEventTest, CommonEvent_008, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test ResetCommonEventProxy function.
  */
-HWTEST_F(CommonEventTest, CommonEvent_009, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_009, TestSize.Level1)
 {
     std::shared_ptr<CommonEvent> commonEvent = std::make_shared<CommonEvent>();
     ASSERT_NE(nullptr, commonEvent);
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent->commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent->ResetCommonEventProxy();
 }
 
 /*
@@ -208,11 +154,9 @@ HWTEST_F(CommonEventTest, CommonEvent_009, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test DumpState function and GetCommonEventProxy is false.
  */
-HWTEST_F(CommonEventTest, CommonEvent_010, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_010, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = true;
     uint8_t dumpType = 1;
     std::string event = "aa";
     int32_t userId = 1;
@@ -226,11 +170,9 @@ HWTEST_F(CommonEventTest, CommonEvent_010, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test FinishReceiver function and GetCommonEventProxy is false.
  */
-HWTEST_F(CommonEventTest, CommonEvent_011, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_011, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = true;
     sptr<IRemoteObject> proxy = sptr<IRemoteObject>(new MockCommonEventStub());
     int32_t code = 1;
     std::string data = "aa";
@@ -244,11 +186,9 @@ HWTEST_F(CommonEventTest, CommonEvent_011, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test GetStickyCommonEvent function and GetCommonEventProxy is false.
  */
-HWTEST_F(CommonEventTest, CommonEvent_012, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_012, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    commonEvent.commonEventProxy_ = nullptr;
-    commonEvent.isProxyValid_ = true;
     std::string event = "aa";
     CommonEventData eventData;
     EXPECT_EQ(false, commonEvent.GetStickyCommonEvent(event, eventData));
@@ -260,12 +200,10 @@ HWTEST_F(CommonEventTest, CommonEvent_012, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test GetStickyCommonEvent function and GetCommonEventProxy is true.
  */
-HWTEST_F(CommonEventTest, CommonEvent_013, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_013, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent.isProxyValid_ = true;
+    
     std::string event = "";
     CommonEventData eventData;
     EXPECT_EQ(false, commonEvent.GetStickyCommonEvent(event, eventData));
@@ -277,7 +215,7 @@ HWTEST_F(CommonEventTest, CommonEvent_013, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test PublishParameterCheck function.
  */
-HWTEST_F(CommonEventTest, PublishParameterCheck_001, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, PublishParameterCheck_001, TestSize.Level1)
 {
     CommonEvent commonEvent;
     CommonEventData data;
@@ -296,7 +234,7 @@ HWTEST_F(CommonEventTest, PublishParameterCheck_001, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test PublishParameterCheck function.
  */
-HWTEST_F(CommonEventTest, PublishParameterCheck_002, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, PublishParameterCheck_002, TestSize.Level1)
 {
     CommonEvent commonEvent;
     CommonEventData data;
@@ -313,12 +251,9 @@ HWTEST_F(CommonEventTest, PublishParameterCheck_002, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test PublishCommonEventAsUser function.
  */
-HWTEST_F(CommonEventTest, CommonEvent_016, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_016, TestSize.Level1)
 {
     CommonEvent commonEvent;
-    auto stubPtr = sptr<IRemoteObject>(new MockCommonEventStub());
-    commonEvent.commonEventProxy_ = iface_cast<ICommonEvent>(stubPtr);
-    commonEvent.isProxyValid_ = true;
     CommonEventData data;
     CommonEventPublishInfo publishInfo;
     publishInfo.SetOrdered(true);
@@ -326,7 +261,7 @@ HWTEST_F(CommonEventTest, CommonEvent_016, TestSize.Level1)
     uid_t uid = 1;
     int32_t userId = 1;
     int32_t callToken = 0;
-    EXPECT_EQ(true, commonEvent.PublishCommonEventAsUser(data, publishInfo, subscriber, uid, callToken, userId));
+    EXPECT_EQ(false, commonEvent.PublishCommonEventAsUser(data, publishInfo, subscriber, uid, callToken, userId));
 }
 
 /*
@@ -335,7 +270,7 @@ HWTEST_F(CommonEventTest, CommonEvent_016, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test PublishCommonEvent function.
  */
-HWTEST_F(CommonEventTest, CommonEvent_017, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, CommonEvent_017, TestSize.Level1)
 {
     CommonEvent commonEvent;
     CommonEventData data;
@@ -351,7 +286,7 @@ HWTEST_F(CommonEventTest, CommonEvent_017, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test SetStaticSubscriberState function.
  */
-HWTEST_F(CommonEventTest, SetStaticSubscriberState_001, TestSize.Level1)
+HWTEST_F(CommonEventBranchTest, SetStaticSubscriberState_001, TestSize.Level1)
 {
     CommonEvent commonEvent;
     EXPECT_EQ(
