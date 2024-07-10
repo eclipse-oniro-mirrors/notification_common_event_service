@@ -344,61 +344,6 @@ void SetEventsResult(const napi_env &env, const std::vector<std::string> &events
     }
 }
 
-static void ClearEnvCallback(void *data)
-{
-    EVENT_LOGD("Env expired, need to clear env");
-    SubscriberInstance *subscriber = reinterpret_cast<SubscriberInstance *>(data);
-    subscriber->ClearEnv();
-}
-
-SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
-{
-    id_ = ++subscriberID_;
-    EVENT_LOGD("constructor SubscriberInstance");
-    valid_ = std::make_shared<bool>(false);
-}
-
-SubscriberInstance::~SubscriberInstance()
-{
-    EVENT_LOGD("destructor SubscriberInstance[%{public}llu]", id_.load());
-    *valid_ = false;
-    if (env_ != nullptr && tsfn_ != nullptr) {
-        napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-        napi_remove_env_cleanup_hook(env_, ClearEnvCallback, this);
-    }
-}
-
-unsigned long long SubscriberInstance::GetID()
-{
-    return id_.load();
-}
-
-void SubscriberInstance::SetEnv(const napi_env &env)
-{
-    EVENT_LOGD("Enter");
-    env_ = env;
-    napi_add_env_cleanup_hook(env, ClearEnvCallback, this);
-}
-
-void SubscriberInstance::ClearEnv()
-{
-    EVENT_LOGD("Env expired, clear SubscriberInstance env");
-    env_ = nullptr;
-    tsfn_ = nullptr;
-}
-
-void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
-{
-    EVENT_LOGD("enter");
-    ref_ = ref;
-    *valid_ = ref_ != nullptr ? true : false;
-}
-
-void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
-{
-    tsfn_ = tsfn;
-}
-
 void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int8_t &errorCode, const napi_value &result)
 {
     napi_value undefined = nullptr;
