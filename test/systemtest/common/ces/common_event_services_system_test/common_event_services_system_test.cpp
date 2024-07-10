@@ -30,6 +30,7 @@
 #include "event_log_wrapper.h"
 #include "nativetoken_kit.h"
 #include "token_setproc.h"
+#include "accesstoken_kit.h"
 
 #include <gtest/gtest.h>
 
@@ -150,11 +151,14 @@ public:
 void cesSystemTest::SetUpTestCase()
 {
     uint64_t tokenId;
-    const char **perms = new const char *[1];
+    const char **perms = new const char *[4];
     perms[0] = "ohos.permission.COMMONEVEVT_STICKY"; // system_core
+    perms[1] = "ohos.permission.LISTEN_BUNDLE_CHANGE"; // system_core
+    perms[2] = "ohos.permission.MANAGE_LOCAL_ACCOUNTS"; // system_core
+    perms[3] = "ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS"; // system_core
     NativeTokenInfoParams infoInstance = {
         .dcapsNum = 0,
-        .permsNum = 1,
+        .permsNum = 4,
         .aclsNum = 0,
         .dcaps = nullptr,
         .perms = perms,
@@ -165,6 +169,7 @@ void cesSystemTest::SetUpTestCase()
     infoInstance.processName = "SetUpTestCase";
     tokenId = GetAccessTokenId(&infoInstance);
     SetSelfTokenID(tokenId);
+    Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
     delete[] perms;
 }
 
@@ -2071,7 +2076,7 @@ HWTEST_F(cesSystemTest, CES_SendEvent_1800, Function | MediumTest | Level1)
 HWTEST_F(cesSystemTest, CES_SetEventAuthority_0100, Function | MediumTest | Level1)
 {
     std::string eventName = "TESTEVENT_SUBSCRIBER_PERMISSION";
-    std::string permissin = "PERMISSION";
+    std::string permissin = "ohos.permission.MANAGE_LOCAL_ACCOUNTS";
 
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -2247,7 +2252,7 @@ HWTEST_F(cesSystemTest, CES_SetEventAuthority_0800, Function | MediumTest | Leve
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_PERMISSION_R";
-    std::string permissin = "PERMISSION";
+    std::string permissin = "ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS";
 
     Want wantTest;
     wantTest.SetAction(eventName);

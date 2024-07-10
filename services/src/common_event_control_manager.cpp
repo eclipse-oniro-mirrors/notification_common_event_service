@@ -372,12 +372,18 @@ bool CommonEventControlManager::ProcessOrderedEvent(
 
     std::shared_ptr<CommonEventSubscriberManager> spinstance =
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance();
-
+    auto subscribers = spinstance->GetSubscriberRecords(eventRecord);
+    auto OrderedSubscriberCompareFunc = [] (
+        std::shared_ptr<EventSubscriberRecord> fist,
+        std::shared_ptr<EventSubscriberRecord> second) {
+        return fist->eventSubscribeInfo->GetPriority() > second->eventSubscribeInfo->GetPriority();
+    };
+    std::sort(subscribers.begin(), subscribers.end(), OrderedSubscriberCompareFunc);
     eventRecordPtr->FillCommonEventRecord(eventRecord);
     eventRecordPtr->resultTo = commonEventListener;
     eventRecordPtr->state = OrderedEventRecord::IDLE;
     eventRecordPtr->nextReceiver = 0;
-    eventRecordPtr->receivers = spinstance->GetSubscriberRecords(eventRecord);
+    eventRecordPtr->receivers = subscribers;
     for (auto vec : eventRecordPtr->receivers) {
         eventRecordPtr->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     }
