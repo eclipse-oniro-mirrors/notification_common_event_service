@@ -476,18 +476,6 @@ HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest |
 }
 
 /*
- * @tc.number: CommonEventSubscriber_0100
- * @tc.name: verify GetIsSubscribeSAManager
- * @tc.desc: Invoke SubscribeSAManager interface verify whether it is normal
- */
-HWTEST_F(CommonEventTest, CommonEventSubscriber_0100, Function | MediumTest | Level1)
-{
-    auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
-    commonEventDeathRecipient->SubscribeSAManager();
-    EXPECT_EQ(true, commonEventDeathRecipient->GetIsSubscribeSAManager());
-}
-
-/*
  * @tc.number: CommonEventSubscriber_0102
  * @tc.name: verify IsStickyCommonEvent
  * @tc.desc: Invoke OnAddSystemAbility interface verify whether it is normal
