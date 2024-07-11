@@ -21,28 +21,35 @@
 #include "refbase.h"
 #include "system_ability_definition.h"
 #include <memory>
+#include <mutex>
 
 namespace OHOS {
 namespace EventFwk {
 void CommonEventDeathRecipient::SubscribeSAManager()
 {
-    auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    statusChangeListener_ = new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
-    if (samgrProxy == nullptr || statusChangeListener_ == nullptr) {
-        EVENT_LOGE("GetSystemAbilityManager failed or new SystemAbilityStatusChangeListener failed");
-        statusChangeListener_ = nullptr;
-        return;
+    if (statusChangeListener_ == nullptr) {
+        std::lock_guard<std::mutex> lock(listenerMutex_);
+        if (statusChangeListener_ == nullptr) {
+            auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+            if (samgrProxy == nullptr) {
+                EVENT_LOGE("GetSystemAbilityManager failed");
+                return;
+            }
+            
+            sptr<SystemAbilityStatusChangeListener> listener =
+                new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
+            if (listener == nullptr) {
+                EVENT_LOGE("new SystemAbilityStatusChangeListener failed");
+                return;
+            }
+            int32_t ret = samgrProxy->SubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, listener);
+            if (ret != ERR_OK) {
+                EVENT_LOGE("SubscribeSystemAbility to sa manager failed");
+                return;
+            }
+            statusChangeListener_ = listener;
+        }
     }
-    int32_t ret = samgrProxy->SubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, statusChangeListener_);
-    if (ret != ERR_OK) {
-        EVENT_LOGE("SubscribeSystemAbility to sa manager failed");
-        statusChangeListener_ = nullptr;
-    }
-}
-
-bool CommonEventDeathRecipient::GetIsSubscribeSAManager()
-{
-    return statusChangeListener_ != nullptr;
 }
 
 CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SystemAbilityStatusChangeListener()

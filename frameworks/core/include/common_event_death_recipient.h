@@ -19,6 +19,7 @@
 #include "cpp/queue.h"
 #include "ffrt.h"
 #include <memory>
+#include <mutex>
 #include <singleton.h>
 
 #include "system_ability_status_change_stub.h"
@@ -32,8 +33,6 @@ public:
     ~CommonEventDeathRecipient() = default;
 
     void SubscribeSAManager();
-
-    bool GetIsSubscribeSAManager();
 private:
     class SystemAbilityStatusChangeListener : public SystemAbilityStatusChangeStub {
     public:
@@ -47,6 +46,7 @@ private:
         std::shared_ptr<ffrt::queue> queue_ = nullptr;
     };
 
+    std::mutex listenerMutex_;
     sptr<ISystemAbilityStatusChange> statusChangeListener_ = nullptr;
 };
 }  // namespace EventFwk

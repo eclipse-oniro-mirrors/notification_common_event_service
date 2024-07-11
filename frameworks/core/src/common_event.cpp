@@ -354,9 +354,7 @@ sptr<ICommonEvent> CommonEvent::GetCommonEventProxy()
     }
 
     auto commonEventDeathRecipient = DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
-    if (!commonEventDeathRecipient->GetIsSubscribeSAManager()) {
-        commonEventDeathRecipient->SubscribeSAManager();
-    }
+    commonEventDeathRecipient->SubscribeSAManager();
     return proxy;
 }
 
