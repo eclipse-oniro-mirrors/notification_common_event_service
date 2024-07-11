@@ -158,6 +158,60 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
     commonEventDataWorkerData = nullptr;
 }
 
+static void ClearEnvCallback(void *data)
+{
+    EVENT_LOGD("Env expired, need to clear env");
+    SubscriberInstance *subscriber = reinterpret_cast<SubscriberInstance *>(data);
+    subscriber->ClearEnv();
+}
+
+SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : CommonEventSubscriber(sp)
+{
+    id_ = ++subscriberID_;
+    EVENT_LOGD("constructor SubscriberInstance");
+    valid_ = std::make_shared<bool>(false);
+}
+
+SubscriberInstance::~SubscriberInstance()
+{
+    EVENT_LOGD("destructor SubscriberInstance[%{public}llu]", id_.load());
+    *valid_ = false;
+    if (env_ != nullptr && tsfn_ != nullptr) {
+        napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
+        napi_remove_env_cleanup_hook(env_, ClearEnvCallback, this);
+    }
+}
+
+unsigned long long SubscriberInstance::GetID()
+{
+    return id_.load();
+}
+
+void SubscriberInstance::SetEnv(const napi_env &env)
+{
+    EVENT_LOGD("Enter");
+    env_ = env;
+}
+
+void SubscriberInstance::ClearEnv()
+{
+    EVENT_LOGD("Env expired, clear SubscriberInstance env");
+    env_ = nullptr;
+    tsfn_ = nullptr;
+}
+
+void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
+{
+    EVENT_LOGD("enter");
+    ref_ = ref;
+    *valid_ = ref_ != nullptr ? true : false;
+}
+
+void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
+{
+    tsfn_ = tsfn;
+}
+
 void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 {
     EVENT_LOGD("OnReceiveEvent start");
@@ -1308,7 +1362,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
-
+    napi_add_env_cleanup_hook(env, ClearEnvCallback, subscriber.get());
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
     return NapiGetNull(env);
 }
