@@ -197,7 +197,6 @@ SubscriberInstance::~SubscriberInstance()
     if (env_ != nullptr && tsfn_ != nullptr) {
         EVENT_LOGD("Release threadsafe function");
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-        napi_remove_env_cleanup_hook(env_, ClearEnvCallback, this);
     }
 }
 
@@ -210,6 +209,11 @@ void SubscriberInstance::SetEnv(const napi_env &env)
 {
     EVENT_LOGD("Enter");
     env_ = env;
+}
+
+napi_env SubscriberInstance::GetEnv()
+{
+    return env_;
 }
 
 void SubscriberInstance::ClearEnv()
@@ -691,6 +695,7 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
             EVENT_LOGD("asyncCallbackInfoSubscribe is null");
         }
         subscriber->SetCallbackRef(nullptr);
+        napi_remove_env_cleanup_hook(subscriber->GetEnv(), ClearEnvCallback, subscriber.get());
         subscriberInstances.erase(subscribe);
     }
 }
@@ -863,6 +868,8 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
                     }
                     wrapper->GetSubscriber()->SetCallbackRef(nullptr);
                     CommonEventManager::UnSubscribeCommonEvent(subscriberInstance.first);
+                    napi_remove_env_cleanup_hook(subscriberInstance.first->GetEnv(), ClearEnvCallback,
+                        subscriberInstance.first.get());
                     subscriberInstances.erase(subscriberInstance.first);
                     break;
                 }

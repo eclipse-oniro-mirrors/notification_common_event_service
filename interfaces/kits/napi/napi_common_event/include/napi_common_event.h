@@ -241,6 +241,7 @@ public:
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
     void ClearEnv();
     unsigned long long GetID();
+    napi_env GetEnv();
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
