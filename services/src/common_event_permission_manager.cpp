@@ -148,6 +148,12 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     },
     {CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.GET_BUNDLE_RESOURCES"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_ENTER_SLEEP,
+        {PermissionState::DEFAULT, {"ohos.permission.POWER_MANAGER"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_EXIT_SLEEP,
+        {PermissionState::DEFAULT, {"ohos.permission.POWER_MANAGER"}}
     }
 };
 
