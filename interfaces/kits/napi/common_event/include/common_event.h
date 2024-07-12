@@ -218,6 +218,7 @@ public:
     void ClearEnv();
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
+    napi_env GetEnv();
     unsigned long long GetID();
 
 private:
