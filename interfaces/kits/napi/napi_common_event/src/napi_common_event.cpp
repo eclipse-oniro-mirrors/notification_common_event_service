@@ -238,6 +238,10 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 {
     EVENT_LOGD("OnReceiveEvent excute");
     CommonEventDataWorker *commonEventDataWorker = new (std::nothrow) CommonEventDataWorker();
+    if (commonEventDataWorker == nullptr) {
+        EVENT_LOGE("Invalid commonEventDataWorker");
+        return;
+    }
     commonEventDataWorker->want = data.GetWant();
     EVENT_LOGD("OnReceiveEvent() action = %{public}s", data.GetWant().GetAction().c_str());
     commonEventDataWorker->code = data.GetCode();
