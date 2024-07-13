@@ -64,6 +64,10 @@ namespace OHOS::CommonEventManager {
         subscriber->SetCallback(callback);
         AsyncCallbackInfoSubscribe *asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfoSubscribe{
             .callback = callback, .subscriber = subscriber};
+        if (asyncCallbackInfo == nullptr) {
+            LOGE("SetSubscribeInfo failed: out of memory.");
+            return;
+        }
         std::lock_guard<std::mutex> lock(subscriberImplMutex);
         subscriberImpls[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
     }

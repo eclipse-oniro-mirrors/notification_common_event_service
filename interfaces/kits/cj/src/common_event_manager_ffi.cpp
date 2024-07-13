@@ -133,7 +133,12 @@ namespace OHOS::CommonEventManager {
             }
             auto subscriber = instance->GetSubscriber();
             ret.data = MallocCString(GetSubscriberData(subscriber));
-            ret.code = NO_ERROR;
+            if (ret.data == nullptr) {
+                LOGE("CJ_GetData failed: out of memory.")
+                ret.code = ERR_NO_MEMORY;
+            } else {
+                ret.code = NO_ERROR;
+            }
             return ret;
         }
 
@@ -373,6 +378,7 @@ namespace OHOS::CommonEventManager {
             CArrString ret = {.head = VectorToCharPointer(vStr), .size = vStr.size()};
             if (ret.head == nullptr) {
                 LOGE("Failed to malloc.");
+                ret.size = 0;
             }
             return ret;
         }
