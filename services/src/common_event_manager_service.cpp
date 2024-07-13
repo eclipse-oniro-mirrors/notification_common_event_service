@@ -48,9 +48,14 @@ std::mutex CommonEventManagerService::instanceMutex_;
 
 sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
 {
-    std::lock_guard<std::mutex> lock(instanceMutex_);
     if (instance_ == nullptr) {
-        instance_ = new (std::nothrow) CommonEventManagerService();
+        std::lock_guard<std::mutex> lock(instanceMutex_);
+        if (instance_ == nullptr) {
+            instance_ = new (std::nothrow) CommonEventManagerService();
+            if (instance_ == nullptr) {
+                EVENT_LOGE("failed to create CommonEventManagerService!");
+            }
+        }
     }
     return instance_;
 }

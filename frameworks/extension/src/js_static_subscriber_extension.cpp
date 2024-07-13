@@ -55,7 +55,10 @@ napi_value AttachStaticSubscriberExtensionContext(napi_env env, void* value, voi
     napi_coerce_to_native_binding_object(env, napiContextObj, AbilityRuntime::DetachCallbackFunc,
         AttachStaticSubscriberExtensionContext, value, nullptr);
     auto workContext = new (std::nothrow) std::weak_ptr<StaticSubscriberExtensionContext>(ptr);
-
+    if (workContext == nullptr) {
+        EVENT_LOGE("invalid StaticSubscriberExtensionContext.");
+        return nullptr;
+    }
     napi_wrap(env, napiContextObj, workContext,
         [](napi_env, void* data, void*) {
             EVENT_LOGI("Finalizer for weak_ptr static subscriber extension context is called");
@@ -133,6 +136,10 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
     }
 
     auto workContext = new (std::nothrow) std::weak_ptr<StaticSubscriberExtensionContext>(context);
+    if (workContext == nullptr) {
+        EVENT_LOGE("invalid StaticSubscriberExtensionContext.");
+        return;
+    }
     napi_coerce_to_native_binding_object(env, nativeObj, AbilityRuntime::DetachCallbackFunc,
         AttachStaticSubscriberExtensionContext, workContext, nullptr);
     context->Bind(jsRuntime_, shellContextRef.release());
@@ -166,6 +173,10 @@ sptr<IRemoteObject> JsStaticSubscriberExtension::OnConnect(const AAFwk::Want& wa
     Extension::OnConnect(want);
     sptr<StaticSubscriberStubImpl> remoteObject = new (std::nothrow) StaticSubscriberStubImpl(
         std::static_pointer_cast<JsStaticSubscriberExtension>(shared_from_this()));
+    if (remoteObject == nullptr) {
+        EVENT_LOGE("failed to create StaticSubscriberStubImpl!");
+        return nullptr;
+    }
     return remoteObject->AsObject();
 }
 
