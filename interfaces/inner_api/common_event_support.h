@@ -1315,6 +1315,30 @@ public:
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_DATA_SHARE_READY;
+
+    /**
+    * This common event means that overlay package is added.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_OVERLAY_PACKAGE_ADDED;
+
+    /**
+    * This common event means that overlay package is changed.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_OVERLAY_PACKAGE_CHANGED;
+
+    /**
+    * This common event means that disposed rule is added.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_DISPOSED_RULE_ADDED;
+
+    /**
+    * This common event means that disposed rule is deleted.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_DISPOSED_RULE_DELETED;
     
 public:
     CommonEventSupport();

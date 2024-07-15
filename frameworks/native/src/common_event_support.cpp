@@ -1453,6 +1453,30 @@ const std::string CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED = "u
  */
 const std::string CommonEventSupport::COMMON_EVENT_DATA_SHARE_READY = "usual.event.DATA_SHARE_READY";
 
+/**
+ * This common event means that overlay package is added.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_OVERLAY_PACKAGE_ADDED = "usual.event.OVERLAY_PACKAGE_ADDED";
+
+/**
+ * This common event means that overlay package is changed.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_OVERLAY_PACKAGE_CHANGED = "usual.event.OVERLAY_PACKAGE_CHANGED";
+
+/**
+ * This common event means that disposed rule is added.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_ADDED = "usual.event.DISPOSED_RULE_ADDED";
+
+/**
+ * This common event means that disposed rule is deleted.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_DELETED = "usual.event.DISPOSED_RULE_DELETED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2754,6 +2778,30 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DATA_SHARE_READY);
+
+    /**
+    * This common event means that overlay package is added.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_OVERLAY_PACKAGE_ADDED);
+
+    /**
+    * This common event means that overlay package is changed.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_OVERLAY_PACKAGE_CHANGED);
+
+    /**
+    * This common event means that disposed rule is added.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_ADDED);
+
+    /**
+    * This common event means that disposed rule is deleted.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_DELETED);
     return;
 }
 
