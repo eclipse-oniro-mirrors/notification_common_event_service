@@ -51,6 +51,7 @@ struct CCommonEventData {
 namespace OHOS::CommonEventManager {
     constexpr int8_t NO_ERROR = 0;
     constexpr int8_t ERR_CES_FAILED = 1;
+    constexpr int8_t ERR_NO_MEMORY = -2;
 
     char *MallocCString(const std::string &origin);
 }
