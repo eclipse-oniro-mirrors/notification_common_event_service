@@ -23,6 +23,8 @@
 #include "refbase.h"
 #include "system_ability_definition.h"
 #include "ces_inner_error_code.h"
+#include <memory>
+#include <mutex>
 
 namespace OHOS {
 namespace EventFwk {
@@ -31,7 +33,26 @@ const int32_t MAX_RETRY_TIME = 30;
 const int32_t SLEEP_TIME = 1000;
 }
 
+std::mutex CommonEvent::instanceMutex_;
+std::shared_ptr<CommonEvent> CommonEvent::instance_;
+
 using namespace OHOS::Notification;
+
+std::shared_ptr<CommonEvent> CommonEvent::GetInstance()
+{
+    if (instance_ == nullptr) {
+        std::lock_guard<std::mutex> lock(instanceMutex_);
+        if (instance_ == nullptr) {
+            auto commonEvent = std::make_shared<CommonEvent>();
+            if (commonEvent == nullptr) {
+                
+                return nullptr;
+            }
+            instance_ = commonEvent;
+        }
+    }
+    return instance_;
+}
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber)

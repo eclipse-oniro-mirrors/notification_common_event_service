@@ -77,7 +77,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
             return;
         }
         EVENT_LOGI("Common event service restore, try to reconnect");
-        auto commonEvent = DelayedSingleton<CommonEvent>::GetInstance();
+        auto commonEvent = CommonEvent::GetInstance();
         if (commonEvent->Reconnect()) {
             commonEvent->Resubscribe();
             listenerSptr->isSAOffline_ = false;
