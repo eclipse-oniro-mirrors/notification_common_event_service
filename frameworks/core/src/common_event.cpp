@@ -45,7 +45,7 @@ std::shared_ptr<CommonEvent> CommonEvent::GetInstance()
         if (instance_ == nullptr) {
             auto commonEvent = std::make_shared<CommonEvent>();
             if (commonEvent == nullptr) {
-                
+                EVENT_LOGE("Failed to create CommonEvent");
                 return nullptr;
             }
             instance_ = commonEvent;
