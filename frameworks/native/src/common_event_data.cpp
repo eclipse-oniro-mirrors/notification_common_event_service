@@ -99,7 +99,7 @@ bool CommonEventData::Marshalling(Parcel &parcel) const
     return true;
 }
 
-bool CommonEventData::ReadFromParcel(Parcel &parcel)
+__attribute__((no_sanitize("cfi"))) bool CommonEventData::ReadFromParcel(Parcel &parcel)
 {
     // read data
     int empty = VALUE_NULL;
