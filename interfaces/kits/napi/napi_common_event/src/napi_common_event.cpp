@@ -265,6 +265,10 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
         EVENT_LOGD("OnReceiveEvent complete");
     }
+
+    if (commonEventDataWorker != nullptr) {
+        EVENT_LOGD("commonEventDataWorker is using");
+    }
 }
 
 void ThreadFinished(napi_env env, void* data, [[maybe_unused]] void* context)
