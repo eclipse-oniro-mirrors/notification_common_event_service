@@ -83,7 +83,7 @@ ErrCode CommonEventCommand::RunAsPublishCommand()
         publishInfo.SetSticky(cmdInfo.isSticky);
         publishInfo.SetOrdered(cmdInfo.isOrdered);
         // publish the common event
-        int32_t publishResult = DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEventAsUser(
+        int32_t publishResult = CommonEvent::GetInstance()->PublishCommonEventAsUser(
             commonEventData, publishInfo, nullptr, cmdInfo.userId);
         if (publishResult == ERR_OK) {
             resultReceiver_ = STRING_PUBLISH_COMMON_EVENT_OK;
@@ -178,7 +178,7 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
     }
     if (result == ERR_OK) {
         std::vector<std::string> dumpResults;
-        bool dumpResult = DelayedSingleton<CommonEvent>::GetInstance()->DumpState(
+        bool dumpResult = CommonEvent::GetInstance()->DumpState(
             static_cast<int32_t>(cmdInfo.eventType), cmdInfo.action, cmdInfo.userId, dumpResults);
         if (dumpResult) {
             EVENT_LOGI("event size %{public}zu", dumpResults.size());

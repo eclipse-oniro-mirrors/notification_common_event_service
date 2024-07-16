@@ -74,7 +74,7 @@ int32_t CommonEventManager::NewPublishCommonEventAsUser(const CommonEventData &d
     const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
     const int32_t &userId)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber,
+    return CommonEvent::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber,
         userId);
 }
 
@@ -88,7 +88,7 @@ bool CommonEventManager::PublishCommonEventAsUser(const CommonEventData &data,
     const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
     const uid_t &uid, const int32_t &callerToken, const int32_t &userId)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber, uid,
+    return CommonEvent::GetInstance()->PublishCommonEventAsUser(data, publishInfo, subscriber, uid,
         callerToken, userId);
 }
 
@@ -99,7 +99,7 @@ bool CommonEventManager::SubscribeCommonEvent(const std::shared_ptr<CommonEventS
 
 int32_t CommonEventManager::NewSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->SubscribeCommonEvent(subscriber);
+    return CommonEvent::GetInstance()->SubscribeCommonEvent(subscriber);
 }
 
 bool CommonEventManager::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
@@ -109,47 +109,47 @@ bool CommonEventManager::UnSubscribeCommonEvent(const std::shared_ptr<CommonEven
 
 int32_t CommonEventManager::NewUnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->UnSubscribeCommonEvent(subscriber);
+    return CommonEvent::GetInstance()->UnSubscribeCommonEvent(subscriber);
 }
 
 bool CommonEventManager::GetStickyCommonEvent(const std::string &event, CommonEventData &commonEventData)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->GetStickyCommonEvent(event, commonEventData);
+    return CommonEvent::GetInstance()->GetStickyCommonEvent(event, commonEventData);
 }
 
 bool CommonEventManager::Freeze(const uid_t &uid)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->Freeze(uid);
+    return CommonEvent::GetInstance()->Freeze(uid);
 }
 
 bool CommonEventManager::Unfreeze(const uid_t &uid)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->Unfreeze(uid);
+    return CommonEvent::GetInstance()->Unfreeze(uid);
 }
 
 bool CommonEventManager::UnfreezeAll()
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->UnfreezeAll();
+    return CommonEvent::GetInstance()->UnfreezeAll();
 }
 
 int32_t CommonEventManager::RemoveStickyCommonEvent(const std::string &event)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->RemoveStickyCommonEvent(event);
+    return CommonEvent::GetInstance()->RemoveStickyCommonEvent(event);
 }
 
 int32_t CommonEventManager::SetStaticSubscriberState(bool enable)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->SetStaticSubscriberState(enable);
+    return CommonEvent::GetInstance()->SetStaticSubscriberState(enable);
 }
 
 int32_t CommonEventManager::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->SetStaticSubscriberState(events, enable);
+    return CommonEvent::GetInstance()->SetStaticSubscriberState(events, enable);
 }
 
 bool CommonEventManager::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
 {
-    return DelayedSingleton<CommonEvent>::GetInstance()->SetFreezeStatus(pidList, isFreeze);
+    return CommonEvent::GetInstance()->SetFreezeStatus(pidList, isFreeze);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -125,7 +125,7 @@ bool AsyncCommonEventResult::FinishCommonEvent()
     }
     finished_ = true;
 
-    return DelayedSingleton<CommonEvent>::GetInstance()->FinishReceiver(token_, resultCode_, resultData_, abortEvent_);
+    return CommonEvent::GetInstance()->FinishReceiver(token_, resultCode_, resultData_, abortEvent_);
 }
 
 bool AsyncCommonEventResult::IsOrderedCommonEvent() const

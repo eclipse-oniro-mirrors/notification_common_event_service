@@ -17,6 +17,7 @@
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_H
 
 #include <map>
+#include <memory>
 #include <mutex>
 #include <thread>
 
@@ -27,6 +28,7 @@ namespace OHOS {
 namespace EventFwk {
 class CommonEvent {
 public:
+    static std::shared_ptr<CommonEvent> GetInstance();
     /**
      * Publishes a common event.
      *
@@ -228,6 +230,8 @@ private:
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
 private:
+    static std::mutex instanceMutex_;
+    static std::shared_ptr<CommonEvent> instance_;
     std::mutex eventListenersMutex_;
     std::map<std::shared_ptr<CommonEventSubscriber>, sptr<CommonEventListener>> eventListeners_;
     const size_t SUBSCRIBER_MAX_SIZE = 200;
