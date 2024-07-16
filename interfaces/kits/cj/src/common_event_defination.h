@@ -54,5 +54,6 @@ namespace OHOS::CommonEventManager {
     constexpr int8_t ERR_NO_MEMORY = -2;
 
     char *MallocCString(const std::string &origin);
+    char *MallocCString(const std::string &origin, int32_t &code);
 }
 #endif // COMMON_EVENT_CONSTANT_H

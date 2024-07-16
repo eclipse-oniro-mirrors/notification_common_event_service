@@ -36,7 +36,7 @@ namespace OHOS::CommonEventManager {
     const int8_t STR_TYPE = 2;
     const int8_t BOOL_TYPE = 3;
     const int8_t FD_TYPE = 4;
-    const int8_t CHAR_PTR_TYPE = 5;
+    const int8_t STR_PTR_TYPE = 5;
     const int8_t I32_PTR_TYPE = 6;
     const int8_t I64_PTR_TYPE = 7;
     const int8_t BOOL_PTR_TYPE = 8;
@@ -173,7 +173,7 @@ namespace OHOS::CommonEventManager {
                 wantP.SetParam(key, OHOS::AAFwk::Boolean::Box(*static_cast<bool *>(head->value)));
             } else if (head->valueType == FD_TYPE) { // "FD"
                 SetFdData(key, static_cast<int *>(head->value), wantP);
-            } else if (head->valueType == CHAR_PTR_TYPE) { // char**
+            } else if (head->valueType == STR_PTR_TYPE) { // char**
                 char **strPtr = static_cast<char **>(head->value);
                 std::vector<std::string> strVec;
                 charPtrToVector(strPtr, head->size, strVec);
@@ -210,6 +210,20 @@ namespace OHOS::CommonEventManager {
         auto len = origin.length() + 1;
         char *res = static_cast<char *>(malloc(sizeof(char) * len));
         if (res == nullptr) {
+            return nullptr;
+        }
+        return std::char_traits<char>::copy(res, origin.c_str(), len);
+    }
+
+    char *MallocCString(const std::string &origin, int32_t &code)
+    {
+        if (origin.empty() || code != NO_ERROR) {
+            return nullptr;
+        }
+        auto len = origin.length() + 1;
+        char *res = static_cast<char *>(malloc(sizeof(char) * len));
+        if (res == nullptr) {
+            code = ERR_NO_MEMORY;
             return nullptr;
         }
         return std::char_traits<char>::copy(res, origin.c_str(), len);
@@ -382,7 +396,7 @@ namespace OHOS::CommonEventManager {
     {
         LOGI("%{public}s called. key=%{public}s", __func__, p->key);
         if (AAFwk::Array::IsStringArray(ao)) {
-            p->valueType = CHAR_PTR_TYPE;
+            p->valueType = STR_PTR_TYPE;
             InnerWrapWantParamsArrayString(ao, p);
             return;
         } else if (AAFwk::Array::IsBooleanArray(ao)) {
@@ -406,10 +420,12 @@ namespace OHOS::CommonEventManager {
         }
     }
 
-    void ParseParameters(Want &want, CCommonEventData &cData)
+    void ParseParameters(Want &want, CCommonEventData &cData, int32_t &code)
     {
+        if (code != NO_ERROR) {
+            return;
+        }
         WantParams wantP = want.GetParams();
-
         std::map<std::string, sptr<OHOS::AAFwk::IInterface>> paramsMap = wantP.GetParams();
         int count = 0;
         auto size = static_cast<int64_t>(paramsMap.size());
@@ -423,6 +439,7 @@ namespace OHOS::CommonEventManager {
             auto ptr = cData.parameters.head + count;
             ptr->key = MallocCString(iter->first);
             if (ptr->key == nullptr) {
+                code = ERR_NO_MEMORY;
                 return ClearParametersPtr(cData.parameters.head, count, true);
             }
             ptr->value = nullptr;
@@ -445,19 +462,27 @@ namespace OHOS::CommonEventManager {
                 InnerWrapWantParamsArray(wantP, array, ptr);
             }
             if (ptr->value == nullptr) {
+                code = ERR_NO_MEMORY;
                 return ClearParametersPtr(cData.parameters.head, count, false);
             }
             count++;
         }
     }
 
-    void GetCommonEventData(const CommonEventData &data, CCommonEventData &cData)
+    int32_t GetCommonEventData(const CommonEventData &data, CCommonEventData &cData)
     {
         auto want = data.GetWant();
         cData.code = data.GetCode();
-        cData.data = MallocCString(data.GetData());
-        cData.event = MallocCString(want.GetAction());
-        cData.bundleName = MallocCString(want.GetBundle());
-        ParseParameters(want, cData);
+        int32_t code = NO_ERROR;
+        cData.data = MallocCString(data.GetData(), code);
+        cData.event = MallocCString(want.GetAction(), code);
+        cData.bundleName = MallocCString(want.GetBundle(), code);
+        ParseParameters(want, cData, code);
+        if (code != NO_ERROR) {
+            free(cData.data);
+            free(cData.event);
+            free(cData.bundleName);
+        }
+        return code;
     }
 }
