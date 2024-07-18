@@ -119,7 +119,11 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
         EVENT_LOGE("Failed to get static subscriber extension object");
         return;
     }
+    ExecNapiWrap(env, obj);
+}
 
+void JsStaticSubscriberExtension::ExecNapiWrap(napi_env env, napi_value obj)
+{
     auto context = GetContext();
     if (context == nullptr) {
         EVENT_LOGE("Failed to get context");
