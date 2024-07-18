@@ -53,6 +53,8 @@ public:
 
     void OnReceiveEvent(std::shared_ptr<CommonEventData> data) override;
 
+    void ExecNapiWrap(napi_env env, napi_value obj);
+
 private:
     AbilityRuntime::JsRuntime& jsRuntime_;
     std::unique_ptr<NativeReference> jsObj_;
