@@ -291,13 +291,17 @@ namespace OHOS::CommonEventManager {
     void ClearParametersPtr(CParameters *p, int count, bool isKey)
     {
         for (int i = 0; i < count; i++) {
-            free((p + i)->key);
-            free((p + i)->value);
+            free(p[i].key);
+            free(p[i].value);
+            p[i].key = nullptr;
+            p[i].value = nullptr;
         }
         if (!isKey) {
-            free((p + count)->key);
+            free(p[count].key);
+            p[count].key = nullptr;
         }
         free(p);
+        p = nullptr;
     }
 
     template <class TBase, class T, class NativeT>
@@ -469,6 +473,16 @@ namespace OHOS::CommonEventManager {
         }
     }
 
+    void FreeCCommonEventDataCharPtr(CCommonEventData &cData)
+    {
+        free(cData.data);
+        free(cData.event);
+        free(cData.bundleName);
+        cData.data = nullptr;
+        cData.event = nullptr;
+        cData.bundleName = nullptr;
+    }
+
     int32_t GetCommonEventData(const CommonEventData &data, CCommonEventData &cData)
     {
         auto want = data.GetWant();
@@ -479,9 +493,7 @@ namespace OHOS::CommonEventManager {
         cData.bundleName = MallocCString(want.GetBundle(), code);
         ParseParameters(want, cData, code);
         if (code != NO_ERROR) {
-            free(cData.data);
-            free(cData.event);
-            free(cData.bundleName);
+            FreeCCommonEventDataCharPtr(cData);
         }
         return code;
     }

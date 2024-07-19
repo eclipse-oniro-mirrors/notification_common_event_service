@@ -53,6 +53,9 @@ namespace OHOS::CommonEventManager {
         {
             auto infoPtr = CommonEventManagerImpl::CreateCommonEventSubscribeInfo(events.head, events.size);
             auto ptr = FFIData::Create<CommonEventSubscribeInfoImpl>(infoPtr);
+            if (!ptr) {
+                return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
+            }
             return ptr->GetID();
         }
 
@@ -70,6 +73,9 @@ namespace OHOS::CommonEventManager {
             }
             auto info = instance->GetInfoPtr();
             auto ptr = FFIData::Create<SubscriberManager>(info, id);
+            if (!ptr) {
+                return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
+            }
             ptr->GetSubscriber()->SetSubscriberManagerId(ptr->GetID());
             return ptr->GetID();
         }
@@ -351,6 +357,7 @@ namespace OHOS::CommonEventManager {
         {
             for (int i = 0; i < count; i++) {
                 free(ptr[i]);
+                ptr[i] = nullptr;
             }
         }
 

@@ -38,21 +38,23 @@ namespace OHOS::CommonEventManager {
 
     static void FreeCCommonEventData(CCommonEventData &cData)
     {
-        free(cData.data);
-        free(cData.event);
-        free(cData.bundleName);
+        FreeCCommonEventDataCharPtr(cData);
         for (int i = 0; i < cData.parameters.size; i++) {
             auto ptr = cData.parameters.head[i];
             free(ptr.key);
+            ptr.key = nullptr;
             if (ptr.valueType == STR_PTR_TYPE) {
                 char **value = reinterpret_cast<char **>(ptr.value);
                 for (int i = 0; i < ptr.size; i++) {
                     free(value[i]);
+                    value[i] = nullptr;
                 }
             }
             free(ptr.value);
+            ptr.value = nullptr;
         }
         free(cData.parameters.head);
+        cData.parameters.head = nullptr;
     }
 
     void SubscriberImpl::OnReceiveEvent(const CommonEventData &data)
