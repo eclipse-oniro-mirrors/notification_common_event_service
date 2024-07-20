@@ -90,5 +90,12 @@ bool __attribute__((weak)) AccessTokenHelper::IsSystemApp()
     }
     return false;
 }
+
+std::string AccessTokenHelper::GetCallingProcessName(const AccessTokenID &callerToken)
+{
+    AccessToken::NativeTokenInfo callingTokenInfo;
+    AccessToken::AccessTokenKit::GetNativeTokenInfo(callerToken, callingTokenInfo);
+    return callingTokenInfo.processName;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

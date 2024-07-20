@@ -38,6 +38,7 @@ public:
     static AccessToken::AccessTokenID GetHapTokenID(int userID, const std::string& bundleName, int instIndex);
     static bool VerifyShellToken(const AccessToken::AccessTokenID &callerToken);
     static bool IsSystemApp();
+    static std::string GetCallingProcessName(const AccessToken::AccessTokenID &callerToken);
 };
 }  // namespace EventFwk
 }  // namespace OHOS
