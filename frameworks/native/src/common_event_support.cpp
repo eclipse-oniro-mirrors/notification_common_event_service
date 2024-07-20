@@ -94,18 +94,18 @@ const std::string CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED =
     "usual.event.THERMAL_LEVEL_CHANGED";
 
 /**
- * Indicates the action of a common event that the device is about to enter the sleep mode.
+ * Indicates the action of a common event that the device is about to enter the force sleep mode.
  * This common event can only be published by the system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_ENTER_SLEEP =
-    "usual.event.ENTER_SLEEP";
+const std::string CommonEventSupport::COMMON_EVENT_ENTER_FORCE_SLEEP =
+    "usual.event.ENTER_FORCE_SLEEP";
 
 /**
- * Indicates the action of a common event that the device exits the sleep mode.
+ * Indicates the action of a common event that the device exits the force sleep mode.
  * This common event can only be published by the system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_EXIT_SLEEP =
-    "usual.event.EXIT_SLEEP";
+const std::string CommonEventSupport::COMMON_EVENT_EXIT_FORCE_SLEEP =
+    "usual.event.EXIT_FORCE_SLEEP";
 
 /**
  * Indicates the action of a common event that the device is idle and charging,
@@ -1551,15 +1551,15 @@ void CommonEventSupport::Init()
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED);
     /**
-     * Indicates the action of a common event that the device is about to enter the sleep mode.
+     * Indicates the action of a common event that the device is about to enter the force sleep mode.
      * This common event can only be published by the system.
      */
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ENTER_SLEEP);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ENTER_FORCE_SLEEP);
     /**
-     * Indicates the action of a common event that the device exits the sleep mode.
+     * Indicates the action of a common event that the device exits the force sleep mode.
      * This common event can only be published by the system.
      */
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_EXIT_SLEEP);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_EXIT_FORCE_SLEEP);
     /**
      * Indicates the action of a common event that the device is idle and charging,
      * services can do some business on the background.
