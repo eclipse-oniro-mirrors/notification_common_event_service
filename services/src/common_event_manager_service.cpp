@@ -322,11 +322,16 @@ bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, C
         EVENT_LOGE("event is empty");
         return false;
     }
-
+    auto callerToken = IPCSkeleton::GetCallingTokenID();
+    bool isSubsystem = AccessTokenHelper::VerifyNativeToken(callerToken);
+    if (!isSubsystem && !AccessTokenHelper::IsSystemApp()) {
+        EVENT_LOGE("Not system application or subsystem request.");
+        return ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
+    }
     auto callingUid = IPCSkeleton::GetCallingUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
-    bool ret = AccessTokenHelper::VerifyAccessToken(IPCSkeleton::GetCallingTokenID(), permission);
+    bool ret = AccessTokenHelper::VerifyAccessToken(callerToken, permission);
     if (!ret) {
         EVENT_LOGE("No permission to get a sticky common event from %{public}s (uid = %{public}d)",
             bundleName.c_str(),
