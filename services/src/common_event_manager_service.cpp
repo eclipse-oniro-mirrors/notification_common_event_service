@@ -537,7 +537,7 @@ bool CommonEventManagerService::SetFreezeStatus(std::set<int> pidList, bool isFr
 {
     EVENT_LOGD("enter");
     auto tokenId = IPCSkeleton::GetCallingTokenID();
-    if (!AccessTokenHelper::VerifyNativeToken(tokenId) &&
+    if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
         AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
         EVENT_LOGE("Not subsystem request");
         return false;
