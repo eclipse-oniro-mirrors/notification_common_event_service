@@ -26,6 +26,7 @@ namespace OHOS::CommonEventManager {
     void charPtrToVector(char **charPtr, int size, std::vector<std::string> &result);
     void SetFdData(CParameters *head, WantParams &wantP);
     void SetDataParameters(CArrParameters parameters, WantParams &wantP);
+    void FreeCCommonEventDataCharPtr(CCommonEventData &cData);
 }
 
 #endif
