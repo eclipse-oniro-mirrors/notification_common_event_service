@@ -320,6 +320,10 @@ namespace OHOS::CommonEventManager {
         const char *CJ_GetPermission(int64_t id)
         {
             auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            if (!instance) {
+                LOGE("CJ_GetPermission instance not exist %{public}" PRId64, id);
+                return nullptr;
+            }
             auto str = instance->GetPermission();
             auto ret = MallocCString(str);
             return ret;
@@ -328,6 +332,10 @@ namespace OHOS::CommonEventManager {
         const char *CJ_GetDeviceId(int64_t id)
         {
             auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            if (!instance) {
+                LOGE("CJ_GetDeviceId instance not exist %{public}" PRId64, id);
+                return nullptr;
+            }
             auto str = instance->GetDeviceId();
             auto ret = MallocCString(str);
             return ret;
@@ -336,18 +344,30 @@ namespace OHOS::CommonEventManager {
         int32_t CJ_GetUserId(int64_t id)
         {
             auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            if (!instance) {
+                LOGE("CJ_GetUserId instance not exist %{public}" PRId64, id);
+                return 0;
+            }
             return instance->GetUserId();
         }
 
         int32_t CJ_GetPriority(int64_t id)
         {
             auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            if (!instance) {
+                LOGE("CJ_GetPriority instance not exist %{public}" PRId64, id);
+                return 0;
+            }
             return instance->GetPriority();
         }
 
         const char *CJ_GetBundleName(int64_t id)
         {
             auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            if (!instance) {
+                LOGE("CJ_GetBundleName instance not exist %{public}" PRId64, id);
+                return nullptr;
+            }
             auto str = instance->GetPublisherBundleName();
             auto ret = MallocCString(str);
             return ret;
@@ -381,8 +401,14 @@ namespace OHOS::CommonEventManager {
         CArrString CJ_GetEvents(int64_t id)
         {
             auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            CArrString ret = {.head = nullptr, .size = 0};
+            if (!instance) {
+                LOGE("CJ_GetEvents instance not exist %{public}" PRId64, id);
+                return ret;
+            }
             auto vStr = instance->GetEvents();
-            CArrString ret = {.head = VectorToCharPointer(vStr), .size = vStr.size()};
+            ret.head = VectorToCharPointer(vStr);
+            ret.size = vStr.size();
             if (ret.head == nullptr) {
                 LOGE("Failed to malloc.");
                 ret.size = 0;
