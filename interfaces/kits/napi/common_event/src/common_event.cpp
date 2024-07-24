@@ -129,6 +129,10 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
     }
     napi_handle_scope scope;
     napi_open_handle_scope(commonEventDataWorkerData->env, &scope);
+    if (scope == nullptr) {
+        EVENT_LOGE("Scope is null");
+        return;
+    }
 
     napi_value result = nullptr;
     napi_create_object(commonEventDataWorkerData->env, &result);
