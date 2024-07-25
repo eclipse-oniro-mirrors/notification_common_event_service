@@ -537,7 +537,7 @@ bool CommonEventProxy::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
 
     if (pidList.size() > VECTOR_MAX_SIZE) {
         EVENT_LOGE("PidList size exceeds the max size.");
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        return false;
     }
 
     if (!data.WriteInt32(pidList.size())) {

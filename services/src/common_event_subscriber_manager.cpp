@@ -99,10 +99,6 @@ int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &co
     }
 
     int res = RemoveSubscriberRecordLocked(commonEventListener);
-    
-    if (death_ != nullptr) {
-        commonEventListener->RemoveDeathRecipient(death_);
-    }
     return res;
 }
 
@@ -317,6 +313,10 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
         EVENT_LOGE("commonEventListener is null");
         return ERR_INVALID_VALUE;
     }
+    
+    if (death_ != nullptr) {
+        commonEventListener->RemoveDeathRecipient(death_);
+    }
 
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<std::string> events;
@@ -328,9 +328,9 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
             (*it)->commonEventListener = nullptr;
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
             EVENT_LOGI("Unsubscribe subscriberID: %{public}s", (*it)->eventRecordInfo.subId.c_str());
-            subscribers_.erase(it);
             pid_t pid = (*it)->eventRecordInfo.pid;
             subscriberCounts_[pid] > 1 ? subscriberCounts_[pid]-- : subscriberCounts_.erase(pid);
+            subscribers_.erase(it);
             break;
         }
     }
