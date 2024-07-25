@@ -51,6 +51,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_ON, "COMMON_EVENT_SCREEN_ON");
     SetNamedPropertyByStr(env,
         obj, EventFwk::CommonEventSupport::COMMON_EVENT_THERMAL_LEVEL_CHANGED, "COMMON_EVENT_THERMAL_LEVEL_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj, EventFwk::CommonEventSupport::COMMON_EVENT_ENTER_FORCE_SLEEP, "COMMON_EVENT_ENTER_FORCE_SLEEP");
+    SetNamedPropertyByStr(env,
+        obj, EventFwk::CommonEventSupport::COMMON_EVENT_EXIT_FORCE_SLEEP, "COMMON_EVENT_EXIT_FORCE_SLEEP");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_PRESENT, "COMMON_EVENT_USER_PRESENT");
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_TIME_TICK, "COMMON_EVENT_TIME_TICK");
