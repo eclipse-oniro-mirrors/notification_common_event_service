@@ -22,10 +22,11 @@
 namespace OHOS::CommonEventManager {
     using CommonEventData = OHOS::EventFwk::CommonEventData;
     using WantParams = OHOS::AAFwk::WantParams;
-    void GetCommonEventData(const CommonEventData &data, CCommonEventData &cData);
+    int32_t GetCommonEventData(const CommonEventData &data, CCommonEventData &cData);
     void charPtrToVector(char **charPtr, int size, std::vector<std::string> &result);
     void SetFdData(CParameters *head, WantParams &wantP);
     void SetDataParameters(CArrParameters parameters, WantParams &wantP);
+    void FreeCCommonEventDataCharPtr(CCommonEventData &cData);
 }
 
 #endif

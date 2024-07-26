@@ -27,9 +27,6 @@ namespace OHOS::CommonEventManager {
     using CommonEventSubscriber = OHOS::EventFwk::CommonEventSubscriber;
     using CommonEventData = OHOS::EventFwk::CommonEventData;
 
-    class SubscriberImpl;
-    struct SubscriberInstanceInfo;
-
     class SubscriberImpl : public CommonEventSubscriber {
     public:
         SubscriberImpl(std::shared_ptr<CommonEventSubscribeInfo> sp, int64_t infoId);

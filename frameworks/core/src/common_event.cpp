@@ -429,7 +429,7 @@ bool CommonEvent::Reconnect()
     return false;
 }
 
-bool CommonEvent::Resubscribe()
+__attribute__((no_sanitize("cfi"))) bool CommonEvent::Resubscribe()
 {
     EVENT_LOGD("enter");
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
