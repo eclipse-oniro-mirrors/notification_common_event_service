@@ -408,7 +408,7 @@ namespace OHOS::CommonEventManager {
             }
             auto vStr = instance->GetEvents();
             ret.head = VectorToCharPointer(vStr);
-            ret.size = vStr.size();
+            ret.size = static_cast<int64_t>(vStr.size());
             if (ret.head == nullptr) {
                 LOGE("Failed to malloc.");
                 ret.size = 0;
