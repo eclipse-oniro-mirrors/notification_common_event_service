@@ -172,6 +172,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
         EVENT_LOGE("the commonEventProxy is null");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
+    DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
     sptr<IRemoteObject> commonEventListener = nullptr;
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
     if (subscribeState == INITIAL_SUBSCRIPTION) {
@@ -373,9 +374,6 @@ sptr<ICommonEvent> CommonEvent::GetCommonEventProxy()
         EVENT_LOGE("Failed to get COMMON Event Manager's proxy");
         return nullptr;
     }
-
-    auto commonEventDeathRecipient = DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
-    commonEventDeathRecipient->SubscribeSAManager();
     return proxy;
 }
 
