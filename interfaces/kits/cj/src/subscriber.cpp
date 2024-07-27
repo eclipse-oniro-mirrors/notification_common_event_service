@@ -45,9 +45,9 @@ namespace OHOS::CommonEventManager {
             ptr.key = nullptr;
             if (ptr.valueType == STR_PTR_TYPE) {
                 char **value = reinterpret_cast<char **>(ptr.value);
-                for (int i = 0; i < ptr.size; i++) {
-                    free(value[i]);
-                    value[i] = nullptr;
+                for (int j = 0; j < ptr.size; j++) {
+                    free(value[j]);
+                    value[j] = nullptr;
                 }
             }
             free(ptr.value);
