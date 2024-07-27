@@ -288,8 +288,9 @@ namespace OHOS::CommonEventManager {
         p->value = static_cast<void *>(arrP);
     }
 
-    void ClearParametersPtr(CParameters *p, int count, bool isKey)
+    void ClearParametersPtr(CParameters **ptr, int count, bool isKey)
     {
+        CParameters *p = *ptr;
         for (int i = 0; i < count; i++) {
             free(p[i].key);
             free(p[i].value);
@@ -300,8 +301,8 @@ namespace OHOS::CommonEventManager {
             free(p[count].key);
             p[count].key = nullptr;
         }
-        free(p);
-        p = nullptr;
+        free(*ptr);
+        *ptr = nullptr;
     }
 
     template <class TBase, class T, class NativeT>
@@ -444,7 +445,7 @@ namespace OHOS::CommonEventManager {
             ptr->key = MallocCString(iter->first);
             if (ptr->key == nullptr) {
                 code = ERR_NO_MEMORY;
-                return ClearParametersPtr(cData.parameters.head, count, true);
+                return ClearParametersPtr(&cData.parameters.head, count, true);
             }
             ptr->value = nullptr;
             if (AAFwk::IString::Query(iter->second) != nullptr) {
@@ -467,7 +468,7 @@ namespace OHOS::CommonEventManager {
             }
             if (ptr->value == nullptr) {
                 code = ERR_NO_MEMORY;
-                return ClearParametersPtr(cData.parameters.head, count, false);
+                return ClearParametersPtr(&cData.parameters.head, count, true);
             }
             count++;
         }
