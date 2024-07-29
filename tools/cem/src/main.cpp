@@ -21,6 +21,6 @@ int main(int argc, char *argv[])
 {
     OHOS::EventFwk::CommonEventCommand cmd(argc, argv);
     std::cout << cmd.ExecCommand();
-    exit(0);
+    quick_exit(0);
     return 0;
 }
