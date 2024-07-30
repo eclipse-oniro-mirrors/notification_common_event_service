@@ -79,7 +79,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
     int32_t systemAbilityId, const std::string& deviceId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    if (isSAOffline_) {
+    if (!isSAOffline_) {
         return;
     }
     EVENT_LOGI("Common event service restore, try to reconnect");
