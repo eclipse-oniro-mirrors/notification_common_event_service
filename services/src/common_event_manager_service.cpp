@@ -389,10 +389,13 @@ bool CommonEventManagerService::Freeze(const uid_t &uid)
 {
     EVENT_LOGD("enter");
 
-    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+    auto tokenId = IPCSkeleton::GetCallingTokenID();
+    if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
+        AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
         EVENT_LOGE("Not subsystem request");
         return false;
     }
+
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
         return false;
@@ -415,10 +418,13 @@ bool CommonEventManagerService::Unfreeze(const uid_t &uid)
 {
     EVENT_LOGD("enter");
 
-    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+    auto tokenId = IPCSkeleton::GetCallingTokenID();
+    if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
+        AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
         EVENT_LOGE("Not subsystem request");
         return false;
     }
+
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
         return false;
@@ -442,10 +448,13 @@ bool CommonEventManagerService::UnfreezeAll()
 {
     EVENT_LOGD("enter");
 
-    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
+    auto tokenId = IPCSkeleton::GetCallingTokenID();
+    if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
+        AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
         EVENT_LOGE("Not subsystem request");
         return false;
     }
+    
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");
         return false;
