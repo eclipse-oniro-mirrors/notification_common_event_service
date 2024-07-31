@@ -28,6 +28,8 @@ namespace OHOS {
 namespace EventFwk {
 constexpr size_t REVERSE = 3;
 
+static const std::unordered_map<std::string, std::vector<int32_t>> COMMON_EVENT_MAP_PUBLISHER;
+
 static const std::unordered_map<std::string, std::pair<PermissionState, std::vector<std::string>>> COMMON_EVENT_MAP {
     {CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED,
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVER_STARTUP_COMPLETED"}}
@@ -212,6 +214,15 @@ bool CommonEventPermissionManager::IsSensitiveEvent(const std::string &event)
 bool CommonEventPermissionManager::IsSystemAPIEvent(const std::string &event)
 {
     return SYSTEM_API_COMMON_EVENTS.find(event) != SYSTEM_API_COMMON_EVENTS.end();
+}
+
+bool CommonEventPermissionManager::IsPublishAllowed(const std::string &event, int32_t uid)
+{
+    auto it = COMMON_EVENT_MAP_PUBLISHER.find(event);
+    if (it != COMMON_EVENT_MAP_PUBLISHER.end()) {
+        return std::find(it->second.begin(), it->second.end(), uid) != it->second.end();
+    }
+    return true;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
