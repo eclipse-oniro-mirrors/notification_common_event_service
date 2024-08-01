@@ -34,11 +34,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     if (data == nullptr) {
         return 0;
     }
-
-    char* ch = (char *)malloc(size + 1);
-    if (ch == nullptr) {
-        return 0;
-    }
     OHOS::FuzzData fuzzData(data, size);
     OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
