@@ -43,12 +43,7 @@ std::shared_ptr<CommonEvent> CommonEvent::GetInstance()
     if (instance_ == nullptr) {
         std::lock_guard<std::mutex> lock(instanceMutex_);
         if (instance_ == nullptr) {
-            auto commonEvent = std::make_shared<CommonEvent>();
-            if (commonEvent == nullptr) {
-                EVENT_LOGE("Failed to create CommonEvent");
-                return nullptr;
-            }
-            instance_ = commonEvent;
+            instance_ = std::make_shared<CommonEvent>();
         }
     }
     return instance_;
