@@ -151,12 +151,6 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.GET_BUNDLE_RESOURCES"}}
     },
-    {CommonEventSupport::COMMON_EVENT_ENTER_FORCE_SLEEP,
-        {PermissionState::DEFAULT, {"ohos.permission.POWER_MANAGER"}}
-    },
-    {CommonEventSupport::COMMON_EVENT_EXIT_FORCE_SLEEP,
-        {PermissionState::DEFAULT, {"ohos.permission.POWER_MANAGER"}}
-    }
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
