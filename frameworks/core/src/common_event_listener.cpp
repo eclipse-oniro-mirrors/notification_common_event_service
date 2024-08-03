@@ -52,6 +52,7 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
         }
         sThis->OnReceiveEvent(commonEventData, ordered, sticky);
     };
+    wp = nullptr;
 
     if (handler_) {
         handler_->PostTask(onReceiveEventFunc, "CommonEvent" + commonEventData.GetWant().GetAction());
