@@ -59,6 +59,7 @@ ohos_shared_library("cesfwk_core") {
   version_script = "libcesfwk_core.map"
 
   sources = [
+    "${ces_core_path}/src/ces_xcollie.cpp",
     "${ces_core_path}/src/common_event.cpp",
     "${ces_core_path}/src/common_event_death_recipient.cpp",
     "${ces_core_path}/src/common_event_listener.cpp",
@@ -72,7 +73,6 @@ ohos_shared_library("cesfwk_core") {
     "${ces_native_path}/src/common_event_subscribe_info.cpp",
     "${ces_native_path}/src/common_event_subscriber.cpp",
     "${ces_native_path}/src/matching_skills.cpp",
-    "${ces_core_path}/src/ces_xcollie.cpp",
   ]
 
   configs = [ ":cesfwk_core_config" ]
@@ -86,10 +86,10 @@ ohos_shared_library("cesfwk_core") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
-    "hicollie:libhicollie",
   ]
 
   if (ces_hitrace_usage) {
