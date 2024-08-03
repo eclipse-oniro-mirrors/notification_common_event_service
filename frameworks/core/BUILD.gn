@@ -66,13 +66,13 @@ ohos_shared_library("cesfwk_core") {
     "${ces_core_path}/src/common_event_stub.cpp",
     "${ces_core_path}/src/event_receive_proxy.cpp",
     "${ces_core_path}/src/event_receive_stub.cpp",
-    "${ces_core_path}/src/ces_xcollie.cpp",
     "${ces_native_path}/src/async_common_event_result.cpp",
     "${ces_native_path}/src/common_event_data.cpp",
     "${ces_native_path}/src/common_event_publish_info.cpp",
     "${ces_native_path}/src/common_event_subscribe_info.cpp",
     "${ces_native_path}/src/common_event_subscriber.cpp",
     "${ces_native_path}/src/matching_skills.cpp",
+    "${ces_core_path}/src/ces_xcollie.cpp",
   ]
 
   configs = [ ":cesfwk_core_config" ]
