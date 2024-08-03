@@ -89,7 +89,7 @@ ohos_shared_library("cesfwk_core") {
     "hilog:libhilog",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
-    "hicollie:libhicollie"
+    "hicollie:libhicollie",
   ]
 
   if (ces_hitrace_usage) {
