@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
- #include "ces_xcollie.h"
- #include "xcollie/xcollie.h"
- #include "event_log_wrapper.h"
+#include "ces_xcollie.h"
+#include "xcollie/xcollie.h"
+#include "event_log_wrapper.h"
 
 namespace OHOS {
 namespace EventFwk {
