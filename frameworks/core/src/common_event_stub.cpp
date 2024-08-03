@@ -18,6 +18,7 @@
 #include "event_log_wrapper.h"
 #include "string_ex.h"
 #include "ces_inner_error_code.h"
+#include "ces_xcollie.h"
 
 namespace OHOS {
 namespace EventFwk {
