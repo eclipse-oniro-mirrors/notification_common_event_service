@@ -25,7 +25,7 @@ CesXCollie::CesXCollie(const std::string& tag, uint32_t timeoutSeconds,
     tag_ = tag;
     id_ = HiviewDFX::XCollie::GetInstance().SetTimer(tag_, timeoutSeconds, func, arg, flag);
     isCanceled_ = false;
-    EVENT_LOGD("start CesXCollie, tag:%{public}s, timeoutSeconds:%{public}u,flag:%{public}, id:%{public}d",
+    EVENT_LOGD("start CesXCollie, tag:%{public}s, timeoutSeconds:%{public}u,flag:%{public}u, id:%{public}d",
         tag_.c_str(), timeoutSeconds, flag, id_);
 }
 
