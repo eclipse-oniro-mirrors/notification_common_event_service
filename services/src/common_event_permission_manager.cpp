@@ -47,7 +47,7 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
         {PermissionState::DEFAULT, {"ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS"}}
     },
     {CommonEventSupport::COMMON_EVENT_WIFI_SCAN_FINISHED,
-        {PermissionState::DEFAULT, {"ohos.permission.LOCATION"}}
+        {PermissionState::DEFAULT, {"ohos.permission.GET_WIFI_PEERS_MAC"}}
     },
     {CommonEventSupport::COMMON_EVENT_WIFI_RSSI_VALUE,
         {PermissionState::DEFAULT, {"ohos.permission.GET_WIFI_INFO"}}
@@ -62,7 +62,7 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
         {PermissionState::DEFAULT, {"ohos.permission.MPLINK_CHANGE_STATE"}}
     },
     {CommonEventSupport::COMMON_EVENT_WIFI_P2P_CONN_STATE,
-        {PermissionState::AND, {"ohos.permission.GET_WIFI_INFO", "ohos.permission.LOCATION"}}
+        {PermissionState::AND, {"ohos.permission.GET_WIFI_INFO", "ohos.permission.GET_WIFI_PEERS_MAC"}}
     },
     {CommonEventSupport::COMMON_EVENT_WIFI_P2P_STATE_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.GET_WIFI_INFO"}}
