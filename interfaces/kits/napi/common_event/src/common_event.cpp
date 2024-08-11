@@ -180,6 +180,7 @@ SubscriberInstance::~SubscriberInstance()
 {
     EVENT_LOGD("destructor SubscriberInstance[%{public}llu]", id_.load());
     *valid_ = false;
+    std::lock_guard<std::mutex> lock(envMutex_);
     if (env_ != nullptr && tsfn_ != nullptr) {
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
     }
@@ -199,12 +200,14 @@ void SubscriberInstance::SetEnv(const napi_env &env)
 napi_env SubscriberInstance::GetEnv()
 {
     EVENT_LOGD("Enter");
+    std::lock_guard<std::mutex> lock(envMutex_);
     return env_;
 }
 
 void SubscriberInstance::ClearEnv()
 {
     EVENT_LOGD("Env expired, clear SubscriberInstance env");
+    std::lock_guard<std::mutex> lock(envMutex_);
     env_ = nullptr;
     tsfn_ = nullptr;
 }
@@ -233,7 +236,6 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
     EVENT_LOGD("OnReceiveEvent() action: %{public}s.", data.GetWant().GetAction().c_str());
     commonEventDataWorker->code = data.GetCode();
     commonEventDataWorker->data = data.GetData();
-    commonEventDataWorker->env = env_;
     commonEventDataWorker->ref = ref_;
     commonEventDataWorker->valid = valid_;
 
@@ -248,6 +250,8 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
             }
         }
     }
+    std::lock_guard<std::mutex> lock(envMutex_);
+    commonEventDataWorker->env = env_;
     if (env_ != nullptr && tsfn_ != nullptr) {
         napi_acquire_threadsafe_function(tsfn_);
         napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
