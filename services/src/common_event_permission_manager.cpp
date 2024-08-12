@@ -28,7 +28,41 @@ namespace OHOS {
 namespace EventFwk {
 constexpr size_t REVERSE = 3;
 
-static const std::unordered_map<std::string, std::vector<int32_t>> COMMON_EVENT_MAP_PUBLISHER;
+constexpr int32_t WIFI_UID = 1010;
+constexpr int32_t CONNECT_UID = 1099;
+constexpr int32_t BOOT_UID = 1101;
+constexpr int32_t TIME_UID = 3013;
+constexpr int32_t ACCOUNT_UID = 3058;
+constexpr int32_t BMS_UID = 5523;
+constexpr int32_t POWER_UID = 5528;
+constexpr int32_t TIME_TICK_UID = 3819;
+constexpr int32_t LOCK_UID = 20020024;
+
+static const std::unordered_map<std::string, std::vector<int32_t>> COMMON_EVENT_MAP_PUBLISHER {
+    {CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED, {BOOT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_SWITCHED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_UNLOCKED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_ADDED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_REMOVED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_HWID_LOGIN, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_HWID_LOGOUT, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_WIFI_POWER_STATE, {WIFI_UID}},
+    {CommonEventSupport::COMMON_EVENT_WIFI_CONN_STATE, {WIFI_UID}},
+    {CommonEventSupport::COMMON_EVENT_AIRPLANE_MODE_CHANGED, {CONNECT_UID}},
+    {CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE, {CONNECT_UID}},
+    {CommonEventSupport::COMMON_EVENT_TIME_CHANGED, {TIME_UID}},
+    {CommonEventSupport::COMMON_EVENT_LOCALE_CHANGED, {TIME_UID}},
+    {CommonEventSupport::COMMON_EVENT_TIME_TICK, {TIME_TICK_UID}},
+    {CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_SCREEN_OFF, {POWER_UID}},
+    {CommonEventSupport::COMMON_EVENT_SCREEN_ON, {POWER_UID}},
+    {CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED, {POWER_UID}},
+    {CommonEventSupport::COMMON_EVENT_SCREEN_LOCKED, {LOCK_UID}},
+    {CommonEventSupport::COMMON_EVENT_SCREEN_UNLOCKED, {LOCK_UID}},
+};
 
 static const std::unordered_map<std::string, std::pair<PermissionState, std::vector<std::string>>> COMMON_EVENT_MAP {
     {CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED,
