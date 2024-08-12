@@ -768,7 +768,11 @@ int8_t CommonEventControlManager::CheckPermission(
     const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord)
 {
     EVENT_LOGD("enter");
-
+    if (subscriberRecord.eventRecordInfo.uid == eventRecord.eventRecordInfo.uid) {
+        EVENT_LOGD("CheckPermission subscribe uid = %{public}d, publish uid = %{public}d",
+            subscriberRecord.eventRecordInfo.uid, eventRecord.eventRecordInfo.uid);
+        return OrderedEventRecord::DELIVERED;
+    }
     bool ret = false;
     ret = CheckSubscriberPermission(subscriberRecord, eventRecord);
     if (!ret) {
