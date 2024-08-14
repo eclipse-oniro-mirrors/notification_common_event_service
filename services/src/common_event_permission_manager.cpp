@@ -183,6 +183,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.GET_BUNDLE_RESOURCES"}}
     },
+    {CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED,
+        {PermissionState::DEFAULT, {"ohos.permission.GET_NETWORK_INFO"}}
+    },
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
