@@ -20,6 +20,7 @@
 #include "common_event_manager.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include <mutex>
 
 namespace OHOS {
 namespace EventFwkNapi {
@@ -228,6 +229,7 @@ private:
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
+    std::mutex envMutex_;
 };
 
 class SubscriberInstanceWrapper {
