@@ -95,6 +95,11 @@ ohos_shared_library("cesfwk_services") {
 
   cflags_cc = []
   defines = []
+
+  if (build_variant == "user") {
+    defines += [ "BUILD_VARIANT_USER" ]
+  }
+
   sources = cesfwk_services_sources
 
   configs = [ ":ces_services_config" ]
