@@ -250,7 +250,7 @@ private:
 private:
     std::mutex mutex_;
     sptr<IRemoteObject::DeathRecipient> death_;
-    std::map<std::string, std::multiset<SubscriberRecordPtr>> eventSubscribers_;
+    std::map<std::string, std::set<SubscriberRecordPtr>> eventSubscribers_;
     std::vector<SubscriberRecordPtr> subscribers_;
     std::map<uid_t, FrozenRecords> frozenEvents_;
     const time_t FREEZE_EVENT_TIMEOUT = 30; // How long we keep records. Unit: second
