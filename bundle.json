@@ -87,7 +87,8 @@
                     "//base/notification/common_event_service/frameworks/native:cesfwk_innerkits",
                     "//base/notification/common_event_service/frameworks/extension:cesfwk_extension",
                     "//base/notification/common_event_service/interfaces/kits/napi:napi_packages",
-                    "//base/notification/common_event_service/interfaces/kits/cj:cj_common_event_manager_ffi"
+                    "//base/notification/common_event_service/interfaces/kits/cj:cj_common_event_manager_ffi",
+                    "//base/notification/common_event_service/interfaces/kits/ndk:commonevent_ndk"
                 ],
                 "service_group": [
                     "//base/notification/common_event_service/sa_profile:event_sa_profile",
