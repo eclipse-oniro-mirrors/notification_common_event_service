@@ -66,18 +66,6 @@ struct FrozenEventRecord {
     {}
 };
 
-inline bool operator<(const std::shared_ptr<EventSubscriberRecord> &a, const std::shared_ptr<EventSubscriberRecord> &b)
-{
-    if (a == nullptr || a->eventSubscribeInfo == nullptr) {
-        return true;
-    }
-
-    if (b == nullptr || b->eventSubscribeInfo == nullptr) {
-        return false;
-    }
-    return a->eventSubscribeInfo->GetPriority() > b->eventSubscribeInfo->GetPriority();
-}
-
 using SubscriberRecordPtr = std::shared_ptr<EventSubscriberRecord>;
 using SubscribeInfoPtr = std::shared_ptr<CommonEventSubscribeInfo>;
 using EventRecordPtr = std::shared_ptr<CommonEventRecord>;
