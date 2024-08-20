@@ -28,6 +28,8 @@ ohos_source_set("tools_cem_source_set") {
     debug = false
   }
 
+  branch_protector_ret = "pac_ret"
+
   public_configs = [ ":tools_cem_config" ]
 
   sources = [
