@@ -351,27 +351,42 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
     return ERR_OK;
 }
 
-bool CommonEventSubscriberManager::CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp,
-    const int32_t &userId)
+bool CommonEventSubscriberManager::CheckSubscriberByUserId(
+    const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId)
 {
-    if (subscriberUserId == ALL_USER) {
+    if (subscriberUserId == ALL_USER || subscriberUserId == userId) {
         return true;
     }
-
-    if (isSystemApp && (userId == UNDEFINED_USER || userId == ALL_USER)) {
-        return true;
-    }
-
-    if (!isSystemApp && subscriberUserId == userId) {
-        return true;
-    }
-
-    if (isSystemApp && (subscriberUserId == userId ||
+ 
+    if (isSystemApp && (userId == UNDEFINED_USER || userId == ALL_USER ||
         (subscriberUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && subscriberUserId <= SUBSCRIBE_USER_SYSTEM_END))) {
         return true;
     }
-
+ 
     return false;
+}
+
+bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
+    const int32_t &subscriberUid, const std::vector<int32_t> &specifiedSubscriberUids)
+{
+    if (specifiedSubscriberUids.empty()) {
+        return true;
+    }
+
+    for (auto it = specifiedSubscriberUids.begin(); it != specifiedSubscriberUids.end(); ++it) {
+        if (*it == subscriberUid) {
+            return true;
+        }
+    }
+ 
+    return false;
+}
+ 
+bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedType(
+    const int32_t &specifiedSubscriberType, const bool &isSystemApp)
+{
+    return specifiedSubscriberType == static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE) ||
+        (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE) && isSystemApp);
 }
 
 void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const CommonEventRecord &eventRecord,
@@ -393,6 +408,9 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
     auto bundleName = eventRecord.eventRecordInfo.bundleName;
     auto uid = eventRecord.eventRecordInfo.uid;
+    auto specifiedSubscriberUids = eventRecord.publishInfo->GetSubscriberUid();
+    auto specifiedSubscriberType = eventRecord.publishInfo->GetSubscriberType();
+    bool isValidSpecifiedSubscriberType = CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSystemApp);
 
     for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
         if ((*it)->eventSubscribeInfo == nullptr) {
@@ -410,6 +428,12 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
         auto publisherBundleName = (*it)->eventSubscribeInfo->GetPublisherBundleName();
         if (!publisherBundleName.empty() && publisherBundleName != bundleName) {
+            continue;
+        }
+
+        auto subscriberUid = (*it)->eventRecordInfo.uid;
+        if (isValidSpecifiedSubscriberType &&
+            CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
             continue;
         }
 

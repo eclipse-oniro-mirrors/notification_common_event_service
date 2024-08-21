@@ -19,6 +19,10 @@
 
 namespace OHOS {
 namespace EventFwk {
+namespace {
+    const int32_t SUBSCRIBER_UIDS_MAX_NUM = 3;
+}
+
 CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false)
 {
 }
@@ -75,6 +79,37 @@ std::string CommonEventPublishInfo::GetBundleName() const
     return bundleName_;
 }
 
+void CommonEventPublishInfo::SetSubscriberUid(const std::vector<int32_t> &subscriberUids)
+{
+    if (subscriberUids.size() > SUBSCRIBER_UIDS_MAX_NUM) {
+        subscriberUids_ =
+            std::vector<int32_t>(subscriberUids.begin(), subscriberUids.begin() + SUBSCRIBER_UIDS_MAX_NUM);
+        return;
+    }
+    subscriberUids_ = subscriberUids;
+}
+ 
+std::vector<int32_t> CommonEventPublishInfo::GetSubscriberUid() const
+{
+    return subscriberUids_;
+}
+ 
+void CommonEventPublishInfo::SetSubscriberType(const int32_t &subscriberType)
+{
+    if (!isSubscriberType(subscriberType)) {
+        EVENT_LOGW("subscriberType in common event Publish Info is out of range, and has already"
+            "converted to default value ALL_SUBSCRIBER_TYPE = 0");
+        subscriberType_ = static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE);
+        return;
+    }
+    subscriberType_ = subscriberType;
+}
+ 
+int32_t CommonEventPublishInfo::GetSubscriberType() const
+{
+    return subscriberType_;
+}
+
 bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
 {
     EVENT_LOGD("enter");
@@ -106,6 +141,18 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
         return false;
     }
     return true;
+}
+
+bool CommonEventPublishInfo::isSubscriberType(int32_t subscriberType)
+{
+    switch (subscriberType) {
+        case static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE):
+            return true;
+        case static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE):
+            return true;
+        default:
+            return false;
+    }
 }
 
 bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)

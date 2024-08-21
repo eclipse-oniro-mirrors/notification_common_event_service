@@ -213,6 +213,11 @@ private:
 
     bool CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId);
 
+    bool CheckSubscriberBySpecifiedUids(const int32_t &subscriberUid,
+        const std::vector<int32_t> &specifiedSubscriberUids);
+ 
+    bool CheckSubscriberBySpecifiedType(const int32_t &specifiedSubscriberType, const bool &isSystemApp);
+
     void GetSubscriberRecordsByWantLocked(const CommonEventRecord &eventRecord,
         std::vector<SubscriberRecordPtr> &records);
 
