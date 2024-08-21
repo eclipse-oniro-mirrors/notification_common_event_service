@@ -20,6 +20,12 @@
 
 namespace OHOS {
 namespace EventFwk {
+
+enum SubscriberType {
+    ALL_SUBSCRIBER_TYPE,
+    SYSTEM_SUBSCRIBER_TYPE
+};
+
 class CommonEventPublishInfo : public Parcelable {
 public:
     CommonEventPublishInfo();
@@ -88,6 +94,36 @@ public:
     void SetBundleName(const std::string &bundleName);
 
     /**
+     * Sets uid of subscriber. A maximum of three receiver UIDs are supported.
+     * If there are more subscribers, the publisher needs to control the permission.
+     *
+     * @param subscriberUids Indicates the uids of subscribers.
+     */
+    void SetSubscriberUid(const std::vector<int32_t> &subscriberUids);
+ 
+    /**
+     * Obtains the uids of subscribers of this CommonEventPublishInfo object.
+     *
+     * @return Returns the uids of subscribers.
+     */
+    std::vector<int32_t> GetSubscriberUid() const;
+ 
+    /**
+     * Sets type of subscriber.
+     *
+     * @param subscriberType Indicates the type of subscriber, which can be ALL_SUBSCRIBER_TYPE = 0
+     * or SYSTEM_SUBSCRIBER_TYPE = 1. default is ALL_SUBSCRIBER_TYPE when param is out of range.
+     */
+    void SetSubscriberType(const int32_t &subscriberType);
+ 
+    /**
+     * Obtains the type of subscriber of this CommonEventPublishInfo object.
+     *
+     * @return Returns the type of subscriber.
+     */
+    int32_t GetSubscriberType() const;
+
+    /**
      * Obtains the bundleName of a common event
      *
      * @return Returns the bundleName of a common event.
@@ -117,11 +153,15 @@ private:
      */
     bool ReadFromParcel(Parcel &parcel);
 
+    bool isSubscriberType(int32_t subsciberType);
+
 private:
     bool sticky_;
     bool ordered_;
     std::string bundleName_;
     std::vector<std::string> subscriberPermissions_;
+    std::vector<int32_t> subscriberUids_;
+    int32_t subscriberType_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
