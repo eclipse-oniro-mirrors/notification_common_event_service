@@ -278,12 +278,16 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
     }
 
     nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
-    if (jsonObj.is_null() || jsonObj.empty()) {
+    if (jsonObj.is_null() || jsonObj.empty() || !jsonObj.is_object()) {
         EVENT_LOGE("invalid jsonObj");
         return;
     }
     nlohmann::json commonEventsObj = jsonObj[JSON_KEY_COMMON_EVENTS];
-    if (commonEventsObj.is_null() || !commonEventsObj.is_array() || commonEventsObj.empty()) {
+    if (commonEventsObj.is_null() || !commonEventsObj.is_object()) {
+        EVENT_LOGE("Invalid JSON object");
+        return;
+    }
+    if (!commonEventsObj.is_array() || commonEventsObj.empty()) {
         EVENT_LOGE("invalid common event obj size");
         return;
     }
