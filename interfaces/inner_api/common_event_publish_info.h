@@ -21,8 +21,6 @@
 namespace OHOS {
 namespace EventFwk {
 
-#define SUBSCRIBER_UIDS_MAX_NUM_ 3
- 
 enum SubscriberType {
     ALL_SUBSCRIBER_TYPE,
     SYSTEM_SUBSCRIBER_TYPE

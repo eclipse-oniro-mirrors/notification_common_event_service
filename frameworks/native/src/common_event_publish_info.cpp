@@ -16,10 +16,16 @@
 #include "common_event_publish_info.h"
 #include "event_log_wrapper.h"
 #include "string_ex.h"
+#include <cstdint>
 
 namespace OHOS {
 namespace EventFwk {
-CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false)
+namespace {
+    const int32_t SUBSCRIBER_UIDS_MAX_NUM = 3;
+}
+
+CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false),
+    subscriberType_(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE))
 {
 }
 
@@ -77,9 +83,9 @@ std::string CommonEventPublishInfo::GetBundleName() const
 
 void CommonEventPublishInfo::SetSubscriberUid(const std::vector<int32_t> &subscriberUids)
 {
-    if (subscriberUids.size() > SUBSCRIBER_UIDS_MAX_NUM_) {
+    if (subscriberUids.size() > SUBSCRIBER_UIDS_MAX_NUM) {
         subscriberUids_ =
-            std::vector<int32_t>(subscriberUids.begin(), subscriberUids.begin() + SUBSCRIBER_UIDS_MAX_NUM_);
+            std::vector<int32_t>(subscriberUids.begin(), subscriberUids.begin() + SUBSCRIBER_UIDS_MAX_NUM);
         return;
     }
     subscriberUids_ = subscriberUids;
@@ -141,10 +147,10 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
 
 bool CommonEventPublishInfo::isSubscriberType(int32_t subscriberType)
 {
-    switch (static_cast<SubscriberType>(subscriberType)) {
-        case SubscriberType::ALL_SUBSCRIBER_TYPE:
+    switch (subscriberType) {
+        case static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE):
             return true;
-        case SubscriberType::SYSTEM_SUBSCRIBER_TYPE:
+        case static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE):
             return true;
         default:
             return false;

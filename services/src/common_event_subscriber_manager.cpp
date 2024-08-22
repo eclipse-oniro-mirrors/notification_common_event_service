@@ -372,7 +372,6 @@ bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
     if (specifiedSubscriberUids.empty()) {
         return true;
     }
-    
     for (auto it = specifiedSubscriberUids.begin(); it != specifiedSubscriberUids.end(); ++it) {
         if (*it == subscriberUid) {
             return true;
@@ -432,8 +431,8 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         }
 
         auto subscriberUid = (*it)->eventRecordInfo.uid;
-        if (!(isValidSpecifiedSubscriberType ||
-                CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids))) {
+        if (isValidSpecifiedSubscriberType &&
+            CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
             continue;
         }
 
