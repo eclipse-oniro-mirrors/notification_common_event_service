@@ -165,7 +165,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
         EVENT_LOGE("the commonEventProxy is null");
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        return ERR_NOTIFICATION_CESM_ERROR;
     }
     DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
     sptr<IRemoteObject> commonEventListener = nullptr;
@@ -202,7 +202,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
         EVENT_LOGE("the commonEventProxy is null");
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        return ERR_NOTIFICATION_CESM_ERROR;
     }
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
     auto eventListener = eventListeners_.find(subscriber);
@@ -213,7 +213,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
             eventListeners_.erase(eventListener);
             return ERR_OK;
         }
-        return ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT;
+        return ERR_NOTIFICATION_SEND_ERROR;
     } else {
         EVENT_LOGW("No specified subscriber has been registered");
     }

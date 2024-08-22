@@ -200,6 +200,10 @@ bool StaticSubscriberDataManager::ConvertValueToEvents(
     const DistributedKv::Value &value, std::vector<std::string> &events)
 {
     nlohmann::json jsonObject = nlohmann::json::parse(value.ToString(), nullptr, false);
+    if (jsonObject.is_null() || !jsonObject.is_object()) {
+        EVENT_LOGE("Invalid JSON object");
+        return false;
+    }
     if (jsonObject.is_discarded()) {
         EVENT_LOGE("Failed to parse json string.");
         return false;

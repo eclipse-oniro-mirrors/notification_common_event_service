@@ -372,7 +372,6 @@ bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
     if (specifiedSubscriberUids.empty()) {
         return true;
     }
-
     for (auto it = specifiedSubscriberUids.begin(); it != specifiedSubscriberUids.end(); ++it) {
         if (*it == subscriberUid) {
             return true;

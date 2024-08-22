@@ -16,6 +16,7 @@
 #include "common_event_publish_info.h"
 #include "event_log_wrapper.h"
 #include "string_ex.h"
+#include <cstdint>
 
 namespace OHOS {
 namespace EventFwk {
@@ -23,7 +24,8 @@ namespace {
     const int32_t SUBSCRIBER_UIDS_MAX_NUM = 3;
 }
 
-CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false)
+CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false),
+    subscriberType_(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE))
 {
 }
 

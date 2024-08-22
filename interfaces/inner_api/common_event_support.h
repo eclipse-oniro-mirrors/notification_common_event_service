@@ -1339,7 +1339,13 @@ public:
     * This is a protected common event that can only be sent by system.
     */
     static const std::string COMMON_EVENT_DISPOSED_RULE_DELETED;
-    
+
+    /**
+    * This common event means that vpn connection status has been changed.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED;
+
 public:
     CommonEventSupport();
 

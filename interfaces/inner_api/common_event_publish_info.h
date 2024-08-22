@@ -161,7 +161,7 @@ private:
     std::string bundleName_;
     std::vector<std::string> subscriberPermissions_;
     std::vector<int32_t> subscriberUids_;
-    int32_t subscriberType_ = SubscriberType::ALL_SUBSCRIBER_TYPE;
+    int32_t subscriberType_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
