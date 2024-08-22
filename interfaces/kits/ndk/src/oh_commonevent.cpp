@@ -18,7 +18,6 @@
 #include "oh_commonevent.h"
 #include "oh_commonevent_parameters_parse.h"
 #include "oh_commonevent_wrapper.h"
-
 #include "securec.h"
 #include <cstdlib>
 
@@ -28,12 +27,12 @@ int32_t GetWantParamsArrayT(std::vector<T> list, T** ret)
 {
     int32_t size = list.size();
     if (size <= 0) {
-        ret = nullptr;
+        *ret = nullptr;
         return 0;
     }
     T *arrP = static_cast<T *>(malloc(sizeof(T) * size));
     if (arrP == nullptr) {
-        ret = nullptr;
+        *ret = nullptr;
         return 0;
     }
     for (long i = 0; i < size; i++) {
@@ -83,7 +82,6 @@ void OH_CommonEvent_DestroySubscribeInfo(CommonEventSubscribeInfo* info)
 {
     if (info != nullptr) {
         delete info;
-        info = nullptr;
     }
 }
 
@@ -129,20 +127,21 @@ const char* OH_CommonEvent_GetBundleNameFromRcvData(const CommonEventRcvData* rc
 
 const CommonEventParameters* OH_CommonEvent_GetParametersFromRcvData(const CommonEventRcvData* rcvData)
 {
-    return rcvData->want;
+    return rcvData->parameters;
 }
+
 bool OH_CommonEvent_HasKeyInParameters(const CommonEventParameters* para, const char* key)
 {
     if (para == nullptr || key == nullptr) {
         EVENT_LOGE("Invalid para");
         return false;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
         return false;
     }
-    return want->HasParameter(key);
+    return HasKeyFromParameters(parameters, key);
 }
 
 int OH_CommonEvent_GetIntFromParameters(const CommonEventParameters* para, const char* key, const int defaultValue)
@@ -151,28 +150,28 @@ int OH_CommonEvent_GetIntFromParameters(const CommonEventParameters* para, const
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return want->GetIntParam(key, defaultValue);
+    return GetDataFromParams<int>(parameters, key, I32_TYPE, defaultValue);
 }
 
 int OH_CommonEvent_GetIntArrayFromParameters(const CommonEventParameters* para, const char* key, int** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    return GetWantParamsArrayT<int>(want->GetIntArrayParam(key), array);
+    return GetDataArrayFromParams<int>(parameters, key, I32_PTR_TYPE, array);
 }
 
 long OH_CommonEvent_GetLongFromParameters(const CommonEventParameters* para, const char* key, const long defaultValue)
@@ -181,28 +180,28 @@ long OH_CommonEvent_GetLongFromParameters(const CommonEventParameters* para, con
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return want->GetLongParam(key, defaultValue);
+    return GetDataFromParams<long>(parameters, key, I64_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEventParameters* para, const char* key, long** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    return GetWantParamsArrayT<long>(want->GetLongArrayParam(key), array);
+    return GetDataArrayFromParams<long>(parameters, key, I64_PTR_TYPE, array);
 }
 
 bool OH_CommonEvent_GetBoolFromParameters(const CommonEventParameters* para, const char* key, const bool defaultValue)
@@ -211,28 +210,28 @@ bool OH_CommonEvent_GetBoolFromParameters(const CommonEventParameters* para, con
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return want->GetBoolParam(key, defaultValue);
+    return GetDataFromParams<bool>(parameters, key, BOOL_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEventParameters* para, const char* key, bool** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    return GetWantParamsArrayT<bool>(want->GetBoolArrayParam(key), array);
+    return GetDataArrayFromParams<bool>(parameters, key, BOOL_PTR_TYPE, array);
 }
 
 char OH_CommonEvent_GetCharFromParameters(const CommonEventParameters* para, const char* key, const char defaultValue)
@@ -241,30 +240,28 @@ char OH_CommonEvent_GetCharFromParameters(const CommonEventParameters* para, con
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return want->GetCharParam(key, defaultValue);
+    return GetDataFromParams<char>(parameters, key, CHAR_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEventParameters* para, const char* key, char** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    std::string str = want->GetStringParam(key);
-    *array = MallocCString(str);
-    return str.length();
+    return GetDataArrayFromParams<char>(parameters, key, STR_TYPE, array);
 }
 
 double OH_CommonEvent_GetDoubleFromParameters(const CommonEventParameters* para, const char* key,
@@ -274,28 +271,28 @@ double OH_CommonEvent_GetDoubleFromParameters(const CommonEventParameters* para,
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return want->GetDoubleParam(key, defaultValue);
+    return GetDataFromParams<double>(parameters, key, DOUBLE_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEventParameters* para, const char* key, double** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    auto want = *(reinterpret_cast<const std::shared_ptr<OHOS::AAFwk::Want>*>(para));
-    if (want == nullptr) {
+    auto parameters = reinterpret_cast<const CArrParameters*>(para);
+    if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        array = nullptr;
+        *array = nullptr;
         return 0;
     }
-    return GetWantParamsArrayT<double>(want->GetDoubleArrayParam(key), array);
+    return GetDataArrayFromParams<double>(parameters, key, DOUBLE_PTR_TYPE, array);
 }
 #ifdef __cplusplus
 }
