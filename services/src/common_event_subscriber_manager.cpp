@@ -431,8 +431,8 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         }
 
         auto subscriberUid = (*it)->eventRecordInfo.uid;
-        if (isValidSpecifiedSubscriberType &&
-            CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
+        if (!isValidSpecifiedSubscriberType ||
+            !CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
             continue;
         }
 
