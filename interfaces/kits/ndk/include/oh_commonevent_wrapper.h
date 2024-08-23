@@ -31,14 +31,14 @@ struct CArrParameters {
     int64_t size;
 };
 
-struct CommonEventSubscribeInfo {
+struct CommonEvent_SubscribeInfo {
     uint32_t eventLength = 0;
-    const char **events = nullptr;
-    const char *permission = nullptr;
-    const char *bundleName = nullptr;
+    char **events = nullptr;
+    char *permission = nullptr;
+    char *bundleName = nullptr;
 };
 
-struct CommonEventRcvData {
+struct CommonEvent_RcvData {
     char *event;
     char *bundleName;
     int32_t code;
@@ -52,19 +52,20 @@ public:
     ~SubscriberObserver();
 
     void OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data) override;
-    void SetCallback(CommonEventReceiveCallback callback);
+    void SetCallback(CommonEvent_ReceiveCallback callback);
 private:
-    CommonEventReceiveCallback callback_ = nullptr;
+    CommonEvent_ReceiveCallback callback_ = nullptr;
 };
 
 class SubscriberManager {
 public:
     SubscriberManager() = default;
     ~SubscriberManager() = default;
-    CommonEventSubscriber* CreateSubscriber(const CommonEventSubscribeInfo* subscribeInfo, CommonEventReceiveCallback callback);
-    void DestroySubscriber(CommonEventSubscriber* subscriber);
-    CommonEvent_ErrCode Subscribe(const CommonEventSubscriber* subscriber);
-    CommonEvent_ErrCode UnSubscribe(const CommonEventSubscriber* subscriber);
+    CommonEvent_Subscriber* CreateSubscriber(const CommonEvent_SubscribeInfo* subscribeInfo,
+        CommonEvent_ReceiveCallback callback);
+    void DestroySubscriber(CommonEvent_Subscriber* subscriber);
+    CommonEvent_ErrCode Subscribe(const CommonEvent_Subscriber* subscriber);
+    CommonEvent_ErrCode UnSubscribe(const CommonEvent_Subscriber* subscriber);
     static std::shared_ptr<SubscriberManager> GetInstance();
 private:
     static std::mutex instanceMutex_;

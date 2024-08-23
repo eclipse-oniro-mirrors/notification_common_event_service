@@ -43,32 +43,32 @@ typedef enum CommonEvent_ErrCode {
  * @brief the information of the subscriber
  *
  */
-typedef struct CommonEventSubscribeInfo CommonEventSubscribeInfo;
+typedef struct CommonEvent_SubscribeInfo CommonEvent_SubscribeInfo;
 
 /**
  * @brief the subscriber of common event
  *
  */
-typedef void CommonEventSubscriber;
+typedef void CommonEvent_Subscriber;
 
 /**
  * @brief the data of the commonEvent callback
  *
  */
-typedef struct CommonEventRcvData CommonEventRcvData;
+typedef struct CommonEvent_RcvData CommonEvent_RcvData;
 
 /**
  * @brief The description of the parameters in a common event callback data.
  *
  */
-typedef void CommonEventParameters;
+typedef void CommonEvent_Parameters;
 
 /**
  * @brief Common event callback.
  *
  * @param data common event callback data.
  */
-typedef void (*CommonEventReceiveCallback)(const CommonEventRcvData *data);
+typedef void (*CommonEvent_ReceiveCallback)(const CommonEvent_RcvData *data);
 
 
 /**
@@ -76,9 +76,9 @@ typedef void (*CommonEventReceiveCallback)(const CommonEventRcvData *data);
  *
  * @param events Indicates the subscribed events.
  * @param eventsNum Indicates the subscribed events of number.
- * @return Returns the CommonEventSubscribeInfo, if create failed, returns null.
+ * @return Returns the CommonEvent_SubscribeInfo, if create failed, returns null.
  */
-CommonEventSubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum);
+CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum);
 
 /**
  * @brief Set the subscribe information of permission.
@@ -89,7 +89,7 @@ CommonEventSubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
-CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEventSubscribeInfo* info, const char* permission);
+CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEvent_SubscribeInfo* info, const char* permission);
 
 /**
  * @brief Set the subscribe information of bundleName.
@@ -100,30 +100,31 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEventSubscribeIn
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
-CommonEvent_ErrCode OH_CommonEvent_SetPublisherBundleName(CommonEventSubscribeInfo* info, const char* bundleName);
+CommonEvent_ErrCode OH_CommonEvent_SetPublisherBundleName(CommonEvent_SubscribeInfo* info, const char* bundleName);
 
 /**
  * @brief Destroy the subscribe information.
  *
  * @param info Indicates the subscribe info.
  */
-void OH_CommonEvent_DestroySubscribeInfo(CommonEventSubscribeInfo* info);
+void OH_CommonEvent_DestroySubscribeInfo(CommonEvent_SubscribeInfo* info);
 
 /**
  * @brief Create a subscriber.
  *
  * @param info Indicates the created subscribe Info.
  * @param callback Indicates the received common event callback.
- * @return Returns the CommonEventSubscriber, if create failed, returns null.
+ * @return Returns the CommonEvent_Subscriber, if create failed, returns null.
  */
-CommonEventSubscriber* OH_CommonEvent_CreateSubscriber(const CommonEventSubscribeInfo* info, CommonEventReceiveCallback callback);
+CommonEvent_Subscriber* OH_CommonEvent_CreateSubscriber(const CommonEvent_SubscribeInfo* info,
+    CommonEvent_ReceiveCallback callback);
 
 /**
  * @brief Destory the subscriber.
  *
  * @param subscriber Indicates the created subscriber.
  */
-void OH_CommonEvent_DestroySubscriber(CommonEventSubscriber* subscriber);
+void OH_CommonEvent_DestroySubscriber(CommonEvent_Subscriber* subscriber);
 
 /**
  * @brief Subscribe event by a subscriber.
@@ -138,7 +139,7 @@ void OH_CommonEvent_DestroySubscriber(CommonEventSubscriber* subscriber);
  *         Returns {@link COMMONEVENT_ERR_ALLOC_MEMORY_FAILED } if a memory allocation error occurs.
  * @since 12
  */
-CommonEvent_ErrCode OH_CommonEvent_Subscribe(const CommonEventSubscriber* subscriber);
+CommonEvent_ErrCode OH_CommonEvent_Subscribe(const CommonEvent_Subscriber* subscriber);
 
 /**
  * @brief Unsubscribe event by a subscriber.
@@ -151,7 +152,7 @@ CommonEvent_ErrCode OH_CommonEvent_Subscribe(const CommonEventSubscriber* subscr
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 12
  */
-CommonEvent_ErrCode OH_CommonEvent_UnSubscribe(const CommonEventSubscriber* subscriber);
+CommonEvent_ErrCode OH_CommonEvent_UnSubscribe(const CommonEvent_Subscriber* subscriber);
 
 /**
  * @brief Get event name from callback data.
@@ -159,7 +160,7 @@ CommonEvent_ErrCode OH_CommonEvent_UnSubscribe(const CommonEventSubscriber* subs
  * @param rcvData Indicates the event of callback data.
  * @return Returns the event name.
  */
-const char* OH_CommonEvent_GetEventFromRcvData(const CommonEventRcvData* rcvData);
+const char* OH_CommonEvent_GetEventFromRcvData(const CommonEvent_RcvData* rcvData);
 
 /**
  * @brief Get event result code from callback data.
@@ -167,7 +168,7 @@ const char* OH_CommonEvent_GetEventFromRcvData(const CommonEventRcvData* rcvData
  * @param rcvData Indicates the event of callback data.
  * @return Returns the event of result code, default is 0.
  */
-int32_t OH_CommonEvent_GetCodeFromRcvData(const CommonEventRcvData* rcvData);
+int32_t OH_CommonEvent_GetCodeFromRcvData(const CommonEvent_RcvData* rcvData);
 
 /**
  * @brief Get event result data from callback data.
@@ -175,7 +176,7 @@ int32_t OH_CommonEvent_GetCodeFromRcvData(const CommonEventRcvData* rcvData);
  * @param rcvData Indicates the event of callback data.
  * @return Returns the event of result data, default is null.
  */
-const char* OH_CommonEvent_GetDataStrFromRcvData(const CommonEventRcvData* rcvData);
+const char* OH_CommonEvent_GetDataStrFromRcvData(const CommonEvent_RcvData* rcvData);
 
 /**
  * @brief Get event bundlename from callback data.
@@ -183,7 +184,7 @@ const char* OH_CommonEvent_GetDataStrFromRcvData(const CommonEventRcvData* rcvDa
  * @param rcvData Indicates the event of callback data.
  * @return Returns the event of bundlename, default is null.
  */
-const char* OH_CommonEvent_GetBundleNameFromRcvData(const CommonEventRcvData* rcvData);
+const char* OH_CommonEvent_GetBundleNameFromRcvData(const CommonEvent_RcvData* rcvData);
 
 /**
  * @brief Get event parameters data from callback data.
@@ -191,7 +192,7 @@ const char* OH_CommonEvent_GetBundleNameFromRcvData(const CommonEventRcvData* rc
  * @param rcvData Indicates the event of callback data.
  * @return Returns the event of parameters data, default is null.
  */
-const CommonEventParameters* OH_CommonEvent_GetParametersFromRcvData(const CommonEventRcvData* rcvData);
+const CommonEvent_Parameters* OH_CommonEvent_GetParametersFromRcvData(const CommonEvent_RcvData* rcvData);
 
 /**
  * @brief Check whether the parameters contains a key.
@@ -200,7 +201,7 @@ const CommonEventParameters* OH_CommonEvent_GetParametersFromRcvData(const Commo
  * @param key Indicates the key of parameter.
  * @return Returns the result of check, true means it contains.
  */
-bool OH_CommonEvent_HasKeyInParameters(const CommonEventParameters* para, const char* key);
+bool OH_CommonEvent_HasKeyInParameters(const CommonEvent_Parameters* para, const char* key);
 
 /**
  * @brief Get int data from parameters data by key.
@@ -210,7 +211,7 @@ bool OH_CommonEvent_HasKeyInParameters(const CommonEventParameters* para, const 
  * @param defaultValue Indicates default return value.
  * @return Returns the int data of the key in the parameters.
  */
-int OH_CommonEvent_GetIntFromParameters(const CommonEventParameters* para, const char* key, const int defaultValue);
+int OH_CommonEvent_GetIntFromParameters(const CommonEvent_Parameters* para, const char* key, const int defaultValue);
 
 /**
  * @brief Get int array data from parameters data by key.
@@ -220,7 +221,7 @@ int OH_CommonEvent_GetIntFromParameters(const CommonEventParameters* para, const
  * @param array Indicates the int array.
  * @return Returns the length of the array.
  */
-int32_t OH_CommonEvent_GetIntArrayFromParameters(const CommonEventParameters* para, const char* key, int** array);
+int32_t OH_CommonEvent_GetIntArrayFromParameters(const CommonEvent_Parameters* para, const char* key, int** array);
 
 /**
  * @brief Get long data from parameters data by key.
@@ -230,7 +231,8 @@ int32_t OH_CommonEvent_GetIntArrayFromParameters(const CommonEventParameters* pa
  * @param defaultValue Indicates default return value.
  * @return Returns the long data of the key in the parameters.
  */
-long OH_CommonEvent_GetLongFromParameters(const CommonEventParameters* para, const char* key, const long defaultValue);
+long OH_CommonEvent_GetLongFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const long defaultValue);
 
 /**
  * @brief Get long array data from parameters data by key.
@@ -240,7 +242,7 @@ long OH_CommonEvent_GetLongFromParameters(const CommonEventParameters* para, con
  * @param array Indicates the long array.
  * @return Returns the length of the array.
  */
-int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEventParameters* para, const char* key, long** array);
+int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEvent_Parameters* para, const char* key, long** array);
 
 /**
  * @brief Get bool data from parameters data by key.
@@ -250,7 +252,8 @@ int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEventParameters* p
  * @param defaultValue Indicates default return value.
  * @return Returns the bool data of the key in the parameters.
  */
-bool OH_CommonEvent_GetBoolFromParameters(const CommonEventParameters* para, const char* key, const bool defaultValue);
+bool OH_CommonEvent_GetBoolFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const bool defaultValue);
 
 /**
  * @brief Get bool array data from parameters data by key.
@@ -260,7 +263,7 @@ bool OH_CommonEvent_GetBoolFromParameters(const CommonEventParameters* para, con
  * @param array Indicates the bool array.
  * @return Returns the length of the array.
  */
-int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEventParameters* para, const char* key, bool** array);
+int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEvent_Parameters* para, const char* key, bool** array);
 
 /**
  * @brief Get char data from parameters data by key.
@@ -270,7 +273,8 @@ int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEventParameters* p
  * @param defaultValue Indicates default return value.
  * @return Returns the char data of the key in the parameters.
  */ 
-char OH_CommonEvent_GetCharFromParameters(const CommonEventParameters* para, const char* key, const char defaultValue);
+char OH_CommonEvent_GetCharFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const char defaultValue);
 
 /**
  * @brief Get char array data from parameters data by key.
@@ -280,7 +284,7 @@ char OH_CommonEvent_GetCharFromParameters(const CommonEventParameters* para, con
  * @param array Indicates the char array.
  * @return Returns the length of the array.
  */
-int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEventParameters* para, const char* key, char** array);
+int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* para, const char* key, char** array);
 
 /**
  * @brief Get double data from parameters data by key.
@@ -290,8 +294,8 @@ int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEventParameters* p
  * @param defaultValue Indicates default return value.
  * @return Returns the double data of the key in the parameters.
  */
-double OH_CommonEvent_GetDoubleFromParameters(const CommonEventParameters* para, const char* key,
-    const char defaultValue);
+double OH_CommonEvent_GetDoubleFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const double defaultValue);
 
 /**
  * @brief Get double array data from parameters data by key.
@@ -301,7 +305,8 @@ double OH_CommonEvent_GetDoubleFromParameters(const CommonEventParameters* para,
  * @param array Indicates the double array.
  * @return Returns the length of the array, default is 0.
  */
-int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEventParameters* para, const char* key, double** array);
+int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEvent_Parameters* para, const char* key,
+    double** array);
 
 #ifdef __cplusplus
 }

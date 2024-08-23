@@ -226,7 +226,7 @@ char *MallocCString(const std::string &origin, int32_t &code)
     return std::char_traits<char>::copy(res, origin.c_str(), len);
 }
 
-void FreeCCommonEventDataCharPtr(CommonEventRcvData *cData)
+void FreeCCommonEventDataCharPtr(CommonEvent_RcvData *cData)
 {
     free(cData->data);
     free(cData->event);
@@ -236,7 +236,7 @@ void FreeCCommonEventDataCharPtr(CommonEventRcvData *cData)
     cData->bundleName = nullptr;
 }
 
-int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEventRcvData *cData)
+int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEvent_RcvData *cData)
 {
     auto want = data.GetWant();
     cData->code = data.GetCode();
@@ -249,7 +249,7 @@ int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEv
     return code;
 }
 
-void FreeCCommonEventData(CommonEventRcvData *cData)
+void FreeCCommonEventData(CommonEvent_RcvData *cData)
 {
     EVENT_LOGD("free commonEventData");
     FreeCCommonEventDataCharPtr(cData);
