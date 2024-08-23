@@ -16,7 +16,7 @@
 #ifndef OH_COMMON_EVENT_C_H
 #define OH_COMMON_EVENT_C_H
 
-#include "ces_inner_error_code.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,8 +86,8 @@ CommonEventSubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[
  * @param info Indicates the subscribed events.
  * @param permission Indicates the subscribed events of number.
  * @return Returns the error code.
- *         Returns {@link ERR_OK} if the operation is successful.
- *         Returns {@link ERR_INVALID_PARAMETER} if a parameter error occurs.
+ *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
+ *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEventSubscribeInfo* info, const char* permission);
 
@@ -97,8 +97,8 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEventSubscribeIn
  * @param info Indicates the subscribed events.
  * @param bundleName Indicates the subscribed events of number.
  * @return Returns the error code.
- *         Returns {@link ERR_OK} if the operation is successful.
- *         Returns {@link ERR_INVALID_PARAMETER} if a parameter error occurs.
+ *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
+ *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetPublisherBundleName(CommonEventSubscribeInfo* info, const char* bundleName);
 
@@ -130,11 +130,13 @@ void OH_CommonEvent_DestroySubscriber(CommonEventSubscriber* subscriber);
  *
  * @param subscriber Indicates the subscriber.
  * @return Returns the error code.
- *         Returns {@link ERR_OK} if the operation is successful.
- *         Returns {@link ERR_PERMISSION_ERROR } if don't have some required permission.
- *         Returns {@link ERR_INVALID_PARAMETER } if the input parameter is invalid.
- *         Returns {@link ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
- *         Returns {@link ERR_SYSTEM } others.
+ *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
+ *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER } if the input parameter is invalid.
+ *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
+ *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
+ *         Returns {@link COMMONEVENT_ERR_SUBSCRIBER_NUM_EXCEEDED } if the subscriber number is exceeded.
+ *         Returns {@link COMMONEVENT_ERR_ALLOC_MEMORY_FAILED } if a memory allocation error occurs.
+ * @since 12
  */
 CommonEvent_ErrCode OH_CommonEvent_Subscribe(const CommonEventSubscriber* subscriber);
 
@@ -143,11 +145,11 @@ CommonEvent_ErrCode OH_CommonEvent_Subscribe(const CommonEventSubscriber* subscr
  *
  * @param subscriber Indicates the subscriber.
  * @return Returns the error code.
- *         Returns {@link ERR_OK} if the operation is successful.
- *         Returns {@link ERR_INVALID_PARAMETER } if the input parameter is invalid.
- *         Returns {@link ERR_SUBSCRIBER_NOT_FOUND } if the subscriber is not subscribe.
- *         Returns {@link ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
- *         Returns {@link ERR_SYSTEM } others.
+ *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
+ *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER } if the input parameter is invalid.
+ *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
+ *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
+ * @since 12
  */
 CommonEvent_ErrCode OH_CommonEvent_UnSubscribe(const CommonEventSubscriber* subscriber);
 

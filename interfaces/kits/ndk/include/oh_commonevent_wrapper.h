@@ -18,8 +18,18 @@
 
 #include "common_event_subscriber.h"
 #include "oh_commonevent.h"
-#include "want.h"
-#include <functional>
+
+struct CParameters {
+    int8_t valueType;
+    char *key;
+    void *value;
+    int64_t size;
+};
+
+struct CArrParameters {
+    CParameters *head;
+    int64_t size;
+};
 
 struct CommonEventSubscribeInfo {
     uint32_t eventLength = 0;
@@ -33,7 +43,7 @@ struct CommonEventRcvData {
     char *bundleName;
     int32_t code;
     char *data;
-    CommonEventParameters* want;
+    CArrParameters* parameters;
 };
 
 class SubscriberObserver : public OHOS::EventFwk::CommonEventSubscriber {

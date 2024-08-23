@@ -14,6 +14,7 @@
  */
 
 #include "event_log_wrapper.h"
+#include "ces_inner_error_code.h"
 #include "common_event_manager.h"
 #include "common_event_support.h"
 #include "oh_commonevent_parameters_parse.h"
@@ -32,14 +33,14 @@ SubscriberObserver::~SubscriberObserver()
 void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data)
 {
     EVENT_LOGD("Receive CommonEvent action = %{public}s", data.GetWant().GetAction().c_str());
-    CommonEventRcvData *cData = new CommonEventRcvData();
+    CommonEventRcvData *cData = new (std::nothrow) CommonEventRcvData();
     if (cData == nullptr) {
         EVENT_LOGE("Failed to create CommonEventRcvData");
         return;
     }
     int32_t code = GetCommonEventData(data, cData);
     if (code != COMMONEVENT_ERR_OK) {
-        EVENT_LOGE("Failed to insert GetCommonEventData");
+        EVENT_LOGE("Failed to init GetCommonEventData");
         FreeCCommonEventData(cData);
         return;
     }
@@ -78,7 +79,9 @@ CommonEventSubscriber* SubscriberManager::CreateSubscriber(const CommonEventSubs
     } 
     OHOS::EventFwk::MatchingSkills matchingSkills;
     for (uint32_t i = 0; i < subscribeInfo->eventLength; i++) {
-        matchingSkills.AddEvent(subscribeInfo->events[i]);
+        if (subscribeInfo->events[i] != nullptr) {
+            matchingSkills.AddEvent(subscribeInfo->events[i]);
+        }
     }
     OHOS::EventFwk::CommonEventSubscribeInfo commonEventSubscribeInfo(matchingSkills);
     if (subscribeInfo->permission != nullptr) {
@@ -99,7 +102,6 @@ void SubscriberManager::DestroySubscriber(CommonEventSubscriber* subscriber)
         auto subscriberPtr = reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber);
         delete subscriberPtr;
         subscriberPtr = nullptr;
-        subscriber = nullptr;
     }
 }
 

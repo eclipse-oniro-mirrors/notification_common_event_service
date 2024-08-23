@@ -20,9 +20,54 @@
 #include "stdlib.h"
 #include <string>
 
+const int8_t I32_TYPE = 0;
+const int8_t DOUBLE_TYPE = 1;
+const int8_t STR_TYPE = 2;
+const int8_t BOOL_TYPE = 3;
+const int8_t I64_TYPE = 4;
+const int8_t CHAR_TYPE = 5;
+const int8_t I32_PTR_TYPE = 6;
+const int8_t I64_PTR_TYPE = 7;
+const int8_t BOOL_PTR_TYPE = 8;
+const int8_t DOUBLE_PTR_TYPE = 9;
+
 char *MallocCString(const std::string &origin);
 int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEventRcvData* cData);
 void FreeCCommonEventDataCharPtr(CommonEventRcvData* cData);
 void FreeCCommonEventData(CommonEventRcvData* cData);
+bool HasKeyFromParameters(const CArrParameters* parameters, const char* key);
+
+template <class T>
+T GetDataFromParams(const CArrParameters* parameters, const char* key, int8_t type, T defaultVal)
+{
+    if (parameters->head == nullptr) {
+        return defaultVal;
+    }
+    for (int i = 0; i < parameters->size; i++) {
+        CParameters *it = parameters->head + i;
+        if (it->valueType == type && std::strcmp(it->key, key) == 0) {
+            return *(static_cast<T *>(it->value));
+        }
+    }
+    return defaultVal;
+}
+
+template <class T>
+int32_t GetDataArrayFromParams(const CArrParameters* parameters, const char* key, int8_t type, T** array)
+{
+    if (parameters->head == nullptr) {
+        *array = nullptr;
+        return 0;
+    }
+    for (int i = 0; i < parameters->size; i++) {
+        CParameters *it = parameters->head + i;
+        if (it->valueType == type && std::strcmp(it->key, key) == 0) {
+            *array = static_cast<T *>(it->value);
+            return it->size;
+        }
+    }
+    *array = nullptr;
+    return 0;
+}
 
 #endif
