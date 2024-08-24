@@ -33,7 +33,7 @@ SubscriberObserver::~SubscriberObserver()
 void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data)
 {
     EVENT_LOGD("Receive CommonEvent action = %{public}s", data.GetWant().GetAction().c_str());
-    CommonEventRcvData *cData = new (std::nothrow) CommonEventRcvData();
+    CommonEvent_RcvData *cData = new (std::nothrow) CommonEvent_RcvData();
     if (cData == nullptr) {
         EVENT_LOGE("Failed to create CommonEventRcvData");
         return;
@@ -51,7 +51,7 @@ void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &d
     FreeCCommonEventData(cData);
 }
 
-void SubscriberObserver::SetCallback(CommonEventReceiveCallback callback)
+void SubscriberObserver::SetCallback(CommonEvent_ReceiveCallback callback)
 {
     callback_ = callback;
 }
@@ -70,8 +70,8 @@ std::shared_ptr<SubscriberManager> SubscriberManager::GetInstance()
     return instance_;
 }
 
-CommonEventSubscriber* SubscriberManager::CreateSubscriber(const CommonEventSubscribeInfo* subscribeInfo,
-    CommonEventReceiveCallback callback)
+CommonEvent_Subscriber* SubscriberManager::CreateSubscriber(const CommonEvent_SubscribeInfo* subscribeInfo,
+    CommonEvent_ReceiveCallback callback)
 {
     if (subscribeInfo == nullptr) {
         EVENT_LOGE("SubscribeInfo is null");
@@ -96,7 +96,7 @@ CommonEventSubscriber* SubscriberManager::CreateSubscriber(const CommonEventSubs
     return new (std::nothrow) std::shared_ptr<SubscriberObserver>(observer);
 }
 
-void SubscriberManager::DestroySubscriber(CommonEventSubscriber* subscriber)
+void SubscriberManager::DestroySubscriber(CommonEvent_Subscriber* subscriber)
 {
     if (subscriber != nullptr) {
         auto subscriberPtr = reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber);
@@ -105,7 +105,7 @@ void SubscriberManager::DestroySubscriber(CommonEventSubscriber* subscriber)
     }
 }
 
-CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEventSubscriber* subscriber)
+CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
         EVENT_LOGE("subscriber is null");
@@ -119,7 +119,7 @@ CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEventSubscriber* su
     return static_cast<CommonEvent_ErrCode>(ret);
 }
 
-CommonEvent_ErrCode SubscriberManager::UnSubscribe(const CommonEventSubscriber* subscriber)
+CommonEvent_ErrCode SubscriberManager::UnSubscribe(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
         EVENT_LOGE("subscriber is null");

@@ -46,91 +46,113 @@ int32_t GetWantParamsArrayT(std::vector<T> list, T** ret)
 extern "C" {
 #endif
 
-CommonEventSubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum)
+CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum)
 {
-    CommonEventSubscribeInfo *subscribeInfo = new CommonEventSubscribeInfo();
+    CommonEvent_SubscribeInfo *subscribeInfo = new CommonEvent_SubscribeInfo();
     if (subscribeInfo == nullptr) {
         EVENT_LOGE("Failed to create subscribeInfo");
         return nullptr;
     }
-    subscribeInfo->events = events;
-    subscribeInfo->eventLength = eventsNum;
+    int count = 0;
+    for (int i = 0; i < eventsNum; i++) {
+        if (events + i != nullptr) {
+            count++;
+        }
+    }
+    subscribeInfo->events = new char* [count];
+    for (int i = 0; i < eventsNum; i++) {
+        if (events + i != nullptr) {
+            subscribeInfo->events[subscribeInfo->eventLength] = MallocCString(events[i]);
+            subscribeInfo->eventLength++;
+        }
+    }
     return subscribeInfo;
 }
 
-CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEventSubscribeInfo* info, const char* permission)
+CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEvent_SubscribeInfo* info, const char* permission)
 {
     if (info == nullptr) {
         EVENT_LOGE("Invalid para");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    info->permission = permission;
+    info->permission = MallocCString(permission);
     return COMMONEVENT_ERR_OK;
 }
 
-CommonEvent_ErrCode OH_CommonEvent_SetPublisherBundleName(CommonEventSubscribeInfo* info, const char* bundleName)
+CommonEvent_ErrCode OH_CommonEvent_SetPublisherBundleName(CommonEvent_SubscribeInfo* info, const char* bundleName)
 {
     if (info == nullptr) {
         EVENT_LOGE("Invalid para");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    info->bundleName = bundleName;
+    info->bundleName = MallocCString(bundleName);
     return COMMONEVENT_ERR_OK;
 }
 
-void OH_CommonEvent_DestroySubscribeInfo(CommonEventSubscribeInfo* info)
+void OH_CommonEvent_DestroySubscribeInfo(CommonEvent_SubscribeInfo* info)
 {
     if (info != nullptr) {
+        for (uint32_t i = 0; i < info->eventLength; i++) {
+            free(info->events + i);
+            info->events[i] = nullptr;
+        }
+        delete info->events;
+        info->events = nullptr;
+        free(info->permission);
+        info->permission = nullptr;
+        free(info->bundleName);
+        info->bundleName = nullptr;
         delete info;
     }
 }
 
-CommonEventSubscriber* OH_CommonEvent_CreateSubscriber(const CommonEventSubscribeInfo* info, CommonEventReceiveCallback callback)
+CommonEvent_Subscriber* OH_CommonEvent_CreateSubscriber(const CommonEvent_SubscribeInfo* info,
+    CommonEvent_ReceiveCallback callback)
 {
     return SubscriberManager::GetInstance()->CreateSubscriber(info, callback);
 }
 
-void OH_CommonEvent_DestroySubscriber(CommonEventSubscriber* subscriber)
+void OH_CommonEvent_DestroySubscriber(CommonEvent_Subscriber* subscriber)
 {
     SubscriberManager::GetInstance()->DestroySubscriber(subscriber);
 }
 
-CommonEvent_ErrCode OH_CommonEvent_Subscribe(const CommonEventSubscriber* subscriber)
+CommonEvent_ErrCode OH_CommonEvent_Subscribe(const CommonEvent_Subscriber* subscriber)
 {
     return SubscriberManager::GetInstance()->Subscribe(subscriber);
 }
 
-CommonEvent_ErrCode OH_CommonEvent_UnSubscribe(const CommonEventSubscriber* subscriber)
+CommonEvent_ErrCode OH_CommonEvent_UnSubscribe(const CommonEvent_Subscriber* subscriber)
 {
     return SubscriberManager::GetInstance()->UnSubscribe(subscriber);
 }
 
-const char* OH_CommonEvent_GetEventFromRcvData(const CommonEventRcvData* rcvData)
+const char* OH_CommonEvent_GetEventFromRcvData(const CommonEvent_RcvData* rcvData)
 {
     return rcvData->event;
 }
 
-int32_t OH_CommonEvent_GetCodeFromRcvData(const CommonEventRcvData* rcvData)
+int32_t OH_CommonEvent_GetCodeFromRcvData(const CommonEvent_RcvData* rcvData)
 {
     return rcvData->code;
 }
 
-const char* OH_CommonEvent_GetDataStrFromRcvData(const CommonEventRcvData* rcvData)
+const char* OH_CommonEvent_GetDataStrFromRcvData(const CommonEvent_RcvData* rcvData)
 {
     return rcvData->data;
 }
 
-const char* OH_CommonEvent_GetBundleNameFromRcvData(const CommonEventRcvData* rcvData)
+const char* OH_CommonEvent_GetBundleNameFromRcvData(const CommonEvent_RcvData* rcvData)
 {
     return rcvData->bundleName;
 }
 
-const CommonEventParameters* OH_CommonEvent_GetParametersFromRcvData(const CommonEventRcvData* rcvData)
+const CommonEvent_Parameters* OH_CommonEvent_GetParametersFromRcvData(const CommonEvent_RcvData* rcvData)
 {
     return rcvData->parameters;
 }
 
-bool OH_CommonEvent_HasKeyInParameters(const CommonEventParameters* para, const char* key)
+bool OH_CommonEvent_HasKeyInParameters(const CommonEvent_Parameters* para, const char* key)
 {
     if (para == nullptr || key == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -144,7 +166,7 @@ bool OH_CommonEvent_HasKeyInParameters(const CommonEventParameters* para, const 
     return HasKeyFromParameters(parameters, key);
 }
 
-int OH_CommonEvent_GetIntFromParameters(const CommonEventParameters* para, const char* key, const int defaultValue)
+int OH_CommonEvent_GetIntFromParameters(const CommonEvent_Parameters* para, const char* key, const int defaultValue)
 {
     if (para == nullptr || key == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -158,7 +180,7 @@ int OH_CommonEvent_GetIntFromParameters(const CommonEventParameters* para, const
     return GetDataFromParams<int>(parameters, key, I32_TYPE, defaultValue);
 }
 
-int OH_CommonEvent_GetIntArrayFromParameters(const CommonEventParameters* para, const char* key, int** array)
+int OH_CommonEvent_GetIntArrayFromParameters(const CommonEvent_Parameters* para, const char* key, int** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -174,7 +196,8 @@ int OH_CommonEvent_GetIntArrayFromParameters(const CommonEventParameters* para, 
     return GetDataArrayFromParams<int>(parameters, key, I32_PTR_TYPE, array);
 }
 
-long OH_CommonEvent_GetLongFromParameters(const CommonEventParameters* para, const char* key, const long defaultValue)
+long OH_CommonEvent_GetLongFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const long defaultValue)
 {
     if (para == nullptr || key == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -188,7 +211,7 @@ long OH_CommonEvent_GetLongFromParameters(const CommonEventParameters* para, con
     return GetDataFromParams<long>(parameters, key, I64_TYPE, defaultValue);
 }
 
-int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEventParameters* para, const char* key, long** array)
+int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEvent_Parameters* para, const char* key, long** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -204,7 +227,8 @@ int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEventParameters* p
     return GetDataArrayFromParams<long>(parameters, key, I64_PTR_TYPE, array);
 }
 
-bool OH_CommonEvent_GetBoolFromParameters(const CommonEventParameters* para, const char* key, const bool defaultValue)
+bool OH_CommonEvent_GetBoolFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const bool defaultValue)
 {
     if (para == nullptr || key == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -218,7 +242,7 @@ bool OH_CommonEvent_GetBoolFromParameters(const CommonEventParameters* para, con
     return GetDataFromParams<bool>(parameters, key, BOOL_TYPE, defaultValue);
 }
 
-int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEventParameters* para, const char* key, bool** array)
+int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEvent_Parameters* para, const char* key, bool** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -234,7 +258,8 @@ int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEventParameters* p
     return GetDataArrayFromParams<bool>(parameters, key, BOOL_PTR_TYPE, array);
 }
 
-char OH_CommonEvent_GetCharFromParameters(const CommonEventParameters* para, const char* key, const char defaultValue)
+char OH_CommonEvent_GetCharFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const char defaultValue)
 {
     if (para == nullptr || key == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -248,7 +273,7 @@ char OH_CommonEvent_GetCharFromParameters(const CommonEventParameters* para, con
     return GetDataFromParams<char>(parameters, key, CHAR_TYPE, defaultValue);
 }
 
-int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEventParameters* para, const char* key, char** array)
+int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* para, const char* key, char** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -264,8 +289,8 @@ int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEventParameters* p
     return GetDataArrayFromParams<char>(parameters, key, STR_TYPE, array);
 }
 
-double OH_CommonEvent_GetDoubleFromParameters(const CommonEventParameters* para, const char* key,
-    const char defaultValue)
+double OH_CommonEvent_GetDoubleFromParameters(const CommonEvent_Parameters* para, const char* key,
+    const double defaultValue)
 {
     if (para == nullptr || key == nullptr) {
         EVENT_LOGE("Invalid para");
@@ -279,7 +304,8 @@ double OH_CommonEvent_GetDoubleFromParameters(const CommonEventParameters* para,
     return GetDataFromParams<double>(parameters, key, DOUBLE_TYPE, defaultValue);
 }
 
-int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEventParameters* para, const char* key, double** array)
+int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEvent_Parameters* para, const char* key,
+    double** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");

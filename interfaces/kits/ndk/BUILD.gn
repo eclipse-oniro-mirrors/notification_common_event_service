@@ -35,7 +35,7 @@ config("cesfwk_ndk_public_config") {
   include_dirs = [ "${ces_ndk_path}/include" ]
 }
 
-ohos_shared_library("commonevent_ndk") {
+ohos_shared_library("ohcommonevent") {
   sanitize = {
     integer_overflow = true
     ubsan = true

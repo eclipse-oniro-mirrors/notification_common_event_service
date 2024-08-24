@@ -32,9 +32,9 @@ const int8_t BOOL_PTR_TYPE = 8;
 const int8_t DOUBLE_PTR_TYPE = 9;
 
 char *MallocCString(const std::string &origin);
-int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEventRcvData* cData);
-void FreeCCommonEventDataCharPtr(CommonEventRcvData* cData);
-void FreeCCommonEventData(CommonEventRcvData* cData);
+int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEvent_RcvData* cData);
+void FreeCCommonEventDataCharPtr(CommonEvent_RcvData* cData);
+void FreeCCommonEventData(CommonEvent_RcvData* cData);
 bool HasKeyFromParameters(const CArrParameters* parameters, const char* key);
 
 template <class T>
