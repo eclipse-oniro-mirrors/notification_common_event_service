@@ -200,8 +200,8 @@ bool StaticSubscriberDataManager::ConvertValueToEvents(
     const DistributedKv::Value &value, std::vector<std::string> &events)
 {
     nlohmann::json jsonObject = nlohmann::json::parse(value.ToString(), nullptr, false);
-    if (jsonObject.is_null() || !jsonObject.is_object()) {
-        EVENT_LOGE("Invalid JSON object");
+    if (jsonObject.is_null() || !jsonObject.is_array() || jsonObject.empty()) {
+        EVENT_LOGE("invalid common event obj size");
         return false;
     }
     if (jsonObject.is_discarded()) {
