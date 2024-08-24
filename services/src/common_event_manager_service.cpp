@@ -143,8 +143,9 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
-    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
-        EVENT_LOGE("Only sa can publish common event as proxy.");
+    auto callingUid = IPCSkeleton::GetCallingUid();
+    if (callingUid != FOUNDATION_UID) {
+        EVENT_LOGE("Only foundation can publish common event as proxy uid = %{public}d.", callingUid);
         return false;
     }
 
