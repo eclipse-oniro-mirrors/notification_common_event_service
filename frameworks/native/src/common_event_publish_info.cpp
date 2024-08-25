@@ -35,6 +35,8 @@ CommonEventPublishInfo::CommonEventPublishInfo(const CommonEventPublishInfo &com
     ordered_ = commonEventPublishInfo.ordered_;
     bundleName_ = commonEventPublishInfo.bundleName_;
     subscriberPermissions_ = commonEventPublishInfo.subscriberPermissions_;
+    subscriberUids_ = commonEventPublishInfo.subscriberUids_;
+    subscriberType_ = commonEventPublishInfo.subscriberType_;
 }
 
 CommonEventPublishInfo::~CommonEventPublishInfo()
@@ -142,6 +144,17 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
         EVENT_LOGE("common event Publish Info  write bundleName failed");
         return false;
     }
+    // write subscriberUids
+    if (!parcel.WriteInt32Vector(subscriberUids_)) {
+        EVENT_LOGE("common event Publish Info write subscriberUids failed");
+        return false;
+    }
+    
+    // write subscriberType
+    if (!parcel.WriteInt32(subscriberType_)) {
+        EVENT_LOGE("common event Publish Info write subscriberType failed");
+        return false;
+    }
     return true;
 }
 
@@ -177,7 +190,13 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
     sticky_ = parcel.ReadBool();
     // read bundleName
     bundleName_ = Str16ToStr8(parcel.ReadString16());
-
+    // read subscriberUids
+    if (!parcel.ReadInt32Vector(&subscriberUids_)) {
+        EVENT_LOGE("ReadFromParcel read subscriberUids error");
+        return false;
+    }
+    // read subscriberType
+    subscriberType_ = parcel.ReadInt32();
     return true;
 }
 
