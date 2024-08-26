@@ -19,6 +19,8 @@
 #include "securec.h"
 #include "stdlib.h"
 #include <string>
+namespace OHOS {
+namespace EventFwk {
 
 const int8_t I32_TYPE = 0;
 const int8_t DOUBLE_TYPE = 1;
@@ -32,7 +34,7 @@ const int8_t BOOL_PTR_TYPE = 8;
 const int8_t DOUBLE_PTR_TYPE = 9;
 
 char *MallocCString(const std::string &origin);
-int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEvent_RcvData* cData);
+int32_t GetCommonEventData(const CommonEventData &data, CommonEvent_RcvData* cData);
 void FreeCCommonEventDataCharPtr(CommonEvent_RcvData* cData);
 void FreeCCommonEventData(CommonEvent_RcvData* cData);
 bool HasKeyFromParameters(const CArrParameters* parameters, const char* key);
@@ -56,7 +58,6 @@ template <class T>
 int32_t GetDataArrayFromParams(const CArrParameters* parameters, const char* key, int8_t type, T** array)
 {
     if (parameters->head == nullptr) {
-        *array = nullptr;
         return 0;
     }
     for (int i = 0; i < parameters->size; i++) {
@@ -66,8 +67,8 @@ int32_t GetDataArrayFromParams(const CArrParameters* parameters, const char* key
             return it->size;
         }
     }
-    *array = nullptr;
     return 0;
 }
-
+}  // namespace EventFwk
+}  // namespace OHOS
 #endif
