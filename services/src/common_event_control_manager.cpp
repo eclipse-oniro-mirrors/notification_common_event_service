@@ -426,8 +426,10 @@ bool CommonEventControlManager::EnqueueOrderedRecord(const std::shared_ptr<Order
 void CommonEventControlManager::EnqueueHistoryEventRecord(
     const std::shared_ptr<OrderedEventRecord> &eventRecordPtr, bool hasLastSubscribe)
 {
-    EVENT_LOGD("enter");
-
+    #ifdef BUILD_VARIANT_USER
+        EVENT_LOGD("User version don't record history");
+        return;
+    #endif
     if (eventRecordPtr == nullptr) {
         EVENT_LOGE("eventRecordPtr is nullptr");
         return;
@@ -437,11 +439,9 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
     record.want = eventRecordPtr->commonEventData->GetWant();
     record.code = eventRecordPtr->commonEventData->GetCode();
     record.data = eventRecordPtr->commonEventData->GetData();
-
     record.sticky = eventRecordPtr->publishInfo->IsSticky();
     record.ordered = eventRecordPtr->publishInfo->IsOrdered();
     record.subscriberPermissions = eventRecordPtr->publishInfo->GetSubscriberPermissions();
-
     record.recordTime = eventRecordPtr->recordTime;
     record.pid = eventRecordPtr->eventRecordInfo.pid;
     record.uid = eventRecordPtr->eventRecordInfo.uid;
@@ -472,7 +472,6 @@ void CommonEventControlManager::EnqueueHistoryEventRecord(
     record.receiverTime = eventRecordPtr->receiverTime;
     record.state = eventRecordPtr->state;
     record.resultAbort = eventRecordPtr->resultAbort;
-
     std::lock_guard<std::mutex> lock(historyMutex_);
     if (historyEventRecords_.size() == HISTORY_MAX_SIZE) {
         historyEventRecords_.pop_front();
