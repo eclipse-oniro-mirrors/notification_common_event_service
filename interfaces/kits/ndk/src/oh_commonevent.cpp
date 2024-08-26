@@ -48,6 +48,10 @@ extern "C" {
 
 CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum)
 {
+    if (eventsNum == 0) {
+        EVENT_LOGE("Events is empty");
+        return nullptr;
+    }
     CommonEvent_SubscribeInfo *subscribeInfo = new CommonEvent_SubscribeInfo();
     if (subscribeInfo == nullptr) {
         EVENT_LOGE("Failed to create subscribeInfo");
