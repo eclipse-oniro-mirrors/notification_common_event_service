@@ -246,6 +246,13 @@ int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEv
     cData->bundleName = MallocCString(want.GetBundle(), code);
     cData->parameters = new (std::nothrow) CArrParameters();
     ParseParameters(want, cData->parameters, code);
+
+    if (code != COMMONEVENT_ERR_OK) {
+        EVENT_LOGD("free commonEventData");
+        FreeCCommonEventDataCharPtr(cData);
+        delete cData->parameters;
+        cData->parameters = nullptr;
+    }
     return code;
 }
 

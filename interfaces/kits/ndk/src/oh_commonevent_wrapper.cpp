@@ -40,8 +40,9 @@ void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &d
     }
     int32_t code = GetCommonEventData(data, cData);
     if (code != COMMONEVENT_ERR_OK) {
-        EVENT_LOGE("Failed to init GetCommonEventData");
-        FreeCCommonEventData(cData);
+        EVENT_LOGE("Failed to init GetCommonEventData");\
+        delete cData;
+        cData = nullptr;
         return;
     }
     if (callback_ != nullptr) {
@@ -49,6 +50,8 @@ void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &d
         (*callback_)(cData);
     }
     FreeCCommonEventData(cData);
+    delete cData;
+    cData = nullptr;
 }
 
 void SubscriberObserver::SetCallback(CommonEvent_ReceiveCallback callback)
