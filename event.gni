@@ -39,6 +39,8 @@ ces_core_path = "${frameworks_path}/core"
 
 ces_innerkits_path = "${interfaces_path}/inner_api"
 
+ces_ndk_path = "${interfaces_path}/kits/ndk"
+
 ces_native_path = "${frameworks_path}/native"
 
 ces_extension_path = "${frameworks_path}/extension"
