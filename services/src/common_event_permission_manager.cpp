@@ -79,7 +79,6 @@ static const std::unordered_map<std::string, std::vector<int32_t>> COMMON_EVENT_
     {CommonEventSupport::COMMON_EVENT_SCREEN_ON, {POWER_UID}},
     {CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED, {POWER_UID}},
     {CommonEventSupport::COMMON_EVENT_CALL_STATE_CHANGED, {BMS_UID}},
-    {CommonEventSupport::COMMON_EVENT_SMS_RECEIVE_COMPLETED, {PHONE_UID}},
     {CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED, {PHONE_UID}},
     {CommonEventSupport::COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED, {PHONE_UID}},
     {CommonEventSupport::COMMON_EVENT_NITZ_TIME_CHANGED, {PHONE_UID}},
