@@ -273,8 +273,8 @@ void FreeCCommonEventData(CommonEvent_RcvData *cData)
         parameters->head = nullptr;
         parameters->size = 0;
     }
+    delete cData->parameters;
     cData->parameters = nullptr;
-    free(cData);
 }
 
 bool HasKeyFromParameters(const CArrParameters* parameters, const char* key)
