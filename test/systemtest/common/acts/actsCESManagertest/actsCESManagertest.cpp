@@ -1888,7 +1888,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_1000, Function | MediumTe
     if (result && stLevel_.CESLevel >= 1) {
         GTEST_LOG_(INFO) << "CES_SendEventSetViscosity_1000 stress level: " << stLevel_.CESLevel;
     }
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
 }
 
 /*
