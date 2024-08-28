@@ -56,7 +56,6 @@ template <class T>
 int32_t GetDataArrayFromParams(const CArrParameters* parameters, const char* key, int8_t type, T** array)
 {
     if (parameters->head == nullptr) {
-        *array = nullptr;
         return 0;
     }
     for (int i = 0; i < parameters->size; i++) {
@@ -66,7 +65,6 @@ int32_t GetDataArrayFromParams(const CArrParameters* parameters, const char* key
             return it->size;
         }
     }
-    *array = nullptr;
     return 0;
 }
 

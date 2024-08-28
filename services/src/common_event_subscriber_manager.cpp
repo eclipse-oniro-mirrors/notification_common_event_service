@@ -392,25 +392,19 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
     std::vector<SubscriberRecordPtr> &records)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-
     if (eventSubscribers_.size() <= 0) {
         return;
     }
-
     auto recordsItem = eventSubscribers_.find(eventRecord.commonEventData->GetWant().GetAction());
     if (recordsItem == eventSubscribers_.end()) {
         return;
     }
-
     bool isSystemApp = (eventRecord.eventRecordInfo.isSystemApp || eventRecord.eventRecordInfo.isSubsystem) &&
         !eventRecord.eventRecordInfo.isProxy;
-
     auto bundleName = eventRecord.eventRecordInfo.bundleName;
     auto uid = eventRecord.eventRecordInfo.uid;
     auto specifiedSubscriberUids = eventRecord.publishInfo->GetSubscriberUid();
     auto specifiedSubscriberType = eventRecord.publishInfo->GetSubscriberType();
-    bool isValidSpecifiedSubscriberType = CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSystemApp);
-
     for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
         if ((*it)->eventSubscribeInfo == nullptr) {
             continue;
@@ -430,9 +424,15 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
             continue;
         }
 
+        auto isSubscriberSystemApp = (*it)->eventRecordInfo.isSystemApp || (*it)->eventRecordInfo.isSubsystem;
+        if (!CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp)) {
+            EVENT_LOGD("Specified subscriber type is invalid");
+            continue;
+        }
+
         auto subscriberUid = (*it)->eventRecordInfo.uid;
-        if (!isValidSpecifiedSubscriberType ||
-            !CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
+        if (!CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
+            EVENT_LOGD("Subscriber's uid is not in Specified subscriber UIDs which is given by publisher");
             continue;
         }
 

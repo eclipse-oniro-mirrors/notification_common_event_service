@@ -48,6 +48,10 @@ extern "C" {
 
 CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum)
 {
+    if (eventsNum == 0) {
+        EVENT_LOGE("Events is empty");
+        return nullptr;
+    }
     CommonEvent_SubscribeInfo *subscribeInfo = new CommonEvent_SubscribeInfo();
     if (subscribeInfo == nullptr) {
         EVENT_LOGE("Failed to create subscribeInfo");
@@ -93,10 +97,10 @@ void OH_CommonEvent_DestroySubscribeInfo(CommonEvent_SubscribeInfo* info)
 {
     if (info != nullptr) {
         for (uint32_t i = 0; i < info->eventLength; i++) {
-            free(info->events + i);
+            free(info->events[i]);
             info->events[i] = nullptr;
         }
-        delete info->events;
+        delete[] info->events;
         info->events = nullptr;
         free(info->permission);
         info->permission = nullptr;
@@ -184,13 +188,11 @@ int OH_CommonEvent_GetIntArrayFromParameters(const CommonEvent_Parameters* para,
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     return GetDataArrayFromParams<int>(parameters, key, I32_PTR_TYPE, array);
@@ -215,13 +217,11 @@ int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEvent_Parameters* 
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     return GetDataArrayFromParams<long>(parameters, key, I64_PTR_TYPE, array);
@@ -246,13 +246,11 @@ int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEvent_Parameters* 
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     return GetDataArrayFromParams<bool>(parameters, key, BOOL_PTR_TYPE, array);
@@ -277,13 +275,11 @@ int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* 
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     return GetDataArrayFromParams<char>(parameters, key, STR_TYPE, array);
@@ -309,13 +305,11 @@ int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEvent_Parameters
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
         EVENT_LOGE("Invalid para");
-        *array = nullptr;
         return 0;
     }
     return GetDataArrayFromParams<double>(parameters, key, DOUBLE_PTR_TYPE, array);
