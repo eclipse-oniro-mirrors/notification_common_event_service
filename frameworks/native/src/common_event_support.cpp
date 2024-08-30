@@ -2809,6 +2809,12 @@ void CommonEventSupport::Init()
     * This is a protected common event that can only be sent by system.
     */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_DELETED);
+
+    /**
+    * This common event means that vpn connection status has been changed.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED);
     return;
 }
 
