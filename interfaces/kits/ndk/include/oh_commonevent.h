@@ -33,10 +33,10 @@ typedef enum CommonEvent_ErrCode {
     COMMONEVENT_ERR_FAIL_SEND_REQUEST = 1500007,
     /** @error Common event service not init. */
     COMMONEVENT_ERR_INIT_UNDONE = 1500008,
-    /** @error System error. */
-    COMMONEVENT_ERR_SYSTEM = 1500009,
     /** @error the subscriber number exceed system specification */
     COMMONEVENT_ERR_SUBSCRIBER_NUM_EXCEEDED = 1500010,
+    /** @error A memory allocation error occurs. */
+    COMMONEVENT_ERR_ALLOC_MEMORY_FAILED = 1500011,
 } CommonEvent_ErrCode;
 
 /**

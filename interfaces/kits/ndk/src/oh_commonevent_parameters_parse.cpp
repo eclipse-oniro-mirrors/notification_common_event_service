@@ -29,23 +29,25 @@
 #include <memory>
 #include <new>
 
+namespace OHOS {
+namespace EventFwk {
 // WantParameters -> CArrParameters
-void InnerWrapWantParamsString(OHOS::AAFwk::WantParams &wantParams, CParameters *p)
+void InnerWrapWantParamsString(AAFwk::WantParams &wantParams, CParameters *p)
 {
     auto value = wantParams.GetParam(p->key);
-    OHOS::AAFwk::IString *ao = OHOS::AAFwk::IString::Query(value);
+    AAFwk::IString *ao = AAFwk::IString::Query(value);
     if (ao == nullptr) {
         EVENT_LOGE("No value");
         return;
     }
-    std::string natValue = OHOS::AAFwk::String::Unbox(ao);
+    std::string natValue = AAFwk::String::Unbox(ao);
     p->value = MallocCString(natValue);
     p->size = static_cast<int64_t>(natValue.length()) + 1;
     p->valueType = STR_TYPE;
 }
 
 template <class TBase, class T, class NativeT>
-void InnerWrapWantParamsT(OHOS::AAFwk::WantParams &wantParams, CParameters *p)
+void InnerWrapWantParamsT(AAFwk::WantParams &wantParams, CParameters *p)
 {
     auto value = wantParams.GetParam(p->key);
     TBase *ao = TBase::Query(value);
@@ -63,7 +65,7 @@ void InnerWrapWantParamsT(OHOS::AAFwk::WantParams &wantParams, CParameters *p)
     p->size = sizeof(NativeT);
 }
 
-void InnerWrapWantParamsArrayString(OHOS::sptr<OHOS::AAFwk::IArray> &ao, CParameters *p)
+void InnerWrapWantParamsArrayString(sptr<AAFwk::IArray> &ao, CParameters *p)
 {
     long size = 0;
     if (ao->GetLength(size) != COMMONEVENT_ERR_OK) {
@@ -75,11 +77,11 @@ void InnerWrapWantParamsArrayString(OHOS::sptr<OHOS::AAFwk::IArray> &ao, CParame
         return;
     }
     for (long i = 0; i < size; i++) {
-        OHOS::sptr<OHOS::AAFwk::IInterface> iface = nullptr;
+        sptr<AAFwk::IInterface> iface = nullptr;
         if (ao->Get(i, iface) == COMMONEVENT_ERR_OK) {
-            OHOS::AAFwk::IString *iValue = OHOS::AAFwk::IString::Query(iface);
+            AAFwk::IString *iValue = AAFwk::IString::Query(iface);
             if (iValue != nullptr) {
-                auto val = OHOS::AAFwk::String::Unbox(iValue);
+                auto val = AAFwk::String::Unbox(iValue);
                 arrP[i] = MallocCString(val);
             }
         }
@@ -106,7 +108,7 @@ void ClearParametersPtr(CParameters **ptr, int count, bool isKey)
 }
 
 template <class TBase, class T, class NativeT>
-void InnerWrapWantParamsArrayT(OHOS::sptr<OHOS::AAFwk::IArray> &ao, CParameters *p)
+void InnerWrapWantParamsArrayT(sptr<AAFwk::IArray> &ao, CParameters *p)
 {
     long size = 0;
     if (ao->GetLength(size) != COMMONEVENT_ERR_OK) {
@@ -118,7 +120,7 @@ void InnerWrapWantParamsArrayT(OHOS::sptr<OHOS::AAFwk::IArray> &ao, CParameters 
         return;
     }
     for (long i = 0; i < size; i++) {
-        OHOS::sptr<OHOS::AAFwk::IInterface> iface = nullptr;
+        sptr<AAFwk::IInterface> iface = nullptr;
         if (ao->Get(i, iface) == COMMONEVENT_ERR_OK) {
             TBase *iValue = TBase::Query(iface);
             if (iValue != nullptr) {
@@ -130,32 +132,32 @@ void InnerWrapWantParamsArrayT(OHOS::sptr<OHOS::AAFwk::IArray> &ao, CParameters 
     p->value = static_cast<void *>(arrP);
 }
 
-void InnerWrapWantParamsArray(OHOS::AAFwk::WantParams &wantParams, OHOS::sptr<OHOS::AAFwk::IArray> &ao, CParameters *p)
+void InnerWrapWantParamsArray(AAFwk::WantParams &wantParams, sptr<AAFwk::IArray> &ao, CParameters *p)
 {
-    if (OHOS::AAFwk::Array::IsBooleanArray(ao)) {
+    if (AAFwk::Array::IsBooleanArray(ao)) {
         p->valueType = BOOL_PTR_TYPE;
-        return InnerWrapWantParamsArrayT<OHOS::AAFwk::IBoolean, OHOS::AAFwk::Boolean, bool>(ao, p);
-    } else if (OHOS::AAFwk::Array::IsIntegerArray(ao)) {
+        return InnerWrapWantParamsArrayT<AAFwk::IBoolean, AAFwk::Boolean, bool>(ao, p);
+    } else if (AAFwk::Array::IsIntegerArray(ao)) {
         p->valueType = I32_PTR_TYPE;
-        return InnerWrapWantParamsArrayT<OHOS::AAFwk::IInteger, OHOS::AAFwk::Integer, int>(ao, p);
-    } else if (OHOS::AAFwk::Array::IsLongArray(ao)) {
+        return InnerWrapWantParamsArrayT<AAFwk::IInteger, AAFwk::Integer, int>(ao, p);
+    } else if (AAFwk::Array::IsLongArray(ao)) {
         p->valueType = I64_PTR_TYPE;
-        return InnerWrapWantParamsArrayT<OHOS::AAFwk::ILong, OHOS::AAFwk::Long, int64_t>(ao, p);
-    } else if (OHOS::AAFwk::Array::IsDoubleArray(ao)) {
+        return InnerWrapWantParamsArrayT<AAFwk::ILong, AAFwk::Long, int64_t>(ao, p);
+    } else if (AAFwk::Array::IsDoubleArray(ao)) {
         p->valueType = DOUBLE_PTR_TYPE;
-        return InnerWrapWantParamsArrayT<OHOS::AAFwk::IDouble, OHOS::AAFwk::Double, double>(ao, p);
+        return InnerWrapWantParamsArrayT<AAFwk::IDouble, AAFwk::Double, double>(ao, p);
     } else {
         return;
     }
 }
 
-void ParseParameters(OHOS::AAFwk::Want &want, CArrParameters* parameters, int32_t &code)
+void ParseParameters(AAFwk::Want &want, CArrParameters* parameters, int32_t &code)
 {
     if (code != COMMONEVENT_ERR_OK || parameters == nullptr) {
         return;
     }
-    OHOS::AAFwk::WantParams wantP = want.GetParams();
-    std::map<std::string, OHOS::sptr<OHOS::AAFwk::IInterface>> paramsMap = wantP.GetParams();
+    AAFwk::WantParams wantP = want.GetParams();
+    std::map<std::string, sptr<AAFwk::IInterface>> paramsMap = wantP.GetParams();
     int count = 0;
     auto size = static_cast<int64_t>(paramsMap.size());
     
@@ -168,31 +170,31 @@ void ParseParameters(OHOS::AAFwk::Want &want, CArrParameters* parameters, int32_
         auto ptr = parameters->head + count;
         ptr->key = MallocCString(iter->first);
         if (ptr->key == nullptr) {
-            code = COMMONEVENT_ERR_SYSTEM;
+            code = COMMONEVENT_ERR_ALLOC_MEMORY_FAILED;
             parameters->size = 0;
             return ClearParametersPtr(&parameters->head, count, true);
         }
         ptr->value = nullptr;
-        if (OHOS::AAFwk::IString::Query(iter->second) != nullptr) {
+        if (AAFwk::IString::Query(iter->second) != nullptr) {
             InnerWrapWantParamsString(wantP, ptr);
-        } else if (OHOS::AAFwk::IBoolean::Query(iter->second) != nullptr) {
+        } else if (AAFwk::IBoolean::Query(iter->second) != nullptr) {
             ptr->valueType = BOOL_TYPE;
-            InnerWrapWantParamsT<OHOS::AAFwk::IBoolean, OHOS::AAFwk::Boolean, bool>(wantP, ptr);
-        } else if (OHOS::AAFwk::IChar::Query(iter->second) != nullptr) {
+            InnerWrapWantParamsT<AAFwk::IBoolean, AAFwk::Boolean, bool>(wantP, ptr);
+        } else if (AAFwk::IChar::Query(iter->second) != nullptr) {
             ptr->valueType = CHAR_TYPE;
-            InnerWrapWantParamsT<OHOS::AAFwk::IChar, OHOS::AAFwk::Char, char>(wantP, ptr);
-        } else if (OHOS::AAFwk::IInteger::Query(iter->second) != nullptr) {
+            InnerWrapWantParamsT<AAFwk::IChar, AAFwk::Char, char>(wantP, ptr);
+        } else if (AAFwk::IInteger::Query(iter->second) != nullptr) {
             ptr->valueType = I32_TYPE;
-            InnerWrapWantParamsT<OHOS::AAFwk::IInteger, OHOS::AAFwk::Integer, int>(wantP, ptr);
-        } else if (OHOS::AAFwk::IDouble::Query(iter->second) != nullptr) {
+            InnerWrapWantParamsT<AAFwk::IInteger, AAFwk::Integer, int>(wantP, ptr);
+        } else if (AAFwk::IDouble::Query(iter->second) != nullptr) {
             ptr->valueType = DOUBLE_TYPE;
-            InnerWrapWantParamsT<OHOS::AAFwk::IDouble, OHOS::AAFwk::Double, double>(wantP, ptr);
-        } else if (OHOS::AAFwk::ILong::Query(iter->second) != nullptr) {
+            InnerWrapWantParamsT<AAFwk::IDouble, AAFwk::Double, double>(wantP, ptr);
+        } else if (AAFwk::ILong::Query(iter->second) != nullptr) {
             ptr->valueType = I64_TYPE;
-            InnerWrapWantParamsT<OHOS::AAFwk::ILong, OHOS::AAFwk::Long, int64_t>(wantP, ptr);
-        } else if (OHOS::AAFwk::IArray::Query(iter->second) != nullptr) {
-            OHOS::AAFwk::IArray *ao = OHOS::AAFwk::IArray::Query(iter->second);
-            OHOS::sptr<OHOS::AAFwk::IArray> array(ao);
+            InnerWrapWantParamsT<AAFwk::ILong, AAFwk::Long, int64_t>(wantP, ptr);
+        } else if (AAFwk::IArray::Query(iter->second) != nullptr) {
+            AAFwk::IArray *ao = AAFwk::IArray::Query(iter->second);
+            sptr<AAFwk::IArray> array(ao);
             InnerWrapWantParamsArray(wantP, array, ptr);
         }
         count++;
@@ -220,7 +222,7 @@ char *MallocCString(const std::string &origin, int32_t &code)
     auto len = origin.length() + 1;
     char *res = static_cast<char *>(malloc(sizeof(char) * len));
     if (res == nullptr) {
-        code = COMMONEVENT_ERR_SYSTEM;
+        code = COMMONEVENT_ERR_ALLOC_MEMORY_FAILED;
         return nullptr;
     }
     return std::char_traits<char>::copy(res, origin.c_str(), len);
@@ -236,7 +238,7 @@ void FreeCCommonEventDataCharPtr(CommonEvent_RcvData *cData)
     cData->bundleName = nullptr;
 }
 
-int32_t GetCommonEventData(const OHOS::EventFwk::CommonEventData &data, CommonEvent_RcvData *cData)
+int32_t GetCommonEventData(const EventFwk::CommonEventData &data, CommonEvent_RcvData *cData)
 {
     auto want = data.GetWant();
     cData->code = data.GetCode();
@@ -291,3 +293,5 @@ bool HasKeyFromParameters(const CArrParameters* parameters, const char* key)
     }
     return false;
 }
+}  // namespace EventFwk
+}  // namespace OHOS
