@@ -21,27 +21,6 @@
 #include "securec.h"
 #include <cstdlib>
 
-
-template <class T>
-int32_t GetWantParamsArrayT(std::vector<T> list, T** ret)
-{
-    int32_t size = list.size();
-    if (size <= 0) {
-        *ret = nullptr;
-        return 0;
-    }
-    T *arrP = static_cast<T *>(malloc(sizeof(T) * size));
-    if (arrP == nullptr) {
-        *ret = nullptr;
-        return 0;
-    }
-    for (long i = 0; i < size; i++) {
-        arrP[i] = list[i];
-    }
-    *ret = arrP;
-    return size;
-}
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,7 +45,7 @@ CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events
     subscribeInfo->events = new char* [count];
     for (int i = 0; i < eventsNum; i++) {
         if (events + i != nullptr) {
-            subscribeInfo->events[subscribeInfo->eventLength] = MallocCString(events[i]);
+            subscribeInfo->events[subscribeInfo->eventLength] = OHOS::EventFwk::MallocCString(events[i]);
             subscribeInfo->eventLength++;
         }
     }
@@ -79,7 +58,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEvent_SubscribeI
         EVENT_LOGE("Invalid para");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    info->permission = MallocCString(permission);
+    info->permission = OHOS::EventFwk::MallocCString(permission);
     return COMMONEVENT_ERR_OK;
 }
 
@@ -89,7 +68,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublisherBundleName(CommonEvent_SubscribeI
         EVENT_LOGE("Invalid para");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    info->bundleName = MallocCString(bundleName);
+    info->bundleName = OHOS::EventFwk::MallocCString(bundleName);
     return COMMONEVENT_ERR_OK;
 }
 
@@ -167,7 +146,7 @@ bool OH_CommonEvent_HasKeyInParameters(const CommonEvent_Parameters* para, const
         EVENT_LOGE("Invalid para");
         return false;
     }
-    return HasKeyFromParameters(parameters, key);
+    return OHOS::EventFwk::HasKeyFromParameters(parameters, key);
 }
 
 int OH_CommonEvent_GetIntFromParameters(const CommonEvent_Parameters* para, const char* key, const int defaultValue)
@@ -181,7 +160,7 @@ int OH_CommonEvent_GetIntFromParameters(const CommonEvent_Parameters* para, cons
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return GetDataFromParams<int>(parameters, key, I32_TYPE, defaultValue);
+    return OHOS::EventFwk::GetDataFromParams<int>(parameters, key, OHOS::EventFwk::I32_TYPE, defaultValue);
 }
 
 int OH_CommonEvent_GetIntArrayFromParameters(const CommonEvent_Parameters* para, const char* key, int** array)
@@ -195,7 +174,7 @@ int OH_CommonEvent_GetIntArrayFromParameters(const CommonEvent_Parameters* para,
         EVENT_LOGE("Invalid para");
         return 0;
     }
-    return GetDataArrayFromParams<int>(parameters, key, I32_PTR_TYPE, array);
+    return OHOS::EventFwk::GetDataArrayFromParams<int>(parameters, key, OHOS::EventFwk::I32_PTR_TYPE, array);
 }
 
 long OH_CommonEvent_GetLongFromParameters(const CommonEvent_Parameters* para, const char* key,
@@ -210,7 +189,7 @@ long OH_CommonEvent_GetLongFromParameters(const CommonEvent_Parameters* para, co
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return GetDataFromParams<long>(parameters, key, I64_TYPE, defaultValue);
+    return OHOS::EventFwk::GetDataFromParams<long>(parameters, key, OHOS::EventFwk::I64_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEvent_Parameters* para, const char* key, long** array)
@@ -224,7 +203,7 @@ int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEvent_Parameters* 
         EVENT_LOGE("Invalid para");
         return 0;
     }
-    return GetDataArrayFromParams<long>(parameters, key, I64_PTR_TYPE, array);
+    return OHOS::EventFwk::GetDataArrayFromParams<long>(parameters, key, OHOS::EventFwk::I64_PTR_TYPE, array);
 }
 
 bool OH_CommonEvent_GetBoolFromParameters(const CommonEvent_Parameters* para, const char* key,
@@ -239,7 +218,7 @@ bool OH_CommonEvent_GetBoolFromParameters(const CommonEvent_Parameters* para, co
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return GetDataFromParams<bool>(parameters, key, BOOL_TYPE, defaultValue);
+    return OHOS::EventFwk::GetDataFromParams<bool>(parameters, key, OHOS::EventFwk::BOOL_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEvent_Parameters* para, const char* key, bool** array)
@@ -253,7 +232,7 @@ int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEvent_Parameters* 
         EVENT_LOGE("Invalid para");
         return 0;
     }
-    return GetDataArrayFromParams<bool>(parameters, key, BOOL_PTR_TYPE, array);
+    return OHOS::EventFwk::GetDataArrayFromParams<bool>(parameters, key, OHOS::EventFwk::BOOL_PTR_TYPE, array);
 }
 
 char OH_CommonEvent_GetCharFromParameters(const CommonEvent_Parameters* para, const char* key,
@@ -268,7 +247,7 @@ char OH_CommonEvent_GetCharFromParameters(const CommonEvent_Parameters* para, co
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return GetDataFromParams<char>(parameters, key, CHAR_TYPE, defaultValue);
+    return OHOS::EventFwk::GetDataFromParams<char>(parameters, key, OHOS::EventFwk::CHAR_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* para, const char* key, char** array)
@@ -282,7 +261,7 @@ int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* 
         EVENT_LOGE("Invalid para");
         return 0;
     }
-    return GetDataArrayFromParams<char>(parameters, key, STR_TYPE, array);
+    return OHOS::EventFwk::GetDataArrayFromParams<char>(parameters, key, OHOS::EventFwk::STR_TYPE, array);
 }
 
 double OH_CommonEvent_GetDoubleFromParameters(const CommonEvent_Parameters* para, const char* key,
@@ -297,7 +276,7 @@ double OH_CommonEvent_GetDoubleFromParameters(const CommonEvent_Parameters* para
         EVENT_LOGE("Invalid para");
         return defaultValue;
     }
-    return GetDataFromParams<double>(parameters, key, DOUBLE_TYPE, defaultValue);
+    return OHOS::EventFwk::GetDataFromParams<double>(parameters, key, OHOS::EventFwk::DOUBLE_TYPE, defaultValue);
 }
 
 int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEvent_Parameters* para, const char* key,
@@ -312,7 +291,7 @@ int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEvent_Parameters
         EVENT_LOGE("Invalid para");
         return 0;
     }
-    return GetDataArrayFromParams<double>(parameters, key, DOUBLE_PTR_TYPE, array);
+    return OHOS::EventFwk::GetDataArrayFromParams<double>(parameters, key, OHOS::EventFwk::DOUBLE_PTR_TYPE, array);
 }
 #ifdef __cplusplus
 }

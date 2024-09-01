@@ -38,7 +38,7 @@ void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &d
         EVENT_LOGE("Failed to create CommonEventRcvData");
         return;
     }
-    int32_t code = GetCommonEventData(data, cData);
+    int32_t code = OHOS::EventFwk::GetCommonEventData(data, cData);
     if (code != COMMONEVENT_ERR_OK) {
         EVENT_LOGE("Failed to init GetCommonEventData");\
         delete cData;
@@ -49,7 +49,7 @@ void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &d
         EVENT_LOGD("Subscribe callback start to run.");
         (*callback_)(cData);
     }
-    FreeCCommonEventData(cData);
+    OHOS::EventFwk::FreeCCommonEventData(cData);
     delete cData;
     cData = nullptr;
 }
@@ -79,7 +79,7 @@ CommonEvent_Subscriber* SubscriberManager::CreateSubscriber(const CommonEvent_Su
     if (subscribeInfo == nullptr) {
         EVENT_LOGE("SubscribeInfo is null");
         return nullptr;
-    } 
+    }
     OHOS::EventFwk::MatchingSkills matchingSkills;
     for (uint32_t i = 0; i < subscribeInfo->eventLength; i++) {
         if (subscribeInfo->events[i] != nullptr) {
