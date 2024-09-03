@@ -325,7 +325,6 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
         if (commonEventListener == (*it)->commonEventListener) {
             RemoveFrozenEventsBySubscriber((*it));
             RemoveFrozenEventsMapBySubscriber((*it));
-            (*it)->commonEventListener = nullptr;
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
             EVENT_LOGI("Unsubscribe subscriberID: %{public}s", (*it)->eventRecordInfo.subId.c_str());
             pid_t pid = (*it)->eventRecordInfo.pid;
@@ -338,7 +337,6 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
     for (auto event : events) {
         for (auto it = eventSubscribers_[event].begin(); it != eventSubscribers_[event].end(); ++it) {
             if ((commonEventListener == (*it)->commonEventListener) || ((*it)->commonEventListener == nullptr)) {
-                (*it)->commonEventListener = nullptr;
                 eventSubscribers_[event].erase(it);
                 break;
             }
