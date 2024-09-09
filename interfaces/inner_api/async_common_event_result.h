@@ -32,7 +32,7 @@ public:
      * @param token Indicates the remote object of the current ordered common event.
      */
     AsyncCommonEventResult(const int32_t &resultCode, const std::string &resultData, const bool &ordered,
-        const bool &sticky, const sptr<IRemoteObject> &token);
+        const bool &sticky, const wptr<IRemoteObject> &token);
 
     ~AsyncCommonEventResult();
 
@@ -129,7 +129,7 @@ private:
     std::string resultData_;
     bool ordered_;
     bool sticky_;
-    sptr<IRemoteObject> token_;
+    wptr<IRemoteObject> token_;
     bool abortEvent_;
     bool finished_;
 };
