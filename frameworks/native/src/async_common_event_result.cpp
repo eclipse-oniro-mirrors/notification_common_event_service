@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace EventFwk {
 AsyncCommonEventResult::AsyncCommonEventResult(const int32_t &resultCode, const std::string &resultData,
-    const bool &ordered, const bool &sticky, const sptr<IRemoteObject> &token)
+    const bool &ordered, const bool &sticky, const wptr<IRemoteObject> &token)
     : abortEvent_(false), finished_(false)
 {
     resultCode_ = resultCode;
@@ -125,7 +125,7 @@ bool AsyncCommonEventResult::FinishCommonEvent()
     }
     finished_ = true;
 
-    return CommonEvent::GetInstance()->FinishReceiver(token_, resultCode_, resultData_, abortEvent_);
+    return CommonEvent::GetInstance()->FinishReceiver(token_.promote(), resultCode_, resultData_, abortEvent_);
 }
 
 bool AsyncCommonEventResult::IsOrderedCommonEvent() const
