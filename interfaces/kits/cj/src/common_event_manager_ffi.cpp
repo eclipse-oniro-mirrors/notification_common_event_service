@@ -407,6 +407,9 @@ namespace OHOS::CommonEventManager {
                 return ret;
             }
             auto vStr = instance->GetEvents();
+            if (vStr.size()) {
+                return ret;
+            }
             ret.head = VectorToCharPointer(vStr);
             ret.size = static_cast<int64_t>(vStr.size());
             if (ret.head == nullptr) {
