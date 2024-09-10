@@ -123,8 +123,9 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     return proxy->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken, userId);
 }
 
-bool CommonEvent::PublishParameterCheck(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener)
+__attribute__((no_sanitize("cfi"))) bool CommonEvent::PublishParameterCheck(const CommonEventData &data,
+    const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
+    sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGD("enter");
     if (data.GetWant().GetAction() == std::string()) {
