@@ -270,8 +270,12 @@ namespace OHOS::CommonEventManager {
             LOGE("fail to get length");
             return;
         }
+        if (size == 0) {
+            return;
+        }
         char **arrP = static_cast<char **>(malloc(sizeof(char *) * size));
         if (arrP == nullptr) {
+            LOGE("fail to malloc");
             return;
         }
         for (long i = 0; i < size; i++) {
@@ -313,8 +317,12 @@ namespace OHOS::CommonEventManager {
             LOGE("fail to get length");
             return;
         }
+        if (size == 0) {
+            return;
+        }
         NativeT *arrP = static_cast<NativeT *>(malloc(sizeof(NativeT) * size));
         if (arrP == nullptr) {
+            LOGE("fail to malloc");
             return;
         }
         for (long i = 0; i < size; i++) {
@@ -371,8 +379,12 @@ namespace OHOS::CommonEventManager {
             LOGE("fail to get length");
             return NONE_VALUE;
         }
+        if (size == 0) {
+            return NONE_VALUE;
+        }
         int *arrP = static_cast<int *>(malloc(sizeof(int) * size));
         if (arrP == nullptr) {
+            LOGE("fail to malloc");
             return NONE_VALUE;
         }
         for (long i = 0; i < size; i++) {
@@ -434,7 +446,10 @@ namespace OHOS::CommonEventManager {
         std::map<std::string, sptr<OHOS::AAFwk::IInterface>> paramsMap = wantP.GetParams();
         int count = 0;
         auto size = static_cast<int64_t>(paramsMap.size());
-        LOGI("paramsMap size = %{public}" PRId64, size);
+        LOGD("paramsMap size = %{public}" PRId64, size);
+        if (size == 0) {
+            return;
+        }
         cData.parameters.head = static_cast<CParameters *>(malloc(sizeof(CParameters) * size));
         if (cData.parameters.head == nullptr) {
             return;
