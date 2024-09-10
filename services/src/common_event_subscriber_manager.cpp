@@ -349,49 +349,60 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
     return ERR_OK;
 }
 
-bool CommonEventSubscriberManager::CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp,
-    const int32_t &userId)
+bool CommonEventSubscriberManager::CheckSubscriberByUserId(
+    const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId)
 {
-    if (subscriberUserId == ALL_USER) {
+    if (subscriberUserId == ALL_USER || subscriberUserId == userId) {
         return true;
     }
-
-    if (isSystemApp && (userId == UNDEFINED_USER || userId == ALL_USER)) {
-        return true;
-    }
-
-    if (!isSystemApp && subscriberUserId == userId) {
-        return true;
-    }
-
-    if (isSystemApp && (subscriberUserId == userId ||
+ 
+    if (isSystemApp && (userId == UNDEFINED_USER || userId == ALL_USER ||
         (subscriberUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && subscriberUserId <= SUBSCRIBE_USER_SYSTEM_END))) {
         return true;
     }
-
+ 
     return false;
+}
+
+bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
+    const int32_t &subscriberUid, const std::vector<int32_t> &specifiedSubscriberUids)
+{
+    if (specifiedSubscriberUids.empty()) {
+        return true;
+    }
+    for (auto it = specifiedSubscriberUids.begin(); it != specifiedSubscriberUids.end(); ++it) {
+        if (*it == subscriberUid) {
+            return true;
+        }
+    }
+ 
+    return false;
+}
+ 
+bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedType(
+    const int32_t &specifiedSubscriberType, const bool &isSystemApp)
+{
+    return specifiedSubscriberType == static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE) ||
+        (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE) && isSystemApp);
 }
 
 void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const CommonEventRecord &eventRecord,
     std::vector<SubscriberRecordPtr> &records)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-
     if (eventSubscribers_.size() <= 0) {
         return;
     }
-
     auto recordsItem = eventSubscribers_.find(eventRecord.commonEventData->GetWant().GetAction());
     if (recordsItem == eventSubscribers_.end()) {
         return;
     }
-
     bool isSystemApp = (eventRecord.eventRecordInfo.isSystemApp || eventRecord.eventRecordInfo.isSubsystem) &&
         !eventRecord.eventRecordInfo.isProxy;
-
     auto bundleName = eventRecord.eventRecordInfo.bundleName;
     auto uid = eventRecord.eventRecordInfo.uid;
-
+    auto specifiedSubscriberUids = eventRecord.publishInfo->GetSubscriberUid();
+    auto specifiedSubscriberType = eventRecord.publishInfo->GetSubscriberType();
     for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
         if ((*it)->eventSubscribeInfo == nullptr) {
             continue;
@@ -408,6 +419,18 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
         auto publisherBundleName = (*it)->eventSubscribeInfo->GetPublisherBundleName();
         if (!publisherBundleName.empty() && publisherBundleName != bundleName) {
+            continue;
+        }
+
+        auto isSubscriberSystemApp = (*it)->eventRecordInfo.isSystemApp || (*it)->eventRecordInfo.isSubsystem;
+        if (!CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp)) {
+            EVENT_LOGD("Specified subscriber type is invalid");
+            continue;
+        }
+
+        auto subscriberUid = (*it)->eventRecordInfo.uid;
+        if (!CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
+            EVENT_LOGD("Subscriber's uid is not in Specified subscriber UIDs which is given by publisher");
             continue;
         }
 
