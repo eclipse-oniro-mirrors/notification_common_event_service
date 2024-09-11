@@ -20,6 +20,7 @@
 
 #include "ability_manager_client.h"
 #include "common_event_subscriber_manager.h"
+#include "common_event_support.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
 #include "hisysevent.h"
@@ -83,6 +84,21 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
 
     if (!InsertSubscriberRecordLocked(events, record)) {
         return nullptr;
+    }
+
+    if (eventRecordInfo.uid != SAMGR_UID) {
+        for (int i = 0; i < events.size(); i++) {
+            bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(events[i]);
+            if (!isSystemEvent && eventSubscribeInfo->GetPermission().empty() &&
+                eventSubscribeInfo->GetPublisherBundleName().empty() && eventSubscribeInfo->GetPublisherUid() == 0) {
+                EVENT_LOGW("Subscribe size = %{public}zu, %{public}s without any restrict subid = %{public}s, bundle = "
+                           "%{public}s",
+                    events.size(),
+                    events[i].c_str(),
+                    eventRecordInfo.subId.c_str(),
+                    eventRecordInfo.bundleName.c_str());
+            }
+        }
     }
 
     return record;
