@@ -25,24 +25,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-CommonEventDeathRecipient::~CommonEventDeathRecipient()
-{
-    if (statusChangeListener_ != nullptr) {
-        auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-        if (samgrProxy == nullptr) {
-            EVENT_LOGE("GetSystemAbilityManager failed");
-            return;
-        }
-        
-        int32_t ret = samgrProxy->UnSubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, statusChangeListener_);
-        if (ret != ERR_OK) {
-            EVENT_LOGE("SubscribeSystemAbility to sa manager failed");
-            return;
-        }
-        statusChangeListener_ = nullptr;
-    }
-}
-
 void CommonEventDeathRecipient::SubscribeSAManager()
 {
     if (statusChangeListener_ == nullptr) {
@@ -75,28 +57,39 @@ CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SystemAbilityStatu
     queue_ = std::make_shared<ffrt::queue>("cesResubMain");
 }
 
+CommonEventDeathRecipient::SystemAbilityStatusChangeListener::~SystemAbilityStatusChangeListener()
+{
+    if (queue_ != nullptr) {
+        queue_.reset();
+    }
+}
+
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!isSAOffline_) {
-        return;
-    }
-    EVENT_LOGI("Common event service restore, try to reconnect");
-    if (CommonEvent::GetInstance()->Reconnect()) {
-        auto resubscrebeFund = [] () {
-            CommonEvent::GetInstance()->Resubscribe();
-        };
-        queue_->submit(resubscrebeFund);
-        isSAOffline_ = false;
-    }
+    wptr<CommonEventDeathRecipient::SystemAbilityStatusChangeListener> listenerWptr = this;
+    auto reconnectFunc = [listenerWptr] () {
+        sptr<CommonEventDeathRecipient::SystemAbilityStatusChangeListener> listenerSptr = listenerWptr.promote();
+        if (listenerSptr == nullptr) {
+            return;
+        }
+        if (!listenerSptr->isSAOffline_) {
+            return;
+        }
+        EVENT_LOGI("Common event service restore, try to reconnect");
+        auto commonEvent = CommonEvent::GetInstance();
+        if (commonEvent->Reconnect()) {
+            commonEvent->Resubscribe();
+            listenerSptr->isSAOffline_ = false;
+        }
+    };
+    queue_->submit(reconnectFunc);
 }
 
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
     EVENT_LOGI("Common event service died");
-    std::lock_guard<std::mutex> lock(mutex_);
     isSAOffline_ = true;
 }
 }  // namespace EventFwk
