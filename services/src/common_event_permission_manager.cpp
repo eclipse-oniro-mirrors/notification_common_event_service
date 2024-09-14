@@ -61,7 +61,7 @@ static const std::unordered_map<std::string, std::vector<int32_t>> COMMON_EVENT_
     {CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT, {ACCOUNT_UID}},
     {CommonEventSupport::COMMON_EVENT_WIFI_POWER_STATE, {WIFI_UID}},
     {CommonEventSupport::COMMON_EVENT_WIFI_CONN_STATE, {WIFI_UID}},
-    {CommonEventSupport::COMMON_EVENT_AIRPLANE_MODE_CHANGED, {CONNECT_UID}},
+    {CommonEventSupport::COMMON_EVENT_AIRPLANE_MODE_CHANGED, {CONNECT_UID, PHONE_UID}},
     {CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE, {CONNECT_UID}},
     {CommonEventSupport::COMMON_EVENT_HTTP_PROXY_CHANGE, {CONNECT_UID}},
     {CommonEventSupport::COMMON_EVENT_TIME_CHANGED, {TIME_UID, TIME_TICK_UID}},
