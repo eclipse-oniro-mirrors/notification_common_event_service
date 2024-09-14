@@ -77,6 +77,8 @@ ohos_executable("cem") {
 
   deps = [ ":tools_cem_source_set" ]
 
+  external_deps = [ "hilog:libhilog" ]
+
   install_enable = true
 
   subsystem_name = "notification"

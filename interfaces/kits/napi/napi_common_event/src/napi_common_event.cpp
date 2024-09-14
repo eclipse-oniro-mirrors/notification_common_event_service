@@ -82,7 +82,7 @@ SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeI
         return;
     }
 
-    EVENT_LOGD("Constructor objectInfo");
+    EVENT_LOGI("Constructor objectInfo");
     subscriber = std::shared_ptr<SubscriberInstance>(objectInfo);
 }
 
@@ -1096,7 +1096,7 @@ napi_value SetCodeAndDataSync(napi_env env, napi_callback_info info)
         std::string msg = "Parameter verification failed. cannot exceed ";
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID,
             msg.append(std::to_string(STR_DATA_MAX_SIZE - 1)).append(" characters"));
-        return NapiGetNull(env);;
+        return NapiGetNull(env);
     }
     data = str;
 
