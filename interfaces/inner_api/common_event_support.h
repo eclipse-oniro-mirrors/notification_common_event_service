@@ -1285,12 +1285,6 @@ public:
     static const std::string COMMON_EVENT_PRIVACY_STATE_CHANGED;
 
     /**
-     * Indicates that the file access state is changed.
-     * This is a protected common event that can only be sent by system.
-     */
-    static const std::string COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED;
-
-    /**
      * This common event means that minors mode is enabled.
      * This is a protected common event that can only be sent by system.
      */
@@ -1309,6 +1303,12 @@ public:
      * This is a protected common event, which can be sent only by the system.
      */
     static const std::string COMMON_EVENT_BUNDLE_RESOURCES_CHANGED;
+
+    /**
+     * Indicates that the file access state is changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED;
 
     /**
      * This common event means that datashare is ready.
@@ -1339,18 +1339,18 @@ public:
     * This is a protected common event that can only be sent by system.
     */
     static const std::string COMMON_EVENT_DISPOSED_RULE_DELETED;
-
-    /**
-    * This common event means that the second mount is ready.
-    * This is a protected common event that can only be sent by system.
-    */
-    static const std::string COMMON_EVENT_SECOND_MOUNTED;
-
+    
     /**
     * This common event means that vpn connection status has been changed.
     * This is a protected common event that can only be sent by system.
     */
     static const std::string COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED;
+    
+    /**
+    * This common event means that the second mount is ready.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SECOND_MOUNTED;
 
 public:
     CommonEventSupport();
