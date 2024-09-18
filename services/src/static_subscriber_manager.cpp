@@ -278,7 +278,7 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
     }
 
     nlohmann::json jsonObj = nlohmann::json::parse(profile, nullptr, false);
-    if (jsonObj.is_null() || jsonObj.empty()) {
+    if (jsonObj.is_null() || jsonObj.empty() || !jsonObj.is_object()) {
         EVENT_LOGE("invalid jsonObj");
         return;
     }

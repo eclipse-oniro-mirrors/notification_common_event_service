@@ -32,6 +32,8 @@ constexpr int16_t MAX_SUBSCRIBER_NUM_PER_EVENT = 255;
 constexpr uint32_t DEFAULT_MAX_SUBSCRIBER_NUM_ALL_APP = 5000;
 constexpr double WARNING_REPORT_PERCENTAGE = 0.8;
 constexpr char const RESOURCE_MANAGER_PROCESS_NAME[] = "resource_schedule_service";
+constexpr int32_t FOUNDATION_UID = 5523;
+constexpr int32_t SAMGR_UID = 5555;
 
 enum DumpEventType {
     ALL,

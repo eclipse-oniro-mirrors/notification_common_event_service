@@ -66,18 +66,6 @@ struct FrozenEventRecord {
     {}
 };
 
-inline bool operator<(const std::shared_ptr<EventSubscriberRecord> &a, const std::shared_ptr<EventSubscriberRecord> &b)
-{
-    if (a == nullptr || a->eventSubscribeInfo == nullptr) {
-        return true;
-    }
-
-    if (b == nullptr || b->eventSubscribeInfo == nullptr) {
-        return false;
-    }
-    return a->eventSubscribeInfo->GetPriority() > b->eventSubscribeInfo->GetPriority();
-}
-
 using SubscriberRecordPtr = std::shared_ptr<EventSubscriberRecord>;
 using SubscribeInfoPtr = std::shared_ptr<CommonEventSubscribeInfo>;
 using EventRecordPtr = std::shared_ptr<CommonEventRecord>;
@@ -225,6 +213,11 @@ private:
 
     bool CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId);
 
+    bool CheckSubscriberBySpecifiedUids(const int32_t &subscriberUid,
+        const std::vector<int32_t> &specifiedSubscriberUids);
+ 
+    bool CheckSubscriberBySpecifiedType(const int32_t &specifiedSubscriberType, const bool &isSystemApp);
+
     void GetSubscriberRecordsByWantLocked(const CommonEventRecord &eventRecord,
         std::vector<SubscriberRecordPtr> &records);
 
@@ -250,7 +243,7 @@ private:
 private:
     std::mutex mutex_;
     sptr<IRemoteObject::DeathRecipient> death_;
-    std::map<std::string, std::multiset<SubscriberRecordPtr>> eventSubscribers_;
+    std::map<std::string, std::set<SubscriberRecordPtr>> eventSubscribers_;
     std::vector<SubscriberRecordPtr> subscribers_;
     std::map<uid_t, FrozenRecords> frozenEvents_;
     const time_t FREEZE_EVENT_TIMEOUT = 30; // How long we keep records. Unit: second

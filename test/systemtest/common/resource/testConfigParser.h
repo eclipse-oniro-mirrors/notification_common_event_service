@@ -53,6 +53,10 @@ public:
         nlohmann::json jsonObj;
         jf >> jsonObj;
 
+        if (jsonObj.is_null() || !jsonObj.is_object()) {
+            std::cout << "Invalid JSON object" << std::endl;
+            return;
+        }
         const auto &jsonObjEnd = jsonObj.end();
         if (jsonObj.find(STRESS_TEST_AMS_KEY) != jsonObjEnd) {
             jsonObj.at(STRESS_TEST_AMS_KEY).get_to(stlevel.AMSLevel);

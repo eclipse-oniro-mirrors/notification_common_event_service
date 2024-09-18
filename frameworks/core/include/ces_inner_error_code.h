@@ -16,6 +16,7 @@
 #define BASE_NOTIFICATION_CES_STANDARD_INNERKITS_BASE_INCLUDE_CES_INNER_ERRORS_H
 
 #include "errors.h"
+#include <stdint.h>
 
 namespace OHOS {
 namespace Notification {

@@ -16,10 +16,16 @@
 #include "common_event_publish_info.h"
 #include "event_log_wrapper.h"
 #include "string_ex.h"
+#include <cstdint>
 
 namespace OHOS {
 namespace EventFwk {
-CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false)
+namespace {
+    const int32_t SUBSCRIBER_UIDS_MAX_NUM = 3;
+}
+
+CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false),
+    subscriberType_(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE))
 {
 }
 
@@ -29,6 +35,8 @@ CommonEventPublishInfo::CommonEventPublishInfo(const CommonEventPublishInfo &com
     ordered_ = commonEventPublishInfo.ordered_;
     bundleName_ = commonEventPublishInfo.bundleName_;
     subscriberPermissions_ = commonEventPublishInfo.subscriberPermissions_;
+    subscriberUids_ = commonEventPublishInfo.subscriberUids_;
+    subscriberType_ = commonEventPublishInfo.subscriberType_;
 }
 
 CommonEventPublishInfo::~CommonEventPublishInfo()
@@ -75,6 +83,37 @@ std::string CommonEventPublishInfo::GetBundleName() const
     return bundleName_;
 }
 
+void CommonEventPublishInfo::SetSubscriberUid(const std::vector<int32_t> &subscriberUids)
+{
+    if (subscriberUids.size() > SUBSCRIBER_UIDS_MAX_NUM) {
+        subscriberUids_ =
+            std::vector<int32_t>(subscriberUids.begin(), subscriberUids.begin() + SUBSCRIBER_UIDS_MAX_NUM);
+        return;
+    }
+    subscriberUids_ = subscriberUids;
+}
+ 
+std::vector<int32_t> CommonEventPublishInfo::GetSubscriberUid() const
+{
+    return subscriberUids_;
+}
+ 
+void CommonEventPublishInfo::SetSubscriberType(const int32_t &subscriberType)
+{
+    if (!isSubscriberType(subscriberType)) {
+        EVENT_LOGW("subscriberType in common event Publish Info is out of range, and has already"
+            "converted to default value ALL_SUBSCRIBER_TYPE = 0");
+        subscriberType_ = static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE);
+        return;
+    }
+    subscriberType_ = subscriberType;
+}
+ 
+int32_t CommonEventPublishInfo::GetSubscriberType() const
+{
+    return subscriberType_;
+}
+
 bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
 {
     EVENT_LOGD("enter");
@@ -105,7 +144,30 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
         EVENT_LOGE("common event Publish Info  write bundleName failed");
         return false;
     }
+    // write subscriberUids
+    if (!parcel.WriteInt32Vector(subscriberUids_)) {
+        EVENT_LOGE("common event Publish Info write subscriberUids failed");
+        return false;
+    }
+    
+    // write subscriberType
+    if (!parcel.WriteInt32(subscriberType_)) {
+        EVENT_LOGE("common event Publish Info write subscriberType failed");
+        return false;
+    }
     return true;
+}
+
+bool CommonEventPublishInfo::isSubscriberType(int32_t subscriberType)
+{
+    switch (subscriberType) {
+        case static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE):
+            return true;
+        case static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE):
+            return true;
+        default:
+            return false;
+    }
 }
 
 bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
@@ -128,7 +190,13 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
     sticky_ = parcel.ReadBool();
     // read bundleName
     bundleName_ = Str16ToStr8(parcel.ReadString16());
-
+    // read subscriberUids
+    if (!parcel.ReadInt32Vector(&subscriberUids_)) {
+        EVENT_LOGE("ReadFromParcel read subscriberUids error");
+        return false;
+    }
+    // read subscriberType
+    subscriberType_ = parcel.ReadInt32();
     return true;
 }
 

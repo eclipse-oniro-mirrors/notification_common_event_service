@@ -86,7 +86,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 
     std::string action = data.GetWant().GetAction();
     bool IsPublishAllowed =
-        DelayedSingleton<CommonEventPermissionManager>::GetInstance()->IsPublishAllowed(action, uid);
+        DelayedSingleton<CommonEventPermissionManager>::GetInstance()->IsPublishAllowed(action, uid, callerToken);
     if (!IsPublishAllowed) {
         EVENT_LOGE("Publish event = %{public}s not allowed uid = %{public}d.", action.c_str(), uid);
         return false;
