@@ -43,7 +43,12 @@ std::shared_ptr<CommonEvent> CommonEvent::GetInstance()
     if (instance_ == nullptr) {
         std::lock_guard<std::mutex> lock(instanceMutex_);
         if (instance_ == nullptr) {
-            instance_ = std::make_shared<CommonEvent>();
+            auto commonEvent = std::make_shared<CommonEvent>();
+            if (commonEvent == nullptr) {
+                EVENT_LOGE("Failed to create CommonEvent");
+                return nullptr;
+            }
+            instance_ = commonEvent;
         }
     }
     return instance_;
@@ -167,7 +172,6 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
         EVENT_LOGE("the commonEventProxy is null");
         return ERR_NOTIFICATION_CESM_ERROR;
     }
-    DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
     sptr<IRemoteObject> commonEventListener = nullptr;
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
     if (subscribeState == INITIAL_SUBSCRIPTION) {
@@ -369,6 +373,9 @@ sptr<ICommonEvent> CommonEvent::GetCommonEventProxy()
         EVENT_LOGE("Failed to get COMMON Event Manager's proxy");
         return nullptr;
     }
+
+    auto commonEventDeathRecipient = DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+    commonEventDeathRecipient->SubscribeSAManager();
     return proxy;
 }
 

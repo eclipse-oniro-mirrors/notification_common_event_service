@@ -66,18 +66,20 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     subscribeInfo.SetDeviceId(stringData);
     std::shared_ptr<EventFwk::TestSubscriber> subscriber =
         std::make_shared<EventFwk::TestSubscriber>(subscribeInfo);
-    subscriber->SetCode(code);
-    subscriber->GetCode();
-    subscriber->SetData(stringData);
-    subscriber->GetData();
-    subscriber->SetCodeAndData(code, stringData);
-    subscriber->AbortCommonEvent();
-    subscriber->ClearAbortCommonEvent();
-    subscriber->GetAbortCommonEvent();
-    subscriber->GoAsyncCommonEvent();
-    subscriber->GetSubscribeInfo();
-    subscriber->IsOrderedCommonEvent();
-    subscriber->IsStickyCommonEvent();
+    if (subscriber != nullptr) {
+        subscriber->SetCode(code);
+        subscriber->GetCode();
+        subscriber->SetData(stringData);
+        subscriber->GetData();
+        subscriber->SetCodeAndData(code, stringData);
+        subscriber->AbortCommonEvent();
+        subscriber->ClearAbortCommonEvent();
+        subscriber->GetAbortCommonEvent();
+        subscriber->GoAsyncCommonEvent();
+        subscriber->GetSubscribeInfo();
+        subscriber->IsOrderedCommonEvent();
+        subscriber->IsStickyCommonEvent();
+    }
     commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
     // test PublishCommonEvent and four paramter
     commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber, code, code);

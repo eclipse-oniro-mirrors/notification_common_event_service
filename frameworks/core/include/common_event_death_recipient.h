@@ -29,19 +29,20 @@ namespace EventFwk {
 class CommonEventDeathRecipient : public DelayedSingleton<CommonEventDeathRecipient> {
 public:
     CommonEventDeathRecipient() = default;
-    ~CommonEventDeathRecipient();
+
+    ~CommonEventDeathRecipient() = default;
 
     void SubscribeSAManager();
 private:
     class SystemAbilityStatusChangeListener : public SystemAbilityStatusChangeStub {
     public:
         SystemAbilityStatusChangeListener();
-        ~SystemAbilityStatusChangeListener() = default;
+        ~SystemAbilityStatusChangeListener();
         void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
         void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
-    private:
+    public:
         bool isSAOffline_ = false;
-        std::mutex mutex_;
+    private:
         std::shared_ptr<ffrt::queue> queue_ = nullptr;
     };
 
