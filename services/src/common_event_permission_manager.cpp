@@ -28,7 +28,65 @@ namespace OHOS {
 namespace EventFwk {
 constexpr size_t REVERSE = 3;
 
-static const std::unordered_map<std::string, std::vector<int32_t>> COMMON_EVENT_MAP_PUBLISHER;
+constexpr int32_t PHONE_UID = 1001;
+constexpr int32_t WIFI_UID = 1010;
+constexpr int32_t CONNECT_UID = 1099;
+constexpr int32_t BOOT_UID = 1101;
+constexpr int32_t TIME_UID = 3013;
+constexpr int32_t ACCOUNT_UID = 3058;
+constexpr int32_t TIME_TICK_UID = 3819;
+constexpr int32_t BMS_UID = 5523;
+constexpr int32_t POWER_UID = 5528;
+
+static const std::unordered_map<std::string, std::vector<int32_t>> COMMON_EVENT_MAP_PUBLISHER {
+    {CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED, {BOOT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_SWITCHED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_UNLOCKED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_ADDED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_REMOVED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_BACKGROUND, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_FOREGROUND, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_STOPPING, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_STOPPED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_HWID_TOKEN_INVALID, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_TOKEN_INVALID, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_HWID_LOGOFF, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOFF, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_USER_INFO_UPDATED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_HWID_LOGIN, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_HWID_LOGOUT, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT, {ACCOUNT_UID}},
+    {CommonEventSupport::COMMON_EVENT_WIFI_POWER_STATE, {WIFI_UID}},
+    {CommonEventSupport::COMMON_EVENT_WIFI_CONN_STATE, {WIFI_UID}},
+    {CommonEventSupport::COMMON_EVENT_AIRPLANE_MODE_CHANGED, {CONNECT_UID}},
+    {CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE, {CONNECT_UID}},
+    {CommonEventSupport::COMMON_EVENT_HTTP_PROXY_CHANGE, {CONNECT_UID}},
+    {CommonEventSupport::COMMON_EVENT_TIME_CHANGED, {TIME_UID, TIME_TICK_UID}},
+    {CommonEventSupport::COMMON_EVENT_LOCALE_CHANGED, {TIME_UID, TIME_TICK_UID}},
+    {CommonEventSupport::COMMON_EVENT_TIME_TICK, {TIME_UID, TIME_TICK_UID}},
+    {CommonEventSupport::COMMON_EVENT_SANDBOX_PACKAGE_ADDED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_SANDBOX_PACKAGE_REMOVED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_OVERLAY_PACKAGE_ADDED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_OVERLAY_PACKAGE_CHANGED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_SCREEN_OFF, {POWER_UID}},
+    {CommonEventSupport::COMMON_EVENT_SCREEN_ON, {POWER_UID}},
+    {CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED, {POWER_UID}},
+    {CommonEventSupport::COMMON_EVENT_CALL_STATE_CHANGED, {BMS_UID}},
+    {CommonEventSupport::COMMON_EVENT_SMS_EMERGENCY_CB_RECEIVE_COMPLETED, {PHONE_UID}},
+    {CommonEventSupport::COMMON_EVENT_SMS_WAPPUSH_RECEIVE_COMPLETED, {PHONE_UID}},
+    {CommonEventSupport::COMMON_EVENT_NITZ_TIME_CHANGED, {PHONE_UID}},
+    {CommonEventSupport::COMMON_EVENT_NITZ_TIMEZONE_CHANGED, {PHONE_UID}},
+    {CommonEventSupport::COMMON_EVENT_SIM_STATE_CHANGED, {PHONE_UID}},
+    {CommonEventSupport::COMMON_EVENT_SIM_CARD_DEFAULT_MAIN_SUBSCRIPTION_CHANGED, {PHONE_UID}},
+    {CommonEventSupport::COMMON_EVENT_SET_PRIMARY_SLOT_STATUS, {PHONE_UID}},
+    {CommonEventSupport::COMMON_EVENT_CELLULAR_DATA_STATE_CHANGED, {PHONE_UID}},
+};
 
 static const std::unordered_map<std::string, std::pair<PermissionState, std::vector<std::string>>> COMMON_EVENT_MAP {
     {CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED,
@@ -150,6 +208,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     },
     {CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.GET_BUNDLE_RESOURCES"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED,
+        {PermissionState::DEFAULT, {"ohos.permission.GET_NETWORK_INFO"}}
     },
 };
 

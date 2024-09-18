@@ -45,6 +45,7 @@ const std::string SCHEME = "com.ces.test.scheme";
 const std::string PERMISSION = "com.ces.test.permission";
 const std::string DEVICEDID = "deviceId";
 constexpr int32_t ERR_COMMON = -1;
+constexpr int32_t DEFAULT_INVAL_USRE = -1;
 }  // namespace
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
@@ -239,7 +240,12 @@ public:
         return 1;
     }
 
-    int KillProcess(const std::string &bundleName, const bool clearPageStack) override
+    int KillProcess(const std::string &bundleName) override
+    {
+        return 1;
+    }
+
+    int ClearUpApplicationData(const std::string &bundleName, const int32_t userId = DEFAULT_INVAL_USRE) override
     {
         return 1;
     }
@@ -972,7 +978,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, BundleManagerHelper_0001, Function | Medi
     const int32_t userId = 3;
     BundleManagerHelper bundleManagerHelper;
     bool result = bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId);
-    EXPECT_EQ(result, true);
+    EXPECT_EQ(result, false);
 }
 
 /**

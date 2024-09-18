@@ -143,8 +143,9 @@ bool CommonEventManagerService::PublishCommonEvent(const CommonEventData &event,
         return false;
     }
 
-    if (!AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID())) {
-        EVENT_LOGE("Only sa can publish common event as proxy.");
+    auto callingUid = IPCSkeleton::GetCallingUid();
+    if (callingUid != FOUNDATION_UID) {
+        EVENT_LOGE("Only foundation can publish common event as proxy uid = %{public}d.", callingUid);
         return false;
     }
 
@@ -195,7 +196,10 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
             EVENT_LOGE("innerCommonEventManager not exist");
             return;
         }
-        std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
+        std::string bundleName = "";
+        if (!AccessTokenHelper::VerifyNativeToken(clientToken)) {
+            bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(uid);
+        }
         sptr<CommonEventManagerService> commonEventManagerService = weakThis.promote();
         if (commonEventManagerService == nullptr) {
             EVENT_LOGE("CommonEventManager not exist");
@@ -244,8 +248,11 @@ int32_t CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
 
     auto callingUid = IPCSkeleton::GetCallingUid();
     auto callingPid = IPCSkeleton::GetCallingPid();
-    std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    std::string bundleName = "";
+    if (!AccessTokenHelper::VerifyNativeToken(callerToken)) {
+        bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
+    }
     std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
     int64_t startTime = SystemTime::GetNowSysTime();
     std::function<void()> subscribeCommonEventFunc = [wp,

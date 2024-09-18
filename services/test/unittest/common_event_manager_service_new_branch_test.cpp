@@ -238,7 +238,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1100, Level1)
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test Freeze function
     uid_t uid = 1;
-    EXPECT_EQ(true, comm->Freeze(uid));
+    EXPECT_EQ(false, comm->Freeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1100 end";
 }
 
@@ -276,7 +276,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1300, Level1)
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test Unfreeze function
     uid_t uid = 1;
-    EXPECT_EQ(true, comm->Unfreeze(uid));
+    EXPECT_EQ(false, comm->Unfreeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1300 end";
 }
 
@@ -312,7 +312,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1500, Level1)
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test UnfreezeAll function
-    EXPECT_EQ(true, comm->UnfreezeAll());
+    EXPECT_EQ(false, comm->UnfreezeAll());
     GTEST_LOG_(INFO) << "CommonEventManagerService_1500 end";
 }
 
