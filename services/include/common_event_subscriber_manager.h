@@ -44,7 +44,8 @@ struct EventSubscriberRecord {
           freezeTime(0)
     {}
 
-    bool operator<(const EventSubscriberRecord &other) const {
+    bool operator<(const EventSubscriberRecord &other) const
+    {
         if (commonEventListener == nullptr) {
             EVENT_LOGE("commonEventListener is null");
             return false;
