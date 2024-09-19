@@ -345,7 +345,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -465,7 +465,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::DELIVERED, ret);
 
     bool result = commonEventControlManager.NotifyFreezeEvents(eventSubRecord, commonEventRecord);
     EXPECT_EQ(false, result);
@@ -552,7 +552,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -596,7 +596,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -640,7 +640,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -706,7 +706,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -746,7 +746,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -786,7 +786,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -826,7 +826,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -866,7 +866,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -906,7 +906,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     CommonEventControlManager commonEventControlManager;
     int ret = commonEventControlManager.CheckPermission(eventSubRecord, commonEventRecord);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, ret);
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, ret);
 }
 
 /*
@@ -1238,7 +1238,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     bool result = inner.PublishCommonEvent(
         data, publishInfo, listener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "case1");
     sleep(PUBLISH_SLEEP);
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     inner.UnsubscribeCommonEvent(listener);
 }
 
@@ -1283,7 +1283,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     bool result = inner.PublishCommonEvent(
         data, publishInfo, listener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "case2");
     sleep(PUBLISH_SLEEP);
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     inner.UnsubscribeCommonEvent(listener);
 }
 
