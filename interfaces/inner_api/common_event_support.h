@@ -1339,18 +1339,18 @@ public:
     * This is a protected common event that can only be sent by system.
     */
     static const std::string COMMON_EVENT_DISPOSED_RULE_DELETED;
-
-    /**
-    * This common event means that the second mount is ready.
-    * This is a protected common event that can only be sent by system.
-    */
-    static const std::string COMMON_EVENT_SECOND_MOUNTED;
     
     /**
     * This common event means that vpn connection status has been changed.
     * This is a protected common event that can only be sent by system.
     */
     static const std::string COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED;
+    
+    /**
+    * This common event means that the second mount is ready.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SECOND_MOUNTED;
 
 public:
     CommonEventSupport();
