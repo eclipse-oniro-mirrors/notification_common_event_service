@@ -1477,17 +1477,17 @@ const std::string CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_ADDED = "usual.
 const std::string CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_DELETED = "usual.event.DISPOSED_RULE_DELETED";
 
 /**
- * Indicates that the second mount is ready.
- * This is a protected common event that can only be sent by system.
- */
-const std::string CommonEventSupport::COMMON_EVENT_SECOND_MOUNTED = "usual.event.SECOND_MOUNTED";
-
-/**
  * This common event means that vpn connection status has been changed.
  * This is a protected common event that can only be sent by system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED =
     "usual.event.VPN_CONNECTION_STATUS_CHANGED";
+
+/**
+ * Indicates that the second mount is ready.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SECOND_MOUNTED = "usual.event.SECOND_MOUNTED";
 
 CommonEventSupport::CommonEventSupport()
 {
@@ -2815,18 +2815,18 @@ void CommonEventSupport::Init()
     * This is a protected common event that can only be sent by system.
     */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISPOSED_RULE_DELETED);
-
-    /**
-     * Indicates that the second mount is ready.
-     * This is a protected common event that can only be sent by system.
-     */
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SECOND_MOUNTED);
     
     /**
     * This common event means that vpn connection status has been changed.
     * This is a protected common event that can only be sent by system.
     */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED);
+
+    /**
+     * Indicates that the second mount is ready.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SECOND_MOUNTED);
     return;
 }
 
