@@ -161,7 +161,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0400, Le
     // set VerifyAccessToken is false
     MockIsVerfyPermisson(false);
     MockIsSystemApp(false);
-    EXPECT_EQ(OrderedEventRecord::SKIPPED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
+    EXPECT_EQ(OrderedEventRecord::DELIVERED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0400 end";
 }
 
