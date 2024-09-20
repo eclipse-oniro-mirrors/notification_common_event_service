@@ -467,8 +467,8 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_01
     // make common event data
     CommonEventData data;
     data.SetWant(want);
-    data.SetCode(INITCODE);
-    data.SetData(INNITDATA);
+    data.SetCode(CHANGECODE);
+    data.SetData(CHANGEDATA);
 
     // make publish info
     CommonEventPublishInfo publishInfo;
