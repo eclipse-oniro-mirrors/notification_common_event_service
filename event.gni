@@ -53,6 +53,7 @@ declare_args() {
   has_hisysevent_part = true
   common_event_service_tool_cem_enable = true
   ces_hitrace_usage = true
+  ces_config_policy_enable = true
 
   if (!defined(global_parts_info) ||
       defined(global_parts_info.account_os_account)) {
@@ -69,6 +70,11 @@ declare_args() {
   if (defined(global_parts_info) &&
       !defined(global_parts_info.hiviewdfx_hitrace)) {
     hitrace_usage = false
+  }
+
+  if (defined(global_parts_info) &&
+      !defined(global_parts_info.customization_config_policy)) {
+    ces_config_policy_enable = false
   }
 
   print("has_hisysevent_part = " + "$has_hisysevent_part")
