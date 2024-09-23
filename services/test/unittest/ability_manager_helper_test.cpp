@@ -366,8 +366,7 @@ public:
         return 1;
     }
 
-    int RegisterWindowManagerServiceHandler(const sptr<IWindowManagerServiceHandler>& handler,
-        bool animationEnabled) override
+    int RegisterWindowManagerServiceHandler(const sptr<IWindowManagerServiceHandler>& handler) override
     {
         return 1;
     }
