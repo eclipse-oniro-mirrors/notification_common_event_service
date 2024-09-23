@@ -60,9 +60,6 @@ public:
 
     bool IsSystemAPIEvent(const std::string &event);
 
-    bool IsPublishAllowed(const std::string &event, int32_t uid,
-        const Security::AccessToken::AccessTokenID &callerToken);
-
 private:
     static bool IsSensitiveEvent(const std::string &event);
     std::unordered_map<std::string, Permission> eventMap_;

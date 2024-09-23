@@ -20,6 +20,7 @@
 #include "common_event_control_manager.h"
 #include "icommon_event.h"
 #include "static_subscriber_manager.h"
+#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace EventFwk {
@@ -186,6 +187,11 @@ private:
     void SendPublishHiSysEvent(int32_t userId, const std::string &publisherName, int32_t pid, int32_t uid,
         const std::string &events, bool succeed);
     void SetSystemUserId(const uid_t &uid, EventComeFrom &comeFrom, int32_t &userId);
+    bool GetJsonFromFile(const char *path, nlohmann::json &root);
+    bool GetJsonByFilePath(const char *filePath, std::vector<nlohmann::json> &roots);
+    bool GetConfigJson(const std::string &keyCheck, nlohmann::json &configJson) const;
+    void getCcmPublishControl();
+    bool IsPublishAllowed(const std::string &event, int32_t uid);
 
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;
@@ -194,6 +200,8 @@ private:
     time_t sysEventTime = 0;
     std::string supportCheckSaPermission_ = "false";
     std::atomic<int> subCount = 0;
+    std::unordered_map<std::string, std::vector<int32_t>> publishControlMap_;
+    std::vector<nlohmann::json> eventConfigJson_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
