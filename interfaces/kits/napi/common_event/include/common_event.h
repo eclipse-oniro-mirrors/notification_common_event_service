@@ -221,6 +221,7 @@ public:
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
     napi_env GetEnv();
     unsigned long long GetID();
+    std::mutex& GetRefMutex();
 
 private:
     napi_env env_ = nullptr;
@@ -230,6 +231,7 @@ private:
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
+    std::mutex refMutex_;
 };
 
 class SubscriberInstanceWrapper {
@@ -370,6 +372,8 @@ void PaddingAsyncCallbackInfoFinish(const napi_env &env, const size_t &argc,
 napi_value FinishCommonEvent(napi_env env, napi_callback_info info);
 
 std::shared_ptr<SubscriberInstance> GetSubscriber(const napi_env &env, const napi_value &value);
+
+std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper *wrapper);
 
 napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&argv)[SUBSCRIBE_MAX_PARA],
     std::shared_ptr<SubscriberInstance> &subscriber, napi_ref &callback);

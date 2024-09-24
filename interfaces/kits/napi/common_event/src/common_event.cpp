@@ -224,20 +224,14 @@ void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &t
     tsfn_ = tsfn;
 }
 
+std::mutex& SubscriberInstance::GetRefMutex()
+{
+    return refMutex_;
+}
+
 void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 {
-    EVENT_LOGD("OnReceiveEvent start");
-    CommonEventDataWorker *commonEventDataWorker = new (std::nothrow) CommonEventDataWorker();
-    if (commonEventDataWorker == nullptr) {
-        EVENT_LOGE("commonEventDataWorker is null");
-        return;
-    }
-    commonEventDataWorker->want = data.GetWant();
-    EVENT_LOGD("OnReceiveEvent() action: %{public}s.", data.GetWant().GetAction().c_str());
-    commonEventDataWorker->code = data.GetCode();
-    commonEventDataWorker->data = data.GetData();
-    commonEventDataWorker->ref = ref_;
-    commonEventDataWorker->valid = valid_;
+    EVENT_LOGD("OnReceiveEvent start action: %{public}s.", data.GetWant().GetAction().c_str());
 
     if (this->IsOrderedCommonEvent()) {
         EVENT_LOGD("IsOrderedCommonEvent is true");
@@ -251,8 +245,19 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         }
     }
     std::lock_guard<std::mutex> lock(envMutex_);
-    commonEventDataWorker->env = env_;
     if (env_ != nullptr && tsfn_ != nullptr) {
+        CommonEventDataWorker *commonEventDataWorker = new (std::nothrow) CommonEventDataWorker();
+        if (commonEventDataWorker == nullptr) {
+            EVENT_LOGE("commonEventDataWorker is null");
+            return;
+        }
+        commonEventDataWorker->want = data.GetWant();
+        commonEventDataWorker->code = data.GetCode();
+        commonEventDataWorker->env = env_;
+        commonEventDataWorker->data = data.GetData();
+        commonEventDataWorker->valid = valid_;
+        std::lock_guard<std::mutex> lock(refMutex_);
+        commonEventDataWorker->ref = ref_;
         napi_acquire_threadsafe_function(tsfn_);
         napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
@@ -1039,6 +1044,21 @@ std::shared_ptr<SubscriberInstance> GetSubscriber(const napi_env &env, const nap
         return nullptr;
     }
 
+    return GetSubscriberByWrapper(wrapper);
+}
+
+std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper *wrapper)
+{
+    if (wrapper->GetSubscriber() == nullptr) {
+        EVENT_LOGE("subscriber is null");
+        return nullptr;
+    }
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (auto subscriberInstance : subscriberInstances) {
+        if (subscriberInstance.first.get() == wrapper->GetSubscriber().get()) {
+            return subscriberInstance.first;
+        }
+    }
     return wrapper->GetSubscriber();
 }
 
@@ -1053,16 +1073,7 @@ napi_value GetSubscriberByUnsubscribe(
         EVENT_LOGE("subscriber is nullptr");
         return nullptr;
     }
-
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
-    for (auto subscriberInstance : subscriberInstances) {
-        if (subscriberInstance.first.get() == subscriber.get()) {
-            isFind = true;
-            subscriber = subscriberInstance.first;
-            break;
-        }
-    }
-
+    isFind = true;
     return NapiGetNull(env);
 }
 
@@ -1072,6 +1083,7 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
     std::lock_guard<std::mutex> lock(subscriberInsMutex);
     auto subscribe = subscriberInstances.find(subscriber);
     if (subscribe != subscriberInstances.end()) {
+        std::lock_guard<std::mutex> lock(subscriber->GetRefMutex());
         for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {
             if (asyncCallbackInfoSubscribe->callback != nullptr) {
                 napi_delete_reference(env, asyncCallbackInfoSubscribe->callback);
@@ -1105,25 +1117,10 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
         [](napi_env env, void *data, void *hint) {
             auto *wrapper = reinterpret_cast<SubscriberInstanceWrapper *>(data);
             EVENT_LOGD("Constructor destroy");
-            std::lock_guard<std::mutex> lock(subscriberInsMutex);
-            for (auto subscriberInstance : subscriberInstances) {
-                if (subscriberInstance.first.get() == wrapper->GetSubscriber().get()) {
-                    for (auto asyncCallbackInfo : subscriberInstance.second.asyncCallbackInfo) {
-                        if (asyncCallbackInfo->callback != nullptr) {
-                            EVENT_LOGD("Delete CommonEventSubscriberConstructor work reference.");
-                            napi_delete_reference(env, asyncCallbackInfo->callback);
-                        }
-                        delete asyncCallbackInfo;
-                        asyncCallbackInfo = nullptr;
-                    }
-                    wrapper->GetSubscriber()->SetCallbackRef(nullptr);
-                    CommonEventManager::UnSubscribeCommonEvent(subscriberInstance.first);
-                    napi_remove_env_cleanup_hook(subscriberInstance.first->GetEnv(), ClearEnvCallback,
-                        subscriberInstance.first.get());
-                    subscriberInstances.erase(subscriberInstance.first);
-                    break;
-                    EVENT_LOGD("Execution complete");
-                }
+            auto subscriber = GetSubscriberByWrapper(wrapper);
+            if (subscriber != nullptr) {
+                CommonEventManager::UnSubscribeCommonEvent(subscriber);
+                NapiDeleteSubscribe(env, subscriber);
             }
             delete wrapper;
             wrapper = nullptr;
