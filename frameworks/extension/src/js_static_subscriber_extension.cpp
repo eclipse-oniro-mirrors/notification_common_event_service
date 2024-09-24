@@ -26,6 +26,7 @@
 #include "napi/native_node_api.h"
 #include "napi_remote_object.h"
 #include "static_subscriber_stub_impl.h"
+#include <memory>
 
 namespace OHOS {
 namespace EventFwk {
@@ -194,6 +195,11 @@ void JsStaticSubscriberExtension::OnDisconnect(const AAFwk::Want& want)
     Extension::OnDisconnect(want);
 }
 
+std::weak_ptr<JsStaticSubscriberExtension> JsStaticSubscriberExtension::GetWeakPtr()
+{
+    return std::static_pointer_cast<JsStaticSubscriberExtension>(shared_from_this());
+}
+
 void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData> data)
 {
     EVENT_LOGD("%{public}s called.", __func__);
@@ -201,20 +207,24 @@ void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData
         EVENT_LOGE("handler is invalid");
         return;
     }
+    std::weak_ptr<JsStaticSubscriberExtension> wThis = GetWeakPtr();
 
-    auto task = [this, data]() {
+    auto task = [wThis, data]() {
+        std::shared_ptr<JsStaticSubscriberExtension> sThis = wThis.lock();
+        if (sThis == nullptr) {
+            return;
+        }
         if (data == nullptr) {
             EVENT_LOGE("OnReceiveEvent common event data is invalid");
             return;
         }
-        StaticSubscriberExtension::OnReceiveEvent(data);
-        if (!jsObj_) {
+        if (!sThis->jsObj_) {
             EVENT_LOGE("Not found StaticSubscriberExtension.js");
             return;
         }
 
-        AbilityRuntime::HandleScope handleScope(jsRuntime_);
-        napi_env env = jsRuntime_.GetNapiEnv();
+        AbilityRuntime::HandleScope handleScope(sThis->jsRuntime_);
+        napi_env env = sThis->jsRuntime_.GetNapiEnv();
         napi_value commonEventData = nullptr;
         napi_create_object(env, &commonEventData);
         Want want = data->GetWant();
@@ -236,7 +246,7 @@ void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData
         napi_set_named_property(env, commonEventData, "parameters", napiParams);
 
         napi_value argv[] = {commonEventData};
-        napi_value obj = jsObj_->GetNapiValue();
+        napi_value obj = sThis->jsObj_->GetNapiValue();
         if (obj == nullptr) {
             EVENT_LOGE("Failed to get StaticSubscriberExtension object");
             return;

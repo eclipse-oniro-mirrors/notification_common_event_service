@@ -22,6 +22,7 @@
 #include "native_engine/native_value.h"
 #include "runtime.h"
 #include "static_subscriber_extension.h"
+#include <memory>
 
 namespace OHOS {
 namespace EventFwk {
@@ -54,6 +55,8 @@ public:
     void OnReceiveEvent(std::shared_ptr<CommonEventData> data) override;
 
     void ExecNapiWrap(napi_env env, napi_value obj);
+
+    std::weak_ptr<JsStaticSubscriberExtension> GetWeakPtr();
 
 private:
     AbilityRuntime::JsRuntime& jsRuntime_;

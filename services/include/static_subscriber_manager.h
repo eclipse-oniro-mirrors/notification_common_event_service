@@ -116,6 +116,7 @@ private:
     bool hasInitAllowList_ = false;
     bool hasInitValidSubscribers_ = false;
     std::mutex subscriberMutex_;
+    std::mutex disableEventsMutex_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
