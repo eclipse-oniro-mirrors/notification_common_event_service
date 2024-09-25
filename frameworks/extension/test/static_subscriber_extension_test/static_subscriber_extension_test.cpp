@@ -161,7 +161,7 @@ HWTEST_F(StaticSubscriberExtensionTest, CreateAndInitContext_002, TestSize.Level
     const std::shared_ptr<OHOSApplication> application = nullptr;
     std::shared_ptr<AbilityHandler> handler = nullptr;
     const sptr<IRemoteObject> token = nullptr;
-    const std::shared_ptr<AbilityLocalRecord> record = std::make_shared<AbilityLocalRecord>(info, token);
+    const std::shared_ptr<AbilityLocalRecord> record = std::make_shared<AbilityLocalRecord>(info, token, nullptr, 0);
     auto resulft = testObject->CreateAndInitContext(record, application, handler, token);
 
     EXPECT_TRUE(resulft != nullptr);
@@ -187,7 +187,7 @@ HWTEST_F(StaticSubscriberExtensionTest, Init_001, TestSize.Level1)
     const std::shared_ptr<OHOSApplication> application = nullptr;
     std::shared_ptr<AbilityHandler> handler = nullptr;
     const sptr<IRemoteObject> token = nullptr;
-    const std::shared_ptr<AbilityLocalRecord> record = std::make_shared<AbilityLocalRecord>(info, token);
+    const std::shared_ptr<AbilityLocalRecord> record = std::make_shared<AbilityLocalRecord>(info, token, nullptr, 0);
     testObject->Init(record, application, handler, token);
 
     EXPECT_TRUE(testObject->GetContext() != nullptr);
