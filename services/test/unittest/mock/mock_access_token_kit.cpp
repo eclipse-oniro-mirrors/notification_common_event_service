@@ -69,7 +69,6 @@ ATokenTypeEnum AccessTokenKit::GetTokenTypeFlag(AccessTokenID tokenID)
 int AccessTokenKit::GetHapTokenInfo(AccessTokenID tokenID, HapTokenInfo& info)
 {
     info.dlpType = EventFwk::g_mockDlpType;
-    info.apl = EventFwk::g_mockApl;
     return 0;
 }
 } // namespace AccessToken
