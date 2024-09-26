@@ -133,6 +133,10 @@ void JsStaticSubscriberExtension::ExecNapiWrap(napi_env env, napi_value obj)
     napi_value contextObj = CreateJsStaticSubscriberExtensionContext(env, context);
     auto shellContextRef = AbilityRuntime::JsRuntime::LoadSystemModuleByEngine(
         env, "application.StaticSubscriberExtensionContext", &contextObj, ARGC_ONE);
+    if (shellContextRef == nullptr) {
+        EVENT_LOGE("Failed to get shell context reference");
+        return;
+    }
     napi_value nativeObj = shellContextRef->GetNapiValue();
     if (nativeObj == nullptr) {
         EVENT_LOGE("Failed to get context native object");
