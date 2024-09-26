@@ -1339,7 +1339,13 @@ public:
     * This is a protected common event that can only be sent by system.
     */
     static const std::string COMMON_EVENT_DISPOSED_RULE_DELETED;
-    
+
+    /**
+    * This common event means that the second mount is ready.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SECOND_MOUNTED;
+
 public:
     CommonEventSupport();
 
