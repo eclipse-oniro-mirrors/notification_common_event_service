@@ -31,6 +31,12 @@
 #include "parameters.h"
 #include "system_time.h"
 #include "want.h"
+#include <fstream>
+#include "securec.h"
+#ifdef CONFIG_POLICY_ENABLE
+#include "config_policy_utils.h"
+#endif
+
 
 namespace OHOS {
 namespace EventFwk {
@@ -39,11 +45,21 @@ const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check
 }  // namespace
 
 static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
+#ifdef CONFIG_POLICY_ENABLE
+    constexpr static const char* CONFIG_FILE = "etc/notification/common_event_config.json";
+#else
+    constexpr static const char* CONFIG_FILE = "system/etc/notification/common_event_config.json";
+#endif
 
 InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_shared<CommonEventControlManager>()),
     staticSubscriberManager_(std::make_shared<StaticSubscriberManager>())
 {
     supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_CES_CHECK_SA_PERMISSION, "false");
+    if (!GetJsonByFilePath(CONFIG_FILE, eventConfigJson_)) {
+        EVENT_LOGE("Failed to get config file.");
+    }
+
+    getCcmPublishControl();
 }
 
 constexpr char HIDUMPER_HELP_MSG[] =
@@ -68,6 +84,123 @@ const std::map<std::string, std::string> EVENT_COUNT_DISALLOW = {
 
 constexpr size_t HIDUMP_OPTION_MAX_SIZE = 2;
 
+bool InnerCommonEventManager::GetJsonFromFile(const char *path, nlohmann::json &root)
+{
+    std::ifstream file(path);
+    root = nlohmann::json::parse(file);
+    if (root.is_null() || root.empty() || !root.is_object()) {
+        EVENT_LOGE("GetJsonFromFile fail as invalid root.");
+        return false;
+    }
+    return true;
+}
+
+bool InnerCommonEventManager::GetJsonByFilePath(const char *filePath, std::vector<nlohmann::json> &roots)
+{
+    EVENT_LOGD("Get json value by file path.");
+    if (filePath == nullptr) {
+        EVENT_LOGE("GetJsonByFilePath fail as filePath is null.");
+        return false;
+    }
+    bool ret = false;
+    nlohmann::json localRoot;
+#ifdef CONFIG_POLICY_ENABLE
+    CfgFiles *cfgFiles = GetCfgFiles(filePath);
+    if (cfgFiles == nullptr) {
+        EVENT_LOGE("Not found filePath:%{public}s.", filePath);
+        return false;
+    }
+
+    for (int32_t i = 0; i <= MAX_CFG_POLICY_DIRS_CNT - 1; i++) {
+        if (cfgFiles->paths[i] && *(cfgFiles->paths[i]) != '\0' && GetJsonFromFile(cfgFiles->paths[i], localRoot)) {
+            EVENT_LOGE("Config file path:%{public}s.", cfgFiles->paths[i]);
+            roots.push_back(localRoot);
+            ret = true;
+        }
+    }
+    FreeCfgFiles(cfgFiles);
+#else
+    EVENT_LOGD("Use default config file path:%{public}s.", filePath);
+    ret = GetJsonFromFile(filePath, localRoot);
+    if (ret) {
+        roots.push_back(localRoot);
+    }
+#endif
+    return ret;
+}
+
+bool InnerCommonEventManager::GetConfigJson(const std::string &keyCheck, nlohmann::json &configJson) const
+{
+    if (eventConfigJson_.size() <= 0) {
+        EVENT_LOGE("Failed to get config json cause empty configJsons.");
+        return false;
+    }
+    bool ret = false;
+    std::for_each(eventConfigJson_.rbegin(), eventConfigJson_.rend(),
+        [&keyCheck, &configJson, &ret](const nlohmann::json &json) {
+        if (keyCheck.find("/") == std::string::npos && json.contains(keyCheck)) {
+            configJson = json;
+            ret = true;
+        }
+
+        if (keyCheck.find("/") != std::string::npos) {
+            nlohmann::json::json_pointer keyCheckPoint(keyCheck);
+            if (json.contains(keyCheckPoint)) {
+                configJson = json;
+                ret = true;
+            }
+        }
+    });
+    if (!ret) {
+        EVENT_LOGE("Cannot find keyCheck: %{public}s in configJsons.", keyCheck.c_str());
+    }
+    return ret;
+}
+
+void InnerCommonEventManager::getCcmPublishControl()
+{
+    nlohmann::json root;
+    std::string JsonPoint = "/";
+    JsonPoint.append("publishControl");
+    if (!GetConfigJson(JsonPoint, root)) {
+        EVENT_LOGE("Failed to get JsonPoint CCM config file.");
+        return;
+    }
+    if (!root.contains("publishControl")) {
+        EVENT_LOGE("not found jsonKey publishControl");
+        return;
+    }
+    // 访问数据
+    const nlohmann::json& publish_control = root["publishControl"];
+    if (publish_control.is_null() || publish_control.empty()) {
+        EVENT_LOGE("GetCcm publishControl failed as invalid publishControl json.");
+        return;
+    }
+    for (const auto& item : publish_control) {
+        std::string event_name = item["eventName"];
+        const nlohmann::json& uid_list = item["uidList"];
+        std::vector<int> uids;
+        for (const auto& uid : uid_list) {
+            uids.push_back(uid);
+        }
+        publishControlMap_[event_name] = uids;
+    }
+}
+
+bool InnerCommonEventManager::IsPublishAllowed(const std::string &event, int32_t uid)
+{
+    if (publishControlMap_.empty()) {
+        EVENT_LOGI("yzy publishControlMap event no need control");
+        return true;
+    }
+    auto it = publishControlMap_.find(event);
+    if (it != publishControlMap_.end()) {
+        EVENT_LOGI("yzy publishControlMap event = %{public}s,uid = %{public}d", event.c_str(), it->second[0]);
+        return std::find(it->second.begin(), it->second.end(), uid) != it->second.end();
+    }
+    return true;
+}
+
 bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId, const std::string &bundleName,
@@ -85,9 +218,8 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     }
 
     std::string action = data.GetWant().GetAction();
-    bool IsPublishAllowed =
-        DelayedSingleton<CommonEventPermissionManager>::GetInstance()->IsPublishAllowed(action, uid, callerToken);
-    if (!IsPublishAllowed) {
+    bool isAllowed = IsPublishAllowed(action, uid);
+    if (!isAllowed) {
         EVENT_LOGE("Publish event = %{public}s not allowed uid = %{public}d.", action.c_str(), uid);
         return false;
     }
