@@ -14,6 +14,7 @@
  */
 
 #include "js_static_subscriber_extension.h"
+#include <memory>
 
 #include "ability_info.h"
 #include "ability_handler.h"
@@ -26,7 +27,6 @@
 #include "napi/native_node_api.h"
 #include "napi_remote_object.h"
 #include "static_subscriber_stub_impl.h"
-#include <memory>
 
 namespace OHOS {
 namespace EventFwk {
