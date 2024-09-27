@@ -87,14 +87,14 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
     }
 
     if (eventRecordInfo.uid != SAMGR_UID) {
-        for (int i = 0; i < events.size(); i++) {
-            bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(events[i]);
+        for (auto event : events) {
+            bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(event);
             if (!isSystemEvent && eventSubscribeInfo->GetPermission().empty() &&
                 eventSubscribeInfo->GetPublisherBundleName().empty() && eventSubscribeInfo->GetPublisherUid() == 0) {
                 EVENT_LOGW("Subscribe size = %{public}zu, %{public}s without any restrict subid = %{public}s, bundle = "
                            "%{public}s",
                     events.size(),
-                    events[i].c_str(),
+                    event.c_str(),
                     eventRecordInfo.subId.c_str(),
                     eventRecordInfo.bundleName.c_str());
             }
