@@ -83,10 +83,6 @@ bool StaticSubscriberManager::InitValidSubscribers()
     if (!validSubscribers_.empty()) {
         validSubscribers_.clear();
     }
-    std::lock_guard<std::mutex> lock(disableEventsMutex_);
-    if (!disableEvents_.empty()) {
-        disableEvents_.clear();
-    }
     std::set<std::string> bundleList;
     DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->
         QueryStaticSubscriberStateData(disableEvents_, bundleList);
@@ -112,7 +108,10 @@ bool StaticSubscriberManager::InitValidSubscribers()
         hasInitValidSubscribers_ = true;
         return true;
     }
-
+    std::lock_guard<std::mutex> lock(disableEventsMutex_);
+    if (!disableEvents_.empty()) {
+        disableEvents_.clear();
+    }
     for (auto bundleName : bundleList) {
         auto finder = staticSubscribers_.find(bundleName);
         if (finder != staticSubscribers_.end()) {

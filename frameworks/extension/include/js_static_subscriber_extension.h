@@ -15,6 +15,7 @@
 
 #ifndef OHOS_COMMON_EVENT_SERVICE_JS_STATIC_SUBSCRIBER_EXTENSION_H
 #define OHOS_COMMON_EVENT_SERVICE_JS_STATIC_SUBSCRIBER_EXTENSION_H
+#include <memory>
 
 #include "common_event_data.h"
 #include "js_runtime.h"
@@ -22,7 +23,6 @@
 #include "native_engine/native_value.h"
 #include "runtime.h"
 #include "static_subscriber_extension.h"
-#include <memory>
 
 namespace OHOS {
 namespace EventFwk {
