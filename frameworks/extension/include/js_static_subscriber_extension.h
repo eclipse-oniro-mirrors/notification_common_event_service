@@ -15,6 +15,7 @@
 
 #ifndef OHOS_COMMON_EVENT_SERVICE_JS_STATIC_SUBSCRIBER_EXTENSION_H
 #define OHOS_COMMON_EVENT_SERVICE_JS_STATIC_SUBSCRIBER_EXTENSION_H
+#include <memory>
 
 #include "common_event_data.h"
 #include "js_runtime.h"
@@ -54,6 +55,8 @@ public:
     void OnReceiveEvent(std::shared_ptr<CommonEventData> data) override;
 
     void ExecNapiWrap(napi_env env, napi_value obj);
+
+    std::weak_ptr<JsStaticSubscriberExtension> GetWeakPtr();
 
 private:
     AbilityRuntime::JsRuntime& jsRuntime_;

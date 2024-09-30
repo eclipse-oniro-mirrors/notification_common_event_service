@@ -16,6 +16,7 @@
 #include "static_subscriber_manager.h"
 
 #include <fstream>
+#include <mutex>
 #include <set>
 
 #include "ability_manager_helper.h"
@@ -82,9 +83,6 @@ bool StaticSubscriberManager::InitValidSubscribers()
     if (!validSubscribers_.empty()) {
         validSubscribers_.clear();
     }
-    if (!disableEvents_.empty()) {
-        disableEvents_.clear();
-    }
     std::set<std::string> bundleList;
     DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->
         QueryStaticSubscriberStateData(disableEvents_, bundleList);
@@ -110,7 +108,10 @@ bool StaticSubscriberManager::InitValidSubscribers()
         hasInitValidSubscribers_ = true;
         return true;
     }
-
+    std::lock_guard<std::mutex> lock(disableEventsMutex_);
+    if (!disableEvents_.empty()) {
+        disableEvents_.clear();
+    }
     for (auto bundleName : bundleList) {
         auto finder = staticSubscribers_.find(bundleName);
         if (finder != staticSubscribers_.end()) {
@@ -129,6 +130,7 @@ bool StaticSubscriberManager::InitValidSubscribers()
 bool StaticSubscriberManager::IsDisableEvent(const std::string &bundleName, const std::string &event)
 {
     EVENT_LOGD("Called.");
+    std::lock_guard<std::mutex> lock(disableEventsMutex_);
     auto bundleIt = disableEvents_.find(bundleName);
     if (bundleIt == disableEvents_.end()) {
         return false;
@@ -387,7 +389,7 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
 void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId)
 {
     EVENT_LOGD("enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
-
+    std::lock_guard<std::mutex> lock(disableEventsMutex_);
     for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
         auto subIt = it->second.begin();
         while (subIt != it->second.end()) {
@@ -487,6 +489,7 @@ int32_t StaticSubscriberManager::UpdateDisableEvents(
     const std::string &bundleName, const std::vector<std::string> &events, bool enable)
 {
     EVENT_LOGD("Called.");
+    std::lock_guard<std::mutex> lock(disableEventsMutex_);
     auto finder = disableEvents_.find(bundleName);
     if (finder == disableEvents_.end()) {
         if (!enable) {
