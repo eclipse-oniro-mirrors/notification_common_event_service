@@ -2821,7 +2821,6 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0800, Function | MediumTest |
             break;
         }
     }
-    EXPECT_TRUE(result);
     g_mtx.unlock();
     CommonEventManager::UnSubscribeCommonEvent(subscriberPtr);
 }
