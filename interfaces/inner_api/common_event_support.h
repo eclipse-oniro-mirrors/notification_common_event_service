@@ -1352,6 +1352,12 @@ public:
     */
     static const std::string COMMON_EVENT_SECOND_MOUNTED;
 
+    /**
+    * Indicates that an application begins to restored.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_RESTORE_START;
+
 public:
     CommonEventSupport();
 
