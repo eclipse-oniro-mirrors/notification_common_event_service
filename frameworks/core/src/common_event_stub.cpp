@@ -18,6 +18,7 @@
 #include "event_log_wrapper.h"
 #include "string_ex.h"
 #include "ces_inner_error_code.h"
+#include "ces_xcollie.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -90,6 +91,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             break;
         }
         case static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT): {
+            CesXCollie cesXCollie("ces::SubscribeCommonEvent");
             std::unique_ptr<CommonEventSubscribeInfo> subscribeInfo(data.ReadParcelable<CommonEventSubscribeInfo>());
             if (!subscribeInfo) {
                 EVENT_LOGE("Failed to ReadParcelable<CommonEventSubscribeInfo>");
@@ -114,6 +116,7 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             break;
         }
         case static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNSUBSCRIBE_COMMON_EVENT): {
+            CesXCollie cesXCollie("ces::UnsubscribeCommonEvent");
             bool hasSubscriber = data.ReadBool();
             if (!hasSubscriber) {
                 EVENT_LOGE("no valid commonEventListener!");

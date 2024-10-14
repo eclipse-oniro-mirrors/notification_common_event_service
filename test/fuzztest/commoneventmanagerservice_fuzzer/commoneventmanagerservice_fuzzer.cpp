@@ -16,7 +16,6 @@
 #include "common_event_manager_service.h"
 #include "common_event_data.h"
 #include "commoneventmanagerservice_fuzzer.h"
-#include "out/rk3568/obj/third_party/musl/intermidiates/linux/musl_src_ported/include/unistd.h"
 #include "refbase.h"
 #include "fuzz_common_base.h"
 #include <string>

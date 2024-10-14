@@ -81,7 +81,7 @@ public:
         return (GetData<uint32_t>() % BOOL_MODULO_NUM) == 0;
     }
 
-    size_t const& GetSize()
+    size_t const& GetSize() const
     {
         return size_;
     }

@@ -295,7 +295,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
                     infoItem->second.size());
             }
         } else {
-            std::multiset<SubscriberRecordPtr> EventSubscribersPtr;
+            std::set<SubscriberRecordPtr> EventSubscribersPtr;
             EventSubscribersPtr.insert(record);
             eventSubscribers_[event] = EventSubscribersPtr;
         }

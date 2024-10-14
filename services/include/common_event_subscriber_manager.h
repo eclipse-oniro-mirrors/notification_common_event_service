@@ -44,7 +44,8 @@ struct EventSubscriberRecord {
           freezeTime(0)
     {}
 
-    bool operator<(const EventSubscriberRecord &other) const {
+    bool operator<(const EventSubscriberRecord &other) const
+    {
         if (commonEventListener == nullptr) {
             EVENT_LOGE("commonEventListener is null");
             return false;
@@ -65,18 +66,6 @@ struct FrozenEventRecord {
     FrozenEventRecord() : subscriberRecordPtr(nullptr)
     {}
 };
-
-inline bool operator<(const std::shared_ptr<EventSubscriberRecord> &a, const std::shared_ptr<EventSubscriberRecord> &b)
-{
-    if (a == nullptr || a->eventSubscribeInfo == nullptr) {
-        return true;
-    }
-
-    if (b == nullptr || b->eventSubscribeInfo == nullptr) {
-        return false;
-    }
-    return a->eventSubscribeInfo->GetPriority() > b->eventSubscribeInfo->GetPriority();
-}
 
 using SubscriberRecordPtr = std::shared_ptr<EventSubscriberRecord>;
 using SubscribeInfoPtr = std::shared_ptr<CommonEventSubscribeInfo>;
@@ -255,7 +244,7 @@ private:
 private:
     std::mutex mutex_;
     sptr<IRemoteObject::DeathRecipient> death_;
-    std::map<std::string, std::multiset<SubscriberRecordPtr>> eventSubscribers_;
+    std::map<std::string, std::set<SubscriberRecordPtr>> eventSubscribers_;
     std::vector<SubscriberRecordPtr> subscribers_;
     std::map<uid_t, FrozenRecords> frozenEvents_;
     const time_t FREEZE_EVENT_TIMEOUT = 30; // How long we keep records. Unit: second
