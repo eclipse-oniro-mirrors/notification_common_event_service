@@ -1489,6 +1489,12 @@ const std::string CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED
  */
 const std::string CommonEventSupport::COMMON_EVENT_SECOND_MOUNTED = "usual.event.SECOND_MOUNTED";
 
+/**
+ * Indicates that an application begins to restored.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_RESTORE_START = "usual.event.RESTORE_START";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2827,6 +2833,12 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SECOND_MOUNTED);
+
+    /**
+     * Indicates that an application begins to restored.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RESTORE_START);
     return;
 }
 
