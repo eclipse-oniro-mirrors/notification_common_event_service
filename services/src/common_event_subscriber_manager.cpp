@@ -296,8 +296,8 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
         int result = HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::FRAMEWORK, "PROCESS_KILL",
             HiviewDFX::HiSysEvent::EventType::FAULT, "PID", killedPid, "PROCESS_NAME",
             record->eventRecordInfo.bundleName, "MSG", CES_REGISTER_EXCEED_LIMIT);
-        EVENT_LOGE("hisysevent write result=%{public}d, send event [FRAMEWORK,PROCESS_KILL], pid=%{public}d,"
-            " bundleName=%{public}s, msg=%{public}s", result, killedPid, record->eventRecordInfo.bundleName.c_str(),
+        EVENT_LOGW("hisysevent write result=%{public}d, send event [FRAMEWORK,PROCESS_KILL], pid=%{public}d,"
+            " processName=%{public}s, msg=%{public}s", result, killedPid, record->eventRecordInfo.bundleName.c_str(),
             CES_REGISTER_EXCEED_LIMIT);
     }
 
