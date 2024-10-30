@@ -190,12 +190,12 @@ void InnerCommonEventManager::getCcmPublishControl()
 bool InnerCommonEventManager::IsPublishAllowed(const std::string &event, int32_t uid)
 {
     if (publishControlMap_.empty()) {
-        EVENT_LOGI("PublishControlMap event no need control");
+        EVENT_LOGD("PublishControlMap event no need control");
         return true;
     }
     auto it = publishControlMap_.find(event);
     if (it != publishControlMap_.end()) {
-        EVENT_LOGI("PublishControlMap event = %{public}s,uid = %{public}d", event.c_str(), it->second[0]);
+        EVENT_LOGD("PublishControlMap event = %{public}s,uid = %{public}d", event.c_str(), it->second[0]);
         return std::find(it->second.begin(), it->second.end(), uid) != it->second.end();
     }
     return true;

@@ -28,6 +28,17 @@ namespace OHOS {
 namespace EventFwk {
 constexpr size_t REVERSE = 3;
 
+constexpr int32_t PHONE_UID = 1001;
+constexpr int32_t WIFI_UID = 1010;
+constexpr int32_t CONNECT_UID = 1099;
+constexpr int32_t BOOT_UID = 1101;
+constexpr int32_t TIME_UID = 3013;
+constexpr int32_t ACCOUNT_UID = 3058;
+constexpr int32_t TIME_TICK_UID = 3819;
+constexpr int32_t BMS_UID = 5523;
+constexpr int32_t POWER_UID = 5528;
+constexpr int32_t BROKER_UID = 5557;
+
 static const std::unordered_map<std::string, std::pair<PermissionState, std::vector<std::string>>> COMMON_EVENT_MAP {
     {CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED,
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVER_STARTUP_COMPLETED"}}
@@ -148,6 +159,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     },
     {CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.GET_BUNDLE_RESOURCES"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED,
+        {PermissionState::DEFAULT, {"ohos.permission.GET_NETWORK_INFO"}}
     },
 };
 
