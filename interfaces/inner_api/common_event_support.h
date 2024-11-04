@@ -1347,6 +1347,12 @@ public:
     static const std::string COMMON_EVENT_SECOND_MOUNTED;
 
     /**
+    * Indicates that an application begins to restored.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_RESTORE_START;
+
+    /**
     * This common event means that vpn connection status has been changed.
     * This is a protected common event that can only be sent by system.
     */
