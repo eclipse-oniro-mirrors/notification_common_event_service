@@ -553,8 +553,7 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
 
     if (!comeFrom.isSubsystem || supportCheckSaPermission_.compare("true") == 0) {
         if (AccessTokenHelper::VerifyShellToken(callerToken)) {
-            const std::string permission = "ohos.permission.PUBLISH_SYSTEM_COMMON_EVENT";
-            comeFrom.isCemShell = AccessTokenHelper::VerifyAccessToken(callerToken, permission);
+            comeFrom.isCemShell = true;
         } else {
             comeFrom.isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->CheckIsSystemAppByUid(uid);
         }
