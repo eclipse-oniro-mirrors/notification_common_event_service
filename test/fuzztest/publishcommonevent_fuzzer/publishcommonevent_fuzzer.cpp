@@ -18,24 +18,21 @@
 #include "common_event_manager.h"
 #include "common_event_support.h"
 #include "fuzz_common_base.h"
+#include <fuzzer/FuzzedDataProvider.h>
 #include <string>
 #include <vector>
 
-
-constexpr int8_t FUZZ_DATA_LEN = 3;
-
 namespace OHOS {
-constexpr size_t U32_AT_SIZE = 4;
 
-bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
+bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
     AAFwk::Want want;
     want.SetAction(EventFwk::CommonEventSupport::COMMON_EVENT_TEST_ACTION1);
     EventFwk::CommonEventData commonEventData;
     commonEventData.SetWant(want);
-    int32_t code = fuzzData.GenerateRandomInt32();
+    int32_t code = fdp->ConsumeIntegral<int32_t>();
     commonEventData.SetCode(code);
-    std::string stringData = fuzzData.GenerateRandomString();
+    std::string stringData = fdp->ConsumeRandomLengthString();
     commonEventData.SetData(stringData);
 
     EventFwk::CommonEventPublishInfo commonEventPublishInfo;
@@ -49,13 +46,10 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     EventFwk::CommonEventManager::PublishCommonEvent(commonEventData, commonEventPublishInfo);
     EventFwk::CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
 
-    if (fuzzData.GetSize() < FUZZ_DATA_LEN) {
-        EventFwk::CommonEventManager::PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
-    } else {
-        int32_t uid = fuzzData.GenerateRandomInt32();
-        EventFwk::CommonEventManager::PublishCommonEvent(
-            commonEventData, commonEventPublishInfo, subscriber, uid, code);
-    }
+    EventFwk::CommonEventManager::PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
+    int32_t uid = fdp->ConsumeIntegral<int32_t>();
+    EventFwk::CommonEventManager::PublishCommonEvent(
+        commonEventData, commonEventPublishInfo, subscriber, uid, code);
     return true;
 }
 }
@@ -64,16 +58,9 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-
-    if (size < OHOS::U32_AT_SIZE) {
-        return 0;
-    }
+    FuzzedDataProvider fdp(data, size);
     std::vector<std::string> permissions;
     NativeTokenGet(permissions);
-    OHOS::FuzzData fuzzData(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
+    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
     return 0;
 }

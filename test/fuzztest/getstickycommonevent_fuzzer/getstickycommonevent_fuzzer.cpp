@@ -16,11 +16,12 @@
 #include "getstickycommonevent_fuzzer.h"
 #include "common_event_manager.h"
 #include "fuzz_common_base.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
-    bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
+    bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     {
-        std::string event = fuzzData.GenerateRandomString();
+        std::string event = fdp->ConsumeRandomLengthString();
         EventFwk::CommonEventData commonEventData;
 
         return EventFwk::CommonEventManager::GetStickyCommonEvent(event, commonEventData);
@@ -31,10 +32,7 @@ namespace OHOS {
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-    OHOS::FuzzData fuzzData(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
     return 0;
 }
