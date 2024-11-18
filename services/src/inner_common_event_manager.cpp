@@ -422,9 +422,6 @@ void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::stri
             break;
         }
         case DumpEventType::HISTORY: {
-            if (controlPtr_) {
-                controlPtr_->DumpHistoryState(event, userId, state);
-            }
             break;
         }
         default: {
@@ -432,7 +429,6 @@ void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::stri
             DelayedSingleton<CommonEventStickyManager>::GetInstance()->DumpState(event, userId, state);
             if (controlPtr_) {
                 controlPtr_->DumpState(event, userId, state);
-                controlPtr_->DumpHistoryState(event, userId, state);
             }
             break;
         }
