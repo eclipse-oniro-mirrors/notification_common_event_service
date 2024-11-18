@@ -98,23 +98,6 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_0300, Level1)
 }
 
 /**
- * @tc.name: CommonEventControlManager_0400
- * @tc.desc: test EnqueueHistoryEventRecord function and eventRecordPtr is nullptr.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_0400, Level1)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0400 start";
-    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-        std::make_shared<CommonEventControlManager>();
-    ASSERT_NE(nullptr, commonEventControlManager);
-    std::shared_ptr<OrderedEventRecord> eventRecordPtr = nullptr;
-    bool hasLastSubscribe = true;
-    commonEventControlManager->EnqueueHistoryEventRecord(eventRecordPtr, hasLastSubscribe);
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0400 end";
-}
-
-/**
  * @tc.name: CommonEventControlManager_0500
  * @tc.desc: test NotifyOrderedEvent function and eventRecordPtr is nullptr.
  * @tc.type: FUNC
@@ -512,108 +495,6 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2400, Level1)
     commonEventControlManager->unorderedEventQueue_.emplace_back(record);
     commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_2400 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_2500
- * @tc.desc: test GetHistoryEventRecords function.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2500, Level1)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2500 start";
-    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-        std::make_shared<CommonEventControlManager>();
-    ASSERT_NE(nullptr, commonEventControlManager);
-    std::string event = "";
-    int32_t userId = ALL_USER;
-    std::list<HistoryEventRecord> records;
-    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2500 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_2600
- * @tc.desc: test GetHistoryEventRecords function.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2600, Level1)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2600 start";
-    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-        std::make_shared<CommonEventControlManager>();
-    ASSERT_NE(nullptr, commonEventControlManager);
-    std::string event = "";
-    int32_t userId = ALL_USER - 1;
-    std::list<HistoryEventRecord> records;
-    HistoryEventRecord historyEventRecord;
-    historyEventRecord.userId = ALL_USER - 1;
-    commonEventControlManager->historyEventRecords_.emplace_back();
-    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2600 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_2700
- * @tc.desc: test GetHistoryEventRecords function.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2700, Level1)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2700 start";
-    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-        std::make_shared<CommonEventControlManager>();
-    ASSERT_NE(nullptr, commonEventControlManager);
-    std::string event = "";
-    int32_t userId = ALL_USER + 1;
-    std::list<HistoryEventRecord> records;
-    HistoryEventRecord historyEventRecord;
-    historyEventRecord.userId = ALL_USER + 2;
-    commonEventControlManager->historyEventRecords_.emplace_back();
-    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2700 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_2800
- * @tc.desc: test GetHistoryEventRecords function.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2800, Level1)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2800 start";
-    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-        std::make_shared<CommonEventControlManager>();
-    ASSERT_NE(nullptr, commonEventControlManager);
-    std::string event = "aa";
-    int32_t userId = ALL_USER + 1;
-    std::list<HistoryEventRecord> records;
-    HistoryEventRecord historyEventRecord;
-    historyEventRecord.userId = ALL_USER + 2;
-    commonEventControlManager->historyEventRecords_.emplace_back();
-    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2800 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_2900
- * @tc.desc: test GetHistoryEventRecords function.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2900, Level1)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2900 start";
-    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
-        std::make_shared<CommonEventControlManager>();
-    ASSERT_NE(nullptr, commonEventControlManager);
-    std::string event = "aa";
-    int32_t userId = ALL_USER + 1;
-    std::list<HistoryEventRecord> records;
-    HistoryEventRecord historyEventRecord;
-    historyEventRecord.userId = ALL_USER + 1;
-    commonEventControlManager->historyEventRecords_.emplace_back();
-    commonEventControlManager->GetHistoryEventRecords(event, userId, records);
-    GTEST_LOG_(INFO) << "CommonEventControlManager_2900 end";
 }
 
 }
