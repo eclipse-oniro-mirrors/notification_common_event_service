@@ -17,12 +17,10 @@
 #include "common_event_listener.h"
 #include "commoneventproxy_fuzzer.h"
 #include "fuzz_common_base.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
-namespace {
-    constexpr size_t U32_AT_SIZE = 4;
-}
-bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
+bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
     sptr<IRemoteObject> object = nullptr;
     EventFwk::CommonEventProxy commonEventProxy(object);
@@ -38,14 +36,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-
-    if (size < OHOS::U32_AT_SIZE) {
-        return 0;
-    }
-    OHOS::FuzzData fuzzData(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
     return 0;
 }

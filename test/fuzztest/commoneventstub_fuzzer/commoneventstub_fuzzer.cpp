@@ -17,16 +17,14 @@
 #include "common_event_data.h"
 #include "commoneventstub_fuzzer.h"
 #include "fuzz_common_base.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
-namespace {
-    constexpr size_t U32_AT_SIZE = 4;
-}
-bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
+bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    std::string stringData = fuzzData.GenerateRandomString();
-    int32_t code = fuzzData.GetData<int32_t>();
-    bool enabled = fuzzData.GenerateRandomBool();
+    std::string stringData = fdp->ConsumeRandomLengthString();
+    int32_t code = fdp->ConsumeIntegral<int32_t>();
+    bool enabled = fdp->ConsumeBool();
     MessageParcel dataParcel;
     MessageParcel reply;
     MessageOption option;
@@ -62,7 +60,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     // test GetStickyCommonEvent function
     commonEventStub.GetStickyCommonEvent(stringData, commonEventData);
     // test DumpState function
-    uint8_t dumpType = fuzzData.GetData<uint8_t>();
+    uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     std::vector<std::string> state;
     state.emplace_back(stringData);
     commonEventStub.DumpState(dumpType, stringData, code, state);
@@ -82,15 +80,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-
-    if (size < OHOS::U32_AT_SIZE) {
-        return 0;
-    }
-
-    OHOS::FuzzData fuzzData(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
     return 0;
 }

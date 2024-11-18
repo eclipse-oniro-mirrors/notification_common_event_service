@@ -15,6 +15,7 @@
 
 #include "matchingskills_fuzzer.h"
 #include "fuzz_common_base.h"
+#include <fuzzer/FuzzedDataProvider.h>
 #define private public
 #define protected public
 #include "matching_skills.h"
@@ -22,13 +23,10 @@
 #undef protected
 
 namespace OHOS {
-namespace {
-    constexpr size_t U32_AT_SIZE = 4;
-}
-bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
+bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    std::string stringData = fuzzData.GenerateRandomString();
-    size_t index = fuzzData.GetData<size_t>();
+    std::string stringData = fdp->ConsumeRandomLengthString();
+    size_t index = fdp->ConsumeIntegral<size_t>();
     Parcel parcel;
     // test MatchingSkills class function
     EventFwk::MatchingSkills matchingSkills;
@@ -78,14 +76,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-
-    if (size < OHOS::U32_AT_SIZE) {
-        return 0;
-    }
-    OHOS::FuzzData fuzzData(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
     return 0;
 }

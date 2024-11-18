@@ -22,6 +22,7 @@
 #include "subscribecommonevent_fuzzer.h"
 #include "common_event_manager.h"
 #include "fuzz_common_base.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
 namespace EventFwk {
@@ -38,11 +39,9 @@ public:
 };
 }  // namespace EventFwk
 
-constexpr size_t U32_AT_SIZE = 4;
-
-bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
+bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    std::string stringData = fuzzData.GenerateRandomString();
+    std::string stringData = fdp->ConsumeRandomLengthString();
 
     EventFwk::MatchingSkills matchingSkills;
     Parcel parcel;
@@ -50,18 +49,18 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
     matchingSkills.AddEntity(stringData);
     matchingSkills.AddScheme(stringData);
     // set CommonEventSubscribeInfo and test CommonEventSubscribeInfo class function
-    uint8_t mode = fuzzData.GetData<uint8_t>();
+    uint8_t mode = fdp->ConsumeIntegral<uint8_t>();
     EventFwk::CommonEventSubscribeInfo::ThreadMode threadMode =
         EventFwk::CommonEventSubscribeInfo::ThreadMode(mode);
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    int32_t priority = fuzzData.GenerateRandomInt32();
+    int32_t priority = fdp->ConsumeIntegral<int32_t>();
     subscribeInfo.ReadFromParcel(parcel);
     subscribeInfo.Unmarshalling(parcel);
     subscribeInfo.SetPriority(priority);
     subscribeInfo.SetPermission(stringData);
     subscribeInfo.SetDeviceId(stringData);
     subscribeInfo.SetThreadMode(threadMode);
-    subscribeInfo.SetPublisherBundleName(fuzzData.GenerateRandomString());
+    subscribeInfo.SetPublisherBundleName(fdp->ConsumeRandomLengthString());
     subscribeInfo.GetPriority();
     subscribeInfo.SetUserId(priority);
     subscribeInfo.GetUserId();
@@ -84,14 +83,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-
-    if (size < OHOS::U32_AT_SIZE) {
-        return 0;
-    }
-    OHOS::FuzzData fuzzData(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
+    FuzzedDataProvider fdp(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
     return 0;
 }
