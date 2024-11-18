@@ -14,7 +14,15 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
-cflags = []
+cflags = [
+  "-fno-math-errno",
+  "-fno-unroll-loops",
+  "-fmerge-all-constants",
+  "-fno-ident",
+  "-flto",
+  "-ffunction-sections",
+  "-fdata-sections",
+]
 
 config("cesfwk_innerkits_config") {
   visibility = [ ":*" ]
