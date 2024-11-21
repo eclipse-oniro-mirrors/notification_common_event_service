@@ -15,7 +15,6 @@
 
 #include "commoneventpublishinfo_fuzzer.h"
 #include "fuzz_common_base.h"
-#include <fuzzer/FuzzedDataProvider.h>
 
 #define private public
 #define protected public
@@ -24,10 +23,11 @@
 #undef protected
 
 namespace OHOS {
-bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
+constexpr size_t U32_AT_SIZE = 4;
+bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
     Parcel parcel;
-    bool enabled = fdp->ConsumeBool();
+    bool enabled = fuzzData.GenerateRandomBool();
     EventFwk::CommonEventPublishInfo PublishInfo;
     EventFwk::CommonEventPublishInfo commonEventPublishInfo(PublishInfo);
     commonEventPublishInfo.SetSticky(enabled);
@@ -43,7 +43,14 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    FuzzedDataProvider fdp(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
+    if (data == nullptr) {
+        return 0;
+    }
+
+    if (size < OHOS::U32_AT_SIZE) {
+        return 0;
+    }
+    OHOS::FuzzData fuzzData(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
 }

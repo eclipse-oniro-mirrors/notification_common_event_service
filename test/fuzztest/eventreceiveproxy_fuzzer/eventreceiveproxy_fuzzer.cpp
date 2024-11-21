@@ -16,16 +16,18 @@
 #include "eventreceiveproxy_fuzzer.h"
 #include "event_receive_proxy.h"
 #include "fuzz_common_base.h"
-#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
 namespace EventFwk {
 }  // namespace EventFwk
-bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
+namespace {
+    constexpr size_t U32_AT_SIZE = 4;
+}
+bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
     // make common event data
     EventFwk::CommonEventData commonEventData;
-    bool enabled = fdp->ConsumeBool();
+    bool enabled = fuzzData.GenerateRandomBool();
     std::shared_ptr<EventFwk::EventReceiveProxy> result = std::make_shared<EventFwk::EventReceiveProxy>(nullptr);
     if (result != nullptr) {
         result->NotifyEvent(commonEventData, enabled, enabled);
@@ -39,7 +41,14 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    FuzzedDataProvider fdp(data, size);
-    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
+    if (data == nullptr) {
+        return 0;
+    }
+
+    if (size < OHOS::U32_AT_SIZE) {
+        return 0;
+    }
+    OHOS::FuzzData fuzzData(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
 }

@@ -17,21 +17,23 @@
 #include "common_event_manager.h"
 #include "common_event_support.h"
 #include "fuzz_common_base.h"
-#include <fuzzer/FuzzedDataProvider.h>
 #include <string>
 #include <vector>
 
-namespace OHOS {
+constexpr int8_t FUZZ_DATA_LEN = 4;
 
-bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
+namespace OHOS {
+constexpr size_t U32_AT_SIZE = 4;
+
+bool DoSomethingInterestingWithMyAPI(FuzzData fuzzData)
 {
     AAFwk::Want want;
     want.SetAction(EventFwk::CommonEventSupport::COMMON_EVENT_TEST_ACTION1);
     EventFwk::CommonEventData commonEventData;
     commonEventData.SetWant(want);
-    int32_t code = fdp->ConsumeIntegral<int32_t>();
+    int32_t code = fuzzData.GenerateRandomInt32();
     commonEventData.SetCode(code);
-    std::string stringData = fdp->ConsumeRandomLengthString();
+    std::string stringData = fuzzData.GenerateRandomString();
     commonEventData.SetData(stringData);
 
     EventFwk::CommonEventPublishInfo commonEventPublishInfo;
@@ -46,16 +48,18 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     // test PublishCommonEventAsUser and two paramter
     EventFwk::CommonEventManager::PublishCommonEventAsUser(commonEventData, userId);
 
-    EventFwk::CommonEventManager::PublishCommonEventAsUser(
-        commonEventData, commonEventPublishInfo, subscriber, userId);
-    EventFwk::CommonEventManager::NewPublishCommonEventAsUser(
-        commonEventData, commonEventPublishInfo, userId);
-    EventFwk::CommonEventManager::NewPublishCommonEventAsUser(
-        commonEventData, commonEventPublishInfo, subscriber, userId);
-
-    int32_t uid = fdp->ConsumeIntegral<int32_t>();
-    EventFwk::CommonEventManager::PublishCommonEventAsUser(
-        commonEventData, commonEventPublishInfo, subscriber, uid, code, userId);
+    if (fuzzData.GetSize() < FUZZ_DATA_LEN) {
+        EventFwk::CommonEventManager::PublishCommonEventAsUser(
+            commonEventData, commonEventPublishInfo, subscriber, userId);
+        EventFwk::CommonEventManager::NewPublishCommonEventAsUser(
+            commonEventData, commonEventPublishInfo, userId);
+        EventFwk::CommonEventManager::NewPublishCommonEventAsUser(
+            commonEventData, commonEventPublishInfo, subscriber, userId);
+    } else {
+        int32_t uid = fuzzData.GenerateRandomInt32();
+        EventFwk::CommonEventManager::PublishCommonEventAsUser(
+            commonEventData, commonEventPublishInfo, subscriber, uid, code, userId);
+    }
     return true;
 }
 }
@@ -64,9 +68,16 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    FuzzedDataProvider fdp(data, size);
+    if (data == nullptr) {
+        return 0;
+    }
+
+    if (size < OHOS::U32_AT_SIZE) {
+        return 0;
+    }
     std::vector<std::string> permissions;
     NativeTokenGet(permissions);
-    OHOS::DoSomethingInterestingWithMyAPI(&fdp);
+    OHOS::FuzzData fuzzData(data, size);
+    OHOS::DoSomethingInterestingWithMyAPI(fuzzData);
     return 0;
 }
