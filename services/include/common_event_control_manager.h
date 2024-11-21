@@ -119,6 +119,15 @@ public:
      */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
+    /**
+     * Dumps state of history common event.
+     *
+     * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
+     * @param userId Indicates the user ID.
+     * @param state Indicates the state of common event service.
+     */
+    void DumpHistoryState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
+
 private:
     bool ProcessUnorderedEvent(
         const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord = nullptr);
@@ -168,9 +177,19 @@ private:
     void GetUnorderedEventRecords(
         const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
 
+    void GetHistoryEventRecords(
+        const std::string &event, const int32_t &userId, std::list<HistoryEventRecord> &records);
+
     void DumpStateByCommonEventRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 
     void DumpStateBySubscriberRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
+
+    void DumpHistoryStateBySubscriberRecord(const HistoryEventRecord &record, std::string &dumpInfo);
+
+    void DumpHistoryStateByCommonEventRecord(const HistoryEventRecord &record, std::string &dumpInfo);
+
+    void EnqueueHistoryEventRecord(const std::shared_ptr<OrderedEventRecord> &eventRecordPtr,
+        bool hasLastSubscribe);
 
     void PublishFrozenEventsInner(const FrozenRecords &frozenEventRecords);
 
@@ -183,11 +202,14 @@ private:
     std::shared_ptr<OrderedEventHandler> handlerOrdered_;
     std::vector<std::shared_ptr<OrderedEventRecord>> orderedEventQueue_;
     std::vector<std::shared_ptr<OrderedEventRecord>> unorderedEventQueue_;
+    std::list<HistoryEventRecord> historyEventRecords_;
     bool pendingTimeoutMessage_;
     bool scheduled_;
     const int64_t TIMEOUT = 10000;  // How long we allow a receiver to run before giving up on it. Unit: ms
     std::mutex orderedMutex_;
     std::mutex unorderedMutex_;
+    std::mutex historyMutex_;
+    const size_t HISTORY_MAX_SIZE = 100;
 
     std::shared_ptr<ffrt::queue> orderedQueue_ = nullptr;
     std::shared_ptr<ffrt::queue> unorderedQueue_ = nullptr;
