@@ -53,7 +53,7 @@ bool StaticSubscriberManager::InitAllowList()
     std::vector<AppExecFwk::ApplicationInfo> appInfos {};
     if (!DelayedSingleton<BundleManagerHelper>::GetInstance()
             ->GetApplicationInfos(AppExecFwk::ApplicationFlag::GET_BASIC_APPLICATION_INFO, appInfos)) {
-        EVENT_LOGE("GetApplicationInfos failed");
+        EVENT_LOGE_LIMIT("GetApplicationInfos failed");
         return false;
     }
 
@@ -216,7 +216,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
     if (!hasInitAllowList_ && !InitAllowList()) {
-        EVENT_LOGE("failed to init subscriber list");
+        EVENT_LOGE_LIMIT("failed to init subscriber list");
         return;
     }
 
