@@ -41,6 +41,10 @@ void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status stat
         return;
     }
     AsyncCallbackRemoveSticky *asyncCallbackInfo = static_cast<AsyncCallbackRemoveSticky *>(data);
+    if (!asyncCallbackInfo) {
+        EVENT_LOGE("Invalid asyncCallbackInfo");
+        return;
+    }
     ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
     if (asyncCallbackInfo->info.callback != nullptr) {
         napi_delete_reference(env, asyncCallbackInfo->info.callback);
