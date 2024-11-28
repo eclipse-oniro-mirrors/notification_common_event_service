@@ -41,6 +41,10 @@ void CommonEventManagerServiceAbility::OnStart()
     }
 
     service_ = CommonEventManagerService::GetInstance();
+    if (service_ == nullptr) {
+        EVENT_LOGE("failed to create CommonEventManagerService!");
+        return;
+    }
     ErrCode errorCode = service_->Init();
     if (errorCode != ERR_OK) {
         EVENT_LOGE("Failed to init the commonEventManagerService instance.");

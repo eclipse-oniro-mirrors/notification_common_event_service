@@ -137,7 +137,7 @@ bool CommonEventProxy::PublishCommonEvent(const CommonEventData &event, const Co
 
     if (!data.WriteInt32(callerToken)) {
         EVENT_LOGE("Failed to write parcelable callerToken");
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        return false;
     }
 
     if (!data.WriteInt32(userId)) {
