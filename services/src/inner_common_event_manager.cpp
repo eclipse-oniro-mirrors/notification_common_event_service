@@ -122,7 +122,7 @@ bool InnerCommonEventManager::GetJsonByFilePath(const char *filePath, std::vecto
 
     for (int32_t i = 0; i <= MAX_CFG_POLICY_DIRS_CNT - 1; i++) {
         if (cfgFiles->paths[i] && *(cfgFiles->paths[i]) != '\0' && GetJsonFromFile(cfgFiles->paths[i], localRoot)) {
-            EVENT_LOGE("Config file path:%{public}s.", cfgFiles->paths[i]);
+            EVENT_LOGD("Config file path:%{public}s.", cfgFiles->paths[i]);
             roots.push_back(localRoot);
             ret = true;
         }
