@@ -152,7 +152,7 @@ void CommonEventSubscriberManager::DumpDetailed(
         return;
     }
     char systime[LENGTH];
-    strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", record->recordTime);
+    strftime(systime, sizeof(char) * LENGTH, "%Y%m%d %I:%M %p", &record->recordTime);
 
     std::string recordTime = format + "Time: " + std::string(systime) + "\n";
     std::string pid = format + "PID: " + std::to_string(record->eventRecordInfo.pid) + "\n";
