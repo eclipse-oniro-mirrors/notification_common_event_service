@@ -120,13 +120,13 @@ void CommonEventCommand::SetPublishCmdInfo(PublishCmdInfo &cmdInfo, ErrCode &res
                 cmdInfo.isOrdered = true;
                 break;
             case 'c':
-                cmdInfo.code = std::stoi(optarg);
+                cmdInfo.code = atoi(optarg);
                 break;
             case 'd':
                 cmdInfo.data = optarg;
                 break;
             case 'u':
-                cmdInfo.userId = std::stoi(optarg);
+                cmdInfo.userId = atoi(optarg);
                 break;
             default:
                 break;
@@ -213,7 +213,7 @@ void CommonEventCommand::SetDumpCmdInfo(DumpCmdInfo &cmdInfo, ErrCode &result, b
                 cmdInfo.action = optarg;
                 break;
             case 'u':
-                cmdInfo.userId = std::stoi(optarg);
+                cmdInfo.userId = atoi(optarg);
                 break;
             case 'p':
                 CheckDumpEventType(cmdInfo, result);

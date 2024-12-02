@@ -51,10 +51,6 @@ bool StaticSubscriberManager::InitAllowList()
     EVENT_LOGD("enter");
 
     std::vector<AppExecFwk::ApplicationInfo> appInfos {};
-    if (DelayedSingleton<BundleManagerHelper>::GetInstance() == nullptr) {
-        EVENT_LOGE("Get BundleManagerHelper failed");
-        return false;
-    }
     if (!DelayedSingleton<BundleManagerHelper>::GetInstance()
             ->GetApplicationInfos(AppExecFwk::ApplicationFlag::GET_BASIC_APPLICATION_INFO, appInfos)) {
         EVENT_LOGE_LIMIT("GetApplicationInfos failed");
