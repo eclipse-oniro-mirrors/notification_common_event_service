@@ -154,6 +154,10 @@ ohos_shared_library("cesfwk_services") {
     defines += [ "CONFIG_POLICY_ENABLE" ]
   }
 
+  if (common_event_service_limit_screen_event) {
+    defines += [ "WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP" ]
+  }
+
   subsystem_name = "notification"
   part_name = "common_event_service"
 }
