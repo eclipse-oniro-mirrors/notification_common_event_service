@@ -476,6 +476,19 @@ HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest |
 }
 
 /*
+ * @tc.number: CommonEventPublishInfo_0300
+ * @tc.name: verify SetSubscriberType
+ * @tc.desc: Invoke SetSubscriberType interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventPublishInfo_0300, Function | MediumTest | Level1)
+{
+    int32_t subscribeType = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSubscriberType(subscribeType);
+    EXPECT_EQ(subscribeType, publishInfo.GetSubscriberType());
+}
+
+/*
  * @tc.number: CommonEventSubscriber_0102
  * @tc.name: verify IsStickyCommonEvent
  * @tc.desc: Invoke OnAddSystemAbility interface verify whether it is normal
