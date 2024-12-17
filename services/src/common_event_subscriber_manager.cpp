@@ -26,6 +26,9 @@
 #include "hisysevent.h"
 #include "hitrace_meter_adapter.h"
 #include "subscriber_death_recipient.h"
+#ifdef WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP
+#include <dlfcn.h>
+#endif
 
 namespace OHOS {
 namespace EventFwk {
@@ -33,6 +36,14 @@ constexpr int32_t LENGTH = 80;
 constexpr int32_t SIGNAL_KILL = 9;
 static constexpr int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
 static constexpr char CES_REGISTER_EXCEED_LIMIT[] = "Kill Reason: CES Register exceed limit";
+#ifdef WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP
+static const char *POWER_MANAGER_EXT_PATH = "libpower_manager_ext.z.so";
+static const char *WATCH_SUBSCRIBE_SCREEN_EVENT_TO_OTHER_APP = "WatchSubscribeScreenEventToOtherApp";
+void *handler = dlopen(POWER_MANAGER_EXT_PATH, RTLD_LAZY | RTLD_NODELETE);
+typedef bool (*FuncSubscriber)(std::vector<std::string>, std::vector<int32_t>, std::string, int);
+FuncSubscriber SubscribeScreenEventToBlackListAppFlag =
+    reinterpret_cast<FuncSubscriber>(dlsym(handler, WATCH_SUBSCRIBE_SCREEN_EVENT_TO_OTHER_APP));
+#endif
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
     : death_(sptr<IRemoteObject::DeathRecipient>(new (std::nothrow) SubscriberDeathRecipient()))
@@ -456,9 +467,35 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         }
 
         if (CheckSubscriberByUserId((*it)->eventSubscribeInfo->GetUserId(), isSystemApp, eventRecord.userId)) {
-            records.emplace_back(*it);
+            SubscribeScreenEventToBlackListApp(eventRecord, bundleName, subscriberUid, records, *it);
         }
     }
+}
+
+void CommonEventSubscriberManager::SubscribeScreenEventToBlackListApp(const CommonEventRecord &eventRecord,
+    std::string subscribeBundleName, int subscribeUid, std::vector<SubscriberRecordPtr> &records,
+    SubscriberRecordPtr it)
+{
+#ifdef WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP
+    std::string action = eventRecord.commonEventData->GetWant().GetAction();
+    if (!action.empty() && (action != CommonEventSupport::COMMON_EVENT_SCREEN_ON &&
+                               action != CommonEventSupport::COMMON_EVENT_SCREEN_OFF)) {
+        records.emplace_back(it);
+        return;
+    }
+    std::vector<std::string> excludeSubscriberBundleNames =
+        eventRecord.commonEventData->GetWant().GetStringArrayParam("exceptBundleNames");
+    std::vector<int32_t> excludeSubscriberUids = eventRecord.commonEventData->GetWant().GetIntArrayParam("exceptUids");
+    if (handler != nullptr && SubscribeScreenEventToBlackListAppFlag != nullptr) {
+        bool result = SubscribeScreenEventToBlackListAppFlag(
+            excludeSubscriberBundleNames, excludeSubscriberUids, subscribeBundleName, subscribeUid);
+        if (result) {
+            records.emplace_back(it);
+        }
+    }
+#else
+    records.emplace_back(it);
+#endif
 }
 
 void CommonEventSubscriberManager::GetSubscriberRecordsByEvent(

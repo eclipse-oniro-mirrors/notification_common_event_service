@@ -241,6 +241,9 @@ private:
 
     void PrintSubscriberCounts(std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts);
 
+    void SubscribeScreenEventToBlackListApp(const CommonEventRecord &eventRecord, std::string subscribeBundleName,
+        int subscribeUid, std::vector<SubscriberRecordPtr> &records, SubscriberRecordPtr it);
+
 private:
     std::mutex mutex_;
     sptr<IRemoteObject::DeathRecipient> death_;

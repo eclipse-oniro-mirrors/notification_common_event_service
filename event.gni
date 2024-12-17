@@ -54,6 +54,7 @@ declare_args() {
   common_event_service_tool_cem_enable = true
   ces_hitrace_usage = true
   ces_config_policy_enable = true
+  common_event_service_limit_screen_event = false
 
   if (!defined(global_parts_info) ||
       defined(global_parts_info.account_os_account)) {
