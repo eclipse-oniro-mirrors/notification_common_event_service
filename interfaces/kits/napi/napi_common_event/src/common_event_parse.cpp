@@ -54,6 +54,7 @@ static const int32_t GET_ABORT_MAX_PARA = 1;
 static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t PUBLISH_MAX_PARA_AS_USER = 3;
 static const int32_t ARGS_DATA_TWO = 2;
+static const uint32_t NAPI_REF_INITIAL_REF_COUNT = 1;
 
 void NapiThrow(napi_env env, int32_t errCode)
 {
@@ -729,7 +730,7 @@ napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&ar
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         return nullptr;
     }
-    napi_create_reference(env, argv[1], 1, &callback);
+    napi_create_reference(env, argv[1], NAPI_REF_INITIAL_REF_COUNT, &callback);
 
     return NapiGetNull(env);
 }

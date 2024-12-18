@@ -29,6 +29,29 @@ static const int32_t GETSUBSCREBEINFO_MAX_PARA = 1;
 static const int32_t ARGS_TWO_EVENT = 2;
 static const int32_t PARAM0_EVENT = 0;
 static const int32_t PARAM1_EVENT = 1;
+static const uint32_t NAPI_REF_INITIAL_REF_COUNT = 1;
+}
+
+static void NapiIncreaseRef(napi_env env, const napi_ref &ref)
+{
+    if (ref == nullptr) {
+        return;
+    }
+    uint32_t *refCount = new uint32_t;
+    napi_reference_ref(env, ref, refCount);
+}
+
+static void NapiReleaseRef(napi_env env, const napi_ref &ref)
+{
+    if (ref == nullptr) {
+        return;
+    }
+    uint32_t *refCount = new uint32_t;
+    napi_reference_unref(env, ref, refCount);
+    if (*refCount == NAPI_REF_INITIAL_REF_COUNT) {
+        EVENT_LOGD("delete ref");
+        napi_delete_reference(env, ref);
+    }
 }
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
@@ -123,6 +146,7 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
     if (commonEventDataWorkerData->ref == nullptr ||
         (commonEventDataWorkerData->valid == nullptr) || *(commonEventDataWorkerData->valid) == false) {
         EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData ref is null or invalid which may be previously released");
+        NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
         delete commonEventDataWorkerData;
         commonEventDataWorkerData = nullptr;
         return;
@@ -131,6 +155,7 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
     napi_open_handle_scope(commonEventDataWorkerData->env, &scope);
     if (scope == nullptr) {
         EVENT_LOGE("Scope is null");
+        NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
         return;
     }
 
@@ -139,6 +164,7 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
     if (SetCommonEventData(commonEventDataWorkerData, result) == nullptr) {
         EVENT_LOGE("failed to set common event data");
         napi_close_handle_scope(commonEventDataWorkerData->env, scope);
+        NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
         delete commonEventDataWorkerData;
         commonEventDataWorkerData = nullptr;
         return;
@@ -158,6 +184,7 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
         commonEventDataWorkerData->env, undefined, callback, ARGS_TWO_EVENT, &results[PARAM0_EVENT], &resultout);
 
     napi_close_handle_scope(commonEventDataWorkerData->env, scope);
+    NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
     delete commonEventDataWorkerData;
     commonEventDataWorkerData = nullptr;
 }
@@ -215,6 +242,11 @@ void SubscriberInstance::ClearEnv()
 void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
     EVENT_LOGD("enter");
+    if (ref != nullptr) {
+        NapiIncreaseRef(env_, ref);
+    } else {
+        NapiReleaseRef(env_, ref_);
+    }
     ref_ = ref;
     *valid_ = ref_ != nullptr ? true : false;
 }
@@ -258,6 +290,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         commonEventDataWorker->valid = valid_;
         std::lock_guard<std::mutex> lock(refMutex_);
         commonEventDataWorker->ref = ref_;
+        NapiIncreaseRef(env_, ref_);
         napi_acquire_threadsafe_function(tsfn_);
         napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
@@ -1085,9 +1118,6 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
     if (subscribe != subscriberInstances.end()) {
         std::lock_guard<std::mutex> lock(subscriber->GetRefMutex());
         for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {
-            if (asyncCallbackInfoSubscribe->callback != nullptr) {
-                napi_delete_reference(env, asyncCallbackInfoSubscribe->callback);
-            }
             delete asyncCallbackInfoSubscribe;
             asyncCallbackInfoSubscribe = nullptr;
         }
