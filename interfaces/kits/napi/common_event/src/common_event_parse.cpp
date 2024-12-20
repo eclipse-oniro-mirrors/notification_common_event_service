@@ -41,6 +41,7 @@ static const int32_t GET_ABORT_MAX_PARA = 1;
 static const int32_t FINISH_MAX_PARA = 1;
 static const int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
 static const int32_t COMMON_EVENT_PUBLISH_PARAM = 2;
+static const uint32_t NAPI_REF_INITIAL_REF_COUNT = 1;
 
 napi_value NapiGetNull(napi_env env)
 {
@@ -594,7 +595,7 @@ napi_value ParseParametersBySubscribe(const napi_env &env, const napi_value (&ar
         EVENT_LOGE("Wrong argument type. Function expected.");
         return nullptr;
     }
-    napi_create_reference(env, argv[1], 1, &callback);
+    napi_create_reference(env, argv[1], NAPI_REF_INITIAL_REF_COUNT, &callback);
 
     return NapiGetNull(env);
 }
