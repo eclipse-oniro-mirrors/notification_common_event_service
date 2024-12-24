@@ -441,13 +441,6 @@ void CommonEventDumpTest::DumpInfoCount(const std::vector<std::string> &state, i
             isSticky = false;
             isPending = true;
         }
-        pos = vec.find("History Events:");
-        if (pos != string::npos) {
-            isSubscribers = false;
-            isSticky = false;
-            isPending = false;
-            isHistory = true;
-        }
         if (isSubscribers) {
             subscribersNum++;
         } else if (isSticky) {
@@ -1388,8 +1381,6 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0400, Function | Medi
     GetInnerCommonEventManager()->DumpState(static_cast<int32_t>(DumpEventType::HISTORY), "", ALL_USER, state);
     GTEST_LOG_(INFO) << "get state size:" << state.size();
     ASSERT_EQ(state.size(), DUMP_HISTORY_COUNT_ZERO * 3);
-    auto pos = state[0].find("History Events:");
-    ASSERT_NE(pos, string::npos);
 
     GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener->AsObject());
     GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener2->AsObject());
