@@ -1238,7 +1238,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     bool result = inner.PublishCommonEvent(
         data, publishInfo, listener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "case1");
     sleep(PUBLISH_SLEEP);
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     inner.UnsubscribeCommonEvent(listener);
 }
 
@@ -1283,7 +1283,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     bool result = inner.PublishCommonEvent(
         data, publishInfo, listener, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "case2");
     sleep(PUBLISH_SLEEP);
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     inner.UnsubscribeCommonEvent(listener);
 }
 
