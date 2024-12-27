@@ -256,11 +256,6 @@ void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &t
     tsfn_ = tsfn;
 }
 
-std::mutex& SubscriberInstance::GetRefMutex()
-{
-    return refMutex_;
-}
-
 void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 {
     EVENT_LOGD("OnReceiveEvent start action: %{public}s.", data.GetWant().GetAction().c_str());
@@ -288,7 +283,6 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         commonEventDataWorker->env = env_;
         commonEventDataWorker->data = data.GetData();
         commonEventDataWorker->valid = valid_;
-        std::lock_guard<std::mutex> lock(refMutex_);
         commonEventDataWorker->ref = ref_;
         NapiIncreaseRef(env_, ref_);
         napi_acquire_threadsafe_function(tsfn_);
@@ -1116,7 +1110,6 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
     std::lock_guard<std::mutex> lock(subscriberInsMutex);
     auto subscribe = subscriberInstances.find(subscriber);
     if (subscribe != subscriberInstances.end()) {
-        std::lock_guard<std::mutex> lock(subscriber->GetRefMutex());
         for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {
             delete asyncCallbackInfoSubscribe;
             asyncCallbackInfoSubscribe = nullptr;
