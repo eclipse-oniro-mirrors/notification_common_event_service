@@ -1216,7 +1216,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     };
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
-    matchingSkillsObj.AddEvent("usual.event.BOOT_COMPLETED");
+    matchingSkillsObj.AddEvent("usual.event.BOOT_COMPLETED_TEST");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
     subscribeInfo.SetPermission("123");
     subscribeInfo.SetPriority(1);
@@ -1226,7 +1226,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     /* Publish */
     Want want;
-    want.SetAction("usual.event.BOOT_COMPLETED");
+    want.SetAction("usual.event.BOOT_COMPLETED_TEST");
     CommonEventData data;
     data.SetWant(want);
 
@@ -1261,7 +1261,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
     };
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
     MatchingSkills matchingSkillsObj;
-    matchingSkillsObj.AddEvent("usual.event.USER_SWITCHED");
+    matchingSkillsObj.AddEvent("usual.event.USER_SWITCHED_TEST");
     CommonEventSubscribeInfo subscribeInfo(matchingSkillsObj);
     subscribeInfo.SetPermission("");
     subscribeInfo.SetPriority(1);
@@ -1271,7 +1271,7 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
 
     /* Publish */
     Want want;
-    want.SetAction("usual.event.USER_SWITCHED");
+    want.SetAction("usual.event.USER_SWITCHED_TEST");
     CommonEventData data;
     data.SetWant(want);
 

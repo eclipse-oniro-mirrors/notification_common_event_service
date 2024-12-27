@@ -243,7 +243,6 @@ public:
     void ClearEnv();
     unsigned long long GetID();
     napi_env GetEnv();
-    std::mutex& GetRefMutex();
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
@@ -252,7 +251,6 @@ private:
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
-    std::mutex refMutex_;
 };
 
 class SubscriberInstanceWrapper {

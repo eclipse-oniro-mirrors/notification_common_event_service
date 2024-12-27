@@ -221,7 +221,6 @@ public:
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
     napi_env GetEnv();
     unsigned long long GetID();
-    std::mutex& GetRefMutex();
 
 private:
     napi_env env_ = nullptr;
@@ -231,7 +230,6 @@ private:
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
-    std::mutex refMutex_;
 };
 
 class SubscriberInstanceWrapper {

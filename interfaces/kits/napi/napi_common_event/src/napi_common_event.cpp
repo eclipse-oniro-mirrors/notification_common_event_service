@@ -274,11 +274,6 @@ void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &t
     tsfn_ = tsfn;
 }
 
-std::mutex& SubscriberInstance::GetRefMutex()
-{
-    return refMutex_;
-}
-
 void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 {
     EVENT_LOGD("OnReceiveEvent execute action = %{public}s", data.GetWant().GetAction().c_str());
@@ -304,13 +299,10 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         commonEventDataWorker->data = data.GetData();
         commonEventDataWorker->env = env_;
         commonEventDataWorker->valid = valid_;
+        commonEventDataWorker->ref = ref_;
+        NapiIncreaseRef(env_, ref_);
         napi_acquire_threadsafe_function(tsfn_);
-        {
-            std::lock_guard<std::mutex> lock(refMutex_);
-            commonEventDataWorker->ref = ref_;
-            NapiIncreaseRef(env_, ref_);
-            napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
-        }
+        napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
         EVENT_LOGD("OnReceiveEvent complete");
     }
@@ -745,7 +737,6 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
     std::lock_guard<std::mutex> lock(subscriberInsMutex);
     auto subscribe = subscriberInstances.find(subscriber);
     if (subscribe != subscriberInstances.end()) {
-        std::lock_guard<std::mutex> lock(subscriber->GetRefMutex());
         for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {
             delete asyncCallbackInfoSubscribe;
             asyncCallbackInfoSubscribe = nullptr;
