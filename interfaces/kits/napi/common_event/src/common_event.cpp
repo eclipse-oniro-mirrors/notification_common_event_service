@@ -39,6 +39,7 @@ static void NapiIncreaseRef(napi_env env, const napi_ref &ref)
     }
     uint32_t *refCount = new uint32_t;
     napi_reference_ref(env, ref, refCount);
+    delete refCount;
 }
 
 static void NapiReleaseRef(napi_env env, const napi_ref &ref)
@@ -52,6 +53,7 @@ static void NapiReleaseRef(napi_env env, const napi_ref &ref)
         EVENT_LOGD("delete ref");
         napi_delete_reference(env, ref);
     }
+    delete refCount;
 }
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
