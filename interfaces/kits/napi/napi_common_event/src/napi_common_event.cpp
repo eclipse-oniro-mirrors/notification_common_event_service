@@ -46,6 +46,7 @@ static void NapiIncreaseRef(napi_env env, const napi_ref &ref)
     }
     uint32_t *refCount = new uint32_t;
     napi_reference_ref(env, ref, refCount);
+    delete refCount;
 }
 
 static void NapiReleaseRef(napi_env env, const napi_ref &ref)
@@ -59,6 +60,7 @@ static void NapiReleaseRef(napi_env env, const napi_ref &ref)
         EVENT_LOGD("delete ref");
         napi_delete_reference(env, ref);
     }
+    delete refCount;
 }
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
@@ -424,14 +426,14 @@ napi_value CreateSubscriberSync(napi_env env, napi_callback_info info)
     napi_get_reference_value(env, g_CommonEventSubscriber, &constructor);
     napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &result);
 
-    if (subscribeInfo != nullptr) {
-        napi_delete_reference(env, subscribeInfo);
-    }
-    
     if (result == nullptr) {
         EVENT_LOGE("create subscriber instance failed");
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         return NapiGetNull(env);
+    }
+
+    if (subscribeInfo != nullptr) {
+        napi_delete_reference(env, subscribeInfo);
     }
 
     return result;
