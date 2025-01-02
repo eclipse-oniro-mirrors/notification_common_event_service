@@ -262,6 +262,7 @@ void SubscriberInstance::ClearEnv()
 
 void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
+    std::lock_guard<std::mutex> lockRef(refMutex_);
     if (ref != nullptr) {
         NapiIncreaseRef(env_, ref);
     } else {
@@ -290,7 +291,8 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         }
     }
     std::lock_guard<std::mutex> lock(envMutex_);
-    if (env_ != nullptr && tsfn_ != nullptr) {
+    std::lock_guard<std::mutex> lockRef(refMutex_);
+    if (env_ != nullptr && tsfn_ != nullptr && ref_ != nullptr) {
         CommonEventDataWorker *commonEventDataWorker = new (std::nothrow) CommonEventDataWorker();
         if (commonEventDataWorker == nullptr) {
             EVENT_LOGE("Invalid commonEventDataWorker");

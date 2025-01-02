@@ -251,6 +251,7 @@ private:
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
+    std::mutex refMutex_;
 };
 
 class SubscriberInstanceWrapper {
