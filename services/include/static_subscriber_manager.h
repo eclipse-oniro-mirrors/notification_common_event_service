@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -66,12 +66,17 @@ public:
      */
     int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable);
 
+    using ParameterType = std::variant<bool, int32_t, double, std::string>;
+
 private:
     struct StaticSubscriberInfo {
         std::string name;
         std::string bundleName;
         int32_t userId = -1;
         std::string permission;
+        std::optional<int32_t> filterCode;
+        std::optional<std::string> filterData;
+        std::map<std::string, ParameterType> filterParameters;
 
         bool operator==(const StaticSubscriberInfo &that) const
         {
@@ -108,6 +113,13 @@ private:
         const sptr<IRemoteObject> &service, const std::string &bundleName);
     void SendStaticSubscriberStartHiSysEvent(int32_t userId, const std::string &publisherName,
         const std::string &subscriberName, const std::string &eventName);
+    void ParseFilterObject(
+        const nlohmann::json &filterObj, const std::string &eventName, StaticSubscriberInfo &subscriber);
+    void AddFilterParameter(const std::string &paramName, const nlohmann::json &paramValue,
+        std::map<std::string, ParameterType> &filterParameters);
+    bool IsFilterParameters(const StaticSubscriberInfo &staticSubscriberInfo, const CommonEventData &data) const;
+    bool CheckFilterCodeAndData(const StaticSubscriberInfo &staticSubscriberInfo, const CommonEventData &data) const;
+    bool CheckFilterParameters(const std::map<std::string, ParameterType> &filterParameters, const Want &want) const;
 
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
     std::map<std::string, StaticSubscriber> staticSubscribers_;
