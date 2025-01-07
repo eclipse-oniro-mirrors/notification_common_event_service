@@ -3612,13 +3612,14 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsDisableEvent_0200, Function | Medium
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, ParseFilterObject_0100, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     nlohmann::json filterObj = { { EVENT_NAME,
         { { "parameters", { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 },
                               { PARAM_4, PARAM_VALUE_4 } } },
             { "code", VALID_CODE }, { "data", VALID_DATA } } } };
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
-    manager.ParseFilterObject(filterObj, EVENT_NAME, subscriber);
+    manager->ParseFilterObject(filterObj, EVENT_NAME, subscriber);
     EXPECT_EQ(subscriber.filterCode.value(), VALID_CODE);
     EXPECT_EQ(subscriber.filterData.value(), VALID_DATA);
     EXPECT_EQ(std::get<bool>(subscriber.filterParameters[PARAM_1]), PARAM_VALUE_1);
@@ -3636,13 +3637,14 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseFilterObject_0200, Function | Med
 {
     const std::string invalidCode = "invalidCode";
     const int invalidData = 12345;
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     nlohmann::json filterObj = { { EVENT_NAME,
         { { "parameters",
               { { PARAM_1, nullptr }, { PARAM_2, nlohmann::json::object() }, { PARAM_3, nlohmann::json::array() } } },
             { "code", invalidCode }, { "data", invalidData } } } };
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
-    EXPECT_NO_THROW(manager.ParseFilterObject(filterObj, EVENT_NAME, subscriber));
+    manager->ParseFilterObject(filterObj, EVENT_NAME, subscriber);
     EXPECT_FALSE(subscriber.filterCode.has_value());
     EXPECT_FALSE(subscriber.filterData.has_value());
     EXPECT_TRUE(subscriber.filterParameters.empty());
@@ -3655,19 +3657,20 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseFilterObject_0200, Function | Med
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, AddFilterParameter_0100, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters;
     nlohmann::json paramValue = PARAM_VALUE_1;
-    manager.AddFilterParameter(PARAM_1, paramValue, filterParameters);
+    manager->AddFilterParameter(PARAM_1, paramValue, filterParameters);
     EXPECT_EQ(std::get<bool>(filterParameters[PARAM_1]), PARAM_VALUE_1);
     paramValue = PARAM_VALUE_2;
-    manager.AddFilterParameter(PARAM_2, paramValue, filterParameters);
+    manager->AddFilterParameter(PARAM_2, paramValue, filterParameters);
     EXPECT_EQ(std::get<int32_t>(filterParameters[PARAM_2]), PARAM_VALUE_2);
     paramValue = PARAM_VALUE_3;
-    manager.AddFilterParameter(PARAM_3, paramValue, filterParameters);
+    manager->AddFilterParameter(PARAM_3, paramValue, filterParameters);
     EXPECT_EQ(std::get<double>(filterParameters[PARAM_3]), PARAM_VALUE_3);
     paramValue = PARAM_VALUE_4;
-    manager.AddFilterParameter(PARAM_4, paramValue, filterParameters);
+    manager->AddFilterParameter(PARAM_4, paramValue, filterParameters);
     EXPECT_EQ(std::get<std::string>(filterParameters[PARAM_4]), PARAM_VALUE_4);
 }
 
@@ -3678,16 +3681,17 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddFilterParameter_0100, Function | Me
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, AddFilterParameter_0200, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters;
     nlohmann::json paramValue = nullptr;
-    EXPECT_NO_THROW(manager.AddFilterParameter(PARAM_1, paramValue, filterParameters));
+    manager->AddFilterParameter(PARAM_1, paramValue, filterParameters);
     EXPECT_TRUE(filterParameters.empty());
     paramValue = nlohmann::json::object();
-    EXPECT_NO_THROW(manager.AddFilterParameter(PARAM_2, paramValue, filterParameters));
+    manager->AddFilterParameter(PARAM_2, paramValue, filterParameters);
     EXPECT_TRUE(filterParameters.empty());
     paramValue = nlohmann::json::array();
-    EXPECT_NO_THROW(manager.AddFilterParameter(PARAM_3, paramValue, filterParameters));
+    manager->AddFilterParameter(PARAM_3, paramValue, filterParameters);
     EXPECT_TRUE(filterParameters.empty());
 }
 
@@ -3698,7 +3702,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddFilterParameter_0200, Function | Me
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0100, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.filterParameters = { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 },
         { PARAM_4, PARAM_VALUE_4 } };
@@ -3711,7 +3716,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0100, Function | Me
     want.SetParams(wantParams);
     CommonEventData data;
     data.SetWant(want);
-    EXPECT_TRUE(manager.IsFilterParameters(subscriber, data));
+    EXPECT_TRUE(manager->IsFilterParameters(subscriber, data));
 }
 
 /*
@@ -3721,7 +3726,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0100, Function | Me
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0200, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.filterParameters = { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 },
         { PARAM_4, PARAM_VALUE_4 } };
@@ -3734,7 +3740,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0200, Function | Me
     want.SetParams(wantParams);
     CommonEventData data;
     data.SetWant(want);
-    EXPECT_FALSE(manager.IsFilterParameters(subscriber, data));
+    EXPECT_FALSE(manager->IsFilterParameters(subscriber, data));
 }
 
 /*
@@ -3744,14 +3750,15 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0200, Function | Me
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterCodeAndData_0100, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.filterCode = VALID_CODE;
     subscriber.filterData = VALID_DATA;
     CommonEventData data;
     data.SetCode(VALID_CODE);
     data.SetData(VALID_DATA);
-    EXPECT_TRUE(manager.CheckFilterCodeAndData(subscriber, data));
+    EXPECT_TRUE(manager->CheckFilterCodeAndData(subscriber, data));
 }
 
 /*
@@ -3761,7 +3768,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterCodeAndData_0100, Function 
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterCodeAndData_0200, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.filterCode = VALID_CODE;
     subscriber.filterData = VALID_DATA;
@@ -3770,7 +3778,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterCodeAndData_0200, Function 
     const std::string invalidData = "differentData";
     data.SetCode(invalidCode);
     data.SetData(invalidData);
-    EXPECT_FALSE(manager.CheckFilterCodeAndData(subscriber, data));
+    EXPECT_FALSE(manager->CheckFilterCodeAndData(subscriber, data));
 }
 
 /*
@@ -3780,7 +3788,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterCodeAndData_0200, Function 
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0100, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters = { { PARAM_1, PARAM_VALUE_1 },
         { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 }, { PARAM_4, PARAM_VALUE_4 } };
     Want want;
@@ -3790,7 +3799,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0100, Function |
     wantParams.SetParam(PARAM_3, AAFwk::Double::Box(PARAM_VALUE_3));
     wantParams.SetParam(PARAM_4, AAFwk::String::Box(PARAM_VALUE_4));
     want.SetParams(wantParams);
-    EXPECT_TRUE(manager.CheckFilterParameters(filterParameters, want));
+    EXPECT_TRUE(manager->CheckFilterParameters(filterParameters, want));
 }
 
 /*
@@ -3800,7 +3809,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0100, Function |
  */
 HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0200, Function | MediumTest | Level1)
 {
-    StaticSubscriberManager manager;
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
     std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters = { { PARAM_1, PARAM_VALUE_1 },
         { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 }, { PARAM_4, PARAM_VALUE_4 } };
     Want want;
@@ -3810,5 +3820,5 @@ HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0200, Function |
     wantParams.SetParam(PARAM_3, AAFwk::Double::Box(INVALID_PARAM_VALUE_3));
     wantParams.SetParam(PARAM_4, AAFwk::String::Box(INVALID_PARAM_VALUE_4));
     want.SetParams(wantParams);
-    EXPECT_FALSE(manager.CheckFilterParameters(filterParameters, want));
+    EXPECT_FALSE(manager->CheckFilterParameters(filterParameters, want));
 }
