@@ -68,16 +68,6 @@ static const char* const COMMON_EVENT_SCREEN_OFF = "usual.event.SCREEN_OFF";
 static const char* const COMMON_EVENT_SCREEN_ON = "usual.event.SCREEN_ON";
 
 /**
- * This commonEvent means when the device is about to enter the force sleep mode.
- */
-static const char* const COMMON_EVENT_ENTER_FORCE_SLEEP = "usual.event.ENTER_FORCE_SLEEP";
-
-/**
- * This commonEvent means when the device exits the force sleep mode.
- */
-static const char* const COMMON_EVENT_EXIT_FORCE_SLEEP = "usual.event.EXIT_FORCE_SLEEP";
-
-/**
  * This commonEvent means when the device is about to enter the hibernate mode.
  */
 static const char* const COMMON_EVENT_ENTER_HIBERNATE = "usual.event.ENTER_HIBERNATE";
