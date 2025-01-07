@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,6 +40,10 @@ constexpr static char JSON_KEY_COMMON_EVENTS[] = "commonEvents";
 constexpr static char JSON_KEY_NAME[] = "name";
 constexpr static char JSON_KEY_PERMISSION[] = "permission";
 constexpr static char JSON_KEY_EVENTS[] = "events";
+constexpr static const char* JSON_KEY_FILTER = "filter";
+constexpr static const char* JSON_KEY_CODE = "code";
+constexpr static const char* JSON_KEY_DATA = "data";
+constexpr static const char* JSON_KEY_PARAMETERS = "parameters";
 }
 
 StaticSubscriberManager::StaticSubscriberManager() {}
@@ -200,6 +204,11 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
                     "bundleName = %{public}s", subscriber.bundleName.c_str(), publishInfo.GetBundleName().c_str());
                 continue;
             }
+            if (!IsFilterParameters(subscriber, data)) {
+                EVENT_LOGW("subscriber filter parameters is not match, subscriber.bundleName = %{public}s",
+                    subscriber.bundleName.c_str());
+                continue;
+            }
             PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
             EVENT_LOGI("Notify %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
                 subscriber.bundleName.c_str());
@@ -323,6 +332,10 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
                 .bundleName = extensionBundleName,
                 .userId = extensionUserId,
                 .permission = commonEventObj[JSON_KEY_PERMISSION].get<std::string>()};
+            if (!commonEventObj[JSON_KEY_FILTER].is_null() && commonEventObj[JSON_KEY_FILTER].is_object()) {
+                auto filterObj = commonEventObj[JSON_KEY_FILTER];
+                ParseFilterObject(filterObj, e.get<std::string>(), subscriber);
+            }
             AddToValidSubscribers(e.get<std::string>(), subscriber);
         }
     }
@@ -546,6 +559,140 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(const std::vector<std:
     auto bundleName =
         DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(IPCSkeleton::GetCallingUid());
     return UpdateDisableEvents(bundleName, events, enable);
+}
+
+void StaticSubscriberManager::ParseFilterObject(
+    const nlohmann::json &filterObj, const std::string &eventName, StaticSubscriberInfo &subscriber)
+{
+    if (filterObj.contains(eventName) && filterObj[eventName].is_object()) {
+        EVENT_LOGD("parse filter object, event = %{public}s", eventName.c_str());
+        auto event = filterObj[eventName];
+        if (event.contains(JSON_KEY_CODE)) {
+            if (event[JSON_KEY_CODE].is_number_integer()) {
+                subscriber.filterCode = event[JSON_KEY_CODE].get<int32_t>();
+            } else {
+                EVENT_LOGW("event: %{public}s, the filter code only supports int32", eventName.c_str());
+            }
+        }
+        if (event.contains(JSON_KEY_DATA)) {
+            if (event[JSON_KEY_DATA].is_string()) {
+                subscriber.filterData = event[JSON_KEY_DATA].get<std::string>();
+            } else {
+                EVENT_LOGW("event: %{public}s, the filter data only supports string", eventName.c_str());
+            }
+        }
+        if (event.contains(JSON_KEY_PARAMETERS) && event[JSON_KEY_PARAMETERS].is_object()) {
+            for (auto &[paramName, paramValue] : event[JSON_KEY_PARAMETERS].items()) {
+                AddFilterParameter(paramName, paramValue, subscriber.filterParameters);
+            }
+        }
+    }
+}
+
+void StaticSubscriberManager::AddFilterParameter(const std::string &paramName, const nlohmann::json &paramValue,
+    std::map<std::string, ParameterType> &filterParameters)
+{
+    if (paramValue.is_null()) {
+        EVENT_LOGW("invalid parameter: %{public}s, parameter value is null", paramName.c_str());
+        return;
+    }
+    ParameterType parameter;
+    if (paramValue.is_boolean()) {
+        parameter = paramValue.get<bool>();
+    } else if (paramValue.is_number_integer()) {
+        parameter = paramValue.get<int32_t>();
+    } else if (paramValue.is_number_float()) {
+        parameter = paramValue.get<double>();
+    } else if (paramValue.is_string()) {
+        parameter = paramValue.get<std::string>();
+    } else {
+        EVENT_LOGW("invalid parameter: %{public}s. supported types are bool, number, and string", paramName.c_str());
+        return;
+    }
+    filterParameters.insert({ paramName, parameter });
+}
+
+bool StaticSubscriberManager::IsFilterParameters(
+    const StaticSubscriberInfo &staticSubscriberInfo, const CommonEventData &data) const
+{
+    Want want = data.GetWant();
+    if (!CheckFilterCodeAndData(staticSubscriberInfo, data)) {
+        return false;
+    }
+    if (!CheckFilterParameters(staticSubscriberInfo.filterParameters, want)) {
+        return false;
+    }
+    return true;
+}
+
+bool StaticSubscriberManager::CheckFilterCodeAndData(
+    const StaticSubscriberInfo &staticSubscriberInfo, const CommonEventData &data) const
+{
+    if (staticSubscriberInfo.filterCode.has_value()) {
+        auto filterCode = staticSubscriberInfo.filterCode.value();
+        if (filterCode != data.GetCode()) {
+            EVENT_LOGW("filter code:%{public}d not equal event code:%{public}d", filterCode, data.GetCode());
+            return false;
+        }
+    }
+    if (staticSubscriberInfo.filterData.has_value()) {
+        auto filterData = staticSubscriberInfo.filterData.value();
+        if (filterData != data.GetData()) {
+            EVENT_LOGW(
+                "filter data:%{public}s not equal event data:%{public}s", filterData.c_str(), data.GetData().c_str());
+            return false;
+        }
+    }
+    return true;
+}
+
+bool StaticSubscriberManager::CheckFilterParameters(
+    const std::map<std::string, ParameterType> &filterParameters, const Want &want) const
+{
+    for (const auto &[paramName, paramValue] : filterParameters) {
+        if (!want.HasParameter(paramName)) {
+            EVENT_LOGW("filter parameter: %{public}s is missing", paramName.c_str());
+            return false;
+        }
+        if (std::holds_alternative<bool>(paramValue)) {
+            auto wantValue = want.GetBoolParam(paramName, false);
+            auto value = std::get<bool>(paramValue);
+            if (wantValue != value) {
+                EVENT_LOGW("key:%{public}s value:%{public}d not equal want value:%{public}d", paramName.c_str(), value,
+                    wantValue);
+                return false;
+            }
+        } else if (std::holds_alternative<int32_t>(paramValue)) {
+            auto wantValue = want.GetIntParam(paramName, -1);
+            auto value = std::get<int32_t>(paramValue);
+            if (wantValue != value) {
+                EVENT_LOGW("key:%{public}s value:%{public}d not equal want value:%{public}d", paramName.c_str(), value,
+                    wantValue);
+                return false;
+            }
+        } else if (std::holds_alternative<double>(paramValue)) {
+            auto wantValue = want.GetDoubleParam(paramName, -1);
+            auto value = std::get<double>(paramValue);
+            if (wantValue != value) {
+                EVENT_LOGW("key:%{public}s value:%{public}f not equal want value:%{public}f", paramName.c_str(), value,
+                    wantValue);
+                return false;
+            }
+        } else if (std::holds_alternative<std::string>(paramValue)) {
+            auto wantValue = want.GetStringParam(paramName);
+            auto value = std::get<std::string>(paramValue);
+            if (wantValue != value) {
+                EVENT_LOGW("key:%{public}s value:%{public}s not equal want value:%{public}s", paramName.c_str(),
+                    value.c_str(), wantValue.c_str());
+                return false;
+            }
+        } else {
+            EVENT_LOGW(
+                "invalid parameter: %{public}s. supported types are bool, number, and string", paramName.c_str());
+            return false;
+        }
+    }
+    return true;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

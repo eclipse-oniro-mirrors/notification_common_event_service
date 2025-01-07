@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,8 +15,12 @@
 
 #include <gtest/gtest.h>
 
+#include "bool_wrapper.h"
 #include "ces_inner_error_code.h"
 #include "common_event_support.h"
+#include "double_wrapper.h"
+#include "int_wrapper.h"
+#include "string_wrapper.h"
 #include "want.h"
 #define private public
 #define protected public
@@ -48,6 +52,21 @@ namespace {
     constexpr uint8_t MOCK_CASE_3 = 3;
     constexpr uint8_t MOCK_CASE_4 = 4;
     constexpr uint8_t MOCK_CASE_5 = 5;
+    const int VALID_CODE = 100;
+    const std::string VALID_DATA = "testData";
+    const std::string PARAM_1 = "param1";
+    const std::string PARAM_2 = "param2";
+    const std::string PARAM_3 = "param3";
+    const std::string PARAM_4 = "param4";
+    const std::string EVENT_NAME = "eventName";
+    const bool PARAM_VALUE_1 = true;
+    const int PARAM_VALUE_2 = 101;
+    const double PARAM_VALUE_3 = 101.01;
+    const std::string PARAM_VALUE_4 = "value";
+    const bool INVALID_PARAM_VALUE_1 = false;
+    const int INVALID_PARAM_VALUE_2 = 102;
+    const double INVALID_PARAM_VALUE_3 = 102.01;
+    const std::string INVALID_PARAM_VALUE_4 = "differentValue";
 }
 
 class StaticSubscriberManagerUnitTest : public testing::Test {
@@ -3584,4 +3603,212 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsDisableEvent_0200, Function | Medium
     std::string event = "event1";
     auto ret = manager->IsDisableEvent(bundleName, event);
     EXPECT_EQ(false, ret);
+}
+
+/*
+ * @tc.name: ParseFilterObject_0100
+ * @tc.desc: Test the ParseFilterObject function with valid input.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseFilterObject_0100, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    nlohmann::json filterObj = { { EVENT_NAME,
+        { { "parameters", { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 },
+                              { PARAM_4, PARAM_VALUE_4 } } },
+            { "code", VALID_CODE }, { "data", VALID_DATA } } } };
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    manager.ParseFilterObject(filterObj, EVENT_NAME, subscriber);
+    EXPECT_EQ(subscriber.filterCode.value(), VALID_CODE);
+    EXPECT_EQ(subscriber.filterData.value(), VALID_DATA);
+    EXPECT_EQ(std::get<bool>(subscriber.filterParameters[PARAM_1]), PARAM_VALUE_1);
+    EXPECT_EQ(std::get<int32_t>(subscriber.filterParameters[PARAM_2]), PARAM_VALUE_2);
+    EXPECT_EQ(std::get<double>(subscriber.filterParameters[PARAM_3]), PARAM_VALUE_3);
+    EXPECT_EQ(std::get<std::string>(subscriber.filterParameters[PARAM_4]), PARAM_VALUE_4);
+}
+
+/*
+ * @tc.name: ParseFilterObject_0200
+ * @tc.desc: Test the ParseFilterObject function with invalid input.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseFilterObject_0200, Function | MediumTest | Level1)
+{
+    const std::string invalidCode = "invalidCode";
+    const int invalidData = 12345;
+    StaticSubscriberManager manager;
+    nlohmann::json filterObj = { { EVENT_NAME,
+        { { "parameters",
+              { { PARAM_1, nullptr }, { PARAM_2, nlohmann::json::object() }, { PARAM_3, nlohmann::json::array() } } },
+            { "code", invalidCode }, { "data", invalidData } } } };
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    EXPECT_NO_THROW(manager.ParseFilterObject(filterObj, EVENT_NAME, subscriber));
+    EXPECT_FALSE(subscriber.filterCode.has_value());
+    EXPECT_FALSE(subscriber.filterData.has_value());
+    EXPECT_TRUE(subscriber.filterParameters.empty());
+}
+
+/*
+ * @tc.name: AddFilterParameter_0100
+ * @tc.desc: Test the AddFilterParameter function with various parameter types.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddFilterParameter_0100, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters;
+    nlohmann::json paramValue = PARAM_VALUE_1;
+    manager.AddFilterParameter(PARAM_1, paramValue, filterParameters);
+    EXPECT_EQ(std::get<bool>(filterParameters[PARAM_1]), PARAM_VALUE_1);
+    paramValue = PARAM_VALUE_2;
+    manager.AddFilterParameter(PARAM_2, paramValue, filterParameters);
+    EXPECT_EQ(std::get<int32_t>(filterParameters[PARAM_2]), PARAM_VALUE_2);
+    paramValue = PARAM_VALUE_3;
+    manager.AddFilterParameter(PARAM_3, paramValue, filterParameters);
+    EXPECT_EQ(std::get<double>(filterParameters[PARAM_3]), PARAM_VALUE_3);
+    paramValue = PARAM_VALUE_4;
+    manager.AddFilterParameter(PARAM_4, paramValue, filterParameters);
+    EXPECT_EQ(std::get<std::string>(filterParameters[PARAM_4]), PARAM_VALUE_4);
+}
+
+/*
+ * @tc.name: AddFilterParameter_0200
+ * @tc.desc: Test the AddFilterParameter function with invalid parameter types.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddFilterParameter_0200, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters;
+    nlohmann::json paramValue = nullptr;
+    EXPECT_NO_THROW(manager.AddFilterParameter(PARAM_1, paramValue, filterParameters));
+    EXPECT_TRUE(filterParameters.empty());
+    paramValue = nlohmann::json::object();
+    EXPECT_NO_THROW(manager.AddFilterParameter(PARAM_2, paramValue, filterParameters));
+    EXPECT_TRUE(filterParameters.empty());
+    paramValue = nlohmann::json::array();
+    EXPECT_NO_THROW(manager.AddFilterParameter(PARAM_3, paramValue, filterParameters));
+    EXPECT_TRUE(filterParameters.empty());
+}
+
+/*
+ * @tc.name: IsFilterParameters_0100
+ * @tc.desc: Test the IsFilterParameters function with matching parameters.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0100, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.filterParameters = { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 },
+        { PARAM_4, PARAM_VALUE_4 } };
+    Want want;
+    OHOS::AAFwk::WantParams wantParams;
+    wantParams.SetParam(PARAM_1, AAFwk::Boolean::Box(PARAM_VALUE_1));
+    wantParams.SetParam(PARAM_2, AAFwk::Integer::Box(PARAM_VALUE_2));
+    wantParams.SetParam(PARAM_3, AAFwk::Double::Box(PARAM_VALUE_3));
+    wantParams.SetParam(PARAM_4, AAFwk::String::Box(PARAM_VALUE_4));
+    want.SetParams(wantParams);
+    CommonEventData data;
+    data.SetWant(want);
+    EXPECT_TRUE(manager.IsFilterParameters(subscriber, data));
+}
+
+/*
+ * @tc.name: IsFilterParameters_0200
+ * @tc.desc: Test the IsFilterParameters function with non-matching parameters.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, IsFilterParameters_0200, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.filterParameters = { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 },
+        { PARAM_4, PARAM_VALUE_4 } };
+    Want want;
+    OHOS::AAFwk::WantParams wantParams;
+    wantParams.SetParam(PARAM_1, AAFwk::Boolean::Box(INVALID_PARAM_VALUE_1));
+    wantParams.SetParam(PARAM_2, AAFwk::Integer::Box(INVALID_PARAM_VALUE_2));
+    wantParams.SetParam(PARAM_3, AAFwk::Double::Box(INVALID_PARAM_VALUE_3));
+    wantParams.SetParam(PARAM_4, AAFwk::String::Box(INVALID_PARAM_VALUE_4));
+    want.SetParams(wantParams);
+    CommonEventData data;
+    data.SetWant(want);
+    EXPECT_FALSE(manager.IsFilterParameters(subscriber, data));
+}
+
+/*
+ * @tc.name: CheckFilterCodeAndData_0100
+ * @tc.desc: Test the CheckFilterCodeAndData function with matching code and data.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterCodeAndData_0100, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.filterCode = VALID_CODE;
+    subscriber.filterData = VALID_DATA;
+    CommonEventData data;
+    data.SetCode(VALID_CODE);
+    data.SetData(VALID_DATA);
+    EXPECT_TRUE(manager.CheckFilterCodeAndData(subscriber, data));
+}
+
+/*
+ * @tc.name: CheckFilterCodeAndData_0200
+ * @tc.desc: Test the CheckFilterCodeAndData function with non-matching code and data.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterCodeAndData_0200, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.filterCode = VALID_CODE;
+    subscriber.filterData = VALID_DATA;
+    CommonEventData data;
+    const int invalidCode = 200;
+    const std::string invalidData = "differentData";
+    data.SetCode(invalidCode);
+    data.SetData(invalidData);
+    EXPECT_FALSE(manager.CheckFilterCodeAndData(subscriber, data));
+}
+
+/*
+ * @tc.name: CheckFilterParameters_0100
+ * @tc.desc: Test the CheckFilterParameters function with matching parameters.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0100, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters = { { PARAM_1, PARAM_VALUE_1 },
+        { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 }, { PARAM_4, PARAM_VALUE_4 } };
+    Want want;
+    OHOS::AAFwk::WantParams wantParams;
+    wantParams.SetParam(PARAM_1, AAFwk::Boolean::Box(PARAM_VALUE_1));
+    wantParams.SetParam(PARAM_2, AAFwk::Integer::Box(PARAM_VALUE_2));
+    wantParams.SetParam(PARAM_3, AAFwk::Double::Box(PARAM_VALUE_3));
+    wantParams.SetParam(PARAM_4, AAFwk::String::Box(PARAM_VALUE_4));
+    want.SetParams(wantParams);
+    EXPECT_TRUE(manager.CheckFilterParameters(filterParameters, want));
+}
+
+/*
+ * @tc.name: CheckFilterParameters_0200
+ * @tc.desc: Test the CheckFilterParameters function with non-matching parameters.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0200, Function | MediumTest | Level1)
+{
+    StaticSubscriberManager manager;
+    std::map<std::string, StaticSubscriberManager::ParameterType> filterParameters = { { PARAM_1, PARAM_VALUE_1 },
+        { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 }, { PARAM_4, PARAM_VALUE_4 } };
+    Want want;
+    OHOS::AAFwk::WantParams wantParams;
+    wantParams.SetParam(PARAM_1, AAFwk::Boolean::Box(INVALID_PARAM_VALUE_1));
+    wantParams.SetParam(PARAM_2, AAFwk::Integer::Box(INVALID_PARAM_VALUE_2));
+    wantParams.SetParam(PARAM_3, AAFwk::Double::Box(INVALID_PARAM_VALUE_3));
+    wantParams.SetParam(PARAM_4, AAFwk::String::Box(INVALID_PARAM_VALUE_4));
+    want.SetParams(wantParams);
+    EXPECT_FALSE(manager.CheckFilterParameters(filterParameters, want));
 }
