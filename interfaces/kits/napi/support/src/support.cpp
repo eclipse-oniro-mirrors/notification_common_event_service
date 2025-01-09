@@ -55,6 +55,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj, EventFwk::CommonEventSupport::COMMON_EVENT_ENTER_FORCE_SLEEP, "COMMON_EVENT_ENTER_FORCE_SLEEP");
     SetNamedPropertyByStr(env,
         obj, EventFwk::CommonEventSupport::COMMON_EVENT_EXIT_FORCE_SLEEP, "COMMON_EVENT_EXIT_FORCE_SLEEP");
+    SetNamedPropertyByStr(env,
+        obj, EventFwk::CommonEventSupport::COMMON_EVENT_ENTER_HIBERNATE, "COMMON_EVENT_ENTER_HIBERNATE");
+    SetNamedPropertyByStr(env,
+        obj, EventFwk::CommonEventSupport::COMMON_EVENT_EXIT_HIBERNATE, "COMMON_EVENT_EXIT_HIBERNATE");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_USER_PRESENT, "COMMON_EVENT_USER_PRESENT");
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_TIME_TICK, "COMMON_EVENT_TIME_TICK");
