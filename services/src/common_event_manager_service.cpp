@@ -313,6 +313,34 @@ int32_t CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObje
     return ERR_OK;
 }
 
+int32_t CommonEventManagerService::UnsubscribeCommonEventSync(const sptr<IRemoteObject> &commonEventListener)
+{
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    EVENT_LOGD("enter");
+
+    if (!IsReady()) {
+        EVENT_LOGE("CommonEventManagerService not ready");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
+    std::function<void()> unsubscribeCommonEventFunc = [wp, commonEventListener] () {
+        std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
+        if (innerCommonEventManager == nullptr) {
+            EVENT_LOGE("innerCommonEventManager not exist");
+            return;
+        }
+        bool ret = innerCommonEventManager->UnsubscribeCommonEvent(commonEventListener);
+        if (!ret) {
+            EVENT_LOGE("failed to unsubscribe event");
+        }
+    };
+
+    ffrt::task_handle handler = commonEventSrvQueue_->submit_h(unsubscribeCommonEventFunc);
+    commonEventSrvQueue_->wait(handler);
+    return ERR_OK;
+}
+
 bool CommonEventManagerService::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
     EVENT_LOGD("enter");

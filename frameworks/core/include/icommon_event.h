@@ -75,6 +75,14 @@ public:
     virtual int32_t UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) = 0;
 
     /**
+     * Synchronized, unsubscribes from common events.
+     *
+     * @param commonEventListener Indicates the subscriber object.
+     * @return Returns true if successful; false otherwise.
+     */
+    virtual int32_t UnsubscribeCommonEventSync(const sptr<IRemoteObject> &commonEventListener) = 0;
+
+    /**
      * Gets the current sticky common event
      *
      * @param event Indicates the common event.

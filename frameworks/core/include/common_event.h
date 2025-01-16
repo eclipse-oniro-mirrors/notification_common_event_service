@@ -97,6 +97,14 @@ public:
     int32_t UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
+     * Synchronized, unsubscribes from common events.
+     *
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns true if successful; false otherwise.
+     */
+    int32_t UnSubscribeCommonEventSync(const std::shared_ptr<CommonEventSubscriber> &subscriber);
+
+    /**
      * Gets the current sticky common event.
      *
      * @param event Indicates the common event.

@@ -58,6 +58,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     subscribeInfo.SetPriority(code);
     service->SubscribeCommonEvent(subscribeInfo, commonEventListener);
     service->UnsubscribeCommonEvent(commonEventListener);
+    service->UnsubscribeCommonEventSync(commonEventListener);
     service->GetStickyCommonEvent(stringData, commonEventData);
     uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     std::vector<std::string> state;

@@ -57,6 +57,8 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     commonEventStub.SubscribeCommonEvent(subscribeInfo, commonEventListener);
     // test UnsubscribeCommonEvent function
     commonEventStub.UnsubscribeCommonEvent(commonEventListener);
+    // test UnsubscribeCommonEventSync function
+    commonEventStub.UnsubscribeCommonEventSync(commonEventListener);
     // test GetStickyCommonEvent function
     commonEventStub.GetStickyCommonEvent(stringData, commonEventData);
     // test DumpState function

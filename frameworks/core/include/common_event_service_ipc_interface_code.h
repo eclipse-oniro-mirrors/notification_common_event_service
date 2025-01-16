@@ -35,6 +35,7 @@ enum class CommonEventInterfaceCode {
     CES_NOTIFY_COMMON_EVENT,
     COMMAND_ON_RECEIVE_EVENT,
     CES_SET_FREEZE_STATUS,
+    CES_UNSUBSCRIBE_COMMON_EVENT_SYNC,
     // ipc id 2001-3000 for tools
     // ipc id for dumping Subscribe State (2001)
     CES_DUMP_STATE = 2001,

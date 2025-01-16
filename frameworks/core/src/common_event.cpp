@@ -222,6 +222,37 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     return ERR_OK;
 }
 
+__attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventSync(
+    const std::shared_ptr<CommonEventSubscriber> &subscriber)
+{
+    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    EVENT_LOGD("enter");
+
+    if (subscriber == nullptr) {
+        EVENT_LOGE("the subscriber is null");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        EVENT_LOGE("the commonEventProxy is null");
+        return ERR_NOTIFICATION_CESM_ERROR;
+    }
+    std::lock_guard<std::mutex> lock(eventListenersMutex_);
+    auto eventListener = eventListeners_.find(subscriber);
+    if (eventListener != eventListeners_.end()) {
+        EVENT_LOGD("before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
+        if (proxy->UnsubscribeCommonEventSync(eventListener->second->AsObject()) == ERR_OK) {
+            eventListener->second->Stop();
+            eventListeners_.erase(eventListener);
+            return ERR_OK;
+        }
+        return ERR_NOTIFICATION_SEND_ERROR;
+    } else {
+        EVENT_LOGW("No specified subscriber has been registered");
+    }
+    return ERR_OK;
+}
+
 bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
     EVENT_LOGD("enter");

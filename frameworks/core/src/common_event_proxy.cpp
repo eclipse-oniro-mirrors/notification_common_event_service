@@ -243,6 +243,45 @@ int32_t CommonEventProxy::UnsubscribeCommonEvent(const sptr<IRemoteObject> &comm
     return reply.ReadInt32();
 }
 
+int32_t CommonEventProxy::UnsubscribeCommonEventSync(const sptr<IRemoteObject> &commonEventListener)
+{
+    EVENT_LOGD("start");
+
+    MessageParcel data;
+    MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EVENT_LOGE("Failed to write InterfaceToken");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+
+    if (commonEventListener != nullptr) {
+        if (!data.WriteBool(true)) {
+            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        }
+        if (!data.WriteRemoteObject(commonEventListener)) {
+            EVENT_LOGE("Failed to write parcelable commonEventListener");
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        }
+    } else {
+        EVENT_LOGW("invalid commonEventListener");
+        if (!data.WriteBool(false)) {
+            EVENT_LOGE("Failed to write parcelable hasSubscriber");
+            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        }
+    }
+
+    bool ret = SendRequest(CommonEventInterfaceCode::CES_UNSUBSCRIBE_COMMON_EVENT_SYNC, data, reply);
+    if (!ret) {
+        EVENT_LOGE("Failed to send request");
+        return ERR_NOTIFICATION_SEND_ERROR;
+    }
+
+    EVENT_LOGD("end");
+    return reply.ReadInt32();
+}
+
 bool CommonEventProxy::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
     EVENT_LOGD("start");
