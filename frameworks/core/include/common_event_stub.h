@@ -88,6 +88,14 @@ public:
     int32_t UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
+     * Synchronized, unsubscribes from common events.
+     *
+     * @param commonEventListener Indicates the subscriber object
+     * @return Returns true if successful; false otherwise.
+     */
+    int32_t UnsubscribeCommonEventSync(const sptr<IRemoteObject> &commonEventListener) override;
+
+    /**
      * Gets the current sticky common event.
      *
      * @param event Indicates the common event.

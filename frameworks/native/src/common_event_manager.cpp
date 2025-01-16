@@ -112,6 +112,11 @@ int32_t CommonEventManager::NewUnSubscribeCommonEvent(const std::shared_ptr<Comm
     return CommonEvent::GetInstance()->UnSubscribeCommonEvent(subscriber);
 }
 
+int32_t CommonEventManager::NewUnSubscribeCommonEventSync(const std::shared_ptr<CommonEventSubscriber> &subscriber)
+{
+    return CommonEvent::GetInstance()->UnSubscribeCommonEventSync(subscriber);
+}
+
 bool CommonEventManager::GetStickyCommonEvent(const std::string &event, CommonEventData &commonEventData)
 {
     return CommonEvent::GetInstance()->GetStickyCommonEvent(event, commonEventData);

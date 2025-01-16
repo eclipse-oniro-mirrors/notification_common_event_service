@@ -134,6 +134,25 @@ int CommonEventStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Message
             }
             break;
         }
+        case static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNSUBSCRIBE_COMMON_EVENT_SYNC): {
+            CesXCollie cesXCollie("ces::UnsubscribeCommonEvent");
+            bool hasSubscriber = data.ReadBool();
+            if (!hasSubscriber) {
+                EVENT_LOGE("no valid commonEventListener!");
+                return ERR_INVALID_VALUE;
+            }
+            sptr<IRemoteObject> commonEventListener = data.ReadRemoteObject();
+            if (commonEventListener == nullptr) {
+                EVENT_LOGE("Failed to ReadParcelable<IRemoteObject>");
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+            }
+            int32_t ret = UnsubscribeCommonEventSync(commonEventListener);
+            if (!reply.WriteInt32(ret)) {
+                EVENT_LOGE("Failed to write reply");
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+            }
+            break;
+        }
         case static_cast<uint32_t>(CommonEventInterfaceCode::CES_GET_STICKY_COMMON_EVENT): {
             std::string event = Str16ToStr8(data.ReadString16());
             AAFwk::Want want;
@@ -294,6 +313,13 @@ int32_t CommonEventStub::SubscribeCommonEvent(const CommonEventSubscribeInfo &su
 }
 
 int32_t CommonEventStub::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
+{
+    EVENT_LOGD("called");
+
+    return true;
+}
+
+int32_t CommonEventStub::UnsubscribeCommonEventSync(const sptr<IRemoteObject> &commonEventListener)
 {
     EVENT_LOGD("called");
 
