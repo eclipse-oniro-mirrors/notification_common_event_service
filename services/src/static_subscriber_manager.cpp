@@ -21,16 +21,20 @@
 
 #include "ability_manager_helper.h"
 #include "access_token_helper.h"
+#include "bool_wrapper.h"
 #include "bundle_manager_helper.h"
 #include "ces_inner_error_code.h"
 #include "common_event_constant.h"
 #include "common_event_support.h"
+#include "double_wrapper.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
 #include "hitrace_meter_adapter.h"
+#include "int_wrapper.h"
 #include "ipc_skeleton.h"
 #include "os_account_manager_helper.h"
 #include "static_subscriber_data_manager.h"
+#include "string_wrapper.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -655,42 +659,39 @@ bool StaticSubscriberManager::CheckFilterParameters(
             return false;
         }
         if (std::holds_alternative<bool>(paramValue)) {
-            auto wantValue = want.GetBoolParam(paramName, false);
-            auto value = std::get<bool>(paramValue);
-            if (wantValue != value) {
-                EVENT_LOGW("key:%{public}s value:%{public}d not equal want value:%{public}d", paramName.c_str(), value,
-                    wantValue);
-                return false;
-            }
+            return CheckSpecificParam(
+                paramName, std::get<bool>(paramValue), want, AAFwk::IBoolean::Query, AAFwk::Boolean::Unbox);
         } else if (std::holds_alternative<int32_t>(paramValue)) {
-            auto wantValue = want.GetIntParam(paramName, -1);
-            auto value = std::get<int32_t>(paramValue);
-            if (wantValue != value) {
-                EVENT_LOGW("key:%{public}s value:%{public}d not equal want value:%{public}d", paramName.c_str(), value,
-                    wantValue);
-                return false;
-            }
+            return CheckSpecificParam(
+                paramName, std::get<int32_t>(paramValue), want, AAFwk::IInteger::Query, AAFwk::Integer::Unbox);
         } else if (std::holds_alternative<double>(paramValue)) {
-            auto wantValue = want.GetDoubleParam(paramName, -1);
-            auto value = std::get<double>(paramValue);
-            if (wantValue != value) {
-                EVENT_LOGW("key:%{public}s value:%{public}f not equal want value:%{public}f", paramName.c_str(), value,
-                    wantValue);
-                return false;
-            }
+            return CheckSpecificParam(
+                paramName, std::get<double>(paramValue), want, AAFwk::IDouble::Query, AAFwk::Double::Unbox);
         } else if (std::holds_alternative<std::string>(paramValue)) {
-            auto wantValue = want.GetStringParam(paramName);
-            auto value = std::get<std::string>(paramValue);
-            if (wantValue != value) {
-                EVENT_LOGW("key:%{public}s value:%{public}s not equal want value:%{public}s", paramName.c_str(),
-                    value.c_str(), wantValue.c_str());
-                return false;
-            }
+            return CheckSpecificParam(
+                paramName, std::get<std::string>(paramValue), want, AAFwk::IString::Query, AAFwk::String::Unbox);
         } else {
             EVENT_LOGW(
                 "invalid parameter: %{public}s. supported types are bool, number, and string", paramName.c_str());
             return false;
         }
+    }
+    return true;
+}
+
+template<typename T, typename QueryFunc, typename UnboxFunc>
+bool StaticSubscriberManager::CheckSpecificParam(
+    const std::string &paramName, const T &paramValue, const Want &want, QueryFunc queryFunc, UnboxFunc unboxFunc) const
+{
+    auto* ao = queryFunc(want.GetParams().GetParam(paramName));
+    if (ao == nullptr) {
+        EVENT_LOGW("%{public}s ao null", paramName.c_str());
+        return false;
+    }
+    auto wantValue = unboxFunc(ao);
+    if (wantValue != paramValue) {
+        EVENT_LOGW("key:%{public}s not equal want", paramName.c_str());
+        return false;
     }
     return true;
 }

@@ -120,6 +120,9 @@ private:
     bool IsFilterParameters(const StaticSubscriberInfo &staticSubscriberInfo, const CommonEventData &data) const;
     bool CheckFilterCodeAndData(const StaticSubscriberInfo &staticSubscriberInfo, const CommonEventData &data) const;
     bool CheckFilterParameters(const std::map<std::string, ParameterType> &filterParameters, const Want &want) const;
+    template<typename T, typename QueryFunc, typename UnboxFunc>
+    bool CheckSpecificParam(const std::string &paramName, const T &paramValue, const Want &want, QueryFunc queryFunc,
+        UnboxFunc unboxFunc) const;
 
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
     std::map<std::string, StaticSubscriber> staticSubscribers_;
