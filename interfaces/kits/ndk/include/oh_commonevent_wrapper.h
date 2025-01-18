@@ -16,34 +16,45 @@
 #ifndef OH_COMMON_EVENT_WRAPPER_C_H
 #define OH_COMMON_EVENT_WRAPPER_C_H
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include "common_event_subscriber.h"
 #include "oh_commonevent.h"
-
-struct CParameters {
-    int8_t valueType;
-    char *key;
-    void *value;
-    int64_t size;
-};
+#include "want_params.h"
 
 struct CArrParameters {
-    CParameters *head;
-    int64_t size;
+    OHOS::AAFwk::WantParams wantParams;
+    mutable std::vector<void*> allocatedPointers;
 };
 
 struct CommonEvent_SubscribeInfo {
-    uint32_t eventLength = 0;
-    char **events = nullptr;
-    char *permission = nullptr;
-    char *bundleName = nullptr;
+    std::vector<std::string> events;
+    std::string permission;
+    std::string bundleName;
+};
+
+struct CommonEvent_PublishInfo {
+    bool ordered = false;
+    std::string bundleName;
+    std::vector<std::string> subscriberPermissions;
+    int32_t code = 0;
+    std::string data;
+    CArrParameters* parameters = nullptr;
 };
 
 struct CommonEvent_RcvData {
-    char *event;
-    char *bundleName;
+    std::string event;
+    std::string bundleName;
     int32_t code;
-    char *data;
-    CArrParameters* parameters;
+    std::string data;
+    CArrParameters* parameters = nullptr;
+};
+
+struct ResultCacheItem {
+    std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> result = nullptr;
+    std::string data;
 };
 
 class SubscriberObserver : public OHOS::EventFwk::CommonEventSubscriber {
@@ -66,10 +77,14 @@ public:
     void DestroySubscriber(CommonEvent_Subscriber* subscriber);
     CommonEvent_ErrCode Subscribe(const CommonEvent_Subscriber* subscriber);
     CommonEvent_ErrCode UnSubscribe(const CommonEvent_Subscriber* subscriber);
+    void SetAsyncResult(SubscriberObserver* subscriber);
+    ResultCacheItem* GetAsyncResult(const SubscriberObserver* subscriber);
     static std::shared_ptr<SubscriberManager> GetInstance();
 private:
     static std::mutex instanceMutex_;
+    static std::mutex resultCacheMutex_;
     static std::shared_ptr<SubscriberManager> instance_;
+    static std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> resultCache_;
 };
 
 #endif

@@ -32,24 +32,33 @@ SubscriberObserver::~SubscriberObserver()
 
 void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data)
 {
-    EVENT_LOGD("Receive CommonEvent action = %{public}s", data.GetWant().GetAction().c_str());
     CommonEvent_RcvData *cData = new (std::nothrow) CommonEvent_RcvData();
     if (cData == nullptr) {
         EVENT_LOGE("Failed to create CommonEventRcvData");
         return;
     }
-    int32_t code = OHOS::EventFwk::GetCommonEventData(data, cData);
-    if (code != COMMONEVENT_ERR_OK) {
-        EVENT_LOGE("Failed to init GetCommonEventData");\
+    if (IsOrderedCommonEvent()) {
+        EVENT_LOGD("SetAsyncResult");
+        SubscriberManager::GetInstance()->SetAsyncResult(this);
+    }
+    auto want = data.GetWant();
+    cData->code = data.GetCode();
+    cData->data = data.GetData();
+    cData->event = want.GetAction();
+    cData->bundleName = want.GetBundle();
+    cData->parameters = new (std::nothrow) CArrParameters();
+    if (cData->parameters == nullptr) {
+        EVENT_LOGE("Failed to init cData parameters");
         delete cData;
         cData = nullptr;
         return;
     }
+    cData->parameters->wantParams = want.GetParams();
     if (callback_ != nullptr) {
-        EVENT_LOGD("Subscribe callback start to run.");
         (*callback_)(cData);
     }
-    OHOS::EventFwk::FreeCCommonEventData(cData);
+    delete cData->parameters;
+    cData->parameters = nullptr;
     delete cData;
     cData = nullptr;
 }
@@ -60,7 +69,9 @@ void SubscriberObserver::SetCallback(CommonEvent_ReceiveCallback callback)
 }
 
 std::mutex SubscriberManager::instanceMutex_;
+std::mutex SubscriberManager::resultCacheMutex_;
 std::shared_ptr<SubscriberManager> SubscriberManager::instance_;
+std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> SubscriberManager::resultCache_;
 
 std::shared_ptr<SubscriberManager> SubscriberManager::GetInstance()
 {
@@ -81,16 +92,16 @@ CommonEvent_Subscriber* SubscriberManager::CreateSubscriber(const CommonEvent_Su
         return nullptr;
     }
     OHOS::EventFwk::MatchingSkills matchingSkills;
-    for (uint32_t i = 0; i < subscribeInfo->eventLength; i++) {
-        if (subscribeInfo->events[i] != nullptr) {
-            matchingSkills.AddEvent(subscribeInfo->events[i]);
+    for (const auto& iter : subscribeInfo->events) {
+        if (!iter.empty()) {
+            matchingSkills.AddEvent(iter);
         }
     }
     OHOS::EventFwk::CommonEventSubscribeInfo commonEventSubscribeInfo(matchingSkills);
-    if (subscribeInfo->permission != nullptr) {
+    if (!subscribeInfo->permission.empty()) {
         commonEventSubscribeInfo.SetPermission(subscribeInfo->permission);
     }
-    if (subscribeInfo->bundleName != nullptr) {
+    if (!subscribeInfo->bundleName.empty()) {
         commonEventSubscribeInfo.SetPublisherBundleName(subscribeInfo->bundleName);
     }
 
@@ -119,6 +130,10 @@ CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* s
     if (ret == OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT) {
         return COMMONEVENT_ERR_SUBSCRIBER_NUM_EXCEEDED;
     }
+    {
+        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        resultCache_.emplace(observer, ResultCacheItem());
+    }
     return static_cast<CommonEvent_ErrCode>(ret);
 }
 
@@ -130,5 +145,44 @@ CommonEvent_ErrCode SubscriberManager::UnSubscribe(const CommonEvent_Subscriber*
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
     int32_t ret = OHOS::EventFwk::CommonEventManager::NewUnSubscribeCommonEvent(observer);
+    {
+        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        resultCache_.erase(observer);
+    }
     return static_cast<CommonEvent_ErrCode>(ret);
+}
+
+void SubscriberManager::SetAsyncResult(SubscriberObserver* subscriber)
+{
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is null");
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        for (auto& iter : resultCache_) {
+            if (iter.first.get() == subscriber) {
+                iter.second.result = subscriber->GoAsyncCommonEvent();
+                break;
+            }
+        }
+    }
+}
+
+ResultCacheItem* SubscriberManager::GetAsyncResult(const SubscriberObserver* subscriber)
+{
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is null");
+        return nullptr;
+    }
+    {
+        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        for (auto& iter : resultCache_) {
+            if (iter.first.get() == subscriber) {
+                return &iter.second;
+            }
+        }
+    }
+    EVENT_LOGI("subscriber not found");
+    return nullptr;
 }
