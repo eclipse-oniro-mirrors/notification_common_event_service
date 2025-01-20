@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+# Copyright (c) 2021-2025 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -995,6 +995,39 @@ ohos_unittest("subscriber_deach_recipient_test") {
   ]
 }
 
+ohos_unittest("capi_common_event_test") {
+  module_out_path = module_output_path
+
+  include_dirs = [
+    "${ces_innerkits_path}",
+    "${ces_ndk_path}/include",
+  ]
+
+  sources = [
+    "${ces_ndk_path}/src/oh_commonevent.cpp",
+    "${ces_ndk_path}/src/oh_commonevent_parameters_parse.cpp",
+    "${ces_ndk_path}/src/oh_commonevent_wrapper.cpp",
+    "capi_common_event_test/capi_common_event_test.cpp",
+  ]
+
+  deps = [
+    "${ces_core_path}:cesfwk_core",
+    "${ces_native_path}:cesfwk_innerkits",
+  ]
+
+  external_deps = [
+    "ability_base:base",
+    "ability_base:want",
+    "ability_runtime:ability_manager",
+    "ability_runtime:abilitykit_native",
+    "ability_runtime:napi_base_context",
+    "c_utils:utils",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
+    "hilog:libhilog",
+  ]
+}
+
 group("unittest") {
   testonly = true
   deps = []
@@ -1005,6 +1038,7 @@ group("unittest") {
     ":bundle_manager_death_recipient_unit_test",
     ":bundle_manager_helper_other_test",
     ":bundle_manager_helper_test",
+    ":capi_common_event_test",
     ":common_event_access_token_helper_test",
     ":common_event_control_manager_branch_test",
     ":common_event_control_manager_test",
