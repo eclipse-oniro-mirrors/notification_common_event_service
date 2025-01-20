@@ -3614,10 +3614,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseFilterObject_0100, Function | Med
 {
     auto manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
-    nlohmann::json filterObj = { { EVENT_NAME,
-        { { "parameters", { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 }, { PARAM_3, PARAM_VALUE_3 },
-                              { PARAM_4, PARAM_VALUE_4 } } },
-            { "code", VALID_CODE }, { "data", VALID_DATA } } } };
+    nlohmann::json filterObj = { { { "event", EVENT_NAME },
+        { "conditions", { { "parameters", { { PARAM_1, PARAM_VALUE_1 }, { PARAM_2, PARAM_VALUE_2 },
+                                              { PARAM_3, PARAM_VALUE_3 }, { PARAM_4, PARAM_VALUE_4 } } },
+                            { "code", VALID_CODE }, { "data", VALID_DATA } } } } };
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     manager->ParseFilterObject(filterObj, EVENT_NAME, subscriber);
     EXPECT_EQ(subscriber.filterCode.value(), VALID_CODE);
@@ -3639,10 +3639,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseFilterObject_0200, Function | Med
     const int invalidData = 12345;
     auto manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
-    nlohmann::json filterObj = { { EVENT_NAME,
-        { { "parameters",
-              { { PARAM_1, nullptr }, { PARAM_2, nlohmann::json::object() }, { PARAM_3, nlohmann::json::array() } } },
-            { "code", invalidCode }, { "data", invalidData } } } };
+    nlohmann::json filterObj = { { { "event", EVENT_NAME },
+        { "conditions", { { "parameters", { { PARAM_1, nullptr }, { PARAM_2, nlohmann::json::object() },
+                                              { PARAM_3, nlohmann::json::array() } } },
+                            { "code", invalidCode }, { "data", invalidData } } } } };
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     manager->ParseFilterObject(filterObj, EVENT_NAME, subscriber);
     EXPECT_FALSE(subscriber.filterCode.has_value());
