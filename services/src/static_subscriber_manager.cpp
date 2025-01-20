@@ -45,9 +45,11 @@ constexpr static char JSON_KEY_NAME[] = "name";
 constexpr static char JSON_KEY_PERMISSION[] = "permission";
 constexpr static char JSON_KEY_EVENTS[] = "events";
 constexpr static const char* JSON_KEY_FILTER = "filter";
-constexpr static const char* JSON_KEY_CODE = "code";
-constexpr static const char* JSON_KEY_DATA = "data";
-constexpr static const char* JSON_KEY_PARAMETERS = "parameters";
+constexpr static const char* JSON_KEY_FILTER_EVENT = "event";
+constexpr static const char* JSON_KEY_FILTER_CONDITIONS = "conditions";
+constexpr static const char* JSON_KEY_FILTER_CONDITIONS_CODE = "code";
+constexpr static const char* JSON_KEY_FILTER_CONDITIONS_DATA = "data";
+constexpr static const char* JSON_KEY_FILTER_CONDITIONS_PARAMETERS = "parameters";
 }
 
 StaticSubscriberManager::StaticSubscriberManager() {}
@@ -336,10 +338,7 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
                 .bundleName = extensionBundleName,
                 .userId = extensionUserId,
                 .permission = commonEventObj[JSON_KEY_PERMISSION].get<std::string>()};
-            if (!commonEventObj[JSON_KEY_FILTER].is_null() && commonEventObj[JSON_KEY_FILTER].is_object()) {
-                auto filterObj = commonEventObj[JSON_KEY_FILTER];
-                ParseFilterObject(filterObj, e.get<std::string>(), subscriber);
-            }
+            ParseFilterObject(commonEventObj[JSON_KEY_FILTER], e.get<std::string>(), subscriber);
             AddToValidSubscribers(e.get<std::string>(), subscriber);
         }
     }
@@ -568,27 +567,61 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(const std::vector<std:
 void StaticSubscriberManager::ParseFilterObject(
     const nlohmann::json &filterObj, const std::string &eventName, StaticSubscriberInfo &subscriber)
 {
-    if (filterObj.contains(eventName) && filterObj[eventName].is_object()) {
-        EVENT_LOGD("parse filter object, event = %{public}s", eventName.c_str());
-        auto event = filterObj[eventName];
-        if (event.contains(JSON_KEY_CODE)) {
-            if (event[JSON_KEY_CODE].is_number_integer()) {
-                subscriber.filterCode = event[JSON_KEY_CODE].get<int32_t>();
-            } else {
-                EVENT_LOGW("event: %{public}s, the filter code only supports int32", eventName.c_str());
-            }
+    if (filterObj.is_null() || !filterObj.is_array() || filterObj.empty()) {
+        EVENT_LOGD("invalid filterObj size");
+        return;
+    }
+    for (auto filter : filterObj) {
+        if (filter.is_null() || !filter.is_object()) {
+            EVENT_LOGD("invalid filter");
+            continue;
         }
-        if (event.contains(JSON_KEY_DATA)) {
-            if (event[JSON_KEY_DATA].is_string()) {
-                subscriber.filterData = event[JSON_KEY_DATA].get<std::string>();
-            } else {
-                EVENT_LOGW("event: %{public}s, the filter data only supports string", eventName.c_str());
-            }
+        if (filter[JSON_KEY_FILTER_EVENT].is_null() || !filter[JSON_KEY_FILTER_EVENT].is_string()) {
+            EVENT_LOGD("invalid common event ability name obj");
+            continue;
         }
-        if (event.contains(JSON_KEY_PARAMETERS) && event[JSON_KEY_PARAMETERS].is_object()) {
-            for (auto &[paramName, paramValue] : event[JSON_KEY_PARAMETERS].items()) {
-                AddFilterParameter(paramName, paramValue, subscriber.filterParameters);
-            }
+        if (filter[JSON_KEY_FILTER_EVENT].get<std::string>() != eventName) {
+            EVENT_LOGD("eventName is not match");
+            continue;
+        }
+        if (filter[JSON_KEY_FILTER_CONDITIONS].is_null() || !filter[JSON_KEY_FILTER_CONDITIONS].is_object()) {
+            EVENT_LOGD("conditions null");
+            continue;
+        }
+        const auto &conditions = filter.find(JSON_KEY_FILTER_CONDITIONS);
+        if (conditions == filter.end() || conditions->is_null() || !conditions->is_object()) {
+            EVENT_LOGD("conditions null");
+            continue;
+        }
+        ParseConditions(*conditions, eventName, subscriber);
+    }
+}
+
+void StaticSubscriberManager::ParseConditions(
+    const nlohmann::json &conditions, const std::string &eventName, StaticSubscriberInfo &subscriber)
+{
+    const auto &code = conditions.find(JSON_KEY_FILTER_CONDITIONS_CODE);
+    if (code != conditions.end()) {
+        if (code->is_number_integer()) {
+            subscriber.filterCode = code->get<int32_t>();
+        } else {
+            EVENT_LOGW("event: %{public}s, the filter code only supports int32", eventName.c_str());
+        }
+    }
+
+    const auto &data = conditions.find(JSON_KEY_FILTER_CONDITIONS_DATA);
+    if (data != conditions.end()) {
+        if (data->is_string()) {
+            subscriber.filterData = data->get<std::string>();
+        } else {
+            EVENT_LOGW("event: %{public}s, the filter data only supports string", eventName.c_str());
+        }
+    }
+
+    const auto &parameters = conditions.find(JSON_KEY_FILTER_CONDITIONS_PARAMETERS);
+    if (parameters != conditions.end() && parameters->is_object()) {
+        for (const auto &[paramName, paramValue] : parameters->items()) {
+            AddFilterParameter(paramName, paramValue, subscriber.filterParameters);
         }
     }
 }

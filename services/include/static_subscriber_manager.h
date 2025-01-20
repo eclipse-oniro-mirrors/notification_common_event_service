@@ -115,6 +115,8 @@ private:
         const std::string &subscriberName, const std::string &eventName);
     void ParseFilterObject(
         const nlohmann::json &filterObj, const std::string &eventName, StaticSubscriberInfo &subscriber);
+    void ParseConditions(
+        const nlohmann::json &conditions, const std::string &eventName, StaticSubscriberInfo &subscriber);
     void AddFilterParameter(const std::string &paramName, const nlohmann::json &paramValue,
         std::map<std::string, ParameterType> &filterParameters);
     bool IsFilterParameters(const StaticSubscriberInfo &staticSubscriberInfo, const CommonEventData &data) const;
