@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -205,7 +205,7 @@ const CommonEvent_Parameters* OH_CommonEvent_GetParametersFromRcvData(const Comm
  * @param ordered Indicates whether the common event is ordered.
  * @return Returns the CommonEvent_PublishInfo, if create failed, returns null.
  */
-CommonEvent_PublishInfo* OH_CommonEvent_CreatePublishInfo(const bool ordered);
+CommonEvent_PublishInfo* OH_CommonEvent_CreatePublishInfo(bool ordered);
 
 /**
  * @brief Destroy the common event publish information.
@@ -236,7 +236,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoBundleName(CommonEvent_PublishI
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoPermissions(CommonEvent_PublishInfo* info,
-    const char* permissions[], const int32_t num);
+    const char* permissions[], int32_t num);
 
 /**
  * @brief Set the code of publish information.
@@ -247,7 +247,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoPermissions(CommonEvent_Publish
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
-CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoCode(CommonEvent_PublishInfo* info, const int32_t code);
+CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoCode(CommonEvent_PublishInfo* info, int32_t code);
 
 /**
  * @brief Set the data of publish information.
@@ -260,7 +260,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoCode(CommonEvent_PublishInfo* i
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoData(CommonEvent_PublishInfo* info,
-    const char* data, const size_t length);
+    const char* data, size_t length);
 
 /**
  * @brief Set the parameters of publish information.
@@ -317,7 +317,7 @@ int OH_CommonEvent_GetIntFromParameters(const CommonEvent_Parameters* para, cons
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
-CommonEvent_ErrCode OH_CommonEvent_SetIntToParameters(CommonEvent_Parameters* param, const char* key, const int value);
+CommonEvent_ErrCode OH_CommonEvent_SetIntToParameters(CommonEvent_Parameters* param, const char* key, int value);
 
 /**
  * @brief Get int array data from parameters data by key.
@@ -342,7 +342,7 @@ int32_t OH_CommonEvent_GetIntArrayFromParameters(const CommonEvent_Parameters* p
  *         Returns {@link COMMONEVENT_ERR_ALLOC_MEMORY_FAILED} if a memory allocation error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetIntArrayToParameters(CommonEvent_Parameters* param, const char* key,
-    const int* value, const size_t num);
+    const int* value, size_t num);
 
 /**
  * @brief Get long data from parameters data by key.
@@ -366,7 +366,7 @@ long OH_CommonEvent_GetLongFromParameters(const CommonEvent_Parameters* para, co
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetLongToParameters(CommonEvent_Parameters* param, const char* key,
-    const long value);
+    long value);
 
 /**
  * @brief Get long array data from parameters data by key.
@@ -391,7 +391,7 @@ int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEvent_Parameters* 
  *         Returns {@link COMMONEVENT_ERR_ALLOC_MEMORY_FAILED} if a memory allocation error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetLongArrayToParameters(CommonEvent_Parameters* param, const char* key,
-    const long* value, const size_t num);
+    const long* value, size_t num);
 
 /**
  * @brief Get bool data from parameters data by key.
@@ -415,7 +415,7 @@ bool OH_CommonEvent_GetBoolFromParameters(const CommonEvent_Parameters* para, co
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetBoolToParameters(CommonEvent_Parameters* param, const char* key,
-    const bool value);
+    bool value);
 
 /**
  * @brief Get bool array data from parameters data by key.
@@ -440,7 +440,7 @@ int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEvent_Parameters* 
  *         Returns {@link COMMONEVENT_ERR_ALLOC_MEMORY_FAILED} if a memory allocation error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetBoolArrayToParameters(CommonEvent_Parameters* param, const char* key,
-    const bool* value, const size_t num);
+    const bool* value, size_t num);
 
 /**
  * @brief Get char data from parameters data by key.
@@ -464,7 +464,7 @@ char OH_CommonEvent_GetCharFromParameters(const CommonEvent_Parameters* para, co
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetCharToParameters(CommonEvent_Parameters* param, const char* key,
-    const char value);
+    char value);
 
 /**
  * @brief Get char array data from parameters data by key.
@@ -488,7 +488,7 @@ int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* 
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetCharArrayToParameters(CommonEvent_Parameters* param, const char* key,
-    const char* value, const size_t num);
+    const char* value, size_t num);
 
 /**
  * @brief Get double data from parameters data by key.
@@ -512,7 +512,7 @@ double OH_CommonEvent_GetDoubleFromParameters(const CommonEvent_Parameters* para
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetDoubleToParameters(CommonEvent_Parameters* param, const char* key,
-    const double value);
+    double value);
 
 /**
  * @brief Get double array data from parameters data by key.
@@ -538,7 +538,7 @@ int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEvent_Parameters
  *         Returns {@link COMMONEVENT_ERR_ALLOC_MEMORY_FAILED} if a memory allocation error occurs.
  */
 CommonEvent_ErrCode OH_CommonEvent_SetDoubleArrayToParameters(CommonEvent_Parameters* param, const char* key,
-    const double* value, const size_t num);
+    const double* value, size_t num);
 
 /**
  * @brief Publish a standard commen event.
@@ -620,7 +620,7 @@ int32_t OH_CommonEvent_GetCodeFromSubscriber(const CommonEvent_Subscriber* subsc
  * @param code Indicates the result code.
  * @return Returns the result of operation, true means succeeded.
  */
-bool OH_CommonEvent_SetCodeToSubscriber(CommonEvent_Subscriber* subscriber, const int32_t code);
+bool OH_CommonEvent_SetCodeToSubscriber(CommonEvent_Subscriber* subscriber, int32_t code);
 
 /**
  * @brief Get result data from an ordered event by a subscriber.
@@ -638,7 +638,7 @@ const char* OH_CommonEvent_GetDataFromSubscriber(const CommonEvent_Subscriber* s
  * @param length Indicates the length of result data.
  * @return Returns the result of operation, true means succeeded.
  */
-bool OH_CommonEvent_SetDataToSubscriber(CommonEvent_Subscriber* subscriber, const char* data, const size_t length);
+bool OH_CommonEvent_SetDataToSubscriber(CommonEvent_Subscriber* subscriber, const char* data, size_t length);
 
 #ifdef __cplusplus
 }
