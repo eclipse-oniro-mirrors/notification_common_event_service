@@ -584,16 +584,13 @@ void StaticSubscriberManager::ParseFilterObject(
             EVENT_LOGD("eventName is not match");
             continue;
         }
-        if (filter[JSON_KEY_FILTER_CONDITIONS].is_null() || !filter[JSON_KEY_FILTER_CONDITIONS].is_object()) {
-            EVENT_LOGD("conditions null");
-            continue;
-        }
         const auto &conditions = filter.find(JSON_KEY_FILTER_CONDITIONS);
         if (conditions == filter.end() || conditions->is_null() || !conditions->is_object()) {
             EVENT_LOGD("conditions null");
             continue;
         }
         ParseConditions(*conditions, eventName, subscriber);
+        return;
     }
 }
 
