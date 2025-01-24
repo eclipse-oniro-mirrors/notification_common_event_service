@@ -20,6 +20,7 @@
 #include "common_event_manager.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include <memory>
 #include <mutex>
 
 namespace OHOS {
@@ -59,7 +60,6 @@ struct AsyncCallbackInfoSubscribe {
     napi_ref callback = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int8_t errorCode = NO_ERROR;
-    napi_threadsafe_function tsfn = nullptr;
 };
 
 struct AsyncCallbackInfoUnsubscribe {
@@ -199,16 +199,7 @@ struct CommonEventPublishDataByjs {
     AAFwk::WantParams wantParams;
 };
 
-struct CommonEventDataWorker {
-    napi_env env = nullptr;
-    napi_ref ref = nullptr;
-    std::shared_ptr<bool> valid;
-    Want want;
-    int32_t code = 0;
-    std::string data;
-};
-
-class SubscriberInstance : public CommonEventSubscriber {
+class SubscriberInstance : public CommonEventSubscriber, public std::enable_shared_from_this<SubscriberInstance> {
 public:
     explicit SubscriberInstance(const CommonEventSubscribeInfo &sp);
     ~SubscriberInstance();
@@ -220,17 +211,24 @@ public:
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
     napi_env GetEnv();
+    napi_ref GetCallbackRef();
     unsigned long long GetID();
 
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
-    std::shared_ptr<bool> valid_;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
     std::mutex refMutex_;
+};
+
+struct CommonEventDataWorker {
+    std::weak_ptr<SubscriberInstance> subscriber;
+    Want want;
+    int32_t code = 0;
+    std::string data;
 };
 
 class SubscriberInstanceWrapper {

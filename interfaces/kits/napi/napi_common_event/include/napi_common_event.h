@@ -22,6 +22,7 @@
 #include "js_runtime_utils.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include <memory>
 #include <mutex>
 
 namespace OHOS {
@@ -214,15 +215,6 @@ struct CommonEventPublishDataByjs {
     AAFwk::WantParams wantParams;
 };
 
-struct CommonEventDataWorker {
-    napi_env env = nullptr;
-    napi_ref ref = nullptr;
-    std::shared_ptr<bool> valid;
-    Want want;
-    int32_t code = 0;
-    std::string data;
-};
-
 struct AsyncCallbackRemoveSticky {
     napi_env env = nullptr;
     napi_async_work asyncWork = nullptr;
@@ -230,7 +222,7 @@ struct AsyncCallbackRemoveSticky {
     CallbackPromiseInfo info;
 };
 
-class SubscriberInstance : public CommonEventSubscriber {
+class SubscriberInstance : public CommonEventSubscriber, public std::enable_shared_from_this<SubscriberInstance> {
 public:
     SubscriberInstance(const CommonEventSubscribeInfo &sp);
     virtual ~SubscriberInstance();
@@ -243,15 +235,22 @@ public:
     void ClearEnv();
     unsigned long long GetID();
     napi_env GetEnv();
+    napi_ref GetCallbackRef();
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
-    std::shared_ptr<bool> valid_;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
     std::mutex refMutex_;
+};
+
+struct CommonEventDataWorker {
+    std::weak_ptr<SubscriberInstance> subscriber;
+    Want want;
+    int32_t code = 0;
+    std::string data;
 };
 
 class SubscriberInstanceWrapper {
