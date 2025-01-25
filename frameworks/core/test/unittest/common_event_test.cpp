@@ -384,6 +384,19 @@ HWTEST_F(CommonEventTest, CommonEventStub_0010, TestSize.Level1)
 }
 
 /*
+ * tc.number: CommonEventStub_004
+ * tc.name: test UnsubscribeCommonEvent
+ * tc.type: FUNC
+ * tc.desc: Invoke UnsubscribeCommonEvent interface verify whether it is normal
+ */
+HWTEST_F(CommonEventTest, CommonEventStub_0011, TestSize.Level1)
+{
+    CommonEventStub commonEventStub;
+    bool unsubscribeCommonEvent = commonEventStub.UnsubscribeCommonEventSync(nullptr);
+    EXPECT_EQ(true, unsubscribeCommonEvent);
+}
+
+/*
  * tc.number: MatchingSkills_001
  * tc.name: test Unmarshalling
  * tc.type: FUNC
