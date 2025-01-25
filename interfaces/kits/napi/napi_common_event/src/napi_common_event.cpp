@@ -15,6 +15,7 @@
 
 #include "napi_common_event.h"
 
+#include <memory>
 #include <mutex>
 #include <uv.h>
 
@@ -37,31 +38,6 @@ static const uint32_t ARGC_ONE = 1;
 static const uint32_t ARGC_TWO = 2;
 static const int32_t PUBLISH_MAX_PARA_AS_USER = 3;
 static const int32_t STR_DATA_MAX_SIZE = 64 * 1024;  // 64KB
-static const uint32_t NAPI_REF_INITIAL_REF_COUNT = 1;
-
-static void NapiIncreaseRef(napi_env env, const napi_ref &ref)
-{
-    if (ref == nullptr) {
-        return;
-    }
-    uint32_t *refCount = new uint32_t;
-    napi_reference_ref(env, ref, refCount);
-    delete refCount;
-}
-
-static void NapiReleaseRef(napi_env env, const napi_ref &ref)
-{
-    if (ref == nullptr) {
-        return;
-    }
-    uint32_t *refCount = new uint32_t;
-    napi_reference_unref(env, ref, refCount);
-    if (*refCount == NAPI_REF_INITIAL_REF_COUNT) {
-        EVENT_LOGD("delete ref");
-        napi_delete_reference(env, ref);
-    }
-    delete refCount;
-}
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 
@@ -116,52 +92,42 @@ std::shared_ptr<SubscriberInstance> SubscriberInstanceWrapper::GetSubscriber()
     return subscriber;
 }
 
-napi_value SetCommonEventData(const CommonEventDataWorker *commonEventDataWorkerData, napi_value &result)
+napi_value SetCommonEventData(const CommonEventDataWorker *commonEventDataWorkerData, napi_env env, napi_value &result)
 {
     EVENT_LOGD("enter");
-
     if (commonEventDataWorkerData == nullptr) {
         EVENT_LOGE("commonEventDataWorkerData is nullptr");
         return nullptr;
     }
-
     napi_value value = nullptr;
 
     // event
-    napi_create_string_utf8(commonEventDataWorkerData->env,
-        commonEventDataWorkerData->want.GetAction().c_str(),
-        NAPI_AUTO_LENGTH,
-        &value);
-    napi_set_named_property(commonEventDataWorkerData->env, result, "event", value);
+    napi_create_string_utf8(env, commonEventDataWorkerData->want.GetAction().c_str(), NAPI_AUTO_LENGTH, &value);
+    napi_set_named_property(env, result, "event", value);
 
     // bundleName
-    napi_create_string_utf8(commonEventDataWorkerData->env,
-        commonEventDataWorkerData->want.GetBundle().c_str(),
-        NAPI_AUTO_LENGTH,
-        &value);
-    napi_set_named_property(commonEventDataWorkerData->env, result, "bundleName", value);
+    napi_create_string_utf8(env, commonEventDataWorkerData->want.GetBundle().c_str(), NAPI_AUTO_LENGTH, &value);
+    napi_set_named_property(env, result, "bundleName", value);
 
     // code
-    napi_create_int32(commonEventDataWorkerData->env, commonEventDataWorkerData->code, &value);
-    napi_set_named_property(commonEventDataWorkerData->env, result, "code", value);
+    napi_create_int32(env, commonEventDataWorkerData->code, &value);
+    napi_set_named_property(env, result, "code", value);
 
     // data
-    napi_create_string_utf8(
-        commonEventDataWorkerData->env, commonEventDataWorkerData->data.c_str(), NAPI_AUTO_LENGTH, &value);
-    napi_set_named_property(commonEventDataWorkerData->env, result, "data", value);
+    napi_create_string_utf8(env, commonEventDataWorkerData->data.c_str(), NAPI_AUTO_LENGTH, &value);
+    napi_set_named_property(env, result, "data", value);
 
     // parameters ?: {[key:string] : any}
     AAFwk::WantParams wantParams = commonEventDataWorkerData->want.GetParams();
     napi_value wantParamsValue = nullptr;
-    wantParamsValue = OHOS::AppExecFwk::WrapWantParams(commonEventDataWorkerData->env, wantParams);
+    wantParamsValue = OHOS::AppExecFwk::WrapWantParams(env, wantParams);
     if (wantParamsValue) {
-        napi_set_named_property(commonEventDataWorkerData->env, result, "parameters", wantParamsValue);
+        napi_set_named_property(env, result, "parameters", wantParamsValue);
     } else {
-        napi_set_named_property(
-            commonEventDataWorkerData->env, result, "parameters", NapiGetNull(commonEventDataWorkerData->env));
+        napi_set_named_property(env, result, "parameters", NapiGetNull(env));
     }
 
-    return NapiGetNull(commonEventDataWorkerData->env);
+    return NapiGetNull(env);
 }
 
 void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void* data)
@@ -172,47 +138,49 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
         EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData is nullptr");
         return;
     }
-    if (commonEventDataWorkerData->ref == nullptr ||
-        (commonEventDataWorkerData->valid == nullptr) || *(commonEventDataWorkerData->valid) == false) {
-        EVENT_LOGE("OnReceiveEvent commonEventDataWorkerData ref is null or invalid which may be previously released");
-        NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
+    std::shared_ptr<SubscriberInstance> subscriber = commonEventDataWorkerData->subscriber.lock();
+    if (subscriber == nullptr) {
+        EVENT_LOGE("ThreadSafeCallback subscriber is null or invalid which may be previously released");
         delete commonEventDataWorkerData;
         commonEventDataWorkerData = nullptr;
         return;
     }
     napi_handle_scope scope;
-    napi_open_handle_scope(commonEventDataWorkerData->env, &scope);
+    napi_open_handle_scope(env, &scope);
     if (scope == nullptr) {
         EVENT_LOGE("Scope is null");
-        NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
         return;
     }
 
     napi_value result = nullptr;
-    napi_create_object(commonEventDataWorkerData->env, &result);
-    if (SetCommonEventData(commonEventDataWorkerData, result) == nullptr) {
-        napi_close_handle_scope(commonEventDataWorkerData->env, scope);
-        NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
+    napi_create_object(env, &result);
+    if (SetCommonEventData(commonEventDataWorkerData, env, result) == nullptr) {
+        napi_close_handle_scope(env, scope);
         delete commonEventDataWorkerData;
         commonEventDataWorkerData = nullptr;
         return;
     }
 
     napi_value undefined = nullptr;
-    napi_get_undefined(commonEventDataWorkerData->env, &undefined);
+    napi_get_undefined(env, &undefined);
 
+    napi_ref ref = subscriber->GetCallbackRef();
+    if (ref == nullptr) {
+        EVENT_LOGE("ThreadSafeCallback ref is null which may be previously released");
+        napi_close_handle_scope(env, scope);
+        delete commonEventDataWorkerData;
+        commonEventDataWorkerData = nullptr;
+        return;
+    }
     napi_value callback = nullptr;
     napi_value resultout = nullptr;
-    napi_get_reference_value(commonEventDataWorkerData->env, commonEventDataWorkerData->ref, &callback);
+    napi_get_reference_value(env, ref, &callback);
 
     napi_value results[ARGS_TWO_EVENT] = {nullptr};
-    results[INDEX_ZERO] = GetCallbackErrorValue(commonEventDataWorkerData->env, NO_ERROR);
+    results[INDEX_ZERO] = GetCallbackErrorValue(env, NO_ERROR);
     results[INDEX_ONE] = result;
-    napi_call_function(
-        commonEventDataWorkerData->env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout);
-
-    napi_close_handle_scope(commonEventDataWorkerData->env, scope);
-    NapiReleaseRef(commonEventDataWorkerData->env, commonEventDataWorkerData->ref);
+    napi_call_function(env, undefined, callback, ARGS_TWO_EVENT, &results[INDEX_ZERO], &resultout);
+    napi_close_handle_scope(env, scope);
     delete commonEventDataWorkerData;
     commonEventDataWorkerData = nullptr;
 }
@@ -221,13 +189,11 @@ SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : Com
 {
     id_ = ++subscriberID_;
     EVENT_LOGD("Create SubscriberInstance[%{public}llu]", id_.load());
-    valid_ = std::make_shared<bool>(false);
 }
 
 SubscriberInstance::~SubscriberInstance()
 {
     EVENT_LOGD("destroy SubscriberInstance[%{public}llu]", id_.load());
-    *valid_ = false;
     std::lock_guard<std::mutex> lock(envMutex_);
     if (env_ != nullptr && tsfn_ != nullptr) {
         EVENT_LOGD("Release threadsafe function");
@@ -264,12 +230,15 @@ void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
     std::lock_guard<std::mutex> lockRef(refMutex_);
     if (ref != nullptr) {
-        NapiIncreaseRef(env_, ref);
-    } else {
-        NapiReleaseRef(env_, ref_);
+        napi_delete_reference(env_, ref_);
     }
     ref_ = ref;
-    *valid_ = ref_ != nullptr ? true : false;
+}
+
+napi_ref SubscriberInstance::GetCallbackRef()
+{
+    std::lock_guard<std::mutex> lockRef(refMutex_);
+    return ref_;
 }
 
 void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
@@ -301,10 +270,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         commonEventDataWorker->want = data.GetWant();
         commonEventDataWorker->code = data.GetCode();
         commonEventDataWorker->data = data.GetData();
-        commonEventDataWorker->env = env_;
-        commonEventDataWorker->valid = valid_;
-        commonEventDataWorker->ref = ref_;
-        NapiIncreaseRef(env_, ref_);
+        commonEventDataWorker->subscriber = shared_from_this();
         napi_acquire_threadsafe_function(tsfn_);
         napi_call_threadsafe_function(tsfn_, commonEventDataWorker, napi_tsfn_nonblocking);
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
@@ -514,13 +480,17 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         EVENT_LOGE("asyncCallbackInfo is nullptr");
         return NapiGetNull(env);
     }
-    asyncCallbackInfo->subscriber = subscriber;
-    asyncCallbackInfo->callback = callback;
 
     napi_value resourceName = nullptr;
+    napi_threadsafe_function tsfn = nullptr;
     napi_create_string_latin1(env, "Subscribe", NAPI_AUTO_LENGTH, &resourceName);
     napi_create_threadsafe_function(env, argv[1], nullptr, resourceName, 0, 1, asyncCallbackInfo->callback,
-        ThreadFinished, nullptr, ThreadSafeCallback, &(asyncCallbackInfo->tsfn));
+        ThreadFinished, nullptr, ThreadSafeCallback, &tsfn);
+    subscriber->SetEnv(env);
+    subscriber->SetCallbackRef(callback);
+    subscriber->SetThreadSafeFunction(tsfn);
+    asyncCallbackInfo->subscriber = subscriber;
+    asyncCallbackInfo->callback = callback;
     // Calling asynchronous functions
     napi_create_async_work(env,
         nullptr,
@@ -529,9 +499,6 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             EVENT_LOGD("Subscribe napi_create_async_work excute");
             AsyncCallbackInfoSubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoSubscribe *>(data);
             if (asyncCallbackInfo) {
-                asyncCallbackInfo->subscriber->SetEnv(env);
-                asyncCallbackInfo->subscriber->SetCallbackRef(asyncCallbackInfo->callback);
-                asyncCallbackInfo->subscriber->SetThreadSafeFunction(asyncCallbackInfo->tsfn);
                 asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(
                     asyncCallbackInfo->subscriber);
             }
