@@ -294,3 +294,37 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_011, TestSize.Level1)
     EXPECT_EQ(
         ERR_OK, DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveSubscriber(commonEventListener));
 }
+
+/*
+ * Feature: CommonEvent
+ * Function: NewUnSubscribeCommonEventSync
+ * SubFunction: NA
+ * FunctionPoints: normal
+ * EnvConditions: system running normally
+ * CaseDescription: Verify UnSubscribeCommonEvent function return value with eventListener existed.
+ */
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_012, TestSize.Level1)
+{
+    CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    CommonEvent::GetInstance()->SubscribeCommonEvent(subscriber);
+    EXPECT_EQ(ERR_OK, CommonEvent::GetInstance()->UnSubscribeCommonEventSync(subscriber));
+}
+
+/*
+ * Feature: CommonEventManager
+ * Function: NewUnSubscribeCommonEventSync
+ * SubFunction: NA
+ * FunctionPoints: normal
+ * EnvConditions: system running normally
+ * CaseDescription: Unsubscribe normally and verify UnSubscribeCommonEvent function return value.
+ */
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_013, TestSize.Level1)
+{
+    CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    std::shared_ptr<CommonEventManager> helper;
+    EXPECT_EQ(ERR_OK, helper->NewUnSubscribeCommonEventSync(subscriber));
+}
