@@ -706,8 +706,8 @@ const char* OH_CommonEvent_GetDataFromSubscriber(const CommonEvent_Subscriber* s
 
 bool OH_CommonEvent_SetDataToSubscriber(CommonEvent_Subscriber* subscriber, const char* data, size_t length)
 {
-    if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+    if (subscriber == nullptr || data == nullptr) {
+        EVENT_LOGE("Invalid subscriber or data");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
