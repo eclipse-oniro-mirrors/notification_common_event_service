@@ -51,7 +51,7 @@ constexpr static const char* JSON_KEY_FILTER_CONDITIONS = "conditions";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_CODE = "code";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_DATA = "data";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_PARAMETERS = "parameters";
-static bool isWearableg_isWearable = OHOS::system::GetParameter("const.product.devicetype", "") ==  "wearable";
+static bool g_isWearable = OHOS::system::GetParameter("const.product.devicetype", "") ==  "wearable";
 constexpr int32_t BOOT_DELAY_TIME = 15000;
 constexpr int32_t TIME_UNIT_SIZE = 1000;
 }
