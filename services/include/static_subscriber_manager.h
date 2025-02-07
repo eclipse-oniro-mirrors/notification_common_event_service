@@ -28,6 +28,7 @@
 #include "common_event_data.h"
 #include "common_event_publish_info.h"
 #include "singleton.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -134,6 +135,7 @@ private:
     bool hasInitValidSubscribers_ = false;
     std::mutex subscriberMutex_;
     std::mutex disableEventsMutex_;
+    std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

@@ -35,6 +35,7 @@
 #include "os_account_manager_helper.h"
 #include "static_subscriber_data_manager.h"
 #include "string_wrapper.h"
+#include "parameters.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -50,6 +51,9 @@ constexpr static const char* JSON_KEY_FILTER_CONDITIONS = "conditions";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_CODE = "code";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_DATA = "data";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_PARAMETERS = "parameters";
+static bool isWearableg_isWearable = OHOS::system::GetParameter("const.product.devicetype", "") ==  "wearable";
+constexpr int32_t BOOT_DELAY_TIME = 15000;
+constexpr int32_t TIME_UNIT_SIZE = 1000;
 }
 
 StaticSubscriberManager::StaticSubscriberManager() {}
@@ -169,56 +173,78 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
     auto targetSubscribers = validSubscribers_.find(data.GetWant().GetAction());
-    if (targetSubscribers != validSubscribers_.end()) {
-        for (auto subscriber : targetSubscribers->second) {
-            if (IsDisableEvent(subscriber.bundleName, targetSubscribers->first)) {
-                EVENT_LOGW("subscriber %{public}s is disable.", subscriber.bundleName.c_str());
-                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-                continue;
-            }
-            if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
-                EVENT_LOGW("subscriber %{public}s userId is invalid, subscriber.userId = %{public}d",
-                    subscriber.bundleName.c_str(), subscriber.userId);
-                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-                continue;
-            }
-            if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
-                && (subscriber.userId != userId)) {
-                EVENT_LOGW("subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
-                    "userId = %{public}d", subscriber.bundleName.c_str(), subscriber.userId, userId);
-                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-                continue;
-            }
-            if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->
-                CheckIsSystemAppByBundleName(subscriber.bundleName, subscriber.userId)) {
-                EVENT_LOGW("subscriber %{public}s is not system app, not allow.", subscriber.bundleName.c_str());
-                continue;
-            }
-            if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
-                EVENT_LOGW("publisher does not have required permission %{public}s", subscriber.permission.c_str());
-                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-                continue;
-            }
-            if (!VerifySubscriberPermission(subscriber.bundleName, subscriber.userId,
-                publishInfo.GetSubscriberPermissions())) {
-                EVENT_LOGW("subscriber %{public}s does not have required permissions", subscriber.bundleName.c_str());
-                SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-                continue;
-            }
-            if (!publishInfo.GetBundleName().empty() && subscriber.bundleName != publishInfo.GetBundleName()) {
-                EVENT_LOGW("subscriber bundleName is not match, subscriber.bundleName = %{public}s, "
-                    "bundleName = %{public}s", subscriber.bundleName.c_str(), publishInfo.GetBundleName().c_str());
-                continue;
-            }
-            if (!IsFilterParameters(subscriber, data)) {
-                EVENT_LOGW("subscriber filter parameters is not match, subscriber.bundleName = %{public}s",
-                    subscriber.bundleName.c_str());
-                continue;
-            }
+    if (targetSubscribers == validSubscribers_.end()) {
+        return;
+    }
+    std::vector<StaticSubscriberInfo> bootStartHaps {};
+    for (auto subscriber : targetSubscribers->second) {
+        if (IsDisableEvent(subscriber.bundleName, targetSubscribers->first)) {
+            EVENT_LOGW("subscriber %{public}s is disable.", subscriber.bundleName.c_str());
+            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+            continue;
+        }
+        if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
+            EVENT_LOGW("subscriber %{public}s userId is invalid, subscriber.userId = %{public}d",
+                subscriber.bundleName.c_str(), subscriber.userId);
+            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+            continue;
+        }
+        if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
+            && (subscriber.userId != userId)) {
+            EVENT_LOGW("subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
+                "userId = %{public}d", subscriber.bundleName.c_str(), subscriber.userId, userId);
+            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+            continue;
+        }
+        if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->
+            CheckIsSystemAppByBundleName(subscriber.bundleName, subscriber.userId)) {
+            EVENT_LOGW("subscriber %{public}s is not system app, not allow.", subscriber.bundleName.c_str());
+            continue;
+        }
+        if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
+            EVENT_LOGW("publisher does not have required permission %{public}s", subscriber.permission.c_str());
+            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+            continue;
+        }
+        if (!VerifySubscriberPermission(subscriber.bundleName, subscriber.userId,
+            publishInfo.GetSubscriberPermissions())) {
+            EVENT_LOGW("subscriber %{public}s does not have required permissions", subscriber.bundleName.c_str());
+            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+            continue;
+        }
+        if (!publishInfo.GetBundleName().empty() && subscriber.bundleName != publishInfo.GetBundleName()) {
+            EVENT_LOGW("subscriber bundleName is not match, subscriber.bundleName = %{public}s, "
+                "bundleName = %{public}s", subscriber.bundleName.c_str(), publishInfo.GetBundleName().c_str());
+            continue;
+        }
+        if (!IsFilterParameters(subscriber, data)) {
+            EVENT_LOGW("subscriber filter parameters is not match, subscriber.bundleName = %{public}s",
+                subscriber.bundleName.c_str());
+            continue;
+        }
+        if (g_isWearable && data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED) {
+            bootStartHaps.push_back(subscriber);
+        } else {
             PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
             EVENT_LOGI("Notify %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
-                subscriber.bundleName.c_str());
+                       subscriber.bundleName.c_str());
         }
+    }
+    if (g_isWearable) {
+        if (!ffrt_) {
+            EVENT_LOGD("ready to create ffrt");
+            ffrt_ = std::make_shared<ffrt::queue>("StaticSubscriberManager");
+        }
+
+        std::function<void()> task = [bootStartHaps, data, service]() {
+            for (auto subscriber : bootStartHaps) {
+                StaticSubscriberManager::GetInstance()->PublishCommonEventConnecAbility(data, service,
+                    subscriber.userId, subscriber.bundleName, subscriber.name);
+                EVENT_LOGI("Notify %{public}s end,send StaticSubscriber = %{public}s",
+                           data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
+            }
+        };
+        ffrt_->submit(task, ffrt::task_attr().delay(BOOT_DELAY_TIME * TIME_UNIT_SIZE));
     }
 }
 
