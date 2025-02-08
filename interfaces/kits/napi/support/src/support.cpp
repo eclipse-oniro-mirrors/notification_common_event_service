@@ -640,6 +640,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_MINORSMODE_OFF");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BUNDLE_RESOURCES_CHANGED,
+        "COMMON_EVENT_BUNDLE_RESOURCES_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED,
         "COMMON_EVENT_SCREEN_LOCK_FILE_ACCESS_STATE_CHANGED");
     SetNamedPropertyByStr(env,
