@@ -44,7 +44,6 @@ std::string BundleManagerHelper::GetBundleName(const uid_t uid)
     std::string bundleName = "";
 
     if (!GetBundleMgrProxyAsync()) {
-        EVENT_LOGE_LIMIT("failed to get bms proxy");
         return bundleName;
     }
     std::string identity = IPCSkeleton::ResetCallingIdentity();
@@ -61,7 +60,6 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
-        EVENT_LOGE("failed to get bms proxy");
         return false;
     }
 
@@ -76,7 +74,6 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
-        EVENT_LOGE("failed to get bms proxy");
         return false;
     }
     std::vector<int> osAccountIds;
@@ -104,7 +101,6 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
-        EVENT_LOGE("failed to get bms proxy");
         return false;
     }
 
@@ -121,7 +117,6 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(const uid_t uid)
     bool isSystemApp = false;
 
     if (!GetBundleMgrProxy()) {
-        EVENT_LOGE("failed to get bms proxy");
         return isSystemApp;
     }
 
@@ -232,7 +227,6 @@ bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag 
     }
 
     if (!GetBundleMgrProxy()) {
-        EVENT_LOGE("failed to get bms proxy");
         return false;
     }
 

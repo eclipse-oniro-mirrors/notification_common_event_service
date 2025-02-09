@@ -217,15 +217,15 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(vec, *eventRecord);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
                 vec, *eventRecord);
-            EVENT_LOGE("NotifyUnorderedEvent = %{public}s freeze, suscriberID = %{public}s",
+            EVENT_LOGE("Notify %{public}s to freeze subscriber, subId = %{public}s",
                 eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             freezeCnt++;
         } else {
             sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(vec->commonEventListener);
             if (!commonEventListenerProxy) {
                 eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
-                EVENT_LOGE("Failed to get IEventReceive proxy, suscriberID = %{public}s",
-                    vec->eventRecordInfo.subId.c_str());
+                EVENT_LOGE("Notify %{public}s to invalid proxy, subId = %{public}s",
+                    eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
                 failCnt++;
                 continue;
             }
@@ -241,13 +241,13 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
                     eventRecord->commonEventData->GetWant().GetAction());
             } else {
                 failCnt++;
-                EVENT_LOGE("NotifyUnorderedEvent = %{public}s fail, suscriberID = %{public}s",
+                EVENT_LOGE("Notify %{public}s fail, subId = %{public}s",
                     eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             }
         }
     }
-    EVENT_LOGI("NotifyUnorderedEvent = %{public}s end, subscriberCnt = %{public}zu, succCnt = %{public}d,"
-        "failCnt = %{public}d, freezeCnt = %{public}d", eventRecord->commonEventData->GetWant().GetAction().c_str(),
+    EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}d, %{public}d, %{public}d)",
+        eventRecord->commonEventData->GetWant().GetAction().c_str(),
         eventRecord->receivers.size(), succCnt, failCnt, freezeCnt);
 }
 
@@ -543,8 +543,8 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
                 receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
                 sp->resultTo = nullptr;
             }
-            EVENT_LOGI("NotifyOrderedEvent = %{public}s end, success: %{public}zu, total: %{public}zu",
-                sp->commonEventData->GetWant().GetAction().c_str(), sp->nextReceiver, numReceivers);
+            EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}zu)",
+                sp->commonEventData->GetWant().GetAction().c_str(), numReceivers, sp->nextReceiver);
             CancelTimeout();
 
             orderedEventQueue_.erase(orderedEventQueue_.begin());
@@ -800,7 +800,7 @@ bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::str
         EVENT_LOGW("No permission to send common event %{public}s "
                     "from %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
                     "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
-                    "due to registered subscriber requires the %{public}s permission.",
+                    "due to subscriber requires the %{public}s permission.",
             eventRecord.commonEventData->GetWant().GetAction().c_str(),
             eventRecord.eventRecordInfo.bundleName.c_str(),
             eventRecord.eventRecordInfo.pid,

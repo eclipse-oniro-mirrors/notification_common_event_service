@@ -42,7 +42,6 @@ int AbilityManagerHelper::ConnectAbility(
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!GetAbilityMgrProxy()) {
-        EVENT_LOGE("failed to get ability manager proxy!");
         return -1;
     }
 
@@ -134,7 +133,6 @@ void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnecti
     }
 
     if (!GetAbilityMgrProxy()) {
-        EVENT_LOGE("failed to get ability manager proxy!");
         return;
     }
     IN_PROCESS_CALL_WITHOUT_RET(abilityMgr_->DisconnectAbility(connection));
