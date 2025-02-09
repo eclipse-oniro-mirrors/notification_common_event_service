@@ -726,3 +726,28 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_005, TestSize.Level1)
     bool result = subscriber->SetCodeAndData(code, data);
     EXPECT_EQ(result, false);
 }
+
+/*
+ * tc.number: CommonEventSubscriber_006
+ * tc.name: test ClearAbortCommonEvent and AbortCommonEvent
+ * tc.type: FUNC
+ * tc.require: issue
+ * tc.desc: when ClearAbortCommonEvent
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_006, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+    std::shared_ptr<AsyncCommonEventResult> result =
+        std::make_shared<AsyncCommonEventResult>(12, "data", true, false, nullptr);
+    subscriber->SetAsyncCommonEventResult(result);
+    EXPECT_EQ(subscriber->CheckSynchronous(), true);
+
+    EXPECT_EQ(subscriber->AbortCommonEvent(), true);
+    EXPECT_EQ(subscriber->GetAbortCommonEvent(), true);
+
+    EXPECT_EQ(subscriber->ClearAbortCommonEvent(), true);
+    EXPECT_EQ(subscriber->GetAbortCommonEvent(), false);
+}
