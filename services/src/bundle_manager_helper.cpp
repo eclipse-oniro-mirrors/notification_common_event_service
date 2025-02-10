@@ -81,7 +81,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     }
     std::vector<int> osAccountIds;
     if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(osAccountIds) != ERR_OK) {
-        EVENT_LOGE("failed to QueryActiveOsAccountIds!");
+        EVENT_LOGE_LIMIT("failed to QueryActiveOsAccountIds!");
         return false;
     }
     if (osAccountIds.size() == 0) {
