@@ -419,6 +419,13 @@ static const char* const COMMON_EVENT_MINORSMODE_OFF = "usual.event.MINORSMODE_O
  */
 static const char* const COMMON_EVENT_DATA_SHARE_READY = "usual.event.DATA_SHARE_READY";
 
+/**
+ * This common event means that the managed browser policy is changed.
+ * This is a protected common event that can only be sent by system.
+ */
+static const char* const COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED =
+    "usual.event.MANAGED_BROWSER_POLICY_CHANGED";
+
 #ifdef __cplusplus
 }
 #endif
