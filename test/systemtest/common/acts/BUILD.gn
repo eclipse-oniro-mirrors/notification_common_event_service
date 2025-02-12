@@ -52,7 +52,6 @@ group("actsCEStest_ces") {
 
   deps = [
     "actsCESCESpublishInfoTest:actsCESTest",
-    "actsCESDataTest:actsCESTest",
     "actsCESManagertest:actsCESTest",
     "actsCESMatchingSkillsTest:actsCESTest",
     "actsCESSubscribeInfoTest:actsCESTest",

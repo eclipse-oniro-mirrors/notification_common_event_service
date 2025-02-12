@@ -183,7 +183,7 @@ private:
 
         std::function<void()> asyncProcessFunc =
             std::bind(&SubscriberTest::AsyncProcess, this, result, TIME_OUT_SECONDS_MIDDLE);
-        handlerPtr->PostTask(asyncProcessFunc);
+        ffrt::submit(asyncProcessFunc);
     }
 
     void ProcessSubscriberTestCase5()
@@ -214,7 +214,7 @@ private:
 
         std::function<void()> asyncProcessFunc =
             std::bind(&SubscriberTest::AsyncProcess, this, result, TIME_OUT_SECONDS_MIDDLE);
-        handlerPtr->PostTask(asyncProcessFunc);
+        ffrt::submit(asyncProcessFunc);
     }
 
     void AsyncProcess(const std::shared_ptr<AsyncCommonEventResult> &result, time_t outtime)
@@ -240,9 +240,6 @@ private:
 
         result->FinishCommonEvent();
     }
-
-private:
-    std::shared_ptr<EventHandler> handlerPtr = std::make_shared<EventHandler>(EventRunner::Create());
 };
 
 class SubscriberAnotherTest : public CommonEventSubscriber {
@@ -342,7 +339,7 @@ private:
 
         std::function<void()> asyncProcessFunc =
             std::bind(&SubscriberAnotherTest::AsyncProcess, this, result, TIME_OUT_SECONDS_MIDDLE);
-        handlerPtr->PostTask(asyncProcessFunc);
+        ffrt::submit(asyncProcessFunc);
     }
 
     void AsyncProcess(const std::shared_ptr<AsyncCommonEventResult> &result, time_t outtime)
@@ -368,13 +365,13 @@ private:
 
         result->FinishCommonEvent();
     }
-
-private:
-    std::shared_ptr<EventHandler> handlerPtr = std::make_shared<EventHandler>(EventRunner::Create());
 };
 
 void CESPublishOrderedEventSystmTest::SetUpTestCase(void)
-{}
+{
+    g_mtx.unlock();
+    g_mtxAnother.unlock();
+}
 
 void CESPublishOrderedEventSystmTest::TearDownTestCase(void)
 {}
@@ -402,6 +399,124 @@ bool CESPublishOrderedEventSystmTest::PublishOrderedCommonEventTest(const Common
 {
     GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::PublishOrderedCommonEventTest begain:";
     return CommonEventManager::PublishCommonEvent(data, publishInfo, subscriber);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedEventTest_0100
+ * @tc.name: PublishCommonEvent
+ * @tc.desc: Verify that the ordered common event was published successfully
+ */
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0100, Function | MediumTest | Level1)
+{
+    /* Subscribe */
+    // make matching skills
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(EVENTCASE1);
+
+    // make subscriber info
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
+
+    // make a subscriber object
+    std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    // subscribe a common event
+    bool subscribeResult = SubscribeCommonEventTest(subscriberTest);
+    EXPECT_EQ(true, subscribeResult);
+
+    // make another matching skills
+    MatchingSkills matchingSkillsAnother;
+    matchingSkillsAnother.AddEvent(EVENTCASE1);
+
+    // make another subscriber info
+    CommonEventSubscribeInfo subscribeInfoAnother(matchingSkillsAnother);
+
+    // make another subscriber object
+    std::shared_ptr<SubscriberAnotherTest> subscriberTestAnother =
+        std::make_shared<SubscriberAnotherTest>(subscribeInfoAnother);
+
+    // subscribe another event
+    bool subscribeResultAnother = SubscribeCommonEventTest(subscriberTestAnother);
+    EXPECT_EQ(true, subscribeResultAnother);
+
+    /* Publish */
+
+    // make a want
+    Want want;
+    want.SetAction(EVENTCASE1);
+
+    // make common event data
+    CommonEventData data;
+    data.SetWant(want);
+    data.SetCode(INITCODE);
+    data.SetData(INNITDATA);
+
+    // make publish info
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetOrdered(true);
+
+    // lock the mutex
+    g_mtx.lock();
+    g_mtxAnother.lock();
+
+    std::shared_ptr<Subscriber> subscriber = std::make_shared<Subscriber>(subscribeInfo);
+
+    // publish ordered event
+    bool publishResult = PublishOrderedCommonEventTest(data, publishInfo, subscriber);
+
+    EXPECT_EQ(true, publishResult);
+
+    // record start time
+    struct tm startTime = {0};
+    EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
+
+    // record current time
+    struct tm doingTime = {0};
+    EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTime), true);
+    int64_t seconds = 0;
+
+    GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::g_mtx.try_lock begin";
+    while (!g_mtx.try_lock()) {
+        // get current time and compare it with the start time
+        EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTime), true);
+        seconds = OHOS::GetSecondsBetween(startTime, doingTime);
+        if (seconds >= TIME_OUT_SECONDS_LIMIT) {
+            GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::g_mtx.try_lock overtime";
+            break;
+        }
+    }
+    GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::g_mtx.try_lock use time(s): "
+                     << OHOS::GetSecondsBetween(startTime, doingTime);
+
+    // expect the subscriber could receive the event within 5 seconds.
+    EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
+
+    // record start time of another
+    struct tm startTimeAnother = {0};
+    EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTimeAnother), true);
+
+    // record current time
+    struct tm doingTimeAnother = {0};
+    EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTimeAnother), true);
+    int64_t secondsAnother = 0;
+
+    GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::g_mtxAnother.try_lock begin";
+    while (!g_mtxAnother.try_lock()) {
+        // get current time and compare it with the start time
+        EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTimeAnother), true);
+        secondsAnother = OHOS::GetSecondsBetween(startTimeAnother, doingTimeAnother);
+        if (secondsAnother >= TIME_OUT_SECONDS_LIMIT) {
+            GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::g_mtxAnother.try_lock overtime";
+            break;
+        }
+    }
+
+    GTEST_LOG_(INFO) << "CESPublishOrderedEventSystmTest::g_mtxAnother.try_lock use time(s): "
+                     << OHOS::GetSecondsBetween(startTimeAnother, doingTimeAnother);
+    EXPECT_LT(secondsAnother, TIME_OUT_SECONDS_LIMIT);
+
+    g_mtx.unlock();
+    g_mtxAnother.unlock();
 }
 
 /*
@@ -538,6 +653,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_030
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -650,6 +766,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_040
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -764,6 +881,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_050
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -879,6 +997,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_060
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
