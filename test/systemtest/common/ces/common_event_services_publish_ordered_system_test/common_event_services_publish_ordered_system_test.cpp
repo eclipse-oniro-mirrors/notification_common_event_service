@@ -183,7 +183,7 @@ private:
 
         std::function<void()> asyncProcessFunc =
             std::bind(&SubscriberTest::AsyncProcess, this, result, TIME_OUT_SECONDS_MIDDLE);
-        handlerPtr->PostTask(asyncProcessFunc);
+        ffrt::submit(asyncProcessFunc);
     }
 
     void ProcessSubscriberTestCase5()
@@ -214,7 +214,7 @@ private:
 
         std::function<void()> asyncProcessFunc =
             std::bind(&SubscriberTest::AsyncProcess, this, result, TIME_OUT_SECONDS_MIDDLE);
-        handlerPtr->PostTask(asyncProcessFunc);
+        ffrt::submit(asyncProcessFunc);
     }
 
     void AsyncProcess(const std::shared_ptr<AsyncCommonEventResult> &result, time_t outtime)
@@ -240,9 +240,6 @@ private:
 
         result->FinishCommonEvent();
     }
-
-private:
-    std::shared_ptr<EventHandler> handlerPtr = std::make_shared<EventHandler>(EventRunner::Create());
 };
 
 class SubscriberAnotherTest : public CommonEventSubscriber {
@@ -342,7 +339,7 @@ private:
 
         std::function<void()> asyncProcessFunc =
             std::bind(&SubscriberAnotherTest::AsyncProcess, this, result, TIME_OUT_SECONDS_MIDDLE);
-        handlerPtr->PostTask(asyncProcessFunc);
+        ffrt::submit(asyncProcessFunc);
     }
 
     void AsyncProcess(const std::shared_ptr<AsyncCommonEventResult> &result, time_t outtime)
@@ -368,13 +365,13 @@ private:
 
         result->FinishCommonEvent();
     }
-
-private:
-    std::shared_ptr<EventHandler> handlerPtr = std::make_shared<EventHandler>(EventRunner::Create());
 };
 
 void CESPublishOrderedEventSystmTest::SetUpTestCase(void)
-{}
+{
+    g_mtx.unlock();
+    g_mtxAnother.unlock();
+}
 
 void CESPublishOrderedEventSystmTest::TearDownTestCase(void)
 {}
@@ -418,6 +415,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_010
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -655,6 +653,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_030
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -767,6 +766,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_040
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -881,6 +881,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_050
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
@@ -996,6 +997,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_060
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(HIGHPRIORITY);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);

@@ -1667,7 +1667,7 @@ HWTEST_F(cesSystemTest, CES_ReceiveEvent_0500, Function | MediumTest | Level1)
 HWTEST_F(cesSystemTest, CES_ReceiveEvent_0600, Function | MediumTest | Level1)
 {
     bool result = true;
-    std::string eventName = "testEventReceiveEntityInfoFalse";
+    std::string eventName = "cesSystemTestTestEventReceiveEntityInfoFalse";
     std::string entity = "addEntity";
 
     Want wantTest;
@@ -2673,6 +2673,7 @@ HWTEST_F(cesSystemTest, CES_PublishOrderTimeOut_0300, Function | MediumTest | Le
     publishInfoTimeOut.SetOrdered(true);
 
     CommonEventSubscribeInfo subscribeInfoOne(matchingSkills);
+    subscribeInfoOne.SetPriority(PRIORITY_HIGH);
     auto subscriberTimeOnePtr = std::make_shared<CESPublishOrderTimeOutOne>(subscribeInfoOne);
     EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberTimeOnePtr));
 
@@ -2723,6 +2724,7 @@ HWTEST_F(cesSystemTest, CES_PublishOrderTimeOut_0400, Function | MediumTest | Le
     publishInfoTimeOut.SetOrdered(true);
 
     CommonEventSubscribeInfo subscribeInfoOne(matchingSkills);
+    subscribeInfoOne.SetPriority(PRIORITY_HIGH);
     auto subscriberTimeOnePtr = std::make_shared<CESPublishOrderTimeOutOne>(subscribeInfoOne);
     EXPECT_TRUE(CommonEventManager::SubscribeCommonEvent(subscriberTimeOnePtr));
 
