@@ -2107,8 +2107,8 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0500, Function | MediumTest | Leve
  */
 HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0600, Function | MediumTest | Level1)
 {
-    std::string eventName = "testEventReceiveEntityInfoFalse";
-    std::string eventAction = "testEventReceiveEntityInfoFalse";
+    std::string eventName = "ActsCESManagertestTestEventReceiveEntityInfoFalse";
+    std::string eventAction = "ActsCESManagertestTestEventReceiveEntityInfoFalse";
     std::string entity = "addEntity";
     bool result = true;
     bool stickty = true;
