@@ -229,7 +229,7 @@ void SubscriberInstance::ClearEnv()
 void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
     std::lock_guard<std::mutex> lockRef(refMutex_);
-    if (ref != nullptr) {
+    if (ref == nullptr) {
         napi_delete_reference(env_, ref_);
     }
     ref_ = ref;
