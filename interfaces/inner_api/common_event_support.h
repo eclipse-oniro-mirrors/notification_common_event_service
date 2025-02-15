@@ -1358,6 +1358,12 @@ public:
     */
     static const std::string COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED;
 
+    /**
+     * Indicates that the managed browser policy is changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED;
+
 public:
     CommonEventSupport();
 

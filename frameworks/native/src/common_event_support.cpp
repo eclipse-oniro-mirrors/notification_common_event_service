@@ -1495,6 +1495,13 @@ const std::string CommonEventSupport::COMMON_EVENT_RESTORE_START = "usual.event.
 const std::string CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED =
     "usual.event.VPN_CONNECTION_STATUS_CHANGED";
 
+/**
+ * Indicates that the managed browser policy is changed.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED =
+    "usual.event.MANAGED_BROWSER_POLICY_CHANGED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2839,6 +2846,12 @@ void CommonEventSupport::Init()
     * This is a protected common event that can only be sent by system.
     */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED);
+
+    /**
+     * Indicates that the managed browser policy is changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED);
     return;
 }
 

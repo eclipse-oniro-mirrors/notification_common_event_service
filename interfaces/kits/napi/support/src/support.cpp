@@ -662,6 +662,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED,
         "COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED,
+        "COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 
