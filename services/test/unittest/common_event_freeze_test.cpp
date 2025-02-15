@@ -393,6 +393,7 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
 
     // make subscriber info
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetPriority(1);
 
     // make a subscriber object
     std::shared_ptr<SubscriberTest> subscriberTest = std::make_shared<SubscriberTest>(subscribeInfo);
