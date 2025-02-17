@@ -92,6 +92,16 @@ public:
      */
     static const std::string COMMON_EVENT_ENTER_FORCE_SLEEP;
     /**
+     * Indicates the action of a common event that the device is about to enter the hibernate mode.
+     * This common event can only be published by the system.
+     */
+    static const std::string COMMON_EVENT_ENTER_HIBERNATE;
+    /**
+     * Indicates the action of a common event that the device exits the hibernate mode.
+     * This common event can only be published by the system.
+     */
+    static const std::string COMMON_EVENT_EXIT_HIBERNATE;
+    /**
      * Indicates the action of a common event that the device exits the force sleep mode.
      * This common event can only be published by the system.
      */

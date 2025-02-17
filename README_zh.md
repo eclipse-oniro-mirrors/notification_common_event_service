@@ -439,6 +439,8 @@ CommonEvent.unsubscriber(CommonEventSubscriber, UnsubscriberCallBack);
 | COMMON_EVENT_SCREEN_ON                                       | usual.event.SCREEN_ON                                       | 无                                             |
 | COMMON_EVENT_ENTER_FORCE_SLEEP                               | usual.event.ENTER_FORCE_SLEEP                               | 无                                             |
 | COMMON_EVENT_EXIT_FORCE_SLEEP                                | usual.event.EXIT_FORCE_SLEEP                                | 无                                             |
+| COMMON_EVENT_ENTER_HIBERNATE                                 | usual.event.ENTER_HIBERNATE                                 | 无                                             |
+| COMMON_EVENT_EXIT_HIBERNATE                                  | usual.event.EXIT_HIBERNATE                                  | 无                                             |
 | COMMON_EVENT_USER_PRESENT                                    | usual.event.USER_PRESENT                                    | 无                                             |
 | COMMON_EVENT_TIME_TICK                                       | usual.event.TIME_TICK                                       | 无                                             |
 | COMMON_EVENT_TIME_CHANGED                                    | usual.event.TIME_CHANGED                                    | 无                                             |
