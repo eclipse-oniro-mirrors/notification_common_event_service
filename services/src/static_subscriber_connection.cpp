@@ -25,12 +25,16 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
     EVENT_LOGI_LIMIT("enter");
-    auto proxy = GetProxy(remoteObject);
-    if (proxy) {
-        ErrCode ec = proxy->OnReceiveEvent(&event_);
-        EVENT_LOGI("OnAbilityConnectDone end, bundle = %{public}s, code = %{public}d", element.GetURI().c_str(), ec);
-    }
-    AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(this);
+    sptr<StaticSubscriberConnection> sThis = this;
+    auto proxy = sThis->GetProxy(remoteObject);
+    std::string bundleName = element.GetURI();
+    ffrt::submit([=] () {
+        if (proxy) {
+            ErrCode ec = proxy->OnReceiveEvent(&event_);
+            EVENT_LOGI("OnAbilityConnectDone end, bundle = %{public}s, code = %{public}d", bundleName.c_str(), ec);
+        }
+        AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(sThis);
+    });
 }
 
 sptr<StaticSubscriberProxy> StaticSubscriberConnection::GetProxy(const sptr<IRemoteObject> &remoteObject)

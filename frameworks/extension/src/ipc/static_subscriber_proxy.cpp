@@ -22,7 +22,7 @@ ErrCode StaticSubscriberProxy::OnReceiveEvent(CommonEventData* inData)
 {
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_SYNC);
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         return ERR_INVALID_VALUE;
