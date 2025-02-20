@@ -74,7 +74,6 @@ private:
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     std::set<sptr<StaticSubscriberConnection>> subscriberConnection_;
-    std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
