@@ -107,16 +107,10 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         EVENT_LOGE("connection is nullptr");
         return;
     }
-
-    if (!ffrt_) {
-        EVENT_LOGD("ready to create ffrt");
-        ffrt_ = std::make_shared<ffrt::queue>("AbilityManagerHelper");
-    }
-
     std::function<void()> task = [connection]() {
         AbilityManagerHelper::GetInstance()->DisconnectAbility(connection);
     };
-    ffrt_->submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * TIME_UNIT_SIZE));
+    ffrt::submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * TIME_UNIT_SIZE));
 }
 
 void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
