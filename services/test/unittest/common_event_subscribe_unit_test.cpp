@@ -542,12 +542,12 @@ public:
         return 1;
     }
 
-    int32_t AttachAppDebug(const std::string &bundleName) override
+    int32_t AttachAppDebug(const std::string &bundleName, bool isDebugFromLocal) override
     {
         return 1;
     }
 
-    int32_t DetachAppDebug(const std::string &bundleName) override
+    int32_t DetachAppDebug(const std::string &bundleName, bool isDebugFromLocal) override
     {
         return 1;
     }
