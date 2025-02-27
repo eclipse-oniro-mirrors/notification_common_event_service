@@ -715,17 +715,25 @@ bool StaticSubscriberManager::CheckFilterParameters(
             return false;
         }
         if (std::holds_alternative<bool>(paramValue)) {
-            return CheckSpecificParam(
-                paramName, std::get<bool>(paramValue), want, AAFwk::IBoolean::Query, AAFwk::Boolean::Unbox);
+            if (!CheckSpecificParam(
+                paramName, std::get<bool>(paramValue), want, AAFwk::IBoolean::Query, AAFwk::Boolean::Unbox)) {
+                return false;
+            }
         } else if (std::holds_alternative<int32_t>(paramValue)) {
-            return CheckSpecificParam(
-                paramName, std::get<int32_t>(paramValue), want, AAFwk::IInteger::Query, AAFwk::Integer::Unbox);
+            if (!CheckSpecificParam(
+                paramName, std::get<int32_t>(paramValue), want, AAFwk::IInteger::Query, AAFwk::Integer::Unbox)) {
+                return false;
+            }
         } else if (std::holds_alternative<double>(paramValue)) {
-            return CheckSpecificParam(
-                paramName, std::get<double>(paramValue), want, AAFwk::IDouble::Query, AAFwk::Double::Unbox);
+            if (!CheckSpecificParam(
+                paramName, std::get<double>(paramValue), want, AAFwk::IDouble::Query, AAFwk::Double::Unbox)) {
+                return false;
+            }
         } else if (std::holds_alternative<std::string>(paramValue)) {
-            return CheckSpecificParam(
-                paramName, std::get<std::string>(paramValue), want, AAFwk::IString::Query, AAFwk::String::Unbox);
+            if (!CheckSpecificParam(
+                paramName, std::get<std::string>(paramValue), want, AAFwk::IString::Query, AAFwk::String::Unbox)) {
+                return false;
+            }
         } else {
             EVENT_LOGW(
                 "invalid parameter: %{public}s. supported types are bool, number, and string", paramName.c_str());
