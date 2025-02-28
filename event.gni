@@ -55,6 +55,7 @@ declare_args() {
   ces_hitrace_usage = true
   ces_config_policy_enable = true
   common_event_service_limit_screen_event = false
+  common_event_service_boot_complete_delay = false
 
   if (!defined(global_parts_info) ||
       defined(global_parts_info.account_os_account)) {

@@ -43,7 +43,8 @@
         "features": [
             "common_event_service_with_graphics",
             "common_event_service_tool_cem_enable",
-            "common_event_service_limit_screen_event"
+            "common_event_service_limit_screen_event",
+            "common_event_service_boot_complete_delay"
         ],
         "hisysevent_config": [
             "//base/notification/common_event_service/hisysevent.yaml"

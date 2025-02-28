@@ -51,8 +51,7 @@ constexpr static const char* JSON_KEY_FILTER_CONDITIONS = "conditions";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_CODE = "code";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_DATA = "data";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_PARAMETERS = "parameters";
-static bool g_isWearable = OHOS::system::GetParameter("const.product.devicetype", "") ==  "wearable";
-constexpr int32_t BOOT_DELAY_TIME = 15000;
+static int32_t g_bootDelayTime = OHOS::system::GetIntParameter("bootevent.boot.completed.delay", 0);
 constexpr int32_t TIME_UNIT_SIZE = 1000;
 }
 
@@ -222,15 +221,22 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
                 subscriber.bundleName.c_str());
             continue;
         }
-        if (g_isWearable && data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED) {
+#ifdef WATCH_EVENT_BOOT_COMPLETED_DELAY
+        if (data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED) {
             bootStartHaps.push_back(subscriber);
         } else {
             PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
             EVENT_LOGI("Notify %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
                        subscriber.bundleName.c_str());
         }
+#else
+        PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
+        EVENT_LOGI("Notify %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
+                   subscriber.bundleName.c_str());
+#endif
     }
-    if (g_isWearable) {
+#ifdef WATCH_EVENT_BOOT_COMPLETED_DELAY
+    if (!bootStartHaps.empty()) {
         if (!ffrt_) {
             EVENT_LOGD("ready to create ffrt");
             ffrt_ = std::make_shared<ffrt::queue>("StaticSubscriberManager");
@@ -244,8 +250,9 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
                            data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
             }
         };
-        ffrt_->submit(task, ffrt::task_attr().delay(BOOT_DELAY_TIME * TIME_UNIT_SIZE));
+        ffrt_->submit(task, ffrt::task_attr().delay(g_bootDelayTime * TIME_UNIT_SIZE));
     }
+#endif
 }
 
 void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
