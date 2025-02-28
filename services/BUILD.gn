@@ -158,6 +158,10 @@ ohos_shared_library("cesfwk_services") {
     defines += [ "WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP" ]
   }
 
+  if (common_event_service_boot_complete_delay) {
+    defines += [ "WATCH_EVENT_BOOT_COMPLETED_DELAY" ]
+  }
+
   subsystem_name = "notification"
   part_name = "common_event_service"
 }
