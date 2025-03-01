@@ -72,7 +72,8 @@
                 "c_utils",
                 "ffrt",
                 "kv_store",
-                "config_policy"
+                "config_policy",
+                "runtime_core"
             ],
             "third_party": [
                 "libuv"
@@ -88,6 +89,7 @@
                     "//base/notification/common_event_service/frameworks/native:cesfwk_innerkits",
                     "//base/notification/common_event_service/frameworks/extension:cesfwk_extension",
                     "//base/notification/common_event_service/interfaces/kits/napi:napi_packages",
+                    "//base/notification/common_event_service/interfaces/kits/ani:ani_commoneventmanager",
                     "//base/notification/common_event_service/interfaces/kits/cj:cj_common_event_manager_ffi",
                     "//base/notification/common_event_service/interfaces/kits/ndk:ohcommonevent"
                 ],
