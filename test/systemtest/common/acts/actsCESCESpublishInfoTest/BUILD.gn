@@ -14,7 +14,7 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
 
-module_output_path = "common_event_service/systemtest"
+module_output_path = "common_event_service/common_event_service/systemtest"
 ohos_systemtest("ActsCESCESpublishInfoTest") {
   module_out_path = module_output_path
   resource_config_file = "${common_event_service_path}/test/systemtest/common/resource/testconfig/ohos_test.xml"

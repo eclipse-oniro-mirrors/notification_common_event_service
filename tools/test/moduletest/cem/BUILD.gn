@@ -14,7 +14,7 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
 
-module_output_path = "common_event_service/tools"
+module_output_path = "common_event_service/common_event_service/tools"
 
 tools_cem_mock_sources = [
   "${tools_path}/test/mock/mock_common_event_stub.cpp",
