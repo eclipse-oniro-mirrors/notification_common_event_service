@@ -150,6 +150,7 @@ ohos_shared_library("static_subscriber_extension_module") {
     "ability_base:session_info",
     "ability_runtime:ability_manager",
     "ability_runtime:extensionkit_native",
+    "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
