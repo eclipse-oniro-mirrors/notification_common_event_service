@@ -208,15 +208,16 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
 {
     EVENT_LOGI("ANI_Constructor call.");
     ani_env* env;
+    ani_status status = ANI_ERROR;
     if (ANI_OK != vm->GetEnv(ANI_VERSION_1, &env)) {
         EVENT_LOGE("Unsupported ANI_VERSION_1.");
         return ANI_ERROR;
     }
 
-    static const char* className = "Lsts_common_event/CommonEvent;";
-    ani_class cls;
-    if (ANI_OK != env->FindClass(className, &cls)) {
-        EVENT_LOGE("Not found Class: %{public}s.", className);
+    ani_namespace kitNs;
+    status = env->FindNamespace("Lsts_common_event/commonEventManager;", &kitNs);
+    if (status != ANI_OK) {
+        EVENT_LOGE("Not found Lsts_common_event/commonEventManager");
         return ANI_INVALID_ARGS;
     }
 
@@ -234,10 +235,11 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
             reinterpret_cast<void*>(unsubscribeExecute) },
     };
 
-    if (ANI_OK != env->Class_BindNativeMethods(cls, methods.data(), methods.size())) {
-        EVENT_LOGE("Cannot bind native methods to: %{public}s.", className);
+    status = env->Namespace_BindNativeFunctions(kitNs, methods.data(), methods.size());
+    if (status != ANI_OK) {
+        EVENT_LOGE("Cannot bind native methods to Lsts_common_event/commonEventManager");
         return ANI_INVALID_TYPE;
-    };
+    }
 
     *result = ANI_VERSION_1;
     return ANI_OK;
@@ -277,4 +279,24 @@ SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeI
 std::shared_ptr<SubscriberInstance> SubscriberInstanceWrapper::GetSubscriber()
 {
     return subscriber;
+}
+
+std::string EnumConvertUtils::Support_ConvertSts2Native(const int index)
+{
+    if (index < 0 || index >= SupportArray.size()) {
+        EVENT_LOGE("Support_ConvertSts2Native failed index:%{public}d", index);
+        return 0;
+    }
+    return SupportArray[index];
+}
+
+int EnumConvertUtils::Support_ConvertNative2Sts(const std::string nativeValue)
+{
+    for (unsigned int index = 0; index < SupportArray.size(); index++) {
+        if (nativeValue == SupportArray[index]) {
+            return index;
+        }
+    }
+    EVENT_LOGE("Support_ConvertSts2Native failed nativeValue:%{public}s", nativeValue.c_str());
+    return 0;
 }

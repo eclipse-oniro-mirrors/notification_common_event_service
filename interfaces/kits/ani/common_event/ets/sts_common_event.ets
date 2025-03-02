@@ -13,6 +13,11 @@
  * limitations under the License.
  */
 
+import CommonEventPublishData from 'commonEventPublishData';
+import CommonEventData from 'commonEventData';
+import CommonEventSubscribeInfo from 'commonEventSubscribeInfo';
+import CommonEventSubscriber from 'commonEventSubscriber';
+
 export class BusinessError<T = void> {
     code: number;
     data: T;
@@ -20,61 +25,17 @@ export class BusinessError<T = void> {
 
 type AsyncCallback<T, E = void> = (err: BusinessError<E>, data: T) => void;
 
-export class CommonEventPublishData {
-    bundleName?: string;
-    code?: number;
-    data?: string;
-    subscriberPermissions?: Array<string>;
-    isOrdered?: boolean;
-    isSticky?: boolean;
-    parameters?: Record<string, Object>;
-}
+namespace commonEventManager{
 
-export class CommonEventData {
-    event: string;
-    bundleName?: string;
-    code?: number;
-    data?: string;
-    parameters?: Record<string, Object>;
-    constructor(evnet:string) {
-        this.event = evnet;
-    }
-}
+    export native function publishExecute(event: string):int;
+    export native function publishWithOptionsExecute(event: string, options: CommonEventPublishData):int;
+    export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
+    export native function subscribeExecute(subscriber: CommonEventSubscriber):int;
+    export native function unsubscribeExecute(subscriber: CommonEventSubscriber):int;
 
-export class CommonEventSubscribeInfo {
-    events: Array<string>;
-    publisherPermission?: string;
-    publisherDeviceId?: string;
-    userId?: number;
-    priority?: number;
-    publisherBundleName?: string;
-
-    constructor(evnets:Array<string>) {
-        this.events = evnets;
-    }
-}
-
-export class CommonEventSubscriber {
-    native subscriberInstanceWrapper : long;
-    getCodeSync(): number {
-        return 2;
-    }
-}
-
-export class CommonEvent{
-    static {
-        loadLibrary("ani_commoneventmanager.z")
-    }
-
-    public native publishExecute(event: string):int;
-    public native publishWithOptionsExecute(event: string, options: CommonEventPublishData):int;
-    public native createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
-    public native subscribeExecute(subscriber: CommonEventSubscriber):int;
-    public native unsubscribeExecute(subscriber: CommonEventSubscriber):int;
-
-    publish(event: string, callback: AsyncCallback<void, void>): void {
+    export function publish(event: string, callback: AsyncCallback<void, void>): void {
         console.log("publish call.");
-        let task = taskpool.execute(this.publishExecute, event);
+        let task = taskpool.execute(commonEventManager.publishExecute, event);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             console.log("publish call result:" + resultCode.intValue());
@@ -85,9 +46,9 @@ export class CommonEvent{
         });
     }
 
-    publish(event: string, options: CommonEventPublishData, callback: AsyncCallback<void, void>): void {
+    export function publish(event: string, options: CommonEventPublishData, callback: AsyncCallback<void, void>): void {
         console.info("publish with option call.");
-        let task = taskpool.execute(this.publishWithOptionsExecute, event, options);
+        let task = taskpool.execute(commonEventManager.publishWithOptionsExecute, event, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             console.log("publish with option result:" + resultCode.intValue());
@@ -98,10 +59,10 @@ export class CommonEvent{
         });
     }
 
-    createSubscriber(subscribeInfo: CommonEventSubscribeInfo,
+    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo,
         callback: AsyncCallback<CommonEventSubscriber, void>): void {
         console.info("createSubscriber callback call.");
-        let task = taskpool.execute(this.createSubscriberExecute, subscribeInfo);
+        let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
         task.then((e: NullishType)=>{
             let result: CommonEventSubscriber = e as CommonEventSubscriber;
             console.log("createSubscriber result.");
@@ -112,11 +73,11 @@ export class CommonEvent{
         });
     }
 
-    createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber>{
+    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber>{
         console.info("createSubscriber Promise call.");
         let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
             reject: (error: Object) => void) => {
-            let p1 = taskpool.execute(this.createSubscriberExecute, subscribeInfo);
+            let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
             p1.then((e :NullishType)=>{
                 console.log("createSubscriber Promise result");
                 let result: CommonEventSubscriber  = e as CommonEventSubscriber;
@@ -128,13 +89,13 @@ export class CommonEvent{
         return p;
     }
 
-    subscribe(subscriber: CommonEventSubscriber, callback: AsyncCallback<CommonEventData, void>): void {
+    export function subscribe(subscriber: CommonEventSubscriber, callback: AsyncCallback<CommonEventData, void>): void {
         console.info("subscribe call.");
-        let task = taskpool.execute(this.subscribeExecute, subscriber);
+        let task = taskpool.execute(commonEventManager.subscribeExecute, subscriber);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             console.log("subscribe result:" + resultCode.intValue());
-            let a: CommonEventData = new CommonEventData("test");
+            let a: CommonEventData;
             let r: BusinessError = { code: resultCode.intValue(), data: undefined };
             callback(r, a);
         }, (err:Object): void => {
@@ -142,9 +103,9 @@ export class CommonEvent{
         });
     }
 
-    unsubscribe(subscriber: CommonEventSubscriber, callback?: AsyncCallback<void, void>): void {
+    export function unsubscribe(subscriber: CommonEventSubscriber, callback?: AsyncCallback<void, void>): void {
         console.info("unsubscribe call.");
-        let task = taskpool.execute(this.unsubscribeExecute, subscriber);
+        let task = taskpool.execute(commonEventManager.unsubscribeExecute, subscriber);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             console.log("unsubscribe result:" + resultCode.intValue());
