@@ -37,6 +37,7 @@ void ResetAbilityManagerHelperState()
 
 namespace OHOS {
 namespace EventFwk {
+AbilityManagerHelper::AbilityManagerHelper() {}
 int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {

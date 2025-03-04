@@ -29,6 +29,11 @@ constexpr int32_t DISCONNECT_DELAY_TIME = 15000; // ms
 constexpr int32_t TIME_UNIT_SIZE = 1000;
 }
 
+AbilityManagerHelper::AbilityManagerHelper()
+{
+    ffrt_ = std::make_shared<ffrt::queue>("AbilityManagerHelper");
+}
+
 int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
@@ -107,10 +112,11 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         EVENT_LOGE("connection is nullptr");
         return;
     }
+
     std::function<void()> task = [connection]() {
         AbilityManagerHelper::GetInstance()->DisconnectAbility(connection);
     };
-    ffrt::submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * TIME_UNIT_SIZE));
+    ffrt_->submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * TIME_UNIT_SIZE));
 }
 
 void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
