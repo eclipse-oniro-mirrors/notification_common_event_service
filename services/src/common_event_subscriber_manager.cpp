@@ -353,7 +353,7 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
             RemoveFrozenEventsBySubscriber((*it));
             RemoveFrozenEventsMapBySubscriber((*it));
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
-            EVENT_LOGI("Unsubscribe subscriberID: %{public}s", (*it)->eventRecordInfo.subId.c_str());
+            EVENT_LOGI("Unsubscribe subId = %{public}s", (*it)->eventRecordInfo.subId.c_str());
             pid_t pid = (*it)->eventRecordInfo.pid;
             subscriberCounts_[pid] > 1 ? subscriberCounts_[pid]-- : subscriberCounts_.erase(pid);
             subscribers_.erase(it);
@@ -387,7 +387,8 @@ bool CommonEventSubscriberManager::CheckSubscriberByUserId(
         (subscriberUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && subscriberUserId <= SUBSCRIBE_USER_SYSTEM_END))) {
         return true;
     }
- 
+    EVENT_LOGD("Subscriber userId [%{public}d] isn't equal to publish required userId %{public}d",
+        subscriberUserId, userId);
     return false;
 }
 
@@ -441,11 +442,15 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
         if (!eventRecord.publishInfo->GetBundleName().empty() &&
             eventRecord.publishInfo->GetBundleName() != (*it)->eventRecordInfo.bundleName) {
+            EVENT_LOGD("Subscriber[%{public}s] and publisher required bundleName[%{public}s] is not matched",
+                (*it)->eventRecordInfo.bundleName.c_str(), eventRecord.publishInfo->GetBundleName().c_str());
             continue;
         }
 
-        auto publisherBundleName = (*it)->eventSubscribeInfo->GetPublisherBundleName();
-        if (!publisherBundleName.empty() && publisherBundleName != bundleName) {
+        auto subscriberRequiredBundle = (*it)->eventSubscribeInfo->GetPublisherBundleName();
+        if (!subscriberRequiredBundle.empty() && subscriberRequiredBundle != bundleName) {
+            EVENT_LOGD("Publisher[%{public}s] isn't equal to subscriber required bundleName[%{public}s] is not matched",
+                bundleName.c_str(), subscriberRequiredBundle.c_str());
             continue;
         }
 
@@ -457,12 +462,14 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
         auto subscriberUid = (*it)->eventRecordInfo.uid;
         if (!CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
-            EVENT_LOGD("Subscriber's uid is not in Specified subscriber UIDs which is given by publisher");
+            EVENT_LOGD("Subscriber's uid isn't in Specified subscriber UIDs which is given by publisher");
             continue;
         }
 
-        auto publisherUid = (*it)->eventSubscribeInfo->GetPublisherUid();
-        if (publisherUid > 0 && uid > 0 && static_cast<uid_t>(publisherUid) != uid) {
+        auto subscriberRequiredUid = (*it)->eventSubscribeInfo->GetPublisherUid();
+        if (subscriberRequiredUid > 0 && uid > 0 && static_cast<uid_t>(subscriberRequiredUid) != uid) {
+            EVENT_LOGD("Publisher[%{public}d] isn't equal to subscriber required uid[%{public}d]",
+                uid, subscriberRequiredUid);
             continue;
         }
 
@@ -542,8 +549,8 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
                 recordPtr->freezeTime = 0;
             }
             recordPtr->isFreeze = freezeState;
-            EVENT_LOGD("recordPtr->uid: %{public}d", recordPtr->eventRecordInfo.uid);
-            EVENT_LOGD("recordPtr->isFreeze: %{public}d", recordPtr->isFreeze);
+            EVENT_LOGD("recordPtr->uid: %{public}d, recordPtr->isFreeze: %{public}d",
+                recordPtr->eventRecordInfo.uid, recordPtr->isFreeze);
         }
     }
 }

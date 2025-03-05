@@ -251,8 +251,8 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         }
     }
     
-    EVENT_LOGI("%{public}s(pid = %{public}d, uid = %{public}d), publish event = %{public}s to userId = %{public}d",
-        bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str(), userId);
+    EVENT_LOGI("%{public}s(pid = %{public}d, uid = %{public}d), publish %{public}s to %{public}d",
+        bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str(), user);
 
     if (staticSubscriberManager_ != nullptr) {
         staticSubscriberManager_->PublishCommonEvent(data, publishInfo, callerToken, user, service, bundleName);
@@ -320,7 +320,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
         return false;
     }
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("InnerCommonEventManager::SubscribeCommonEvent:commonEventListener == nullptr");
+        EVENT_LOGE("commonEventListener is nullptr");
         return false;
     }
 
@@ -344,21 +344,19 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     eventRecordInfo.isSystemApp = comeFrom.isSystemApp;
     eventRecordInfo.isProxy = comeFrom.isProxy;
 
-    // generate subscriber id : pid_uid_subCount_time
+    // generate subscriber id : pid_uid_instanceKey_subCount_time
     int64_t now = SystemTime::GetNowSysTime();
     std::string subId = std::to_string(pid) + "_" + std::to_string(uid) + "_" +
         std::to_string(instanceKey) + "_" + std::to_string(subCount.load()) + "_" + std::to_string(now);
     subCount.fetch_add(1);
     eventRecordInfo.subId = subId;
-    EVENT_LOGI("SubscribeCommonEvent %{public}s(pid = %{public}d, uid = %{public}d, "
-        "userId = %{public}d, instanceKey = %{public}d, subId = %{public}s, "
-        "ffrtCost = %{public}s, taskCost = %{public}s",
-        bundleName.c_str(), pid, uid, subscribeInfo.GetUserId(), instanceKey, subId.c_str(),
-        std::to_string(taskStartTime - startTime).c_str(), std::to_string(now - taskStartTime).c_str());
-
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
 
+    now = SystemTime::GetNowSysTime();
+    EVENT_LOGI("SubscribeCommonEvent %{public}s(userId = %{public}d, subId = %{public}s, "
+        "ffrtCost %{public}lld ms, taskCost %{public}lld ms", bundleName.c_str(), userId, subId.c_str(),
+        taskStartTime - startTime, now - taskStartTime);
     PublishStickyEvent(sp, record);
 
     SendSubscribeHiSysEvent(userId, bundleName, pid, uid, subscribeInfo.GetMatchingSkills().GetEvents());
@@ -371,7 +369,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &
     EVENT_LOGD("enter");
 
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("commonEventListener == nullptr");
+        EVENT_LOGE("commonEventListener is nullptr");
         return false;
     }
 
@@ -595,7 +593,7 @@ bool InnerCommonEventManager::PublishStickyEvent(
             EVENT_LOGW("commonEventRecord is nullptr and get next");
             continue;
         }
-        EVENT_LOGD("publish sticky event : %{public}s",
+        EVENT_LOGI("Publish sticky event : %{public}s",
             commonEventRecord->commonEventData->GetWant().GetAction().c_str());
 
         if (!commonEventRecord->publishInfo->GetBundleName().empty() &&

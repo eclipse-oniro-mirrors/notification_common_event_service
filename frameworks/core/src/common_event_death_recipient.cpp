@@ -82,7 +82,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
     if (!isSAOffline_) {
         return;
     }
-    EVENT_LOGI("Common event service restore, try to reconnect");
+    EVENT_LOGI("CES restarted, try to reconnect");
     if (CommonEvent::GetInstance()->Reconnect()) {
         auto resubscrebeFund = [] () {
             CommonEvent::GetInstance()->Resubscribe();
@@ -95,7 +95,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
-    EVENT_LOGI("Common event service died");
+    EVENT_LOGI("CES died");
     std::lock_guard<std::mutex> lock(mutex_);
     isSAOffline_ = true;
 }

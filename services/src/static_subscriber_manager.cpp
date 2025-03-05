@@ -226,8 +226,8 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             bootStartHaps.push_back(subscriber);
         } else {
             PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
-            EVENT_LOGI("Notify %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
-                       subscriber.bundleName.c_str());
+            EVENT_LOGI("ConnectAbility %{public}s end, StaticSubscriber = %{public}s",
+                data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
         }
 #else
         PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
@@ -247,7 +247,7 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
                 StaticSubscriberManager::GetInstance()->PublishCommonEventConnecAbility(data, service,
                     subscriber.userId, subscriber.bundleName, subscriber.name);
                 EVENT_LOGI("Notify %{public}s end,send StaticSubscriber = %{public}s",
-                           data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
+                    data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
             }
         };
         ffrt_->submit(task, ffrt::task_attr().delay(g_bootDelayTime * TIME_UNIT_SIZE));
@@ -264,7 +264,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
     if (!hasInitAllowList_ && !InitAllowList()) {
-        EVENT_LOGE_LIMIT("failed to init subscriber list");
+        EVENT_LOGE_LIMIT("Failed to init allowCommonEvent list");
         return;
     }
 
@@ -275,7 +275,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
         data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_UID_REMOVED ||
         data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_STARTED) &&
         !InitValidSubscribers()) {
-        EVENT_LOGE("failed to init Init valid subscribers map!");
+        EVENT_LOGE("Failed to init subscribers map");
         return;
     }
 
@@ -390,7 +390,7 @@ void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityIn
         int32_t userId = -1;
         if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(
             extension.applicationInfo.uid, userId) != ERR_OK) {
-            EVENT_LOGE("GetOsAccountLocalIdFromUid failed, uid = %{public}d", extension.applicationInfo.uid);
+            EVENT_LOGE("Get userId failed, uid = %{public}d", extension.applicationInfo.uid);
             return;
         }
         ParseEvents(extension.name, extension.bundleName, userId, profile);

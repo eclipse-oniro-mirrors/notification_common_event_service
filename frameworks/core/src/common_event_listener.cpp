@@ -67,7 +67,7 @@ __attribute__((no_sanitize("cfi"))) ErrCode CommonEventListener::Init()
     EVENT_LOGD("ready to init");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!commonEventSubscriber_) {
-        EVENT_LOGE("Failed to init with CommonEventSubscriber nullptr");
+        EVENT_LOGE("Failed to init due to subscriber is nullptr");
         return ERR_INVALID_OPERATION;
     }
     auto threadMode = commonEventSubscriber_->GetSubscribeInfo().GetThreadMode();
@@ -171,7 +171,7 @@ void CommonEventListener::Stop()
         }
 
         if (commonEventSubscriber_ == nullptr) {
-            EVENT_LOGE("commonEventSubscriber_ == nullptr");
+            EVENT_LOGE("commonEventSubscriber_ is nullptr");
             return;
         }
         EVENT_LOGD("event size: %{public}zu",
