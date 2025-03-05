@@ -23,14 +23,15 @@ export class BusinessError<T = void> {
     data: T;
 }
 
-type AsyncCallback<T, E = void> = (err: BusinessError<E>, data: T) => void;
+export type AsyncCallback<T, E = void> = (err: BusinessError<E>, data: T) => void;
 
-namespace commonEventManager{
+export namespace commonEventManager {
 
     export native function publishExecute(event: string):int;
     export native function publishWithOptionsExecute(event: string, options: CommonEventPublishData):int;
     export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
-    export native function subscribeExecute(subscriber: CommonEventSubscriber):int;
+    export native function subscribeExecute(subscriber: CommonEventSubscriber,
+        callback: AsyncCallback<CommonEventData, void>):int;
     export native function unsubscribeExecute(subscriber: CommonEventSubscriber):int;
 
     export function publish(event: string, callback: AsyncCallback<void, void>): void {
@@ -91,7 +92,7 @@ namespace commonEventManager{
 
     export function subscribe(subscriber: CommonEventSubscriber, callback: AsyncCallback<CommonEventData, void>): void {
         console.info("subscribe call.");
-        let task = taskpool.execute(commonEventManager.subscribeExecute, subscriber);
+        let task = taskpool.execute(commonEventManager.subscribeExecute, subscriber, callback);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             console.log("subscribe result:" + resultCode.intValue());
