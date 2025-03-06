@@ -54,7 +54,10 @@ ohos_shared_library("ani_commoneventmanager") {
 
   configs = [ ":native_module_config" ]
 
-  sources = [ "src/ani_common_event.cpp" ]
+  sources = [
+    "src/ani_common_event.cpp",
+    "src/ani_common_event_utils.cpp",
+  ]
 
   deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
@@ -71,8 +74,8 @@ ohos_shared_library("ani_commoneventmanager") {
 generate_static_abc("common_event_abc") {
   arktsconfig =
       "${interfaces_path}/kits/ani/common_event/common_event_config.json"
-  dst_file = "$target_out_dir/ability_delegator.abc"
-  out_puts = [ "$target_out_dir/ability_delegator.abc" ]
+  dst_file = "$target_out_dir/common_event_manager.abc"
+  out_puts = [ "$target_out_dir/common_event_manager.abc" ]
 
   #is_boot_abc = "True"
   #device_dst_file = "system/framework/ability_delegator.abc"

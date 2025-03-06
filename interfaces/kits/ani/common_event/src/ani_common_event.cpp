@@ -15,38 +15,22 @@
 
 #include "ani_common_event.h"
 
-#include <ani.h>
-#include <array>
-#include <iostream>
-#include <unistd.h>
-
+#include "ani_common_event_utils.h"
 #include "event_log_wrapper.h"
+namespace OHOS {
+namespace EventManagerFwkAni {
 
 using namespace OHOS::EventFwk;
 
-static void GetStdString(ani_env* env, ani_string str, std::string& result)
-{
-    auto ret = ANI_OK;
-    ani_size sz {};
-    ret = env->String_GetUTF8Size(str, &sz);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("GetStdString String_GetUTF8Size error. result: %{public}d.", ret);
-        return;
-    }
-    result.resize(sz + 1);
-    ret = env->String_GetUTF8SubString(str, 0, sz, result.data(), result.size(), &sz);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("GetStdString String_GetUTF8Size error. result: %{public}d.", ret);
-        return;
-    }
-    result.resize(sz);
-}
+std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
+static std::map<std::shared_ptr<SubscriberInstance>, std::shared_ptr<AsyncCommonEventResult>> subscriberInstances;
+static std::mutex subscriberInsMutex;
 
-static uint32_t publishExecute(ani_env* env, ani_object obj, ani_string eventId)
+static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
     EVENT_LOGI("publishExecute call.");
     std::string eventIdStr;
-    GetStdString(env, eventId, eventIdStr);
+    AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
     EVENT_LOGI("publishExecute eventIdStr: %{public}s.", eventIdStr.c_str());
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
@@ -58,42 +42,34 @@ static uint32_t publishExecute(ani_env* env, ani_object obj, ani_string eventId)
     return errorCode;
 }
 
-static uint32_t publishWithOptionsExecute(ani_env* env, ani_object obj, ani_string eventId, ani_object optionsObject)
+static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_object optionsObject)
 {
     EVENT_LOGI("publishWithOptionsExecute call.");
     std::string eventIdStr;
-    GetStdString(env, eventId, eventIdStr);
+    AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
     EVENT_LOGI("publishWithOptionsExecute eventIdStr: %{public}s.", eventIdStr.c_str());
-    auto aniResult = ANI_OK;
-    ani_ref bundleNameRef {};
-    aniResult = env->Object_GetFieldByName_Ref(optionsObject, "bundleName", &bundleNameRef);
-    if (aniResult != ANI_OK) {
-        EVENT_LOGE("publishWithOptionsExecute Class_FindField error. result: %{public}d.", aniResult);
-        return ANI_INVALID_ARGS;
-    }
-    ani_string bundleName = static_cast<ani_string>(bundleNameRef);
-    std::string bundleNameStr;
-    GetStdString(env, bundleName, bundleNameStr);
-    EVENT_LOGI("publishWithOptionsExecute bundleName: %{public}s.", bundleNameStr.c_str());
 
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
-    commonEventPublishInfo.SetBundleName(bundleNameStr);
     Want want;
     want.SetAction(eventIdStr);
     commonEventData.SetWant(want);
+
+    AniCommonEventUtils::ConvertCommonEventPublishData(
+        env, optionsObject, want, commonEventData, commonEventPublishInfo);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
     EVENT_LOGI("publishWithOptionsExecute result: %{public}d.", errorCode);
     return errorCode;
 }
 
-static ani_ref createSubscriberExecute(ani_env* env, ani_object obj, ani_ref optionsRef)
+static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
     EVENT_LOGI("createSubscriberExecute call.");
     CommonEventSubscribeInfo subscribeInfo;
+    AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     auto ret = ANI_OK;
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
-
+    EVENT_LOGE("createSubscriberExecute subscribeInfo.GetPriority. result: %{public}d.", subscribeInfo.GetPriority());
     ani_class cls;
     ret = env->FindClass("Lsts_common_event/CommonEventSubscriber;", &cls);
     if (ret != ANI_OK) {
@@ -133,7 +109,7 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object obj, ani_ref opt
     return resultRef;
 }
 
-static uint32_t subscribeExecute(ani_env* env, ani_object obj, ani_object optionsRef)
+static uint32_t subscribeExecute(ani_env* env, ani_object optionsRef, ani_ref callbackRef)
 {
     EVENT_LOGI("subscribeExecute call.");
     auto ret = ANI_OK;
@@ -164,12 +140,19 @@ static uint32_t subscribeExecute(ani_env* env, ani_object obj, ani_object option
         EVENT_LOGE("subscribeExecute wrapper is null.");
         return ANI_INVALID_ARGS;
     }
-    auto result = CommonEventManager::NewSubscribeCommonEvent(wrapper->GetSubscriber());
+    auto subscriberInstance = GetSubscriberByWrapper(wrapper);
+    if (subscriberInstance == nullptr) {
+        EVENT_LOGE("subscriberInstance is null.");
+        return ANI_INVALID_ARGS;
+    }
+    subscriberInstance->SetEnv(env);
+    subscriberInstance->SetCallbackRef(callbackRef);
+    auto result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
     EVENT_LOGI("subscribeExecute result: %{public}d.", result);
     return result;
 }
 
-static uint32_t unsubscribeExecute(ani_env* env, ani_object obj, ani_object optionsRef)
+static uint32_t unsubscribeExecute(ani_env* env, ani_object optionsRef)
 {
     EVENT_LOGI("unsubscribeExecute call.");
     auto ret = ANI_OK;
@@ -204,60 +187,71 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_object obj, ani_object opti
     return result;
 }
 
-ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
+std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper* wrapper)
 {
-    EVENT_LOGI("ANI_Constructor call.");
-    ani_env* env;
-    ani_status status = ANI_ERROR;
-    if (ANI_OK != vm->GetEnv(ANI_VERSION_1, &env)) {
-        EVENT_LOGE("Unsupported ANI_VERSION_1.");
-        return ANI_ERROR;
+    if (wrapper->GetSubscriber() == nullptr) {
+        EVENT_LOGE("subscriber is null");
+        return nullptr;
     }
-
-    ani_namespace kitNs;
-    status = env->FindNamespace("Lsts_common_event/commonEventManager;", &kitNs);
-    if (status != ANI_OK) {
-        EVENT_LOGE("Not found Lsts_common_event/commonEventManager");
-        return ANI_INVALID_ARGS;
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (auto subscriberInstance : subscriberInstances) {
+        if (subscriberInstance.first.get() == wrapper->GetSubscriber().get()) {
+            return subscriberInstance.first;
+        }
     }
-
-    std::array methods = {
-        ani_native_function { "publishExecute", "Lstd/core/String;:I", reinterpret_cast<void*>(publishExecute) },
-        ani_native_function { "publishWithOptionsExecute",
-            "Lstd/core/String;Lsts_common_event/CommonEventPublishData;:I",
-            reinterpret_cast<void*>(publishWithOptionsExecute) },
-        ani_native_function { "createSubscriberExecute",
-            "Lsts_common_event/CommonEventSubscribeInfo;:Lsts_common_event/CommonEventSubscriber;",
-            reinterpret_cast<void*>(createSubscriberExecute) },
-        ani_native_function { "subscribeExecute", "Lsts_common_event/CommonEventSubscriber;:I",
-            reinterpret_cast<void*>(subscribeExecute) },
-        ani_native_function { "unsubscribeExecute", "Lsts_common_event/CommonEventSubscriber;:I",
-            reinterpret_cast<void*>(unsubscribeExecute) },
-    };
-
-    status = env->Namespace_BindNativeFunctions(kitNs, methods.data(), methods.size());
-    if (status != ANI_OK) {
-        EVENT_LOGE("Cannot bind native methods to Lsts_common_event/commonEventManager");
-        return ANI_INVALID_TYPE;
-    }
-
-    *result = ANI_VERSION_1;
-    return ANI_OK;
+    return wrapper->GetSubscriber();
 }
 
 SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo& sp) : CommonEventSubscriber(sp)
 {
-    EVENT_LOGD("create SubscriberInstance");
+    EVENT_LOGI("create SubscriberInstance");
+    id_ = ++subscriberID_;
 }
 
 SubscriberInstance::~SubscriberInstance()
 {
-    EVENT_LOGD("destroy SubscriberInstance");
+    EVENT_LOGI("destroy SubscriberInstance");
 }
 
 void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
 {
-    EVENT_LOGD("OnReceiveEvent call");
+    EVENT_LOGI("OnReceiveEvent execute action = %{public}s", data.GetWant().GetAction().c_str());
+    if (this->IsOrderedCommonEvent()) {
+        std::lock_guard<std::mutex> lock(subscriberInsMutex);
+        for (auto subscriberInstance : subscriberInstances) {
+            if (subscriberInstance.first.get() == this) {
+                subscriberInstances[subscriberInstance.first] = GoAsyncCommonEvent();
+                break;
+            }
+        }
+    }
+    ani_object ani_data {};
+    AniCommonEventUtils::ConvertCommonEventDataToEts(env_, ani_data, data);
+    // Call JS by CallbackRef
+}
+
+unsigned long long SubscriberInstance::GetID()
+{
+    return id_.load();
+}
+
+void SubscriberInstance::SetEnv(ani_env* env)
+{
+    EVENT_LOGD("Enter");
+    env_ = env;
+}
+
+void SubscriberInstance::SetCallbackRef(const ani_ref& ref)
+{
+    std::lock_guard<std::mutex> lockRef(refMutex_);
+    ref_ = ref;
+}
+
+void SubscriberInstance::ClearEnv()
+{
+    EVENT_LOGD("Env expired, clear SubscriberInstance env");
+    std::lock_guard<std::mutex> lock(envMutex_);
+    env_ = nullptr;
 }
 
 SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeInfo& info)
@@ -281,22 +275,48 @@ std::shared_ptr<SubscriberInstance> SubscriberInstanceWrapper::GetSubscriber()
     return subscriber;
 }
 
-std::string EnumConvertUtils::Support_ConvertSts2Native(const int index)
-{
-    if (index < 0 || index >= SupportArray.size()) {
-        EVENT_LOGE("Support_ConvertSts2Native failed index:%{public}d", index);
-        return 0;
-    }
-    return SupportArray[index];
-}
+} // namespace EventManagerFwkAni
+} // namespace OHOS
 
-int EnumConvertUtils::Support_ConvertNative2Sts(const std::string nativeValue)
+ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
 {
-    for (unsigned int index = 0; index < SupportArray.size(); index++) {
-        if (nativeValue == SupportArray[index]) {
-            return index;
-        }
+    EVENT_LOGI("ANI_Constructor call.");
+    ani_env* env;
+    ani_status status = ANI_ERROR;
+    if (ANI_OK != vm->GetEnv(ANI_VERSION_1, &env)) {
+        EVENT_LOGE("Unsupported ANI_VERSION_1.");
+        return ANI_ERROR;
     }
-    EVENT_LOGE("Support_ConvertSts2Native failed nativeValue:%{public}s", nativeValue.c_str());
-    return 0;
+
+    ani_namespace kitNs;
+    status = env->FindNamespace("L@ohos/event/common_event_manager/commonEventManager;", &kitNs);
+    if (status != ANI_OK) {
+        EVENT_LOGE("Not found L@ohos/event/common_event_manager/commonEventManager.");
+        return ANI_INVALID_ARGS;
+    }
+
+    std::array methods = {
+        ani_native_function { "publishExecute", "Lstd/core/String;:I",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
+        ani_native_function { "publishWithOptionsExecute",
+            "Lstd/core/String;L@ohos/event/commonEventPublishData/CommonEventPublishDataInner;:I",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
+        ani_native_function { "createSubscriberExecute",
+            "L@ohos/event/commonEventSubscribeInfo/CommonEventSubscribeInfo;:L@ohos/event/commonEventSubscriber/"
+            "CommonEventSubscriber;",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
+        ani_native_function { "subscribeExecute", nullptr,
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
+        ani_native_function { "unsubscribeExecute", "L@ohos/event/commonEventSubscriber/CommonEventSubscriber;:I",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::unsubscribeExecute) },
+    };
+
+    status = env->Namespace_BindNativeFunctions(kitNs, methods.data(), methods.size());
+    if (status != ANI_OK) {
+        EVENT_LOGE("Cannot bind native methods to L@ohos/event/common_event_manager/commonEventManager");
+        return ANI_INVALID_TYPE;
+    }
+
+    *result = ANI_VERSION_1;
+    return ANI_OK;
 }
