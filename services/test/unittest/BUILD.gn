@@ -14,7 +14,7 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
 
-module_output_path = "common_event_service/services"
+module_output_path = "common_event_service/common_event_service/services"
 
 config("cesfwk_services_config") {
   visibility = [ ":*" ]
