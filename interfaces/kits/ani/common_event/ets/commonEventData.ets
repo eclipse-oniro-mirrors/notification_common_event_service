@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-export default interface CommonEventData {
+export interface CommonEventData {
     event: string;
     bundleName?: string;
     code?: number;

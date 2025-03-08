@@ -182,7 +182,12 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_object optionsRef)
         return ANI_INVALID_ARGS;
     }
 
-    auto result = CommonEventManager::NewUnSubscribeCommonEvent(wrapper->GetSubscriber());
+    auto subscriberInstance = GetSubscriberByWrapper(wrapper);
+    if (subscriberInstance == nullptr) {
+        EVENT_LOGE("subscriberInstance is null.");
+        return ANI_INVALID_ARGS;
+    }
+    auto result = CommonEventManager::NewUnSubscribeCommonEvent(subscriberInstance);
     EVENT_LOGI("unsubscribeExecute result: %{public}d.", result);
     return result;
 }
@@ -299,7 +304,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
         ani_native_function { "publishExecute", "Lstd/core/String;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
         ani_native_function { "publishWithOptionsExecute",
-            "Lstd/core/String;L@ohos/event/commonEventPublishData/CommonEventPublishDataInner;:I",
+            "Lstd/core/String;L@ohos/event/commonEventPublishData/CommonEventPublishData;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
         ani_native_function { "createSubscriberExecute",
             "L@ohos/event/commonEventSubscribeInfo/CommonEventSubscribeInfo;:L@ohos/event/commonEventSubscriber/"

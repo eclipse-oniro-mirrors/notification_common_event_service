@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-import CommonEventPublishData from 'commonEventPublishData';
-import CommonEventData from 'commonEventData';
-import CommonEventSubscribeInfo from 'commonEventSubscribeInfo';
-import CommonEventSubscriber from 'commonEventSubscriber';
+import { CommonEventPublishData } from 'commonEventPublishData';
+import { CommonEventData } from 'commonEventData';
+import { CommonEventSubscribeInfo } from 'commonEventSubscribeInfo';
+import { CommonEventSubscriber } from 'commonEventSubscriber';
 
 export class BusinessError<T = void> {
     code: number;
@@ -74,7 +74,7 @@ export namespace commonEventManager {
         });
     }
 
-    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber>{
+    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber> {
         console.info("createSubscriber Promise call.");
         let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
             reject: (error: Object) => void) => {
@@ -88,6 +88,11 @@ export namespace commonEventManager {
             });
         });
         return p;
+    }
+
+    export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber{
+        console.info("createSubscriberSync call.");
+        return commonEventManager.createSubscriberExecute(subscribeInfo);
     }
 
     export function subscribe(subscriber: CommonEventSubscriber, callback: AsyncCallback<CommonEventData, void>): void {

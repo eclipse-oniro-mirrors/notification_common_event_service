@@ -17,6 +17,6 @@ import("//build/ohos.gni")
 group("ani_common_event_packages") {
   deps = [
     "${interfaces_path}/kits/ani/common_event:ani_commoneventmanager",
-    "${interfaces_path}/kits/ani/common_event:common_event_abc",
+    "${interfaces_path}/kits/ani/common_event:common_event_abc_etc",
   ]
 }

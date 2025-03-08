@@ -77,6 +77,15 @@ generate_static_abc("common_event_abc") {
   dst_file = "$target_out_dir/common_event_manager.abc"
   out_puts = [ "$target_out_dir/common_event_manager.abc" ]
 
-  #is_boot_abc = "True"
-  #device_dst_file = "system/framework/ability_delegator.abc"
+  is_boot_abc = "True"
+  device_dst_file = "/system/framework/common_event_manager.abc"
+  cache_path = "$target_out_dir/cache"
+}
+
+ohos_prebuilt_etc("common_event_abc_etc") {
+  source = "$target_out_dir/common_event_manager.abc"
+  module_install_dir = "framework"
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+  deps = [ ":common_event_abc" ]
 }

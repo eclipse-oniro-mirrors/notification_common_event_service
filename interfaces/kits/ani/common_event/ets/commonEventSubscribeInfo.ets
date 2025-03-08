@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-export default interface CommonEventSubscribeInfo {
+export interface CommonEventSubscribeInfo {
     events: Array<string>;
     publisherPermission?: string;
     publisherDeviceId?: string;
