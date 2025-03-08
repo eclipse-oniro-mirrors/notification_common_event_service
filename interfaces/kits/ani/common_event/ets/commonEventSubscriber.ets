@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-export default interface CommonEventSubscriber {
+export interface CommonEventSubscriber {
     subscriberInstanceWrapper : long;
     getCodeSync(): number;
 }
