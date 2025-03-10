@@ -46,6 +46,7 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
     "ability_base:session_info",
     "ability_runtime:ability_manager",
     "ability_runtime:extensionkit_native",
+    "ability_runtime:runtime",
     "ace_engine:ace_uicontent",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
