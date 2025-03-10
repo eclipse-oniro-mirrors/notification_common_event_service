@@ -69,9 +69,8 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     auto ret = ANI_OK;
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
-    EVENT_LOGE("createSubscriberExecute subscribeInfo.GetPriority. result: %{public}d.", subscribeInfo.GetPriority());
     ani_class cls;
-    ret = env->FindClass("Lsts_common_event/CommonEventSubscriber;", &cls);
+    ret = env->FindClass("LcommonEvent/commonEventSubscriber/CommonEventSubscriberInner;", &cls);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute FindClass error. result: %{public}d.", ret);
         return nullptr;
@@ -88,17 +87,20 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
         EVENT_LOGE("createSubscriberExecute Object_New error. result: %{public}d.", ret);
         return nullptr;
     }
-    ani_field wrapperField;
-    ret = env->Class_FindField(cls, "subscriberInstanceWrapper", &wrapperField);
+
+    ani_method wrapperField;
+    ret = env->Class_FindMethod(cls, "<set>subscriberInstanceWrapper", nullptr, &wrapperField);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Class_FindField error. result: %{public}d.", ret);
         return nullptr;
     }
-    ret = env->Object_SetField_Long(subscriberObj, wrapperField, reinterpret_cast<ani_long>(wrapper));
+
+    ret = env->Object_CallMethod_Void(subscriberObj, wrapperField, reinterpret_cast<ani_long>(wrapper));
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Object_SetField_Long error. result: %{public}d.", ret);
         return nullptr;
     }
+
     ani_ref resultRef = nullptr;
     ret = env->GlobalReference_Create(subscriberObj, &resultRef);
     if (ret != ANI_OK) {
@@ -113,24 +115,11 @@ static uint32_t subscribeExecute(ani_env* env, ani_object optionsRef, ani_ref ca
 {
     EVENT_LOGI("subscribeExecute call.");
     auto ret = ANI_OK;
-    ani_class cls;
-    ret = env->FindClass("Lsts_common_event/CommonEventSubscriber;", &cls);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("subscribeExecute FindClass error. result: %{public}d.", ret);
-        return ANI_INVALID_ARGS;
-    }
-
-    ani_field wrapperField;
-    ret = env->Class_FindField(cls, "subscriberInstanceWrapper", &wrapperField);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("subscribeExecute Class_FindField error. result: %{public}d.", ret);
-        return ANI_INVALID_ARGS;
-    }
 
     ani_long wrapper_long {};
-    ret = env->Object_GetField_Long(optionsRef, wrapperField, &wrapper_long);
+    ret = env->Object_GetPropertyByName_Long(optionsRef, "subscriberInstanceWrapper", &wrapper_long);
     if (ret != ANI_OK) {
-        EVENT_LOGE("subscribeExecute Object_GetField_Long error. result: %{public}d.", ret);
+        EVENT_LOGE("subscribeExecute Object_GetPropertyByName_Long error. result: %{public}d.", ret);
         return ANI_INVALID_ARGS;
     }
 
@@ -156,23 +145,12 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_object optionsRef)
 {
     EVENT_LOGI("unsubscribeExecute call.");
     auto ret = ANI_OK;
-    ani_class cls;
-    ret = env->FindClass("Lsts_common_event/CommonEventSubscriber;", &cls);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("unsubscribeExecute FindClass error. result: %{public}d.", ret);
-        return ret;
-    }
-    ani_field wrapperField;
-    ret = env->Class_FindField(cls, "subscriberInstanceWrapper", &wrapperField);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("unsubscribeExecute Class_FindField error. result: %{public}d.", ret);
-        return ret;
-    }
+
     ani_long wrapper_long {};
-    ret = env->Object_GetField_Long(optionsRef, wrapperField, &wrapper_long);
+    ret = env->Object_GetPropertyByName_Long(optionsRef, "subscriberInstanceWrapper", &wrapper_long);
     if (ret != ANI_OK) {
-        EVENT_LOGE("unsubscribeExecute Object_GetField_Long error. result: %{public}d.", ret);
-        return ret;
+        EVENT_LOGE("subscribeExecute Object_GetPropertyByName_Long error. result: %{public}d.", ret);
+        return ANI_INVALID_ARGS;
     }
 
     SubscriberInstanceWrapper* wrapper = nullptr;
@@ -280,9 +258,7 @@ std::shared_ptr<SubscriberInstance> SubscriberInstanceWrapper::GetSubscriber()
     return subscriber;
 }
 
-} // namespace EventManagerFwkAni
-} // namespace OHOS
-
+extern "C" {
 ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
 {
     EVENT_LOGI("ANI_Constructor call.");
@@ -294,9 +270,9 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
     }
 
     ani_namespace kitNs;
-    status = env->FindNamespace("L@ohos/event/common_event_manager/commonEventManager;", &kitNs);
+    status = env->FindNamespace("L@ohos/commonEventManager/commonEventManager;", &kitNs);
     if (status != ANI_OK) {
-        EVENT_LOGE("Not found L@ohos/event/common_event_manager/commonEventManager.");
+        EVENT_LOGE("Not found L@ohos/commonEventManager/commonEventManager.");
         return ANI_INVALID_ARGS;
     }
 
@@ -304,15 +280,15 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
         ani_native_function { "publishExecute", "Lstd/core/String;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
         ani_native_function { "publishWithOptionsExecute",
-            "Lstd/core/String;L@ohos/event/commonEventPublishData/CommonEventPublishData;:I",
+            "Lstd/core/String;LcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
         ani_native_function { "createSubscriberExecute",
-            "L@ohos/event/commonEventSubscribeInfo/CommonEventSubscribeInfo;:L@ohos/event/commonEventSubscriber/"
+            "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfo;:LcommonEvent/commonEventSubscriber/"
             "CommonEventSubscriber;",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
-        ani_native_function { "subscribeExecute", nullptr,
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
-        ani_native_function { "unsubscribeExecute", "L@ohos/event/commonEventSubscriber/CommonEventSubscriber;:I",
+        ani_native_function {
+            "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
+        ani_native_function { "unsubscribeExecute", "LcommonEvent/commonEventSubscriber/CommonEventSubscriber;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::unsubscribeExecute) },
     };
 
@@ -325,3 +301,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
     *result = ANI_VERSION_1;
     return ANI_OK;
 }
+}
+
+} // namespace EventManagerFwkAni
+} // namespace OHOS

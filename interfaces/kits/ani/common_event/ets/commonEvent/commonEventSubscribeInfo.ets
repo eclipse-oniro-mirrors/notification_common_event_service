@@ -13,18 +13,11 @@
  * limitations under the License.
  */
 
-export interface CommonEventData {
-    event: string;
-    bundleName?: string;
-    code?: number;
-    data?: string;
-    parameters?: Record<string, Object>;
-}
-
-class CommonEventDataInner implements CommonEventData {
-    public event: string = "";
-    public bundleName?: string | undefined;
-    public code?: number | undefined;
-    public data?: string | undefined;
-    public parameters?: Record<string, Object> | undefined;
+export interface CommonEventSubscribeInfo {
+    events: Array<string>;
+    publisherPermission?: string;
+    publisherDeviceId?: string;
+    userId?: number;
+    priority?: number;
+    publisherBundleName?: string;
 }

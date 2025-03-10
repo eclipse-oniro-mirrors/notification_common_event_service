@@ -13,20 +13,16 @@
  * limitations under the License.
  */
 
-import { CommonEventPublishData } from 'commonEventPublishData';
-import { CommonEventData } from 'commonEventData';
-import { CommonEventSubscribeInfo } from 'commonEventSubscribeInfo';
-import { CommonEventSubscriber } from 'commonEventSubscriber';
+import hilog from '@ohos.hilog';
+import{ AsyncCallback, BusinessError } from '@ohos.base';
+import{ CommonEventPublishData } from 'commonEvent.commonEventPublishData';
+import{ CommonEventData } from 'commonEvent.commonEventData';
+import{ CommonEventSubscribeInfo } from 'commonEvent.commonEventSubscribeInfo';
+import{ CommonEventSubscriber } from 'commonEvent.commonEventSubscriber';
 
-export class BusinessError<T = void> {
-    code: number;
-    data: T;
-}
-
-export type AsyncCallback<T, E = void> = (err: BusinessError<E>, data: T) => void;
-
-export namespace commonEventManager {
-
+const TAG: string = 'commonEventManager';
+namespace commonEventManager {
+    loadLibrary("ani_commoneventmanager.z");
     export native function publishExecute(event: string):int;
     export native function publishWithOptionsExecute(event: string, options: CommonEventPublishData):int;
     export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
@@ -35,92 +31,94 @@ export namespace commonEventManager {
     export native function unsubscribeExecute(subscriber: CommonEventSubscriber):int;
 
     export function publish(event: string, callback: AsyncCallback<void, void>): void {
-        console.log("publish call.");
+        hilog.info(0x0000, TAG, 'publish called.');
         let task = taskpool.execute(commonEventManager.publishExecute, event);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            console.log("publish call result:" + resultCode.intValue());
+            hilog.info(0x0000, TAG, 'publish call result:%{public}d.', resultCode.intValue());
             let r: BusinessError = { code: resultCode.intValue(), data: undefined };
             callback(r, undefined);
         }, (err:Object): void => {
-            console.log("publish call error:" + err);
+            hilog.error(0x0000, TAG, 'publish error.');
         });
     }
 
     export function publish(event: string, options: CommonEventPublishData, callback: AsyncCallback<void, void>): void {
-        console.info("publish with option call.");
+        hilog.info(0x0000, TAG, 'publish with option call.');
         let task = taskpool.execute(commonEventManager.publishWithOptionsExecute, event, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            console.log("publish with option result:" + resultCode.intValue());
+            hilog.info(0x0000, TAG, 'publish with option result:%{public}d.', resultCode.intValue());
             let r: BusinessError = { code: resultCode.intValue(), data: undefined };
             callback(r, undefined);
         }, (err:Object): void => {
-            console.log("publish with option error:" + err);
+            hilog.error(0x0000, TAG, 'publish with option error.');
         });
     }
 
     export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo,
         callback: AsyncCallback<CommonEventSubscriber, void>): void {
-        console.info("createSubscriber callback call.");
+        hilog.info(0x0000, TAG, 'createSubscriber callback call.');
         let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
         task.then((e: NullishType)=>{
             let result: CommonEventSubscriber = e as CommonEventSubscriber;
-            console.log("createSubscriber result.");
+            hilog.info(0x0000, TAG, 'createSubscriber result.');
             let r: BusinessError = { code: 0, data: undefined };
             callback(r, result);
         }, (err:Object): void => {
-            console.log("createSubscriber error:" + err);
+            hilog.error(0x0000, TAG, 'createSubscriber error.');
         });
     }
 
     export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber> {
-        console.info("createSubscriber Promise call.");
+        hilog.info(0x0000, TAG, 'createSubscriber Promise call');
         let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
             reject: (error: Object) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
             p1.then((e :NullishType)=>{
-                console.log("createSubscriber Promise result");
+                hilog.info(0x0000, TAG, 'createSubscriber Promise result.');
                 let result: CommonEventSubscriber  = e as CommonEventSubscriber;
                 resolve(result);
             }, (err:Object): void => {
-                console.log("createSubscriber Promise error:" + err);
+                hilog.error(0x0000, TAG, 'createSubscriber Promise error');
             });
         });
         return p;
     }
 
     export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber{
-        console.info("createSubscriberSync call.");
+        hilog.info(0x0000, TAG, 'createSubscriberSync call');
         return commonEventManager.createSubscriberExecute(subscribeInfo);
     }
 
     export function subscribe(subscriber: CommonEventSubscriber, callback: AsyncCallback<CommonEventData, void>): void {
-        console.info("subscribe call.");
+        hilog.info(0x0000, TAG, 'subscribe call.');
         let task = taskpool.execute(commonEventManager.subscribeExecute, subscriber, callback);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            console.log("subscribe result:" + resultCode.intValue());
+            hilog.info(0x0000, TAG, 'subscribe result:%{public}d.', resultCode.intValue());
             let a: CommonEventData;
             let r: BusinessError = { code: resultCode.intValue(), data: undefined };
             callback(r, a);
         }, (err:Object): void => {
-            console.log("subscribe error:" + err);
+            hilog.error(0x0000, TAG, 'subscribe error');
         });
     }
 
     export function unsubscribe(subscriber: CommonEventSubscriber, callback?: AsyncCallback<void, void>): void {
-        console.info("unsubscribe call.");
+        hilog.info(0x0000, TAG, 'unsubscribe call.');
         let task = taskpool.execute(commonEventManager.unsubscribeExecute, subscriber);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            console.log("unsubscribe result:" + resultCode.intValue());
+            hilog.info(0x0000, TAG, 'unsubscribe result:%{public}d.', resultCode.intValue());
             let r: BusinessError = { code: resultCode.intValue(), data: undefined };
             if (callback != undefined) {
                 callback(r, undefined);
             }
         }, (err:Object): void => {
-            console.log("unsubscribe error:" + err);
+            hilog.error(0x0000, TAG, 'unsubscribe error');
         });
     }
 }
+
+export default commonEventManager;

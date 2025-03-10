@@ -13,20 +13,12 @@
  * limitations under the License.
  */
 
-export interface CommonEventSubscribeInfo {
-    events: Array<string>;
-    publisherPermission?: string;
-    publisherDeviceId?: string;
-    userId?: number;
-    priority?: number;
-    publisherBundleName?: string;
-}
-
-class CommonEventSubscribeInfoInner implements CommonEventSubscribeInfo {
-    public events: Array<string> = new Array<string>;
-    public publisherPermission?: string | undefined;
-    public publisherDeviceId?: string | undefined;
-    public userId?: number | undefined;
-    public priority?: number | undefined;
-    public publisherBundleName?: string | undefined;
+export interface CommonEventPublishData {
+    bundleName?: string;
+    code?: number;
+    data?: string;
+    subscriberPermissions?: Array<string>;
+    isOrdered?: boolean;
+    isSticky?: boolean;
+    parameters?: Record<string, Object>;
 }
