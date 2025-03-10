@@ -115,12 +115,30 @@ ohos_unittest("common_event_subscribe_info_test") {
     "ipc:ipc_core",
   ]
 }
+ohos_unittest("common_event_publish_info_test") {
+  module_out_path = module_output_path
+
+  sources = [ "common_event_publish_info_test.cpp" ]
+
+  configs = []
+
+  deps = [
+    "${ces_core_path}:cesfwk_core",
+    "${ces_native_path}:cesfwk_innerkits",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+  ]
+}
 
 group("unittest") {
   testonly = true
   deps = []
 
   deps += [
+    ":common_event_publish_info_test",
     ":common_event_subscribe_info_test",
     ":common_event_subscribe_test",
     ":common_event_unsubscribe_test",
