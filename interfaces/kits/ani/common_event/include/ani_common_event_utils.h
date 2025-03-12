@@ -31,12 +31,17 @@ using CommonEventData = OHOS::EventFwk::CommonEventData;
 class AniCommonEventUtils {
 public:
     static void GetStdString(ani_env* env, ani_string str, std::string& result);
-    static void GetStdStringArrayClass(ani_env *env, ani_object arrayObj, std::vector<std::string> &strings);
+    static void GetStdStringArrayClass(ani_env* env, ani_object arrayObj, std::vector<std::string>& strings);
     static void ConvertCommonEventPublishData(ani_env* env, ani_object optionsObject, EventFwk::Want& want,
-        EventFwk::CommonEventData &commonEventData, EventFwk::CommonEventPublishInfo &commonEventPublishInfo);
+        EventFwk::CommonEventData& commonEventData, EventFwk::CommonEventPublishInfo& commonEventPublishInfo);
     static void ConvertCommonEventSubscribeInfo(
         ani_env* env, ani_object infoObject, CommonEventSubscribeInfo& subscribeInfo);
     static void ConvertCommonEventDataToEts(ani_env* env, ani_object& ani_data, const CommonEventData& commonEventData);
+    static bool GetStringOrUndefined(ani_env* env, ani_object param, const char* name, std::string& res);
+    static bool GetIntOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res);
+    static bool GetBooleanOrUndefined(ani_env* env, ani_object param, const char* name, bool& res);
+    static bool GetStringArrayOrUndefined(
+        ani_env* env, ani_object param, const char* name, std::vector<std::string>& res);
 };
 
 class EnumConvertUtils {

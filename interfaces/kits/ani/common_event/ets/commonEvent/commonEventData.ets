@@ -13,22 +13,10 @@
  * limitations under the License.
  */
 
-export interface CommonEventPublishData {
+export interface CommonEventData {
+    event: string;
     bundleName?: string;
     code?: number;
     data?: string;
-    subscriberPermissions?: Array<string>;
-    isOrdered?: boolean;
-    isSticky?: boolean;
     parameters?: Record<string, Object>;
-}
-
-class CommonEventPublishDataInner implements CommonEventPublishData {
-    public bundleName?: string | undefined;
-    public code?: number | undefined;
-    public data?: string | undefined;
-    public subscriberPermissions?: Array<string> | undefined;
-    public isOrdered?: boolean | undefined;
-    public isSticky?: boolean | undefined;
-    public parameters?: Record<string, Object> | undefined;
 }

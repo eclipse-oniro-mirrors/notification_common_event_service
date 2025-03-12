@@ -63,6 +63,7 @@ ohos_shared_library("ani_commoneventmanager") {
 
   external_deps = [
     "ability_base:want",
+    "c_utils:utils",
     "hilog:libhilog",
     "runtime_core:ani",
   ]
@@ -71,21 +72,77 @@ ohos_shared_library("ani_commoneventmanager") {
   part_name = "common_event_service"
 }
 
-generate_static_abc("common_event_abc") {
-  arktsconfig =
-      "${interfaces_path}/kits/ani/common_event/common_event_config.json"
-  dst_file = "$target_out_dir/common_event_manager.abc"
-  out_puts = [ "$target_out_dir/common_event_manager.abc" ]
-
+generate_static_abc("common_event_manager") {
+  base_url = "./ets"
+  files = [ "./ets/@ohos.commonEventManager.ets" ]
   is_boot_abc = "True"
   device_dst_file = "/system/framework/common_event_manager.abc"
-  cache_path = "$target_out_dir/cache"
 }
 
-ohos_prebuilt_etc("common_event_abc_etc") {
+ohos_prebuilt_etc("common_event_manager_etc") {
   source = "$target_out_dir/common_event_manager.abc"
   module_install_dir = "framework"
   subsystem_name = "notification"
   part_name = "common_event_service"
-  deps = [ ":common_event_abc" ]
+  deps = [ ":common_event_manager" ]
+}
+
+generate_static_abc("commonEventData") {
+  base_url = "./ets"
+  files = [ "./ets/commonEvent/commonEventData.ets" ]
+  is_boot_abc = "True"
+  device_dst_file = "/system/framework/commonEventData.abc"
+}
+
+ohos_prebuilt_etc("commonEventData_etc") {
+  source = "$target_out_dir/commonEventData.abc"
+  module_install_dir = "framework"
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+  deps = [ ":commonEventData" ]
+}
+
+generate_static_abc("commonEventPublishData") {
+  base_url = "./ets"
+  files = [ "./ets/commonEvent/commonEventPublishData.ets" ]
+  is_boot_abc = "True"
+  device_dst_file = "/system/framework/commonEventPublishData.abc"
+}
+
+ohos_prebuilt_etc("commonEventPublishData_etc") {
+  source = "$target_out_dir/commonEventPublishData.abc"
+  module_install_dir = "framework"
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+  deps = [ ":commonEventPublishData" ]
+}
+
+generate_static_abc("commonEventSubscribeInfo") {
+  base_url = "./ets"
+  files = [ "./ets/commonEvent/commonEventSubscribeInfo.ets" ]
+  is_boot_abc = "True"
+  device_dst_file = "/system/framework/commonEventSubscribeInfo.abc"
+}
+
+ohos_prebuilt_etc("commonEventSubscribeInfo_etc") {
+  source = "$target_out_dir/commonEventSubscribeInfo.abc"
+  module_install_dir = "framework"
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+  deps = [ ":commonEventSubscribeInfo" ]
+}
+
+generate_static_abc("commonEventSubscriber") {
+  base_url = "./ets"
+  files = [ "./ets/commonEvent/commonEventSubscriber.ets" ]
+  is_boot_abc = "True"
+  device_dst_file = "/system/framework/commonEventSubscriber.abc"
+}
+
+ohos_prebuilt_etc("commonEventSubscriber_etc") {
+  source = "$target_out_dir/commonEventSubscriber.abc"
+  module_install_dir = "framework"
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+  deps = [ ":commonEventSubscriber" ]
 }
