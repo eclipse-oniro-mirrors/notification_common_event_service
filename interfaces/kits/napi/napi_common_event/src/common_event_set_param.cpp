@@ -449,6 +449,10 @@ bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info i
     }
     napi_valuetype valueType = napi_undefined;
     NAPI_CALL_BASE(env, napi_typeof(env, argv[INDEX_ONE], &valueType), false);
+    if (valueType == napi_undefined || valueType == napi_null) {
+        EVENT_LOGD("Second param is undefined or null");
+        return true;
+    }
     if (valueType == napi_function) {
         lastParam = argv[INDEX_ONE];
         return true;

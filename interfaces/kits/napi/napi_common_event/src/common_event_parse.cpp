@@ -1158,9 +1158,14 @@ napi_value ParseParametersByUnsubscribe(const napi_env &env, const size_t &argc,
         return nullptr;
     }
 
-    // argv[1]:callback
+    // argv[1]:callback?
     if (argc >= UNSUBSCRIBE_MAX_PARA) {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype));
+        if (valuetype == napi_undefined || valuetype == napi_null) {
+            EVENT_LOGD("Second param is undefined or null");
+            napi_get_boolean(env, isFind, &result);
+            return result;
+        }
         if (valuetype != napi_function) {
             EVENT_LOGE("Parameter type error. Function expected.");
             std::string msg = "Incorrect parameter types.The type of param must be function.";
