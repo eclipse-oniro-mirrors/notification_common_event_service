@@ -754,8 +754,7 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
     }
     asynccallback->env = env;
     asynccallback->subscriber = subscriber;
-    asynccallback->argc = argc;
-    if (argc >= UNSUBSCRIBE_MAX_PARA) {
+    if (callback != nullptr) {
         asynccallback->callback = callback;
     }
 
@@ -778,12 +777,10 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
             EVENT_LOGD("Unsubscribe napi_create_async_work complete");
             AsyncCallbackInfoUnsubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoUnsubscribe *>(data);
             if (asyncCallbackInfo) {
-                if (asyncCallbackInfo->argc >= UNSUBSCRIBE_MAX_PARA) {
+                if (asyncCallbackInfo->callback != nullptr) {
                     napi_value result = nullptr;
                     napi_get_null(env, &result);
                     SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, result);
-                }
-                if (asyncCallbackInfo->callback != nullptr) {
                     EVENT_LOGD("Delete cancel callback reference.");
                     napi_delete_reference(env, asyncCallbackInfo->callback);
                 }

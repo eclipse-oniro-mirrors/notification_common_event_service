@@ -83,7 +83,6 @@ struct AsyncCallbackInfoUnsubscribe {
     napi_env env = nullptr;
     napi_async_work asyncWork = nullptr;
     napi_ref callback = nullptr;
-    size_t argc = 0;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int32_t errorCode = NO_ERROR;
 };
