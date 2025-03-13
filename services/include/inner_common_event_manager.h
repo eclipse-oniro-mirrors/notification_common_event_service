@@ -197,7 +197,6 @@ private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;
     std::shared_ptr<StaticSubscriberManager> staticSubscriberManager_;
     DISALLOW_COPY_AND_MOVE(InnerCommonEventManager);
-    time_t sysEventTime = 0;
     std::string supportCheckSaPermission_ = "false";
     std::atomic<int> subCount = 0;
     std::unordered_map<std::string, std::vector<int32_t>> publishControlMap_;

@@ -295,13 +295,6 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         mappedEventRecord.commonEventData->SetWant(want);
         controlPtr_->PublishCommonEvent(mappedEventRecord, commonEventListener);
     }
-
-    if (time(nullptr) - sysEventTime >= PUBLISH_SYS_EVENT_INTERVAL &&
-        EVENT_COUNT_DISALLOW.find(data.GetWant().GetAction().c_str()) == EVENT_COUNT_DISALLOW.end()) {
-        SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), true);
-        sysEventTime = time(nullptr);
-    }
-
     return true;
 }
 
@@ -358,8 +351,6 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
         "ffrtCost %{public}lld ms, taskCost %{public}lld ms", bundleName.c_str(), userId, subId.c_str(),
         taskStartTime - startTime, now - taskStartTime);
     PublishStickyEvent(sp, record);
-
-    SendSubscribeHiSysEvent(userId, bundleName, pid, uid, subscribeInfo.GetMatchingSkills().GetEvents());
     return true;
 };
 
@@ -385,10 +376,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &
         std::string data = sp->commonEventData->GetData();
         controlPtr_->FinishReceiverAction(sp, code, data, sp->resultAbort);
     }
-
-    SendUnSubscribeHiSysEvent(commonEventListener);
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveSubscriber(commonEventListener);
-
     return true;
 }
 
@@ -653,44 +641,6 @@ void InnerCommonEventManager::HiDump(const std::vector<std::u16string> &args, st
     }
 }
 
-void InnerCommonEventManager::SendSubscribeHiSysEvent(int32_t userId, const std::string &subscriberName, int32_t pid,
-    int32_t uid, const std::vector<std::string> &events)
-{
-    EventInfo eventInfo;
-    eventInfo.userId = userId;
-    eventInfo.subscriberName = subscriberName;
-    eventInfo.pid = pid;
-    eventInfo.uid = uid;
-    eventInfo.eventName = std::accumulate(events.begin(), events.end(), std::string(""),
-        [events](std::string eventName, const std::string &str) {
-            return (str == events.front()) ? (eventName + str) : (eventName + "," + str);
-        });
-    EventReport::SendHiSysEvent(SUBSCRIBE, eventInfo);
-}
-
-void InnerCommonEventManager::SendUnSubscribeHiSysEvent(const sptr<IRemoteObject> &commonEventListener)
-{
-    auto subscriberRecord = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetSubscriberRecord(
-        commonEventListener);
-    if (subscriberRecord == nullptr) {
-        return;
-    }
-
-    EventInfo eventInfo;
-    if (subscriberRecord->eventSubscribeInfo != nullptr) {
-        eventInfo.userId = subscriberRecord->eventSubscribeInfo->GetUserId();
-        std::vector<std::string> events = subscriberRecord->eventSubscribeInfo->GetMatchingSkills().GetEvents();
-        eventInfo.eventName = std::accumulate(events.begin(), events.end(), std::string(""),
-            [events](std::string eventName, const std::string &str) {
-                return (str == events.front()) ? (eventName + str) : (eventName + "," + str);
-            });
-    }
-    eventInfo.subscriberName = subscriberRecord->eventRecordInfo.bundleName;
-    eventInfo.pid = subscriberRecord->eventRecordInfo.pid;
-    eventInfo.uid = static_cast<int32_t>(subscriberRecord->eventRecordInfo.uid);
-    EventReport::SendHiSysEvent(UNSUBSCRIBE, eventInfo);
-}
-
 void InnerCommonEventManager::SendPublishHiSysEvent(int32_t userId, const std::string &publisherName, int32_t pid,
     int32_t uid, const std::string &event, bool succeed)
 {
@@ -701,9 +651,7 @@ void InnerCommonEventManager::SendPublishHiSysEvent(int32_t userId, const std::s
     eventInfo.uid = uid;
     eventInfo.eventName = event;
 
-    if (succeed) {
-        EventReport::SendHiSysEvent(PUBLISH, eventInfo);
-    } else {
+    if (!succeed) {
         EventReport::SendHiSysEvent(PUBLISH_ERROR, eventInfo);
     }
 }
