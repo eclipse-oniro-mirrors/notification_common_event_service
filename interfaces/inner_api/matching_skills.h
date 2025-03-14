@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -212,12 +212,15 @@ private:
      */
     bool MatchScheme(const std::string &scheme) const;
 
+    std::string ToString() const;
+
 private:
     std::vector<std::string> entities_;
     std::vector<std::string> events_;
     std::vector<std::string> schemes_;
     static constexpr int32_t VALUE_NULL = -1;
     static constexpr int32_t VALUE_OBJECT = 1;
+    friend class CommonEvent;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

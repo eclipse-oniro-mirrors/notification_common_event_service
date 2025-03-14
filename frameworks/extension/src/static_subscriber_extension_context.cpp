@@ -71,7 +71,7 @@ ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
     }
     
     err = AAFwk::AbilityManagerClient::GetInstance()->StartAbility(want, token_);
-    EVENT_LOGI("StaticSubscriberExtensionContext::StartAbility. End calling StartAbility. err=%{public}d", err);
+    EVENT_LOGI("End calling StartAbility. err=%{public}d", err);
     return err;
 }
 

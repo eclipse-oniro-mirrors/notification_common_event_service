@@ -251,7 +251,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         }
     }
     
-    EVENT_LOGI("%{public}s(pid = %{public}d, uid = %{public}d), publish %{public}s to %{public}d",
+    EVENT_LOGI("%{public}s(pid=%{public}d, uid=%{public}d), publish=%{public}s to %{public}d",
         bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str(), user);
 
     if (staticSubscriberManager_ != nullptr) {
@@ -347,9 +347,9 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
         sp, commonEventListener, recordTime, eventRecordInfo);
 
     now = SystemTime::GetNowSysTime();
-    EVENT_LOGI("SubscribeCommonEvent %{public}s(userId = %{public}d, subId = %{public}s, "
-        "ffrtCost %{public}lld ms, taskCost %{public}lld ms", bundleName.c_str(), userId, subId.c_str(),
-        taskStartTime - startTime, now - taskStartTime);
+    EVENT_LOGI("Subscribe %{public}s(userId = %{public}d, subId = %{public}s, "
+        "ffrtCost %{public}s ms, taskCost %{public}s ms)", bundleName.c_str(), userId, subId.c_str(),
+        std::to_string(taskStartTime - startTime).c_str(), std::to_string(now - taskStartTime).c_str());
     PublishStickyEvent(sp, record);
     return true;
 };
@@ -586,7 +586,7 @@ bool InnerCommonEventManager::PublishStickyEvent(
 
         if (!commonEventRecord->publishInfo->GetBundleName().empty() &&
             commonEventRecord->publishInfo->GetBundleName() != subscriberRecord->eventRecordInfo.bundleName) {
-            EVENT_LOGW("commonEventRecord assigned to bundleName[%{public}s]",
+            EVENT_LOGW("Event only assigned to [%{public}s]",
                 commonEventRecord->publishInfo->GetBundleName().c_str());
             continue;
         }
