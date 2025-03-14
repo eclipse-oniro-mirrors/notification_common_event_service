@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -311,6 +311,30 @@ bool MatchingSkills::MatchScheme(const std::string &scheme) const
 bool MatchingSkills::Match(const Want &want) const
 {
     return MatchEvent(want.GetAction()) && MatchEntity(want.GetEntities()) && MatchScheme(want.GetScheme());
+}
+
+std::string MatchingSkills::ToString() const
+{
+    std::string result = "";
+    if (events_.size() > 0) {
+        result.append(" Events: ").append(events_[0]);
+        for (size_t i = 1; i < events_.size(); ++i) {
+            result.append(",").append(events_[i]);
+        }
+    }
+    if (schemes_.size() > 0) {
+        result.append(" Schemes: ").append(schemes_[0]);
+        for (size_t i = 1; i < schemes_.size(); ++i) {
+            result.append(",").append(schemes_[i]);
+        }
+    }
+    if (entities_.size() > 0) {
+        result.append(" Entrities: ").append(entities_[0]);
+        for (size_t i = 1; i < entities_.size(); ++i) {
+            result.append(",").append(entities_[i]);
+        }
+    }
+    return result;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
