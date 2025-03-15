@@ -31,7 +31,7 @@ namespace commonEventManager {
     export native function unsubscribeExecute(subscriber: CommonEventSubscriber):int;
 
     export function publish(event: string, callback: AsyncCallback<void, void>): void {
-        hilog.info(0x0000, TAG, 'publish called.');
+        hilog.info(0x0000, TAG, 'publish called event: %{public}s', event);
         let task = taskpool.execute(commonEventManager.publishExecute, event);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
@@ -97,9 +97,11 @@ namespace commonEventManager {
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'subscribe result:%{public}d.', resultCode.intValue());
-            let a: CommonEventData;
-            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
-            callback(r, a);
+            if (resultCode != 0) {
+                let a: CommonEventData;
+                let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+                callback(r, a);
+            }
         }, (err:Object): void => {
             hilog.error(0x0000, TAG, 'subscribe error');
         });
@@ -119,6 +121,20 @@ namespace commonEventManager {
             hilog.error(0x0000, TAG, 'unsubscribe error');
         });
     }
+
+    export enum Support {
+        COMMON_EVENT_SCREEN_OFF = 'usual.event.SCREEN_OFF',
+        COMMON_EVENT_SCREEN_ON = 'usual.event.SCREEN_ON',
+        COMMON_EVENT_USER_INFO_UPDATED = 'usual.event.USER_INFO_UPDATED',
+        COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGOUT = 'common.event.DISTRIBUTED_ACCOUNT_LOGOUT',
+        COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN = 'common.event.DISTRIBUTED_ACCOUNT_LOGIN',
+        COMMON_EVENT_HTTP_PROXY_CHANGE = 'usual.event.HTTP_PROXY_CHANGE',
+        COMMON_EVENT_MINORSMODE_ON = 'usual.event.MINORSMODE_ON',
+        COMMON_EVENT_MINORSMODE_OFF = 'usual.event.MINORSMODE_OFF',
+        COMMON_EVENT_TIME_CHANGED = 'usual.event.TIME_CHANGED',
+        COMMON_EVENT_TIMEZONE_CHANGED = 'usual.event.TIMEZONE_CHANGED'
+    }
+
 }
 
 export default commonEventManager;

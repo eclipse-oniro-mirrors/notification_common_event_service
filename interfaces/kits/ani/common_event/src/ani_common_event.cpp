@@ -111,13 +111,14 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     return resultRef;
 }
 
-static uint32_t subscribeExecute(ani_env* env, ani_object optionsRef, ani_ref callbackRef)
+static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object callback)
 {
     EVENT_LOGI("subscribeExecute call.");
     auto ret = ANI_OK;
 
     ani_long wrapper_long {};
-    ret = env->Object_GetPropertyByName_Long(optionsRef, "subscriberInstanceWrapper", &wrapper_long);
+    ret = env->Object_GetPropertyByName_Long(
+        static_cast<ani_object>(subscribeRef), "subscriberInstanceWrapper", &wrapper_long);
     if (ret != ANI_OK) {
         EVENT_LOGE("subscribeExecute Object_GetPropertyByName_Long error. result: %{public}d.", ret);
         return ANI_INVALID_ARGS;
@@ -134,20 +135,40 @@ static uint32_t subscribeExecute(ani_env* env, ani_object optionsRef, ani_ref ca
         EVENT_LOGE("subscriberInstance is null.");
         return ANI_INVALID_ARGS;
     }
+
+    ani_ref resultRef = nullptr;
+    ret = env->GlobalReference_Create(callback, &resultRef);
+    if (ret != ANI_OK) {
+        EVENT_LOGE("createSubscriberExecute GlobalReference_Create error. result: %{public}d.", ret);
+        return ANI_INVALID_ARGS;
+    }
+    if (resultRef == nullptr) {
+        EVENT_LOGE("subscribeExecute resultRef is null.");
+    }
     subscriberInstance->SetEnv(env);
-    subscriberInstance->SetCallbackRef(callbackRef);
+    subscriberInstance->SetCallback(static_cast<ani_object>(resultRef));
+
+    ani_vm* etsVm;
+    ret = env->GetVM(&etsVm);
+    if (ret != ANI_OK) {
+        EVENT_LOGE("OnReceiveEvent GetVM error. result: %{public}d.", ret);
+        return ANI_INVALID_ARGS;
+    }
+    subscriberInstance->SetVm(etsVm);
     auto result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
+
     EVENT_LOGI("subscribeExecute result: %{public}d.", result);
     return result;
 }
 
-static uint32_t unsubscribeExecute(ani_env* env, ani_object optionsRef)
+static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
 {
     EVENT_LOGI("unsubscribeExecute call.");
     auto ret = ANI_OK;
 
     ani_long wrapper_long {};
-    ret = env->Object_GetPropertyByName_Long(optionsRef, "subscriberInstanceWrapper", &wrapper_long);
+    ret = env->Object_GetPropertyByName_Long(
+        static_cast<ani_object>(subscribeRef), "subscriberInstanceWrapper", &wrapper_long);
     if (ret != ANI_OK) {
         EVENT_LOGE("subscribeExecute Object_GetPropertyByName_Long error. result: %{public}d.", ret);
         return ANI_INVALID_ARGS;
@@ -208,9 +229,43 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
             }
         }
     }
+
+    ani_env* etsEnv;
+    ani_status aniResult = ANI_ERROR;
+    ani_options aniArgs { 0, nullptr };
+    aniResult = etsVm_->AttachCurrentThread(&aniArgs, ANI_VERSION_1, &etsEnv);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("subscribeCallbackThreadFunciton FunctionalObject_Call error. result: %{public}d.", aniResult);
+        return;
+    }
     ani_object ani_data {};
-    AniCommonEventUtils::ConvertCommonEventDataToEts(env_, ani_data, data);
-    // Call JS by CallbackRef
+    AniCommonEventUtils::ConvertCommonEventDataToEts(etsEnv, ani_data, data);
+
+    ani_object businessErrorObject;
+    int32_t code = 0;
+    std::string message = "";
+    AniCommonEventUtils::CreateBusinessErrorObject(etsEnv, businessErrorObject, code, message);
+
+    auto fnObject = reinterpret_cast<ani_fn_object>(static_cast<ani_ref>(callback_));
+    if (fnObject == nullptr) {
+        EVENT_LOGE("subscribeCallbackThreadFunciton fnObject is null.");
+        return;
+    }
+
+    EVENT_LOGI("FunctionalObject_Call.");
+    std::vector<ani_ref> args = { static_cast<ani_ref>(businessErrorObject), static_cast<ani_ref>(ani_data) };
+    ani_ref result;
+    aniResult = etsEnv->FunctionalObject_Call(fnObject, args.size(), args.data(), &result);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("subscribeCallbackThreadFunciton FunctionalObject_Call error. result: %{public}d.", aniResult);
+        return;
+    }
+
+    aniResult = etsVm_->DetachCurrentThread();
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("subscribeCallbackThreadFunciton DetachCurrentThread error. result: %{public}d.", aniResult);
+        return;
+    }
 }
 
 unsigned long long SubscriberInstance::GetID()
@@ -220,14 +275,21 @@ unsigned long long SubscriberInstance::GetID()
 
 void SubscriberInstance::SetEnv(ani_env* env)
 {
-    EVENT_LOGD("Enter");
+    EVENT_LOGD("SetEnv");
+    std::lock_guard<std::mutex> lock(envMutex_);
     env_ = env;
 }
 
-void SubscriberInstance::SetCallbackRef(const ani_ref& ref)
+void SubscriberInstance::SetVm(ani_vm* etsVm)
 {
-    std::lock_guard<std::mutex> lockRef(refMutex_);
-    ref_ = ref;
+    EVENT_LOGD("SetVm");
+    etsVm_ = etsVm;
+}
+
+void SubscriberInstance::SetCallback(const ani_object& callback)
+{
+    std::lock_guard<std::mutex> lockRef(callbackMutex_);
+    callback_ = callback;
 }
 
 void SubscriberInstance::ClearEnv()

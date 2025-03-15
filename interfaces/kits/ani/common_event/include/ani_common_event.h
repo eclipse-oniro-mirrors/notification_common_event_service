@@ -30,16 +30,18 @@ public:
     void OnReceiveEvent(const OHOS::EventFwk::CommonEventData& data) override;
     unsigned long long GetID();
     void SetEnv(ani_env* env);
-    void SetCallbackRef(const ani_ref& ref);
+    void SetVm(ani_vm* etsVm);
+    void SetCallback(const ani_object& callback);
     void ClearEnv();
 
 private:
     std::mutex envMutex_;
-    std::mutex refMutex_;
+    std::mutex callbackMutex_;
     ani_env* env_ = nullptr;
-    ani_ref ref_ = nullptr;
+    ani_object callback_ = nullptr;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
+    ani_vm* etsVm_ = nullptr;
 };
 
 class SubscriberInstanceWrapper {

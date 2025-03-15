@@ -20,3 +20,11 @@ export interface CommonEventData {
     data?: string;
     parameters?: Record<string, Object>;
 }
+
+class CommonEventDataImpl implements CommonEventData {
+    public event: string = "";
+    public bundleName?: string | undefined;
+    public code?: number | undefined;
+    public data?: string | undefined;
+    public parameters?: Record<string, Object> | undefined;
+}
