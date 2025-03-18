@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,7 +30,8 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     std::string bundleName = element.GetURI();
     ffrt::submit([=] () {
         if (proxy) {
-            ErrCode ec = proxy->OnReceiveEvent(&event_);
+            int32_t funcResult = -1;
+            ErrCode ec = proxy->OnReceiveEvent(event_, funcResult);
             EVENT_LOGI("OnAbilityConnectDone end, bundle = %{public}s, code = %{public}d", bundleName.c_str(), ec);
         }
         AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(sThis);

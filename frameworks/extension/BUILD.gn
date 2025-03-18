@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Huawei Device Co., Ltd.
+# Copyright (c) 2023-2025 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,12 +12,20 @@
 # limitations under the License.
 
 import("//base/notification/common_event_service/event.gni")
-import("//build/ohos.gni")
+import("//build/config/components/idl_tool/idl.gni")
+
+idl_gen_interface("static_subscriber_interface") {
+  sources = [ "IStaticSubscriber.idl" ]
+  log_domainid = "0xD001202"
+  log_tag = "Ces"
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+}
 
 config("static_subscriber_ipc_public_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${ces_extension_path}/include/ipc" ]
+  include_dirs = [ "${target_gen_dir}" ]
 }
 
 ohos_shared_library("static_subscriber_ipc") {
@@ -33,15 +41,16 @@ ohos_shared_library("static_subscriber_ipc") {
 
   include_dirs = []
 
-  sources = [
-    "${ces_extension_path}/src/ipc/static_subscriber_proxy.cpp",
-    "${ces_extension_path}/src/ipc/static_subscriber_stub.cpp",
-  ]
+  sources = []
 
   configs = []
   public_configs = [ ":static_subscriber_ipc_public_config" ]
 
-  deps = [ "${ces_native_path}:cesfwk_innerkits" ]
+  deps = [
+    ":static_subscriber_proxy",
+    ":static_subscriber_stub",
+    "${ces_native_path}:cesfwk_innerkits",
+  ]
 
   external_deps = [
     "ability_base:want",
@@ -170,4 +179,56 @@ group("cesfwk_extension") {
     ":static_subscriber_extension_module",
     ":static_subscriber_ipc",
   ]
+}
+
+ohos_source_set("static_subscriber_proxy") {
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+  public_configs = [ ":static_subscriber_ipc_public_config" ]
+  output_values = get_target_outputs(":static_subscriber_interface")
+  sources = filter_include(output_values, [ "*_proxy.cpp" ])
+  deps = [
+    ":static_subscriber_interface",
+    "${ces_native_path}:cesfwk_innerkits",
+  ]
+  external_deps = [
+    "ability_base:want",
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+  ]
+  subsystem_name = "notification"
+  part_name = "common_event_service"
+}
+
+ohos_source_set("static_subscriber_stub") {
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+  public_configs = [ ":static_subscriber_ipc_public_config" ]
+  output_values = get_target_outputs(":static_subscriber_interface")
+  sources = filter_include(output_values, [ "*_stub.cpp" ])
+  deps = [
+    ":static_subscriber_interface",
+    "${ces_native_path}:cesfwk_innerkits",
+  ]
+  external_deps = [
+    "ability_base:want",
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+  ]
+  subsystem_name = "notification"
+  part_name = "common_event_service"
 }

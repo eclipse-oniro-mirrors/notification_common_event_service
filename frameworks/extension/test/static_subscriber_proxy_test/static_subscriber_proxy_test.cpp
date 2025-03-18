@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -63,7 +63,7 @@ public:
         return returnCode_;
     }
 
-    ErrCode OnReceiveEvent(CommonEventData* inData) override
+    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
     {
         return 0;
     }
@@ -82,7 +82,7 @@ public:
         return returnCode_;
     }
 
-    ErrCode OnReceiveEvent(CommonEventData* inData) override
+    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
     {
         return 0;
     }
@@ -102,8 +102,10 @@ HWTEST_F(StaticSubscriberProxyTest, StaticSubscriberProxy_OnReceiveEvent_001, Te
     sptr<StaticSubscriberProxy> testProxy = new (std::nothrow) StaticSubscriberProxy(object);
     EXPECT_TRUE(testProxy != nullptr);
     EXPECT_TRUE(testProxy->remoteObject_ != nullptr);
-    CommonEventData* inData = nullptr;
-    EXPECT_EQ(testProxy->OnReceiveEvent(inData), ERR_OK);
+    const CommonEventData data;
+    int32_t funcResult = -1;
+    EXPECT_EQ(testProxy->OnReceiveEvent(data, funcResult), ERR_OK);
+    EXPECT_EQ(funcResult, ERR_OK);
     GTEST_LOG_(INFO) << "StaticSubscriberProxy_OnReceiveEvent_001 end.";
 }
 
@@ -119,8 +121,10 @@ HWTEST_F(StaticSubscriberProxyTest, StaticSubscriberProxy_OnReceiveEvent_002, Te
     sptr<StaticSubscriberProxy> testProxy = new (std::nothrow) StaticSubscriberProxy(object);
     EXPECT_TRUE(testProxy != nullptr);
     EXPECT_TRUE(testProxy->remoteObject_ != nullptr);
-    CommonEventData* inData = nullptr;
-    EXPECT_EQ(testProxy->OnReceiveEvent(inData), 1);
+    const CommonEventData data;
+    int32_t funcResult = -1;
+    EXPECT_EQ(testProxy->OnReceiveEvent(data, funcResult), ERR_TRANSACTION_FAILED);
+    EXPECT_EQ(funcResult, SESSION_UNOPEN_ERR);
     GTEST_LOG_(INFO) << "StaticSubscriberProxy_OnReceiveEvent_002 end.";
 }
 } // namespace EventFwk
