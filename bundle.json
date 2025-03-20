@@ -133,6 +133,13 @@
                     ]
                   },
                   "name":"//base/notification/common_event_service/frameworks/native:cesfwk_innerkits"
+                },
+                {
+                    "header": {
+                      "header_base" : "//base/notification/common_event_service/interfaces/kits/cj/src",
+                      "header_files": []
+                    },
+                    "name":"//base/notification/common_event_service/interfaces/kits/cj:cj_common_event_manager_ffi"
                 }
             ],
             "test": [
