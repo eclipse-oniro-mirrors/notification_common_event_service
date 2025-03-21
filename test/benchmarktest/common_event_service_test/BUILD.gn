@@ -50,6 +50,7 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "hilog:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
   ]

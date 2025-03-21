@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,7 @@ namespace OHOS {
 namespace EventFwk {
 std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::commonRunner_ = nullptr;
 std::atomic<int> ffrtIndex = 0;
+std::mutex CommonEventListener::onRemoteRequestMutex_;
 
 CommonEventListener::CommonEventListener(const std::shared_ptr<CommonEventSubscriber> &commonEventSubscriber)
     : commonEventSubscriber_(commonEventSubscriber)
@@ -32,7 +33,7 @@ CommonEventListener::CommonEventListener(const std::shared_ptr<CommonEventSubscr
 CommonEventListener::~CommonEventListener()
 {}
 
-void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
+ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, bool ordered, bool sticky)
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGD("enter");
@@ -40,7 +41,7 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsReady()) {
         EVENT_LOGE("not ready");
-        return;
+        return IPC_INVOKER_ERR;
     }
 
     wptr<CommonEventListener> wp = this;
@@ -60,6 +61,7 @@ void CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, co
     if (listenerQueue_) {
         static_cast<ffrt::queue*>(listenerQueue_)->submit(onReceiveEventFunc);
     }
+    return ERR_NONE;
 }
 
 __attribute__((no_sanitize("cfi"))) ErrCode CommonEventListener::Init()
@@ -188,6 +190,18 @@ void CommonEventListener::Stop()
     if (queue) {
         delete static_cast<ffrt::queue*>(queue);
     }
+}
+
+int32_t CommonEventListener::CallbackEnter([[maybe_unused]] uint32_t code)
+{
+    onRemoteRequestMutex_.lock();
+    return 0;
+}
+
+int32_t CommonEventListener::CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result)
+{
+    onRemoteRequestMutex_.unlock();
+    return 0;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
