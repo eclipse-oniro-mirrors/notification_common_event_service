@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -63,7 +63,7 @@ public:
         return returnCode_;
     }
 
-    ErrCode OnReceiveEvent(CommonEventData* inData) override
+    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
     {
         GTEST_LOG_(INFO) << "MockRegisterService::OnReceiveEvent called.";
         return 0;
@@ -87,7 +87,7 @@ HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_001, Tes
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    EXPECT_TRUE(data.WriteInterfaceToken(u"OHOS.AppExecFwk.IStaticSubscriber"));
+    EXPECT_TRUE(data.WriteInterfaceToken(u"OHOS.EventFwk.IStaticSubscriber"));
     EXPECT_EQ(object->OnRemoteRequest(code, data, reply, option), IPC_STUB_UNKNOW_TRANS_ERR);
     GTEST_LOG_(INFO) << "StaticSubscriberStub_OnRemoteRequest_001 end.";
 }
@@ -125,8 +125,10 @@ HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_003, Tes
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    EXPECT_TRUE(data.WriteInterfaceToken(u"OHOS.AppExecFwk.IStaticSubscriber"));
-    EXPECT_EQ(object->OnRemoteRequest(static_cast<uint32_t>(CommonEventInterfaceCode::COMMAND_ON_RECEIVE_EVENT),
+    CommonEventData inData;
+    EXPECT_TRUE(data.WriteInterfaceToken(u"OHOS.EventFwk.IStaticSubscriber"));
+    data.WriteParcelable(&inData);
+    EXPECT_EQ(object->OnRemoteRequest(static_cast<uint32_t>(IStaticSubscriberIpcCode::COMMAND_ON_RECEIVE_EVENT),
         data, reply, option), ERR_NONE);
     GTEST_LOG_(INFO) << "StaticSubscriberStub_OnRemoteRequest_003 end.";
 }

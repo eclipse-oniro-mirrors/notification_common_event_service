@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -65,8 +65,10 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
         static_cast<AbilityRuntime::JsRuntime&>(*runtime));
     sptr<StaticSubscriberStubImpl> object = new (std::nothrow) StaticSubscriberStubImpl(extension);
     EXPECT_TRUE(object != nullptr);
-    CommonEventData* data = nullptr;
-    EXPECT_EQ(object->OnReceiveEvent(data), 0);
+    const CommonEventData data;
+    int32_t funcResult = -1;
+    EXPECT_EQ(object->OnReceiveEvent(data, funcResult), ERR_OK);
+    EXPECT_EQ(funcResult, 0);
     GTEST_LOG_(INFO) << "StaticSubscriberStubImpl_OnReceiveEvent_001 end.";
 }
 
@@ -81,8 +83,10 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
     const std::shared_ptr<JsStaticSubscriberExtension> extension;
     sptr<StaticSubscriberStubImpl> object = new (std::nothrow) StaticSubscriberStubImpl(extension);
     EXPECT_TRUE(object != nullptr);
-    CommonEventData* data = nullptr;
-    EXPECT_EQ(object->OnReceiveEvent(data), -1);
+    const CommonEventData data;
+    int32_t funcResult = -1;
+    EXPECT_EQ(object->OnReceiveEvent(data, funcResult), ERR_INVALID_DATA);
+    EXPECT_EQ(funcResult, SESSION_UNOPEN_ERR);
     GTEST_LOG_(INFO) << "StaticSubscriberStubImpl_OnReceiveEvent_002 end.";
 }
 } // namespace EventFwk
