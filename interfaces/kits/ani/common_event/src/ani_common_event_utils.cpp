@@ -20,6 +20,8 @@ namespace OHOS {
 namespace EventManagerFwkAni {
 
 using namespace OHOS::EventFwk;
+using namespace OHOS::AppExecFwk;
+#define SETTER_METHOD_NAME(property) "<set>" #property
 
 void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string& result)
 {
@@ -148,7 +150,7 @@ bool AniCommonEventUtils::GetBooleanOrUndefined(ani_env* env, ani_object param, 
 
     ani_boolean result = 0;
     if ((status = env->Object_CallMethodByName_Boolean(
-        reinterpret_cast<ani_object>(obj), "valueOf", nullptr, &result)) != ANI_OK) {
+        reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) != ANI_OK) {
         EVENT_LOGE("status : %{public}d", status);
         return false;
     }
@@ -238,7 +240,7 @@ void AniCommonEventUtils::ConvertCommonEventPublishData(ani_env* env, ani_object
         EVENT_LOGI("ConvertCommonEventPublishData bundleName not exit");
     }
 
-    // Get the parameters.
+    // Get the parameters [Record]
 }
 
 void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
@@ -306,62 +308,142 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
     subscribeInfo = commonEventSubscribeInfo;
 }
 
+void AniCommonEventUtils::CreateNewObjectByClass(
+    ani_env* env, const char* className, ani_class& cls, ani_object& ani_data)
+{
+    auto aniResult = ANI_ERROR;
+    ani_method ctor = nullptr;
+    aniResult = env->FindClass(className, &cls);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateNewObjectByClass findClass error. result: %{public}d.", aniResult);
+        return;
+    }
+    if (cls == nullptr) {
+        EVENT_LOGE("CreateNewObjectByClass cls is null.");
+        return;
+    }
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateNewObjectByClass Class_FindMethod error. result: %{public}d.", aniResult);
+        return;
+    }
+    aniResult = env->Object_New(cls, ctor, &ani_data);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateNewObjectByClass Object_New error. result: %{public}d.", aniResult);
+    }
+    return;
+}
+
+void AniCommonEventUtils::CreateBusinessErrorObject(
+    ani_env* env, ani_object& object, int32_t code, const std::string& message)
+{
+    EVENT_LOGI("CreateBusinessErrorObject called.");
+    ani_status aniResult = ANI_ERROR;
+    ani_class cls;
+    ani_method ctor = nullptr;
+    if (env == nullptr) {
+        EVENT_LOGE("CreateBusinessErrorObject env is null.");
+        return;
+    }
+
+    aniResult = env->FindClass("L@ohos/base/BusinessError;", &cls);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateBusinessErrorObject findClass error. result: %{public}d.", aniResult);
+        return;
+    }
+    if (cls == nullptr) {
+        EVENT_LOGE("CreateBusinessErrorObject cls is null.");
+        return;
+    }
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateBusinessErrorObject Class_FindMethod error. result: %{public}d.", aniResult);
+        return;
+    }
+    aniResult = env->Object_New(cls, ctor, &object);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateBusinessErrorObject Object_New error. result: %{public}d.", aniResult);
+    }
+
+    ani_string string = nullptr;
+    env->String_NewUTF8(message.c_str(), message.size(), &string);
+    aniResult = env->Object_SetFieldByName_Double(object, "code", ani_double(code));
+    aniResult = env->Object_SetFieldByName_Ref(object, "data", string);
+}
+
+template<typename valueType>
+void AniCommonEventUtils::CallSetter(
+    ani_env* env, ani_class cls, ani_object object, const char* setterName, valueType value)
+{
+    ani_status aniResult = ANI_ERROR;
+    ani_method setter;
+    aniResult = env->Class_FindMethod(cls, setterName, nullptr, &setter);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CallSetter Class_FindMethod error. result: %{public}d.", aniResult);
+        return;
+    }
+    aniResult = env->Object_CallMethod_Void(object, setter, value);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CallSetter Object_CallMethod_Void error. result: %{public}d.", aniResult);
+    }
+    return;
+}
+
+void AniCommonEventUtils::CreateAniDoubleObject(ani_env* env, ani_object &object, ani_double value)
+{
+    ani_status aniResult = ANI_ERROR;
+    ani_class clsDouble = nullptr;
+    ani_method ctor;
+    aniResult = env->FindClass("Lstd/core/Double;", &clsDouble);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateAniDoubleObject FindClass error. result: %{public}d.", aniResult);
+        return;
+    }
+    aniResult = env->Class_FindMethod(clsDouble, "<ctor>", "D:V", &ctor);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateAniDoubleObject Class_FindMethod error. result: %{public}d.", aniResult);
+        return;
+    }
+    aniResult = env->Object_New(clsDouble, ctor, &object, value);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("CreateAniDoubleObject Object_New error. result: %{public}d.", aniResult);
+        return;
+    }
+}
+
 void AniCommonEventUtils::ConvertCommonEventDataToEts(
     ani_env* env, ani_object& ani_data, const CommonEventData& commonEventData)
 {
-    auto aniResult = ANI_OK;
+    EVENT_LOGI("ConvertCommonEventDataToEts called");
+
     ani_class cls = nullptr;
-    ani_field field = nullptr;
-    ani_string string = nullptr;
-    if ((aniResult = env->FindClass("LcommonEvent/commonEventData/CommonEventDataInner;", &cls)) != ANI_OK) {
-        EVENT_LOGE("ConvertCommonEventDataToEts findClass error. result: %{public}d.", aniResult);
-    }
-    if (cls == nullptr) {
-        EVENT_LOGE("ConvertCommonEventDataToEts cls is null.");
-        return;
-    }
-    if ((aniResult = env->Object_New(cls, nullptr, &ani_data)) != ANI_OK) {
-        EVENT_LOGE("ConvertCommonEventDataToEts Object_New error. result: %{public}d.", aniResult);
-    }
-    if (ani_data == nullptr) {
-        EVENT_LOGE("ConvertCommonEventDataToEts ani_data is null.");
+    CreateNewObjectByClass(env, "LcommonEvent/commonEventData/CommonEventDataImpl;", cls, ani_data);
+    if ((ani_data == nullptr) || (cls == nullptr)) {
+        EVENT_LOGE("ConvertCommonEventDataToEts ani_data or cls is null.");
         return;
     }
 
-    env->Class_FindField(cls, "event", &field);
+    ani_string string = nullptr;
+    // set event [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetAction().c_str(), commonEventData.GetWant().GetAction().size(), &string);
-    env->Object_SetField_Ref(ani_data, field, string);
+    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(event), string);
 
-    env->Class_FindField(cls, "bundleName", &field);
+    // set bundleName [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetBundle().c_str(), commonEventData.GetWant().GetBundle().size(), &string);
-    env->Object_SetField_Ref(ani_data, field, string);
+    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(bundleName), string);
 
-    env->Class_FindField(cls, "data", &field);
-    env->Object_SetField_Int(ani_data, field, commonEventData.GetCode());
+    // set data [string]
+    env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
+    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(data), string);
 
-    // Set the parameters.
-}
+    // set code [number]
+    ani_object codeObject;
+    CreateAniDoubleObject(env, codeObject, static_cast<ani_double>(commonEventData.GetCode()));
+    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
 
-std::string EnumConvertUtils::Support_ConvertSts2Native(const int index)
-{
-    if (index < 0 || index >= SupportArray.size()) {
-        EVENT_LOGE("Support_ConvertSts2Native failed index:%{public}d", index);
-        return 0;
-    }
-    return SupportArray[index];
-}
-
-int EnumConvertUtils::Support_ConvertNative2Sts(const std::string nativeValue)
-{
-    for (unsigned int index = 0; index < SupportArray.size(); index++) {
-        if (nativeValue == SupportArray[index]) {
-            return index;
-        }
-    }
-    EVENT_LOGE("Support_ConvertSts2Native failed nativeValue:%{public}s", nativeValue.c_str());
-    return 0;
+    // set parameters [Record]
 }
 
 } // namespace EventManagerFwkAni
