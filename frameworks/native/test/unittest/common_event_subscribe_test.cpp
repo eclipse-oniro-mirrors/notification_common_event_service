@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -85,8 +85,18 @@ public:
     ~EventReceiveStubTest()
     {}
 
-    virtual void NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
-    {}
+    OHOS::ErrCode NotifyEvent(const CommonEventData& data, bool ordered, bool sticky) override
+    {
+        return OHOS::ERR_OK;
+    }
+    int32_t CallbackEnter([[maybe_unused]] uint32_t code) override
+    {
+        return 0;
+    }
+    int32_t CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result) override
+    {
+        return 0;
+    }
 };
 
 class CommonEventStubTest : public CommonEventStub {
