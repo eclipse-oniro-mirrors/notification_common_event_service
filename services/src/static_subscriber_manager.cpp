@@ -164,7 +164,6 @@ void StaticSubscriberManager::PublishCommonEventConnecAbility(const CommonEventD
     EVENT_LOGD("Ready to connect to subscriber %{public}s in bundle %{public}s",
         abilityName.c_str(), bundleName.c_str());
     DelayedSingleton<AbilityManagerHelper>::GetInstance()->ConnectAbility(want, data, service, userId);
-    SendStaticSubscriberStartHiSysEvent(userId, abilityName, bundleName, data.GetWant().GetAction());
 }
 
 void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &data,
@@ -521,17 +520,6 @@ void StaticSubscriberManager::SendStaticEventProcErrHiSysEvent(int32_t userId, c
     eventInfo.subscriberName = subscriberName;
     eventInfo.eventName = eventName;
     EventReport::SendHiSysEvent(STATIC_EVENT_PROC_ERROR, eventInfo);
-}
-
-void StaticSubscriberManager::SendStaticSubscriberStartHiSysEvent(int32_t userId, const std::string &publisherName,
-    const std::string &subscriberName, const std::string &eventName)
-{
-    EventInfo eventInfo;
-    eventInfo.userId = userId;
-    eventInfo.publisherName = publisherName;
-    eventInfo.subscriberName = subscriberName;
-    eventInfo.eventName = eventName;
-    EventReport::SendHiSysEvent(STATIC_SUBSCRIBER_START, eventInfo);
 }
 
 int32_t StaticSubscriberManager::UpdateDisableEvents(
