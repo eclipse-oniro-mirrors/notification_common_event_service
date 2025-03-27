@@ -486,7 +486,7 @@ int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* 
 CommonEvent_ErrCode OH_CommonEvent_SetCharArrayToParameters(
     CommonEvent_Parameters* param, const char* key, const char* value, size_t num)
 {
-    if (param == nullptr || key == nullptr || (value == nullptr && num > 0)) {
+    if (param == nullptr || key == nullptr || value == nullptr) {
         EVENT_LOGE("Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
