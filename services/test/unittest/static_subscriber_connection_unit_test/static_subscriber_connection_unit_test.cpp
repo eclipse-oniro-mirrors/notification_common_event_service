@@ -70,6 +70,7 @@ HWTEST_F(StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0100, Func
     sptr<IRemoteObject> remoteObject = nullptr;
     int resultCode = 0;
     conn->OnAbilityConnectDone(element, remoteObject, resultCode);
+    sleep(1);
     conn->OnAbilityDisconnectDone(element, resultCode);
     EXPECT_TRUE(IsOnReceiveEventCalled());
     ResetStaticSubscriberProxyMockState();
