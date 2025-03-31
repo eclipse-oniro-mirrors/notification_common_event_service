@@ -17,6 +17,7 @@
 
 #include "bundle_constants.h"
 #include "bundle_mgr_client.h"
+#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
@@ -70,26 +71,16 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
     EVENT_LOGD("enter");
+    int userId = SUBSCRIBE_USER_SYSTEM_BEGIN;
+    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
+    EVENT_LOGD("active userId = %{public}d", userId);
 
     std::lock_guard<std::mutex> lock(mutex_);
-
     if (!GetBundleMgrProxy()) {
         return false;
     }
-    std::vector<int> osAccountIds;
-    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(osAccountIds) != ERR_OK) {
-        EVENT_LOGE_LIMIT("failed to QueryActiveOsAccountIds!");
-        return false;
-    }
-    if (osAccountIds.size() == 0) {
-        EVENT_LOGE("no os account acquired!");
-        return false;
-    }
-    for (auto userId : osAccountIds) {
-        EVENT_LOGD("active userId = %{public}d", userId);
-        sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
-            userId, extensionInfos);
-    }
+    sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
+        userId, extensionInfos);
     return true;
 }
 
@@ -216,21 +207,15 @@ bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag 
     std::vector<AppExecFwk::ApplicationInfo> &appInfos)
 {
     EVENT_LOGD("enter");
+    int userId = SUBSCRIBE_USER_SYSTEM_BEGIN;
+    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
+    EVENT_LOGD("active userId = %{public}d", userId);
 
     std::lock_guard<std::mutex> lock(mutex_);
-
-    std::vector<int> osAccountIds {};
-    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(osAccountIds) != ERR_OK
-        || osAccountIds.empty()) {
-        EVENT_LOGE("failed to QueryActiveOsAccountIds!");
-        return false;
-    }
-
     if (!GetBundleMgrProxy()) {
         return false;
     }
-
-    return sptrBundleMgr_->GetApplicationInfos(flag, osAccountIds[0], appInfos);
+    return sptrBundleMgr_->GetApplicationInfos(flag, userId, appInfos);
 }
 }  // namespace EventFwk
 }  // namespace OHOS

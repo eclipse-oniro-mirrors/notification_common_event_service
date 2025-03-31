@@ -17,7 +17,7 @@
 
 namespace OHOS {
 namespace EventFwk {
-ErrCode OsAccountManagerHelper::QueryActiveOsAccountIds(std::vector<int32_t>& ids)
+ErrCode OsAccountManagerHelper::GetCurrentActiveUserId(int32_t &id)
 {
     return ERR_OK;
 }
