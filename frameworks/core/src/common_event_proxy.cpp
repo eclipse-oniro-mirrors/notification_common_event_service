@@ -304,6 +304,9 @@ bool CommonEventProxy::GetStickyCommonEvent(const std::string &event, CommonEven
         ret = reply.ReadBool();
         if (ret) {
             std::unique_ptr<CommonEventData> eventDataPtr(reply.ReadParcelable<CommonEventData>());
+            if (eventDataPtr == nullptr) {
+                return false;
+            }
             eventData = *eventDataPtr;
         }
     }
