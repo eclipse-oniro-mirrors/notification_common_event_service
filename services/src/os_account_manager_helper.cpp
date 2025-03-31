@@ -64,5 +64,15 @@ bool OsAccountManagerHelper::IsSystemAccount(int32_t userId)
 {
     return userId >= AccountSA::Constants::START_USER_ID && userId <= AccountSA::Constants::MAX_USER_ID;
 }
+
+ErrCode OsAccountManagerHelper::GetCurrentActiveUserId(int32_t &id)
+{
+    int32_t ret = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(id);
+    if (ret != ERR_OK) {
+        EVENT_LOGE_LIMIT("Failed to call OsAccountManager::GetForegroundOsAccountLocalId, code is %{public}d", ret);
+    }
+    return ret;
+}
+
 }  // namespace EventFwk
 }  // namespace OHOS

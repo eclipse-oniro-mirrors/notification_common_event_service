@@ -96,6 +96,10 @@ bool StaticSubscriberManager::InitValidSubscribers()
     if (!validSubscribers_.empty()) {
         validSubscribers_.clear();
     }
+    if (!InitAllowList()) {
+        EVENT_LOGE_LIMIT("Failed to init allowCommonEvent list");
+        return false;
+    }
     std::set<std::string> bundleList;
     DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->
         QueryStaticSubscriberStateData(disableEvents_, bundleList);
@@ -262,17 +266,8 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     EVENT_LOGD("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
-    if (!hasInitAllowList_ && !InitAllowList()) {
-        EVENT_LOGE_LIMIT("Failed to init allowCommonEvent list");
-        return;
-    }
-
     if ((!hasInitValidSubscribers_ ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_SWITCHED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_UID_REMOVED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_STARTED) &&
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_SWITCHED) &&
         !InitValidSubscribers()) {
         EVENT_LOGE("Failed to init subscribers map");
         return;
