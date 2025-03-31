@@ -57,6 +57,14 @@ public:
      * @return Returns result.
      */
     bool CheckUserExists(const int32_t &userId);
+
+    /**
+     * Gets operating system account local ID from current active.
+     *
+     * @param id Indicates the current active account ID.
+     * @return Returns result code.
+     */
+    ErrCode GetCurrentActiveUserId(int32_t &id);
 };
 }  // namespace EventFwk
 }  // namespace OHOS
