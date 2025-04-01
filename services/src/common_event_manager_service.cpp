@@ -173,7 +173,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
     if (DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(uid)) {
         EVENT_LOGE("Too many common events have been sent in a short period from (pid = %{public}d, uid = "
                    "%{public}d, userId = %{public}d)", pid, uid, userId);
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        return ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH;
     }
 
     std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
