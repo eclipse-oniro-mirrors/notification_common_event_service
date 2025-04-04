@@ -104,8 +104,9 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_001, Level1)
     CommonEventPublishInfo publishInfo;
 
     int32_t userId = 1;
-    int32_t result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
-    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, result);
+    int32_t funcResult = -1;
+    commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId, funcResult);
+    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, funcResult);
 }
 
 /**
@@ -123,8 +124,10 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_002, Level1)
     int32_t userId = 1;
     uid_t uid = 1;
     int32_t callerToken = 2;
-    bool result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, uid, callerToken, userId);
-    EXPECT_EQ(false, result);
+    bool funcResult = false;
+    commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, uid, callerToken, userId,
+        funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /**
@@ -140,8 +143,47 @@ HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_003, Level1)
     CommonEventPublishInfo publishInfo;
 
     int32_t userId = 1098;
-    int32_t result = commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId);
-    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, result);
+    int32_t funcResult = -1;
+    commonEventManagerService.PublishCommonEvent(event, publishInfo, nullptr, userId, funcResult);
+    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, funcResult);
+}
+
+/**
+ * @tc.name: PublishCommonEvent_004
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_004, Level1)
+{   
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData event;
+    CommonEventPublishInfo publishInfo;
+
+    int32_t userId = 1;
+    int32_t funcResult = -1;
+    commonEventManagerService.PublishCommonEvent(event, publishInfo, userId, funcResult);
+    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, funcResult);
+}
+
+/**
+ * @tc.name: PublishCommonEvent_005
+ * @tc.desc: Test CommonEventManagerService_
+ * @tc.type: FUNC
+ * @tc.require: I582Y4
+ */
+HWTEST_F(CommonEventManagerServiceTest, PublishCommonEvent_005, Level1)
+{
+    CommonEventManagerService commonEventManagerService;
+    CommonEventData event;
+    CommonEventPublishInfo publishInfo;
+
+    int32_t userId = 1;
+    uid_t uid = 1;
+    int32_t callerToken = 2;
+    bool funcResult = false;
+    commonEventManagerService.PublishCommonEvent(event, publishInfo, uid, callerToken, userId, funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /**
@@ -156,8 +198,9 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_001, Level1)
     CommonEventData event;
     CommonEventSubscribeInfo subscribeInfo;
 
-    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+    int32_t funcResult = -1;
+    commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr, 0, funcResult);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, funcResult);
 }
 
 /**
@@ -175,8 +218,9 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_002, Level1)
     struct tm recordTime = {0};
     GetSystemCurrentTime(&recordTime);
 
-    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+    int32_t funcResult = -1;
+    commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr, 0, funcResult);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, funcResult);
 }
 
 /**
@@ -193,8 +237,9 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_003, Level1)
     CommonEventSubscribeInfo subscribeInfo;
     subscribeInfo.SetUserId(1098);
 
-    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_USERID_INVALID, result);
+    int32_t funcResult = -1;
+    commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr, 0, funcResult);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_USERID_INVALID, funcResult);
 }
 
 /**
@@ -224,10 +269,11 @@ HWTEST_F(CommonEventManagerServiceTest, SubscribeCommonEvent_004, Level1)
             callingUid,
             callerToken,
             bundleName);
-   
-    int32_t result = commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr);
+
+    int32_t funcResult = -1;
+    commonEventManagerService.SubscribeCommonEvent(subscribeInfo, nullptr, 0, funcResult);
     EXPECT_EQ(false, ret);
-    EXPECT_EQ(ERR_OK, result);
+    EXPECT_EQ(ERR_OK, funcResult);
 }
 
 /**
@@ -313,6 +359,7 @@ HWTEST_F(CommonEventManagerServiceTest, SetStaticSubscriberStateWithTwoParameter
     CommonEventManagerService commonEventManagerService;
     std::vector<std::string> events;
     events.push_back("StaticCommonEventA");
-    int32_t result = commonEventManagerService.SetStaticSubscriberState(events, true);
-    EXPECT_EQ(result, OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP);
+    int32_t funcResult = -1;
+    commonEventManagerService.SetStaticSubscriberStateByEvents(events, true, funcResult);
+    EXPECT_EQ(funcResult, OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP);
 }

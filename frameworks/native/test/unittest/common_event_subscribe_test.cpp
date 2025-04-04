@@ -39,6 +39,7 @@
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
 using OHOS::Parcel;
+using OHOS::ErrCode;
 
 namespace {
 const std::string EVENT = "com.ces.test.event";
@@ -104,36 +105,38 @@ public:
     CommonEventStubTest()
     {}
 
-    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
+    virtual ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo,
+        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t userId, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
-        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
+    virtual ErrCode SubscribeCommonEvent(const CommonEventSubscribeInfo& subscribeInfo,
+        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual int32_t UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject> &commonEventListener)
+    virtual ErrCode UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
-        std::vector<std::string> &state)
+    virtual ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
+        std::vector<std::string>& state, bool& funcResult)
     {
-        return false;
+        funcResult = false;
+        return OHOS::ERR_OK;
     }
 
     virtual ~CommonEventStubTest()
     {}
 
-    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int32_t &code,
-        const std::string &receiverData, const bool &abortEvent)
+    virtual ErrCode FinishReceiver(const OHOS::sptr<IRemoteObject>& proxy, int32_t code,
+        const std::string& receiverData, bool abortEvent, bool& funcResult)
     {
-        return false;
+        funcResult = false;
+        return OHOS::ERR_OK;
     }
 };
 

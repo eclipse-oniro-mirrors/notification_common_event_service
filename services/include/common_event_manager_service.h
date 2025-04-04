@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,8 +42,11 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
+    ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo,
+        const sptr<IRemoteObject>& commonEventListener, int32_t userId, int32_t& funcResult) override;
+
+    ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo, int32_t userId,
+        int32_t& funcResult) override;
 
     /**
      * Publishes a common event.
@@ -56,9 +59,12 @@ public:
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
-    bool PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const uid_t &uid, const int32_t &callerToken,
-        const int32_t &userId) override;
+    ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo,
+        const sptr<IRemoteObject>& commonEventListener, uint32_t uid, int32_t callerToken, int32_t userId,
+        bool& funcResult) override;
+
+    ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo, uint32_t uid,
+        int32_t callerToken, int32_t userId, bool& funcResult) override;
 
     /**
      * Subscribes to common events.
@@ -68,8 +74,8 @@ public:
      * @param instanceKey Indicates the instance key
      * @return Returns true if successful; false otherwise.
      */
-    int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
-        const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) override;
+    ErrCode SubscribeCommonEvent(const CommonEventSubscribeInfo& subscribeInfo,
+        const sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult) override;
 
     /**
      * Unsubscribes from common events.
@@ -77,7 +83,7 @@ public:
      * @param commonEventListener Indicates the common event subscriber.
      * @return Returns true if successful; false otherwise.
      */
-    int32_t UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
+    ErrCode UnsubscribeCommonEvent(const sptr<IRemoteObject>& commonEventListener, int32_t& funcResult) override;
 
     /**
      * Synchronized, unsubscribes from common events.
@@ -85,7 +91,7 @@ public:
      * @param commonEventListener Indicates the common event subscriber.
      * @return Returns true if successful; false otherwise.
      */
-    int32_t UnsubscribeCommonEventSync(const sptr<IRemoteObject> &commonEventListener) override;
+    ErrCode UnsubscribeCommonEventSync(const sptr<IRemoteObject>& commonEventListener, int32_t& funcResult) override;
 
     /**
      * Gets the current sticky common event
@@ -94,7 +100,7 @@ public:
      * @param eventData Indicates the common event data.
      * @return Returns true if successful; false otherwise.
      */
-    bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
+    ErrCode GetStickyCommonEvent(const std::string& event, CommonEventData& eventData, bool& funcResult) override;
 
     /**
      * Dumps state of common event service.
@@ -105,8 +111,8 @@ public:
      * @param state Indicates the state of common event service.
      * @return Returns true if successful; false otherwise.
      */
-    bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
-        std::vector<std::string> &state) override;
+    ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId, std::vector<std::string>& state,
+        bool& funcResult) override;
 
     /**
      * Finishes Receiver.
@@ -117,8 +123,8 @@ public:
      * @param abortEvent Indicates Whether to cancel the current common event.
      * @return Returns true if successful; false otherwise.
      */
-    bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData,
-        const bool &abortEvent) override;
+    ErrCode FinishReceiver(const sptr<IRemoteObject>& proxy, int32_t code, const std::string& receiverData,
+        bool abortEvent, bool& funcResult) override;
 
     /**
      * Freezes application.
@@ -126,7 +132,7 @@ public:
      * @param uid Indicates the uid of application.
      * @return Returns true if successful; false otherwise.
      */
-    bool Freeze(const uid_t &uid) override;
+    ErrCode Freeze(uint32_t uid, bool& funcResult) override;
 
     /**
      * Unfreezes application.
@@ -134,14 +140,14 @@ public:
      * @param uid Indicates the Uid of application.
      * @return Returns true if successful; false otherwise.
      */
-    bool Unfreeze(const uid_t &uid) override;
+    ErrCode Unfreeze(uint32_t uid, bool& funcResult) override;
 
     /**
      * Unfreezes all frozen applications.
      *
      * @return Returns true if successful; false otherwise.
      */
-    bool UnfreezeAll() override;
+    ErrCode UnfreezeAll(bool& funcResult) override;
 
     /**
      * Remove sticky common event.
@@ -149,7 +155,7 @@ public:
      * @param event Name of the common event.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    int32_t RemoveStickyCommonEvent(const std::string &event) override;
+    ErrCode RemoveStickyCommonEvent(const std::string& event, int32_t& funcResult) override;
 
     /**
      * Set Static Subscriber State.
@@ -157,7 +163,7 @@ public:
      * @param enable static subscriber state.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    int32_t SetStaticSubscriberState(bool enable) override;
+    ErrCode SetStaticSubscriberState(bool enable, int32_t& funcResult) override;
 
     /**
      * Set static subscriber state.
@@ -166,7 +172,8 @@ public:
      * @param enable Static subscriber state.
      * @return Returns ERR_OK if success; otherwise failed.
      */
-    int32_t SetStaticSubscriberState(const std::vector<std::string> &events, bool enable) override;
+    ErrCode SetStaticSubscriberStateByEvents(const std::vector<std::string>& events, bool enable, int32_t& funcResult)
+        override;
 
     /**
     * Set freeze status of process.
@@ -175,7 +182,7 @@ public:
     * @param isFreeze Indicates wheather the process is freezed.
     * @return Returns true if successful; false otherwise.
     */
-    bool SetFreezeStatus(std::set<int> pidList, bool isFreeze) override;
+    ErrCode SetFreezeStatus(const std::vector<int>& pidList, bool isFreeze, bool& funcResult) override;
 
     int Dump(int fd, const std::vector<std::u16string> &args) override;
 

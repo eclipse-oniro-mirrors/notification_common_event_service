@@ -144,9 +144,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_001, TestSize.Level1)
     dataParcel.WriteParcelable(&publishInfo);
 
     const int32_t useId = 0;
-
-    int result = commonEventProxy.PublishCommonEvent(data, publishInfo, nullptr, useId);
-    EXPECT_EQ(OHOS::ERR_OK, result);
+    int32_t funcResult = -1;
+    commonEventProxy.PublishCommonEvent(data, publishInfo, useId, funcResult);
+    EXPECT_EQ(OHOS::ERR_OK, funcResult);
 }
 
 /*
@@ -170,8 +170,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_002, TestSize.Level1)
 
     MessageParcel::SetFlag(false);
     const int32_t useId = 1;
-    int result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
-    EXPECT_EQ(OHOS::ERR_OK, result);
+    int32_t funcResult = -1;
+    commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId, funcResult);
+    EXPECT_EQ(OHOS::ERR_OK, funcResult);
 }
 
 /*
@@ -198,8 +199,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_003, TestSize.Level1)
 
     MessageParcel::SetFlag(false);
     const int32_t useId = 1;
-    bool result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
-    EXPECT_EQ(false, result);
+    int32_t funcResult = -1;
+    commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId, funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /*
@@ -226,8 +228,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_004, TestSize.Level1)
 
     MessageParcel::SetFlag(false);
     const int32_t useId = 1;
-    bool result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
-    EXPECT_EQ(false, result);
+    int32_t funcResult = -1;
+    commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId, funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /*
@@ -254,8 +257,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_005, TestSize.Level1)
 
     MessageParcel::SetFlag(false);
     const int32_t useId = 1;
-    bool result = commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId);
-    EXPECT_EQ(false, result);
+    int32_t funcResult = -1;
+    commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId, funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /*
@@ -282,8 +286,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_006, TestSize.Level1)
     CommonEventPublishInfo publishInfo;
 
     MessageParcel::SetFlag(false);
-    bool result = commonEventProxy.DumpState(dumpType, event, userId, state);
-    EXPECT_EQ(true, result);
+    bool funcResult = false;
+    commonEventProxy.DumpState(dumpType, event, userId, state, funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /*
@@ -312,8 +317,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_007, TestSize.Level1)
     dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
 
     MessageParcel::SetFlag(false);
-    bool result = commonEventProxy.DumpState(dumpType, event, userId, state);
-    EXPECT_EQ(true, result);
+    bool funcResult = false;
+    commonEventProxy.DumpState(dumpType, event, userId, state, funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /*
@@ -342,8 +348,9 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_008, TestSize.Level1)
     dataParcel.WriteParcelable(&publishInfo);
 
     MessageParcel::SetFlag(false);
-    bool result = commonEventProxy.DumpState(dumpType, event, userId, state);
-    EXPECT_EQ(true, result);
+    bool funcResult = false;
+    commonEventProxy.DumpState(dumpType, event, userId, state, funcResult);
+    EXPECT_EQ(false, funcResult);
 }
 
 /*
@@ -359,7 +366,8 @@ HWTEST_F(CommonEventProxyTest, SetStaticSubscriberState_001, TestSize.Level1)
     OHOS::MessageParcel reply;
     OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
     CommonEventProxy commonEventProxy(object);
-    int32_t result = commonEventProxy.SetStaticSubscriberState(true);
+    int32_t funcResult = -1;
+    int32_t result = commonEventProxy.SetStaticSubscriberState(true, funcResult);
     EXPECT_EQ(OHOS::ERR_OK, result);
 }
 
@@ -375,7 +383,8 @@ HWTEST_F(CommonEventProxyTest, SetStaticSubscriberStateWithTwoParameters_0100, T
     CommonEventProxy commonEventProxy(object);
     std::vector<std::string> events;
     events.push_back("StaticCommonEventA");
-    int32_t result = commonEventProxy.SetStaticSubscriberState(events, true);
+    int32_t funcResult = -1;
+    int32_t result = commonEventProxy.SetStaticSubscriberStateByEvents(events, true, funcResult);
     EXPECT_EQ(result, OHOS::ERR_OK);
 }
 
@@ -392,7 +401,8 @@ HWTEST_F(CommonEventProxyTest, SetFreezeStatus_001, TestSize.Level1)
     OHOS::MessageParcel reply;
     OHOS::sptr<OHOS::IRemoteObject> object = new OHOS::MockIRemoteObject();
     CommonEventProxy commonEventProxy(object);
-    std::set<int> pidList = {1000};
-    bool result = commonEventProxy.SetFreezeStatus(pidList, true);
-    EXPECT_EQ(false, result);
+    std::vector<int> pidList = {1000};
+    bool funcResult = false;
+    commonEventProxy.SetFreezeStatus(pidList, true, funcResult);
+    EXPECT_EQ(false, funcResult);
 }

@@ -35,26 +35,104 @@ OHOS::sptr<MockCommonEventStub> MockCommonEventStub::GetInstance()
     return instance_;
 }
 
-int32_t MockCommonEventStub::PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-    const sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
+ErrCode MockCommonEventStub::PublishCommonEvent(
+    const CommonEventData& event,
+    const CommonEventPublishInfo& publishInfo,
+    int32_t userId,
+    int32_t& funcResult)
 {
     EVENT_LOGI("enter");
-
+    funcResult = ERR_OK;
     return ERR_OK;
 }
 
-int32_t MockCommonEventStub::SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
-    const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
+ErrCode MockCommonEventStub::PublishCommonEvent(
+    const CommonEventData& event,
+    const CommonEventPublishInfo& publishInfo,
+    const sptr<IRemoteObject>& commonEventListener,
+    int32_t userId,
+    int32_t& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = ERR_OK;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::PublishCommonEvent(
+    const CommonEventData& event,
+    const CommonEventPublishInfo& publishInfo,
+    uint32_t uid,
+    int32_t callerToken,
+    int32_t userId,
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = ERR_OK;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::PublishCommonEvent(
+    const CommonEventData& event,
+    const CommonEventPublishInfo& publishInfo,
+    const sptr<IRemoteObject>& commonEventListener,
+    uint32_t uid,
+    int32_t callerToken,
+    int32_t userId,
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+int32_t MockCommonEventStub::SubscribeCommonEvent(
+    const CommonEventSubscribeInfo& subscribeInfo,
+    const sptr<IRemoteObject>& commonEventListener,
+    int32_t instanceKey,
+    int32_t& funcResult)
 {
     EVENT_LOGI("enter");
 
     subscribeInfoPtr = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
+    funcResult = ERR_OK;
     return ERR_OK;
 }
 
-bool MockCommonEventStub::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
-    std::vector<std::string> &state)
+ErrCode MockCommonEventStub::UnsubscribeCommonEvent(
+    const sptr<IRemoteObject>& commonEventListener,
+    int32_t& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::UnsubscribeCommonEventSync(
+    const sptr<IRemoteObject>& commonEventListener,
+    int32_t& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::GetStickyCommonEvent(
+    const std::string& event,
+    CommonEventData& eventData,
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::DumpState(
+    uint8_t dumpType,
+    const std::string& event,
+    int32_t userId,
+    std::vector<std::string>& state,
+    bool& funcResult)
 {
     EVENT_LOGI("enter");
 
@@ -73,8 +151,84 @@ bool MockCommonEventStub::DumpState(const uint8_t &dumpType, const std::string &
     }
 
     subscribeInfoPtr = nullptr;
+    funcResult = true;
+    return ERR_OK;
+}
 
-    return true;
+ErrCode MockCommonEventStub::FinishReceiver(
+    const sptr<IRemoteObject>& proxy,
+    int32_t code,
+    const std::string& receiverData,
+    bool abortEvent,
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::Freeze(
+    uint32_t uid,
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::Unfreeze(
+    uint32_t uid,
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::UnfreezeAll(
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = true;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::RemoveStickyCommonEvent(
+    const std::string& event,
+    int32_t& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = ERR_OK;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::SetStaticSubscriberState(
+    bool enable,
+    int32_t& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = ERR_OK;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::SetStaticSubscriberStateByEvents(
+    const std::vector<std::string>& events,
+    bool enable,
+    int32_t& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = ERR_OK;
+    return ERR_OK;
+}
+
+ErrCode MockCommonEventStub::SetFreezeStatus(
+    const std::vector<int>& pidList,
+    bool isFreeze,
+    bool& funcResult)
+{
+    EVENT_LOGI("enter");
+    funcResult = ERR_OK;
+    return ERR_OK;
 }
 } // namespace EventFwk
 } // namespace OHOS
