@@ -60,7 +60,7 @@ const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
 // The system error
 const int32_t ERR_NOTIFICATION_SYS_ERROR = 1500009;
 
-// The count of subscriber exceed limit
+// The count of subscriber exceed system specification
 const int32_t ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT = 1500010;
 }  // namespace Notification
 }  // namespace OHOS
