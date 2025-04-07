@@ -77,37 +77,38 @@ public:
     CommonEventStubTest()
     {}
 
-    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener, const int32_t &userId)
+    virtual ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo,
+        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t userId, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual int32_t SubscribeCommonEvent(
-        const CommonEventSubscribeInfo &subscribeInfo, const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener,
-        const int32_t instanceKey)
+    virtual ErrCode SubscribeCommonEvent(const CommonEventSubscribeInfo& subscribeInfo,
+        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual int32_t UnsubscribeCommonEvent(const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
+    virtual ErrCode UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
-        std::vector<std::string> &state)
+    virtual ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
+        std::vector<std::string>& state, bool& funcResult)
     {
-        return false;
+        funcResult = false;
+        return ERR_OK;
     }
 
     virtual ~CommonEventStubTest()
     {}
 
-    virtual bool FinishReceiver(const OHOS::sptr<OHOS::IRemoteObject> &proxy, const int &code,
-        const std::string &receiverData, const bool &abortEvent)
+    virtual ErrCode FinishReceiver(const OHOS::sptr<IRemoteObject>& proxy, int32_t code,
+        const std::string& receiverData, bool abortEvent, bool& funcResult)
     {
-        return false;
+        funcResult = false;
+        return ERR_OK;
     }
 };
 
@@ -820,7 +821,6 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Functi
         std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
     // make subscriber
-    CommonEventStubTest CommonEventStubTest;
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // make common event listener
@@ -1020,9 +1020,10 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function 
     const int32_t userId = 1;
     const int32_t tokenId = 0;
     CommonEventManagerService commonEventManagerService;
-    bool result = commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid,
-        tokenId, userId);
-    EXPECT_EQ(result, false);
+    bool funcResult = false;
+    commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid,
+        tokenId, userId, funcResult);
+    EXPECT_EQ(funcResult, false);
 }
 
 /**
@@ -1038,8 +1039,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function 
     const int32_t userId =2;
     std::vector<std::string> state;
     CommonEventManagerService commonEventManagerService;
-    bool result = commonEventManagerService.DumpState(dumpType, event, userId, state);
-    EXPECT_EQ(result, false);
+    bool funcResult = false;
+    commonEventManagerService.DumpState(dumpType, event, userId, state, funcResult);
+    EXPECT_EQ(funcResult, false);
 }
 
 /**
@@ -1054,8 +1056,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0003, Function 
     int32_t code = 0;
     std::string receiverData = "receiverData";
     CommonEventManagerService commonEventManagerService;
-    bool result = commonEventManagerService.FinishReceiver(proxy, code, receiverData, false);
-    EXPECT_EQ(result, false);
+    bool funcResult = false;
+    commonEventManagerService.FinishReceiver(proxy, code, receiverData, false, funcResult);
+    EXPECT_EQ(funcResult, false);
 }
 
 /**
