@@ -136,6 +136,7 @@ CommonEvent_PublishInfo* OH_CommonEvent_CreatePublishInfo(bool ordered)
     CommonEvent_PublishInfo* publishInfo = new (std::nothrow) CommonEvent_PublishInfo();
     if (publishInfo == nullptr) {
         EVENT_LOGE("Failed to create PublishInfo");
+        return nullptr;
     }
     publishInfo->ordered = ordered;
     return publishInfo;
