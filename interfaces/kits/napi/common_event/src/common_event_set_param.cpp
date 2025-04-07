@@ -94,6 +94,9 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     int32_t code = 0;
     if (ParseParametersBySetCode(env, argv, argc, code, callback) == nullptr) {
         EVENT_LOGE("ParseParametersBySetCode failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -101,12 +104,18 @@ napi_value SetCode(napi_env env, napi_callback_info info)
         AsyncCallbackInfoSetCode {.env = env, .asyncWork = nullptr, .code = code};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGD("Create asyncCallbackInfo is defeat.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -173,6 +182,9 @@ napi_value SetData(napi_env env, napi_callback_info info)
     std::string data;
     if (ParseParametersBySetData(env, argv, argc, data, callback) == nullptr) {
         EVENT_LOGE("ParseParametersBySetData failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -180,12 +192,18 @@ napi_value SetData(napi_env env, napi_callback_info info)
         AsyncCallbackInfoSetData {.env = env, .asyncWork = nullptr, .data = data};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGD("subscriber is failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -254,6 +272,9 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     std::string data;
     if (ParseParametersBySetCodeAndData(env, argv, argc, code, data, callback) == nullptr) {
         EVENT_LOGE("ParseParametersBySetData failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -261,12 +282,18 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
         .env = env, .asyncWork = nullptr, .code = code, .data = data};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGD("subscriber is fail");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
