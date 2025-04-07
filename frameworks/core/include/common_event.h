@@ -246,6 +246,7 @@ private:
     static const uint8_t ALREADY_SUBSCRIBED = 0;
     static const uint8_t INITIAL_SUBSCRIPTION = 1;
     static const uint8_t SUBSCRIBE_FAILED = 2;
+    static const uint8_t SUBSCRIBE_EXCEED_LIMIT = 3;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
