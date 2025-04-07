@@ -293,6 +293,9 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByGetSubscribeInfo(env, argc, argv, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByGetSubscribeInfo failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -300,12 +303,18 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoSubscribeInfo {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGD("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -389,6 +398,9 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByIsOrderedCommonEvent(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByIsOrderedCommonEvent failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -396,12 +408,18 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
         AsyncCallbackInfoOrderedCommonEvent {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGD("subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -475,6 +493,9 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByIsStickyCommonEvent(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByIsStickyCommonEvent failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -482,6 +503,9 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
         AsyncCallbackInfoStickyCommonEvent {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGD("asyncCallbackInfo is fail.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -560,6 +584,9 @@ napi_value GetCode(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByGetCode(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByGetCode failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -567,12 +594,18 @@ napi_value GetCode(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoGetCode {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("Failed to create asyncCallbackInfo.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -642,6 +675,9 @@ napi_value GetData(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByGetData(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByGetData failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -649,12 +685,18 @@ napi_value GetData(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoGetData {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGD("subscriber is defeat.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -724,6 +766,9 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByAbort(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByAbort failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -731,12 +776,18 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoAbort {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("AsyncCallbackInfo failed.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGD("subscriber is unsuccessful");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -800,6 +851,9 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByClearAbort(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByClearAbort failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -807,12 +861,18 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoClearAbort {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGD("asyncCallbackInfo is nullptr.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -877,6 +937,9 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByGetAbort(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByGetAbort failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -884,12 +947,18 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoGetAbort {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGD("Create asyncCallbackInfo is failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -959,6 +1028,9 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByFinish(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByFinish failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -966,12 +1038,18 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoFinish {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE("subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }
@@ -1139,6 +1217,9 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
 
     if (ParseParametersByPublishAsUser(env, argv, argc, event, userId, commonEventPublishDatajs, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByPublishAsUser failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -1146,6 +1227,9 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoPublish {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
     asyncCallbackInfo->callback = callback;
@@ -1217,6 +1301,9 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     napi_ref callback = nullptr;
     if (ParseParametersByCreateSubscriber(env, argv, argc, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByCreateSubscriber failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -1224,6 +1311,9 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoCreate {.env = env, .asyncWork = nullptr, .subscribeInfo = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGD("asyncCallbackInfo is failed.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
     napi_value promise = nullptr;
@@ -1303,6 +1393,9 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
 
     if (ParseParametersBySubscribe(env, argv, subscriber, callback) == nullptr) {
         EVENT_LOGE("ParseParametersBySubscribe failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -1310,6 +1403,9 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoSubscribe {.env = env, .asyncWork = nullptr, .subscriber = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -1389,18 +1485,27 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
     result = ParseParametersByUnsubscribe(env, argc, argv, subscriber, callback);
     if (result == nullptr) {
         EVENT_LOGE("ParseParametersByUnsubscribe failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
     bool isFind = false;
     napi_get_value_bool(env, result, &isFind);
     if (!isFind) {
         EVENT_LOGE("Unsubscribe failed. The current subscriber does not exist");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
     AsyncCallbackInfoUnsubscribe *asynccallback = new (std::nothrow) AsyncCallbackInfoUnsubscribe();
     if (asynccallback == nullptr) {
         EVENT_LOGE("asynccallback is null");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
     asynccallback->env = env;
@@ -1472,6 +1577,9 @@ napi_value Publish(napi_env env, napi_callback_info info)
 
     if (ParseParametersByPublish(env, argv, argc, event, commonEventPublishDatajs, callback) == nullptr) {
         EVENT_LOGE("ParseParametersByPublish failed");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
 
@@ -1479,6 +1587,9 @@ napi_value Publish(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoPublish {.env = env, .asyncWork = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE("asyncCallbackInfo failed.");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         return NapiGetNull(env);
     }
     asyncCallbackInfo->callback = callback;
