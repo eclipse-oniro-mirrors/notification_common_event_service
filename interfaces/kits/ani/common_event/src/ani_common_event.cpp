@@ -69,22 +69,31 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     auto ret = ANI_OK;
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
+    if (wrapper == nullptr) {
+        return nullptr;
+    }
     ani_class cls;
     ret = env->FindClass("LcommonEvent/commonEventSubscriber/CommonEventSubscriberInner;", &cls);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute FindClass error. result: %{public}d.", ret);
+        delete wrapper;
+        wrapper = nullptr;
         return nullptr;
     }
     ani_method ctor;
     ret = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Class_FindMethod error. result: %{public}d.", ret);
+        delete wrapper;
+        wrapper = nullptr;
         return nullptr;
     }
     ani_object subscriberObj;
     ret = env->Object_New(cls, ctor, &subscriberObj);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Object_New error. result: %{public}d.", ret);
+        delete wrapper;
+        wrapper = nullptr;
         return nullptr;
     }
 
@@ -92,12 +101,16 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     ret = env->Class_FindMethod(cls, "<set>subscriberInstanceWrapper", nullptr, &wrapperField);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Class_FindField error. result: %{public}d.", ret);
+        delete wrapper;
+        wrapper = nullptr;
         return nullptr;
     }
 
     ret = env->Object_CallMethod_Void(subscriberObj, wrapperField, reinterpret_cast<ani_long>(wrapper));
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Object_SetField_Long error. result: %{public}d.", ret);
+        delete wrapper;
+        wrapper = nullptr;
         return nullptr;
     }
 
@@ -105,6 +118,8 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     ret = env->GlobalReference_Create(subscriberObj, &resultRef);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute GlobalReference_Create error. result: %{public}d.", ret);
+        delete wrapper;
+        wrapper = nullptr;
         return nullptr;
     }
     EVENT_LOGI("createSubscriberExecute end.");
