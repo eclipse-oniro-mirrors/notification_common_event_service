@@ -21,7 +21,7 @@
 #include "common_event_death_recipient.h"
 #undef private
 #include "common_event_publish_info.h"
-#include "mock_common_event_stub.h"
+#include "common_event_stub.h"
 #include "common_event_subscriber.h"
 #include "event_receive_proxy.h"
 #include "matching_skills.h"
@@ -216,9 +216,8 @@ HWTEST_F(CommonEventTest, CommonEventStub_001, TestSize.Level1)
 
     const int32_t userId = 1;
 
-    MockCommonEventStub commonEventStub;
-    int32_t publishCommonEvent = -1;
-    commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, userId, publishCommonEvent);
+    CommonEventStub commonEventStub;
+    int32_t publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, userId);
     EXPECT_EQ(ERR_OK, publishCommonEvent);
 }
 
@@ -247,9 +246,8 @@ HWTEST_F(CommonEventTest, CommonEventStub_002, TestSize.Level1)
 
     const int32_t userId = 1;
 
-    MockCommonEventStub commonEventStub;
-    bool publishCommonEvent = false;
-    commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, SYSTEM_UID, 0, userId, publishCommonEvent);
+    CommonEventStub commonEventStub;
+    bool publishCommonEvent = commonEventStub.PublishCommonEvent(data, publishInfo, nullptr, SYSTEM_UID, 0, userId);
     EXPECT_EQ(true, publishCommonEvent);
 }
 
@@ -263,9 +261,8 @@ HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level1)
 {
     CommonEventSubscribeInfo subscribeInfo;
 
-    MockCommonEventStub commonEventStub;
-    int32_t subscribeCommonEvent = -1;
-    commonEventStub.SubscribeCommonEvent(subscribeInfo, nullptr, 0, subscribeCommonEvent);
+    CommonEventStub commonEventStub;
+    bool subscribeCommonEvent = commonEventStub.SubscribeCommonEvent(subscribeInfo, nullptr);
     EXPECT_EQ(ERR_OK, subscribeCommonEvent);
 }
 
@@ -277,10 +274,9 @@ HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level1)
  */
 HWTEST_F(CommonEventTest, CommonEventStub_004, TestSize.Level1)
 {
-    MockCommonEventStub commonEventStub;
-    int32_t unsubscribeCommonEvent = -1;
-    commonEventStub.UnsubscribeCommonEvent(nullptr, unsubscribeCommonEvent);
-    EXPECT_EQ(true, static_cast<bool>(unsubscribeCommonEvent));
+    CommonEventStub commonEventStub;
+    bool unsubscribeCommonEvent = commonEventStub.UnsubscribeCommonEvent(nullptr);
+    EXPECT_EQ(true, unsubscribeCommonEvent);
 }
 
 /*
@@ -300,9 +296,8 @@ HWTEST_F(CommonEventTest, CommonEventStub_005, TestSize.Level1)
     CommonEventData data;
     data.SetWant(want);
 
-    MockCommonEventStub commonEventStub;
-    bool getStickyCommonEvent = false;
-    commonEventStub.GetStickyCommonEvent(event, data, getStickyCommonEvent);
+    CommonEventStub commonEventStub;
+    bool getStickyCommonEvent = commonEventStub.GetStickyCommonEvent(event, data);
     EXPECT_EQ(true, getStickyCommonEvent);
 }
 
@@ -318,9 +313,8 @@ HWTEST_F(CommonEventTest, CommonEventStub_006, TestSize.Level1)
     const int32_t userId = 2;
     std::vector<std::string> state;
 
-    MockCommonEventStub commonEventStub;
-    bool dumpState = false;
-    commonEventStub.DumpState(dumpType, EVENT, userId, state, dumpState);
+    CommonEventStub commonEventStub;
+    bool dumpState = commonEventStub.DumpState(dumpType, EVENT, userId, state);
     EXPECT_EQ(true, dumpState);
 }
 
@@ -335,9 +329,8 @@ HWTEST_F(CommonEventTest, CommonEventStub_007, TestSize.Level1)
     const int32_t code = 1;
     const std::string receiverData = "bb";
 
-    MockCommonEventStub commonEventStub;
-    bool finishReceiver = false;
-    commonEventStub.FinishReceiver(nullptr, code, receiverData, true, finishReceiver);
+    CommonEventStub commonEventStub;
+    bool finishReceiver = commonEventStub.FinishReceiver(nullptr, code, receiverData, true);
     EXPECT_EQ(true, finishReceiver);
 }
 
@@ -349,15 +342,12 @@ HWTEST_F(CommonEventTest, CommonEventStub_007, TestSize.Level1)
  */
 HWTEST_F(CommonEventTest, CommonEventStub_008, TestSize.Level1)
 {
-    MockCommonEventStub commonEventStub;
-    bool freeze = false;
-    commonEventStub.Freeze(SYSTEM_UID, freeze);
+    CommonEventStub commonEventStub;
+    bool freeze = commonEventStub.Freeze(SYSTEM_UID);
     EXPECT_EQ(true, freeze);
-    bool unfreeze = false;
-    commonEventStub.Unfreeze(SYSTEM_UID, unfreeze);
+    bool unfreeze = commonEventStub.Unfreeze(SYSTEM_UID);
     EXPECT_EQ(true, unfreeze);
-    bool unfreezeAll = false;
-    commonEventStub.UnfreezeAll(unfreezeAll);
+    bool unfreezeAll = commonEventStub.UnfreezeAll();
     EXPECT_EQ(true, unfreezeAll);
 }
 
@@ -374,7 +364,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_009, TestSize.Level1)
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    MockCommonEventStub commonEventStub;
+    CommonEventStub commonEventStub;
     int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
 }
@@ -387,10 +377,9 @@ HWTEST_F(CommonEventTest, CommonEventStub_009, TestSize.Level1)
  */
 HWTEST_F(CommonEventTest, CommonEventStub_0010, TestSize.Level1)
 {
-    MockCommonEventStub commonEventStub;
-    std::vector<int> pidList = {1000};
-    bool result = false;
-    commonEventStub.SetFreezeStatus(pidList, true, result);
+    CommonEventStub commonEventStub;
+    std::set<int> pidList = {1000};
+    bool result = commonEventStub.SetFreezeStatus(pidList, true);
     EXPECT_EQ(false, result);
 }
 
@@ -402,10 +391,9 @@ HWTEST_F(CommonEventTest, CommonEventStub_0010, TestSize.Level1)
  */
 HWTEST_F(CommonEventTest, CommonEventStub_0011, TestSize.Level1)
 {
-    MockCommonEventStub commonEventStub;
-    int32_t unsubscribeCommonEvent = false;
-    commonEventStub.UnsubscribeCommonEventSync(nullptr, unsubscribeCommonEvent);
-    EXPECT_EQ(true, static_cast<bool>(unsubscribeCommonEvent));
+    CommonEventStub commonEventStub;
+    bool unsubscribeCommonEvent = commonEventStub.UnsubscribeCommonEventSync(nullptr);
+    EXPECT_EQ(true, unsubscribeCommonEvent);
 }
 
 /*

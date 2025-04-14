@@ -13,34 +13,42 @@
  * limitations under the License.
  */
 
-#ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
-#define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
+#ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_STUB_H
+#define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_STUB_H
 
-#include "common_event_stub.h"
-#include "event_handler.h"
-#include "ffrt.h"
-#include "inner_common_event_manager.h"
+#include "common_event_service_ipc_interface_code.h"
+#include "icommon_event.h"
+#include "iremote_stub.h"
 #include "nocopyable.h"
-#include "refbase.h"
-#include <mutex>
 
 namespace OHOS {
 namespace EventFwk {
-enum class ServiceRunningState { STATE_NOT_START, STATE_RUNNING };
-
-class CommonEventManagerService : public CommonEventStub {
+class CommonEventStub : public IRemoteStub<ICommonEvent> {
 public:
-    static sptr<CommonEventManagerService> GetInstance();
-    CommonEventManagerService();
-    virtual ~CommonEventManagerService();
+    CommonEventStub();
+
+    virtual ~CommonEventStub();
+
+    /**
+     * Processes the remote Request.
+     *
+     * @param code Indicates the code to send.
+     * @param data Indicates the message to send.
+     * @param reply Indicates the message to reply.
+     * @param option Indicates the message option.
+     * @return Returns ERR_NONE if success, otherwise ERR_CODE.
+     */
+    int OnRemoteRequest(
+        uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+
     /**
      * Publishes a common event.
      *
      * @param event Indicates the common event data.
      * @param publishInfo Indicates the publish info.
-     * @param commonEventListener Indicates the common event subscriber object.
+     * @param commonEventListener Indicates the last subscriber to receive the event.
      * @param userId Indicates the user ID.
-     * @return Returns true if successful; false otherwise.
+     * @return Returns ERR_OK if successful; otherwise failed.
      */
     int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
@@ -50,9 +58,9 @@ public:
      *
      * @param event Indicates the common event data.
      * @param publishInfo Indicates the publish info.
-     * @param commonEventListener Indicates the common event subscriber.
-     * @param uid Indicates the uid of application.
-     * @param callerToken Indicates the caller token
+     * @param commonEventListener Indicates the last subscriber to receive the event.
+     * @param uid Indicates the uid.
+     * @param callerToken Indicates the caller token.
      * @param userId Indicates the user ID.
      * @return Returns true if successful; false otherwise.
      */
@@ -63,10 +71,10 @@ public:
     /**
      * Subscribes to common events.
      *
-     * @param subscribeInfo Indicates the subscribe info.
-     * @param commonEventListener Indicates the common event subscriber.
+     * @param subscribeInfo Indicates the subscribe information.
+     * @param commonEventListener Indicates the subscriber object.
      * @param instanceKey Indicates the instance key
-     * @return Returns true if successful; false otherwise.
+     * @return Returns ERR_OK if successful; otherwise failed.
      */
     int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
         const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) override;
@@ -74,21 +82,21 @@ public:
     /**
      * Unsubscribes from common events.
      *
-     * @param commonEventListener Indicates the common event subscriber.
-     * @return Returns true if successful; false otherwise.
+     * @param commonEventListener Indicates the subscriber object.
+     * @return Returns ERR_OK if successful; otherwise failed.
      */
     int32_t UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
      * Synchronized, unsubscribes from common events.
      *
-     * @param commonEventListener Indicates the common event subscriber.
+     * @param commonEventListener Indicates the subscriber object
      * @return Returns true if successful; false otherwise.
      */
     int32_t UnsubscribeCommonEventSync(const sptr<IRemoteObject> &commonEventListener) override;
 
     /**
-     * Gets the current sticky common event
+     * Gets the current sticky common event.
      *
      * @param event Indicates the common event.
      * @param eventData Indicates the common event data.
@@ -97,41 +105,41 @@ public:
     bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData) override;
 
     /**
-     * Dumps state of common event service.
+     * Dumps the state for common event service.
      *
      * @param dumpType Indicates the dump type.
-     * @param event Specifies the information for the common event. Set null string ("") if you want to dump all.
-     * @param userId Indicates the user ID.
-     * @param state Indicates the state of common event service.
+     * @param event Indicates the specified event.
+     * @param userId Indicates the user id.
+     * @param state Indicates the output result.
      * @return Returns true if successful; false otherwise.
      */
     bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
         std::vector<std::string> &state) override;
 
     /**
-     * Finishes Receiver.
+     * Finishes the receiver for the ordered common event.
      *
-     * @param proxy Indicates the receiver proxy.
-     * @param code Indicates the code of a common event.
-     * @param data Indicates the data of a common event.
-     * @param abortEvent Indicates Whether to cancel the current common event.
+     * @param proxy Indicates the current subscriber object.
+     * @param code Indicates the result code.
+     * @param receiverData Indicates the result data.
+     * @param abortEvent Indicates whether the current ordered common event should be aborted.
      * @return Returns true if successful; false otherwise.
      */
-    bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData,
-        const bool &abortEvent) override;
+    bool FinishReceiver(const sptr<IRemoteObject> &proxy, const int32_t &code,
+        const std::string &receiverData, const bool &abortEvent) override;
 
     /**
-     * Freezes application.
+     * Freezes the specified process.
      *
-     * @param uid Indicates the uid of application.
+     * @param uid Indicates the uid of frozen process.
      * @return Returns true if successful; false otherwise.
      */
     bool Freeze(const uid_t &uid) override;
 
     /**
-     * Unfreezes application.
+     * Unfreezes the specified process.
      *
-     * @param uid Indicates the Uid of application.
+     * @param uid Indicates the uid of unfrozen process.
      * @return Returns true if successful; false otherwise.
      */
     bool Unfreeze(const uid_t &uid) override;
@@ -177,33 +185,10 @@ public:
     */
     bool SetFreezeStatus(std::set<int> pidList, bool isFreeze) override;
 
-    int Dump(int fd, const std::vector<std::u16string> &args) override;
-
-    ErrCode Init();
-
 private:
-    bool IsReady() const;
-
-    int32_t PublishCommonEventDetailed(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const pid_t &pid, const uid_t &uid,
-        const int32_t &clientToken, const int32_t &userId);
-
-    void GetHidumpInfo(const std::vector<std::u16string> &args, std::string &result);
-    int32_t CheckUserIdParams(const int32_t &userId);
-private:
-    static sptr<CommonEventManagerService> instance_;
-    static std::mutex instanceMutex_;
-
-    std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
-    ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;
-    std::shared_ptr<EventRunner> runner_;
-    std::shared_ptr<EventHandler> handler_;
-    std::shared_ptr<ffrt::queue> commonEventSrvQueue_ = nullptr;
-    std::string supportCheckSaPermission_ = "false";
-
-    DISALLOW_COPY_AND_MOVE(CommonEventManagerService);
+    DISALLOW_COPY_AND_MOVE(CommonEventStub);
 };
 }  // namespace EventFwk
 }  // namespace OHOS
 
-#endif  // FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
+#endif  // FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_STUB_H

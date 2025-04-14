@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -122,9 +122,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0100 end");
 }
 
@@ -143,9 +143,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0200 end");
 }
 
@@ -164,9 +163,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0300 end");
 }
 
@@ -184,9 +182,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo1(matchingSkills1);
     auto subscriberPtr1 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo1);
     sptr<CommonEventListener> commonEventListener1 = new CommonEventListener(subscriberPtr1);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo1, commonEventListener1, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo1, commonEventListener1), ERR_OK);
 
     std::string eventName2 = "TESTEVENT2";
     MatchingSkills matchingSkills2;
@@ -194,8 +191,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo2(matchingSkills2);
     auto subscriberPtr2 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo2);
     sptr<CommonEventListener> commonEventListener2 = new CommonEventListener(subscriberPtr2);
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo2, commonEventListener2, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo2, commonEventListener2), ERR_OK);
 
     std::string eventName3 = "TESTEVENT3";
     MatchingSkills matchingSkills3;
@@ -203,8 +200,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo3(matchingSkills3);
     auto subscriberPtr3 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo3);
     sptr<CommonEventListener> commonEventListener3 = new CommonEventListener(subscriberPtr3);
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo3, commonEventListener3, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo3, commonEventListener3), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0400 end");
 }
 
@@ -224,9 +221,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0500 end");
 }
 
@@ -246,9 +242,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0600 end");
 }
 
@@ -268,9 +263,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0700 end");
 }
 
@@ -290,11 +284,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level1)
     subscribeInfo.SetPriority(1000);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0800 end");
 }
 
@@ -314,11 +305,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level1)
     subscribeInfo.SetDeviceId("module_test");
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_0900 end");
 }
 
@@ -337,11 +325,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level1)
     subscribeInfo.SetPriority(100);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_1000 end");
 }
 
@@ -359,11 +344,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_1100 end");
 }
 
@@ -381,11 +363,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_1200 end");
 }
 
@@ -403,11 +382,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_1300 end");
 }
 
@@ -425,11 +401,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo1(matchingSkills4);
     auto subscriberPtr1 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo1);
     sptr<CommonEventListener> commonEventListener1 = new CommonEventListener(subscriberPtr1);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo1, commonEventListener1, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener1, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo1, commonEventListener1), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener1), ERR_OK);
 
     std::string eventName5 = "TESTEVENT5";
     MatchingSkills matchingSkills5;
@@ -437,10 +410,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo2(matchingSkills5);
     auto subscriberPtr2 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo2);
     sptr<CommonEventListener> commonEventListener2 = new CommonEventListener(subscriberPtr2);
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo2, commonEventListener2, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener2, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo2, commonEventListener2), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener2), ERR_OK);
 
     std::string eventName6 = "TESTEVENT6";
     MatchingSkills matchingSkills6;
@@ -448,10 +419,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo3(matchingSkills6);
     auto subscriberPtr3 = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo3);
     sptr<CommonEventListener> commonEventListener3 = new CommonEventListener(subscriberPtr3);
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo3, commonEventListener3, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener3, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo3, commonEventListener3), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener3), ERR_OK);
 
     EVENT_LOGE("CES_TC_ModuleTest_1400 end");
 }
@@ -477,12 +446,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_1500 end");
 }
 
@@ -509,12 +475,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_1600 end");
 }
 
@@ -619,13 +582,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     mtx_.lock();
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -666,12 +626,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2100, Function | MediumTest | Level2)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     mtx_.lock();
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
@@ -716,13 +673,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2200, Function | MediumTest | Level2)
     bundleObject->MockSetIsSystemApp(false);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult1 = -1;
-    commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener, 0, funcResult1);
-    int32_t funcResult2 = -1;
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult2);
-    if (funcResult1 && funcResult2) {
+    if (commonEventManagerService_->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener) &&
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -740,8 +694,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2200, Function | MediumTest | Level2)
     }
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
-    int32_t funcResult3 = -1;
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     EVENT_LOGE("CES_TC_ModuleTest_2200 end");
     mtx_.unlock();
 }
@@ -769,13 +722,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2300, Function | MediumTest | Level2)
     bundleObject->MockSetIsSystemApp(false);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult1 = -1;
-    commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener, 0, funcResult1);
-    int32_t funcResult2 = -1;
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult2);
-    if (funcResult1 && funcResult2) {
+    if (commonEventManagerService_->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener) &&
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -794,8 +744,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2300, Function | MediumTest | Level2)
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
     EVENT_LOGE("CES_TC_ModuleTest_2300 end");
-    int32_t funcResult3 = -1;
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -822,14 +771,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
     bundleObject->MockSetIsSystemApp(false);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-        int32_t funcResult1 = -1;
-    commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener, 0, funcResult1);
-    int32_t funcResult2 = -1;
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult2);
-    if (funcResult1 && funcResult2) {
+    if (commonEventManagerService_->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener) &&
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -848,8 +793,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
     EVENT_LOGE("CES_TC_ModuleTest_2400 end");
-    int32_t funcResult3 = -1;
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -870,9 +814,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     EXPECT_TRUE(matchingSkills.Match(wantTest));
     EVENT_LOGE("CES_TC_ModuleTest_2500 end");
 }
@@ -901,13 +843,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level1)
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     bundleObject->MockSetIsSystemApp(true);
-    int32_t funcResult1 = -1;
-    commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener, 0, funcResult1);
-    int32_t funcResult2 = -1;
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult2);
-    if (funcResult1 && funcResult2) {
+    if (commonEventManagerService_->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener) &&
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -926,8 +865,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level1)
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     EVENT_LOGE("CES_TC_ModuleTest_2600 end");
     bundleObject->MockSetIsSystemApp(false);
-    int32_t funcResult3 = -1;
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -955,13 +893,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level1)
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
     bundleObject->MockSetIsSystemApp(true);
-    int32_t funcResult1 = -1;
-    commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener, 0, funcResult1);
-    int32_t funcResult2 = -1;
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult2);
-    if (funcResult1 && funcResult2) {
+    if (commonEventManagerService_->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener) &&
+        (commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER))) {
         mtx_.lock();
     }
     struct tm startTime = {0};
@@ -980,8 +915,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level1)
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     EVENT_LOGE("CES_TC_ModuleTest_2700 end");
     bundleObject->MockSetIsSystemApp(false);
-    int32_t funcResult3 = -1;
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
+    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener);
     mtx_.unlock();
 }
 
@@ -1007,14 +941,11 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     EXPECT_TRUE(CommonEventManager::PublishCommonEvent(commonEventData, publishInfo));
 
     CommonEventData stickyData;
-    bool funcResult2 = false;
-    commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData, funcResult2);
+    commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData);
     EXPECT_FALSE(eventActionStr == stickyData.GetWant().GetAction());
     EVENT_LOGE("CES_TC_ModuleTest_2800 end");
 }
@@ -1042,15 +973,13 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
+
     CommonEventData stickyData;
-    bool stickyResult = false;
-    commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData, stickyResult);
+    bool stickyResult =
+        commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData);
     EXPECT_FALSE(stickyResult);
     EVENT_LOGE("CES_TC_ModuleTest_2900 end");
 }
@@ -1072,9 +1001,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3000 end");
 }
 
@@ -1097,9 +1025,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3100 end");
 }
 
@@ -1124,9 +1051,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3200 end");
 }
 
@@ -1146,11 +1072,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level1)
     subscribeInfo.SetPermission(permissin);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3300 end");
 }
 
@@ -1172,11 +1095,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level1)
     subscribeInfo.SetPriority(1);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3400 end");
 }
 
@@ -1200,11 +1120,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level1)
     subscribeInfo.SetDeviceId(deviceId);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3500 end");
 }
 
@@ -1231,12 +1148,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level1)
     publishInfo.SetSubscriberPermissions(permissions);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3600 end");
 }
 
@@ -1265,12 +1179,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level1)
     publishInfo.SetSubscriberPermissions(permissions);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3700 end");
 }
 
@@ -1301,12 +1212,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level1)
     publishInfo.SetSubscriberPermissions(permissions);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3800 end");
 }
 
@@ -1327,9 +1235,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level1)
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
 
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+        subscribeInfo, commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_3900 end");
 }
 
@@ -1349,11 +1256,8 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level1)
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_4000 end");
 }
 
@@ -1377,12 +1281,9 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level1)
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_4100 end");
 }
 
@@ -1406,13 +1307,10 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     mtx_.lock();
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};
@@ -1443,7 +1341,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
 
     // add maximum subscriber, the last subscriber trigger "SUBSCRIBER_EXCEED_MAXIMUM" hisysevent
     std::set<sptr<CommonEventListener>> cesListenerSet;
-    int32_t funcResult = -1;
+
     for (uint32_t i = 0; i <= MAX_SUBSCRIBER_NUM_PER_EVENT + 1; i++) {
         std::string eventName = "SUBSCRIBEEVENT_SUBSCRIBENUMTEST";
         MatchingSkills matchingSkills;
@@ -1452,13 +1350,12 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
         auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
         sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
         cesListenerSet.insert(commonEventListener);
-        commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-        EXPECT_EQ(funcResult, ERR_OK);
+        EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(
+            subscribeInfo, commonEventListener), ERR_OK);
     }
 
     for (auto it = cesListenerSet.begin(); it != cesListenerSet.end(); ++it) {
-        commonEventManagerService_->UnsubscribeCommonEvent(*it, funcResult);
-        EXPECT_EQ(funcResult, ERR_OK);
+        EXPECT_EQ(commonEventManagerService_->UnsubscribeCommonEvent(*it), ERR_OK);
     }
 
     EVENT_LOGE("CES_TC_ModuleTest_4300 end");
@@ -1486,17 +1383,13 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     IPCSkeleton::SetCallingTokenID(1);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP);
     IPCSkeleton::SetCallingTokenID(0);
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+        commonEventData, publishInfo, commonEventListener, UNDEFINED_USER), ERR_OK);
     EVENT_LOGE("CES_TC_ModuleTest_4400 end");
 }
 
@@ -1515,18 +1408,15 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4500, Function | MediumTest | Level1)
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::COMMON);
     auto subscriberPtr = std::make_shared<CommonEventServicesModuleTest>(subscribeInfo);
     sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
-    int32_t funcResult = -1;
-    commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener), ERR_OK);
     mtx_.lock();
 
     Want testWant;
     testWant.SetAction(eventName);
     CommonEventData commonEventData(testWant);
     CommonEventPublishInfo publishInfo;
-    commonEventManagerService_->PublishCommonEvent(
-        commonEventData, publishInfo, nullptr, UNDEFINED_USER, funcResult);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(commonEventManagerService_->PublishCommonEvent(
+            commonEventData, publishInfo, nullptr, UNDEFINED_USER), ERR_OK);
     struct tm startTime = {0};
     EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
     struct tm doingTime = {0};

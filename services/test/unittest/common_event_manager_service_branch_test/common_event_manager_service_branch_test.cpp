@@ -82,9 +82,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Le
     uid_t uid = 1;
     int32_t userId = 100;
     int32_t callerToken = 0;
-    bool result = false;
-    comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, callerToken, userId, result);
-    EXPECT_EQ(false, result);
+    EXPECT_EQ(false, comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, callerToken, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0100 end";
 }
 
@@ -104,9 +102,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0200, Le
     // test SubscribeCommonEvent
     CommonEventSubscribeInfo subscribeInfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
-    int32_t result = -1;
-    comm->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, comm->SubscribeCommonEvent(subscribeInfo, commonEventListener));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0200 end";
 }
 
@@ -125,9 +122,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0300, Le
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test SubscribeCommonEvent
     sptr<IRemoteObject> commonEventListener = nullptr;
-    int32_t result = -1;
-    comm->UnsubscribeCommonEvent(commonEventListener, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, comm->UnsubscribeCommonEvent(commonEventListener));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0300 end";
 }
 
@@ -147,9 +143,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0400, Le
     // test SubscribeCommonEvent
     std::string event = "aa";
     CommonEventData eventData;
-    bool result = true;
-    comm->GetStickyCommonEvent(event, eventData, result);
-    EXPECT_EQ(false, result);
+    EXPECT_EQ(false, comm->GetStickyCommonEvent(event, eventData));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0400 end";
 }
 
@@ -174,9 +168,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0500, Le
     int32_t userId = 1;
     MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
     MockIsSystemApp(false);
-    int32_t result = -1;
-    comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP, result);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP,
+        comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0500 end";
 }
 
@@ -204,9 +197,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0600, Le
     CommonEventPublishInfo publishinfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
     int32_t userId = 1;
-    int32_t result = -1;
-    comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, result);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP,
+        comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0600 end";
 }
 
@@ -232,9 +224,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0700, Le
     CommonEventPublishInfo publishinfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
     int32_t userId = -1;
-    int32_t result = -1;
-    comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, result);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP,
+        comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0700 end";
 }
 
@@ -260,9 +251,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0800, Le
     CommonEventPublishInfo publishinfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
     int32_t userId = -2;
-    int32_t result = -1;
-    comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, result);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP,
+        comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0800 end";
 }
 
@@ -288,9 +278,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0900, Le
     CommonEventPublishInfo publishinfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
     int32_t userId = -3;
-    int32_t result = -1;
-    comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP, result);
+    EXPECT_EQ(ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP,
+        comm->PublishCommonEvent(event, publishinfo, commonEventListener, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0900 end";
 }
 
@@ -317,9 +306,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1000, Le
     uid_t uid = 1;
     int32_t callerToken = 2;
     int32_t userId = 1;
-    bool result = true;
-    comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, callerToken, userId, result);
-    EXPECT_EQ(false, result);
+    EXPECT_EQ(false, comm->PublishCommonEvent(event, publishinfo, commonEventListener, uid, callerToken, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1000 end";
 }
 
@@ -368,9 +355,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1200, Le
     // test SubscribeCommonEvent function
     CommonEventSubscribeInfo subscribeInfo;
     sptr<IRemoteObject> commonEventListener = nullptr;
-    int32_t result = -1;
-    comm->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, result);
-    EXPECT_EQ(ERR_OK, result);
+    EXPECT_EQ(ERR_OK, comm->SubscribeCommonEvent(subscribeInfo, commonEventListener));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1200 end";
 }
 
@@ -392,9 +377,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1300, Le
     int32_t userId = 1;
     std::vector<std::string> state;
     state.emplace_back(event);
-    bool result = true;
-    comm->DumpState(dumpType, event, userId, state, result);
-    EXPECT_EQ(false, result);
+    EXPECT_EQ(false, comm->DumpState(dumpType, event, userId, state));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1300 end";
 }
 
@@ -418,9 +401,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1400, Le
     int32_t userId = 1;
     std::vector<std::string> state;
     state.emplace_back(event);
-    bool result = true;
-    comm->DumpState(dumpType, event, userId, state, result);
-    EXPECT_EQ(false, result);
+    EXPECT_EQ(false, comm->DumpState(dumpType, event, userId, state));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1400 end";
 }
 
@@ -481,9 +462,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1700, Le
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    int32_t result = -1;
-    comm->UnsubscribeCommonEvent(nullptr, result);
-    EXPECT_EQ(ERR_OK, result);
+    EXPECT_EQ(ERR_OK, comm->UnsubscribeCommonEvent(nullptr));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1700 end";
 }
 
@@ -502,9 +481,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0201, Le
     comm->innerCommonEventManager_ = nullptr;
     // test RemoveStickyCommonEvent
     std::string event = "this is event";
-    int32_t result = -1;
-    comm->RemoveStickyCommonEvent(event, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CESM_ERROR, result);
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CESM_ERROR, comm->RemoveStickyCommonEvent(event));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0201 end";
 }
 
@@ -525,9 +503,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0202, Le
     MockIsSystemApp(false);
     // test RemoveStickyCommonEvent
     std::string event = "this is event";
-    int32_t result = -1;
-    comm->RemoveStickyCommonEvent(event, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP, result);
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP, comm->RemoveStickyCommonEvent(event));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0202 end";
 }
 
@@ -551,9 +528,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0203, Le
     MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
     // test RemoveStickyCommonEvent
     std::string event = "this is event";
-    int32_t result = -1;
-    comm->RemoveStickyCommonEvent(event, result);
-    EXPECT_EQ(ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED, result);
+    EXPECT_EQ(
+        ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED, comm->RemoveStickyCommonEvent(event));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0203 end";
 }
 
@@ -572,12 +548,9 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Le
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    int32_t ret = -1;
-    comm->SetStaticSubscriberState(true, ret);
+    int32_t ret = comm->SetStaticSubscriberState(true);
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    int32_t result = -1;
-    comm->SetStaticSubscriberState(true, result);
-    EXPECT_EQ(ret, result);
+    EXPECT_EQ(ret, comm->SetStaticSubscriberState(true));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0204 end";
 }
 }

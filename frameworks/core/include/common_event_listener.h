@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,16 +45,13 @@ public:
      * @param ordered Indicates whether it is an ordered common event.
      * @param sticky Indicates whether it is a sticky common event.
      */
-    ErrCode NotifyEvent(const CommonEventData &data, bool ordered, bool sticky) override;
+    void NotifyEvent(const CommonEventData &data, const bool &ordered, const bool &sticky) override;
 
     /**
      * Stops to receive events.
      *
      */
     void Stop();
-
-    int32_t CallbackEnter([[maybe_unused]] uint32_t code) override;
-    int32_t CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result) override;
 
 private:
     ErrCode Init();
@@ -72,7 +69,6 @@ public:
 
 private:
     std::mutex mutex_;
-    static std::mutex onRemoteRequestMutex_;
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber_;
     std::shared_ptr<EventRunner> runner_;
     std::shared_ptr<EventHandler> handler_;

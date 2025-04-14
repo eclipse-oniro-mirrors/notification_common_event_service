@@ -90,9 +90,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0200, Level1)
     uid_t uid = 1;
     int32_t userId = 100;
     int32_t callerToken = 0;
-    bool funcResult = false;
-    comm->PublishCommonEvent(event, publishinfo, nullptr, uid, callerToken, userId, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->PublishCommonEvent(event, publishinfo, nullptr, uid, callerToken, userId));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0200 end";
 }
 
@@ -112,9 +110,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0500, Level1)
     // set event is empty
     std::string event = "";
     CommonEventData eventData;
-    bool funcResult = false;
-    comm->GetStickyCommonEvent(event, eventData, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->GetStickyCommonEvent(event, eventData));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0500 end";
 }
 
@@ -136,9 +132,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0600, Level1)
     // test GetStickyCommonEvent function
     std::string event = "sticky common event";
     CommonEventData eventData;
-    bool funcResult = false;
-    comm->GetStickyCommonEvent(event, eventData, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->GetStickyCommonEvent(event, eventData));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0600 end";
 }
 
@@ -161,9 +155,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0700, Level1)
     std::string event = "dump state";
     int32_t userId = 2;
     std::vector<std::string> state;
-    bool funcResult = false;
-    comm->DumpState(dumpType, event, userId, state, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->DumpState(dumpType, event, userId, state));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0700 end";
 }
 
@@ -187,9 +179,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0800, Level1)
     std::string event = "dump state";
     int32_t userId = 2;
     std::vector<std::string> state;
-    bool funcResult = false;
-    comm->DumpState(dumpType, event, userId, state, funcResult);
-    EXPECT_EQ(true, funcResult);
+    EXPECT_EQ(true, comm->DumpState(dumpType, event, userId, state));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0800 end";
 }
 
@@ -210,9 +200,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0900, Level1)
     int32_t code = 1;
     std::string receiverData = "finish receiver";
     bool abortEvent = true;
-    bool funcResult = false;
-    comm->FinishReceiver(nullptr, code, receiverData, abortEvent, funcResult);
-    EXPECT_EQ(true, funcResult);
+    EXPECT_EQ(true, comm->FinishReceiver(nullptr, code, receiverData, abortEvent));
     GTEST_LOG_(INFO) << "CommonEventManagerService_0900 end";
 }
 
@@ -229,9 +217,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1000, Level1)
     // set VerifyNativeToken is true
     MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_NATIVE);
     uid_t uid = 1;
-    bool funcResult = false;
-    comm->Freeze(uid, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->Freeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1000 end";
 }
 
@@ -252,9 +238,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1100, Level1)
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test Freeze function
     uid_t uid = 1;
-    bool funcResult = false;
-    comm->Freeze(uid, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->Freeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1100 end";
 }
 
@@ -271,9 +255,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1200, Level1)
     // set VerifyNativeToken is true
     MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_NATIVE);
     uid_t uid = 1;
-    bool funcResult = false;
-    comm->Unfreeze(uid, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->Unfreeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1200 end";
 }
 
@@ -294,9 +276,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1300, Level1)
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test Unfreeze function
     uid_t uid = 1;
-    bool funcResult = false;
-    comm->Unfreeze(uid, funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->Unfreeze(uid));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1300 end";
 }
 
@@ -312,9 +292,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1400, Level1)
     ASSERT_NE(nullptr, comm);
     // set VerifyNativeToken is true
     MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_NATIVE);
-    bool funcResult = false;
-    comm->UnfreezeAll(funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->UnfreezeAll());
     GTEST_LOG_(INFO) << "CommonEventManagerService_1400 end";
 }
 
@@ -334,9 +312,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1500, Level1)
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test UnfreezeAll function
-    bool funcResult = false;
-    comm->UnfreezeAll(funcResult);
-    EXPECT_EQ(false, funcResult);
+    EXPECT_EQ(false, comm->UnfreezeAll());
     GTEST_LOG_(INFO) << "CommonEventManagerService_1500 end";
 }
 
@@ -395,9 +371,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1800, Level1)
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
-    int32_t funcResult = -1;
-    comm->SetStaticSubscriberState(true, funcResult);
-    EXPECT_EQ(OHOS::ERR_INVALID_OPERATION, funcResult);
+    EXPECT_EQ(OHOS::ERR_INVALID_OPERATION, comm->SetStaticSubscriberState(true));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1800 end";
 }
 }

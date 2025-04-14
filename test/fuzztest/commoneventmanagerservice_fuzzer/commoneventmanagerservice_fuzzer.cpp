@@ -49,27 +49,25 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     permissions.emplace_back(stringData);
     commonEventPublishInfo.SetSubscriberPermissions(permissions);
     sptr<IRemoteObject> commonEventListener = nullptr;
-    int32_t funcResult = -1;
-    service->PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener, code, funcResult);
-    bool funcResult1 = false;
+    service->PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener, code);
     service->PublishCommonEvent(
-        commonEventData, commonEventPublishInfo, commonEventListener, code, code, code, funcResult1);
+        commonEventData, commonEventPublishInfo, commonEventListener, code, code, code);
     EventFwk::MatchingSkills matchingSkills;
     matchingSkills.AddEvent(stringData);
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetPriority(code);
-    service->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
-    service->UnsubscribeCommonEvent(commonEventListener, funcResult);
-    service->UnsubscribeCommonEventSync(commonEventListener, funcResult);
-    service->GetStickyCommonEvent(stringData, commonEventData, funcResult1);
+    service->SubscribeCommonEvent(subscribeInfo, commonEventListener);
+    service->UnsubscribeCommonEvent(commonEventListener);
+    service->UnsubscribeCommonEventSync(commonEventListener);
+    service->GetStickyCommonEvent(stringData, commonEventData);
     uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     std::vector<std::string> state;
     state.emplace_back(stringData);
-    service->DumpState(dumpType, stringData, code, state, funcResult1);
-    service->FinishReceiver(commonEventListener, code, stringData, enabled, funcResult1);
-    service->Freeze(code, funcResult1);
-    service->Unfreeze(code, funcResult1);
-    service->UnfreezeAll(funcResult1);
+    service->DumpState(dumpType, stringData, code, state);
+    service->FinishReceiver(commonEventListener, code, stringData, enabled);
+    service->Freeze(code);
+    service->Unfreeze(code);
+    service->UnfreezeAll();
     return true;
 }
 }

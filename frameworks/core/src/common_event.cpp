@@ -63,17 +63,8 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     if (!proxy) {
         return false;
     }
-    int32_t funcResult = -1;
-    auto res = -1;
-    if (subscriber == nullptr) {
-        res = proxy->PublishCommonEvent(data, publishInfo, UNDEFINED_USER, funcResult);
-    } else {
-        res = proxy->PublishCommonEvent(data, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
-    }
-    if (res != ERR_OK) {
-        funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
-    return funcResult == ERR_OK ? true : false;
+    return proxy->PublishCommonEvent(
+        data, publishInfo, commonEventListener, UNDEFINED_USER) == ERR_OK ? true : false;
 }
 
 int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -90,17 +81,7 @@ int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const
     if (!proxy) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-    int32_t funcResult = -1;
-    auto res = -1;
-    if (subscriber == nullptr) {
-        res = proxy->PublishCommonEvent(data, publishInfo, userId, funcResult);
-    } else {
-        res = proxy->PublishCommonEvent(data, publishInfo, commonEventListener, userId, funcResult);
-    }
-    if (res != ERR_OK) {
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
-    return funcResult;
+    return proxy->PublishCommonEvent(data, publishInfo, commonEventListener, userId);
 }
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -117,18 +98,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     if (!proxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = -1;
-    if (subscriber == nullptr) {
-        res = proxy->PublishCommonEvent(data, publishInfo, uid, callerToken, UNDEFINED_USER, funcResult);
-    } else {
-        res = proxy->PublishCommonEvent(
-            data, publishInfo, commonEventListener, uid, callerToken, UNDEFINED_USER, funcResult);
-    }
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken, UNDEFINED_USER);
 }
 
 bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -146,18 +116,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     if (!proxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = -1;
-    if (subscriber == nullptr) {
-        res = proxy->PublishCommonEvent(data, publishInfo, uid, callerToken, userId, funcResult);
-    } else {
-        res = proxy->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken, userId, funcResult);
-    }
-
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy->PublishCommonEvent(data, publishInfo, commonEventListener, uid, callerToken, userId);
 }
 
 __attribute__((no_sanitize("cfi"))) bool CommonEvent::PublishParameterCheck(const CommonEventData &data,
@@ -207,17 +166,10 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
     sptr<IRemoteObject> commonEventListener = nullptr;
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
-    if (commonEventListener == nullptr) {
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
-    int32_t funcResult = -1;
     if (subscribeState == INITIAL_SUBSCRIPTION) {
         auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
-        commonEventListener, UNDEFINED_INSTANCE_KEY, funcResult);
+        commonEventListener, UNDEFINED_INSTANCE_KEY);
         if (res != ERR_OK) {
-            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        if (funcResult != ERR_OK) {
             EVENT_LOGD("subscribe common event failed, remove event listener");
             std::lock_guard<std::mutex> lock(eventListenersMutex_);
             auto eventListener = eventListeners_.find(subscriber);
@@ -225,7 +177,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
                 eventListeners_.erase(eventListener);
             }
         }
-        return funcResult;
+        return res;
     } else if (subscribeState == ALREADY_SUBSCRIBED) {
         return ERR_OK;
     } else if (subscribeState == SUBSCRIBE_EXCEED_LIMIT) {
@@ -251,17 +203,9 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     }
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
     auto eventListener = eventListeners_.find(subscriber);
-    int32_t funcResult = -1;
     if (eventListener != eventListeners_.end()) {
         EVENT_LOGD("before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
-        if (eventListener->second->AsObject() == nullptr) {
-            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        auto res = proxy->UnsubscribeCommonEvent(eventListener->second->AsObject(), funcResult);
-        if (res != ERR_OK) {
-            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        if (funcResult == ERR_OK) {
+        if (proxy->UnsubscribeCommonEvent(eventListener->second->AsObject()) == ERR_OK) {
             eventListener->second->Stop();
             eventListeners_.erase(eventListener);
             return ERR_OK;
@@ -290,17 +234,9 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
     }
     std::lock_guard<std::mutex> lock(eventListenersMutex_);
     auto eventListener = eventListeners_.find(subscriber);
-    int32_t funcResult = -1;
     if (eventListener != eventListeners_.end()) {
         EVENT_LOGD("before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
-        if (eventListener->second->AsObject() == nullptr) {
-            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        auto res = proxy->UnsubscribeCommonEventSync(eventListener->second->AsObject(), funcResult);
-        if (res != ERR_OK) {
-            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        if (funcResult == ERR_OK) {
+        if (proxy->UnsubscribeCommonEventSync(eventListener->second->AsObject()) == ERR_OK) {
             eventListener->second->Stop();
             eventListeners_.erase(eventListener);
             return ERR_OK;
@@ -324,12 +260,7 @@ bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData
     if (!proxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = proxy->GetStickyCommonEvent(event, eventData, funcResult);
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy->GetStickyCommonEvent(event, eventData);
 }
 
 bool CommonEvent::FinishReceiver(
@@ -345,12 +276,7 @@ bool CommonEvent::FinishReceiver(
     if (!cesProxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = cesProxy->FinishReceiver(proxy, code, data, abortEvent, funcResult);
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return cesProxy->FinishReceiver(proxy, code, data, abortEvent);
 }
 
 bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
@@ -362,12 +288,7 @@ bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, c
     if (!proxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = proxy->DumpState(dumpType, event, userId, state, funcResult);
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy->DumpState(dumpType, event, userId, state);
 }
 
 bool CommonEvent::Freeze(const uid_t &uid)
@@ -378,12 +299,7 @@ bool CommonEvent::Freeze(const uid_t &uid)
     if (!proxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = proxy->Freeze(uid, funcResult);
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy->Freeze(uid);
 }
 
 bool CommonEvent::Unfreeze(const uid_t &uid)
@@ -394,12 +310,7 @@ bool CommonEvent::Unfreeze(const uid_t &uid)
     if (!proxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = proxy->Unfreeze(uid, funcResult);
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy->Unfreeze(uid);
 }
 
 bool CommonEvent::UnfreezeAll()
@@ -410,12 +321,7 @@ bool CommonEvent::UnfreezeAll()
     if (!proxy) {
         return false;
     }
-    bool funcResult = false;
-    auto res = proxy->UnfreezeAll(funcResult);
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy->UnfreezeAll();
 }
 
 int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
@@ -426,12 +332,7 @@ int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
     if (!proxy) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-    int funcResult = -1;
-    auto res = proxy->RemoveStickyCommonEvent(event, funcResult);
-    if (res != ERR_OK) {
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
-    return funcResult;
+    return proxy->RemoveStickyCommonEvent(event);
 }
 
 int32_t CommonEvent::SetStaticSubscriberState(bool enable)
@@ -441,12 +342,7 @@ int32_t CommonEvent::SetStaticSubscriberState(bool enable)
     if (!proxy_) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-    int32_t funcResult = -1;
-    auto res = proxy_->SetStaticSubscriberState(enable, funcResult);
-    if (res != ERR_OK) {
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
-    return funcResult;
+    return proxy_->SetStaticSubscriberState(enable);
 }
 
 int32_t CommonEvent::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
@@ -456,12 +352,7 @@ int32_t CommonEvent::SetStaticSubscriberState(const std::vector<std::string> &ev
     if (!proxy_) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-    int32_t funcResult = -1;
-    auto res = proxy_->SetStaticSubscriberStateByEvents(events, enable, funcResult);
-    if (res != ERR_OK) {
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
-    return funcResult;
+    return proxy_->SetStaticSubscriberState(events, enable);
 }
 
 bool CommonEvent::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
@@ -471,16 +362,7 @@ bool CommonEvent::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
     if (!proxy_) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
-    bool funcResult = false;
-    std::vector<int> pidVector;
-    for (const auto& pid : pidList) {
-        pidVector.push_back(pid);
-    }
-    auto res = proxy_->SetFreezeStatus(pidVector, isFreeze, funcResult);
-    if (res != ERR_OK) {
-        return false;
-    }
-    return funcResult;
+    return proxy_->SetFreezeStatus(pidList, isFreeze);
 }
 
 sptr<ICommonEvent> CommonEvent::GetCommonEventProxy()
@@ -573,18 +455,9 @@ __attribute__((no_sanitize("cfi"))) bool CommonEvent::Resubscribe()
     for (auto it = eventListeners_.begin(); it != eventListeners_.end();) {
         auto subscriber = it->first;
         auto listener = it->second;
-        if (listener == nullptr) {
-            EVENT_LOGE("null listener");
-            it = eventListeners_.erase(it);
-            continue;
-        }
-        int32_t funcResult = -1;
-        auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
-            listener, UNDEFINED_INSTANCE_KEY, funcResult);
+        int32_t res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
+            listener, UNDEFINED_INSTANCE_KEY);
         if (res != ERR_OK) {
-            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        if (funcResult != ERR_OK) {
             EVENT_LOGW("subscribe common event failed, remove event listener");
             it = eventListeners_.erase(it);
         } else {
