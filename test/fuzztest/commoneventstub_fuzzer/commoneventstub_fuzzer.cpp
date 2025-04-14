@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-#include "common_event_stub.h"
 #include "common_event_data.h"
 #include "commoneventstub_fuzzer.h"
+#include "mock_common_event_stub.h"
 #include "fuzz_common_base.h"
 #include <fuzzer/FuzzedDataProvider.h>
 
@@ -28,7 +28,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     MessageParcel dataParcel;
     MessageParcel reply;
     MessageOption option;
-    EventFwk::CommonEventStub commonEventStub;
+    EventFwk::MockCommonEventStub commonEventStub;
     // test PublishCommonEvent function
     AAFwk::Want want;
     EventFwk::CommonEventData commonEventData;
@@ -48,33 +48,37 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     permissions.emplace_back(stringData);
     commonEventPublishInfo.SetSubscriberPermissions(permissions);
     sptr<IRemoteObject> commonEventListener = nullptr;
-    commonEventStub.PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener, code, code, code);
+    int32_t funcResult = -1;
+    bool funcResultBool = false;
+    commonEventStub.PublishCommonEvent(commonEventData, commonEventPublishInfo, commonEventListener,
+        code, code, code, funcResultBool);
     // test SubscribeCommonEvent function
     EventFwk::MatchingSkills matchingSkills;
     matchingSkills.AddEvent(stringData);
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetPriority(code);
-    commonEventStub.SubscribeCommonEvent(subscribeInfo, commonEventListener);
+    commonEventStub.SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     // test UnsubscribeCommonEvent function
-    commonEventStub.UnsubscribeCommonEvent(commonEventListener);
+    commonEventStub.UnsubscribeCommonEvent(commonEventListener, funcResult);
     // test UnsubscribeCommonEventSync function
-    commonEventStub.UnsubscribeCommonEventSync(commonEventListener);
+    commonEventStub.UnsubscribeCommonEventSync(commonEventListener, funcResult);
     // test GetStickyCommonEvent function
-    commonEventStub.GetStickyCommonEvent(stringData, commonEventData);
+    commonEventStub.GetStickyCommonEvent(stringData, commonEventData, funcResultBool);
     // test DumpState function
     uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     std::vector<std::string> state;
     state.emplace_back(stringData);
-    commonEventStub.DumpState(dumpType, stringData, code, state);
+    commonEventStub.DumpState(dumpType, stringData, code, state, funcResultBool);
     // test FinishReceiver function
-    commonEventStub.FinishReceiver(commonEventListener, code, stringData, enabled);
+    commonEventStub.FinishReceiver(commonEventListener, code, stringData, enabled, funcResultBool);
     // test Freeze function
-    commonEventStub.Freeze(code);
+    commonEventStub.Freeze(code, funcResultBool);
     // test Unfreeze function
-    commonEventStub.Unfreeze(code);
+    commonEventStub.Unfreeze(code, funcResultBool);
     commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     // test UnfreezeAll function
-    return commonEventStub.UnfreezeAll();
+    commonEventStub.UnfreezeAll(funcResultBool);
+    return funcResultBool;
 }
 }
 

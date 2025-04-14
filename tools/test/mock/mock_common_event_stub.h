@@ -31,39 +31,97 @@ public:
     MOCK_METHOD4(FinishReceiver, bool(const sptr<IRemoteObject> &proxy, const int32_t &code,
                                      const std::string &receiverData, const bool &abortEvent));
 
-    /**
-     * Publishes a common event.
-     *
-     * @param event Indicates the common event data.
-     * @param publishInfo Indicates the publish info.
-     * @param commonEventListener Indicates the last subscriber to receive the ordered common event.
-     * @param userId Indicates the user ID.
-     * @return Returns true if success; false otherwise.
-     */
-    int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const sptr<IRemoteObject> &commonEventListener, const int32_t &userId) override;
+    ErrCode PublishCommonEvent(
+        const CommonEventData& event,
+        const CommonEventPublishInfo& publishInfo,
+        int32_t userId,
+        int32_t& funcResult) override;
 
-    /**
-     * Subscribes to common events.
-     *
-     * @param subscribeInfo the subscribe information.
-     * @param commonEventListener the subscriber object.
-     * @param instanceKey Indicates the instance key
-     * @return Returns true if success; false otherwise.
-     */
-    int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
-        const sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey = 0) override;
+    ErrCode PublishCommonEvent(
+        const CommonEventData& event,
+        const CommonEventPublishInfo& publishInfo,
+        const sptr<IRemoteObject>& commonEventListener,
+        int32_t userId,
+        int32_t& funcResult) override;
 
-    /**
-     * Dumps the state for common event service.
-     *
-     * @param event the specified event.
-     * @param userId the user id.
-     * @param state the output result.
-     * @return Returns true if success; false otherwise.
-     */
-    bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
-        std::vector<std::string> &state) override;
+    ErrCode PublishCommonEvent(
+        const CommonEventData& event,
+        const CommonEventPublishInfo& publishInfo,
+        uint32_t uid,
+        int32_t callerToken,
+        int32_t userId,
+        bool& funcResult) override;
+
+    ErrCode PublishCommonEvent(
+        const CommonEventData& event,
+        const CommonEventPublishInfo& publishInfo,
+        const sptr<IRemoteObject>& commonEventListener,
+        uint32_t uid,
+        int32_t callerToken,
+        int32_t userId,
+        bool& funcResult) override;
+
+    ErrCode SubscribeCommonEvent(
+        const CommonEventSubscribeInfo& subscribeInfo,
+        const sptr<IRemoteObject>& commonEventListener,
+        int32_t instanceKey,
+        int32_t& funcResult) override;
+
+    ErrCode UnsubscribeCommonEvent(
+        const sptr<IRemoteObject>& commonEventListener,
+        int32_t& funcResult) override;
+
+    ErrCode UnsubscribeCommonEventSync(
+        const sptr<IRemoteObject>& commonEventListener,
+        int32_t& funcResult) override;
+
+    ErrCode GetStickyCommonEvent(
+        const std::string& event,
+        CommonEventData& eventData,
+        bool& funcResult) override;
+
+    ErrCode DumpState(
+        uint8_t dumpType,
+        const std::string& event,
+        int32_t userId,
+        std::vector<std::string>& state,
+        bool& funcResult) override;
+
+    ErrCode FinishReceiver(
+        const sptr<IRemoteObject>& proxy,
+        int32_t code,
+        const std::string& receiverData,
+        bool abortEvent,
+        bool& funcResult) override;
+
+    ErrCode Freeze(
+        uint32_t uid,
+        bool& funcResult) override;
+
+    ErrCode Unfreeze(
+        uint32_t uid,
+        bool& funcResult) override;
+
+    ErrCode UnfreezeAll(
+        bool& funcResult) override;
+
+    ErrCode RemoveStickyCommonEvent(
+        const std::string& event,
+        int32_t& funcResult) override;
+
+    ErrCode SetStaticSubscriberState(
+        bool enable,
+        int32_t& funcResult) override;
+
+    ErrCode SetStaticSubscriberStateByEvents(
+        const std::vector<std::string>& events,
+        bool enable,
+        int32_t& funcResult) override;
+
+    ErrCode SetFreezeStatus(
+        const std::set<int32_t>& pidList,
+        bool isFreeze,
+        bool& funcResult) override;
 
 private:
     static std::mutex instanceMutex_;

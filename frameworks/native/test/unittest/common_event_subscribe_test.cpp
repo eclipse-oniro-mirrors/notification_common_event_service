@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,6 +39,7 @@
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
 using OHOS::Parcel;
+using OHOS::ErrCode;
 
 namespace {
 const std::string EVENT = "com.ces.test.event";
@@ -85,8 +86,18 @@ public:
     ~EventReceiveStubTest()
     {}
 
-    virtual void NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
-    {}
+    OHOS::ErrCode NotifyEvent(const CommonEventData& data, bool ordered, bool sticky) override
+    {
+        return OHOS::ERR_OK;
+    }
+    int32_t CallbackEnter([[maybe_unused]] uint32_t code) override
+    {
+        return 0;
+    }
+    int32_t CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result) override
+    {
+        return 0;
+    }
 };
 
 class CommonEventStubTest : public CommonEventStub {
@@ -94,36 +105,38 @@ public:
     CommonEventStubTest()
     {}
 
-    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
-        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
+    virtual ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo,
+        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t userId, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
-        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
+    virtual ErrCode SubscribeCommonEvent(const CommonEventSubscribeInfo& subscribeInfo,
+        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual int32_t UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject> &commonEventListener)
+    virtual ErrCode UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t& funcResult)
     {
         return ERR_COMMON;
     }
 
-    virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
-        std::vector<std::string> &state)
+    virtual ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
+        std::vector<std::string>& state, bool& funcResult)
     {
-        return false;
+        funcResult = false;
+        return OHOS::ERR_OK;
     }
 
     virtual ~CommonEventStubTest()
     {}
 
-    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int32_t &code,
-        const std::string &receiverData, const bool &abortEvent)
+    virtual ErrCode FinishReceiver(const OHOS::sptr<IRemoteObject>& proxy, int32_t code,
+        const std::string& receiverData, bool abortEvent, bool& funcResult)
     {
-        return false;
+        funcResult = false;
+        return OHOS::ERR_OK;
     }
 };
 
