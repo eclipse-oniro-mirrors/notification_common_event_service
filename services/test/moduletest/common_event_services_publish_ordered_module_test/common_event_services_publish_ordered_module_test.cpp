@@ -1156,9 +1156,8 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_09
 HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_1000, Function | MediumTest | Level1)
 {
     uint16_t systemUid = 1000;
-    bool funcResult = true;
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Freeze(systemUid, funcResult);
-    EXPECT_EQ(false, funcResult);
+    bool freeze = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Freeze(systemUid);
+    EXPECT_EQ(false, freeze);
 }
 
 /*
@@ -1170,9 +1169,8 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_10
 HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_1100, Function | MediumTest | Level1)
 {
     uint16_t systemUid = 1000;
-    bool funcResult = true;
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Unfreeze(systemUid, funcResult);
-    EXPECT_EQ(false, funcResult);
+    bool unfreeze = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->Unfreeze(systemUid);
+    EXPECT_EQ(false, unfreeze);
 }
 
 /*
@@ -1183,9 +1181,8 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_11
  */
 HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_1200, Function | MediumTest | Level1)
 {
-    bool funcResult = true;
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnfreezeAll(funcResult);
-    EXPECT_EQ(false, funcResult);
+    bool unfreezeAll = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->UnfreezeAll();
+    EXPECT_EQ(false, unfreezeAll);
 }
 
 /*
@@ -1226,10 +1223,9 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0100, Funct
     std::string event = "aa";
     int32_t userId = 20;
     std::vector<std::string> state;
-    bool funcResult = true;
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(
-        dumpType, event, userId, state, funcResult);
-    EXPECT_EQ(false, funcResult);
+    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->DumpState(
+        dumpType, event, userId, state);
+    EXPECT_EQ(false, result);
 }
 
 /*
@@ -1242,10 +1238,9 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0200, Funct
     std::string receiverData = "aa";
     int32_t code = 20;
     bool abortEvent = true;
-    bool funcResult = true;
-    OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->FinishReceiver(
-        nullptr, code, receiverData, abortEvent, funcResult);
-    EXPECT_EQ(false, funcResult);
+    bool result = OHOS::DelayedSingleton<CommonEventManagerService>::GetInstance()->FinishReceiver(
+        nullptr, code, receiverData, abortEvent);
+    EXPECT_EQ(false, result);
 }
 
 /*

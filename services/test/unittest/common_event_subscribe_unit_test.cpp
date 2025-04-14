@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -77,38 +77,37 @@ public:
     CommonEventStubTest()
     {}
 
-    virtual ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo,
-        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t userId, int32_t& funcResult)
+    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+        const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener, const int32_t &userId)
     {
         return ERR_COMMON;
     }
 
-    virtual ErrCode SubscribeCommonEvent(const CommonEventSubscribeInfo& subscribeInfo,
-        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult)
+    virtual int32_t SubscribeCommonEvent(
+        const CommonEventSubscribeInfo &subscribeInfo, const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener,
+        const int32_t instanceKey)
     {
         return ERR_COMMON;
     }
 
-    virtual ErrCode UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t& funcResult)
+    virtual int32_t UnsubscribeCommonEvent(const OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
     {
         return ERR_COMMON;
     }
 
-    virtual ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
-        std::vector<std::string>& state, bool& funcResult)
+    virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+        std::vector<std::string> &state)
     {
-        funcResult = false;
-        return ERR_OK;
+        return false;
     }
 
     virtual ~CommonEventStubTest()
     {}
 
-    virtual ErrCode FinishReceiver(const OHOS::sptr<IRemoteObject>& proxy, int32_t code,
-        const std::string& receiverData, bool abortEvent, bool& funcResult)
+    virtual bool FinishReceiver(const OHOS::sptr<OHOS::IRemoteObject> &proxy, const int &code,
+        const std::string &receiverData, const bool &abortEvent)
     {
-        funcResult = false;
-        return ERR_OK;
+        return false;
     }
 };
 
@@ -598,18 +597,8 @@ public:
     ~EventReceiveStubTest()
     {}
 
-    ErrCode NotifyEvent(const CommonEventData& data, bool ordered, bool sticky) override
-    {
-        return ERR_OK;
-    }
-    int32_t CallbackEnter([[maybe_unused]] uint32_t code) override
-    {
-        return 0;
-    }
-    int32_t CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result) override
-    {
-        return 0;
-    }
+    virtual void NotifyEvent(const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
+    {}
 };
 
 void CommonEventSubscribeUnitTest::SetUpTestCase(void)
@@ -821,6 +810,7 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_0900, Functi
         std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
     // make subscriber
+    CommonEventStubTest CommonEventStubTest;
     std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
 
     // make common event listener
@@ -1020,10 +1010,9 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function 
     const int32_t userId = 1;
     const int32_t tokenId = 0;
     CommonEventManagerService commonEventManagerService;
-    bool funcResult = false;
-    commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid,
-        tokenId, userId, funcResult);
-    EXPECT_EQ(funcResult, false);
+    bool result = commonEventManagerService.PublishCommonEvent(event, publishinfo, commonEventListener, uid,
+        tokenId, userId);
+    EXPECT_EQ(result, false);
 }
 
 /**
@@ -1039,9 +1028,8 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function 
     const int32_t userId =2;
     std::vector<std::string> state;
     CommonEventManagerService commonEventManagerService;
-    bool funcResult = false;
-    commonEventManagerService.DumpState(dumpType, event, userId, state, funcResult);
-    EXPECT_EQ(funcResult, false);
+    bool result = commonEventManagerService.DumpState(dumpType, event, userId, state);
+    EXPECT_EQ(result, false);
 }
 
 /**
@@ -1056,9 +1044,8 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0003, Function 
     int32_t code = 0;
     std::string receiverData = "receiverData";
     CommonEventManagerService commonEventManagerService;
-    bool funcResult = false;
-    commonEventManagerService.FinishReceiver(proxy, code, receiverData, false, funcResult);
-    EXPECT_EQ(funcResult, false);
+    bool result = commonEventManagerService.FinishReceiver(proxy, code, receiverData, false);
+    EXPECT_EQ(result, false);
 }
 
 /**

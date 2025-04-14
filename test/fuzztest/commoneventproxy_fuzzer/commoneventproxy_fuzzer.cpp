@@ -24,9 +24,8 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
     sptr<IRemoteObject> object = nullptr;
     EventFwk::CommonEventProxy commonEventProxy(object);
-    int32_t funcResult = -1;
-    commonEventProxy.UnsubscribeCommonEvent(object, funcResult);
-    commonEventProxy.UnsubscribeCommonEventSync(object, funcResult);
+    commonEventProxy.UnsubscribeCommonEvent(object);
+    commonEventProxy.UnsubscribeCommonEventSync(object);
     std::shared_ptr<EventFwk::CommonEventSubscriber> commonEventSubscriber = nullptr;
     EventFwk::CommonEventListener commonEventListener(commonEventSubscriber);
     commonEventListener.Stop();

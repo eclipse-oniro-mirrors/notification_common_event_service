@@ -71,38 +71,36 @@ public:
     CommonEventStubTest()
     {}
 
-    virtual ErrCode PublishCommonEvent(const CommonEventData& event, const CommonEventPublishInfo& publishInfo,
-        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t userId, int32_t& funcResult)
+    virtual int32_t PublishCommonEvent(const CommonEventData &event, const CommonEventPublishInfo &publishinfo,
+        const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t &userId)
     {
         return ERR_COMMON;
     }
 
-    virtual ErrCode SubscribeCommonEvent(const CommonEventSubscribeInfo& subscribeInfo,
-        const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult)
+    virtual int32_t SubscribeCommonEvent(const CommonEventSubscribeInfo &subscribeInfo,
+    const OHOS::sptr<IRemoteObject> &commonEventListener, const int32_t instanceKey)
     {
         return ERR_COMMON;
     }
 
-    virtual ErrCode UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject>& commonEventListener, int32_t& funcResult)
+    virtual int32_t UnsubscribeCommonEvent(const OHOS::sptr<IRemoteObject> &commonEventListener)
     {
         return ERR_COMMON;
     }
 
-    virtual ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
-        std::vector<std::string>& state, bool& funcResult)
+    virtual bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
+        std::vector<std::string> &state)
     {
-        funcResult = false;
-        return ERR_OK;
+        return false;
     }
 
     virtual ~CommonEventStubTest()
     {}
 
-    virtual ErrCode FinishReceiver(const OHOS::sptr<IRemoteObject>& proxy, int32_t code,
-        const std::string& receiverData, bool abortEvent, bool& funcResult)
+    virtual bool FinishReceiver(const OHOS::sptr<IRemoteObject> &proxy, const int32_t &code,
+        const std::string &receiverData, const bool &abortEvent)
     {
-        funcResult = false;
-        return ERR_OK;
+        return false;
     }
 };
 

@@ -107,7 +107,13 @@
                       "common_event_constant.h",
                       "common_event_death_recipient.h",
                       "common_event_listener.h",
-                      "common_event.h"
+                      "common_event_proxy.h",
+                      "common_event_stub.h",
+                      "common_event.h",
+                      "event_receive_proxy.h",
+                      "event_receive_stub.h",
+                      "icommon_event.h",
+                      "ievent_receive.h"
                     ]
                   },
                   "name":"//base/notification/common_event_service/frameworks/core:cesfwk_core"

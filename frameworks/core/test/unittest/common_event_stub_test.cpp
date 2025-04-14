@@ -15,7 +15,6 @@
 
 #include "common_event.h"
 #include "common_event_death_recipient.h"
-#include "common_event_manager_service.h"
 #include "common_event_stub.h"
 #include "common_event_proxy.h"
 #include "common_event_data.h"
@@ -23,7 +22,6 @@
 #include "event_receive_proxy.h"
 #include "common_event_publish_info.h"
 #include "matching_skills.h"
-#include "mock_common_event_stub.h"
 
 #include "event_log_wrapper.h"
 #include "string_ex.h"
@@ -37,7 +35,6 @@ using namespace OHOS::EventFwk;
 namespace {
     const std::string EVENT = "com.ces.test.event";
     const std::string PERMISSION = "com.ces.test.permission";
-    constexpr int32_t ERR_INVALID_VALUE = 5;
 }
 
 class CommonEventStubTest : public CommonEventSubscriber, public testing::Test {
@@ -137,8 +134,8 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_001, TestSize.Level1)
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    CommonEventStub commonEventStub;
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
 }
 
@@ -151,18 +148,18 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_001, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_002, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_PUBLISH_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
     CommonEventPublishInfo publishInfo;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     dataParcel.WriteParcelable(&event);
     dataParcel.WriteParcelable(&publishInfo);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -175,18 +172,18 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_002, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_003, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_PUBLISH_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
     CommonEventPublishInfo publishInfo;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     dataParcel.WriteBool(true);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, result);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
 }
 
 /*
@@ -198,20 +195,19 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_003, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_004, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::
-        COMMAND_PUBLISH_COMMON_EVENT_IN_COMMONEVENTDATA_IN_COMMONEVENTPUBLISHINFO_IN_UNSIGNED_INT_IN_INT_IN_INT_OUT_BOOLEAN);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT2);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
     CommonEventPublishInfo publishInfo;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     dataParcel.WriteParcelable(&event);
     dataParcel.WriteParcelable(&publishInfo);
     dataParcel.WriteBool(true);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -224,18 +220,17 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_004, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_005, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::
-        COMMAND_PUBLISH_COMMON_EVENT_IN_COMMONEVENTDATA_IN_COMMONEVENTPUBLISHINFO_IN_UNSIGNED_INT_IN_INT_IN_INT_OUT_BOOLEAN);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_PUBLISH_COMMON_EVENT2);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
     CommonEventPublishInfo publishInfo;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, result);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
 }
 
 /*
@@ -247,17 +242,17 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_005, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_006, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_FINISH_RECEIVER);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FINISH_RECEIVER);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     dataParcel.WriteBool(false);
     
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, result);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
 }
 
 /*
@@ -269,17 +264,17 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_006, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_007, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEventPublishInfo publishInfo;
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, result);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
 }
 
 /*
@@ -291,18 +286,18 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_007, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_008, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEventPublishInfo publishInfo;
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     dataParcel.WriteParcelable(&publishInfo);
     dataParcel.WriteBool(true);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, result);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, result);
 }
 
 /*
@@ -314,17 +309,17 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_008, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_009, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_FREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEvent commonEvent;
 
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     reply.WriteBool(false);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -337,16 +332,16 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_009, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_010, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_FREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEvent commonEvent;
 
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -359,19 +354,19 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_010, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_011, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_UNFREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEvent commonEvent;
 
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     int32_t uid = -1;
     bool ret = commonEvent.Unfreeze(uid);
     reply.WriteBool(ret);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -384,16 +379,16 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_011, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_012, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_UNFREEZE);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEvent commonEvent;
 
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -406,18 +401,18 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_012, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_013, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_UNFREEZE_ALL);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE_ALL);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEvent commonEvent;
 
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
     bool ret = commonEvent.UnfreezeAll();
     reply.WriteBool(ret);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -430,17 +425,17 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_013, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_014, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_UNFREEZE_ALL);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNFREEZE_ALL);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEvent commonEvent;
 
     reply.WriteBool(false);
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -453,16 +448,16 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_014, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_015, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_REMOVE_STICKY_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_GET_STICKY_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
 
     reply.WriteBool(false);
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::NO_ERROR, result);
 }
 
@@ -475,16 +470,16 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_015, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_016, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_UNSUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_UNSUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
 
     dataParcel.WriteInterfaceToken(CommonEventStub::GetDescriptor());
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
-    EXPECT_EQ(ERR_INVALID_VALUE, result);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(OHOS::ERR_INVALID_VALUE, result);
 }
 
 /*
@@ -496,17 +491,17 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_016, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_017, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEventPublishInfo publishInfo;
     bool value = true;
     dataParcel.WriteBool(value);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
 }
 
@@ -519,16 +514,16 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_017, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_018, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEventPublishInfo publishInfo;
     dataParcel.WriteRemoteObject(nullptr);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
 }
 
@@ -541,16 +536,16 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_018, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_019, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEventPublishInfo publishInfo;
     dataParcel.WriteRemoteObject(nullptr);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
 }
 
@@ -563,20 +558,19 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_019, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_020, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_SUBSCRIBE_COMMON_EVENT);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_SUBSCRIBE_COMMON_EVENT);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
     CommonEventData event;
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEventPublishInfo publishInfo;
     CommonEventSubscribeInfo subscribeInfo;
     OHOS::sptr<OHOS::IRemoteObject> commonEventListener = new OHOS::MockIRemoteObject();
-    int32_t ret = -1;
-    commonEventManagerService.SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, ret);
+    int32_t ret = commonEventStub.SubscribeCommonEvent(subscribeInfo, commonEventListener);
     reply.WriteInt32(ret);
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_EQ(OHOS::ERR_TRANSACTION_FAILED, result);
 }
 
@@ -589,16 +583,16 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_020, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, OnRemoteRequest_021, TestSize.Level1)
 {
-    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_FINISH_RECEIVER);
+    const uint32_t code = static_cast<uint32_t>(CommonEventInterfaceCode::CES_FINISH_RECEIVER);
     OHOS::MessageParcel dataParcel;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
 
-    CommonEventManagerService commonEventManagerService;
+    CommonEventStub commonEventStub;
     CommonEventPublishInfo publishInfo;
     OHOS::sptr<OHOS::IRemoteObject> proxy = new OHOS::MockIRemoteObject();
     proxy = nullptr;
-    int result = commonEventManagerService.OnRemoteRequest(code, dataParcel, reply, option);
+    int result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     EXPECT_NE(OHOS::ERR_INVALID_VALUE, result);
 }
 
@@ -611,10 +605,9 @@ HWTEST_F(CommonEventStubTest, OnRemoteRequest_021, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, RemoveStickyCommonEvent_0001, TestSize.Level1)
 {
-    MockCommonEventStub commonEventStub;
+    CommonEventStub commonEventStub;
     std::string event = "this is event";
-    int32_t result = -1;
-    commonEventStub.RemoveStickyCommonEvent(event, result);
+    int32_t result = commonEventStub.RemoveStickyCommonEvent(event);
     EXPECT_EQ(result, OHOS::ERR_OK);
 }
 
@@ -627,9 +620,8 @@ HWTEST_F(CommonEventStubTest, RemoveStickyCommonEvent_0001, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, SetStaticSubscriberState_001, TestSize.Level1)
 {
-    MockCommonEventStub commonEventStub;
-    int32_t result = -1;
-    commonEventStub.SetStaticSubscriberState(true, result);
+    CommonEventStub commonEventStub;
+    int32_t result = commonEventStub.SetStaticSubscriberState(true);
     EXPECT_EQ(result, OHOS::ERR_OK);
 }
 
@@ -641,11 +633,9 @@ HWTEST_F(CommonEventStubTest, SetStaticSubscriberState_001, TestSize.Level1)
  */
 HWTEST_F(CommonEventStubTest, SetStaticSubscriberStateWithTwoParameters_0100, TestSize.Level1)
 {
-    MockCommonEventStub commonEventStub;
+    CommonEventStub commonEventStub;
     std::vector<std::string> events;
     events.push_back("StaticCommonEventA");
-    int32_t result = -1;
-    commonEventStub.SetStaticSubscriberStateByEvents(events, true, result);
+    int32_t result = commonEventStub.SetStaticSubscriberState(events, true);
     EXPECT_EQ(result, OHOS::ERR_OK);
 }
- 
