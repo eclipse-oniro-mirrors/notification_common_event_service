@@ -33,6 +33,7 @@
 #include "want.h"
 #include <fstream>
 #include "securec.h"
+#include <cinttypes>
 #ifdef CONFIG_POLICY_ENABLE
 #include "config_policy_utils.h"
 #endif
@@ -348,7 +349,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 
     now = SystemTime::GetNowSysTime();
     EVENT_LOGI("SubscribeCommonEvent %{public}s(userId = %{public}d, subId = %{public}s, "
-        "ffrtCost %{public}lld ms, taskCost %{public}lld ms", bundleName.c_str(), userId, subId.c_str(),
+        "ffrtCost %{public}" PRId64 " ms, taskCost %{public}" PRId64 " ms", bundleName.c_str(), userId, subId.c_str(),
         taskStartTime - startTime, now - taskStartTime);
     PublishStickyEvent(sp, record);
     return true;
