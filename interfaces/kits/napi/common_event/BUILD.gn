@@ -48,8 +48,6 @@ ohos_shared_library("commonevent") {
 
   include_dirs = [
     "${interfaces_path}/kits/napi/common_event/include",
-    "//third_party/node/src",
-    "//third_party/libuv/include",
     "${interfaces_path}/kits/napi/support/include",
   ]
 
@@ -71,7 +69,9 @@ ohos_shared_library("commonevent") {
     "ability_runtime:napi_common",
     "c_utils:utils",
     "hilog:libhilog",
+    "libuv:uv",
     "napi:ace_napi",
+    "node:node_header_notice",
   ]
 
   relative_install_dir = "module"

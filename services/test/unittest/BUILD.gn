@@ -43,7 +43,6 @@ ohos_unittest("common_event_publish_system_event_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -54,6 +53,7 @@ ohos_unittest("common_event_publish_system_event_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -75,7 +75,6 @@ ohos_unittest("common_event_dump_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -86,6 +85,7 @@ ohos_unittest("common_event_dump_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -107,7 +107,6 @@ ohos_unittest("common_event_freeze_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -118,6 +117,7 @@ ohos_unittest("common_event_freeze_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -139,7 +139,6 @@ ohos_unittest("common_event_freeze_unit_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -150,6 +149,7 @@ ohos_unittest("common_event_freeze_unit_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -175,13 +175,13 @@ ohos_unittest("ability_manager_death_recipient_unit_test") {
   deps = [
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
     "ability_runtime:ability_manager",
     "c_utils:utils",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -211,6 +211,7 @@ ohos_unittest("bundle_manager_death_recipient_unit_test") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -223,7 +224,6 @@ ohos_unittest("static_subscriber_manager_unit_test") {
   include_dirs = [
     "${ces_innerkits_path}",
     "${services_path}/include",
-    "//third_party/json/include",
   ]
 
   sources = [
@@ -242,7 +242,6 @@ ohos_unittest("static_subscriber_manager_unit_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -254,11 +253,13 @@ ohos_unittest("static_subscriber_manager_unit_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hitrace:hitrace_meter",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "kv_store:distributeddata_inner",
   ]
 }
@@ -269,7 +270,6 @@ ohos_unittest("static_subscriber_data_manager_unit_test") {
   include_dirs = [
     "${ces_innerkits_path}",
     "${services_path}/include",
-    "//third_party/json/include/nlohmann",
   ]
 
   sources = [
@@ -277,13 +277,12 @@ ohos_unittest("static_subscriber_data_manager_unit_test") {
     "static_subscriber_data_manager_unit_test/static_subscriber_data_manager_unit_test.cpp",
   ]
 
-  deps = [
-    "${ces_native_path}:cesfwk_innerkits",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
   external_deps = [
+    "googletest:gtest_main",
     "hilog:libhilog",
+    "json:nlohmann_json_static",
     "kv_store:distributeddata_inner",
   ]
 }
@@ -307,7 +306,6 @@ ohos_unittest("static_subscriber_connection_unit_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -315,6 +313,7 @@ ohos_unittest("static_subscriber_connection_unit_test") {
     "ability_runtime:ability_manager",
     "c_utils:utils",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -336,7 +335,6 @@ ohos_unittest("common_event_sticky_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -347,6 +345,7 @@ ohos_unittest("common_event_sticky_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -370,7 +369,6 @@ ohos_unittest("common_event_subscribe_unit_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -382,6 +380,7 @@ ohos_unittest("common_event_subscribe_unit_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -403,7 +402,6 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -414,6 +412,7 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -435,7 +434,6 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -446,6 +444,7 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -467,7 +466,6 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -478,6 +476,7 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -491,13 +490,11 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
 
   configs = [ ":cesfwk_services_config" ]
 
-  deps = [
-    "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${services_path}:cesfwk_services_static" ]
 
   external_deps = [
     "c_utils:utils",
+    "googletest:gtest_main",
     "hilog:libhilog",
   ]
 }
@@ -509,13 +506,11 @@ ohos_unittest("common_event_hisysevent_test") {
 
   configs = [ ":cesfwk_services_config" ]
 
-  deps = [
-    "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${services_path}:cesfwk_services_static" ]
 
   external_deps = [
     "c_utils:utils",
+    "googletest:gtest_main",
     "hilog:libhilog",
   ]
 }
@@ -530,16 +525,14 @@ ohos_unittest("common_event_access_token_helper_test") {
 
   configs = [ ":cesfwk_services_config" ]
 
-  deps = [
-    "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${services_path}:cesfwk_services_static" ]
 
   external_deps = [
     "ability_runtime:abilitykit_native",
     "access_token:libaccesstoken_sdk",
     "access_token:libtokenid_sdk",
     "c_utils:utils",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
   ]
@@ -560,7 +553,6 @@ ohos_unittest("common_event_manager_service_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -571,6 +563,7 @@ ohos_unittest("common_event_manager_service_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -600,7 +593,6 @@ ohos_unittest("common_event_manager_service_ability_test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -610,6 +602,7 @@ ohos_unittest("common_event_manager_service_ability_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -635,8 +628,6 @@ ohos_unittest("bundle_manager_helper_other_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -647,6 +638,8 @@ ohos_unittest("bundle_manager_helper_other_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -672,8 +665,6 @@ ohos_unittest("bundle_manager_helper_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -684,6 +675,8 @@ ohos_unittest("bundle_manager_helper_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -706,7 +699,6 @@ ohos_unittest("common_event_manager_service_branch_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -721,6 +713,7 @@ ohos_unittest("common_event_manager_service_branch_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -743,7 +736,6 @@ ohos_unittest("common_event_manager_service_new_branch_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -758,6 +750,7 @@ ohos_unittest("common_event_manager_service_new_branch_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -785,8 +778,6 @@ ohos_unittest("common_event_control_manager_branch_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -800,6 +791,8 @@ ohos_unittest("common_event_control_manager_branch_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -822,7 +815,6 @@ ohos_unittest("common_event_control_manager_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -835,6 +827,7 @@ ohos_unittest("common_event_control_manager_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -853,7 +846,6 @@ ohos_unittest("common_event_subscriber_manager_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -864,6 +856,7 @@ ohos_unittest("common_event_subscriber_manager_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
@@ -883,7 +876,6 @@ ohos_unittest("inner_common_event_manager_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -894,6 +886,7 @@ ohos_unittest("inner_common_event_manager_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -918,8 +911,6 @@ ohos_unittest("ability_manager_helper_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -930,6 +921,8 @@ ohos_unittest("ability_manager_helper_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -949,7 +942,6 @@ ohos_unittest("ordered_event_handler_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -960,6 +952,7 @@ ohos_unittest("ordered_event_handler_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -978,7 +971,6 @@ ohos_unittest("subscriber_deach_recipient_test") {
     "${ces_extension_path}:static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -989,6 +981,7 @@ ohos_unittest("subscriber_deach_recipient_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",

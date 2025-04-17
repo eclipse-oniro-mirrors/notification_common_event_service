@@ -26,7 +26,6 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
   include_dirs = [
     "${services_path}/include",
     "${ability_runtime_services_path}/abilitymgr/include/",
-    "${ffrt_path}/interfaces/kits",
   ]
 
   cflags = []
@@ -38,11 +37,11 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
     "ability_base:want",
+    "ability_runtime:napi_common",
     "access_token:libaccesstoken_sdk",
     "c_utils:utils",
     "eventhandler:libeventhandler",
@@ -52,6 +51,8 @@ ohos_systemtest("CESPublishOrderedEventSystmTest") {
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
+
+  public_external_deps = [ "googletest:gtest_main" ]
 }
 
 group("systemtest_cesOrdered") {

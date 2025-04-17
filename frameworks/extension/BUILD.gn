@@ -80,10 +80,7 @@ ohos_shared_library("static_subscriber_extension") {
   }
   branch_protector_ret = "pac_ret"
 
-  include_dirs = [
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
-  ]
+  include_dirs = []
 
   sources = [
     "${ces_extension_path}/src/js_static_subscriber_extension.cpp",
@@ -139,13 +136,7 @@ ohos_shared_library("static_subscriber_extension_module") {
   }
   branch_protector_ret = "pac_ret"
 
-  include_dirs = [
-    "${ability_runtime_path}/interfaces/kits/native/ability/native",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
-    "${ability_runtime_services_path}/common/include",
-    "${ces_core_path}/include",
-  ]
+  include_dirs = [ "${ces_core_path}/include" ]
 
   sources = [ "${ces_extension_path}/src/loader/static_subscriber_extension_module_loader.cpp" ]
 
