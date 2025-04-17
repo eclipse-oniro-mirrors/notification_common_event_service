@@ -49,8 +49,6 @@ ohos_unittest("common_event_command_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -59,6 +57,11 @@ ohos_unittest("common_event_command_test") {
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "ipc:ipc_core",
+  ]
+
+  public_external_deps = [
+    "googletest:gmock_main",
+    "googletest:gtest_main",
   ]
 }
 
@@ -100,6 +103,11 @@ ohos_unittest("common_event_command_dump_test") {
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
+
+  public_external_deps = [
+    "googletest:gmock_main",
+    "googletest:gtest_main",
+  ]
 }
 
 ohos_unittest("common_event_command_publish_test") {
@@ -127,8 +135,6 @@ ohos_unittest("common_event_command_publish_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -139,6 +145,11 @@ ohos_unittest("common_event_command_publish_test") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
+  ]
+
+  public_external_deps = [
+    "googletest:gmock_main",
+    "googletest:gtest_main",
   ]
 }
 

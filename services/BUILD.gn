@@ -17,10 +17,7 @@ import("//build/ohos.gni")
 config("ces_services_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [
-    "${ces_services_path}/include",
-    "${ffrt_path}/interfaces/kits",
-  ]
+  include_dirs = [ "${ces_services_path}/include" ]
 
   cflags = [
     "-fvisibility=hidden",
@@ -45,10 +42,7 @@ config("ces_services_public_config") {
 
   cflags = []
 
-  include_dirs = [
-    "${ces_services_path}/include",
-    "${ffrt_path}/interfaces/kits",
-  ]
+  include_dirs = [ "${ces_services_path}/include" ]
 
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
@@ -203,6 +197,8 @@ ohos_static_library("cesfwk_services_static") {
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
   ]
+
+  public_external_deps = [ "ffrt:libffrt" ]
 
   if (has_os_account_part) {
     cflags_cc += [ "-DHAS_OS_ACCOUNT_PART" ]

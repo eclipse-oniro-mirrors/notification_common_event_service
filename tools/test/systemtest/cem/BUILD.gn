@@ -35,7 +35,6 @@ ohos_systemtest("common_event_command_dump_system_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -46,6 +45,8 @@ ohos_systemtest("common_event_command_dump_system_test") {
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
+
+  public_external_deps = [ "googletest:gtest_main" ]
 }
 
 ohos_systemtest("common_event_command_publish_system_test") {

@@ -24,7 +24,6 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "${ces_core_path}/include",
     "${ces_innerkits_path}",
     "${services_path}/include",
-    "${ffrt_path}/interfaces/kits",
   ]
 
   sources = [
@@ -38,7 +37,6 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/benchmark:benchmark",
   ]
 
   external_deps = [
@@ -54,6 +52,9 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "ipc:ipc_core",
     "ipc:libdbinder",
   ]
+
+  public_external_deps = [ "benchmark:benchmark" ]
+
   subsystem_name = "notification"
   part_name = "common_event_service"
 }

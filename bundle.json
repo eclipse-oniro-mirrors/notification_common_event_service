@@ -74,10 +74,13 @@
                 "c_utils",
                 "ffrt",
                 "kv_store",
-                "config_policy"
+                "config_policy",
+                "libuv",
+                "node"
             ],
             "third_party": [
-                "libuv"
+                "libuv",
+                "node"
             ]
         },
         "build": {

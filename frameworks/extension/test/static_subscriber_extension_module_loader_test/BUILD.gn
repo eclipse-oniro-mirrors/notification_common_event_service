@@ -20,10 +20,6 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
   module_out_path = module_output_path
 
   include_dirs = [
-    "${ability_runtime_path}/interfaces/kits/native/ability/native",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
-    "${ability_runtime_services_path}/common/include",
     "${ces_extension_path}/include/loader",
     "${ces_core_path}/include",
   ]
@@ -35,11 +31,7 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
 
   configs = []
 
-  deps = [
-    "${ces_extension_path}:static_subscriber_extension",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${ces_extension_path}:static_subscriber_extension" ]
 
   external_deps = [
     "ability_base:configuration",
@@ -54,6 +46,11 @@ ohos_unittest("static_subscriber_extension_module_loader_test") {
     "hilog:libhilog",
     "ipc:ipc_core",
     "napi:ace_napi",
+  ]
+
+  public_external_deps = [
+    "googletest:gmock_main",
+    "googletest:gtest_main",
   ]
 }
 

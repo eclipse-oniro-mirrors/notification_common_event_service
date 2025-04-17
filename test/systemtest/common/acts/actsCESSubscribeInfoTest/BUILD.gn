@@ -24,10 +24,8 @@ ohos_systemtest("ActsCESSubscribeInfoTest") {
 
   configs = [ "${common_event_service_path}/test/systemtest/common/ces:cesfwk_kits_test_config" ]
 
-  include_dirs = [
-    "${common_event_service_path}/test/systemtest/common/resource",
-    "//third_party/json/single_include",
-  ]
+  include_dirs =
+      [ "${common_event_service_path}/test/systemtest/common/resource" ]
 
   cflags = []
 
@@ -35,10 +33,7 @@ ohos_systemtest("ActsCESSubscribeInfoTest") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
 
-  deps = [
-    "${ces_native_path}:cesfwk_innerkits",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
   external_deps = [
     "ability_base:want",
@@ -46,7 +41,10 @@ ohos_systemtest("ActsCESSubscribeInfoTest") {
     "c_utils:utils",
     "hilog:libhilog",
     "init:libbegetutil",
+    "json:nlohmann_json_static",
   ]
+
+  public_external_deps = [ "googletest:gtest_main" ]
 }
 
 group("actsCESTest") {

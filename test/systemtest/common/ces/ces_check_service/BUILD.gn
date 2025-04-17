@@ -35,7 +35,6 @@ ohos_systemtest("cesCheckService") {
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
@@ -51,6 +50,8 @@ ohos_systemtest("cesCheckService") {
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
+
+  public_external_deps = [ "googletest:gtest_main" ]
 }
 
 group("systemtest_cesTest") {
