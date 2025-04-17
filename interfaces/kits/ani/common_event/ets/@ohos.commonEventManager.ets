@@ -72,14 +72,13 @@ namespace commonEventManager {
 
     export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber> {
         hilog.info(0x0000, TAG, 'createSubscriber Promise call');
-        let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
-            reject: (error: Object) => void) => {
+        let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
             p1.then((e :NullishType)=>{
                 hilog.info(0x0000, TAG, 'createSubscriber Promise result.');
                 let result: CommonEventSubscriber  = e as CommonEventSubscriber;
                 resolve(result);
-            }, (err:Object): void => {
+            }, (err: Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
             });
         });
