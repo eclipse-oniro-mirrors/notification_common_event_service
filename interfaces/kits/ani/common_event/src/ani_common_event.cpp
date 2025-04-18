@@ -81,7 +81,7 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
         return nullptr;
     }
     ani_method ctor;
-    ret = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    ret = env->Class_FindMethod(cls, "<ctor>", "J:V", &ctor);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Class_FindMethod error. result: %{public}d.", ret);
         delete wrapper;
@@ -89,7 +89,7 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
         return nullptr;
     }
     ani_object subscriberObj;
-    ret = env->Object_New(cls, ctor, &subscriberObj);
+    ret = env->Object_New(cls, ctor, &subscriberObj, reinterpret_cast<ani_long>(wrapper));
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Object_New error. result: %{public}d.", ret);
         delete wrapper;
@@ -97,33 +97,8 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
         return nullptr;
     }
 
-    ani_method wrapperField;
-    ret = env->Class_FindMethod(cls, "<set>subscriberInstanceWrapper", nullptr, &wrapperField);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("createSubscriberExecute Class_FindField error. result: %{public}d.", ret);
-        delete wrapper;
-        wrapper = nullptr;
-        return nullptr;
-    }
-
-    ret = env->Object_CallMethod_Void(subscriberObj, wrapperField, reinterpret_cast<ani_long>(wrapper));
-    if (ret != ANI_OK) {
-        EVENT_LOGE("createSubscriberExecute Object_SetField_Long error. result: %{public}d.", ret);
-        delete wrapper;
-        wrapper = nullptr;
-        return nullptr;
-    }
-
-    ani_ref resultRef = nullptr;
-    ret = env->GlobalReference_Create(subscriberObj, &resultRef);
-    if (ret != ANI_OK) {
-        EVENT_LOGE("createSubscriberExecute GlobalReference_Create error. result: %{public}d.", ret);
-        delete wrapper;
-        wrapper = nullptr;
-        return nullptr;
-    }
     EVENT_LOGI("createSubscriberExecute end.");
-    return resultRef;
+    return subscriberObj;
 }
 
 static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object callback)
@@ -230,6 +205,9 @@ SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo& sp) : Com
 SubscriberInstance::~SubscriberInstance()
 {
     EVENT_LOGI("destroy SubscriberInstance");
+    if (env_ != nullptr && callback_ != nullptr) {
+        env_->GlobalReference_Delete(callback_);
+    }
 }
 
 void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
@@ -335,6 +313,15 @@ std::shared_ptr<SubscriberInstance> SubscriberInstanceWrapper::GetSubscriber()
     return subscriber;
 }
 
+static void clean([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object object)
+{
+    ani_long ptr;
+    if (ANI_OK != env->Object_GetFieldByName_Long(object, "ptr", &ptr)) {
+        return;
+    }
+    delete reinterpret_cast<SubscriberInstanceWrapper *>(ptr);
+}
+
 extern "C" {
 ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
 {
@@ -372,6 +359,20 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
     status = env->Namespace_BindNativeFunctions(kitNs, methods.data(), methods.size());
     if (status != ANI_OK) {
         EVENT_LOGE("Cannot bind native methods to L@ohos/event/common_event_manager/commonEventManager");
+        return ANI_INVALID_TYPE;
+    }
+
+    ani_class cls;
+    status = env->FindClass("LcommonEvent/commonEventSubscriber/Cleaner;", &cls);
+    if (status != ANI_OK) {
+        EVENT_LOGE("Not found LcommonEvent/commonEventSubscriber/Cleaner");
+        return ANI_INVALID_ARGS;
+    }
+    std::array cleanMethod = {
+        ani_native_function{"clean", nullptr, reinterpret_cast<void *>(OHOS::EventManagerFwkAni::clean)}};
+    status = env->Class_BindNativeMethods(cls, cleanMethod.data(), cleanMethod.size());
+    if (status != ANI_OK) {
+        EVENT_LOGE("Cannot bind native methods to LcommonEvent/commonEventSubscriber/Cleaner");
         return ANI_INVALID_TYPE;
     }
 

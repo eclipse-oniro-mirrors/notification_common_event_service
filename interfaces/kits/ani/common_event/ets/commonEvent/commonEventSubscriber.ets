@@ -13,14 +13,44 @@
  * limitations under the License.
  */
 
+class Cleaner {
+    private ptr: long = 0 
+
+    constructor(ptr:long) {
+        this.ptr = ptr
+    }
+    native clean(): void
+}
+
+function callback(cleaner: Cleaner): void {
+    cleaner.clean()
+}
+let destroyRegister = new FinalizationRegistry<Cleaner>(callback)
+let unregisterToken = new object()
+
 export interface CommonEventSubscriber {
-    subscriberInstanceWrapper : long;
     getCodeSync(): number;
 }
 
 class CommonEventSubscriberInner implements CommonEventSubscriber {
-    public native subscriberInstanceWrapper : long = 0;
+    static {loadLibrary("ani_commoneventmanager.z")}
+    private subscriberInstanceWrapper: long = 0;
+    
     public getCodeSync(): number {
         return 2;
+    }
+
+    private cleaner: Cleaner | null = null;
+    
+    constructor(wrapper:long) {
+        if(this.subscriberInstanceWrapper == 0){
+            this.subscriberInstanceWrapper = wrapper;
+        }
+        this.registerCleaner(this.subscriberInstanceWrapper)
+    }
+
+    registerCleaner(ptr: long): void {
+        this.cleaner = new Cleaner(ptr)
+        destroyRegister.register(this, this.cleaner!, unregisterToken);
     }
 }
