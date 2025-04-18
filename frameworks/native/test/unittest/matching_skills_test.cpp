@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -521,4 +521,70 @@ HWTEST_F(MatchingSkillsTest, AsyncCommonEventResult_007, TestSize.Level1)
     EXPECT_EQ(asyncCommonEventResult.CheckSynchronous(), false);
     bool result = asyncCommonEventResult.FinishCommonEvent();
     EXPECT_EQ(result, false);
+}
+
+/**
+* @tc.name  : toString_ShouldReturnCorrectString_WhenEventsIsNotEmpty
+* @tc.number: MatchingSkillsTest_001
+* @tc.desc  : Test when events_ is not empty, ToString should return correct string
+*/
+HWTEST_F(MatchingSkillsTest, toString_ShouldReturnCorrectString_WhenEventsIsNotEmpty, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.events_ = {"event1", "event2"};
+    std::string expected = " Events: event1,event2";
+    EXPECT_EQ(matchingSkills.ToString(), expected);
+}
+
+/**
+* @tc.name  : toString_ShouldReturnCorrectString_WhenSchemesIsNotEmpty
+* @tc.number: MatchingSkillsTest_002
+* @tc.desc  : Test when schemes_ is not empty, ToString should return correct string
+*/
+HWTEST_F(MatchingSkillsTest, toString_ShouldReturnCorrectString_WhenSchemesIsNotEmpty, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.schemes_ = {"scheme1", "scheme2"};
+    std::string expected = " Schemes: scheme1,scheme2";
+    EXPECT_EQ(matchingSkills.ToString(), expected);
+}
+
+/**
+* @tc.name  : toString_ShouldReturnCorrectString_WhenEntitiesIsNotEmpty
+* @tc.number: MatchingSkillsTest_003
+* @tc.desc  : Test when entities_ is not empty, ToString should return correct string
+*/
+HWTEST_F(MatchingSkillsTest, toString_ShouldReturnCorrectString_WhenEntitiesIsNotEmpty, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.entities_ = {"entity1", "entity2"};
+    std::string expected = " Entrities: entity1,entity2";
+    EXPECT_EQ(matchingSkills.ToString(), expected);
+}
+
+/**
+* @tc.name  : toString_ShouldReturnCorrectString_WhenAllFieldsAreNotEmpty
+* @tc.number: MatchingSkillsTest_004
+* @tc.desc  : Test when all fields are not empty, ToString should return correct string
+*/
+HWTEST_F(MatchingSkillsTest, toString_ShouldReturnCorrectString_WhenAllFieldsAreNotEmpty, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.events_ = {"event1", "event2"};
+    matchingSkills.schemes_ = {"scheme1", "scheme2"};
+    matchingSkills.entities_ = {"entity1", "entity2"};
+    std::string expected = " Events: event1,event2 Schemes: scheme1,scheme2 Entrities: entity1,entity2";
+    EXPECT_EQ(matchingSkills.ToString(), expected);
+}
+
+/**
+* @tc.name  : toString_ShouldReturnCorrectString_WhenAllFieldsAreEmpty
+* @tc.number: MatchingSkillsTest_005
+* @tc.desc  : Test when all fields are empty, ToString should return correct string
+*/
+HWTEST_F(MatchingSkillsTest, toString_ShouldReturnCorrectString_WhenAllFieldsAreEmpty, TestSize.Level1)
+{
+    MatchingSkills matchingSkills;
+    std::string expected = "";
+    EXPECT_EQ(matchingSkills.ToString(), expected);
 }

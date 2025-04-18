@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -405,6 +405,10 @@ uint8_t CommonEvent::CreateCommonEventListener(
     } else {
         if (eventListeners_.size() == SUBSCRIBER_MAX_SIZE) {
             EVENT_LOGE("the maximum number of subscriptions has been reached");
+            for (auto listenerItem : eventListeners_) {
+                std::string matchingSkills = listenerItem.first->GetSubscribeInfo().GetMatchingSkills().ToString();
+                EVENT_LOGE("Each subscription matchingSkills is %{public}s", matchingSkills.c_str());
+            }
             return SUBSCRIBE_FAILED;
         }
 

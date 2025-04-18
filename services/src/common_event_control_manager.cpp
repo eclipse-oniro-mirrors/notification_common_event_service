@@ -173,8 +173,7 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         EVENT_LOGE("commonEventData == nullptr");
         return false;
     }
-    EVENT_LOGI("Send common event %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) "
-                "when unfreezed",
+    EVENT_LOGI("Send %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) when unfreezed",
         eventRecord.commonEventData->GetWant().GetAction().c_str(),
         subscriberRecord.eventRecordInfo.bundleName.c_str(),
         subscriberRecord.eventRecordInfo.pid,

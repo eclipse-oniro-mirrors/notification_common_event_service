@@ -47,13 +47,9 @@ FuncSubscriber SubscribeScreenEventToBlackListAppFlag =
 
 CommonEventSubscriberManager::CommonEventSubscriberManager()
     : death_(sptr<IRemoteObject::DeathRecipient>(new (std::nothrow) SubscriberDeathRecipient()))
-{
-}
+{}
 
-CommonEventSubscriberManager::~CommonEventSubscriberManager()
-{
-    EVENT_LOGI("~CommonEventSubscriberManager");
-}
+CommonEventSubscriberManager::~CommonEventSubscriberManager() {}
 
 std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubscriber(
     const SubscribeInfoPtr &eventSubscribeInfo, const sptr<IRemoteObject> &commonEventListener,
@@ -102,12 +98,8 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
             bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(event);
             if (!isSystemEvent && eventSubscribeInfo->GetPermission().empty() &&
                 eventSubscribeInfo->GetPublisherBundleName().empty() && eventSubscribeInfo->GetPublisherUid() == 0) {
-                EVENT_LOGW("Subscribe size = %{public}zu, %{public}s without any restrict subid = %{public}s, bundle = "
-                           "%{public}s",
-                    events.size(),
-                    event.c_str(),
-                    eventRecordInfo.subId.c_str(),
-                    eventRecordInfo.bundleName.c_str());
+                EVENT_LOGW("Subscribe %{public}s without any restrict subid = %{public}s, bundle = %{public}s",
+                    event.c_str(), eventRecordInfo.subId.c_str(), eventRecordInfo.bundleName.c_str());
             }
         }
     }
@@ -297,13 +289,9 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
 
         AAFwk::ExitReason reason = { AAFwk::REASON_RESOURCE_CONTROL, "Kill Reason: CES Register exceed limit"};
         AAFwk::AbilityManagerClient::GetInstance()->RecordProcessExitReason(killedPid, reason);
-
-        if (kill(killedPid, SIGNAL_KILL) < 0) {
-            EVENT_LOGE("kill pid=%{public}d which has the most subscribers failed", killedPid);
-        } else {
-            EVENT_LOGI("kill pid=%{public}d which has the most subscribers successfully", killedPid);
-        }
-        
+        int killResult = kill(killedPid, SIGNAL_KILL);
+        EVENT_LOGI("kill pid=%{public}d which has the most subscribers %{public}s", killedPid,
+            killResult < 0 ? "failed" : "successfully");
         int result = HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::FRAMEWORK, "PROCESS_KILL",
             HiviewDFX::HiSysEvent::EventType::FAULT, "PID", killedPid, "PROCESS_NAME",
             record->eventRecordInfo.bundleName, "MSG", CES_REGISTER_EXCEED_LIMIT);
@@ -318,6 +306,8 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
             infoItem->second.insert(record);
 
             if (infoItem->second.size() > MAX_SUBSCRIBER_NUM_PER_EVENT && record->eventSubscribeInfo != nullptr) {
+                EVENT_LOGW("%{public}s event has %{public}zu subscriber, please check", event.c_str(),
+                    infoItem->second.size());
                 SendSubscriberExceedMaximumHiSysEvent(record->eventSubscribeInfo->GetUserId(), event,
                     infoItem->second.size());
             }
@@ -353,7 +343,7 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
             RemoveFrozenEventsBySubscriber((*it));
             RemoveFrozenEventsMapBySubscriber((*it));
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
-            EVENT_LOGI("Unsubscribe subId = %{public}s", (*it)->eventRecordInfo.subId.c_str());
+            EVENT_LOGI("Unsubscribe %{public}s", (*it)->eventRecordInfo.subId.c_str());
             pid_t pid = (*it)->eventRecordInfo.pid;
             subscriberCounts_[pid] > 1 ? subscriberCounts_[pid]-- : subscriberCounts_.erase(pid);
             subscribers_.erase(it);

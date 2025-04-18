@@ -231,7 +231,7 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
         }
 #else
         PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
-        EVENT_LOGI("Notify %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
+        EVENT_LOGI("ConnectAbility %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
                    subscriber.bundleName.c_str());
 #endif
     }
@@ -246,7 +246,7 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             for (auto subscriber : bootStartHaps) {
                 StaticSubscriberManager::GetInstance()->PublishCommonEventConnecAbility(data, service,
                     subscriber.userId, subscriber.bundleName, subscriber.name);
-                EVENT_LOGI("Notify %{public}s end,send StaticSubscriber = %{public}s",
+                EVENT_LOGI("ConnectAbility %{public}s end,send StaticSubscriber = %{public}s",
                     data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
             }
         };
