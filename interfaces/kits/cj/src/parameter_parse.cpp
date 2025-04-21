@@ -446,12 +446,12 @@ namespace OHOS::CommonEventManager {
         std::map<std::string, sptr<OHOS::AAFwk::IInterface>> paramsMap = wantP.GetParams();
         int count = 0;
         auto size = static_cast<int64_t>(paramsMap.size());
-        LOGD("paramsMap size = %{public}" PRId64, size);
         if (size == 0) {
             return;
         }
         cData.parameters.head = static_cast<CParameters *>(malloc(sizeof(CParameters) * size));
         if (cData.parameters.head == nullptr) {
+            code = ERR_NO_MEMORY;
             return;
         }
         cData.parameters.size = size;
