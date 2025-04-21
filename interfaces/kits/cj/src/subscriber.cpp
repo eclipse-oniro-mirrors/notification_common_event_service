@@ -69,7 +69,7 @@ namespace OHOS::CommonEventManager {
             SetPublishResult(this);
         }
         LOGI("Subscribe callback start to run.")
-        CCommonEventData cData;
+        CCommonEventData cData = {};
         int32_t code = GetCommonEventData(data, cData);
         if (code == ERR_NO_MEMORY || code == ERR_CES_FAILED) {
             LOGE("Failed to excute callback: out of memory.");
