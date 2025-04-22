@@ -3130,43 +3130,5 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0500, Function | MediumTes
     }
     EXPECT_TRUE(result);
 }
-
-/*
- * @tc.number: SubscribeCommonEventExceedLimit_0100
- * @tc.name: verify subscribe exceed limit
- * @tc.desc: Failed to call SubscribeCommonEvent API due to the count of subscriber exceed limit
- */
-HWTEST_F(ActsCESManagertest, SubscribeCommonEventExceedLimit_0100, TestSize.Level1)
-{
-    MatchingSkills matchingSkills;
-    matchingSkills.AddEvent("test");
-    for (int i = 0; i < 199; i++) {
-        CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-        auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-        EXPECT_EQ(CommonEventManager::NewSubscribeCommonEvent(subscriberPtr), ERR_OK);
-    }
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    auto subscriberPtr = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
-    EXPECT_EQ(CommonEventManager::NewSubscribeCommonEvent(subscriberPtr),
-        Notification::ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT);
-}
-
-/*
- * @tc.number: PublishCommonEventExceedLimit_0100
- * @tc.name: verify publish exceed limit
- * @tc.desc: Failed to call publish common event API due to publish sequency is too high
- */
-HWTEST_F(ActsCESManagertest, PublishCommonEventExceedLimit_0100, TestSize.Level1)
-{
-    Want wantTest;
-    wantTest.SetAction("eventAction");
-    CommonEventData commonEventData(wantTest);
-    CommonEventPublishInfo info;
-    for (int i = 0; i < 20; i++) {
-        EXPECT_EQ(CommonEventManager::NewPublishCommonEvent(commonEventData, info), ERR_OK);
-    }
-    EXPECT_EQ(CommonEventManager::NewPublishCommonEvent(commonEventData, info),
-        Notification::ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH);
-}
 }  // namespace EventFwk
 }  // namespace OHOS

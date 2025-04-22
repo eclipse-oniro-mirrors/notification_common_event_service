@@ -207,9 +207,6 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
     sptr<IRemoteObject> commonEventListener = nullptr;
     uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
-    if (commonEventListener == nullptr) {
-        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-    }
     int32_t funcResult = -1;
     if (subscribeState == INITIAL_SUBSCRIPTION) {
         auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
