@@ -111,7 +111,7 @@ static void OnReceiveWithoutData(const CommonEvent_RcvData* data)
  * @tc.desc: Test create and set empty subscribeInfo.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0100, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0100, Function | MediumTest | Level0)
 {
     const char* events[] = {};
     auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, 0);
@@ -131,7 +131,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0100, Function | MediumTest | 
  * @tc.desc: Test create and set subscribeInfo.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0200, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0200, Function | MediumTest | Level0)
 {
     const char* events[] = { EVENT, EVENT2 };
     auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
@@ -161,7 +161,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0200, Function | MediumTest | 
  * @tc.desc: Test create subscriber.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0300, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0300, Function | MediumTest | Level0)
 {
     auto subscriber = OH_CommonEvent_CreateSubscriber(nullptr, OnReceive);
     ASSERT_EQ(subscriber, nullptr);
@@ -181,7 +181,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0300, Function | MediumTest | 
  * @tc.desc: Test subscribe and unsubscribe event.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0400, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0400, Function | MediumTest | Level0)
 {
     int32_t ret = OH_CommonEvent_Subscribe(nullptr);
     ASSERT_EQ(ret, COMMONEVENT_ERR_INVALID_PARAMETER);
@@ -206,7 +206,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0400, Function | MediumTest | 
  * @tc.desc: Test create and set publishInfo.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0500, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0500, Function | MediumTest | Level0)
 {
     auto publishInfo = OH_CommonEvent_CreatePublishInfo(true);
     ASSERT_NE(publishInfo, nullptr);
@@ -249,7 +249,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0500, Function | MediumTest | 
  * @tc.desc: Test create empty publishInfo.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0600, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0600, Function | MediumTest | Level0)
 {
     CommonEvent_PublishInfo* publishInfo = nullptr;
     CommonEvent_Parameters* param = nullptr;
@@ -276,7 +276,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0600, Function | MediumTest | 
  * @tc.desc: Test create and set int parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0700, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0700, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -311,7 +311,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0700, Function | MediumTest | 
  * @tc.desc: Test create and set int array parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0800, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0800, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -343,7 +343,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0800, Function | MediumTest | 
  * @tc.desc: Test create and set long parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0900, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0900, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -378,7 +378,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_0900, Function | MediumTest | 
  * @tc.desc: Test create and set long array parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1000, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1000, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -410,7 +410,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1000, Function | MediumTest | 
  * @tc.desc: Test create and set double parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1100, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1100, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -445,7 +445,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1100, Function | MediumTest | 
  * @tc.desc: Test create and set double array parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1200, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1200, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -477,7 +477,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1200, Function | MediumTest | 
  * @tc.desc: Test create and set bool parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1300, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1300, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -512,7 +512,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1300, Function | MediumTest | 
  * @tc.desc: Test create and set bool array parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1400, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1400, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -544,7 +544,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1400, Function | MediumTest | 
  * @tc.desc: Test create and set char parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1500, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1500, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -579,7 +579,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1500, Function | MediumTest | 
  * @tc.desc: Test create and set char array parameters.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1600, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1600, Function | MediumTest | Level0)
 {
     auto param = OH_CommonEvent_CreateParameters();
 
@@ -611,7 +611,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1600, Function | MediumTest | 
  * @tc.desc: Test publish commonEvent.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1700, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1700, Function | MediumTest | Level0)
 {
     int32_t ret = OH_CommonEvent_Publish(nullptr);
     ASSERT_EQ(ret, COMMONEVENT_ERR_INVALID_PARAMETER);
@@ -625,7 +625,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1700, Function | MediumTest | 
  * @tc.desc: Test publish commonEvent with publishInfo.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1800, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1800, Function | MediumTest | Level0)
 {
     auto publishInfo = OH_CommonEvent_CreatePublishInfo(true);
     ASSERT_NE(publishInfo, nullptr);
@@ -680,7 +680,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1800, Function | MediumTest | 
  * @tc.desc: Test handle ordered common event.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1900, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1900, Function | MediumTest | Level0)
 {
     auto publishInfo = OH_CommonEvent_CreatePublishInfo(true);
     ASSERT_NE(publishInfo, nullptr);
@@ -725,7 +725,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_1900, Function | MediumTest | 
  * @tc.desc: Test handle ordered common event.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2000, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2000, Function | MediumTest | Level0)
 {
     auto publishInfo = OH_CommonEvent_CreatePublishInfo(true);
     ASSERT_NE(publishInfo, nullptr);
@@ -779,7 +779,7 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2000, Function | MediumTest | 
  * @tc.desc: Test handle ordered common event with empty subscriber.
  * @tc.type: FUNC
  */
-HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2100, Function | MediumTest | Level1)
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2100, Function | MediumTest | Level0)
 {
     bool ret = OH_CommonEvent_IsOrderedCommonEvent(nullptr);
     ASSERT_FALSE(ret);

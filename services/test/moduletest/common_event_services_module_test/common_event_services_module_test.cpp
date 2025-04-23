@@ -113,7 +113,7 @@ void cesModuleTest::TearDown()
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify the function when the input string is normal
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0100 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST";
@@ -133,7 +133,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level1)
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify the function when the input string is number
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0200 start");
     std::string eventName = "1";
@@ -153,7 +153,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level1)
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify the function when the input string is empty
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0300 start");
     std::string eventName = "";
@@ -173,7 +173,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level1)
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify three subscribers subscribe to three different events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0400 start");
     std::string eventName1 = "TESTEVENT1";
@@ -210,7 +210,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level1)
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify that the ordered common event was subsribered successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0500 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_";
@@ -231,7 +231,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level1)
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify that the ordered common event was subsribered successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0600 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PRIORITY";
@@ -252,7 +252,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level1)
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify that the ordered common event was subsribered successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0700 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_DEVUCEID";
@@ -274,7 +274,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level1)
  * @tc.desc: test Unsubscribe to common event and set the priority to 1000, Verify that ordered common event was
  * unsubscribed successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0800 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PRIORITY";
@@ -295,7 +295,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level1)
  * @tc.desc: test Unsubscribe to common event and set the SetDeviceId to "module_test", Verify Unsubscribe CommonEvent
  * success with setting DeviceId
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_0900 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_DEVUCEID";
@@ -315,7 +315,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService UnsubscribeCommonEvent
  * @tc.desc: test UnsubscribeCommonEvent has priority, Verify that ordered common event was unsubscribed successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1000 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_";
@@ -335,7 +335,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService UnsubscribeCommonEvent
  * @tc.desc: test UnsubscribeCommonEvent , Verify the common event was unsubscribed successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1100 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODELETEST";
@@ -354,7 +354,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService UnsubscribeCommonEvent
  * @tc.desc: test unsubscribe event when the input string is number
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1200 start");
     std::string eventName = "2";
@@ -373,7 +373,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService UnsubscribeCommonEvent
  * @tc.desc: test unsubscribe event when the input string is empty
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1300 start");
     std::string eventName = "";
@@ -392,7 +392,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService UnsubscribeCommonEvent
  * @tc.desc: test unsubscribe to three different events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1400 start");
     std::string eventName4 = "TESTEVENT4";
@@ -430,7 +430,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService PublishCommonEvent
  * @tc.desc: Verify publish event successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1500 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION";
@@ -457,7 +457,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService PublishCommonEvent
  * @tc.desc: Verify publish event with entity successfully
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1600 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION_ENTITY";
@@ -486,7 +486,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level1)
  * @tc.name: CommonEventManagerService DumpState
  * @tc.desc: Verify DumpState
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1700 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_DUMPSTATE";
@@ -541,7 +541,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1800, Function | MediumTest | Level2)
  * @tc.name: CommonEventManagerService DumpState
  * @tc.desc: Verify DumpState with empty event
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_1900 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_DUMPSTATE";
@@ -567,7 +567,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level1)
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify receive common event
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_2000 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION2000";
@@ -802,7 +802,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Subscribe custom event "TESTEVENT_MATCHEVENTTEST"
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_2500 start");
     std::string eventName = "TESTEVENT_MATCHEVENTTEST";
@@ -824,7 +824,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Publish system event "COMMON_EVENT_ABILITY_ADDED"
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_2600 start");
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
@@ -874,7 +874,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Publish system event "COMMON_EVENT_ABILITY_UPDATED"
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_2700 start");
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
@@ -924,7 +924,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level1)
  * @tc.name: GetStickyCommonEvent
  * @tc.desc: set sticky and get action, publish common event set sticky to true and verify the action of stickyData
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_2800 start");
     std::string eventName = "MODULETEST_ACTION_STICKY";
@@ -989,7 +989,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
  * @tc.name: Set Permission
  * @tc.desc: Set permission for common event subscribers and verify successfully subscribe to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3000 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PERMISSION";
@@ -1012,7 +1012,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level1)
  * @tc.desc: Set permission and priority for common event subscribers and verify successfully subscribe to
  * common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3100 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY";
@@ -1036,7 +1036,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level1)
  * @tc.desc: Set permission and priority and DeviceId for common event subscribers and verify successfully
  * subscribe to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3200 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY_DEVICEDID";
@@ -1061,7 +1061,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level1)
  * @tc.name: Set Permission
  * @tc.desc: Set permission for common event subscribers and verify successfully Unsubscribe to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3300 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PERMISSION";
@@ -1083,7 +1083,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level1)
  * @tc.desc: Set permission and priority for common event subscribers and verify successfully Unsubscribe to
  * common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3400 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY";
@@ -1106,7 +1106,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level1)
  * @tc.desc: Set permission and priority and DeviceId for common event subscribers and verify successfully
  * Unsubscribe to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3500 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY_DEVICEDID";
@@ -1130,7 +1130,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level1)
  * @tc.name: Set Subscriber Permissions
  * @tc.desc: Set permission for common event subscribers and verify successfully publish common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3600 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_PERMISSION";
@@ -1159,7 +1159,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level1)
  * @tc.name: Set Subscriber Permissions
  * @tc.desc: Set permission for common event subscribers and verify successfully publish common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3700 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_PERMISSION";
@@ -1190,7 +1190,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level1)
  * @tc.name: Set Subscriber Permissions
  * @tc.desc: Set permission for common event subscribers and verify successfully publish common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3800 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_PERMISSION";
@@ -1223,7 +1223,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level1)
  * @tc.name: Set ThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully subscribe to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_3900 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_SETTHRERADMODE";
@@ -1245,7 +1245,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level1)
  * @tc.name: Set ThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully Unsubscribe to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_4000 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_SETTHRERADMODE";
@@ -1266,7 +1266,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level1)
  * @tc.name: Set ThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully publish to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_4100 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_SETTHRERADMODE";
@@ -1292,7 +1292,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level1)
  * @tc.name: Set ThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully receive to common events
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_4200 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_SETTHRERADMODE_R";
@@ -1335,7 +1335,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level1)
  * @tc.type: FUNC
  * @tc.require: I582Y4
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_4300 start");
 
@@ -1367,7 +1367,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level1)
  * @tc.desc: DLP App publish common event failed.
  * @tc.require: I582VA
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_4400 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION";
@@ -1398,7 +1398,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level1)
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify receive common event
  */
-HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4500, Function | MediumTest | Level1)
+HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4500, Function | MediumTest | Level0)
 {
     EVENT_LOGE("CES_TC_ModuleTest_4500 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION4500";

@@ -151,7 +151,7 @@ void CommonEventUnSubscribeTest::SetMatchingSkillsWithScheme(const std::string &
  * EnvConditions: system running normally
  * CaseDescription: Unsubscribe normally and verify UnSubscribeCommonEvent function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_001, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_001, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
@@ -168,7 +168,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_001, TestSize.Level1)
  * EnvConditions: system running normally
  * CaseDescription: Verify UnSubscribeCommonEvent function return value with eventListener not exist.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_002, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_002, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
@@ -184,7 +184,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_002, TestSize.Level1)
  * EnvConditions: system running normally
  * CaseDescription: Verify UnSubscribeCommonEvent function return value with eventListener existed.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_003, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_003, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
@@ -201,7 +201,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_003, TestSize.Level1)
  * EnvConditions: system running normally
  * CaseDescription: Verify UnSubscribeCommonEvent function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_004, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_004, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
@@ -219,7 +219,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_004, TestSize.Level1)
  * EnvConditions: system running normally
  * CaseDescription: Verify RemoveSubscriber function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_005, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_005, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
@@ -237,7 +237,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_005, TestSize.Level1)
  * EnvConditions: system running normally
  * CaseDescription: When the subscriber does not exist, verify UnSubscribeCommonEvent function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_006, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_006, TestSize.Level0)
 {
     std::shared_ptr<DreivedSubscriber> subscriber = nullptr;
     EXPECT_NE(ERR_OK, CommonEvent::GetInstance()->UnSubscribeCommonEvent(subscriber));
@@ -252,7 +252,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_006, TestSize.Level1)
  * CaseDescription: When the CommonEventListener does not exist,
  *                  verify UnsubscribeCommonEvent function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_009, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_009, TestSize.Level0)
 {
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = std::make_shared<InnerCommonEventManager>();
     sptr<IRemoteObject> sp(nullptr);
@@ -268,7 +268,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_009, TestSize.Level1)
  * CaseDescription: When the CommonEventListener does not exist,
  *                  verify RemoveSubscriber function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_010, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_010, TestSize.Level0)
 {
     EXPECT_EQ(
         ERR_INVALID_VALUE, DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveSubscriber(nullptr));
@@ -283,7 +283,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_010, TestSize.Level1)
  * CaseDescription: When the death_ is not null,
  *                  verify RemoveSubscriber function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_011, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_011, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
@@ -303,7 +303,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_011, TestSize.Level1)
  * EnvConditions: system running normally
  * CaseDescription: Verify UnSubscribeCommonEvent function return value with eventListener existed.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_012, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_012, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
@@ -320,7 +320,7 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_012, TestSize.Level1)
  * EnvConditions: system running normally
  * CaseDescription: Unsubscribe normally and verify UnSubscribeCommonEvent function return value.
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_013, TestSize.Level1)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_013, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
