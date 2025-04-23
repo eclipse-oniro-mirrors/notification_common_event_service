@@ -123,7 +123,7 @@ void CommonEventPublishOrderedEventUnitTest::TearDown(void)
  * @tc.name: test PublishCommonEvent
  * @tc.desc: Verify InnerCommonEventManager PublishCommonEvent success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0700, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0700, Function | MediumTest | Level0)
 {
     // make a want
     Want want;
@@ -179,7 +179,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test PublishCommonEvent
  * @tc.desc: Verify InnerCommonEventManager PublishCommonEvent fail because data has no aciton
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0800, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0800, Function | MediumTest | Level0)
 {
     // make common event data
     CommonEventData data;
@@ -214,7 +214,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test PublishCommonEvent
  * @tc.desc: Verify CommonEventControlManager PublishCommonEvent success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0900, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_0900, Function | MediumTest | Level0)
 {
     // make a commonEventRecord
     Want want;
@@ -272,7 +272,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test ProcessOrderedEvent
  * @tc.desc: Verify CommonEventControlManager ProcessOrderedEvent success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1000, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1000, Function | MediumTest | Level0)
 {
     // make common event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
@@ -318,7 +318,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test EnqueueOrderedRecord eventRecordPtr is null
  * @tc.desc: Verify EnqueueOrderedRecord eventRecordPtr is null orderedEventQueue_ size is 0
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1100, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1100, Function | MediumTest | Level0)
 {
     bool result = commonEventControlManager->EnqueueOrderedRecord(nullptr);
     EXPECT_FALSE(result);
@@ -329,7 +329,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test EnqueueOrderedRecord
  * @tc.desc: Verify EnqueueOrderedRecord success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1200, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1200, Function | MediumTest | Level0)
 {
     // make common event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
@@ -352,7 +352,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test ScheduleOrderedCommonEvent
  * @tc.desc: Verify ScheduleOrderedCommonEvent success when scheduled is true
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1300, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1300, Function | MediumTest | Level0)
 {
     commonEventControlManager->scheduled_ = true;
     bool result = commonEventControlManager->ScheduleOrderedCommonEvent();
@@ -364,7 +364,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test ScheduleOrderedCommonEvent
  * @tc.desc: Verify ScheduleOrderedCommonEvent success when scheduled is false
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1400, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1400, Function | MediumTest | Level0)
 {
     commonEventControlManager->scheduled_ = false;
 
@@ -378,7 +378,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test FinishReceiver
  * @tc.desc: Verify FinishReceiver return true because eventRecord state is received
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1500, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1500, Function | MediumTest | Level0)
 {
     // make common event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
@@ -402,7 +402,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test FinishReceiver
  * @tc.desc: Verify FinishReceiver return false eventRecord state is idle
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1600, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1600, Function | MediumTest | Level0)
 {
     // make common event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
@@ -426,7 +426,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test FinishReceiver recordPtr is null
  * @tc.desc: Verify FinishReceiver recordPtr is null return false
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1700, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1700, Function | MediumTest | Level0)
 {
     std::string receiverData = "receiverData";
     bool result = commonEventControlManager->FinishReceiver(nullptr, 0, receiverData, false);
@@ -438,7 +438,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test GetOrderedEventHandler handlerOrdered_ is not null
  * @tc.desc: Verify GetOrderedEventHandler handlerOrdered_ is not return true
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1800, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1800, Function | MediumTest | Level0)
 {
     commonEventControlManager->handlerOrdered_ =
         std::make_shared<OrderedEventHandler>(EventRunner::Create(), commonEventControlManager);
@@ -451,7 +451,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test CurrentOrderedEventTimeout orderedEventQueue_ is null
  * @tc.desc: Verify CurrentOrderedEventTimeout fail because orderedEventQueue_ is null
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1900, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1900, Function | MediumTest | Level0)
 {
     commonEventControlManager->orderedEventQueue_.clear();
     commonEventControlManager->CurrentOrderedEventTimeout(true);
@@ -469,7 +469,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test CurrentOrderedEventTimeout
  * @tc.desc: Verify CurrentOrderedEventTimeout success with eventRecord->nextReceiver = 0;
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2000, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2000, Function | MediumTest | Level0)
 {
     // make common event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
@@ -501,7 +501,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test CurrentOrderedEventTimeout
  * @tc.desc: Verify CurrentOrderedEventTimeout success with eventRecord->nextReceiver = 1;
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2100, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2100, Function | MediumTest | Level0)
 {
     // make event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
@@ -537,7 +537,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test CancelTimeout
  * @tc.desc: Verify CancelTimeout return true when pendingTimeoutMessage is true
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2200, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2200, Function | MediumTest | Level0)
 {
     commonEventControlManager->pendingTimeoutMessage_ = true;
     bool result = commonEventControlManager->CancelTimeout();
@@ -549,7 +549,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.name: test CancelTimeout
  * @tc.desc: Verify CancelTimeout return true when pendingTimeoutMessage is false
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2300, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2300, Function | MediumTest | Level0)
 {
     bool result = false;
     commonEventControlManager->pendingTimeoutMessage_ = false;
@@ -563,7 +563,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.desc: 1.Set thread mode handler
  *           2.Verify InnerCommonEventManager PublishCommonEvent success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2400, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2400, Function | MediumTest | Level0)
 {
     // make a want
     Want want;
@@ -620,7 +620,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.desc: 1.Set thread mode POST
  *           2.Verify InnerCommonEventManager PublishCommonEvent success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2500, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2500, Function | MediumTest | Level0)
 {
     // make a want
     Want want;
@@ -677,7 +677,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.desc: 1.Set thread mode ASYNC
  *           2.Verify InnerCommonEventManager PublishCommonEvent success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2600, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2600, Function | MediumTest | Level0)
 {
     // make a want
     Want want;
@@ -734,7 +734,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  * @tc.desc: 1.Set thread mode BACKGROUND
  *           2.Verify InnerCommonEventManager PublishCommonEvent success
  */
-HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2700, Function | MediumTest | Level1)
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2700, Function | MediumTest | Level0)
 {
     // make a want
     Want want;

@@ -66,7 +66,7 @@ void CommonEventListenerTest::TearDown()
  * tc.type: FUNC
  * tc.desc: test init function and runner_ commonEventSubscriber is nullptr.
  */
-HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_001, TestSize.Level1)
+HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_001, TestSize.Level0)
 {
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber = nullptr;
     CommonEventListener commonEventListener(commonEventSubscriber);
@@ -80,7 +80,7 @@ HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_001, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test init function commonEventSubscriber is not nullptr.
  */
-HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_002, TestSize.Level1)
+HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_002, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent("EVENT");
@@ -96,7 +96,7 @@ HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_002, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test Stop function and handler_ is nullptr.
  */
-HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_004, TestSize.Level1)
+HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_004, TestSize.Level0)
 {
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber = nullptr;
     std::shared_ptr<CommonEventListener> commonEventListener =
@@ -112,7 +112,7 @@ HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_004, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: test Stop function and handler_ is not nullptr.
  */
-HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_005, TestSize.Level1)
+HWTEST_F(CommonEventListenerTest, CommonEventListenerTest_005, TestSize.Level0)
 {
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber = nullptr;
     std::shared_ptr<CommonEventListener> commonEventListener =

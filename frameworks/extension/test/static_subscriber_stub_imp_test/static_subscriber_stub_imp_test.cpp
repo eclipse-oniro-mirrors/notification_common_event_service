@@ -56,7 +56,7 @@ void StaticSubscriberStubImplTest::TearDown(void)
  * @tc.name: OnReceiveEvent
  * @tc.desc: The extension is not a null ptr value. The test program executes as expected and does not exit abnormally
  */
-HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_001, TestSize.Level1)
+HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "StaticSubscriberStubImpl_OnReceiveEvent_001 start.";
     AbilityRuntime::Runtime::Options options;
@@ -78,7 +78,7 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
  * @tc.name: OnReceiveEvent
  * @tc.desc: The extension is a null ptr value. The test program executes as expected and does not exit abnormally
  */
-HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_002, TestSize.Level1)
+HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "StaticSubscriberStubImpl_OnReceiveEvent_002 start.";
     const std::shared_ptr<StaticSubscriberExtension> extension;
