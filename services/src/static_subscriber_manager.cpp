@@ -267,7 +267,9 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
     if ((!hasInitValidSubscribers_ ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_SWITCHED) &&
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
+        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_FOREGROUND) &&
         !InitValidSubscribers()) {
         EVENT_LOGE("Failed to init subscribers map");
         return;
