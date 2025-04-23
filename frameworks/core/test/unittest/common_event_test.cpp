@@ -66,7 +66,7 @@ void CommonEventTest::TearDown()
  * tc.require: issueI5NGO7
  * tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEvent_001, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEvent_001, TestSize.Level0)
 {
     // make a want
     Want want;
@@ -97,7 +97,7 @@ HWTEST_F(CommonEventTest, CommonEvent_001, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level0)
 {
     // make a want
     Want want;
@@ -129,7 +129,7 @@ HWTEST_F(CommonEventTest, CommonEvent_002, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke Freeze interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEvent_003, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEvent_003, TestSize.Level0)
 {
     CommonEvent commonEvent;
     bool freeze = commonEvent.Freeze(SYSTEM_UID);
@@ -143,7 +143,7 @@ HWTEST_F(CommonEventTest, CommonEvent_003, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke Unfreeze interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEvent_004, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEvent_004, TestSize.Level0)
 {
     CommonEvent commonEvent;
     bool unfreeze = commonEvent.Unfreeze(SYSTEM_UID);
@@ -157,7 +157,7 @@ HWTEST_F(CommonEventTest, CommonEvent_004, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke Unfreeze interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level0)
 {
     // make a want
     Want want;
@@ -183,7 +183,7 @@ HWTEST_F(CommonEventTest, CommonEvent_005, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke SetFreezeStatus interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEvent_006, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEvent_006, TestSize.Level0)
 {
     CommonEvent commonEvent;
     std::set<int> pidList = {1000};
@@ -197,7 +197,7 @@ HWTEST_F(CommonEventTest, CommonEvent_006, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_001, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_001, TestSize.Level0)
 {
     // make a want
     Want want;
@@ -228,7 +228,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_001, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke PublishCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_002, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_002, TestSize.Level0)
 {
     // make a want
     Want want;
@@ -259,7 +259,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_002, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke SubscribeCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level0)
 {
     CommonEventSubscribeInfo subscribeInfo;
 
@@ -275,7 +275,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke UnsubscribeCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_004, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_004, TestSize.Level0)
 {
     MockCommonEventStub commonEventStub;
     int32_t unsubscribeCommonEvent = -1;
@@ -289,7 +289,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_004, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke GetStickyCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_005, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_005, TestSize.Level0)
 {
     const std::string event = "aa";
 
@@ -312,7 +312,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_005, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke DumpState interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_006, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_006, TestSize.Level0)
 {
     const uint8_t dumpType = 1;
     const int32_t userId = 2;
@@ -330,7 +330,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_006, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke FinishReceiver interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_007, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_007, TestSize.Level0)
 {
     const int32_t code = 1;
     const std::string receiverData = "bb";
@@ -347,7 +347,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_007, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke Freeze Unfreeze UnfreezeAll interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_008, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_008, TestSize.Level0)
 {
     MockCommonEventStub commonEventStub;
     bool freeze = false;
@@ -367,7 +367,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_008, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke OnRemoteRequest interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_009, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_009, TestSize.Level0)
 {
     const uint32_t code = -1;
     OHOS::MessageParcel dataParcel;
@@ -385,7 +385,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_009, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke SetFreezeStatus interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_0010, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_0010, TestSize.Level0)
 {
     MockCommonEventStub commonEventStub;
     std::set<int32_t> pidList = {1000};
@@ -400,7 +400,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_0010, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke UnsubscribeCommonEvent interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventStub_0011, TestSize.Level1)
+HWTEST_F(CommonEventTest, CommonEventStub_0011, TestSize.Level0)
 {
     MockCommonEventStub commonEventStub;
     int32_t unsubscribeCommonEvent = false;
@@ -414,7 +414,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_0011, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke Unmarshalling interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level1)
+HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level0)
 {
     bool unmarshalling = true;
     OHOS::Parcel parcel;
@@ -456,7 +456,7 @@ HWTEST_F(CommonEventTest, MatchingSkills_001, TestSize.Level1)
  * @tc.name: verify SetBundleName
  * @tc.desc: Invoke SetBundleName interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventPublishInfo_0100, Function | MediumTest | Level1)
+HWTEST_F(CommonEventTest, CommonEventPublishInfo_0100, Function | MediumTest | Level0)
 {
     const std::string bundleName = "aa";
     CommonEventPublishInfo publishInfo;
@@ -470,7 +470,7 @@ HWTEST_F(CommonEventTest, CommonEventPublishInfo_0100, Function | MediumTest | L
  * @tc.name: verify Unmarshalling
  * @tc.desc: Invoke Unmarshalling interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventPublishInfo_0200, Function | MediumTest | Level1)
+HWTEST_F(CommonEventTest, CommonEventPublishInfo_0200, Function | MediumTest | Level0)
 {
     bool result = true;
     OHOS::Parcel parcel;
@@ -486,7 +486,7 @@ HWTEST_F(CommonEventTest, CommonEventPublishInfo_0200, Function | MediumTest | L
  * @tc.name: verify Unmarshalling
  * @tc.desc: Invoke Unmarshalling interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest | Level1)
+HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest | Level0)
 {
     bool result = false;
     OHOS::Parcel parcel;
@@ -505,7 +505,7 @@ HWTEST_F(CommonEventTest, CommonEventSubscribeInfo_0100, Function | MediumTest |
  * @tc.name: verify SetSubscriberType
  * @tc.desc: Invoke SetSubscriberType interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventPublishInfo_0300, Function | MediumTest | Level1)
+HWTEST_F(CommonEventTest, CommonEventPublishInfo_0300, Function | MediumTest | Level0)
 {
     int32_t subscribeType = 1;
     CommonEventPublishInfo publishInfo;
@@ -518,7 +518,7 @@ HWTEST_F(CommonEventTest, CommonEventPublishInfo_0300, Function | MediumTest | L
  * @tc.name: verify IsStickyCommonEvent
  * @tc.desc: Invoke OnAddSystemAbility interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, CommonEventSubscriber_0102, Function | MediumTest | Level1)
+HWTEST_F(CommonEventTest, CommonEventSubscriber_0102, Function | MediumTest | Level0)
 {
     auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
     commonEventDeathRecipient->SubscribeSAManager();
@@ -533,7 +533,7 @@ HWTEST_F(CommonEventTest, CommonEventSubscriber_0102, Function | MediumTest | Le
  * @tc.name: verify SetStaticSubscriberState
  * @tc.desc: Invoke SetStaticSubscriberState interface verify whether it is normal
  */
-HWTEST_F(CommonEventTest, SetStaticSubscriberState_0100, Function | SmallTest | Level1)
+HWTEST_F(CommonEventTest, SetStaticSubscriberState_0100, Function | SmallTest | Level0)
 {
     CommonEvent commonEvent;
     int32_t result = commonEvent.SetStaticSubscriberState(true);
@@ -545,7 +545,7 @@ HWTEST_F(CommonEventTest, SetStaticSubscriberState_0100, Function | SmallTest | 
  * @tc.name: verify SetStaticSubscriberState
  * @tc.desc: Failed to call SetStaticSubscriberState API to obtain proxy
  */
-HWTEST_F(CommonEventTest, SetStaticSubscriberStateWithTwoParameters_0100, Function | SmallTest | Level1)
+HWTEST_F(CommonEventTest, SetStaticSubscriberStateWithTwoParameters_0100, Function | SmallTest | Level0)
 {
     CommonEvent commonEvent;
     std::vector<std::string> events;

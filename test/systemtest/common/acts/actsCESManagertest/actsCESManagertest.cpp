@@ -134,7 +134,7 @@ void ActsCESManagertest::TearDown()
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify the function when the input string is normal
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_SUBSCRIBER";
@@ -164,7 +164,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0100, Function | MediumTest |
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify the function when the input string is number
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0200, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "1";
@@ -284,7 +284,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0500, Function | MediumTest |
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify that the ordered common event was subsribered succseefully
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0600, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_SUBSCRIBER_SETPRIORITY";
@@ -315,7 +315,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0600, Function | MediumTest |
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: erify that the ordered common event was unsubsribered successfully
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0700, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_UNSUBSCRIBE_SETPRIORITY";
@@ -447,7 +447,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_0900, Function | MediumTest |
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify the normal input string three times
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1000, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1000, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName1 = "TESTEVENT1";
@@ -497,7 +497,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1000, Function | MediumTest |
  * @tc.name: SubscribeCommonEvent
  * @tc.desc:  Verify the normal input string two times
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName1 = "TEST1";
@@ -587,7 +587,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1200, Function | MediumTest |
  * @tc.name: SubscribeCommonEvent
  * @tc.desc: Verify the function when the input string is normal
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1300, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_UNSUBSCRIBE";
@@ -617,7 +617,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1300, Function | MediumTest |
  * @tc.name: UnSubscribeCommonEvent
  * @tc.desc: Verify the function when the input string is number
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1400, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "2";
@@ -737,7 +737,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1700, Function | MediumTest |
  * @tc.name: UnSubscribeCommonEvent
  * @tc.desc: Verify the normal input string three times
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1800, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1800, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName1 = "TESTEVENT4";
@@ -793,7 +793,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1800, Function | MediumTest |
  * @tc.name: UnSubscribeCommonEvent
  * @tc.desc: Verify the normal input string two times
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1900, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_1900, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName1 = "TEST3";
@@ -1006,7 +1006,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEvent_2200, Function | MediumTest |
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify the function when only set action
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION";
@@ -1042,7 +1042,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0100, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify the function when add entity
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0200, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ENTITY";
@@ -1080,7 +1080,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0200, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify the function when set scheme
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0300, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_SCHEME";
@@ -1117,7 +1117,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0300, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify the function when set scheme and add entity
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0400, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_SCHEME_ENTITY";
@@ -1156,7 +1156,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0400, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify set action with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0500, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_INFO_FALSE";
@@ -1195,7 +1195,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0500, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify add entity with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0600, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_ENTITY_INFO_TRUE";
@@ -1236,7 +1236,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0600, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify add entity with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0700, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_ENTITY_INFO_FALSE";
@@ -1277,7 +1277,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0700, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify set action with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0800, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0800, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_INFO_TRUE";
@@ -1316,7 +1316,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0800, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify set scheme with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_0900, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_0900, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_SCHEME_INFO_TRUE";
@@ -1356,7 +1356,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_0900, Function | MediumTest | Level1)
  * @tc.name: SPublishCommonEvent
  * @tc.desc: Verify set scheme with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1000, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1000, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_SCHEME_INFO_FALSE";
@@ -1396,7 +1396,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1000, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: VVerify set scheme and add entity with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_ENTITY_SCHEME_INFO_TRUE";
@@ -1438,7 +1438,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1100, Function | MediumTest | Level1)
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify set scheme and add entity with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1200, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_ENTITY_SCHEME_INFO_FALSE";
@@ -1480,7 +1480,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1200, Function | MediumTest | Level1)
  * @tc.name: SetSticky
  * @tc.desc: Verify set action with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICHY_ACTION_INFO_FALSE";
@@ -1519,7 +1519,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0100, Function | MediumTe
  * @tc.name: SetSticky
  * @tc.desc: Verify add entity with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0200, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICKY_ACTION_ENTITY_INFO_TRUE";
@@ -1560,7 +1560,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0200, Function | MediumTe
  * @tc.name: SetSticky
  * @tc.desc: Verify add entity with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0300, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICKY_ACTION_ENTITY_INFO_FALSE";
@@ -1601,7 +1601,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0300, Function | MediumTe
  * @tc.name: SetSticky
  * @tc.desc: Verify set action with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0400, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICKY_ACTION_INFO_TRUE";
@@ -1640,7 +1640,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0400, Function | MediumTe
  * @tc.name: SetSticky
  * @tc.desc: Verify set scheme with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0500, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICKY_ACTION_SCHEME_INFO_TRUE";
@@ -1680,7 +1680,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0500, Function | MediumTe
  * @tc.name: SetSticky
  * @tc.desc: Verify set scheme with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0600, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICKY_ACTION_SCHEME_INFO_FALSE";
@@ -1720,7 +1720,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0600, Function | MediumTe
  * @tc.name: SetSticky
  * @tc.desc: Verify set scheme and add entity with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0700, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICKY_ACTION_ENTITY_SCHEME_INFO_TRUE";
@@ -1762,7 +1762,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0700, Function | MediumTe
  * @tc.name: SetSticky
  * @tc.desc: Verify set scheme and add entity with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0800, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0800, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_STICKY_ACTION_ENTITY_SCHEME_INFO_FALSE";
@@ -1804,7 +1804,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0800, Function | MediumTe
  * @tc.name: GetStickyCommonEvent
  * @tc.desc: publish common event set sticky to true and verify the action of stickyData
  */
-HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0900, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_0900, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_GETSTICKY_";
@@ -1897,7 +1897,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEventSetViscosity_1000, Function | MediumTe
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify the function when only set action
  */
-HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0100, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_RECEIVE_ACTION";
     std::string eventAction = "TESTEVENT_RECEIVE_ACTION";
@@ -1935,7 +1935,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0100, Function | MediumTest | Leve
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify the function when add entity
  */
-HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0200, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_RECEIVE_ENTITY";
     std::string eventAction = "TESTEVENT_RECEIVE_ENTITY";
@@ -1977,7 +1977,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0200, Function | MediumTest | Leve
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify set action with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0300, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_RECEIVE_ACTION_INFO_FALSE";
     std::string eventAction = "TESTEVENT_RECEIVE_ACTION_INFO_FALSE";
@@ -2018,7 +2018,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0300, Function | MediumTest | Leve
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify set action with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0400, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_RECEIVE_ACTION_INFO_TRUE";
     std::string eventAction = "TESTEVENT_RECEIVE_ACTION_INFO_TRUE";
@@ -2061,7 +2061,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0400, Function | MediumTest | Leve
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify add entity with sticky is false
  */
-HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0500, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_RECEIVE_ENTITY_INFO_FALSE";
     std::string eventAction = "TESTEVENT_RECEIVE_ENTITY_INFO_FALSE";
@@ -2106,7 +2106,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0500, Function | MediumTest | Leve
  * @tc.name: OnReceiveEvent
  * @tc.desc: Verify add entity with sticky is true
  */
-HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0600, Function | MediumTest | Level0)
 {
     std::string eventName = "ActsCESManagertestTestEventReceiveEntityInfoFalse";
     std::string eventAction = "ActsCESManagertestTestEventReceiveEntityInfoFalse";
@@ -2151,7 +2151,7 @@ HWTEST_F(ActsCESManagertest, CES_ReceiveEvent_0600, Function | MediumTest | Leve
  * @tc.name: AddEvent
  * @tc.desc: Verify add an event Theme
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTADDTHEME";
@@ -2181,7 +2181,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0100, Function | MediumT
  * @tc.name: AddEvent
  * @tc.desc: Verify add multiple event themes
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0200, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName1 = "TESTADDTHEME1";
@@ -2215,7 +2215,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0200, Function | MediumT
  * @tc.name: MatchEvent
  * @tc.desc: Verify match an event theme
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0300, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_MATCHEVENTTEST";
@@ -2248,7 +2248,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0300, Function | MediumT
  * @tc.name: MatchEvent
  * @tc.desc: Verify match other event theme
  */
-HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0400, Function | MediumTest | Level0)
 {
     bool result = true;
     std::string eventName = "TESTMATCHEVENTTOPICAL";
@@ -2285,7 +2285,7 @@ HWTEST_F(ActsCESManagertest, CES_SubscriptionEventTheme_0400, Function | MediumT
  * This test case has been covered in the module test, and the system test
  * cannot simulate the non-subsystem scenario
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1300, Function | MediumTest | Level0)
 {
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
@@ -2333,7 +2333,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1300, Function | MediumTest | Level1)
  * This test case has been covered in the module test, and the system test
  * cannot simulate the non-subsystem scenario
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1400, Function | MediumTest | Level0)
 {
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
@@ -2381,7 +2381,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1400, Function | MediumTest | Level1)
  * This test case has been covered in the module test, and the system test
  * cannot simulate the non-subsystem scenario
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1500, Function | MediumTest | Level0)
 {
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
@@ -2428,7 +2428,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1500, Function | MediumTest | Level1)
  * This test case has been covered in the module test, and the system test
  * cannot simulate the non-subsystem scenario
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1600, Function | MediumTest | Level0)
 {
     std::string eventName = CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED;
@@ -2470,7 +2470,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1600, Function | MediumTest | Level1)
  * @tc.desc: Both subscribers subscribe to the event, after the event is published, both the subscribers can receive
  * the event
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1700, Function | MediumTest | Level0)
 {
     std::string eventName = COMPARE_STR;
     std::string eventAction = COMPARE_STR;
@@ -2509,7 +2509,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1700, Function | MediumTest | Level1)
  *           after the event is published, subscribed subscriber can receive the event and unsubscribed
  *           subscribe can not receive the event
  */
-HWTEST_F(ActsCESManagertest, CES_SendEvent_1800, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SendEvent_1800, Function | MediumTest | Level0)
 {
     std::string eventName = COMPARE_STR_FALSE;
     std::string eventAction = COMPARE_STR_FALSE;
@@ -2543,7 +2543,7 @@ HWTEST_F(ActsCESManagertest, CES_SendEvent_1800, Function | MediumTest | Level1)
  * @tc.name: SetPermission
  * @tc.desc: Set permission for common event subscribers and verify successfully subscribe to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_SUBSCRIBER_PERMISSION";
@@ -2575,7 +2575,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0100, Function | MediumTest |
  * @tc.name: SetPermission and SetPriority
  * @tc.desc: Set permission and priority for common event subscribers and verify successfully subscribe to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0200, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_SUBSCRIBER_PERMISSION_PRIORITY";
@@ -2609,7 +2609,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0200, Function | MediumTest |
  * @tc.desc: Set permission and priority and DeviceId for common event subscribers and verify successfully
  * subscribe to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0300, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_SUBSCRIBER_PERMISSION_PRIORITY_D";
@@ -2644,7 +2644,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0300, Function | MediumTest |
  * @tc.name: SetPermission
  * @tc.desc: Set permission for common event subscribers and verify successfully Unsubscribe to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0400, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_UNSUBSCRIBER_PERMISSION";
@@ -2677,7 +2677,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0400, Function | MediumTest |
  * @tc.desc: Set permission and priority for common event subscribers and verify successfully Unsubscribe to
  * common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0500, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_UNSUBSCRIBER_PERMISSION_PRIORITY";
@@ -2711,7 +2711,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0500, Function | MediumTest |
  * @tc.desc: Set permission and priority and DeviceId for common event subscribers and  verify  successfully
  * Unsubscribe to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0600, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0600, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_UNSUBSCRIBER_PERMISSION_PRIORITY_D";
@@ -2746,7 +2746,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0600, Function | MediumTest |
  * @tc.name: OnReceiveEvent
  * @tc.desc: Set permission for common event subscribers and  verify  successfully publish common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0700, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0700, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_PERMISSION";
@@ -2788,7 +2788,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0700, Function | MediumTest |
  * @tc.name: SetSubscriberPermissions
  * @tc.desc: Set permission for common event subscribers and  verify  successfully receive common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0800, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0800, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_PERMISSION_R";
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION_PERMISSION_R";
@@ -2830,7 +2830,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0800, Function | MediumTest |
  * @tc.name: SetThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully subscribe to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0900, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0900, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_SUBSCRIBER_SETTHREADMODE";
@@ -2862,7 +2862,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_0900, Function | MediumTest |
  * @tc.name: SetThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully Unsubscribe to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1000, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1000, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_UNSUBSCRIBER_SETTHREADMODE";
@@ -2893,7 +2893,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1000, Function | MediumTest |
  * @tc.name: SetThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully publish to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_SETTHREADMODE";
@@ -2930,7 +2930,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1100, Function | MediumTest |
  * @tc.name: SetThreadMode
  * @tc.desc: Set ThreadMode for common event subscribers and verify successfully receive to common events
  */
-HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1200, Function | MediumTest | Level0)
 {
     std::string eventName = "TESTEVENT_PUBLISH_ACTION_SETHANDLER_HANDLER";
     std::string eventAction = "TESTEVENT_PUBLISH_ACTION_SETHANDLER_HANDLER";
@@ -2971,7 +2971,7 @@ HWTEST_F(ActsCESManagertest, CES_SetEventAuthority_1200, Function | MediumTest |
  * @tc.name: GetEvent
  * @tc.desc: check to get the added event
  */
-HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0100, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0100, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_GETMATCHINGSKILLS";
@@ -3003,7 +3003,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0100, Function | MediumTes
  * @tc.name: GetEntity
  * @tc.desc: check to get the added entity
  */
-HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0200, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0200, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_ADDENTITY_GETENTITY";
@@ -3036,7 +3036,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0200, Function | MediumTes
  * @tc.name: HasEntity
  * @tc.desc: verify that entity is in MatchingSkills
  */
-HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0300, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0300, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_ADDENTITY_HASENTITY";
@@ -3069,7 +3069,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0300, Function | MediumTes
  * @tc.name: RemoveEntity
  * @tc.desc: verify that the entity was successfully removed
  */
-HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0400, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0400, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_ADDENTITY_REMOVEENTITY";
@@ -3103,7 +3103,7 @@ HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0400, Function | MediumTes
  * @tc.name: CountEntities
  * @tc.desc: verify that count correct number of entities
  */
-HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0500, Function | MediumTest | Level1)
+HWTEST_F(ActsCESManagertest, CES_VerifyMatchingSkills_0500, Function | MediumTest | Level0)
 {
     bool result = false;
     std::string eventName = "TESTEVENT_ADDENTITY_ENTITYCOUNT";

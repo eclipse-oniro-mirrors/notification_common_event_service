@@ -70,7 +70,7 @@ void ActsCesSpecificationTest::TearDown()
  * @tc.name: verify subscribe exceed limit
  * @tc.desc: Failed to call SubscribeCommonEvent API due to the count of subscriber exceed limit
  */
-HWTEST_F(ActsCesSpecificationTest, SubscribeCommonEventExceedLimit_0100, TestSize.Level1)
+HWTEST_F(ActsCesSpecificationTest, SubscribeCommonEventExceedLimit_0100, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent("test");
@@ -90,7 +90,7 @@ HWTEST_F(ActsCesSpecificationTest, SubscribeCommonEventExceedLimit_0100, TestSiz
  * @tc.name: verify publish exceed limit
  * @tc.desc: Failed to call publish common event API due to publish sequency is too high
  */
-HWTEST_F(ActsCesSpecificationTest, PublishCommonEventExceedLimit_0100, TestSize.Level1)
+HWTEST_F(ActsCesSpecificationTest, PublishCommonEventExceedLimit_0100, TestSize.Level0)
 {
     Want wantTest;
     wantTest.SetAction("eventAction");
