@@ -14,15 +14,6 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/ohos.gni")
 
-config("bechmark_test_config") {
-  include_dirs = [
-    "//third_party/json/include",
-    "${ffrt_path}/interfaces/kits",
-  ]
-
-  configs = []
-}
-
 group("benchmarktest") {
   testonly = true
 

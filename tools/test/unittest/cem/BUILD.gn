@@ -17,10 +17,7 @@ import("//build/test.gni")
 module_output_path = "common_event_service/common_event_service/tools"
 
 config("tools_cem_config_mock") {
-  include_dirs = [
-    "//third_party/googletest/googlemock/include",
-    "${tools_path}/test/mock",
-  ]
+  include_dirs = [ "${tools_path}/test/mock" ]
 }
 
 tools_cem_mock_sources = [
@@ -55,13 +52,10 @@ ohos_unittest("common_event_command_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
-    "hilog:libhilog",
-    "ipc:ipc_core",
-  ]
-
-  public_external_deps = [
     "googletest:gmock_main",
     "googletest:gtest_main",
+    "hilog:libhilog",
+    "ipc:ipc_core",
   ]
 }
 
@@ -90,23 +84,18 @@ ohos_unittest("common_event_command_dump_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${ces_native_path}:cesfwk_innerkits",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
   ]
 
   external_deps = [
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
-  ]
-
-  public_external_deps = [
-    "googletest:gmock_main",
-    "googletest:gtest_main",
   ]
 }
 
@@ -141,15 +130,12 @@ ohos_unittest("common_event_command_publish_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
-  ]
-
-  public_external_deps = [
-    "googletest:gmock_main",
-    "googletest:gtest_main",
   ]
 }
 

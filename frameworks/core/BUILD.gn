@@ -51,7 +51,6 @@ config("cesfwk_core_public_config") {
   include_dirs = [
     "${ces_core_path}/include",
     "${ces_innerkits_path}",
-    "${ffrt_path}/interfaces/kits",
     "${target_gen_dir}",
   ]
 }
