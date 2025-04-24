@@ -36,7 +36,7 @@ void TearDown() override {}
  * @tc.number: CommonEventPublishInfoTest_001
  * @tc.desc  : Test SetSubscriberUid method when the size of subscriberUids is less than the maximum limit
  */
-HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetCorrectly_WhenUidsLessThanMax, TestSize.Level1)
+HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetCorrectly_WhenUidsLessThanMax, TestSize.Level0)
 {
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<int32_t> subscriberUids = {1, 2, 3};
@@ -49,7 +49,7 @@ HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetCorrectly_WhenUid
  * @tc.number: CommonEventPublishInfoTest_002
  * @tc.desc  : Test SetSubscriberUid method when the size of subscriberUids is more than the maximum limit
  */
-HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetCorrectly_WhenUidsMoreThanMax, TestSize.Level1)
+HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetCorrectly_WhenUidsMoreThanMax, TestSize.Level0)
 {
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<int32_t> subscriberUids(SUBSCRIBER_UIDS_MAX_NUM + 1, 1);
@@ -63,7 +63,7 @@ HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetCorrectly_WhenUid
  * @tc.number: CommonEventPublishInfoTest_003
  * @tc.desc  : Test SetSubscriberUid method when the subscriberUids is empty
  */
-HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetEmpty_WhenUidsIsEmpty, TestSize.Level1)
+HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetEmpty_WhenUidsIsEmpty, TestSize.Level0)
 {
     CommonEventPublishInfo commonEventPublishInfo;
     std::vector<int32_t> subscriberUids;

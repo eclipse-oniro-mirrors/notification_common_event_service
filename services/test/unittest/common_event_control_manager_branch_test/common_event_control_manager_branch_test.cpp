@@ -61,7 +61,7 @@ void CommonEventControlManagerBranchTest::TearDown(void)
  * @tc.desc: test PublishStickyCommonEvent function record.first is nullptr and record.second is nullptr.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0100, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0100, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0100 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -82,7 +82,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0100, Le
  * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0200, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0200, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0200 start";
     CommonEventControlManager commonEventControlManager;
@@ -114,7 +114,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0200, Le
  * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0300, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0300, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0300 start";
     CommonEventControlManager commonEventControlManager;
@@ -140,7 +140,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0300, Le
  * @tc.desc: test CheckPermission and CheckSubscriberPermission is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0400, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0400, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0400 start";
     CommonEventControlManager commonEventControlManager;
@@ -170,7 +170,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0400, Le
  * @tc.desc: test CheckPermission and CheckSubscriberPermission is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0500, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0500, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0500 start";
     CommonEventControlManager commonEventControlManager;
@@ -196,7 +196,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0500, Le
  * @tc.desc: test NotifyFreezeEvents and CheckPermission is OrderedEventRecord::SKIPPED.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0600, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0600, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0600 start";
     CommonEventControlManager commonEventControlManager;
@@ -223,7 +223,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0600, Le
  * @tc.desc: test FinishReceiverAction and doNext is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0700, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0700, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0700 start";
     CommonEventControlManager commonEventControlManager;
@@ -243,7 +243,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0700, Le
  * @tc.desc: test CheckPublisherRequiredPermissions and VerifyAccessToken is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0800, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0800, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0800 start";
     CommonEventControlManager commonEventControlManager;
@@ -270,7 +270,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0800, Le
  * @tc.desc: test CheckPublisherRequiredPermissions and VerifyAccessToken is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0900, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0900, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_0900 start";
     CommonEventControlManager commonEventControlManager;
@@ -297,7 +297,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0900, Le
  * @tc.desc: test GetUnorderedEventRecords and GetAction == event.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1000, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1000, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1000 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -321,7 +321,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1000, Le
  * @tc.desc: test GetUnorderedEventRecords and GetAction == event and vec->userId == userId.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1100, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1100, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1100 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -346,7 +346,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1100, Le
  * @tc.desc: test GetUnorderedEventRecords and GetAction != event and vec->userId != userId.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1200, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1200, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1200 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -371,7 +371,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1200, Le
  * @tc.desc: test GetOrderedEventRecords and vec->userId != userId.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1300, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1300, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1300 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -394,7 +394,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1300, Le
  * @tc.desc: test GetOrderedEventRecords and vec->userId == userId.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1400, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1400, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1400 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -417,7 +417,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1400, Le
  * @tc.desc: test GetOrderedEventRecords and GetAction == event.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1500, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1500, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1500 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -442,7 +442,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1500, Le
  * @tc.desc: test GetOrderedEventRecords and GetAction != event.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1600, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1600, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1600 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -467,7 +467,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1600, Le
  * @tc.desc: test GetOrderedEventRecords and GetAction != event and GetAction != event.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1700, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1700, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1700 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -492,7 +492,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1700, Le
  * @tc.desc: test GetOrderedEventRecords and GetAction == event and GetAction == event.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1800, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1800, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_1800 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -517,7 +517,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1800, Le
  * @tc.desc: test DumpStateByCommonEventRecord and record->userId is UNDEFINED_USER.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2200, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2200, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2200 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -539,7 +539,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2200, Le
  * @tc.desc: test DumpStateByCommonEventRecord and record->userId is default.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2300, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2300, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2300 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -561,7 +561,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2300, Le
  * @tc.desc: test DumpStateByCommonEventRecord and permissionNum == 0 and permissionNum == 1.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2400 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -592,7 +592,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2400, Le
  * @tc.desc: test DumpStateByCommonEventRecord and record->publishInfo->IsSticky is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2500, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2500, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2500 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -616,7 +616,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2500, Le
  * @tc.desc: test DumpStateByCommonEventRecord and record->state is OrderedEventRecord::RECEIVING.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2600, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2600, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2600 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -641,7 +641,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2600, Le
  * @tc.desc: test DumpStateByCommonEventRecord and record->state is default.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2700, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2700, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_2700 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -666,7 +666,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_2700, Le
  * @tc.desc: test DumpStateBySubscriberRecord and record->receivers is empty.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3400, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3400, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3400 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -683,7 +683,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3400, Le
  * @tc.desc: test DumpStateBySubscriberRecord and record->deliveryState[num - 1] is OrderedEventRecord::PENDING.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3500, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3500, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3500 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -705,7 +705,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3500, Le
  * @tc.desc: test DumpStateBySubscriberRecord and record->deliveryState[num - 1] is OrderedEventRecord::SKIPPED.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3600, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3600, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3600 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -727,7 +727,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3600, Le
  * @tc.desc: test DumpStateBySubscriberRecord and record->deliveryState[num - 1] is OrderedEventRecord::TIMEOUT.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3700, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3700, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3700 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -749,7 +749,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3700, Le
  * @tc.desc: test DumpStateBySubscriberRecord and record->deliveryState[num - 1] is default.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3800, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3800, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_3800 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -771,7 +771,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3800, Le
  * @tc.desc: test SendOrderedEventProcTimeoutHiSysEvent and subscriberRecord is nullptr.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4200, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4200, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_4200 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
@@ -788,7 +788,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4200, Le
  * @tc.desc: test SendOrderedEventProcTimeoutHiSysEvent and subscriberRecord->eventSubscribeInfo != nullptr.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4300, Level1)
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4300, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventControlManager_4300 start";
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =

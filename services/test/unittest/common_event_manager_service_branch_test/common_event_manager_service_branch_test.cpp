@@ -65,7 +65,7 @@ void CommonEventManagerServiceTest::TearDown(void)
  * @tc.desc: test PublishCommonEvent function, shell is system app and return true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0100 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -93,7 +93,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0100, Le
  * @tc.desc: test SubscribeCommonEvent function and IsReady is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0200, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0200, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0200 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
@@ -115,7 +115,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0200, Le
  * @tc.desc: test UnsubscribeCommonEvent function and IsReady is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0300, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0300, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0300 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
@@ -136,7 +136,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0300, Le
  * @tc.desc: test GetStickyCommonEvent function and IsReady is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0400, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0400, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0400 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
@@ -159,7 +159,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0400, Le
  *           2.isSubsystem is false and IsSystemApp is false
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0500, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0500, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0500 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -186,7 +186,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0500, Le
  *           2.isSubsystem is true and IsSystemApp is true
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0600, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0600, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0600 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -216,7 +216,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0600, Le
  *           2.userId is ALL_USER.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0700, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0700, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0700 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -244,7 +244,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0700, Le
  *           2.userId is CURRENT_USER.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0800, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0800, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0800 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -272,7 +272,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0800, Le
  *           2.userId is UNDEFINED_USER.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0900, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0900, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0900 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -300,7 +300,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0900, Le
  *           2.VerifyNativeToken is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1000, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1000, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1000 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -329,7 +329,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1000, Le
  *           2.IsDlpHap is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1100, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1100, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1100 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -357,7 +357,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1100, Le
  *           2.IsReady is true and return ERR_OK.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1200, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1200, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1200 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -380,7 +380,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1200, Le
  *           2.VerifyShellToken is false and VerifyNativeToken is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1300, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1300, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1300 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -404,7 +404,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1300, Le
  *           2.VerifyShellToken is true and VerifyNativeToken is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1400, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1400, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1400 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -430,7 +430,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1400, Le
  *           2.VerifyShellToken is false and VerifyNativeToken is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1500, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1500, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1500 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -450,7 +450,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1500, Le
  *           2.VerifyShellToken is true and VerifyNativeToken is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1600, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1600, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1600 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -473,7 +473,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1600, Le
  *           2.IsReady is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1700, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1700, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1700 start";
     sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
@@ -492,7 +492,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1700, Le
  * @tc.desc: test RemoveStickyCommonEvent function and IsReady is false.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0201, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0201, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0201 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
@@ -513,7 +513,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0201, Le
  * @tc.desc: test RemoveStickyCommonEvent function and IsReady is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0202, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0202, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0202 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
@@ -536,7 +536,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0202, Le
  * @tc.desc: test RemoveStickyCommonEvent function and IsReady is true.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0203, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0203, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0203 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();
@@ -562,7 +562,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0203, Le
  * @tc.desc: test SetStaticSubscriberState function.
  * @tc.type: FUNC
  */
-HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Level1)
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0204 start";
     std::shared_ptr<CommonEventManagerService> comm = std::make_shared<CommonEventManagerService>();

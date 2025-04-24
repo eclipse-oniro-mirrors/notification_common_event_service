@@ -78,10 +78,10 @@ void CommonEventFreezeUnitTest::TearDown() {}
  * @tc.name: test CommonEventSubscriberManager UpdateFreezeInfo set freeze state to true.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0100,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0100, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0100, TestSize.Level0";
 
     // make subscribeInfoPtr
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
@@ -103,7 +103,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0100,
     // get freeze records info
     EXPECT_EQ(true, commonEventSubscriberManager.subscribers_[0]->isFreeze);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0100, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0100, TestSize.Level0 end";
 }
 
 /*
@@ -111,10 +111,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0100,
  * @tc.name: test CommonEventSubscriberManager UpdateFreezeInfo set freeze state to false.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0200,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0200, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0200, TestSize.Level0";
     // make subscribeInfoPtr
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -135,7 +135,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0200,
     // get freeze records info
     EXPECT_EQ(false, commonEventSubscriberManager.subscribers_[0]->isFreeze);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0200, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0200, TestSize.Level0 end";
 }
 
 /*
@@ -143,10 +143,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0200,
  * @tc.name: test CommonEventSubscriberManager insert frozen event record.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300, TestSize.Level0";
     // make subscriber info
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -185,7 +185,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300,
     expectSize = 1;
     EXPECT_EQ(expectSize, allFrozenRecords1.size());
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300, TestSize.Level0 end";
 }
 
 /*
@@ -193,10 +193,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300,
  * @tc.name: test CommonEventSubscriberManager insert frozen event record.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400, TestSize.Level0";
     // make subscriber info
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -236,7 +236,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400,
     expectSize = 1;
     EXPECT_EQ(expectSize, allFrozenRecords1.size());
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400, TestSize.Level0 end";
 }
 
 /*
@@ -244,10 +244,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400,
  * @tc.name: test CommonEventControlManager NotifyUnorderedEvent with frozen subscriber.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0500,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0500, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0500, TestSize.Level0";
     // make subscriber info
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -279,7 +279,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0500,
     controlManager.NotifyUnorderedEvent(eventRecord);
     EXPECT_EQ(OrderedEventRecord::DeliveryState::SKIPPED, eventRecord->deliveryState[0]);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0500, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0500, TestSize.Level0 end";
 }
 
 /*
@@ -287,10 +287,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0500,
  * @tc.name: test CommonEventControlManager NotifyUnorderedEvent without frozen subscriber.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0600,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0600, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0600, TestSize.Level0";
     // make subscribeInfoPtr
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -322,7 +322,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0600,
     controlManager.NotifyUnorderedEvent(eventRecord);
     EXPECT_NE(OrderedEventRecord::DeliveryState::SKIPPED, eventRecord->deliveryState[0]);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0600, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0600, TestSize.Level0 end";
 }
 
 /*
@@ -330,10 +330,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0600,
  * @tc.name: test CommonEventControlManager NotifyOrderedEvent with frozen subscriber.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0700,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0700, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0700, TestSize.Level0";
     // make subscribeInfoPtr
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -365,7 +365,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0700,
     controlManager.NotifyOrderedEvent(eventRecord, 0);
     EXPECT_EQ(OrderedEventRecord::DeliveryState::SKIPPED, eventRecord->deliveryState[0]);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0700, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0700, TestSize.Level0 end";
 }
 
 /*
@@ -373,10 +373,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0700,
  * @tc.name: test CommonEventControlManager NotifyOrderedEvent without frozen subscriber.
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800, TestSize.Level0";
     // make subscribeInfoPtr
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -408,7 +408,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800,
     controlManager.NotifyOrderedEvent(eventRecord, 0);
     EXPECT_NE(OrderedEventRecord::DeliveryState::SKIPPED, eventRecord->deliveryState[0]);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800, TestSize.Level0 end";
 }
 
 /**
@@ -418,7 +418,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0800,
  * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0900,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     // make subscribeInfoPtr
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
@@ -448,7 +448,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0900,
  * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1000,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     // make subscribeInfoPtr
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
@@ -478,10 +478,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1000,
  * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001, TestSize.Level0";
     // make subscriber info
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -516,7 +516,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
     expectSize = 0;
     EXPECT_EQ(allFrozenRecords1.size(), expectSize);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001, TestSize.Level0 end";
 }
 
 /**
@@ -526,10 +526,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
  * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002, TestSize.Level0";
     // make subscriber info
     std::shared_ptr<CommonEventSubscribeInfo> subscribeInfoPtr =
         std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
@@ -559,7 +559,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
     expectSize = 0;
     EXPECT_EQ(allFrozenRecords1.size(), expectSize);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002, TestSize.Level0 end";
 }
 
 /**
@@ -569,10 +569,10 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
  * @tc.require: I5R11Y
  */
 HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003, TestSize.Level1";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003, TestSize.Level0";
     int32_t userId = 0;
     std::string eventName = "EventName";
     uint32_t subscriberNum = 0;
@@ -581,6 +581,6 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003,
     size_t expectSize = 0;
     ASSERT_EQ(commonEventSubscriberManager.subscribers_.size(), expectSize);
     GTEST_LOG_(INFO)
-        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003, TestSize.Level1 end";
+        << "CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1003, TestSize.Level0 end";
 }
 }  // namespace

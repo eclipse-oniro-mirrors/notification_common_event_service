@@ -162,7 +162,7 @@ void CommonEventSubscribeTest::TearDown(void)
  *                   2. success subscribe common event with right parameters
  */
 
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_001, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_001, TestSize.Level0)
 {
     /* Subscribe */
     MatchingSkills matchingSkills;
@@ -223,7 +223,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_001, TestSize.Level1)
  *                   2. different subscriber subscribe event
  *                   3. success subscribe common event with right parameters
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_002, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_002, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
@@ -250,7 +250,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_002, TestSize.Level1)
  *                   2. fail subscribe common event kit with null subscriber
  */
 
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_003, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_003, TestSize.Level0)
 {
     bool subscribeResult = CommonEventManager::SubscribeCommonEvent(nullptr);
 
@@ -266,7 +266,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_003, TestSize.Level1)
  * CaseDescription:  1. subscribe common event
  *                   2. fail subscribe common event with no event
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_004, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_004, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -286,7 +286,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_004, TestSize.Level1)
  * CaseDescription:  1. subscribe common event
  *                   2. fail subscribe common event because common event listener has subsrciber
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_005, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_005, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
@@ -310,7 +310,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_005, TestSize.Level1)
  *                   2. fail subscribe common event, inner common event manager
  *                      common event listener is null
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_009, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_009, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
@@ -334,7 +334,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_009, TestSize.Level1)
  *                   2. fail subscribe common event , common event subscriber manager
  *                      event subscriber info is null
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_010, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_010, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
@@ -366,7 +366,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_010, TestSize.Level1)
  *                   2. fail subscribe common event , common event subscriber manager
  *                      event common event listener is null
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_011, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_011, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(EVENT);
@@ -396,7 +396,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_011, TestSize.Level1)
  *                   2. fail subscribe common event , common event subscriber manager
  *                      event size is null
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_012, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_012, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -427,7 +427,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_012, TestSize.Level1)
  * EnvConditions: system run normally
  * CaseDescription:  1. ready true because handler is null but ThreadMode is not handler
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_014, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_014, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -450,7 +450,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_014, TestSize.Level1)
  * EnvConditions: system run normally
  * CaseDescription:  1. ready fail because handler is null and threadMode is handler
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_015, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_015, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -473,7 +473,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_015, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke Freeze interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventManager_001, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_001, TestSize.Level0)
 {
     CommonEventManager commonEventManager;
     bool freeze = commonEventManager.Freeze(SYSTEM_UID);
@@ -487,7 +487,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_001, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke Unfreeze interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventManager_002, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_002, TestSize.Level0)
 {
     CommonEventManager commonEventManager;
     bool unfreeze = commonEventManager.Unfreeze(SYSTEM_UID);
@@ -501,7 +501,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_002, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke UnfreezeAll interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level0)
 {
     CommonEventManager commonEventManager;
     bool unfreezeAll = commonEventManager.UnfreezeAll();
@@ -515,7 +515,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_003, TestSize.Level1)
  * tc.require: issue
  * tc.desc: Invoke PublishCommonEventAsUser interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventManager_004, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_004, TestSize.Level0)
 {
     CommonEventManager commonEventManager;
     CommonEventData data;
@@ -531,7 +531,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_004, TestSize.Level1)
  * tc.require: issue
  * tc.desc: Invoke PublishCommonEventAsUser interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventManager_005, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_005, TestSize.Level0)
 {
     CommonEventManager commonEventManager;
     CommonEventData data;
@@ -548,7 +548,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_005, TestSize.Level1)
  * tc.require: issueI5NGO7
  * tc.desc: Invoke Unfreeze interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventManager_006, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_006, TestSize.Level0)
 {
     CommonEventManager commonEventManager;
     int32_t ret = commonEventManager.SetStaticSubscriberState(true);
@@ -561,7 +561,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_006, TestSize.Level1)
  * tc.type: FUNC
  * tc.desc: Invoke SetFreezeStatus interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventManager_007, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventManager_007, TestSize.Level0)
 {
     CommonEventManager commonEventManager;
     std::set<int> pidList = {1000};
@@ -576,7 +576,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_007, TestSize.Level1)
  * tc.require: issueI5RULW
  * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventPublishInfo_001, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventPublishInfo_001, TestSize.Level0)
 {
     Parcel parcel;
     CommonEventPublishInfo commonEventPublishInfo;
@@ -591,7 +591,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventPublishInfo_001, TestSize.Level1)
  * tc.require: issueI5RULW
  * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribeInfo_001, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribeInfo_001, TestSize.Level0)
 {
     Parcel parcel;
     CommonEventSubscribeInfo commonEventSubscribeInfo;
@@ -606,7 +606,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribeInfo_001, TestSize.Level1
  * tc.require: issueI5RULW
  * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
  */
-HWTEST_F(CommonEventSubscribeTest, MatchingSkills_001, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, MatchingSkills_001, TestSize.Level0)
 {
     Parcel parcel;
     MatchingSkills matchingSkills;
@@ -647,7 +647,7 @@ HWTEST_F(CommonEventSubscribeTest, MatchingSkills_001, TestSize.Level1)
  * tc.require: issue
  * tc.desc: when SetCode return false
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_001, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_001, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -667,7 +667,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_001, TestSize.Level1)
  * tc.require: issue
  * tc.desc: when GetCode return false
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_002, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_002, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -686,7 +686,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_002, TestSize.Level1)
  * tc.require: issue
  * tc.desc: when SetData return false
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_003, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_003, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -706,7 +706,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_003, TestSize.Level1)
  * tc.require: issue
  * tc.desc: when GetData return null
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_004, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_004, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -726,7 +726,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_004, TestSize.Level1)
  * tc.require: issue
  * tc.desc: when SetCodeAndData return false
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_005, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_005, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
@@ -747,7 +747,7 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_005, TestSize.Level1)
  * tc.require: issue
  * tc.desc: when ClearAbortCommonEvent
  */
-HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_006, TestSize.Level1)
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscriber_006, TestSize.Level0)
 {
     MatchingSkills matchingSkills;
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
