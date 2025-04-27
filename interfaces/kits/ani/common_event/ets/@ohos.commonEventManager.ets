@@ -25,6 +25,9 @@ namespace commonEventManager {
     loadLibrary("ani_commoneventmanager.z");
     export native function publishExecute(event: string):int;
     export native function publishWithOptionsExecute(event: string, options: CommonEventPublishData):int;
+    export native function publishAsUserExecute(event: string, userId: int):int;
+    export native function publishAsUserWithOptionsExecute(event: string, userId: int,
+        options: CommonEventPublishData):int;
     export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
     export native function subscribeExecute(subscriber: CommonEventSubscriber,
         callback: AsyncCallback<CommonEventData, void>):int;
@@ -53,6 +56,31 @@ namespace commonEventManager {
             callback(r, undefined);
         }, (err:Object): void => {
             hilog.error(0x0000, TAG, 'publish with option error.');
+        });
+    }
+
+    export function publishAsUser(event: string, userId: number, callback: AsyncCallback<void, void>): void {
+        let publishAsUserId: Int  = userId as Int;
+        let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, publishAsUserId);
+        task.then((e: NullishType)=>{
+            let resultCode: Int  = e as Int;
+            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+            callback(r, undefined);
+        }, (err:Object): void => {
+            hilog.error(0xD001202, TAG, 'publishAsUser error.');
+        });
+    }
+
+    export function publishAsUser(event: string, userId: number, options: CommonEventPublishData,
+        callback: AsyncCallback<void, void>): void {
+        let publishAsUserId: Int  = userId as Int;
+        let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, publishAsUserId, options);
+        task.then((e: NullishType)=>{
+            let resultCode: Int  = e as Int;
+            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+            callback(r, undefined);
+        }, (err:Object): void => {
+            hilog.error(0xD001202, TAG, 'publishAsUser with option error.');
         });
     }
 
@@ -131,7 +159,51 @@ namespace commonEventManager {
         COMMON_EVENT_MINORSMODE_ON = 'usual.event.MINORSMODE_ON',
         COMMON_EVENT_MINORSMODE_OFF = 'usual.event.MINORSMODE_OFF',
         COMMON_EVENT_TIME_CHANGED = 'usual.event.TIME_CHANGED',
-        COMMON_EVENT_TIMEZONE_CHANGED = 'usual.event.TIMEZONE_CHANGED'
+        COMMON_EVENT_TIMEZONE_CHANGED = 'usual.event.TIMEZONE_CHANGED',
+        COMMON_EVENT_BOOT_COMPLETED = 'usual.event.BOOT_COMPLETED',
+        COMMON_EVENT_VOLUME_EJECT = 'usual.event.data.VOLUME_EJECT',
+        COMMON_EVENT_VOLUME_BAD_REMOVAL = 'usual.event.data.VOLUME_BAD_REMOVAL',
+        COMMON_EVENT_VOLUME_MOUNTED = 'usual.event.data.VOLUME_MOUNTED',
+        COMMON_EVENT_VOLUME_UNMOUNTED = 'usual.event.data.VOLUME_UNMOUNTED',
+        COMMON_EVENT_VOLUME_REMOVED = 'usual.event.data.VOLUME_REMOVED',
+        COMMON_EVENT_USER_REMOVED = 'usual.event.USER_REMOVED',
+        COMMON_EVENT_USER_ADDED = 'usual.event.USER_ADDED',
+        COMMON_EVENT_USER_SWITCHED = 'usual.event.USER_SWITCHED',
+        COMMON_EVENT_SPLIT_SCREEN = 'common.event.SPLIT_SCREEN',
+        COMMON_EVENT_AIRPLANE_MODE_CHANGED = 'usual.event.AIRPLANE_MODE',
+        COMMON_EVENT_DATE_CHANGED = 'usual.event.DATE_CHANGED',
+        COMMON_EVENT_BATTERY_OKAY = 'usual.event.BATTERY_OKAY',
+        COMMON_EVENT_USER_FOREGROUND = 'usual.event.USER_FOREGROUND',
+        COMMON_EVENT_PACKAGE_ADDED = 'usual.event.PACKAGE_ADDED',
+        COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_DISCONNECTED = 'usual.event.bluetooth.remotedevice.ACL_DISCONNECTED',
+        COMMON_EVENT_POWER_DISCONNECTED = 'usual.event.POWER_DISCONNECTED',
+        COMMON_EVENT_POWER_SAVE_MODE_CHANGED = 'usual.event.POWER_SAVE_MODE_CHANGED',
+        COMMON_EVENT_SHUTDOWN = 'usual.event.SHUTDOWN',
+        COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_CONNECTED = 'usual.event.bluetooth.remotedevice.ACL_CONNECTED',
+        COMMON_EVENT_WIFI_AP_STA_JOIN = 'usual.event.wifi.WIFI_HS_STA_JOIN',
+        COMMON_EVENT_PACKAGE_REPLACED = 'usual.event.PACKAGE_REPLACED',
+        COMMON_EVENT_USER_BACKGROUND = 'usual.event.USER_BACKGROUND',
+        COMMON_EVENT_USER_UNLOCKED = 'usual.event.USER_UNLOCKED',
+        COMMON_EVENT_POWER_CONNECTED = 'usual.event.POWER_CONNECTED',
+        COMMON_EVENT_WIFI_POWER_STATE = 'usual.event.wifi.POWER_STATE',
+        COMMON_EVENT_USER_STARTED = 'usual.event.USER_STARTED',
+        COMMON_EVENT_SPN_INFO_CHANGED = 'usual.event.SPN_INFO_CHANGED',
+        COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_NAME_UPDATE = 'usual.event.bluetooth.remotedevice.NAME_UPDATE',
+        COMMON_EVENT_PACKAGE_REMOVED = 'usual.event.PACKAGE_REMOVED',
+        COMMON_EVENT_PACKAGE_DATA_CLEARED = 'usual.event.PACKAGE_DATA_CLEARED',
+        COMMON_EVENT_PACKAGES_UNSUSPENDED = 'usual.event.PACKAGES_UNSUSPENDED',
+        COMMON_EVENT_BATTERY_CHANGED = 'usual.event.BATTERY_CHANGED',
+        COMMON_EVENT_PACKAGE_FULLY_REMOVED = 'usual.event.PACKAGE_FULLY_REMOVED',
+        COMMON_EVENT_WIFI_CONN_STATE = 'usual.event.wifi.CONN_STATE',
+        COMMON_EVENT_PACKAGE_CHANGED = 'usual.event.PACKAGE_CHANGED',
+        COMMON_EVENT_WIFI_AP_STA_LEAVE = 'usual.event.wifi.WIFI_HS_STA_LEAVE',
+        COMMON_EVENT_LOCALE_CHANGED = 'usual.event.LOCALE_CHANGED',
+        COMMON_EVENT_DISCHARGING = 'usual.event.DISCHARGING',
+        COMMON_EVENT_CHARGING = 'usual.event.CHARGING',
+        COMMON_EVENT_CHARGE_TYPE_CHANGED = 'usual.event.CHARGE_TYPE_CHANGED',
+        COMMON_EVENT_DYNAMIC_ICON_CHANGED = 'usual.event.DYNAMIC_ICON_CHANGED',
+        COMMON_EVENT_SCREEN_LOCKED = 'usual.event.SCREEN_LOCKED',
+        COMMON_EVENT_SCREEN_UNLOCKED = 'usual.event.SCREEN_UNLOCKED',
     }
 
 }

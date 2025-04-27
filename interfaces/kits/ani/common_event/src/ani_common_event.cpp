@@ -62,6 +62,46 @@ static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_
     return errorCode;
 }
 
+static uint32_t publishAsUserExecute(ani_env* env, ani_string eventId, ani_int userId)
+{
+    EVENT_LOGD("publishAsUserExecute call.");
+    std::string eventIdStr;
+    AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
+    EVENT_LOGD("publishAsUserExecute eventIdStr: %{public}s, userId: %{public}d", eventIdStr.c_str(), userId);
+
+    CommonEventData commonEventData;
+    CommonEventPublishInfo commonEventPublishInfo;
+    Want want;
+    want.SetAction(eventIdStr);
+    commonEventData.SetWant(want);
+
+    auto errorCode = CommonEventManager::NewPublishCommonEventAsUser(commonEventData, commonEventPublishInfo, userId);
+    EVENT_LOGD("publishAsUserExecute result: %{public}d.", errorCode);
+    return errorCode;
+}
+
+static uint32_t publishAsUserWithOptionsExecute(ani_env* env, ani_string eventId, ani_int userId,
+    ani_object optionsObject)
+{
+    EVENT_LOGD("publishAsUserWithOptionsExecute call.");
+    std::string eventIdStr;
+    AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
+    EVENT_LOGD("publishAsUserWithOptionsExecute eventIdStr: %{public}s, userId: %{public}d",
+        eventIdStr.c_str(), userId);
+
+    CommonEventData commonEventData;
+    CommonEventPublishInfo commonEventPublishInfo;
+    Want want;
+    want.SetAction(eventIdStr);
+    commonEventData.SetWant(want);
+
+    AniCommonEventUtils::ConvertCommonEventPublishData(
+        env, optionsObject, want, commonEventData, commonEventPublishInfo);
+    auto errorCode = CommonEventManager::NewPublishCommonEventAsUser(commonEventData, commonEventPublishInfo, userId);
+    EVENT_LOGD("publishAsUserWithOptionsExecute result: %{public}d.", errorCode);
+    return errorCode;
+}
+
 static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
     EVENT_LOGI("createSubscriberExecute call.");
@@ -359,6 +399,11 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
         ani_native_function { "publishWithOptionsExecute",
             "Lstd/core/String;LcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
+        ani_native_function { "publishAsUserExecute", "Lstd/core/String;I:I",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserExecute) },
+        ani_native_function { "publishAsUserWithOptionsExecute",
+            "Lstd/core/String;ILcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserWithOptionsExecute) },
         ani_native_function { "createSubscriberExecute",
             "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfo;:LcommonEvent/commonEventSubscriber/"
             "CommonEventSubscriber;",
