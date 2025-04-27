@@ -19,8 +19,6 @@ module_output_path = "common_event_service/common_event_service/frameworks/core"
 config("kits_natvie_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${ffrt_path}/interfaces/kits" ]
-
   cflags = []
 
   if (target_cpu == "arm") {
@@ -31,10 +29,7 @@ config("kits_natvie_config") {
 ohos_unittest("common_event_branch_test") {
   module_out_path = module_output_path
 
-  include_dirs = [
-    "${tools_path}/test/mock",
-    "${ffrt_path}/interfaces/kits",
-  ]
+  include_dirs = [ "${tools_path}/test/mock" ]
 
   sources = [
     "${tools_path}/test/mock/mock_common_event_stub.cpp",
@@ -48,7 +43,6 @@ ohos_unittest("common_event_branch_test") {
   deps = [
     "${ces_core_path}:cesfwk_core",
     "${services_path}:cesfwk_services_static",
-    "//third_party/googletest:gmock_main",
   ]
 
   external_deps = [
@@ -61,6 +55,7 @@ ohos_unittest("common_event_branch_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
@@ -169,6 +164,7 @@ ohos_unittest("common_event_proxy_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
@@ -189,6 +185,7 @@ ohos_unittest("event_receive_stub_test") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]

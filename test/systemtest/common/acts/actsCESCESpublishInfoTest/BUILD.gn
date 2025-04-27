@@ -47,13 +47,12 @@ ohos_systemtest("ActsCESCESpublishInfoTest") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
     "json:nlohmann_json_static",
   ]
-
-  public_external_deps = [ "googletest:gtest_main" ]
 }
 
 group("actsCESTest") {

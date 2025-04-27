@@ -45,13 +45,12 @@ ohos_systemtest("cesCheckService") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
-
-  public_external_deps = [ "googletest:gtest_main" ]
 }
 
 group("systemtest_cesTest") {

@@ -16,7 +16,6 @@
 #ifndef FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
 
-#include "cpp/queue.h"
 #include "ffrt.h"
 #include <memory>
 #include <mutex>

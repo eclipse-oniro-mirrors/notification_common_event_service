@@ -52,6 +52,7 @@ ohos_moduletest("CesPublishOrderedEventModuleTest") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "hitrace:hitrace_meter",
     "init:libbegetutil",
@@ -60,8 +61,6 @@ ohos_moduletest("CesPublishOrderedEventModuleTest") {
     "json:nlohmann_json_static",
     "samgr:samgr_proxy",
   ]
-
-  public_external_deps = [ "googletest:gtest_main" ]
 }
 
 group("moduletest_cesOrdered") {
