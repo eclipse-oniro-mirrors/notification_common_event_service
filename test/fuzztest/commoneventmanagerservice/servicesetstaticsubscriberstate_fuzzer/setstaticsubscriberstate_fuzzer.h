@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,22 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef FUZZ_COMMON_BASE_H
-#define FUZZ_COMMON_BASE_H
+#ifndef TEST_FUZZTEST_COMMONEVENTMANAGERSERVICE_SERVICESETSTATICSUBSCRIBERSTATE_FUZZER_H
+#define TEST_FUZZTEST_COMMONEVENTMANAGERSERVICE_SERVICESETSTATICSUBSCRIBERSTATE_FUZZER_H
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include "securec.h"
-#include "fuzz_data.h"
-#include <fuzzer/FuzzedDataProvider.h>
-
-extern "C" {
-void NativeTokenGet(const std::vector<std::string> &permissions);
-
-void SystemHapTokenGet(const std::vector<std::string> &permissions);
-
-void MockRandomToken(FuzzedDataProvider *fdp, const std::vector<std::string> &permissions);
-}
-
-#endif // FUZZ_COMMON_BASE_H
+#define FUZZ_PROJECT_NAME "servicesetstaticsubscriberstate_fuzzer"
+#endif

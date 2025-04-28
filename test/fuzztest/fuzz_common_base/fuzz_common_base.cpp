@@ -23,6 +23,15 @@
 extern "C" {
 using namespace OHOS::Security::AccessToken;
 
+void MockRandomToken(FuzzedDataProvider *fdp, const std::vector<std::string> &permissions)
+{
+    if (fdp->ConsumeBool()) {
+        NativeTokenGet(permissions);
+    } else {
+        SystemHapTokenGet(permissions);
+    }
+}
+
 void NativeTokenGet(const std::vector<std::string> &permissions)
 {
     uint64_t tokenId;
