@@ -42,6 +42,8 @@ public:
     static bool GetBooleanOrUndefined(ani_env* env, ani_object param, const char* name, bool& res);
     static bool GetStringArrayOrUndefined(
         ani_env* env, ani_object param, const char* name, std::vector<std::string>& res);
+    static bool GetWantParamsOrUndefined(
+        ani_env* env, ani_object param, const char* name, AAFwk::WantParams& wantParams);
     static void CreateNewObjectByClass(ani_env* env, const char* className, ani_class &cls, ani_object& ani_data);
     template<typename valueType>
     static void CallSetter(ani_env* env, ani_class cls, ani_object object, const char* setterName, valueType value);

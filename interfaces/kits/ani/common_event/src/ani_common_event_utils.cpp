@@ -14,6 +14,7 @@
  */
 #include "ani_common_event_utils.h"
 
+#include "ani_common_want.h"
 #include "event_log_wrapper.h"
 
 namespace OHOS {
@@ -183,6 +184,33 @@ bool AniCommonEventUtils::GetStringArrayOrUndefined(
     return true;
 }
 
+bool AniCommonEventUtils::GetWantParamsOrUndefined(
+    ani_env* env, ani_object param, const char* name, AAFwk::WantParams& wantParams)
+{
+    ani_ref obj = nullptr;
+    ani_boolean isUndefined = true;
+    ani_status status = ANI_ERROR;
+    if ((status = env->Object_GetPropertyByName_Ref(param, name, &obj)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if ((status = env->Reference_IsUndefined(obj, &isUndefined)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if (isUndefined) {
+        EVENT_LOGW("%{public}s : undefined", name);
+        return false;
+    }
+
+    if (!UnwrapWantParams(env, obj, wantParams)) {
+        EVENT_LOGE("GetWantParamsOrUndefined UnwrapWantParams error.");
+        return false;
+    }
+
+    return true;
+}
+
 void AniCommonEventUtils::ConvertCommonEventPublishData(ani_env* env, ani_object optionsObject, Want& want,
     CommonEventData &commonEventData, CommonEventPublishInfo &commonEventPublishInfo)
 {
@@ -241,6 +269,13 @@ void AniCommonEventUtils::ConvertCommonEventPublishData(ani_env* env, ani_object
     }
 
     // Get the parameters [Record]
+    AAFwk::WantParams wantParams;
+    if (GetWantParamsOrUndefined(env, optionsObject, "parameters", wantParams)) {
+        EVENT_LOGI("ConvertCommonEventPublishData parameters success.");
+        want.SetParams(wantParams);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData parameters not exit");
+    }
 }
 
 void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
@@ -444,6 +479,8 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
 
     // set parameters [Record]
+    ani_ref wantParamRef = WrapWantParams(env, commonEventData.GetWant().GetParams());
+    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(parameters), wantParamRef);
 }
 
 } // namespace EventManagerFwkAni
