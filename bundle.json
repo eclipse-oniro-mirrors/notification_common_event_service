@@ -76,13 +76,9 @@
                 "kv_store",
                 "config_policy",
                 "libuv",
-                "node",
-                "googletest"
-            ],
-            "third_party": [
-                "libuv",
                 "node"
-            ]
+            ],
+            "third_party": []
         },
         "build": {
             "group_type": {
