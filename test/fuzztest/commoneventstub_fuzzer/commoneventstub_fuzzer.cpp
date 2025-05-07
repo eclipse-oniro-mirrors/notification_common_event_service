@@ -14,8 +14,8 @@
  */
 
 #include "common_event_data.h"
+#include "common_event_manager_service.h"
 #include "commoneventstub_fuzzer.h"
-#include "mock_common_event_stub.h"
 #include "fuzz_common_base.h"
 #include <fuzzer/FuzzedDataProvider.h>
 
@@ -28,7 +28,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     MessageParcel dataParcel;
     MessageParcel reply;
     MessageOption option;
-    EventFwk::MockCommonEventStub commonEventStub;
+    EventFwk::CommonEventManagerService commonEventStub;
     // test PublishCommonEvent function
     AAFwk::Want want;
     EventFwk::CommonEventData commonEventData;

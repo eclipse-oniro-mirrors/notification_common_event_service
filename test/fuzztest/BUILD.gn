@@ -30,5 +30,6 @@ group("fuzztest") {
     "publishcommoneventasuser_fuzzer:PublishCommonEventAsUserFuzzTest",
     "subscribecommonevent_fuzzer:SubscribeCommonEventFuzzTest",
     "unsubscribecommonevent_fuzzer:UnSubscribeCommonEventFuzzTest",
+    "commoneventmanagerservice:fuzztest",
   ]
 }
