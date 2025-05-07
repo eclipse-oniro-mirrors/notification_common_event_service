@@ -219,31 +219,38 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
             EVENT_LOGE("Notify %{public}s to freeze subscriber, subId = %{public}s",
                 eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             freezeCnt++;
-        } else {
-            sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(vec->commonEventListener);
-            if (!commonEventListenerProxy) {
-                eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
-                EVENT_LOGE("Notify %{public}s to invalid proxy, subId = %{public}s",
-                    eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
-                failCnt++;
-                continue;
-            }
-            int8_t ret = CheckPermission(*vec, *eventRecord);
-            eventRecord->deliveryState[index] = ret;
-            if (ret == OrderedEventRecord::DELIVERED) {
-                eventRecord->state = OrderedEventRecord::RECEIVING;
-                commonEventListenerProxy->NotifyEvent(
-                    *(eventRecord->commonEventData), false, eventRecord->publishInfo->IsSticky());
-                eventRecord->state = OrderedEventRecord::RECEIVED;
-                succCnt++;
-                AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
-                    eventRecord->commonEventData->GetWant().GetAction());
-            } else {
+            continue;
+        }
+        sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(vec->commonEventListener);
+        if (!commonEventListenerProxy) {
+            eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
+            EVENT_LOGE("Notify %{public}s to invalid proxy, subId = %{public}s",
+                eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
+            failCnt++;
+            continue;
+        }
+        int8_t ret = CheckPermission(*vec, *eventRecord);
+        eventRecord->deliveryState[index] = ret;
+        if (ret == OrderedEventRecord::DELIVERED) {
+            eventRecord->state = OrderedEventRecord::RECEIVING;
+            int32_t result = commonEventListenerProxy->NotifyEvent(*(eventRecord->commonEventData), false,
+                eventRecord->publishInfo->IsSticky());
+            if (result != ERR_OK) {
+                eventRecord->state = OrderedEventRecord::SKIPPED;
                 failCnt++;
                 EVENT_LOGE("Notify %{public}s fail, subId = %{public}s",
                     eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
+                continue;
             }
+            eventRecord->state = OrderedEventRecord::RECEIVED;
+            succCnt++;
+            AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
+                eventRecord->commonEventData->GetWant().GetAction());
+            continue;
         }
+        failCnt++;
+        EVENT_LOGE("Notify %{public}s fail, subId = %{public}s",
+            eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
     }
     EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}d, %{public}d, %{public}d)",
         eventRecord->commonEventData->GetWant().GetAction().c_str(),
