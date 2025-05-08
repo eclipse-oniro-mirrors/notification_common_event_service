@@ -1374,6 +1374,12 @@ public:
      */
     static const std::string COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED;
 
+    /**
+     * Indicates that the default application is changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_DEFAULT_APPLICATION_CHANGED;
+
 public:
     CommonEventSupport();
 

@@ -1516,6 +1516,13 @@ const std::string CommonEventSupport::COMMON_EVENT_RESTORE_START = "usual.event.
 const std::string CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED =
     "usual.event.MANAGED_BROWSER_POLICY_CHANGED";
 
+/**
+ * Indicates that the default application is changed.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DEFAULT_APPLICATION_CHANGED =
+    "usual.event.DEFAULT_APPLICATION_CHANGED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2876,6 +2883,12 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED);
+
+    /**
+     * Indicates that the default application is changed.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEFAULT_APPLICATION_CHANGED);
     return;
 }
 
