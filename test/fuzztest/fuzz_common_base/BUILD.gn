@@ -29,6 +29,8 @@ static_library("fuzz_common_base") {
     "access_token:libaccesstoken_sdk",
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
+    "cJSON:cjson_static",
     "c_utils:utils",
+    "selinux_adapter:librestorecon",
   ]
 }
