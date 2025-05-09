@@ -72,6 +72,7 @@ struct AsyncCallbackInfoSubscribe {
     napi_env env = nullptr;
     napi_async_work asyncWork;
     napi_ref callback = nullptr;
+    napi_deferred deferred = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int32_t errorCode = NO_ERROR;
     napi_threadsafe_function tsfn = nullptr;
@@ -231,6 +232,8 @@ public:
     void SetEnv(const napi_env &env);
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
+    void SetIsNewVersion(bool isNewVersion);
+    bool IsNewVersion();
     void ClearEnv();
     unsigned long long GetID();
     napi_env GetEnv();
@@ -240,6 +243,7 @@ private:
     napi_ref ref_ = nullptr;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
+    bool isNewVersion_ = false;
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
     std::mutex refMutex_;
