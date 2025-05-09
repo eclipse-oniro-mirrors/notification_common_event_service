@@ -265,9 +265,9 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
         return false;
     }
     
-    std::lock_guard<std::mutex> lock(unorderedMutex_);
     NotifyUnorderedEventLocked(eventRecord);
 
+    std::lock_guard<std::mutex> lock(unorderedMutex_);
     auto it = std::find(unorderedEventQueue_.begin(), unorderedEventQueue_.end(), eventRecord);
     if (it != unorderedEventQueue_.end()) {
         unorderedEventQueue_.erase(it);
@@ -509,56 +509,55 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
     }
 
     std::shared_ptr<OrderedEventRecord> sp = nullptr;
-
-    std::lock_guard<std::mutex> lock(orderedMutex_);
-
-    do {
-        if (orderedEventQueue_.empty()) {
-            EVENT_LOGD("orderedEventQueue_ is empty");
-            return;
-        }
-
-        sp = orderedEventQueue_.front();
-        bool forceReceive = false;
-        size_t numReceivers = sp->receivers.size();
-        uint64_t nowSysTime = static_cast<uint64_t>(SystemTime::GetNowSysTime());
-
-        if (sp->dispatchTime > 0) {
-            if ((numReceivers > 0) && (nowSysTime > static_cast<uint64_t>(sp->dispatchTime) +
-                (DOUBLE * TIMEOUT * numReceivers))) {
-                CurrentOrderedEventTimeout(false);
-                forceReceive = true;
-                sp->state = OrderedEventRecord::IDLE;
+    {
+        std::lock_guard<std::mutex> lock(orderedMutex_);
+        do {
+            if (orderedEventQueue_.empty()) {
+                EVENT_LOGD("orderedEventQueue_ is empty");
+                return;
             }
-        }
 
-        if (sp->state != OrderedEventRecord::IDLE) {
-            return;
-        }
+            sp = orderedEventQueue_.front();
+            bool forceReceive = false;
+            size_t numReceivers = sp->receivers.size();
+            uint64_t nowSysTime = static_cast<uint64_t>(SystemTime::GetNowSysTime());
 
-        if ((sp->receivers.empty()) || (sp->nextReceiver >= numReceivers) || sp->resultAbort || forceReceive) {
-            // No more receivers for this ordered common event, then process the final result receiver
-            bool hasLastSubscribe = (sp->resultTo != nullptr) ? true : false;
-            if (sp->resultTo != nullptr) {
-                EVENT_LOGD("Process the final subscriber");
-                sptr<IEventReceive> receiver = iface_cast<IEventReceive>(sp->resultTo);
-                if (!receiver) {
-                    EVENT_LOGE("Failed to get IEventReceive proxy");
-                    return;
+            if (sp->dispatchTime > 0) {
+                if ((numReceivers > 0) && (nowSysTime > static_cast<uint64_t>(sp->dispatchTime) +
+                    (DOUBLE * TIMEOUT * numReceivers))) {
+                    CurrentOrderedEventTimeout(false);
+                    forceReceive = true;
+                    sp->state = OrderedEventRecord::IDLE;
                 }
-                receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
-                sp->resultTo = nullptr;
             }
-            EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}zu)",
-                sp->commonEventData->GetWant().GetAction().c_str(), numReceivers, sp->nextReceiver);
-            CancelTimeout();
 
-            orderedEventQueue_.erase(orderedEventQueue_.begin());
+            if (sp->state != OrderedEventRecord::IDLE) {
+                return;
+            }
 
-            sp = nullptr;
-        }
-    } while (sp == nullptr);
+            if ((sp->receivers.empty()) || (sp->nextReceiver >= numReceivers) || sp->resultAbort || forceReceive) {
+                // No more receivers for this ordered common event, then process the final result receiver
+                bool hasLastSubscribe = (sp->resultTo != nullptr) ? true : false;
+                if (sp->resultTo != nullptr) {
+                    EVENT_LOGD("Process the final subscriber");
+                    sptr<IEventReceive> receiver = iface_cast<IEventReceive>(sp->resultTo);
+                    if (!receiver) {
+                        EVENT_LOGE("Failed to get IEventReceive proxy");
+                        return;
+                    }
+                    receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
+                    sp->resultTo = nullptr;
+                }
+                EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}zu)",
+                    sp->commonEventData->GetWant().GetAction().c_str(), numReceivers, sp->nextReceiver);
+                CancelTimeout();
 
+                orderedEventQueue_.erase(orderedEventQueue_.begin());
+
+                sp = nullptr;
+            }
+        } while (sp == nullptr);
+    }
     size_t recIdx = sp->nextReceiver++;
     SetTime(recIdx, sp, pendingTimeoutMessage_);
 
@@ -861,6 +860,7 @@ void CommonEventControlManager::GetUnorderedEventRecords(
     const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
 {
     EVENT_LOGD("enter");
+    std::lock_guard<std::mutex> unorderedLock(unorderedMutex_);
     if (event.empty() && userId == ALL_USER) {
         records = unorderedEventQueue_;
     } else if (event.empty()) {
@@ -888,6 +888,7 @@ void CommonEventControlManager::GetOrderedEventRecords(
     const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
 {
     EVENT_LOGD("enter");
+    std::lock_guard<std::mutex> orderedLock(orderedMutex_);
     if (event.empty() && userId == ALL_USER) {
         records = orderedEventQueue_;
     } else if (event.empty()) {
@@ -1074,12 +1075,9 @@ void CommonEventControlManager::DumpState(
     const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
     EVENT_LOGD("enter");
-
     std::vector<std::shared_ptr<OrderedEventRecord>> records;
     std::vector<std::shared_ptr<OrderedEventRecord>> unorderedRecords;
     std::vector<std::shared_ptr<OrderedEventRecord>> orderedRecords;
-    std::lock_guard<std::mutex> orderedLock(orderedMutex_);
-    std::lock_guard<std::mutex> unorderedLock(unorderedMutex_);
     GetUnorderedEventRecords(event, userId, unorderedRecords);
     GetOrderedEventRecords(event, userId, orderedRecords);
     records.insert(records.end(), unorderedRecords.begin(), unorderedRecords.end());
