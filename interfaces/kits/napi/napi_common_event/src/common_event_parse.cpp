@@ -34,8 +34,7 @@ static const std::unordered_map<int32_t, std::string> ErrorCodeToMsg {
     {ERR_NOTIFICATION_CES_USERID_INVALID, "Invalid userId."},
     {ERR_NOTIFICATION_SEND_ERROR, "Failed to send the message."},
     {ERR_NOTIFICATION_CESM_ERROR, "Failed to read the data."},
-    {ERR_NOTIFICATION_SYS_ERROR, "System error."},
-    {ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT, "The count of subscriber exceed system specification."}
+    {ERR_NOTIFICATION_SYS_ERROR, "System error."}
 };
 
 static const int32_t STR_MAX_SIZE = 256;

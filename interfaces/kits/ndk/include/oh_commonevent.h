@@ -39,13 +39,6 @@ typedef enum CommonEvent_ErrCode {
     /** @error invalid input parameter. */
     COMMONEVENT_ERR_INVALID_PARAMETER = 401,
 
-    /**
-     * @error The common event send frequency too high.
-     *
-     * @since 19
-     */
-    COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED = 1500003,
-
     /** @error the application cannot send system common events. */
     COMMONEVENT_ERR_NOT_SYSTEM_SERVICE = 1500004,
 
@@ -614,7 +607,6 @@ CommonEvent_ErrCode OH_CommonEvent_SetDoubleArrayToParameters(CommonEvent_Parame
  * @return Returns the error code.
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
- *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high.
  *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18
@@ -629,7 +621,6 @@ CommonEvent_ErrCode OH_CommonEvent_Publish(const char* event);
  * @return Returns the error code.
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
- *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high.
  *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18
