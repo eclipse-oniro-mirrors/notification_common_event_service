@@ -76,7 +76,10 @@
                 "kv_store",
                 "config_policy",
                 "libuv",
-                "node"
+                "ace_engine",
+                "node",
+                "cJSON",
+                "selinux_adapter"
             ],
             "third_party": []
         },

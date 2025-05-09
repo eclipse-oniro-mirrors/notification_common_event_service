@@ -53,6 +53,7 @@ ohos_systemtest("cesSystemTest") {
     "access_token:libtoken_setproc",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "cJSON:cjson_static",
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
@@ -61,6 +62,7 @@ ohos_systemtest("cesSystemTest") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
+    "selinux_adapter:librestorecon",
   ]
 }
 

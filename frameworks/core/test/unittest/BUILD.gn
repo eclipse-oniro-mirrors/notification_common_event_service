@@ -167,6 +167,7 @@ ohos_unittest("common_event_proxy_test") {
     "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "samgr:samgr_proxy",
   ]
 }
 
@@ -188,6 +189,7 @@ ohos_unittest("event_receive_stub_test") {
     "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "samgr:samgr_proxy",
   ]
 }
 
