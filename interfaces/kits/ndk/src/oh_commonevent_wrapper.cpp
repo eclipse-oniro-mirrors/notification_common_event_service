@@ -130,6 +130,9 @@ CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* s
     if (ret == OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT) {
         return COMMONEVENT_ERR_SUBSCRIBER_NUM_EXCEEDED;
     }
+    if (ret != OHOS::ERR_OK) {
+        return static_cast<CommonEvent_ErrCode>(ret);
+    }
     {
         std::lock_guard<std::mutex> lock(resultCacheMutex_);
         resultCache_.emplace(observer, ResultCacheItem());
