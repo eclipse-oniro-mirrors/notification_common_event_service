@@ -166,6 +166,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_RESTORE_START,
         {PermissionState::DEFAULT, {"ohos.permission.START_RESTORE_NOTIFICATION"}}
     },
+    {CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED,
+        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_SHORTCUTS"}}
+    },
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
@@ -174,7 +177,8 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_PACKAGE_INSTALLATION_STARTED,
     CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED,
     CommonEventSupport::COMMON_EVENT_DYNAMIC_ICON_CHANGED,
-    CommonEventSupport::COMMON_EVENT_RESTORE_START
+    CommonEventSupport::COMMON_EVENT_RESTORE_START,
+    CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {

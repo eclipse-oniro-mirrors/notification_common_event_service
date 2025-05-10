@@ -1516,6 +1516,13 @@ const std::string CommonEventSupport::COMMON_EVENT_RESTORE_START = "usual.event.
 const std::string CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED =
     "usual.event.MANAGED_BROWSER_POLICY_CHANGED";
 
+/**
+ * This common event means that shortcut has been changed.
+ * To subscribe to this common event, your application must have the ohos.permission.MANAGE_SHORTCUTS permission.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED = "usual.event.SHORTCUT_CHANGED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2876,6 +2883,13 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED);
+
+    /**
+     * This common event means that the visibility of shortcut has been changed.
+     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_SHORTCUTS permission.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED);
     return;
 }
 
