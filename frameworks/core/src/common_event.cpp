@@ -180,6 +180,8 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
         return res;
     } else if (subscribeState == ALREADY_SUBSCRIBED) {
         return ERR_OK;
+    } else if (subscribeState == SUBSCRIBE_EXCEED_LIMIT) {
+        return ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT;
     } else {
         return ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT;
     }
@@ -409,7 +411,7 @@ uint8_t CommonEvent::CreateCommonEventListener(
                 std::string matchingSkills = listenerItem.first->GetSubscribeInfo().GetMatchingSkills().ToString();
                 EVENT_LOGE("Each subscription matchingSkills is %{public}s", matchingSkills.c_str());
             }
-            return SUBSCRIBE_FAILED;
+            return SUBSCRIBE_EXCEED_LIMIT;
         }
 
         sptr<CommonEventListener> listener = new (std::nothrow) CommonEventListener(subscriber);
