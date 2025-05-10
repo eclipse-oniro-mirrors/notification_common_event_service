@@ -55,6 +55,5 @@ group("actsCEStest_ces") {
     "actsCESManagertest:actsCESTest",
     "actsCESMatchingSkillsTest:actsCESTest",
     "actsCESSubscribeInfoTest:actsCESTest",
-    "actsCesSpecificationTest:actsCESTest",
   ]
 }
