@@ -13,6 +13,26 @@
  * limitations under the License.
  */
 
+/**
+ * @addtogroup OH_CommonEvent
+ * @{
+ *
+ * @brief Provides the APIs of common event service.
+ *
+ * @since 12
+ */
+/**
+ * @file oh_commonevent.h
+ *
+ * @brief Declares the APIs to subscribe and unsubscribe common event, and so on.
+ *
+ * @library libohcommonevent.so
+ * @kit BasicServicesKit
+ * @syscap SystemCapability.Notification.CommonEvent
+ * @since 12
+ * @version 1.0
+ */
+
 #ifndef OH_COMMONEVENT_H
 #define OH_COMMONEVENT_H
 
@@ -38,6 +58,13 @@ typedef enum CommonEvent_ErrCode {
 
     /** @error invalid input parameter. */
     COMMONEVENT_ERR_INVALID_PARAMETER = 401,
+
+    /**
+     * @error The common event send frequency too high.
+     *
+     * @since 20
+     */
+    COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED = 1500003,
 
     /** @error the application cannot send system common events. */
     COMMONEVENT_ERR_NOT_SYSTEM_SERVICE = 1500004,
@@ -607,6 +634,8 @@ CommonEvent_ErrCode OH_CommonEvent_SetDoubleArrayToParameters(CommonEvent_Parame
  * @return Returns the error code.
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
+ *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high,
+ *                 add since api 20.
  *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18
@@ -621,6 +650,8 @@ CommonEvent_ErrCode OH_CommonEvent_Publish(const char* event);
  * @return Returns the error code.
  *         Returns {@link COMMONEVENT_ERR_OK} if the operation is successful.
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
+ *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high,
+ *                  add since api 20.
  *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18
@@ -715,3 +746,4 @@ bool OH_CommonEvent_SetDataToSubscriber(CommonEvent_Subscriber* subscriber, cons
 }
 #endif
 #endif // OH_COMMONEVENT_H
+/** @} */
