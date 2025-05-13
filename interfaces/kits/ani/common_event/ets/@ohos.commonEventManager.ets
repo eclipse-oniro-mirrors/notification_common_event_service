@@ -38,8 +38,8 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.publishExecute, event);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            hilog.info(0x0000, TAG, 'publish call result:%{public}d.', resultCode.intValue());
-            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+            hilog.info(0x0000, TAG, 'publish call result:%{public}d.', resultCode.toInt());
+            let r: BusinessError = { code: resultCode.toInt(), data: undefined };
             callback(r, undefined);
         }, (err:Object): void => {
             hilog.error(0x0000, TAG, 'publish error.');
@@ -51,8 +51,8 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.publishWithOptionsExecute, event, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            hilog.info(0x0000, TAG, 'publish with option result:%{public}d.', resultCode.intValue());
-            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+            hilog.info(0x0000, TAG, 'publish with option result:%{public}d.', resultCode.toInt());
+            let r: BusinessError = { code: resultCode.toInt(), data: undefined };
             callback(r, undefined);
         }, (err:Object): void => {
             hilog.error(0x0000, TAG, 'publish with option error.');
@@ -64,7 +64,7 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, publishAsUserId);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+            let r: BusinessError = { code: resultCode.toInt(), data: undefined };
             callback(r, undefined);
         }, (err:Object): void => {
             hilog.error(0xD001202, TAG, 'publishAsUser error.');
@@ -77,7 +77,7 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, publishAsUserId, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+            let r: BusinessError = { code: resultCode.toInt(), data: undefined };
             callback(r, undefined);
         }, (err:Object): void => {
             hilog.error(0xD001202, TAG, 'publishAsUser with option error.');
@@ -123,10 +123,10 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.subscribeExecute, subscriber, callback);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            hilog.info(0x0000, TAG, 'subscribe result:%{public}d.', resultCode.intValue());
+            hilog.info(0x0000, TAG, 'subscribe result:%{public}d.', resultCode.toInt());
             if (resultCode != 0) {
                 let a: CommonEventData;
-                let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(r, a);
             }
         }, (err:Object): void => {
@@ -139,8 +139,8 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.unsubscribeExecute, subscriber);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
-            hilog.info(0x0000, TAG, 'unsubscribe result:%{public}d.', resultCode.intValue());
-            let r: BusinessError = { code: resultCode.intValue(), data: undefined };
+            hilog.info(0x0000, TAG, 'unsubscribe result:%{public}d.', resultCode.toInt());
+            let r: BusinessError = { code: resultCode.toInt(), data: undefined };
             if (callback != undefined) {
                 callback(r, undefined);
             }
