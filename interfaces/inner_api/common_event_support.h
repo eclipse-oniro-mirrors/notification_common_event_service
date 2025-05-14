@@ -1380,6 +1380,13 @@ public:
      */
     static const std::string COMMON_EVENT_DEFAULT_APPLICATION_CHANGED;
 
+    /**
+     * This common event means that shortcut has been changed.
+     * To subscribe to this common event, your application must have the ohos.permission.MANAGE_SHORTCUTS permission.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SHORTCUT_CHANGED;
+
 public:
     CommonEventSupport();
 
