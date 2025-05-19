@@ -649,3 +649,29 @@ HWTEST_F(CommonEventStubTest, SetStaticSubscriberStateWithTwoParameters_0100, Te
     EXPECT_EQ(result, OHOS::ERR_OK);
 }
  
+/*
+ * tc.number: SetFreezeStatus_001
+ * tc.name: test SetFreezeStatus
+ * tc.type: FUNC
+ * tc.desc: Successful verification by calling SetFreezeStatus.
+ */
+HWTEST_F(CommonEventStubTest, SetFreezeStatus_001, TestSize.Level1)
+{
+    const uint32_t code = static_cast<uint32_t>(ICommonEventIpcCode::COMMAND_SET_FREEZE_STATUS);
+    OHOS::MessageParcel dataParcel;
+    OHOS::MessageParcel reply;
+    OHOS::MessageOption option(OHOS::MessageOption::TF_SYNC);
+    OHOS::sptr<OHOS::IRemoteObject> proxy = new OHOS::MockIRemoteObject();
+    std::set<int32_t> pidList = {1000};
+    bool isFreeze = true;
+
+    dataParcel.WriteInterfaceToken(CommonEventProxy::GetDescriptor());
+    dataParcel.WriteInt32(pidList.size());
+    for (auto it3 = pidList.begin(); it3 != pidList.end(); ++it3) {
+        dataParcel.WriteInt32((*it3));
+    }
+    dataParcel.WriteInt32(isFreeze ? 1 : 0);
+    MockCommonEventStub commonEventStub;
+    auto result = commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
+    EXPECT_EQ(result, OHOS::ERR_NONE);
+}

@@ -403,6 +403,6 @@ HWTEST_F(CommonEventProxyTest, SetFreezeStatus_001, TestSize.Level1)
     CommonEventProxy commonEventProxy(object);
     std::set<int32_t> pidList = {1000};
     bool funcResult = false;
-    commonEventProxy.SetFreezeStatus(pidList, true, funcResult);
-    EXPECT_EQ(false, funcResult);
+    auto result = commonEventProxy.SetFreezeStatus(pidList, true, funcResult);
+    EXPECT_EQ(result, OHOS::ERR_OK);
 }
