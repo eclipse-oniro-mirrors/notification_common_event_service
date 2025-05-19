@@ -25,7 +25,7 @@ const ERROR_PARAM_INVALID = 401;
 const errorParamInvalid: BusinessError<string> = {code: ERROR_PARAM_INVALID, data: "Invalid parameter"};
 
 type ResolveCallback<T> = (data: T) => void;
-type RejectCallback = (err: Object) => void;
+type RejectCallback = (err: Error) => void;
 
 namespace commonEventManager {
     loadLibrary("ani_commoneventmanager.z");
@@ -69,7 +69,7 @@ namespace commonEventManager {
     }
 
     export function publishAsUser(event: string, userId: number, callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
+        let publishAsUserId: Int  = userId.toInt();
         let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, publishAsUserId);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
@@ -82,7 +82,7 @@ namespace commonEventManager {
 
     export function publishAsUser(event: string, userId: number, options: CommonEventPublishData,
         callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
+        let publishAsUserId: Int  = userId.toInt();
         let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, publishAsUserId, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
@@ -180,7 +180,7 @@ namespace commonEventManager {
             let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
             task.then((data: NullishType): void => {
                 resolve(undefined);
-            }, (error: Object): void => {
+            }, (error: Error): void => {
                 hilog.error(0xD001202, TAG, 'removeStickyCommonEvent Promise error');
                 reject(error);
             });
@@ -204,7 +204,7 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
         task.then((e: NullishType): void => {
             resolve(undefined);
-        }, (error: Object): void => {
+        }, (error: Error): void => {
             hilog.error(0xD001202, TAG, 'setStaticSubscriberState Promise error');
             reject(error);
         });
@@ -217,7 +217,7 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateWithEventsExecute, enable, events);
         task.then((e: NullishType): void => {
             resolve(undefined);
-        }, (error: Object): void => {
+        }, (error: Error): void => {
             hilog.error(0xD001202, TAG, 'setStaticSubscriberStateExecute Promise error.');
             reject(error);
         });
