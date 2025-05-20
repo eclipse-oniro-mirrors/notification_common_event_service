@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -64,16 +64,18 @@ public:
      * @brief Disconnect ability delay.
      * @param connection Indicates the connection want to disconnect.
      */
-    void DisconnectServiceAbilityDelay(const sptr<StaticSubscriberConnection> &connection);
+    void DisconnectServiceAbilityDelay(
+        const sptr<StaticSubscriberConnection> &connection, const std::string &action);
+
 private:
     bool GetAbilityMgrProxy();
-    void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection);
+    void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection, const std::string &action);
 
     std::mutex mutex_;
     sptr<AAFwk::IAbilityManager> abilityMgr_;
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
-    std::set<sptr<StaticSubscriberConnection>> subscriberConnection_;
+    std::map<std::string, sptr<StaticSubscriberConnection>> subscriberConnection_;
     std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };
 }  // namespace EventFwk

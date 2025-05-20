@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,21 +39,38 @@ int AbilityManagerHelper::ConnectAbility(
 {
     HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
     EVENT_LOGI("enter, target bundle = %{public}s", want.GetBundle().c_str());
-    std::lock_guard<std::mutex> lock(mutex_);
 
-    if (!GetAbilityMgrProxy()) {
-        return -1;
-    }
+    int result = -1;
+    ffrt::task_handle handle = ffrt_->submit_h([&]() {
+        std::string connectionKey =
+            want.GetBundle() + "_" + want.GetElement().GetAbilityName() + "_" + std::to_string(userId);
 
-    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(event);
-    if (connection == nullptr) {
-        EVENT_LOGE("failed to create obj!");
-        return -1;
-    }
-    int32_t result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
-    if (result == ERR_OK) {
-        subscriberConnection_.emplace(connection);
-    }
+        if (!GetAbilityMgrProxy()) {
+            result = -1;
+            return;
+        }
+        auto it = subscriberConnection_.find(connectionKey);
+        if (it != subscriberConnection_.end()) {
+            it->second->NotifyEvent(event);
+            EVENT_LOGI("Static cache sends events!");
+            result = ERR_OK;
+            return;
+        }
+
+        sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(event);
+        if (connection == nullptr) {
+            EVENT_LOGE("failed to create obj!");
+            result = -1;
+            return;
+        }
+        result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
+        if (result == ERR_OK) {
+            subscriberConnection_[connectionKey] = connection;
+        }
+        EVENT_LOGI("connection sends events!");
+    });
+    ffrt_->wait(handle);
+    EVENT_LOGI("result = %{public}d", result);
     return result;
 }
 
@@ -103,7 +120,8 @@ void AbilityManagerHelper::Clear()
     abilityMgr_ = nullptr;
 }
 
-void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscriberConnection> &connection)
+void AbilityManagerHelper::DisconnectServiceAbilityDelay(
+    const sptr<StaticSubscriberConnection> &connection, const std::string &action)
 {
     EVENT_LOGD("enter");
     if (connection == nullptr) {
@@ -111,31 +129,37 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(const sptr<StaticSubscr
         return;
     }
 
-    std::function<void()> task = [connection]() {
-        AbilityManagerHelper::GetInstance()->DisconnectAbility(connection);
+    std::function<void()> task = [connection, action]() {
+        AbilityManagerHelper::GetInstance()->DisconnectAbility(connection, action);
     };
     ffrt_->submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * TIME_UNIT_SIZE));
 }
 
-void AbilityManagerHelper::DisconnectAbility(const sptr<StaticSubscriberConnection> &connection)
+void AbilityManagerHelper::DisconnectAbility(
+    const sptr<StaticSubscriberConnection> &connection, const std::string &action)
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> lock(mutex_);
     if (connection == nullptr) {
         EVENT_LOGE("connection is nullptr");
         return;
     }
 
-    if (subscriberConnection_.find(connection) == subscriberConnection_.end()) {
+    auto it = std::find_if(subscriberConnection_.begin(), subscriberConnection_.end(),
+        [&connection](const auto &pair) { return pair.second == connection; });
+    if (it == subscriberConnection_.end()) {
         EVENT_LOGE("failed to find connection!");
         return;
     }
-
-    if (!GetAbilityMgrProxy()) {
-        return;
+    if (connection) {
+        connection->RemoveEvent(action);
+        if (!connection->IsEmptyAction()) {
+            EVENT_LOGW("Event within 15 seconds!");
+            return;
+        }
     }
     IN_PROCESS_CALL_WITHOUT_RET(abilityMgr_->DisconnectAbility(connection));
-    subscriberConnection_.erase(connection);
+    subscriberConnection_.erase(it);
+    EVENT_LOGI("erase connection!");
 }
 }  // namespace EventFwk
 }  // namespace OHOS

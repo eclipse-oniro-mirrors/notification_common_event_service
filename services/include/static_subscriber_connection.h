@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,8 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_STATIC_SUBSCRIBER_CONNECTION_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_STATIC_SUBSCRIBER_CONNECTION_H
 
+#include <ffrt.h>
+
 #include "ability_connect_callback_stub.h"
 #include "common_event_data.h"
 #include "static_subscriber_proxy.h"
@@ -29,7 +31,11 @@ public:
      *
      * @param event, Indicates the common event data.
      */
-    explicit StaticSubscriberConnection(const CommonEventData& event) : event_(event) {}
+    explicit StaticSubscriberConnection(const CommonEventData &event) : event_(event)
+    {
+        staticNotifyQueue_ = std::make_shared<ffrt::queue>("StaticSubscriberConnection");
+        events_.push_back(event);
+    }
 
     /**
      * OnAbilityConnectDone, Ability Manager Service notify caller ability the result of connect.
@@ -49,10 +55,20 @@ public:
      */
     void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode) override;
 
+    void NotifyEvent(const CommonEventData &event);
+    void RemoveEvent(const std::string &action);
+    bool IsEmptyAction()
+    {
+        return action_.empty();
+    }
+
 private:
     sptr<StaticSubscriberProxy> GetProxy(const sptr<IRemoteObject> &remoteObject);
     sptr<StaticSubscriberProxy> proxy_ = nullptr;
-    std::mutex proxyMutex_;
+    std::recursive_mutex mutex_;
+    std::vector<CommonEventData> events_;
+    std::vector<std::string> action_;
+    std::shared_ptr<ffrt::queue> staticNotifyQueue_ = nullptr;
 
     CommonEventData event_;
 };

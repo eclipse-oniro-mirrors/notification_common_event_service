@@ -75,3 +75,88 @@ HWTEST_F(StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0100, Func
     EXPECT_TRUE(IsOnReceiveEventCalled());
     ResetStaticSubscriberProxyMockState();
 }
+
+/*
+ * @tc.name: NotifyEvent_0100
+ * @tc.desc: Test that NotifyEvent can correctly cache event and action.
+ * @tc.type: FUNC
+ * @tc.require:
+ *
+ */
+HWTEST_F(StaticSubscriberConnectionUnitTest, NotifyEvent_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO) << "NotifyEvent_0100 start!";
+    CommonEventData data;
+    StaticSubscriberConnection connection(data);
+    connection.NotifyEvent(data);
+    EXPECT_EQ(connection.events_.size(), 2);
+    GTEST_LOG_(INFO) << "NotifyEvent_0100 end!";
+}
+
+/*
+ * @tc.name: RemoveEvent_0100
+ * @tc.desc: Test that RemoveEvent can correctly remove the specified action from action_.
+ * @tc.type: FUNC
+ * @tc.require:
+ *
+ */
+HWTEST_F(StaticSubscriberConnectionUnitTest, RemoveEvent_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO) << "RemoveEvent_0100 start!";
+    CommonEventData data;
+    StaticSubscriberConnection connection(data);
+    connection.NotifyEvent(data);
+    connection.RemoveEvent(data.GetWant().GetAction());
+    EXPECT_TRUE(connection.action_.empty());
+    GTEST_LOG_(INFO) << "RemoveEvent_0100 end!";
+}
+
+/*
+ * @tc.name: RemoveEvent_0200
+ * @tc.desc: Test that RemoveEvent removes only the first occurrence of the specified action in action_.
+ * @tc.type: FUNC
+ * @tc.require:
+ *
+ */
+HWTEST_F(StaticSubscriberConnectionUnitTest, RemoveEvent_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO) << "RemoveEvent_0200 start!";
+    CommonEventData data;
+    StaticSubscriberConnection connection(data);
+
+    std::string action = data.GetWant().GetAction();
+    connection.action_.push_back(action);
+    connection.action_.push_back(action);
+    connection.action_.push_back(action);
+    connection.RemoveEvent(action);
+    int count = 0;
+    for (const auto& act : connection.action_) {
+        if (act == action) {
+            ++count;
+        }
+    }
+    EXPECT_EQ(count, 2);
+    EXPECT_EQ(connection.action_.size(), 2);
+    GTEST_LOG_(INFO) << "RemoveEvent_0200 end!";
+}
+
+/*
+ * @tc.name: IsEmptyAction_0100
+ * @tc.desc: Test that IsEmptyAction returns true when events_ is empty and false when not empty.
+ * @tc.type: FUNC
+ * @tc.require:
+ *
+ */
+HWTEST_F(StaticSubscriberConnectionUnitTest, IsEmptyAction_0100, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO) << "IsEmptyAction_0100 start!";
+    CommonEventData data;
+    StaticSubscriberConnection connection(data);
+    connection.action_.clear();
+    EXPECT_TRUE(connection.IsEmptyAction());
+
+    connection.action_.push_back(data.GetWant().GetAction());
+    EXPECT_FALSE(connection.IsEmptyAction());
+
+    GTEST_LOG_(INFO) << "IsEmptyAction_0100 end!";
+}
