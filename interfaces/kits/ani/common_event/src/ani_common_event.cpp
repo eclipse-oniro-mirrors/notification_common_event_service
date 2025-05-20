@@ -107,6 +107,7 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     EVENT_LOGI("createSubscriberExecute call.");
     CommonEventSubscribeInfo subscribeInfo;
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
+    subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto ret = ANI_OK;
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {
@@ -264,13 +265,13 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
     }
 
     ani_env* etsEnv;
-    ani_status aniResult = ANI_ERROR;
-    ani_options aniArgs { 0, nullptr };
-    aniResult = etsVm_->AttachCurrentThread(&aniArgs, ANI_VERSION_1, &etsEnv);
+    ani_status aniResult = ANI_OK;
+    aniResult = etsVm_->GetEnv(ANI_VERSION_1, &etsEnv);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE("subscribeCallbackThreadFunciton FunctionalObject_Call error. result: %{public}d.", aniResult);
+        EVENT_LOGE("subscribeCallbackThreadFunciton GetEnv error. result: %{public}d.", aniResult);
         return;
     }
+
     ani_object ani_data {};
     AniCommonEventUtils::ConvertCommonEventDataToEts(etsEnv, ani_data, data);
 
@@ -279,25 +280,18 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
     std::string message = "";
     AniCommonEventUtils::CreateBusinessErrorObject(etsEnv, businessErrorObject, code, message);
 
-    auto fnObject = reinterpret_cast<ani_fn_object>(static_cast<ani_ref>(callback_));
+    auto fnObject = reinterpret_cast<ani_fn_object>(reinterpret_cast<ani_ref>(callback_));
     if (fnObject == nullptr) {
         EVENT_LOGE("subscribeCallbackThreadFunciton fnObject is null.");
         return;
     }
 
     EVENT_LOGI("FunctionalObject_Call.");
-    std::vector<ani_ref> args = { static_cast<ani_ref>(businessErrorObject), static_cast<ani_ref>(ani_data) };
+    std::vector<ani_ref> args = { reinterpret_cast<ani_ref>(businessErrorObject), reinterpret_cast<ani_ref>(ani_data) };
     ani_ref result;
     aniResult = etsEnv->FunctionalObject_Call(fnObject, args.size(), args.data(), &result);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("subscribeCallbackThreadFunciton FunctionalObject_Call error. result: %{public}d.", aniResult);
-        return;
-    }
-
-    aniResult = etsVm_->DetachCurrentThread();
-    if (aniResult != ANI_OK) {
-        EVENT_LOGE("subscribeCallbackThreadFunciton DetachCurrentThread error. result: %{public}d.", aniResult);
-        return;
     }
 }
 

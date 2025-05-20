@@ -63,8 +63,11 @@ ohos_shared_library("ani_commoneventmanager") {
 
   external_deps = [
     "ability_base:want",
+    "ability_runtime:ani_common",
+    "ability_runtime:runtime",
     "c_utils:utils",
     "hilog:libhilog",
+    "napi:ace_napi",
     "runtime_core:ani",
   ]
 
