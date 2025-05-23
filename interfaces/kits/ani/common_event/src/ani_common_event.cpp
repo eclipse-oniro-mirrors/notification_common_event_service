@@ -275,10 +275,11 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
     ani_object ani_data {};
     AniCommonEventUtils::ConvertCommonEventDataToEts(etsEnv, ani_data, data);
 
-    ani_object businessErrorObject;
-    int32_t code = 0;
-    std::string message = "";
-    AniCommonEventUtils::CreateBusinessErrorObject(etsEnv, businessErrorObject, code, message);
+    ani_ref nullObject;
+    aniResult = etsEnv->GetNull(&nullObject);
+    if (aniResult != ANI_OK) {
+        EVENT_LOGE("subscribeCallbackThreadFunciton GetNull error. result: %{public}d.", aniResult);
+    }
 
     auto fnObject = reinterpret_cast<ani_fn_object>(reinterpret_cast<ani_ref>(callback_));
     if (fnObject == nullptr) {
@@ -287,7 +288,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
     }
 
     EVENT_LOGI("FunctionalObject_Call.");
-    std::vector<ani_ref> args = { reinterpret_cast<ani_ref>(businessErrorObject), reinterpret_cast<ani_ref>(ani_data) };
+    std::vector<ani_ref> args = { nullObject, reinterpret_cast<ani_ref>(ani_data) };
     ani_ref result;
     aniResult = etsEnv->FunctionalObject_Call(fnObject, args.size(), args.data(), &result);
     if (aniResult != ANI_OK) {
