@@ -25,28 +25,55 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
     EVENT_LOGI_LIMIT("enter");
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
     sptr<StaticSubscriberConnection> sThis = this;
     auto proxy = sThis->GetProxy(remoteObject);
     std::string bundleName = element.GetURI();
-    ffrt::submit([=] () {
-        if (proxy) {
-            int32_t funcResult = -1;
-            ErrCode ec = proxy->OnReceiveEvent(event_, funcResult);
-            EVENT_LOGI("OnAbilityConnectDone end, bundle = %{public}s, code = %{public}d", bundleName.c_str(), ec);
+    EVENT_LOGI("OnAbilityConnectDone end, bundle = %{public}s", bundleName.c_str());
+    for (auto &event : events_) {
+        NotifyEvent(event);
+    }
+    events_.clear();
+}
+
+void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
+{
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    if (proxy_ == nullptr) {
+        events_.push_back(event);
+        EVENT_LOGW("proxy_ is null, Cache events");
+        return;
+    }
+    action_.push_back(event.GetWant().GetAction());
+    wptr<StaticSubscriberConnection> wThis = this;
+    staticNotifyQueue_->submit([event, wThis]() {
+        sptr<StaticSubscriberConnection> sThis = wThis.promote();
+        if (!sThis) {
+            EVENT_LOGE("StaticSubscriberConnection expired, skip NotifyEvent");
+            return;
         }
-        AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(sThis);
+        int32_t funcResult = -1;
+        ErrCode ec = sThis->proxy_->OnReceiveEvent(event, funcResult);
+        EVENT_LOGI("Notify %{public}d to %{public}s end,", ec, event.GetWant().GetBundle().c_str());
+        AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(sThis, event.GetWant().GetAction());
     });
+}
+
+void StaticSubscriberConnection::RemoveEvent(const std::string &action)
+{
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    auto it = std::find(action_.begin(), action_.end(), action);
+    if (it != action_.end()) {
+        action_.erase(it);
+    }
 }
 
 sptr<StaticSubscriberProxy> StaticSubscriberConnection::GetProxy(const sptr<IRemoteObject> &remoteObject)
 {
     if (proxy_ == nullptr) {
-        std::lock_guard<std::mutex> lock(proxyMutex_);
+        proxy_ = new (std::nothrow) StaticSubscriberProxy(remoteObject);
         if (proxy_ == nullptr) {
-            proxy_ = new (std::nothrow) StaticSubscriberProxy(remoteObject);
-            if (proxy_ == nullptr) {
-                EVENT_LOGE("failed to create StaticSubscriberProxy!");
-            }
+            EVENT_LOGE("failed to create StaticSubscriberProxy!");
         }
     }
     return proxy_;

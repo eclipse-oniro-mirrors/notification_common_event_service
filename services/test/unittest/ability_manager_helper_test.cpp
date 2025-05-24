@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -617,7 +617,7 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0600, Level1)
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data);
-    abilityManagerHelper->subscriberConnection_.emplace(connection);
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
     auto handler = std::make_shared<EventHandler>(EventRunner::Create());
     abilityManagerHelper->SetEventHandler(handler);
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
@@ -635,8 +635,8 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0700, Level1)
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data);
-    abilityManagerHelper->subscriberConnection_.emplace(connection);
-    abilityManagerHelper->DisconnectAbility(nullptr);
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
+    abilityManagerHelper->DisconnectAbility(nullptr, "");
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0700 end";
 }
@@ -652,8 +652,9 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0800, Level1)
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data);
-    abilityManagerHelper->subscriberConnection_.emplace(connection);
-    abilityManagerHelper->DisconnectAbility(connection);
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
+    sptr<StaticSubscriberConnection> connectionOne = new (std::nothrow) StaticSubscriberConnection(data);
+    abilityManagerHelper->DisconnectAbility(connectionOne, "test_action");
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0800 end";
 }
@@ -671,8 +672,8 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0900, Level1)
     abilityManagerHelper->SetEventHandler(handler);
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data);
-    abilityManagerHelper->subscriberConnection_.emplace(connection);
-    abilityManagerHelper->DisconnectServiceAbilityDelay(nullptr);
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
+    abilityManagerHelper->DisconnectServiceAbilityDelay(nullptr, "");
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0900 end";
 }
@@ -688,8 +689,8 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1000, Level1)
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data);
-    abilityManagerHelper->subscriberConnection_.emplace(connection);
-    abilityManagerHelper->DisconnectServiceAbilityDelay(connection);
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
+    abilityManagerHelper->DisconnectServiceAbilityDelay(connection, "test_action");
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1000 end";
 }
@@ -705,11 +706,85 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1100, Level1)
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
     CommonEventData data;
     sptr<StaticSubscriberConnection> firstConnection = new (std::nothrow) StaticSubscriberConnection(data);
-    abilityManagerHelper->subscriberConnection_.emplace(firstConnection);
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", firstConnection);
     auto handler = std::make_shared<EventHandler>(EventRunner::Create());
     abilityManagerHelper->SetEventHandler(handler);
     sptr<StaticSubscriberConnection> SecondConnection = new (std::nothrow) StaticSubscriberConnection(data);
-    abilityManagerHelper->DisconnectServiceAbilityDelay(SecondConnection);
+    abilityManagerHelper->DisconnectServiceAbilityDelay(SecondConnection, "test_action");
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1100 end";
+}
+
+/**
+ * @tc.name  : test ConnectAbility multiple times
+ * @tc.number: AbilityManagerHelper_1200
+ * @tc.desc  : When calling the connection multiple times, the proxy_ is empty
+ */
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1200, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_1200 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
+    abilityManagerHelper->abilityMgr_ = new (std::nothrow) TestAbilityMgr();
+
+    Want want;
+    CommonEventData event;
+    sptr<IRemoteObject> callerToken = nullptr;
+    int32_t userId = 1;
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data);
+    std::string connectionKey =
+        want.GetBundle() + "_" + want.GetElement().GetAbilityName() + "_" + std::to_string(userId);
+    abilityManagerHelper->subscriberConnection_[connectionKey] = connection;
+    abilityManagerHelper->subscriberConnection_[connectionKey]->proxy_ = nullptr;
+
+    int result1 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result1, ERR_OK);
+
+    int result2 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result2, ERR_OK);
+
+    int result3 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result3, ERR_OK);
+
+    EXPECT_EQ(abilityManagerHelper->subscriberConnection_[connectionKey]->events_.size(), 4);
+
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_1200 end";
+}
+
+/**
+ * @tc.name  : test ConnectAbility multiple times
+ * @tc.number: AbilityManagerHelper_1300
+ * @tc.desc  : When calling the connection multiple times, the proxy_ is not empty
+ */
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1300, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_1300 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
+    abilityManagerHelper->abilityMgr_ = new (std::nothrow) TestAbilityMgr();
+
+    Want want;
+    CommonEventData event;
+    sptr<IRemoteObject> callerToken = nullptr;
+    int32_t userId = 1;
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data);
+    std::string connectionKey =
+        want.GetBundle() + "_" + want.GetElement().GetAbilityName() + "_" + std::to_string(userId);
+    abilityManagerHelper->subscriberConnection_[connectionKey] = connection;
+    abilityManagerHelper->subscriberConnection_[connectionKey]->GetProxy(callerToken);
+
+    int result1 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result1, ERR_OK);
+
+    int result2 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result2, ERR_OK);
+
+    int result3 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result3, ERR_OK);
+
+    EXPECT_EQ(abilityManagerHelper->subscriberConnection_[connectionKey]->events_.size(), 1);
+
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_1300 end";
 }
