@@ -604,6 +604,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_USER_LOCKING,
+        "COMMON_EVENT_USER_LOCKING");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_USER_LOCKED,
+        "COMMON_EVENT_USER_LOCKED");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_HTTP_PROXY_CHANGE,
         "COMMON_EVENT_HTTP_PROXY_CHANGE");
     SetNamedPropertyByStr(env,

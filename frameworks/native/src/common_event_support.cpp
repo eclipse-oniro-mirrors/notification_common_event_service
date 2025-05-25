@@ -1396,6 +1396,20 @@ const std::string CommonEventSupport::COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED
     "usual.event.DOMAIN_ACCOUNT_STATUS_CHANGED";
 
 /**
+ * Indicate the action of a common event that os account has been locking.
+ * This is a protected common event that can only be sent by system.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_USER_LOCKING =
+    "usual.event.USER_LOCKING";
+
+/**
+ * Indicate the action of a common event that os account status has been locked.
+ * This is a protected common event that can only be sent by system.
+*/
+const std::string CommonEventSupport::COMMON_EVENT_USER_LOCKED =
+    "usual.event.USER_LOCKED";
+
+/**
  * Indicates the action of a common event that the screen lock.
  * This is a protected common event that can only be sent by system.
  */
@@ -2791,6 +2805,18 @@ void CommonEventSupport::Init()
     * This is a protected common event that can only be sent by system.
     */
     commonEventSupport_.emplace_back(COMMON_EVENT_DOMAIN_ACCOUNT_STATUS_CHANGED);
+
+    /**
+    * Indicate the action of a common event that os account status has been locking.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(COMMON_EVENT_USER_LOCKING);
+
+    /**
+    * Indicate the action of a common event that os account status has been locked.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(COMMON_EVENT_USER_LOCKED);
 
     /**
      * Indicates the action of a common event that the screen lock.
