@@ -57,7 +57,8 @@ int AbilityManagerHelper::ConnectAbility(
             return;
         }
 
-        sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(event);
+        sptr<StaticSubscriberConnection> connection =
+            new (std::nothrow) StaticSubscriberConnection(event, connectionKey);
         if (connection == nullptr) {
             EVENT_LOGE("failed to create obj!");
             result = -1;
