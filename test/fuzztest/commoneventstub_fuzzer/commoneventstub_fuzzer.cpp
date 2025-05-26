@@ -25,9 +25,6 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     std::string stringData = fdp->ConsumeRandomLengthString();
     int32_t code = fdp->ConsumeIntegral<int32_t>();
     bool enabled = fdp->ConsumeBool();
-    MessageParcel dataParcel;
-    MessageParcel reply;
-    MessageOption option;
     EventFwk::CommonEventManagerService commonEventStub;
     // test PublishCommonEvent function
     AAFwk::Want want;
@@ -75,7 +72,6 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     commonEventStub.Freeze(code, funcResultBool);
     // test Unfreeze function
     commonEventStub.Unfreeze(code, funcResultBool);
-    commonEventStub.OnRemoteRequest(code, dataParcel, reply, option);
     // test UnfreezeAll function
     commonEventStub.UnfreezeAll(funcResultBool);
     return funcResultBool;
