@@ -29,7 +29,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     sptr<StaticSubscriberConnection> sThis = this;
     auto proxy = sThis->GetProxy(remoteObject);
     std::string bundleName = element.GetURI();
-    EVENT_LOGI("OnAbilityConnectDone end, bundle = %{public}s", bundleName.c_str());
+    EVENT_LOGD("OnAbilityConnectDone end, bundle = %{public}s", bundleName.c_str());
     for (auto &event : events_) {
         NotifyEvent(event);
     }
@@ -54,7 +54,8 @@ void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
         }
         int32_t funcResult = -1;
         ErrCode ec = sThis->proxy_->OnReceiveEvent(event, funcResult);
-        EVENT_LOGI("Notify %{public}d to %{public}s end,", ec, event.GetWant().GetBundle().c_str());
+        EVENT_LOGI("Notify %{public}s to %{public}s end, code is %{public}d, action, connectionKey, errCode",
+            event.GetWant().GetAction().c_str(), sThis->connectionKey_.c_str(), ec);
         AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(sThis, event.GetWant().GetAction());
     });
 }

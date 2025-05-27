@@ -31,10 +31,11 @@ public:
      *
      * @param event, Indicates the common event data.
      */
-    explicit StaticSubscriberConnection(const CommonEventData &event) : event_(event)
+    explicit StaticSubscriberConnection(const CommonEventData &event, const std::string &connectionKey)
     {
         staticNotifyQueue_ = std::make_shared<ffrt::queue>("StaticSubscriberConnection");
         events_.push_back(event);
+        connectionKey_ = connectionKey;
     }
 
     /**
@@ -69,8 +70,7 @@ private:
     std::vector<CommonEventData> events_;
     std::vector<std::string> action_;
     std::shared_ptr<ffrt::queue> staticNotifyQueue_ = nullptr;
-
-    CommonEventData event_;
+    std::string connectionKey_ = "";
 };
 }  // namespace EventFwk
 }  // namespace OHOS
