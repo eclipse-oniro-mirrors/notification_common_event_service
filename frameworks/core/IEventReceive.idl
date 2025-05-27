@@ -17,5 +17,5 @@ sequenceable OHOS.EventFwk.CommonEventData;
 option_stub_hooks on;
 
 interface OHOS.EventFwk.IEventReceive {
-    void NotifyEvent([in] CommonEventData commonEventData, [in] boolean ordered, [in] boolean sticky);
+    [oneway] void NotifyEvent([in] CommonEventData commonEventData, [in] boolean ordered, [in] boolean sticky);
 }
