@@ -509,12 +509,13 @@ void AsyncCompleteCallbackSubscribeToEvent(napi_env env, napi_status status, voi
         EVENT_LOGD("asyncCallbackInfo is 0");
         std::lock_guard<std::mutex> lock(subscriberInsMutex);
         subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
+        SetPromise(env, asyncCallbackInfo->deferred, asyncCallbackInfo->errorCode, NapiGetNull(env));
     } else {
         asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
+        SetPromise(env, asyncCallbackInfo->deferred, asyncCallbackInfo->errorCode, NapiGetNull(env));
         delete asyncCallbackInfo;
         asyncCallbackInfo = nullptr;
     }
-    SetPromise(env, asyncCallbackInfo->deferred, asyncCallbackInfo->errorCode, NapiGetNull(env));
 }
 
 void AsyncCompleteCallbackSubscribe(napi_env env, napi_status status, void *data)
