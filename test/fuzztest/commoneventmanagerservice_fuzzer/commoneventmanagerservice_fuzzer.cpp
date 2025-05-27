@@ -28,9 +28,6 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     std::string stringData = fdp->ConsumeRandomLengthString();
     int32_t code = fdp->ConsumeIntegral<int32_t>();
     bool enabled = fdp->ConsumeBool();
-    MessageParcel dataParcel;
-    MessageParcel reply;
-    MessageOption option;
     EventFwk::CommonEventManagerService::GetInstance();
     sptr<EventFwk::CommonEventManagerService> service =
         sptr<EventFwk::CommonEventManagerService>(new EventFwk::CommonEventManagerService());
