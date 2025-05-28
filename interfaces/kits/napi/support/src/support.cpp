@@ -678,6 +678,18 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED,
         "COMMON_EVENT_SHORTCUT_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKIN,
+        "COMMON_EVENT_TRUSTED_RING_CHECKIN");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKOUT,
+        "COMMON_EVENT_TRUSTED_RING_CHECKOUT");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET,
+        "COMMON_EVENT_TRUSTED_RING_RESET");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 
