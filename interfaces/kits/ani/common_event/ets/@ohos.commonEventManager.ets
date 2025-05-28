@@ -21,6 +21,12 @@ import{ CommonEventSubscribeInfo } from 'commonEvent.commonEventSubscribeInfo';
 import{ CommonEventSubscriber } from 'commonEvent.commonEventSubscriber';
 
 const TAG: string = 'commonEventManager';
+const ERROR_PARAM_INVALID = 401;
+const errorParamInvalid: BusinessError<string> = {code: ERROR_PARAM_INVALID, data: "Invalid parameter"};
+
+type ResolveCallback<T> = (data: T) => void;
+type RejectCallback = (err: Object) => void;
+
 namespace commonEventManager {
     loadLibrary("ani_commoneventmanager.z");
     export native function publishExecute(event: string):int;
@@ -32,6 +38,9 @@ namespace commonEventManager {
     export native function subscribeExecute(subscriber: CommonEventSubscriber,
         callback: AsyncCallback<CommonEventData, void>):int;
     export native function unsubscribeExecute(subscriber: CommonEventSubscriber):int;
+    export native function removeStickyCommonEventExecute(event: string):int;
+    export native function setStaticSubscriberStateExecute(enable: boolean):int;
+    export native function setStaticSubscriberStateWithEventsExecute(enable: boolean,events?: Array<string>):int;
 
     export function publish(event: string, callback: AsyncCallback<void, void>): void {
         hilog.info(0x0000, TAG, 'publish called event: %{public}s', event);
@@ -148,6 +157,73 @@ namespace commonEventManager {
             hilog.error(0x0000, TAG, 'unsubscribe error');
         });
     }
+
+    export function removeStickyCommonEvent(event: string, callback: AsyncCallback<void, void>): void {
+        if (event == undefined) {
+            throw errorParamInvalid;
+        }
+        let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
+        task.then((e: NullishType)=>{
+            let err: BusinessError<void> = {code: 0, data: undefined};
+            callback(err, undefined);
+        }, (error: Object): void => {
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
+        });
+    }
+
+    export function removeStickyCommonEvent(event: string): Promise<void> {
+        if (event == undefined) {
+            throw errorParamInvalid;
+        }
+        let p = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
+            let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
+            task.then((data: NullishType): void => {
+                resolve(undefined);
+            }, (error: Object): void => {
+                hilog.error(0xD001202, TAG, 'removeStickyCommonEvent Promise error');
+                reject(error);
+            });
+        });
+        return p;
+    }
+
+    export function setStaticSubscriberState(enable: boolean, callback: AsyncCallback<void, void>): void {
+        let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
+        task.then((e: NullishType)=>{
+            let err: BusinessError<void> = {code: 0, data: undefined};
+            callback(err, undefined);
+        }, (error: Object): void => {
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
+        });
+    }
+
+    export function setStaticSubscriberState(enable: boolean): Promise<void> {
+        let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
+        let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
+        task.then((e: NullishType): void => {
+            resolve(undefined);
+        }, (error: Object): void => {
+            hilog.error(0xD001202, TAG, 'setStaticSubscriberState Promise error');
+            reject(error);
+        });
+    });
+        return pPromise;
+    }
+
+    export function setStaticSubscriberState(enable: boolean, events?: Array<string>): Promise<void> {
+        let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
+        let task = taskpool.execute(commonEventManager.setStaticSubscriberStateWithEventsExecute, enable, events);
+        task.then((e: NullishType): void => {
+            resolve(undefined);
+        }, (error: Object): void => {
+            hilog.error(0xD001202, TAG, 'setStaticSubscriberStateExecute Promise error.');
+            reject(error);
+        });
+    });
+        return pPromise;
+}
 
     export enum Support {
         COMMON_EVENT_SCREEN_OFF = 'usual.event.SCREEN_OFF',
