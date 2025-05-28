@@ -16,7 +16,10 @@
 #include "ani_common_event.h"
 
 #include "ani_common_event_utils.h"
+#include "ani_common_event_throw_error.h"
+#include "ces_inner_error_code.h"
 #include "event_log_wrapper.h"
+#include "sts_error_utils.h"
 namespace OHOS {
 namespace EventManagerFwkAni {
 
@@ -25,6 +28,7 @@ using namespace OHOS::EventFwk;
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 static std::map<std::shared_ptr<SubscriberInstance>, std::shared_ptr<AsyncCommonEventResult>> subscriberInstances;
 static std::mutex subscriberInsMutex;
+
 
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
@@ -222,6 +226,57 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
     return result;
 }
 
+static uint32_t removeStickyCommonEventExecute(ani_env* env, ani_string eventId)
+{
+    EVENT_LOGD("removeStickyCommonEventExecute call");
+    std::string eventIdStr;
+    AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
+    EVENT_LOGD("removeStickyCommonEventExecute eventIdStr: %{public}s.", eventIdStr.c_str());
+    int returncode = CommonEventManager::RemoveStickyCommonEvent(eventIdStr);
+    if (returncode != ERR_OK) {
+        EVENT_LOGE("removeStickyCommonEventExecute failed with error: %{public}d", returncode);
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+    }
+    EVENT_LOGD("removeStickyCommonEventExecute result: %{public}d.", returncode);
+    return returncode;
+}
+
+static uint32_t setStaticSubscriberStateExecute(ani_env* env, ani_boolean enable)
+{
+    EVENT_LOGD("setStaticSubscriberStateExecute call");
+    int returncode = CommonEventManager::SetStaticSubscriberState(enable);
+    if (returncode != ERR_OK) {
+        EVENT_LOGE("setStaticSubscriberStateExecute failed with error: %{public}d", returncode);
+        if (returncode != Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP &&
+            returncode != Notification::ERR_NOTIFICATION_SEND_ERROR) {
+            returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        }
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+    }
+    EVENT_LOGD("setStaticSubscriberStateExecute result: %{public}d", returncode);
+    return returncode;
+}
+
+static uint32_t setStaticSubscriberStateWithEventsExecute(ani_env* env, ani_boolean enable, ani_object events)
+{
+    EVENT_LOGD("setStaticSubscriberStateWithEventsExecute call");
+    std::vector<std::string> eventList;
+    AniCommonEventUtils::GetStdStringArrayClass(env, events, eventList);
+    int returncode = (events == nullptr) ?
+        CommonEventManager::SetStaticSubscriberState(enable) :
+        CommonEventManager::SetStaticSubscriberState(eventList, enable);
+    if (returncode != ERR_OK) {
+        EVENT_LOGE("setStaticSubscriberStateWithEventsExecute failed with error: %{public}d", returncode);
+        if (returncode != Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP &&
+            returncode != Notification::ERR_NOTIFICATION_SEND_ERROR) {
+            returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        }
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+    }
+    EVENT_LOGD("setStaticSubscriberStateWithEventsExecute result: %{public}d.", returncode);
+    return returncode;
+}
+
 std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper* wrapper)
 {
     if (wrapper->GetSubscriber() == nullptr) {
@@ -357,24 +412,9 @@ static void clean([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object obj
     delete reinterpret_cast<SubscriberInstanceWrapper *>(ptr);
 }
 
-extern "C" {
-ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
+ani_status init(ani_env *env, ani_namespace kitNs)
 {
-    EVENT_LOGI("ANI_Constructor call.");
-    ani_env* env;
     ani_status status = ANI_ERROR;
-    if (ANI_OK != vm->GetEnv(ANI_VERSION_1, &env)) {
-        EVENT_LOGE("Unsupported ANI_VERSION_1.");
-        return ANI_ERROR;
-    }
-
-    ani_namespace kitNs;
-    status = env->FindNamespace("L@ohos/commonEventManager/commonEventManager;", &kitNs);
-    if (status != ANI_OK) {
-        EVENT_LOGE("Not found L@ohos/commonEventManager/commonEventManager.");
-        return ANI_INVALID_ARGS;
-    }
-
     std::array methods = {
         ani_native_function { "publishExecute", "Lstd/core/String;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
@@ -394,11 +434,42 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
             "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
         ani_native_function { "unsubscribeExecute", "LcommonEvent/commonEventSubscriber/CommonEventSubscriber;:I",
             reinterpret_cast<void*>(OHOS::EventManagerFwkAni::unsubscribeExecute) },
+        ani_native_function { "removeStickyCommonEventExecute", "Lstd/core/String;:I",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::removeStickyCommonEventExecute) },
+        ani_native_function { "setStaticSubscriberStateExecute", "Z:I",
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateExecute) },
+        ani_native_function { "setStaticSubscriberStateWithEventsExecute", nullptr,
+            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateWithEventsExecute) },
     };
 
     status = env->Namespace_BindNativeFunctions(kitNs, methods.data(), methods.size());
     if (status != ANI_OK) {
         EVENT_LOGE("Cannot bind native methods to L@ohos/event/common_event_manager/commonEventManager");
+        return ANI_INVALID_TYPE;
+    }
+    return status;
+}
+
+extern "C" {
+ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
+{
+    EVENT_LOGI("ANI_Constructor call.");
+    ani_env* env;
+    ani_status status = ANI_ERROR;
+    if (ANI_OK != vm->GetEnv(ANI_VERSION_1, &env)) {
+        EVENT_LOGE("Unsupported ANI_VERSION_1.");
+        return ANI_ERROR;
+    }
+
+    ani_namespace kitNs;
+    status = env->FindNamespace("L@ohos/commonEventManager/commonEventManager;", &kitNs);
+    if (status != ANI_OK) {
+        EVENT_LOGE("Not found L@ohos/commonEventManager/commonEventManager.");
+        return ANI_INVALID_ARGS;
+    }
+    status = init(env, kitNs);
+    if (status != ANI_OK) {
+        EVENT_LOGE("Cannot bind native methods to L@ohos/events/emitter/emitter");
         return ANI_INVALID_TYPE;
     }
 
