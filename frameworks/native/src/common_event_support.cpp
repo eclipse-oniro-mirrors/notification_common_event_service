@@ -1530,6 +1530,24 @@ const std::string CommonEventSupport::COMMON_EVENT_DEFAULT_APPLICATION_CHANGED =
  */
 const std::string CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED = "usual.event.SHORTCUT_CHANGED";
 
+/**
+ * This common event means that a system user joins in the account-related trusted device group.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKIN = "usual.event.TRUSTED_RING_CHECK_IN";
+
+/**
+ * This common event means that a system user quits the account-relate trusted device group.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKOUT = "usual.event.TRUSTED_RING_CHECK_OUT";
+
+/**
+ * This common event means that the account-related trusted device group has been reset.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET = "usual.event.TRUSTED_RING_RESET";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2903,6 +2921,24 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED);
+
+    /**
+     * This common event means that a system user joins in the account-related trusted device group.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKIN);
+
+    /**
+     * This common event means that a system user quits the account-relate trusted device group.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKOUT);
+
+    /**
+     * This common event means that the account-related trusted device group has been reset.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET);
     return;
 }
 

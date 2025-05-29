@@ -172,6 +172,15 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.MANAGE_SHORTCUTS"}}
     },
+    {CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKIN,
+        {PermissionState::DEFAULT, {"ohos.permission.USE_TRUSTED_RING"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKOUT,
+        {PermissionState::DEFAULT, {"ohos.permission.USE_TRUSTED_RING"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET,
+        {PermissionState::DEFAULT, {"ohos.permission.USE_TRUSTED_RING"}}
+    },
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
@@ -182,7 +191,10 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_DYNAMIC_ICON_CHANGED,
     CommonEventSupport::COMMON_EVENT_RESTORE_START,
     CommonEventSupport::COMMON_EVENT_DEFAULT_APPLICATION_CHANGED,
-    CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED
+    CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED,
+    CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKIN,
+    CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKOUT,
+    CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {

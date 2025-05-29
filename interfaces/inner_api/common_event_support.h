@@ -1387,6 +1387,24 @@ public:
      */
     static const std::string COMMON_EVENT_SHORTCUT_CHANGED;
 
+    /**
+     * This common event means that a system user joins in the account-related trusted device group.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_TRUSTED_RING_CHECKIN;
+
+    /**
+     * This common event means that a system user quits the account-relate trusted device group.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_TRUSTED_RING_CHECKOUT;
+
+    /**
+     * This common event means that the account-related trusted device group has been reset.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_TRUSTED_RING_RESET;
+
 public:
     CommonEventSupport();
 
