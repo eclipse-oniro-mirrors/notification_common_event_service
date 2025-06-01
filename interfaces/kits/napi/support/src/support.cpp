@@ -690,6 +690,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET,
         "COMMON_EVENT_TRUSTED_RING_RESET");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_KIOSK_MODE_ON,
+        "COMMON_EVENT_KIOSK_MODE_ON");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF,
+        "COMMON_EVENT_KIOSK_MODE_OFF");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 

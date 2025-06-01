@@ -1405,6 +1405,17 @@ public:
      */
     static const std::string COMMON_EVENT_TRUSTED_RING_RESET;
 
+    /**
+     * Indicates that the device has entered kiosk mode.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_KIOSK_MODE_ON;
+    /**
+     * Indicates that the device has exited kiosk mode.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_KIOSK_MODE_OFF;
+
 public:
     CommonEventSupport();
 
