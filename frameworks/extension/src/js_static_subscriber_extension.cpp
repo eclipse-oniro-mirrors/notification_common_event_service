@@ -53,6 +53,10 @@ napi_value AttachStaticSubscriberExtensionContext(napi_env env, void* value, voi
     napi_value object = CreateJsStaticSubscriberExtensionContext(env, ptr);
     auto napiContextObj = AbilityRuntime::JsRuntime::LoadSystemModuleByEngine(env,
         "application.StaticSubscriberExtensionContext", &object, 1)->GetNapiValue();
+    if (napiContextObj == nullptr) {
+        EVENT_LOGE("load context failed.");
+        return nullptr;
+    }
     napi_coerce_to_native_binding_object(env, napiContextObj, AbilityRuntime::DetachCallbackFunc,
         AttachStaticSubscriberExtensionContext, value, nullptr);
     auto workContext = new (std::nothrow) std::weak_ptr<StaticSubscriberExtensionContext>(ptr);
