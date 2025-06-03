@@ -69,7 +69,7 @@ namespace commonEventManager {
     }
 
     export function publishAsUser(event: string, userId: number, callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
+        let publishAsUserId: Int  = userId.toInt();
         let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, publishAsUserId);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
@@ -82,7 +82,7 @@ namespace commonEventManager {
 
     export function publishAsUser(event: string, userId: number, options: CommonEventPublishData,
         callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
+        let publishAsUserId: Int  = userId.toInt();
         let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, publishAsUserId, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
