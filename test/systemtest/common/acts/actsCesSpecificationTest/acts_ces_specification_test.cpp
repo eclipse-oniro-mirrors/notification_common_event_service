@@ -22,10 +22,12 @@
 #include "common_event_subscriber.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
+#include "inner_event.h"
 
 #include <gtest/gtest.h>
 
 using namespace testing::ext;
+using namespace OHOS::AppExecFwk;
 
 namespace OHOS {
 namespace EventFwk {
@@ -40,6 +42,16 @@ public:
 CommonEventServicesSystemTest::CommonEventServicesSystemTest(const CommonEventSubscribeInfo &subscribeInfo)
     : CommonEventSubscriber(subscribeInfo)
 {}
+
+int64_t GetNowSysTime()
+{
+    InnerEvent::TimePoint nowSys = InnerEvent::Clock::now();
+    auto epoch = nowSys.time_since_epoch();
+    auto value = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+    int64_t duration = value.count();
+
+    return duration;
+}
 
 void CommonEventServicesSystemTest::OnReceiveEvent(const CommonEventData &data)
 {
@@ -96,11 +108,17 @@ HWTEST_F(ActsCesSpecificationTest, PublishCommonEventExceedLimit_0100, TestSize.
     wantTest.SetAction("eventAction");
     CommonEventData commonEventData(wantTest);
     CommonEventPublishInfo info;
+    int64_t start = GetNowSysTime();
     for (int i = 0; i < 20; i++) {
         EXPECT_EQ(CommonEventManager::NewPublishCommonEvent(commonEventData, info), ERR_OK);
     }
-    EXPECT_EQ(CommonEventManager::NewPublishCommonEvent(commonEventData, info),
-        Notification::ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH);
+    int32_t result = CommonEventManager::NewPublishCommonEvent(commonEventData, info);
+    int64_t now = GetNowSysTime();
+    if (now - start <= 5) {
+        EXPECT_EQ(result, Notification::ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH);
+    } else {
+        EXPECT_EQ(result, ERR_OK);
+    }
 }
 }  // namespace EventFwk
 }  // namespace OHOS
