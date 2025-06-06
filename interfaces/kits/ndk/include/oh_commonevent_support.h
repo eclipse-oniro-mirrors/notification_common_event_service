@@ -426,6 +426,18 @@ static const char* const COMMON_EVENT_DATA_SHARE_READY = "usual.event.DATA_SHARE
 static const char* const COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED =
     "usual.event.MANAGED_BROWSER_POLICY_CHANGED";
 
+/**
+ * Indicates that the device has entered kiosk mode.
+ * This is a protected common event that can only be sent by system.
+ */
+static const char* const COMMON_EVENT_KIOSK_MODE_ON = "usual.event.KIOSK_MODE_ON";
+
+/**
+ * Indicates that the device has exited kiosk mode.
+ * This is a protected common event that can only be sent by system.
+ */
+static const char* const COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_OFF";
+
 #ifdef __cplusplus
 }
 #endif

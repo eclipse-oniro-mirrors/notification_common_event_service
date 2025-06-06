@@ -1548,6 +1548,18 @@ const std::string CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKOUT = "usua
  */
 const std::string CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET = "usual.event.TRUSTED_RING_RESET";
 
+/**
+ * Indicates that the device has entered kiosk mode.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_KIOSK_MODE_ON = "usual.event.KIOSK_MODE_ON";
+
+/**
+ * Indicates that the device has exited kiosk mode.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_OFF";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2939,6 +2951,18 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET);
+
+    /**
+     * Indicates enter kiosk mode.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_KIOSK_MODE_ON);
+
+    /**
+     * Indicates exit kiosk mode.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF);
     return;
 }
 
