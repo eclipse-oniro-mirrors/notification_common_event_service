@@ -194,7 +194,9 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED,
     CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKIN,
     CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKOUT,
-    CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET
+    CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET,
+    CommonEventSupport::COMMON_EVENT_USER_LOCKING,
+    CommonEventSupport::COMMON_EVENT_USER_LOCKED
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {
