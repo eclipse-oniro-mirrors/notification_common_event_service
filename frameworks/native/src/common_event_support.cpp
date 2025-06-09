@@ -1574,6 +1574,20 @@ const std::string CommonEventSupport::COMMON_EVENT_KIOSK_MODE_ON = "usual.event.
  */
 const std::string CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_OFF";
 
+/**
+ * Indicates that the device has updated config policy layer.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_CONFIG_POLICY_LAYER_UPDATE =
+    "usual.event.CONFIG_POLICY_LAYER_UPDATE";
+
+/**
+ * Indicates that the device has updated the roaming region code.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_ROAMING_REGION_CODE_UPDATE =
+    "usual.event.ROAMING_REGION_CODE_UPDATE";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -2989,6 +3003,18 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF);
+
+    /**
+     * Indicates that the device has updated config policy layer.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CONFIG_POLICY_LAYER_UPDATE);
+
+    /**
+     * Indicates that the device has updated the roaming region code.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ROAMING_REGION_CODE_UPDATE);
     return;
 }
 
