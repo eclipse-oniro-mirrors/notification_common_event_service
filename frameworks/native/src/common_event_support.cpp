@@ -1575,18 +1575,18 @@ const std::string CommonEventSupport::COMMON_EVENT_KIOSK_MODE_ON = "usual.event.
 const std::string CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_OFF";
 
 /**
- * Indicates that the device has updated config policy layer.
+ * Indicates that the device has updated the config policy of customazation subsystem.
  * This is a protected common event that can only be sent by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_CONFIG_POLICY_LAYER_UPDATE =
-    "usual.event.CONFIG_POLICY_LAYER_UPDATE";
+const std::string CommonEventSupport::COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED =
+    "usual.event.CUSTOM_CONFIG_POLICY_UPDATED";
 
 /**
- * Indicates that the device has updated the roaming region code.
+ * Indicates that the device has updated the custom roaming region of device.
  * This is a protected common event that can only be sent by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_ROAMING_REGION_CODE_UPDATE =
-    "usual.event.ROAMING_REGION_CODE_UPDATE";
+const std::string CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED =
+    "usual.event.CUSTOM_ROAMING_REGION_UPDATED";
 
 CommonEventSupport::CommonEventSupport()
 {
@@ -3005,16 +3005,16 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF);
 
     /**
-     * Indicates that the device has updated config policy layer.
+     * Indicates that the device has updated the config policy of customazation subsystem.
      * This is a protected common event that can only be sent by system.
      */
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CONFIG_POLICY_LAYER_UPDATE);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED);
 
     /**
-     * Indicates that the device has updated the roaming region code.
+     * Indicates that the device has updated the custom roaming region of device.
      * This is a protected common event that can only be sent by system.
      */
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ROAMING_REGION_CODE_UPDATE);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED);
     return;
 }
 
