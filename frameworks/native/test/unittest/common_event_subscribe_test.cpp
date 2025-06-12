@@ -570,21 +570,6 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventManager_007, TestSize.Level0)
 }
 
 /*
- * tc.number: CommonEventPublishInfo_001
- * tc.name: test ReadFromParcel
- * tc.type: FUNC
- * tc.require: issueI5RULW
- * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
- */
-HWTEST_F(CommonEventSubscribeTest, CommonEventPublishInfo_001, TestSize.Level0)
-{
-    Parcel parcel;
-    CommonEventPublishInfo commonEventPublishInfo;
-    bool result = commonEventPublishInfo.ReadFromParcel(parcel);
-    EXPECT_EQ(result, true);
-}
-
-/*
  * tc.number: CommonEventSubscribeInfo_001
  * tc.name: test ReadFromParcel
  * tc.type: FUNC

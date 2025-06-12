@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "common_event_subscriber_manager.h"
 
 #include <csignal>
 #include <utility>
@@ -19,7 +20,8 @@
 #include <set>
 
 #include "ability_manager_client.h"
-#include "common_event_subscriber_manager.h"
+#include "access_token_helper.h"
+#include "common_event_permission_manager.h"
 #include "common_event_support.h"
 #include "event_log_wrapper.h"
 #include "event_report.h"
@@ -36,6 +38,8 @@ constexpr int32_t LENGTH = 80;
 constexpr int32_t SIGNAL_KILL = 9;
 static constexpr int32_t SUBSCRIBE_EVENT_MAX_NUM = 512;
 static constexpr char CES_REGISTER_EXCEED_LIMIT[] = "Kill Reason: CES Register exceed limit";
+const std::string CONNECTOR = " or ";
+
 #ifdef WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP
 static const char *POWER_MANAGER_EXT_PATH = "libpower_manager_ext.z.so";
 static const char *WATCH_SUBSCRIBE_SCREEN_EVENT_TO_OTHER_APP = "WatchSubscribeScreenEventToOtherApp";
@@ -385,9 +389,6 @@ bool CommonEventSubscriberManager::CheckSubscriberByUserId(
 bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
     const int32_t &subscriberUid, const std::vector<int32_t> &specifiedSubscriberUids)
 {
-    if (specifiedSubscriberUids.empty()) {
-        return true;
-    }
     for (auto it = specifiedSubscriberUids.begin(); it != specifiedSubscriberUids.end(); ++it) {
         if (*it == subscriberUid) {
             return true;
@@ -419,54 +420,195 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         !eventRecord.eventRecordInfo.isProxy;
     auto bundleName = eventRecord.eventRecordInfo.bundleName;
     auto uid = eventRecord.eventRecordInfo.uid;
+
+    for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
+        SubscriberRecordPtr subscriberRecord = *it;
+        auto subscriberUid = subscriberRecord->eventRecordInfo.uid;
+        auto subscriberUserId = subscriberRecord->eventSubscribeInfo->GetUserId();
+        if (subscriberRecord->eventSubscribeInfo == nullptr) {
+            continue;
+        }
+        if (!subscriberRecord->eventSubscribeInfo->GetMatchingSkills().Match(eventRecord.commonEventData->GetWant())) {
+            continue;
+        }
+        if (!CheckSubscriberByUserId(subscriberUserId, isSystemApp, eventRecord.userId)) {
+            continue;
+        }
+        if (!CheckSubscriberPermission(subscriberRecord, eventRecord)) {
+            continue;
+        }
+        if (!CheckPublisherWhetherMatched(subscriberRecord, eventRecord)) {
+            continue;
+        }
+        if (!CheckSubscriberWhetherMatched(subscriberRecord, eventRecord)) {
+            continue;
+        }
+        SubscribeScreenEventToBlackListApp(eventRecord, bundleName, subscriberUid, records, subscriberRecord);
+    }
+}
+
+bool CommonEventSubscriberManager::CheckPublisherWhetherMatched(
+    const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
+{
+    auto bundleName = eventRecord.eventRecordInfo.bundleName;
+    auto uid = eventRecord.eventRecordInfo.uid;
+    auto subscriberRequiredBundle = subscriberRecord->eventSubscribeInfo->GetPublisherBundleName();
+    if (!subscriberRequiredBundle.empty() && subscriberRequiredBundle != bundleName) {
+        EVENT_LOGD("Publisher[%{public}s] isn't equal to subscriber required bundleName[%{public}s] is not matched",
+            bundleName.c_str(), subscriberRequiredBundle.c_str());
+        return false;
+    }
+    auto subscriberRequiredUid = subscriberRecord->eventSubscribeInfo->GetPublisherUid();
+    if (subscriberRequiredUid > 0 && uid > 0 && static_cast<uid_t>(subscriberRequiredUid) != uid) {
+        EVENT_LOGD("Publisher[%{public}d] isn't equal to subscriber required uid[%{public}d]",
+            uid, subscriberRequiredUid);
+        return false;
+    }
+    
+    if (!CheckSubscriberRequiredPermission(subscriberRecord, eventRecord)) {
+        return false;
+    }
+    return true;
+}
+
+bool CommonEventSubscriberManager::CheckSubscriberWhetherMatched(
+    const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
+{
     auto specifiedSubscriberUids = eventRecord.publishInfo->GetSubscriberUid();
     auto specifiedSubscriberType = eventRecord.publishInfo->GetSubscriberType();
-    for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
-        if ((*it)->eventSubscribeInfo == nullptr) {
-            continue;
-        }
+    uint16_t filterSettings = eventRecord.publishInfo->GetFilterSettings();
+    if (filterSettings == 0) {
+        return true;
+    }
+    uint16_t checkResult = 0;
+    if (!eventRecord.publishInfo->GetBundleName().empty() &&
+        eventRecord.publishInfo->GetBundleName() == subscriberRecord->eventRecordInfo.bundleName) {
+        checkResult |= SUBSCRIBER_FILTER_BUNDLE_INDEX;
+    }
+    auto isSubscriberSystemApp = subscriberRecord->eventRecordInfo.isSystemApp ||
+        subscriberRecord->eventRecordInfo.isSubsystem;
+    if (CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp)) {
+        checkResult |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
+    }
 
-        if (!(*it)->eventSubscribeInfo->GetMatchingSkills().Match(eventRecord.commonEventData->GetWant())) {
-            continue;
-        }
+    auto subscriberUid = subscriberRecord->eventRecordInfo.uid;
+    if (!specifiedSubscriberUids.empty() &&
+        CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
+        checkResult |= SUBSCRIBER_FILTER_SUBSCRIBER_UID_INDEX;
+    }
+    std::vector<std::string> publisherRequiredPermissions = eventRecord.publishInfo->GetSubscriberPermissions();
+    if (!publisherRequiredPermissions.empty() &&
+        CheckPublisherRequiredPermissions(subscriberRecord, eventRecord)) {
+        checkResult |= SUBSCRIBER_FILTER_PERMISSION_INDEX;
+    }
+    bool result = false;
+    if (eventRecord.publishInfo->GetValidationRule() == ValidationRule::AND) {
+        result = (checkResult == filterSettings);
+    } else {
+        result = ((checkResult & filterSettings) != 0);
+    }
+    if (!result) {
+        EVENT_LOGD("Not match,%{public}d_%{public}u_%{public}u",
+            static_cast<int32_t>(eventRecord.publishInfo->GetValidationRule()),
+            static_cast<uint32_t>(checkResult), static_cast<uint32_t>(filterSettings));
+    }
+    return result;
+}
 
-        if (!eventRecord.publishInfo->GetBundleName().empty() &&
-            eventRecord.publishInfo->GetBundleName() != (*it)->eventRecordInfo.bundleName) {
-            EVENT_LOGD("Subscriber[%{public}s] and publisher required bundleName[%{public}s] is not matched",
-                (*it)->eventRecordInfo.bundleName.c_str(), eventRecord.publishInfo->GetBundleName().c_str());
-            continue;
-        }
+bool CommonEventSubscriberManager::CheckSubscriberPermission(
+    const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
+{
+    EVENT_LOGD("enter");
+    bool ret = false;
+    std::string lackPermission {};
+    std::string event = eventRecord.commonEventData->GetWant().GetAction();
+    bool isSystemAPIEvent = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->IsSystemAPIEvent(event);
+    if (isSystemAPIEvent && !(subscriberRecord->eventRecordInfo.isSubsystem
+        || subscriberRecord->eventRecordInfo.isSystemApp)) {
+        EVENT_LOGW("Invalid permission for system api event.");
+        return false;
+    }
+    if (subscriberRecord->eventRecordInfo.uid == eventRecord.eventRecordInfo.uid) {
+        return true;
+    }
+    Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
+    if (permission.names.empty()) {
+        return true;
+    }
 
-        auto subscriberRequiredBundle = (*it)->eventSubscribeInfo->GetPublisherBundleName();
-        if (!subscriberRequiredBundle.empty() && subscriberRequiredBundle != bundleName) {
-            EVENT_LOGD("Publisher[%{public}s] isn't equal to subscriber required bundleName[%{public}s] is not matched",
-                bundleName.c_str(), subscriberRequiredBundle.c_str());
-            continue;
+    if (permission.names.size() == 1) {
+        ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord->eventRecordInfo.callerToken, permission.names[0]);
+        lackPermission = permission.names[0];
+    } else if (permission.state == PermissionState::AND) {
+        for (const auto& vec : permission.names) {
+            ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord->eventRecordInfo.callerToken, vec);
+            if (!ret) {
+                lackPermission = vec;
+                break;
+            }
         }
-
-        auto isSubscriberSystemApp = (*it)->eventRecordInfo.isSystemApp || (*it)->eventRecordInfo.isSubsystem;
-        if (!CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp)) {
-            EVENT_LOGD("Specified subscriber type is invalid");
-            continue;
+    } else if (permission.state == PermissionState::OR) {
+        for (const auto& vec : permission.names) {
+            ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord->eventRecordInfo.callerToken, vec);
+            lackPermission += vec + CONNECTOR;
+            if (ret) {
+                break;
+            }
         }
+        lackPermission = lackPermission.substr(0, lackPermission.length() - CONNECTOR.length());
+    }
+    if (!ret) {
+        EVENT_LOGD("No permission to receive %{public}s, due to %{public}s lacks the %{public}s permission.",
+            event.c_str(), subscriberRecord->eventRecordInfo.subId.c_str(), lackPermission.c_str());
+    }
+    return ret;
+}
 
-        auto subscriberUid = (*it)->eventRecordInfo.uid;
-        if (!CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
-            EVENT_LOGD("Subscriber's uid isn't in Specified subscriber UIDs which is given by publisher");
-            continue;
-        }
+bool CommonEventSubscriberManager::CheckSubscriberRequiredPermission(const SubscriberRecordPtr &subscriberRecord,
+    const CommonEventRecord &eventRecord)
+{
+    if (subscriberRecord->eventRecordInfo.uid == eventRecord.eventRecordInfo.uid) {
+        return true;
+    }
+    std::string subscriberRequiredPermission = subscriberRecord->eventSubscribeInfo->GetPermission();
+    if (subscriberRequiredPermission.empty()) {
+        return true;
+    }
 
-        auto subscriberRequiredUid = (*it)->eventSubscribeInfo->GetPublisherUid();
-        if (subscriberRequiredUid > 0 && uid > 0 && static_cast<uid_t>(subscriberRequiredUid) != uid) {
-            EVENT_LOGD("Publisher[%{public}d] isn't equal to subscriber required uid[%{public}d]",
-                uid, subscriberRequiredUid);
-            continue;
-        }
+    bool ret = AccessTokenHelper::VerifyAccessToken(eventRecord.eventRecordInfo.callerToken,
+        subscriberRequiredPermission);
+    if (!ret) {
+        EVENT_LOGD("No permission to send %{public}s "
+                    "to %{public}s due to subscriber requires the %{public}s permission.",
+            eventRecord.commonEventData->GetWant().GetAction().c_str(),
+            subscriberRecord->eventRecordInfo.subId.c_str(),
+            subscriberRequiredPermission.c_str());
+        return false;
+    }
 
-        if (CheckSubscriberByUserId((*it)->eventSubscribeInfo->GetUserId(), isSystemApp, eventRecord.userId)) {
-            SubscribeScreenEventToBlackListApp(eventRecord, bundleName, subscriberUid, records, *it);
+    return true;
+}
+
+bool CommonEventSubscriberManager::CheckPublisherRequiredPermissions(const SubscriberRecordPtr &subscriberRecord,
+    const CommonEventRecord &eventRecord)
+{
+    if (subscriberRecord->eventRecordInfo.uid == eventRecord.eventRecordInfo.uid) {
+        return true;
+    }
+    std::vector<std::string> publisherRequiredPermissions = eventRecord.publishInfo->GetSubscriberPermissions();
+    for (const auto& publisherRequiredPermission : publisherRequiredPermissions) {
+        bool ret = AccessTokenHelper::VerifyAccessToken(
+            subscriberRecord->eventRecordInfo.callerToken, publisherRequiredPermission);
+        if (!ret) {
+            EVENT_LOGD("No permission to receive %{public}s to %{public}s"
+                        "due to publisher requires the %{public}s permission.",
+                eventRecord.commonEventData->GetWant().GetAction().c_str(),
+                subscriberRecord->eventRecordInfo.subId.c_str(),
+                publisherRequiredPermission.c_str());
+            return false;
         }
     }
+    return true;
 }
 
 void CommonEventSubscriberManager::SubscribeScreenEventToBlackListApp(const CommonEventRecord &eventRecord,

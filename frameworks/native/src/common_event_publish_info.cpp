@@ -25,7 +25,8 @@ namespace {
 }
 
 CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false),
-    subscriberType_(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE))
+    subscriberType_(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE)),
+    rule_(ValidationRule::AND)
 {
 }
 
@@ -37,6 +38,7 @@ CommonEventPublishInfo::CommonEventPublishInfo(const CommonEventPublishInfo &com
     subscriberPermissions_ = commonEventPublishInfo.subscriberPermissions_;
     subscriberUids_ = commonEventPublishInfo.subscriberUids_;
     subscriberType_ = commonEventPublishInfo.subscriberType_;
+    rule_ = commonEventPublishInfo.rule_;
 }
 
 CommonEventPublishInfo::~CommonEventPublishInfo()
@@ -114,6 +116,32 @@ int32_t CommonEventPublishInfo::GetSubscriberType() const
     return subscriberType_;
 }
 
+void CommonEventPublishInfo::SetValidationRule(const ValidationRule &rule)
+{
+    rule_ = rule;
+}
+
+ValidationRule CommonEventPublishInfo::GetValidationRule() const
+{
+    return rule_;
+}
+
+uint16_t CommonEventPublishInfo::GetFilterSettings() const
+{
+    uint16_t filterSettings = 0;
+    filterSettings |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
+    if (!bundleName_.empty()) {
+        filterSettings |= SUBSCRIBER_FILTER_BUNDLE_INDEX;
+    }
+    if (!subscriberPermissions_.empty()) {
+        filterSettings |= SUBSCRIBER_FILTER_PERMISSION_INDEX;
+    }
+    if (!subscriberUids_.empty()) {
+        filterSettings |= SUBSCRIBER_FILTER_SUBSCRIBER_UID_INDEX;
+    }
+    return filterSettings;
+}
+
 bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
 {
     EVENT_LOGD("enter");
@@ -153,6 +181,11 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
     // write subscriberType
     if (!parcel.WriteInt32(subscriberType_)) {
         EVENT_LOGE("common event Publish Info write subscriberType failed");
+        return false;
+    }
+    // write rule_
+    if (!parcel.WriteInt32(static_cast<int32_t>(rule_))) {
+        EVENT_LOGE("common event Publish Info write rule failed");
         return false;
     }
     return true;
@@ -197,6 +230,13 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
     }
     // read subscriberType
     subscriberType_ = parcel.ReadInt32();
+    int32_t rule = parcel.ReadInt32();
+    if (rule < static_cast<int32_t>(ValidationRule::AND) ||
+        rule > static_cast<int32_t>(ValidationRule::OR)) {
+        EVENT_LOGE("ReadFromParcel read rule error");
+        return false;
+    }
+    rule_ = static_cast<ValidationRule>(rule);
     return true;
 }
 

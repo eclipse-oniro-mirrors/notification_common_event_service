@@ -28,8 +28,6 @@ using namespace OHOS::AppExecFwk;
 
 namespace OHOS {
 namespace EventFwk {
-extern void MockIsVerfyPermisson(bool mockRet);
-extern void MockIsSystemApp(bool mockRet);
 
 class CommonEventControlManagerBranchTest : public testing::Test {
 public:
@@ -78,120 +76,6 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0100, Le
 }
 
 /**
- * @tc.name: CommonEventControlManager_0200
- * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0200, Level0)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0200 start";
-    CommonEventControlManager commonEventControlManager;
-    EventSubscriberRecord subscriberRecord;
-    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
-    subscriberRecord.eventSubscribeInfo = eventSubscribeInfo;
-    subscriberRecord.eventRecordInfo.isProxy = true;
-    subscriberRecord.eventRecordInfo.isSubsystem = true;
-    subscriberRecord.eventRecordInfo.isSystemApp = true;
-    CommonEventRecord eventRecord;
-    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
-    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
-    eventRecord.publishInfo = publishInfo;
-
-    OHOS::AAFwk::Want want;
-    want.SetAction("usual.event.BOOT_COMPLETED");
-    commonEventData->SetWant(want);
-    eventRecord.commonEventData = commonEventData;
-
-    // set VerifyAccessToken is false
-    MockIsVerfyPermisson(false);
-    MockIsSystemApp(false);
-    EXPECT_EQ(false, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0200 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_0300
- * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0300, Level0)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0300 start";
-    CommonEventControlManager commonEventControlManager;
-    EventSubscriberRecord subscriberRecord;
-    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
-    subscriberRecord.eventSubscribeInfo = eventSubscribeInfo;
-    subscriberRecord.eventRecordInfo.isProxy = true;
-    subscriberRecord.eventRecordInfo.isSubsystem = true;
-    subscriberRecord.eventRecordInfo.isSystemApp = true;
-    CommonEventRecord eventRecord;
-    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
-    eventRecord.commonEventData = commonEventData;
-    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
-    eventRecord.publishInfo = publishInfo;
-    // set VerifyAccessToken is true
-    MockIsVerfyPermisson(true);
-    EXPECT_EQ(true, commonEventControlManager.CheckSubscriberPermission(subscriberRecord, eventRecord));
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0300 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_0400
- * @tc.desc: test CheckPermission and CheckSubscriberPermission is false.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0400, Level0)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0400 start";
-    CommonEventControlManager commonEventControlManager;
-    EventSubscriberRecord subscriberRecord;
-    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
-    subscriberRecord.eventSubscribeInfo = eventSubscribeInfo;
-    subscriberRecord.eventRecordInfo.isProxy = true;
-    subscriberRecord.eventRecordInfo.isSubsystem = true;
-    subscriberRecord.eventRecordInfo.isSystemApp = true;
-    CommonEventRecord eventRecord;
-    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
-    eventRecord.commonEventData = commonEventData;
-    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
-    eventRecord.publishInfo = publishInfo;
-    OHOS::AAFwk::Want want;
-    want.SetAction("usual.event.BOOT_COMPLETED");
-    commonEventData->SetWant(want);
-    // set VerifyAccessToken is false
-    MockIsVerfyPermisson(false);
-    MockIsSystemApp(false);
-    EXPECT_EQ(OrderedEventRecord::DELIVERED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0400 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_0500
- * @tc.desc: test CheckPermission and CheckSubscriberPermission is true.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0500, Level0)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0500 start";
-    CommonEventControlManager commonEventControlManager;
-    EventSubscriberRecord subscriberRecord;
-    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
-    subscriberRecord.eventSubscribeInfo = eventSubscribeInfo;
-    subscriberRecord.eventRecordInfo.isProxy = true;
-    subscriberRecord.eventRecordInfo.isSubsystem = true;
-    subscriberRecord.eventRecordInfo.isSystemApp = true;
-    CommonEventRecord eventRecord;
-    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
-    eventRecord.commonEventData = commonEventData;
-    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
-    eventRecord.publishInfo = publishInfo;
-    // set VerifyAccessToken is true
-    MockIsVerfyPermisson(true);
-    EXPECT_EQ(OrderedEventRecord::DELIVERED, commonEventControlManager.CheckPermission(subscriberRecord, eventRecord));
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0500 end";
-}
-
-/**
  * @tc.name: CommonEventControlManager_0600
  * @tc.desc: test NotifyFreezeEvents and CheckPermission is OrderedEventRecord::SKIPPED.
  * @tc.type: FUNC
@@ -212,8 +96,6 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0600, Le
     eventRecord.commonEventData = commonEventData;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
     eventRecord.publishInfo = publishInfo;
-    // set VerifyAccessToken is false
-    MockIsVerfyPermisson(false);
     EXPECT_EQ(false, commonEventControlManager.NotifyFreezeEvents(subscriberRecord, eventRecord));
     GTEST_LOG_(INFO) << "CommonEventControlManager_0600 end";
 }
@@ -238,59 +120,6 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0700, Le
     GTEST_LOG_(INFO) << "CommonEventControlManager_0700 end";
 }
 
-/**
- * @tc.name: CommonEventControlManager_0800
- * @tc.desc: test CheckPublisherRequiredPermissions and VerifyAccessToken is false.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0800, Level0)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0800 start";
-    CommonEventControlManager commonEventControlManager;
-    std::string publisherRequiredPermission = "aa";
-    std::vector<std::string> publisherRequiredPermissions;
-    publisherRequiredPermissions.emplace_back(publisherRequiredPermission);
-    EventSubscriberRecord subscriberRecord;
-    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
-    subscriberRecord.eventSubscribeInfo = eventSubscribeInfo;
-    CommonEventRecord eventRecord;
-    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
-    eventRecord.commonEventData = commonEventData;
-    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
-    eventRecord.publishInfo = publishInfo;
-    // set VerifyAccessToken is false
-    MockIsVerfyPermisson(false);
-    EXPECT_EQ(false, commonEventControlManager.CheckPublisherRequiredPermissions(
-        publisherRequiredPermissions, subscriberRecord, eventRecord));
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0800 end";
-}
-
-/**
- * @tc.name: CommonEventControlManager_0900
- * @tc.desc: test CheckPublisherRequiredPermissions and VerifyAccessToken is true.
- * @tc.type: FUNC
- */
-HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_0900, Level0)
-{
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0900 start";
-    CommonEventControlManager commonEventControlManager;
-    std::string publisherRequiredPermission = "aa";
-    std::vector<std::string> publisherRequiredPermissions;
-    publisherRequiredPermissions.emplace_back(publisherRequiredPermission);
-    EventSubscriberRecord subscriberRecord;
-    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
-    subscriberRecord.eventSubscribeInfo = eventSubscribeInfo;
-    CommonEventRecord eventRecord;
-    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
-    eventRecord.commonEventData = commonEventData;
-    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
-    eventRecord.publishInfo = publishInfo;
-    // set VerifyAccessToken is true
-    MockIsVerfyPermisson(true);
-    EXPECT_EQ(true, commonEventControlManager.CheckPublisherRequiredPermissions(
-        publisherRequiredPermissions, subscriberRecord, eventRecord));
-    GTEST_LOG_(INFO) << "CommonEventControlManager_0900 end";
-}
 
 /**
  * @tc.name: CommonEventControlManager_1000

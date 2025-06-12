@@ -26,12 +26,10 @@
 #include "ievent_receive.h"
 #include "system_time.h"
 #include "xcollie/watchdog.h"
-
 namespace OHOS {
 namespace EventFwk {
 constexpr int32_t LENGTH = 80;
 constexpr int32_t DOUBLE = 2;
-const std::string CONNECTOR = " or ";
 static const int32_t TIME_UNIT_SIZE = 1000;
 
 CommonEventControlManager::CommonEventControlManager()
@@ -164,11 +162,6 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         return false;
     }
 
-    int8_t ret = CheckPermission(subscriberRecord, eventRecord);
-    if (ret != OrderedEventRecord::DELIVERED) {
-        EVENT_LOGE("check permission is failed");
-        return false;
-    }
     if (eventRecord.commonEventData == nullptr) {
         EVENT_LOGE("commonEventData == nullptr");
         return false;
@@ -229,28 +222,21 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
             failCnt++;
             continue;
         }
-        int8_t ret = CheckPermission(*vec, *eventRecord);
-        eventRecord->deliveryState[index] = ret;
-        if (ret == OrderedEventRecord::DELIVERED) {
-            eventRecord->state = OrderedEventRecord::RECEIVING;
-            int32_t result = commonEventListenerProxy->NotifyEvent(*(eventRecord->commonEventData), false,
-                eventRecord->publishInfo->IsSticky());
-            if (result != ERR_OK) {
-                eventRecord->state = OrderedEventRecord::SKIPPED;
-                failCnt++;
-                EVENT_LOGE("Notify %{public}s fail, subId = %{public}s",
-                    eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
-                continue;
-            }
-            eventRecord->state = OrderedEventRecord::RECEIVED;
-            succCnt++;
-            AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
-                eventRecord->commonEventData->GetWant().GetAction());
+        eventRecord->deliveryState[index] = OrderedEventRecord::DELIVERED;
+        eventRecord->state = OrderedEventRecord::RECEIVING;
+        int32_t result = commonEventListenerProxy->NotifyEvent(*(eventRecord->commonEventData), false,
+            eventRecord->publishInfo->IsSticky());
+        if (result != ERR_OK) {
+            eventRecord->state = OrderedEventRecord::SKIPPED;
+            failCnt++;
+            EVENT_LOGE("Notify %{public}s fail, subId = %{public}s",
+                eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             continue;
         }
-        failCnt++;
-        EVENT_LOGE("Notify %{public}s fail, subId = %{public}s",
-            eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
+        eventRecord->state = OrderedEventRecord::RECEIVED;
+        succCnt++;
+        AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
+            eventRecord->commonEventData->GetWant().GetAction());
     }
     EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}d, %{public}d, %{public}d)",
         eventRecord->commonEventData->GetWant().GetAction().c_str(),
@@ -462,40 +448,42 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
         EVENT_LOGE("Invalid index (= %{public}zu)", index);
         return false;
     }
-    int8_t ret = CheckPermission(*(eventRecordPtr->receivers[index]), *eventRecordPtr);
-    if (ret == OrderedEventRecord::SKIPPED) {
-        eventRecordPtr->deliveryState[index] = ret;
+    if (eventRecordPtr->receivers[index]->isFreeze) {
+        EVENT_LOGD("vec isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
+        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
+            eventRecordPtr->receivers[index], *eventRecordPtr);
+        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
+            eventRecordPtr->receivers[index], *eventRecordPtr);
+        eventRecordPtr->deliveryState[index] = OrderedEventRecord::SKIPPED;
+        eventRecordPtr->curReceiver = nullptr;
         return true;
     }
-    if (ret == OrderedEventRecord::DELIVERED) {
-        if (eventRecordPtr->receivers[index]->isFreeze) {
-            EVENT_LOGD("vec isFreeze: %{public}d", eventRecordPtr->receivers[index]->isFreeze);
-            DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(
-                eventRecordPtr->receivers[index], *eventRecordPtr);
-            DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
-                eventRecordPtr->receivers[index], *eventRecordPtr);
-            eventRecordPtr->deliveryState[index] = OrderedEventRecord::SKIPPED;
-            eventRecordPtr->curReceiver = nullptr;
-            return true;
-        }
-        eventRecordPtr->deliveryState[index] = ret;
-        eventRecordPtr->curReceiver = eventRecordPtr->receivers[index]->commonEventListener;
-        eventRecordPtr->state = OrderedEventRecord::RECEIVING;
-        sptr<IEventReceive> receiver = iface_cast<IEventReceive>(eventRecordPtr->curReceiver);
-        if (!receiver) {
-            EVENT_LOGE("Failed to get IEventReceive proxy");
-            eventRecordPtr->curReceiver = nullptr;
-            return false;
-        }
-        eventRecordPtr->state = OrderedEventRecord::RECEIVED;
-        receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true, eventRecordPtr->publishInfo->IsSticky());
-        EVENT_LOGD("NotifyOrderedEvent index = %{public}zu event = %{public}s success, subId = %{public}s", index,
+    eventRecordPtr->deliveryState[index] = OrderedEventRecord::DELIVERED;
+    eventRecordPtr->curReceiver = eventRecordPtr->receivers[index]->commonEventListener;
+    eventRecordPtr->state = OrderedEventRecord::RECEIVING;
+    sptr<IEventReceive> receiver = iface_cast<IEventReceive>(eventRecordPtr->curReceiver);
+    if (!receiver) {
+        EVENT_LOGE("Failed to get IEventReceive proxy");
+        eventRecordPtr->curReceiver = nullptr;
+        return false;
+    }
+    eventRecordPtr->state = OrderedEventRecord::RECEIVED;
+    int32_t result = receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true,
+        eventRecordPtr->publishInfo->IsSticky());
+    if (result != ERR_OK) {
+        eventRecordPtr->state = OrderedEventRecord::SKIPPED;
+        EVENT_LOGE("Notify %{public}s fail, subId = %{public}s",
             eventRecordPtr->commonEventData->GetWant().GetAction().c_str(),
             eventRecordPtr->receivers[index]->eventRecordInfo.subId.c_str());
-        AccessTokenHelper::RecordSensitivePermissionUsage(
-            eventRecordPtr->receivers[index]->eventRecordInfo.callerToken,
-            eventRecordPtr->commonEventData->GetWant().GetAction());
+        eventRecordPtr->curReceiver = nullptr;
+        return false;
     }
+    EVENT_LOGD("NotifyOrderedEvent index = %{public}zu event = %{public}s success, subId = %{public}s", index,
+        eventRecordPtr->commonEventData->GetWant().GetAction().c_str(),
+        eventRecordPtr->receivers[index]->eventRecordInfo.subId.c_str());
+    AccessTokenHelper::RecordSensitivePermissionUsage(
+        eventRecordPtr->receivers[index]->eventRecordInfo.callerToken,
+        eventRecordPtr->commonEventData->GetWant().GetAction());
     return true;
 }
 
@@ -706,154 +694,6 @@ bool CommonEventControlManager::FinishReceiverAction(std::shared_ptr<OrderedEven
     }
 
     return true;
-}
-
-int8_t CommonEventControlManager::CheckPermission(
-    const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord)
-{
-    EVENT_LOGD("enter");
-    if (subscriberRecord.eventRecordInfo.uid == eventRecord.eventRecordInfo.uid) {
-        EVENT_LOGD("CheckPermission subscribe uid = %{public}d, publish uid = %{public}d",
-            subscriberRecord.eventRecordInfo.uid, eventRecord.eventRecordInfo.uid);
-        return OrderedEventRecord::DELIVERED;
-    }
-    bool ret = false;
-    ret = CheckSubscriberPermission(subscriberRecord, eventRecord);
-    if (!ret) {
-        return OrderedEventRecord::SKIPPED;
-    }
-
-    std::string subscriberRequiredPermission = subscriberRecord.eventSubscribeInfo->GetPermission();
-    ret = CheckSubscriberRequiredPermission(subscriberRequiredPermission, eventRecord, subscriberRecord);
-    if (!ret) {
-        return OrderedEventRecord::SKIPPED;
-    }
-
-    std::vector<std::string> publisherRequiredPermissions = eventRecord.publishInfo->GetSubscriberPermissions();
-    ret = CheckPublisherRequiredPermissions(publisherRequiredPermissions, subscriberRecord, eventRecord);
-    if (!ret) {
-        return OrderedEventRecord::SKIPPED;
-    }
-
-    return OrderedEventRecord::DELIVERED;
-}
-
-bool CommonEventControlManager::CheckSubscriberPermission(
-    const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord)
-{
-    EVENT_LOGD("enter");
-    bool ret = false;
-    std::string lackPermission {};
-    std::string event = eventRecord.commonEventData->GetWant().GetAction();
-    bool isSystemAPIEvent = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->IsSystemAPIEvent(event);
-    if (isSystemAPIEvent && !(subscriberRecord.eventRecordInfo.isSubsystem
-        || subscriberRecord.eventRecordInfo.isSystemApp)) {
-        EVENT_LOGW("Invalid permission for system api event.");
-        return false;
-    }
-    Permission permission = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->GetEventPermission(event);
-    if (permission.names.empty()) {
-        return true;
-    }
-
-    if (permission.names.size() == 1) {
-        ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, permission.names[0]);
-        lackPermission = permission.names[0];
-    } else if (permission.state == PermissionState::AND) {
-        for (auto vec : permission.names) {
-            ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
-            if (!ret) {
-                lackPermission = vec;
-                break;
-            }
-        }
-    } else if (permission.state == PermissionState::OR) {
-        for (auto vec : permission.names) {
-            ret = AccessTokenHelper::VerifyAccessToken(subscriberRecord.eventRecordInfo.callerToken, vec);
-            lackPermission += vec + CONNECTOR;
-            if (ret) {
-                break;
-            }
-        }
-        lackPermission = lackPermission.substr(0, lackPermission.length() - CONNECTOR.length());
-    } else {
-        EVENT_LOGW("Invalid Permission.");
-        return false;
-    }
-    if (!ret) {
-        EVENT_LOGW("No permission to receive common event %{public}s, "
-                    "due to subscriber %{public}s (pid = %{public}d, uid = %{public}d) lacks "
-                    "the %{public}s permission.",
-            event.c_str(), subscriberRecord.eventRecordInfo.bundleName.c_str(),
-            subscriberRecord.eventRecordInfo.pid, subscriberRecord.eventRecordInfo.uid, lackPermission.c_str());
-    }
-
-    return ret;
-}
-
-bool CommonEventControlManager::CheckSubscriberRequiredPermission(const std::string &subscriberRequiredPermission,
-    const CommonEventRecord &eventRecord, const EventSubscriberRecord &subscriberRecord)
-{
-    bool ret = false;
-
-    if (subscriberRequiredPermission.empty()) {
-        return true;
-    }
-
-    ret = AccessTokenHelper::VerifyAccessToken(eventRecord.eventRecordInfo.callerToken, subscriberRequiredPermission);
-    if (!ret) {
-        EVENT_LOGW("No permission to send common event %{public}s "
-                    "from %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
-                    "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
-                    "due to subscriber requires the %{public}s permission.",
-            eventRecord.commonEventData->GetWant().GetAction().c_str(),
-            eventRecord.eventRecordInfo.bundleName.c_str(),
-            eventRecord.eventRecordInfo.pid,
-            eventRecord.eventRecordInfo.uid,
-            eventRecord.userId,
-            subscriberRecord.eventRecordInfo.bundleName.c_str(),
-            subscriberRecord.eventRecordInfo.pid,
-            subscriberRecord.eventRecordInfo.uid,
-            subscriberRecord.eventSubscribeInfo->GetUserId(),
-            subscriberRequiredPermission.c_str());
-    }
-
-    return ret;
-}
-
-bool CommonEventControlManager::CheckPublisherRequiredPermissions(
-    const std::vector<std::string> &publisherRequiredPermissions, const EventSubscriberRecord &subscriberRecord,
-    const CommonEventRecord &eventRecord)
-{
-    bool ret = false;
-
-    if (publisherRequiredPermissions.empty()) {
-        return true;
-    }
-
-    for (auto publisherRequiredPermission : publisherRequiredPermissions) {
-        ret = AccessTokenHelper::VerifyAccessToken(
-            subscriberRecord.eventRecordInfo.callerToken, publisherRequiredPermission);
-        if (!ret) {
-            EVENT_LOGW("No permission to receive common event %{public}s "
-                        "to %{public}s (pid = %{public}d, uid = %{public}d), userId = %{public}d "
-                        "due to publisher %{public}s (pid = %{public}d, uid = %{public}d),"
-                        " userId = %{public}d requires the %{public}s permission.",
-                eventRecord.commonEventData->GetWant().GetAction().c_str(),
-                subscriberRecord.eventRecordInfo.bundleName.c_str(),
-                subscriberRecord.eventRecordInfo.pid,
-                subscriberRecord.eventRecordInfo.uid,
-                subscriberRecord.eventSubscribeInfo->GetUserId(),
-                eventRecord.eventRecordInfo.bundleName.c_str(),
-                eventRecord.eventRecordInfo.pid,
-                eventRecord.eventRecordInfo.uid,
-                eventRecord.userId,
-                publisherRequiredPermission.c_str());
-            break;
-        }
-    }
-
-    return ret;
 }
 
 void CommonEventControlManager::GetUnorderedEventRecords(

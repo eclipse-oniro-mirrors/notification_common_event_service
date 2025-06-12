@@ -22,12 +22,20 @@
 #include "common_event_stub.h"
 #include "common_event_subscriber_manager.h"
 #include "inner_common_event_manager.h"
+#include "common_event_permission_manager.h"
 #undef private
 
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
+namespace OHOS {
+namespace EventFwk {
+
+extern void MockGetEventPermission(bool mockRet, PermissionState mockState = PermissionState::AND,
+    int32_t permissionSize = 1);
+extern void MockIsVerfyPermisson(bool isVerify);
+extern void MockIsSystemApp(bool mockRet);
 
 class CommonEventSubscriberManagerTest : public testing::Test {
 public:
@@ -703,3 +711,750 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventStickyManager_0600, Level1
     GTEST_LOG_(INFO) << "CommonEventStickyManager_0600 end";
 }
 
+/**
+ * @tc.name: CheckSubscriberPermission_1000
+ * @tc.desc: test CheckSubscriberPermission function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1000, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_1000 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->eventRecordInfo.isProxy = false;
+    subscriberRecord->eventRecordInfo.isSubsystem = true;
+    subscriberRecord->eventRecordInfo.isSystemApp = true;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    MockGetEventPermission(true);
+    EXPECT_EQ(true, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_1000 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_1100
+ * @tc.desc: test CheckSubscriberPermission function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1100, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_1100 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
+    subscriberRecord->eventRecordInfo.isSystemApp = false;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    MockGetEventPermission(true);
+    MockIsVerfyPermisson(true);
+    EXPECT_EQ(true, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_1100 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_1200
+ * @tc.desc: test CheckSubscriberPermission function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1200, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_1200 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
+    subscriberRecord->eventRecordInfo.isSystemApp = false;
+    subscriberRecord->eventRecordInfo.subId = "xxxx";
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.USER_LOCKED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    MockGetEventPermission(true);
+    MockIsVerfyPermisson(false);
+    EXPECT_EQ(false, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_1200 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_0200
+ * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1300, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0200 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = true;
+    subscriberRecord->eventRecordInfo.isSystemApp = true;
+    subscriberRecord->eventRecordInfo.subId = "xxxx";
+    subscriberRecord->eventRecordInfo.uid = 1001;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.USER_LOCKED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+
+    // set VerifyAccessToken is false
+    MockIsVerfyPermisson(false);
+    MockIsSystemApp(false);
+    EXPECT_EQ(false, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0200 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_0300
+ * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1400, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = true;
+    subscriberRecord->eventRecordInfo.isSystemApp = true;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+    // set VerifyAccessToken is true
+    MockIsVerfyPermisson(true);
+    EXPECT_EQ(true, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_0300
+ * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1500, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
+    subscriberRecord->eventRecordInfo.isSystemApp = true;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.USER_LOCKED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    // set VerifyAccessToken is true
+    MockGetEventPermission(true, PermissionState::AND, 2);
+    MockIsVerfyPermisson(true);
+
+    EXPECT_EQ(true, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_0300
+ * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1600, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
+    subscriberRecord->eventRecordInfo.isSystemApp = false;
+    subscriberRecord->eventRecordInfo.subId = "xxxx";
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.USER_LOCKED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+
+    EXPECT_EQ(false, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_0300
+ * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1700, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
+    subscriberRecord->eventRecordInfo.isSystemApp = true;
+    subscriberRecord->eventRecordInfo.subId = "xxxx";
+    subscriberRecord->eventRecordInfo.uid = 1001;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    // set VerifyAccessToken is true
+    MockGetEventPermission(true, PermissionState::AND, 2);
+    MockIsVerfyPermisson(false);
+
+    EXPECT_EQ(false, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_0300
+ * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1800, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
+    subscriberRecord->eventRecordInfo.isSystemApp = true;
+    subscriberRecord->eventRecordInfo.subId = "xxxx";
+    subscriberRecord->eventRecordInfo.uid = 1001;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    // set VerifyAccessToken is true
+    MockGetEventPermission(true, PermissionState::OR, 2);
+    MockIsVerfyPermisson(false);
+
+    EXPECT_EQ(false, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberPermission_0300
+ * @tc.desc: test CheckSubscriberPermission permission.names.size is 2 and permission.state is PermissionState::AND.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberPermission_1900, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.isProxy = true;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
+    subscriberRecord->eventRecordInfo.isSystemApp = true;
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.USER_LOCKED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    // set VerifyAccessToken is true
+    MockGetEventPermission(true, PermissionState::OR, 2);
+    MockIsVerfyPermisson(true);
+
+    EXPECT_EQ(true, commonEventSubscriberManager->CheckSubscriberPermission(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CheckSubscriberPermission_0300 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_0800
+ * @tc.desc: test CheckPublisherRequiredPermissions and VerifyAccessToken is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherRequiredPermissions_0800, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_0800 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    std::string publisherRequiredPermission = "aa";
+    std::vector<std::string> publisherRequiredPermissions;
+    publisherRequiredPermissions.emplace_back(publisherRequiredPermission);
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.subId = "xxx";
+    subscriberRecord->eventRecordInfo.uid = 100;
+    CommonEventRecord eventRecord;
+    eventRecord.eventRecordInfo.uid = 1001;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetSubscriberPermissions(publisherRequiredPermissions);
+    eventRecord.publishInfo = publishInfo;
+    // set VerifyAccessToken is false
+    MockIsVerfyPermisson(false);
+    EXPECT_EQ(false, commonEventSubscriberManager->CheckPublisherRequiredPermissions(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CommonEventControlManager_0800 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_0900
+ * @tc.desc: test CheckPublisherRequiredPermissions and VerifyAccessToken is true.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherRequiredPermissions_0900, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_0900 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    std::string publisherRequiredPermission = "aa";
+    std::vector<std::string> publisherRequiredPermissions;
+    publisherRequiredPermissions.emplace_back(publisherRequiredPermission);
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.uid = 100;
+    CommonEventRecord eventRecord;
+    eventRecord.eventRecordInfo.uid = 1001;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetSubscriberPermissions(publisherRequiredPermissions);
+    eventRecord.publishInfo = publishInfo;
+    // set VerifyAccessToken is true
+    MockIsVerfyPermisson(true);
+    EXPECT_EQ(true, commonEventSubscriberManager->CheckPublisherRequiredPermissions(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CommonEventControlManager_0900 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_0900
+ * @tc.desc: test CheckPublisherRequiredPermissions and VerifyAccessToken is true.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherRequiredPermissions_1000, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_0900 start";
+    std::shared_ptr<CommonEventSubscriberManager> commonEventSubscriberManager =
+        std::make_shared<CommonEventSubscriberManager>();
+    std::string publisherRequiredPermission = "aa";
+    std::vector<std::string> publisherRequiredPermissions;
+    publisherRequiredPermissions.emplace_back(publisherRequiredPermission);
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.uid = 100;
+    CommonEventRecord eventRecord;
+    eventRecord.eventRecordInfo.uid = 100;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    eventRecord.commonEventData = commonEventData;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetSubscriberPermissions(publisherRequiredPermissions);
+    eventRecord.publishInfo = publishInfo;
+    // set VerifyAccessToken is true
+    MockIsVerfyPermisson(false);
+
+    EXPECT_EQ(true, commonEventSubscriberManager->CheckPublisherRequiredPermissions(subscriberRecord, eventRecord));
+    GTEST_LOG_(INFO) << "CommonEventControlManager_0900 end";
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherWhetherMatched_BundleNameNotMatched_ReturnFalse, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    eventSubscribeInfo->SetPublisherBundleName("Bundle2");
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+
+    CommonEventRecord eventRecord;
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "Bundle1";
+    eventRecord.eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckPublisherWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherWhetherMatched_UidNotMatched_ReturnFalse, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    eventSubscribeInfo->SetPublisherUid(1002);
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+
+    CommonEventRecord eventRecord;
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.uid = 1001;
+    eventRecord.eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckPublisherWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherWhetherMatched_PermissionNotMatched_ReturnFalse, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    eventSubscribeInfo->SetPublisherBundleName("Bundle1");
+    eventSubscribeInfo->SetPublisherUid(1001);
+    eventSubscribeInfo->SetPermission("xxxxx");
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+
+    CommonEventRecord eventRecord;
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.uid = 1001;
+    eventRecordInfo.bundleName = "Bundle1";
+    eventRecordInfo.subId = "xxxx";
+    eventRecord.eventRecordInfo = eventRecordInfo;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    MockIsVerfyPermisson(false);
+
+    // Act
+    bool result = manager->CheckPublisherWhetherMatched(subscriberRecord, eventRecord);
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherWhetherMatched_AllMatched_ReturnTrue, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    eventSubscribeInfo->SetPublisherBundleName("Bundle1");
+    eventSubscribeInfo->SetPublisherUid(1001);
+    eventSubscribeInfo->SetPermission("xxxxx");
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.uid = 1001;
+
+    CommonEventRecord eventRecord;
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "Bundle1";
+    eventRecordInfo.uid = 1001;
+    eventRecord.eventRecordInfo = eventRecordInfo;
+    MockIsVerfyPermisson(true);
+
+    // Act
+    bool result = manager->CheckPublisherWhetherMatched(subscriberRecord, eventRecord);
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_BundleNameNotMatched, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetBundleName("bundleName1");
+    eventRecord.publishInfo = publishInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "bundleName2";
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_SubscriberTypeNotMatched, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetSubscriberType(SubscriberType::SYSTEM_SUBSCRIBER_TYPE);
+    eventRecord.publishInfo = publishInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.isSystemApp = false;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_SubscriberUidNotMatched, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetSubscriberUid({1, 2, 3});
+    eventRecord.publishInfo = publishInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.uid = 4;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_PublisherRequiredPermissionsNotMatched, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.uid = 4;
+    eventRecordInfo.bundleName = "xxx";
+    eventRecordInfo.subId = "xxxx";
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+    auto eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    eventSubscribeInfo->SetUserId(100);
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    subscriberRecord->eventRecordInfo.uid = 1001;
+
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetValidationRule(ValidationRule::AND);
+    std::vector<std::string> publisherRequiredPermissions;
+    publisherRequiredPermissions.emplace_back("publisherRequiredPermission");
+    publishInfo->SetSubscriberPermissions(publisherRequiredPermissions);
+    eventRecord.publishInfo = publishInfo;
+    eventRecord.eventRecordInfo.uid = 1002;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    MockIsVerfyPermisson(false);
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_AllConditionsMatched, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    publishInfo->SetBundleName("bundleName1");
+    publishInfo->SetSubscriberType(SubscriberType::SYSTEM_SUBSCRIBER_TYPE);
+    publishInfo->SetSubscriberUid({1});
+    publishInfo->SetValidationRule(ValidationRule::AND);
+    eventRecord.publishInfo = publishInfo;
+    eventRecord.eventRecordInfo.uid = 1;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "bundleName1";
+    eventRecordInfo.isSystemApp = true;
+    eventRecordInfo.uid = 1;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    MockIsVerfyPermisson(true);
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_UidNotMatchedAndRuleIsAnd, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    publishInfo->SetBundleName("bundleName1");
+    publishInfo->SetSubscriberType(SubscriberType::SYSTEM_SUBSCRIBER_TYPE);
+    publishInfo->SetSubscriberUid({2});
+    publishInfo->SetValidationRule(ValidationRule::AND);
+    eventRecord.publishInfo = publishInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "bundleName1";
+    eventRecordInfo.isSystemApp = true;
+    eventRecordInfo.uid = 1;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_PermissionNotMatchedAndRuleIsAnd, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    publishInfo->SetBundleName("bundleName1");
+    publishInfo->SetSubscriberType(SubscriberType::SYSTEM_SUBSCRIBER_TYPE);
+    publishInfo->SetSubscriberUid({1});
+    publishInfo->SetValidationRule(ValidationRule::AND);
+    eventRecord.publishInfo = publishInfo;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "bundleName1";
+    eventRecordInfo.isSystemApp = true;
+    eventRecordInfo.uid = 1;
+    eventRecordInfo.subId = "xxxx";
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+    auto eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>();
+    eventSubscribeInfo->SetUserId(100);
+    subscriberRecord->eventSubscribeInfo = eventSubscribeInfo;
+    MockIsVerfyPermisson(false);
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_OneOfConditionsNotMatchedAndRuleIsOr, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    publishInfo->SetBundleName("bundleName1");
+    publishInfo->SetSubscriberType(SubscriberType::SYSTEM_SUBSCRIBER_TYPE);
+    publishInfo->SetSubscriberUid({2});
+    publishInfo->SetValidationRule(ValidationRule::OR);
+    std::vector<std::string> publisherRequiredPermissions;
+    publisherRequiredPermissions.emplace_back("publisherRequiredPermission");
+    publishInfo->SetSubscriberPermissions(publisherRequiredPermissions);
+    eventRecord.publishInfo = publishInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "bundleName1";
+    eventRecordInfo.isSystemApp = true;
+    eventRecordInfo.uid = 1;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+    MockIsVerfyPermisson(true);
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_AllConditionsNotMatchedAndRuleIsOr, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    publishInfo->SetBundleName("bundleName1");
+    publishInfo->SetSubscriberType(SubscriberType::SYSTEM_SUBSCRIBER_TYPE);
+    publishInfo->SetSubscriberUid({2});
+    publishInfo->SetValidationRule(ValidationRule::OR);
+    eventRecord.publishInfo = publishInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "bundleName12";
+    eventRecordInfo.isSystemApp = false;
+    eventRecordInfo.uid = 1;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+}
+}

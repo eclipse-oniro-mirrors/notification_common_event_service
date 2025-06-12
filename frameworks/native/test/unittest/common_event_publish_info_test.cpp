@@ -70,3 +70,43 @@ HWTEST_F(CommonEventPublishInfoTest, SetSubscriberUid_ShouldSetEmpty_WhenUidsIsE
     commonEventPublishInfo.SetSubscriberUid(subscriberUids);
     EXPECT_TRUE(commonEventPublishInfo.GetSubscriberUid().empty());
 }
+
+/*
+ * tc.number: CommonEventPublishInfo_001
+ * tc.name: test ReadFromParcel
+ * tc.type: FUNC
+ * tc.require: issueI5RULW
+ * tc.desc: Invoke ReadFromParcel interface verify whether it is normal
+ */
+HWTEST_F(CommonEventPublishInfoTest, CommonEventPublishInfo_001, TestSize.Level0)
+{
+    Parcel parcel;
+    CommonEventPublishInfo commonEventPublishInfo;
+    commonEventPublishInfo.SetBundleName("testBundle");
+    commonEventPublishInfo.SetOrdered(true);
+    commonEventPublishInfo.SetSticky(true);
+    std::vector<std::string> permissions;
+    permissions.push_back("testPermission");
+    commonEventPublishInfo.SetSubscriberPermissions(permissions);
+    commonEventPublishInfo.SetSubscriberType(OHOS::EventFwk::SYSTEM_SUBSCRIBER_TYPE);
+    commonEventPublishInfo.SetValidationRule(OHOS::EventFwk::ValidationRule::OR);
+    std::vector<int32_t> uids;
+    commonEventPublishInfo.SetSubscriberUid(uids);
+
+    EXPECT_EQ(commonEventPublishInfo.Marshalling(parcel), true);
+
+    sptr<CommonEventPublishInfo> publishInfo = CommonEventPublishInfo::Unmarshalling(parcel);
+    EXPECT_EQ(publishInfo->GetBundleName(), "testBundle");
+    EXPECT_TRUE(publishInfo->IsOrdered());
+    EXPECT_TRUE(publishInfo->IsSticky());
+    EXPECT_EQ(publishInfo->GetSubscriberType(), OHOS::EventFwk::SYSTEM_SUBSCRIBER_TYPE);
+    EXPECT_EQ(publishInfo->GetValidationRule(), OHOS::EventFwk::ValidationRule::OR);
+    EXPECT_EQ(publishInfo->GetSubscriberPermissions().size(), 1);
+    EXPECT_EQ(publishInfo->GetSubscriberUid().size(), 0);
+}
+
+HWTEST_F(CommonEventPublishInfoTest, GetFilterSettings_002, TestSize.Level0)
+{
+    CommonEventPublishInfo commonEventPublishInfo;
+    EXPECT_EQ(commonEventPublishInfo.GetFilterSettings(), 4);
+}

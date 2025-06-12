@@ -26,6 +26,16 @@ enum SubscriberType {
     SYSTEM_SUBSCRIBER_TYPE
 };
 
+enum class ValidationRule {
+    AND = 1,
+    OR = 2,
+};
+
+static constexpr uint16_t SUBSCRIBER_FILTER_BUNDLE_INDEX = 1 << 0;
+static constexpr uint16_t SUBSCRIBER_FILTER_PERMISSION_INDEX = 1 << 1;
+static constexpr uint16_t SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX = 1 << 2;
+static constexpr uint16_t SUBSCRIBER_FILTER_SUBSCRIBER_UID_INDEX = 1 << 3;
+
 class CommonEventPublishInfo : public Parcelable {
 public:
     CommonEventPublishInfo();
@@ -131,6 +141,31 @@ public:
     std::string GetBundleName() const;
 
     /**
+     * Sets validationRule of subscriber.
+     *
+     * @param rule Indicates the validation rule of subscriber, which can be AND or OR. default is AND.
+     */
+    void SetValidationRule(const ValidationRule &rule);
+
+    /**
+     * Obtains the validationRule of a common event
+     *
+     * @return Returns the validationRule of a common event.
+     */
+    ValidationRule GetValidationRule() const;
+
+    /**
+     * Obtains the settings of filter parameters
+     *  SUBSCRIBER_FILTER_BUNDLE_INDEX = 1 << 0;
+     *  SUBSCRIBER_FILTER_PERMISSION_INDEX = 1 << 1;
+     *  SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX = 1 << 2;
+     *  SUBSCRIBER_FILTER_SUBSCRIBER_UID_INDEX = 1 << 3;
+     *
+     * @return Returns the bits of filter settings.
+     */
+    uint16_t GetFilterSettings() const;
+
+    /**
      * Marshals a CommonEventData object into a Parcel.
      *
      * @param parcel Indicates specified Parcel object.
@@ -162,6 +197,7 @@ private:
     std::vector<std::string> subscriberPermissions_;
     std::vector<int32_t> subscriberUids_;
     int32_t subscriberType_;
+    ValidationRule rule_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

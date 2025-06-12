@@ -149,17 +149,6 @@ private:
     bool FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
         const std::string &receiverData, const bool &abortEvent);
 
-    int8_t CheckPermission(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
-
-    bool CheckSubscriberPermission(const EventSubscriberRecord &subscriberRecord,
-        const CommonEventRecord &eventRecord);
-
-    bool CheckSubscriberRequiredPermission(const std::string &subscriberRequiredPermission,
-        const CommonEventRecord &eventRecord, const EventSubscriberRecord &subscriberRecord);
-
-    bool CheckPublisherRequiredPermissions(const std::vector<std::string> &publisherRequiredPermissions,
-        const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
-
     bool NotifyFreezeEvents(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
     void GetOrderedEventRecords(
