@@ -15,6 +15,7 @@
 
 #include "common_event_listener.h"
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "hitrace_meter_adapter.h"
 #include "ffrt.h"
 
@@ -35,7 +36,7 @@ CommonEventListener::~CommonEventListener()
 
 ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, bool ordered, bool sticky)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
@@ -130,7 +131,7 @@ bool CommonEventListener::IsReady()
 __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
 
     int32_t code = commonEventData.GetCode();

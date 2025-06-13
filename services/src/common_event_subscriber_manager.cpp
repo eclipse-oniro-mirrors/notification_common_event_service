@@ -22,6 +22,7 @@
 #include "common_event_subscriber_manager.h"
 #include "common_event_support.h"
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "event_report.h"
 #include "hisysevent.h"
 #include "hitrace_meter_adapter.h"
@@ -55,7 +56,7 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
     const SubscribeInfoPtr &eventSubscribeInfo, const sptr<IRemoteObject> &commonEventListener,
     const struct tm &recordTime, const EventRecordInfo &eventRecordInfo)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (eventSubscribeInfo == nullptr) {
@@ -109,7 +110,7 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
 
 int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (commonEventListener == nullptr) {

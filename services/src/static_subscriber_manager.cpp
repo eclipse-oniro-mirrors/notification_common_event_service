@@ -28,8 +28,8 @@
 #include "common_event_support.h"
 #include "double_wrapper.h"
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "event_report.h"
-#include "hitrace_meter_adapter.h"
 #include "int_wrapper.h"
 #include "ipc_skeleton.h"
 #include "os_account_manager_helper.h"
@@ -262,7 +262,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter, event = %{public}s, userId = %{public}d", data.GetWant().GetAction().c_str(), userId);
 
     std::lock_guard<std::mutex> lock(subscriberMutex_);
@@ -468,7 +468,7 @@ void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &
 
 void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if ((data.GetWant().GetAction() != CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED) &&

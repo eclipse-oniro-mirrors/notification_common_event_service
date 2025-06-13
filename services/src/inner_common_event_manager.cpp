@@ -23,6 +23,7 @@
 #include "common_event_support.h"
 #include "common_event_support_mapper.h"
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "event_report.h"
 #include "hitrace_meter_adapter.h"
 #include "ipc_skeleton.h"
@@ -215,7 +216,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId, const std::string &bundleName,
     const sptr<IRemoteObject> &service)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     if (data.GetWant().GetAction().empty()) {
         EVENT_LOGE("the commonEventdata action is null");
         return false;
@@ -303,7 +304,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     const pid_t &pid, const uid_t &uid, const Security::AccessToken::AccessTokenID &callerToken,
     const std::string &bundleName, const int32_t instanceKey, const int64_t startTime)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     int64_t taskStartTime = SystemTime::GetNowSysTime();
     EVENT_LOGD("enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
         bundleName.c_str(), pid, uid, subscribeInfo.GetUserId());
@@ -356,7 +357,7 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 
 bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (commonEventListener == nullptr) {
@@ -523,7 +524,7 @@ void InnerCommonEventManager::SetSystemUserId(const uid_t &uid, EventComeFrom &c
 bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, EventComeFrom &comeFrom, int32_t &userId)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (userId < UNDEFINED_USER) {
@@ -558,7 +559,7 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
 bool InnerCommonEventManager::PublishStickyEvent(
     const std::shared_ptr<CommonEventSubscribeInfo> &sp, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!sp) {
