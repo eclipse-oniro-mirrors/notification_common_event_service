@@ -76,7 +76,11 @@ namespace OHOS::CommonEventManager {
             if (!ptr) {
                 return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
             }
-            ptr->GetSubscriber()->SetSubscriberManagerId(ptr->GetID());
+            auto subscriber = ptr->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
+            subscriber->SetSubscriberManagerId(ptr->GetID());
             return ptr->GetID();
         }
 
@@ -88,6 +92,9 @@ namespace OHOS::CommonEventManager {
                 return ERR_INVALID_INSTANCE_CODE;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
             auto onChange = [lambda = CJLambda::Create(callbackRef)](const CCommonEventData data) -> void {
                 lambda(data);
             };
@@ -101,18 +108,25 @@ namespace OHOS::CommonEventManager {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
             }
-            return CommonEventManagerImpl::Unsubscribe(instance->GetSubscriber());
+            auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
+            return CommonEventManagerImpl::Unsubscribe(subscriber);
         }
 
-        RetDataI64 CJ_GetCode(int64_t id)
+        RetDataI32 CJ_GetCode(int64_t id)
         {
-            RetDataI64 ret = {.code = ERR_INVALID_INSTANCE_CODE, .data = 0};
+            RetDataI32 ret = {.code = ERR_INVALID_INSTANCE_CODE, .data = 0};
             auto instance = FFIData::GetData<SubscriberManager>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ret;
+            }
             GetSubscriberCode(subscriber, ret.data);
             ret.code = NO_ERROR;
             return ret;
@@ -126,6 +140,9 @@ namespace OHOS::CommonEventManager {
                 return ERR_INVALID_INSTANCE_CODE;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
             return SetSubscriberCode(subscriber, code);
         }
 
@@ -138,6 +155,9 @@ namespace OHOS::CommonEventManager {
                 return ret;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ret;
+            }
             ret.data = MallocCString(GetSubscriberData(subscriber));
             if (ret.data == nullptr) {
                 LOGE("CJ_GetData failed: out of memory.")
@@ -156,6 +176,9 @@ namespace OHOS::CommonEventManager {
                 return ERR_INVALID_INSTANCE_CODE;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
             return SetSubscriberData(subscriber, data);
         }
 
@@ -167,6 +190,9 @@ namespace OHOS::CommonEventManager {
                 return ERR_INVALID_INSTANCE_CODE;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
             return SetSubscriberCodeAndData(subscriber, code, data);
         }
 
@@ -179,6 +205,9 @@ namespace OHOS::CommonEventManager {
                 return ret;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ret;
+            }
             IsCommonEventOrdered(subscriber, ret.data);
             ret.code = NO_ERROR;
             return ret;
@@ -193,6 +222,9 @@ namespace OHOS::CommonEventManager {
                 return ret;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ret;
+            }
             IsCommonEventSticky(subscriber, ret.data);
             ret.code = NO_ERROR;
             return ret;
@@ -205,10 +237,18 @@ namespace OHOS::CommonEventManager {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
             }
-            if (!instance->GetSubscriber()->AbortCommonEvent()) {
+
+            auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
+            std::shared_ptr<AsyncCommonEventResult> result = GetAsyncResult(subscriber.get());
+            if (!result) {
+                LOGE("SubscriberManager result not exist %{public}" PRId64, id);
                 return ERR_CES_FAILED;
             }
-            return SUCCESS_CODE;
+
+            return result->AbortCommonEvent() ? SUCCESS_CODE : ERR_CES_FAILED;
         }
 
         int32_t CJ_ClearAbortCommonEvent(int64_t id)
@@ -218,10 +258,18 @@ namespace OHOS::CommonEventManager {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
             }
-            if (!instance->GetSubscriber()->ClearAbortCommonEvent()) {
+
+            auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_CODE;
+            }
+            std::shared_ptr<AsyncCommonEventResult> result = GetAsyncResult(subscriber.get());
+            if (!result) {
+                LOGE("SubscriberManager result not exist %{public}" PRId64, id);
                 return ERR_CES_FAILED;
             }
-            return SUCCESS_CODE;
+
+            return result->ClearAbortCommonEvent() ? SUCCESS_CODE : ERR_CES_FAILED;
         }
 
         RetDataBool CJ_GetAbortCommonEvent(int64_t id)
@@ -232,8 +280,20 @@ namespace OHOS::CommonEventManager {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
             }
+
+            auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ret;
+            }
+            std::shared_ptr<AsyncCommonEventResult> result = GetAsyncResult(subscriber.get());
+            if (!result) {
+                LOGE("SubscriberManager result not exist %{public}" PRId64, id);
+                ret.code = ERR_CES_FAILED;
+                return ret;
+            }
+
+            ret.data = result->GetAbortCommonEvent();
             ret.code = SUCCESS_CODE;
-            ret.data = instance->GetSubscriber()->GetAbortCommonEvent();
             return ret;
         }
 
@@ -259,6 +319,9 @@ namespace OHOS::CommonEventManager {
                 return ERR_INVALID_INSTANCE_ID;
             }
             auto subscriber = instance->GetSubscriber();
+            if (!subscriber) {
+                return ERR_INVALID_INSTANCE_ID;
+            }
             std::shared_ptr<AsyncCommonEventResult> result = GetAsyncResult(subscriber.get());
             if (result) {
                 errorCode = result->FinishCommonEvent() ? NO_ERROR : ERR_CES_FAILED;

@@ -43,7 +43,7 @@ namespace OHOS::CommonEventManager {
 
     void DeleteSubscribe(std::shared_ptr<SubscriberImpl> subscriber);
 
-    void GetSubscriberCode(std::shared_ptr<SubscriberImpl> subscriber, int64_t &code);
+    void GetSubscriberCode(std::shared_ptr<SubscriberImpl> subscriber, int32_t &code);
 
     int32_t SetSubscriberCode(std::shared_ptr<SubscriberImpl> subscriber, int32_t code);
 

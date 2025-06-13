@@ -34,14 +34,13 @@ extern "C"
     FFI_EXPORT int32_t CJ_Subscribe(int64_t id, void (*callbackRef)(const CCommonEventData data));
     FFI_EXPORT int32_t CJ_Unsubscribe(int64_t id);
 
-    FFI_EXPORT RetDataI64 CJ_GetCode(int64_t id);
+    FFI_EXPORT RetDataI32 CJ_GetCode(int64_t id);
     FFI_EXPORT int32_t CJ_SetCode(int64_t id, int32_t code);
     FFI_EXPORT RetDataCString CJ_GetData(int64_t id);
     FFI_EXPORT int32_t CJ_SetData(int64_t id, char *data);
     FFI_EXPORT int32_t CJ_SetCodeAndData(int64_t id, int32_t code, char *data);
 
     // subscriber properties
-    FFI_EXPORT RetDataI64 CJ_GetCode(int64_t id);
     FFI_EXPORT int32_t CJ_SetCode(int64_t id, int32_t code);
     FFI_EXPORT RetDataCString CJ_GetData(int64_t id);
     FFI_EXPORT int32_t CJ_SetData(int64_t id, char *data);
