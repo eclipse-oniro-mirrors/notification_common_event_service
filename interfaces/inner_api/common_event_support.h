@@ -1427,6 +1427,17 @@ public:
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_KIOSK_MODE_OFF;
+    /**
+     * Indicates that the device has updated the config policy of customazation subsystem.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED;
+
+    /**
+     * Indicates that the device has updated the custom roaming region of device.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED;
 
 public:
     CommonEventSupport();

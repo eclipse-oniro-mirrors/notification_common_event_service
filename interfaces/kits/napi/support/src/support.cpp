@@ -706,6 +706,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_KIOSK_MODE_OFF,
         "COMMON_EVENT_KIOSK_MODE_OFF");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED,
+        "COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED,
+        "COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 
