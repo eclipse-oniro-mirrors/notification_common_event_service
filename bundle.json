@@ -79,7 +79,8 @@
                 "ace_engine",
                 "node",
                 "cJSON",
-                "selinux_adapter"
+                "selinux_adapter",
+                "runtime_core"
             ],
             "third_party": []
         },
@@ -93,6 +94,7 @@
                     "//base/notification/common_event_service/frameworks/native:cesfwk_innerkits",
                     "//base/notification/common_event_service/frameworks/extension:cesfwk_extension",
                     "//base/notification/common_event_service/interfaces/kits/napi:napi_packages",
+                    "//base/notification/common_event_service/interfaces/kits/ani:ani_common_event_packages",
                     "//base/notification/common_event_service/interfaces/kits/cj:cj_common_event_manager_ffi",
                     "//base/notification/common_event_service/interfaces/kits/ndk:ohcommonevent"
                 ],
