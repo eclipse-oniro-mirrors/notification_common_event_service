@@ -83,9 +83,12 @@ ohos_shared_library("static_subscriber_extension") {
   include_dirs = [
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
+    "${interfaces_path}/kits/ani/common_event/include",
   ]
 
   sources = [
+    "${ces_extension_path}/src/ani_static_subscriber_extension.cpp",
+    "${ces_extension_path}/src/ani_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/static_subscriber_extension.cpp",
@@ -99,12 +102,14 @@ ohos_shared_library("static_subscriber_extension") {
   deps = [
     ":static_subscriber_ipc",
     "${ces_native_path}:cesfwk_innerkits",
+    "${interfaces_path}/kits/ani/common_event:ani_commoneventmanager",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
+    "ability_runtime:ani_common",
     "ability_runtime:app_context",
     "ability_runtime:extensionkit_native",
     "ability_runtime:napi_common",
@@ -116,6 +121,7 @@ ohos_shared_library("static_subscriber_extension") {
     "hilog:libhilog",
     "ipc:ipc_core",
     "napi:ace_napi",
+    "runtime_core:ani",
   ]
 
   subsystem_name = "notification"
