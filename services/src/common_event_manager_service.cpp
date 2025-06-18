@@ -22,6 +22,7 @@
 #include "common_event_constant.h"
 #include "datetime_ex.h"
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "hitrace_meter_adapter.h"
 #include "ipc_skeleton.h"
 #include "parameters.h"
@@ -168,7 +169,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
     const CommonEventPublishInfo &publishinfo, const sptr<IRemoteObject> &commonEventListener, const pid_t &pid,
     const uid_t &uid, const int32_t &clientToken, const int32_t &userId)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     if (AccessTokenHelper::IsDlpHap(clientToken)) {
         EVENT_LOGE("DLP hap not allowed to send common event");
         return ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP;
@@ -237,7 +238,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
 ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscribeInfo& subscribeInfo,
     const sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!IsReady()) {
@@ -306,7 +307,7 @@ ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
 ErrCode CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObject>& commonEventListener,
     int32_t& funcResult)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!IsReady()) {
@@ -336,7 +337,7 @@ ErrCode CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObje
 ErrCode CommonEventManagerService::UnsubscribeCommonEventSync(const sptr<IRemoteObject>& commonEventListener,
     int32_t& funcResult)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!IsReady()) {

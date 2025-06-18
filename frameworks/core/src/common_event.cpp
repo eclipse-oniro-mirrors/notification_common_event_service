@@ -17,6 +17,7 @@
 #include "common_event_constant.h"
 #include "common_event_death_recipient.h"
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "hitrace_meter_adapter.h"
 #include "icommon_event.h"
 #include "iservice_registry.h"
@@ -52,7 +53,7 @@ std::shared_ptr<CommonEvent> CommonEvent::GetInstance()
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
@@ -79,7 +80,7 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
 int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
@@ -106,7 +107,7 @@ int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &callerToken)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
@@ -135,7 +136,7 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid,
     const int32_t &callerToken, const int32_t &userId)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
@@ -188,7 +189,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEvent::PublishParameterCheck(cons
 __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (subscriber == nullptr) {
@@ -235,7 +236,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
 __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (subscriber == nullptr) {
@@ -274,7 +275,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
 __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventSync(
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (subscriber == nullptr) {

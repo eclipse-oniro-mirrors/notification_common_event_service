@@ -16,6 +16,7 @@
 #include "ability_manager_helper.h"
 
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "hitrace_meter_adapter.h"
 #include "in_process_call_wrapper.h"
 #include "iservice_registry.h"
@@ -37,7 +38,7 @@ AbilityManagerHelper::AbilityManagerHelper()
 int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGI("enter, target bundle = %{public}s", want.GetBundle().c_str());
 
     int result = -1;

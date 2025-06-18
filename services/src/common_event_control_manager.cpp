@@ -21,6 +21,7 @@
 #include "bundle_manager_helper.h"
 #include "common_event_constant.h"
 #include "event_log_wrapper.h"
+#include "event_trace_wrapper.h"
 #include "event_report.h"
 #include "hitrace_meter_adapter.h"
 #include "ievent_receive.h"
@@ -48,7 +49,7 @@ CommonEventControlManager::~CommonEventControlManager()
 bool CommonEventControlManager::PublishCommonEvent(
     const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     bool ret = false;
@@ -65,7 +66,7 @@ bool CommonEventControlManager::PublishCommonEvent(
 bool CommonEventControlManager::PublishStickyCommonEvent(
     const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!subscriberRecord) {
@@ -77,7 +78,7 @@ bool CommonEventControlManager::PublishStickyCommonEvent(
 
 bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!GetUnorderedEventHandler()) {
@@ -90,7 +91,7 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(const uid_t &uid)
 
 bool CommonEventControlManager::PublishFreezeCommonEvent(std::set<int> pidList)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!GetUnorderedEventHandler()) {
@@ -106,7 +107,7 @@ bool CommonEventControlManager::PublishFreezeCommonEvent(std::set<int> pidList)
 
 bool CommonEventControlManager::PublishAllFreezeCommonEvents()
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (!GetUnorderedEventHandler()) {
@@ -259,7 +260,7 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
 
 bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     if (!eventRecord) {
         EVENT_LOGD("Invalid event record.");
         return false;
@@ -278,7 +279,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
 bool CommonEventControlManager::ProcessUnorderedEvent(
     const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     bool ret = false;
@@ -358,7 +359,7 @@ bool CommonEventControlManager::GetOrderedEventHandler()
 bool CommonEventControlManager::ProcessOrderedEvent(
     const CommonEventRecord &eventRecord, const sptr<IRemoteObject> &commonEventListener)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     bool ret = false;
@@ -451,7 +452,7 @@ bool CommonEventControlManager::ScheduleOrderedCommonEvent()
 
 bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter with index %{public}zu", index);
     if (eventRecordPtr == nullptr) {
         EVENT_LOGE("eventRecordPtr = nullptr");
@@ -501,7 +502,7 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
 
 void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 {
-    HITRACE_METER_NAME(HITRACE_TAG_NOTIFICATION, __PRETTY_FUNCTION__);
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD("enter");
 
     if (isSendMsg) {
