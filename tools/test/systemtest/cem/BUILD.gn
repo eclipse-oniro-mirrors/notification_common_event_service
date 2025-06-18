@@ -75,7 +75,10 @@ ohos_systemtest("common_event_command_publish_system_test") {
     "${ces_native_path}:cesfwk_innerkits",
     "//third_party/googletest:gtest_main",
   ]
-
+  defines = []
+  if (build_variant == "user") {
+    defines += [ "CEM_BUILD_VARIANT_USER" ]
+  }
   external_deps = [
     "ability_base:want",
     "access_token:libnativetoken",
