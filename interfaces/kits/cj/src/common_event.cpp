@@ -112,7 +112,7 @@ namespace OHOS::CommonEventManager {
         }
     }
 
-    void GetSubscriberCode(std::shared_ptr<SubscriberImpl> subscriber, int64_t &code)
+    void GetSubscriberCode(std::shared_ptr<SubscriberImpl> subscriber, int32_t &code)
     {
         std::shared_ptr<AsyncCommonEventResult> result = GetAsyncResult(subscriber.get());
         if (result) {
