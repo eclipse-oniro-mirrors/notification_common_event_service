@@ -30,8 +30,7 @@ export class StaticSubscriberExtensionContext extends ExtensionContext {
     startAbility(want: Want, callback: AsyncCallback<void, void>): void {
         let task = taskpool.execute(this.nativeStartAbilitySync, want);
         task.then((e: NullishType)=>{
-          let err: BusinessError<void> = {code: 0, data: undefined};
-          callback(err, undefined);
+          callback(null, undefined);
       }, (error: Object): void => {
           let err: BusinessError = error as BusinessError;
           callback(err, undefined);
