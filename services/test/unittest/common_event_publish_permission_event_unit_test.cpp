@@ -103,10 +103,10 @@ void CommonEventPublishPermissionEventUnitTest::TearDown(void)
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0100,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0100, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0100, TestSize.Level0";
     InnerCommonEventManager inner;
     struct tm curTime {0};
     OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
@@ -144,10 +144,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0200,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0200, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0200, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {0};
@@ -187,10 +187,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0300,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0300, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0300, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {0};
@@ -230,10 +230,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           2. publish permission is not empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0400,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0400, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0400, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {0};
@@ -273,10 +273,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           2. publish permission is empty
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0500,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0500, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0500, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("");
@@ -314,10 +314,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0600,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0600, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0600, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("12345");
@@ -356,10 +356,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function CheckPermission return OrderedEventRecord::DELIVERED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0700,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0700, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0700, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("12345");
@@ -394,10 +394,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function CheckPermission return OrderedEventRecord::DELIVERED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0800,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0800, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0800, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("");
@@ -435,10 +435,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0900,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0900, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_0900, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("");
@@ -479,10 +479,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function subscriber CheckPermission return OrderedEventRecord::DELIVERED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1000,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1000, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1000, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("12345");
@@ -519,10 +519,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function subscriber CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1100,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1100, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1100, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("12345");
@@ -563,10 +563,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function subscriber CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1200,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1200, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1200, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("12345");
@@ -607,10 +607,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. function subscriber CheckPermission return OrderedEventRecord::SKIPPED
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1300,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1300, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1300, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("12345");
@@ -649,10 +649,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  * @tc.desc: function CheckPermission return false
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1500,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1500, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1500, TestSize.Level0";
 
     InnerCommonEventManager inner;
     struct tm curTime {0};
@@ -675,10 +675,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  * @tc.desc: function CheckPermission return false
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1600,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1600, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1600, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("ohos.permission.GET_WIFI_INFO");
@@ -715,10 +715,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  * @tc.desc: function CheckPermission return false
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1700,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1700, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1700, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("1234");
@@ -755,10 +755,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  * @tc.desc: function CheckPermission return false
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1800,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1800, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1800, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("1234");
@@ -795,10 +795,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  * @tc.desc: function CheckPermission return false
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1900,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1900, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_1900, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("1234");
@@ -835,10 +835,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  * @tc.desc: function CheckPermission return false   null
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2000,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2000, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2000, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("1234");
@@ -875,10 +875,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  * @tc.desc: function CheckPermission return false   not find
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2100,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2100, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2100, TestSize.Level0";
 
     CommonEventSubscribeInfo commonEventSubscribeInfo;
     commonEventSubscribeInfo.SetPermission("1234");
@@ -916,10 +916,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           2. function subscriber CheckPermission return name size
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2200,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2200, "
-                        "TestSize.Level1";
+                        "TestSize.Level0";
 
     std::string event = "usual.event.BOOT_COMPLETED";
 
@@ -935,10 +935,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           2. function subscriber CheckPermission return name size
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2300,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2300, "
-                        "TestSize.Level1";
+                        "TestSize.Level0";
 
     std::string event = "usual.event.wifi.p2p.CONN_STATE_CHANGE";
 
@@ -957,10 +957,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           2. function subscriber CheckPermission return name size
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2400,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO) << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2400, "
-                        "TestSize.Level1";
+                        "TestSize.Level0";
 
     std::string event = "usual.event.data.DISK_REMOVED";
 
@@ -980,10 +980,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has one attribute
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2500,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2500, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2500, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1025,10 +1025,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has one attribute
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2600,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2600, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2600, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1070,10 +1070,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has two attribute and logic and
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2700,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2700, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2700, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1115,10 +1115,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has two attribute and logic or
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2800,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2800, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2800, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1160,10 +1160,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has no attribute
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2900,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2900, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_2900, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1205,10 +1205,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has one attribute
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3000,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3000, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3000, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1250,10 +1250,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has one attribute
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3100,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3100, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3100, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1295,10 +1295,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has two attribute and logic and
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3200,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3200, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3200, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1340,10 +1340,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has two attribute and logic or
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3300,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3300, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3300, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {
@@ -1385,10 +1385,10 @@ HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermission
  *           3. event has no attribute
  */
 HWTEST_F(CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3400,
-    Function | MediumTest | Level1)
+    Function | MediumTest | Level0)
 {
     GTEST_LOG_(INFO)
-        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3400, TestSize.Level1";
+        << "CommonEventPublishPermissionEventUnitTest, CommonEventPublishPermissionEventUnitTest_3400, TestSize.Level0";
     /* subscriber */
     InnerCommonEventManager inner;
     struct tm curTime {

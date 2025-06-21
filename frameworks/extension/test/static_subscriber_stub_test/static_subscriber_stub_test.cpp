@@ -78,7 +78,7 @@ public:
  * @tc.desc: Parameter code is default value, execute the corresponding
  *           branch and return the corresponding return value
  */
-HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_001, TestSize.Level1)
+HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "StaticSubscriberStub_OnRemoteRequest_001 start.";
     sptr<MockStaticSubscriber> object = new (std::nothrow) MockStaticSubscriber();
@@ -98,7 +98,7 @@ HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_001, Tes
  * @tc.desc: The parameter data is different from the GetDescriptor field. Execute the corresponding
  *           branch and return the corresponding return value
  */
-HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_002, TestSize.Level1)
+HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "StaticSubscriberStub_OnRemoteRequest_002 start.";
     sptr<MockStaticSubscriber> object = new (std::nothrow) MockStaticSubscriber();
@@ -117,7 +117,7 @@ HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_002, Tes
  * @tc.desc: Parameter code is COMMAND_ON_RECEIVE_EVENT value, execute the corresponding
  *           branch and return the corresponding return value
  */
-HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_003, TestSize.Level1)
+HWTEST_F(StaticSubscriberStubTest, StaticSubscriberStub_OnRemoteRequest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "StaticSubscriberStub_OnRemoteRequest_003 start.";
     sptr<MockStaticSubscriber> object = new (std::nothrow) MockStaticSubscriber();
