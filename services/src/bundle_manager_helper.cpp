@@ -96,7 +96,7 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
     }
 
     AppExecFwk::BundleMgrClient client;
-    return client.GetResConfigFile(extension, META_NAME_STATIC_SUBSCRIBER, profileInfos);
+    return client.GetResConfigFile(extension, META_NAME_STATIC_SUBSCRIBER, profileInfos, false);
 }
 
 bool BundleManagerHelper::CheckIsSystemAppByUid(const uid_t uid)
