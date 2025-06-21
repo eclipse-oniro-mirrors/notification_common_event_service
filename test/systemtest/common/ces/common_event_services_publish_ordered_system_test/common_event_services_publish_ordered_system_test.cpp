@@ -406,7 +406,7 @@ bool CESPublishOrderedEventSystmTest::PublishOrderedCommonEventTest(const Common
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify that the ordered common event was published successfully
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0100, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0100, Function | MediumTest | Level0)
 {
     /* Subscribe */
     // make matching skills
@@ -524,7 +524,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_010
  * @tc.name: PublishCommonEvent
  * @tc.desc: Verify that the ordered common event was published successfully
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0200, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0200, Function | MediumTest | Level0)
 {
     /* Subscribe */
     // make matching skills
@@ -644,7 +644,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_020
  *                         SubscriberB can receive event
  * @tc.desc: Verify that the ordered common event was published successfully
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0300, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0300, Function | MediumTest | Level0)
 {
     /* Subscribe */
     // make matching skills
@@ -757,7 +757,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_030
  *           SubscriberB can receive event
  * @tc.desc: Verify that the ordered common event was published successfully
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0400, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0400, Function | MediumTest | Level0)
 {
     /* Subscribe */
     // make matching skills
@@ -872,7 +872,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_040
  *           lastSubscriber can receive event
  * @tc.desc: Verify that the ordered common event was published successfully
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0500, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0500, Function | MediumTest | Level0)
 {
     /* Subscribe */
     // make matching skills
@@ -988,7 +988,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_050
  *           lastSubscriber can receive event
  * @tc.desc: Verify that the ordered common event was published successfully
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0600, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0600, Function | MediumTest | Level0)
 {
     /* Subscribe */
     // make matching skills
@@ -1103,7 +1103,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_060
  * @tc.desc: Verify EnqueueOrderedRecord eventRecordPtr is null
  * orderedEventQueue_ size is 0
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0700, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0700, Function | MediumTest | Level0)
 {
     CommonEventControlManager commonEventControlManager;
     commonEventControlManager.EnqueueOrderedRecord(nullptr);
@@ -1119,7 +1119,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_070
  * @tc.name: test FinishReceiver recordPtr is null
  * @tc.desc: Verify FinishReceiver recordPtr is return false
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0800, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0800, Function | MediumTest | Level0)
 {
     CommonEventControlManager commonEventControlManager;
     bool result;
@@ -1133,7 +1133,7 @@ HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_080
  * @tc.name: test  GetOrderedEventHandler handlerOrdered_ is not null
  * @tc.desc: Verify GetOrderedEventHandler handlerOrdered_ is not return true
  */
-HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0900, Function | MediumTest | Level1)
+HWTEST_F(CESPublishOrderedEventSystmTest, CommonEventPublishOrderedEventTest_0900, Function | MediumTest | Level0)
 {
     CommonEventControlManager commonEventControlManager;
     std::shared_ptr<CommonEventControlManager> controlManager = std::make_shared<CommonEventControlManager>();
