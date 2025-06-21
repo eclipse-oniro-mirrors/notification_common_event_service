@@ -22,22 +22,28 @@
 
 namespace {
     bool g_mockGetEventPermissionRet = true;
+    OHOS::EventFwk::PermissionState g_mockPermissionState = OHOS::EventFwk::PermissionState::OR;
+    int32_t g_mockPermissionSize = 1;
 }
 
 namespace OHOS {
 namespace EventFwk {
-void MockGetEventPermission(bool mockRet)
+void MockGetEventPermission(bool mockRet, PermissionState mockState, int32_t permissionSize)
 {
     g_mockGetEventPermissionRet = mockRet;
+    g_mockPermissionState = mockState;
+    g_mockPermissionSize = permissionSize;
 }
+
 Permission CommonEventPermissionManager::GetEventPermission(const std::string &event)
 {   
     Permission per;
     if (true == g_mockGetEventPermissionRet) {
-        std::string eventName = "aa";
-        per.names.emplace_back(eventName);
-        eventMap_.insert(std::make_pair(eventName, per));
-        return eventMap_.find(eventName)->second;
+        for (int32_t i = 0; i < g_mockGetEventPermissionRet; i++) {
+            per.names.emplace_back("permision_" + std::to_string(i));
+        }
+        per.state = g_mockPermissionState;
+        return per;
     }
     return per;
 }

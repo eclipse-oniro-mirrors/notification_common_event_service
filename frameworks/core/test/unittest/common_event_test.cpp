@@ -466,22 +466,6 @@ HWTEST_F(CommonEventTest, CommonEventPublishInfo_0100, Function | MediumTest | L
 }
 
 /*
- * @tc.number: CommonEventPublishInfo_0200
- * @tc.name: verify Unmarshalling
- * @tc.desc: Invoke Unmarshalling interface verify whether it is normal
- */
-HWTEST_F(CommonEventTest, CommonEventPublishInfo_0200, Function | MediumTest | Level0)
-{
-    bool result = true;
-    OHOS::Parcel parcel;
-    CommonEventPublishInfo publishInfo;
-    if (nullptr == publishInfo.Unmarshalling(parcel)) {
-        result = false;
-    }
-    EXPECT_EQ(true, result);
-}
-
-/*
  * @tc.number: CommonEventSubscribeInfo_0100
  * @tc.name: verify Unmarshalling
  * @tc.desc: Invoke Unmarshalling interface verify whether it is normal

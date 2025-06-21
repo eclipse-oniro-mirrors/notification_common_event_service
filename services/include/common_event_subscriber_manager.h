@@ -208,6 +208,16 @@ public:
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
 
 private:
+    bool CheckPublisherWhetherMatched(const SubscriberRecordPtr &subscriberRecord,
+        const CommonEventRecord &eventRecord);
+    bool CheckSubscriberWhetherMatched(const SubscriberRecordPtr &subscriberRecord,
+        const CommonEventRecord &eventRecord);
+    bool CheckSubscriberPermission(const SubscriberRecordPtr &subscriberRecord,
+        const CommonEventRecord &eventRecord);
+    bool CheckSubscriberRequiredPermission(const SubscriberRecordPtr &subscriberRecord,
+        const CommonEventRecord &eventRecord);
+    bool CheckPublisherRequiredPermissions(const SubscriberRecordPtr &subscriberRecord,
+        const CommonEventRecord &eventRecord);
     bool InsertSubscriberRecordLocked(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
 
     int RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener);

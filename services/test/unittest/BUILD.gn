@@ -765,10 +765,7 @@ ohos_unittest("common_event_control_manager_branch_test") {
 
   sources = [
     "${tools_path}/test/mock/mock_common_event_stub.cpp",
-    "././mock/mock_access_token_kit.cpp",
-    "././mock/mock_token_id_kit.cpp",
     "common_event_control_manager_branch_test/common_event_control_manager_branch_test.cpp",
-    "common_event_control_manager_branch_test/mock_common_event_permission_manager.cpp",
     "common_event_control_manager_branch_test/mock_want.cpp",
   ]
 
@@ -803,11 +800,7 @@ ohos_unittest("common_event_control_manager_branch_test") {
 ohos_unittest("common_event_control_manager_test") {
   module_out_path = module_output_path
 
-  sources = [
-    "common_event_control_manager_test.cpp",
-    "mock/mock_access_token_kit.cpp",
-    "mock/mock_common_event_permission_manager.cpp",
-  ]
+  sources = [ "common_event_control_manager_test.cpp" ]
 
   configs = [ ":cesfwk_services_config" ]
 
@@ -838,7 +831,12 @@ ohos_unittest("common_event_control_manager_test") {
 ohos_unittest("common_event_subscriber_manager_test") {
   module_out_path = module_output_path
 
-  sources = [ "common_event_subscriber_manager_test.cpp" ]
+  sources = [
+    "common_event_subscriber_manager_test.cpp",
+    "mock/mock_access_token_kit.cpp",
+    "mock/mock_common_event_permission_manager.cpp",
+    "mock/mock_token_id_kit.cpp",
+  ]
 
   configs = [ ":cesfwk_services_config" ]
 
