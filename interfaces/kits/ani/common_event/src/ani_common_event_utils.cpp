@@ -120,7 +120,7 @@ bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, cons
     }
 
     ani_int result = 0;
-    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "intValue", nullptr, &result)) !=
+    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) !=
         ANI_OK) {
         EVENT_LOGE("status : %{public}d", status);
         return false;
