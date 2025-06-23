@@ -68,6 +68,7 @@ int AbilityManagerHelper::ConnectAbility(
         result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
         if (result == ERR_OK) {
             subscriberConnection_[connectionKey] = connection;
+            DisconnectServiceAbilityDelay(connection, "");
         }
         EVENT_LOGI("connection sends events!");
     });
@@ -130,9 +131,8 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(
         EVENT_LOGE("connection is nullptr");
         return;
     }
-
-    std::function<void()> task = [connection, action]() {
-        AbilityManagerHelper::GetInstance()->DisconnectAbility(connection, action);
+    std::function<void()> task = [connection, action, this]() {
+        this->DisconnectAbility(connection, action);
     };
     ffrt_->submit(task, ffrt::task_attr().delay(DISCONNECT_DELAY_TIME * TIME_UNIT_SIZE));
 }
