@@ -19,6 +19,7 @@
 #include "ability_manager_helper.h"
 #undef private
 #include "mock_common_event_stub.h"
+#include "mock_iabilitymanager.h"
 #include "static_subscriber_connection.h"
 
 using namespace testing::ext;
@@ -831,4 +832,37 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1400, Level1)
     EXPECT_EQ(connection->action_.size(), 1);
     EXPECT_EQ(connection->action_[0], "other_action");
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1400 end";
+}
+
+/**
+ * @tc.name  : ConnectAbility_RealDelay_Disconnect_0001
+ * @tc.desc  : Verify that ConnectAbility auto-releases the connection after the delay task.
+ * @tc.type: FUNC
+ */
+HWTEST_F(AbilityManagerHelperTest, ConnectAbility_RealDelay_Disconnect_0001, Level1)
+{
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    abilityManagerHelper->abilityMgr_ = new MockIAbilityManager();
+
+    Want want;
+    want.SetBundle("test.bundle");
+    ElementName element;
+    element.SetAbilityName("TestAbility");
+    want.SetElement(element);
+    CommonEventData event;
+    sptr<IRemoteObject> callerToken = nullptr;
+    int32_t userId = 1;
+    CommonEventData data;
+    std::string connectionKey =
+        want.GetBundle() + "_" + want.GetElement().GetAbilityName() + "_" + std::to_string(userId);
+    int result1 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
+    EXPECT_EQ(result1, ERR_OK);
+
+    auto it = abilityManagerHelper->subscriberConnection_.find(connectionKey);
+    EXPECT_NE(it, abilityManagerHelper->subscriberConnection_.end());
+
+    ffrt::this_task::sleep_for(std::chrono::seconds(16));
+
+    it = abilityManagerHelper->subscriberConnection_.find(connectionKey);
+    EXPECT_EQ(it, abilityManagerHelper->subscriberConnection_.end());
 }

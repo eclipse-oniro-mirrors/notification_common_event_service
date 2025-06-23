@@ -895,7 +895,10 @@ ohos_unittest("inner_common_event_manager_test") {
 ohos_unittest("ability_manager_helper_test") {
   module_out_path = module_output_path
 
-  include_dirs = [ "${tools_path}/test/mock" ]
+  include_dirs = [
+    "${tools_path}/test/mock",
+    "${common_event_service_path}/services/test/unittest/mock",
+  ]
 
   sources = [
     "${tools_path}/test/mock/mock_common_event_stub.cpp",
