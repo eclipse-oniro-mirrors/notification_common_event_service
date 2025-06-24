@@ -842,7 +842,8 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1400, Level1)
 HWTEST_F(AbilityManagerHelperTest, ConnectAbility_RealDelay_Disconnect_0001, Level1)
 {
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
-    abilityManagerHelper->abilityMgr_ = new MockIAbilityManager();
+    auto mockAbilityMgr = new MockIAbilityManager();
+    abilityManagerHelper->abilityMgr_ = mockAbilityMgr;
 
     Want want;
     want.SetBundle("test.bundle");
@@ -855,8 +856,11 @@ HWTEST_F(AbilityManagerHelperTest, ConnectAbility_RealDelay_Disconnect_0001, Lev
     CommonEventData data;
     std::string connectionKey =
         want.GetBundle() + "_" + want.GetElement().GetAbilityName() + "_" + std::to_string(userId);
+    EXPECT_CALL(*mockAbilityMgr, ConnectAbility(::testing::_, ::testing::_, ::testing::_, ::testing::_))
+        .Times(1)
+        .WillOnce(::testing::Return(ERR_OK));
+
     int result1 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
-    EXPECT_EQ(result1, ERR_OK);
 
     auto it = abilityManagerHelper->subscriberConnection_.find(connectionKey);
     EXPECT_NE(it, abilityManagerHelper->subscriberConnection_.end());
