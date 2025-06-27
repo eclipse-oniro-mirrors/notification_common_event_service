@@ -153,7 +153,7 @@ void StsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventDat
 
         ani_object ani_data {};
         AniCommonEventUtils::ConvertCommonEventDataToEts(env, ani_data, commonEventData);
-        const char* signature  = "LcommonEvent/commonEventData/CommonEventData;:V";
+        const char* signature  = "commonEvent.commonEventData.CommonEventData:";
         CallObjectMethod(false, "onReceiveEvent", signature, ani_data);
     };
     handler_->PostTask(task, "CommonEvent" + data->GetWant().GetAction());
