@@ -108,5 +108,5 @@ HWTEST_F(CommonEventPublishInfoTest, CommonEventPublishInfo_001, TestSize.Level0
 HWTEST_F(CommonEventPublishInfoTest, GetFilterSettings_002, TestSize.Level0)
 {
     CommonEventPublishInfo commonEventPublishInfo;
-    EXPECT_EQ(commonEventPublishInfo.GetFilterSettings(), 4);
+    EXPECT_EQ(commonEventPublishInfo.GetFilterSettings(), 0);
 }

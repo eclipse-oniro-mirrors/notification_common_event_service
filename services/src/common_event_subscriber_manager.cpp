@@ -488,7 +488,8 @@ bool CommonEventSubscriberManager::CheckSubscriberWhetherMatched(
     }
     auto isSubscriberSystemApp = subscriberRecord->eventRecordInfo.isSystemApp ||
         subscriberRecord->eventRecordInfo.isSubsystem;
-    if (CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp)) {
+    if (specifiedSubscriberType != UNINITIALIZATED_SUBSCRIBER_TYPE &&
+        CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp)) {
         checkResult |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
     }
 
