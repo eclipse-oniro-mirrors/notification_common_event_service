@@ -25,8 +25,7 @@ namespace {
 }
 
 CommonEventPublishInfo::CommonEventPublishInfo() : sticky_(false), ordered_(false),
-    subscriberType_(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE)),
-    rule_(ValidationRule::AND)
+    subscriberType_(UNINITIALIZATED_SUBSCRIBER_TYPE), rule_(ValidationRule::AND)
 {
 }
 
@@ -129,7 +128,9 @@ ValidationRule CommonEventPublishInfo::GetValidationRule() const
 uint16_t CommonEventPublishInfo::GetFilterSettings() const
 {
     uint16_t filterSettings = 0;
-    filterSettings |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
+    if (subscriberType_ != UNINITIALIZATED_SUBSCRIBER_TYPE) {
+        filterSettings |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
+    }
     if (!bundleName_.empty()) {
         filterSettings |= SUBSCRIBER_FILTER_BUNDLE_INDEX;
     }

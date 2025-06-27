@@ -35,6 +35,7 @@ static constexpr uint16_t SUBSCRIBER_FILTER_BUNDLE_INDEX = 1 << 0;
 static constexpr uint16_t SUBSCRIBER_FILTER_PERMISSION_INDEX = 1 << 1;
 static constexpr uint16_t SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX = 1 << 2;
 static constexpr uint16_t SUBSCRIBER_FILTER_SUBSCRIBER_UID_INDEX = 1 << 3;
+static constexpr int32_t UNINITIALIZATED_SUBSCRIBER_TYPE = -1;
 
 class CommonEventPublishInfo : public Parcelable {
 public:

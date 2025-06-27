@@ -1201,6 +1201,26 @@ HWTEST_F(CommonEventSubscriberManagerTest, CheckPublisherWhetherMatched_AllMatch
     EXPECT_TRUE(result);
 }
 
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_NoFilter, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "bundleName2";
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckSubscriberWhetherMatched(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
 HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_BundleNameNotMatched, Level0)
 {
     // Arrange
