@@ -21,3 +21,12 @@ export interface CommonEventSubscribeInfo {
     priority?: number;
     publisherBundleName?: string;
 }
+
+class CommonEventSubscribeInfoImpl implements CommonEventSubscribeInfo {
+    public events: Array<string> = {};
+    public publisherPermission?: string | undefined;
+    public publisherDeviceId?: string | undefined;
+    public userId?: number | undefined;
+    public priority?: number | undefined;
+    public publisherBundleName?: string | undefined;
+}
