@@ -25,6 +25,25 @@ namespace OHOS {
 namespace EventFwk {
 napi_value CreateJsStaticSubscriberExtensionContext(napi_env env,
     std::shared_ptr<StaticSubscriberExtensionContext> context);
+
+class JsStaticSubscriberExtensionContext final {
+public:
+    explicit JsStaticSubscriberExtensionContext(const std::shared_ptr<StaticSubscriberExtensionContext>& context)
+        : context_(context) {}
+    ~JsStaticSubscriberExtensionContext() = default;
+
+    static void Finalizer(napi_env env, void* data, void* hint)
+    {
+        std::unique_ptr<JsStaticSubscriberExtensionContext>(
+            static_cast<JsStaticSubscriberExtensionContext*>(data));
+    }
+
+    static napi_value StartAbility(napi_env env, napi_callback_info info);
+    std::shared_ptr<StaticSubscriberExtensionContext> GetAbilityContext();
+private:
+    napi_value OnStartAbility(napi_env env, napi_callback_info info, bool isStartRecent = false);
+    std::weak_ptr<StaticSubscriberExtensionContext> context_;
+};
 } // namespace EventFwk
 } // namespace OHOS
 #endif // OHOS_COMMON_EVENT_SERVICE_JS_STATIC_SUBSCRIBER_EXTENSION_CONTEXT_H
