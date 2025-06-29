@@ -42,6 +42,20 @@ void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string
     result.resize(sz);
 }
 
+ani_status AniCommonEventUtils::GetAniString(ani_env* env, const std::string str, ani_string& aniStr)
+{
+    if (env == nullptr) {
+        EVENT_LOGE("GetAniStringByString fail, env is nullptr");
+        return ANI_INVALID_ARGS;
+    }
+    ani_status status = env->String_NewUTF8(str.c_str(), str.size(), &aniStr);
+    if (status != ANI_OK) {
+        EVENT_LOGE("String_NewUTF8 failed %{public}d", status);
+        return status;
+    }
+    return status;
+}
+
 void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayObj, std::vector<std::string>& strings)
 {
     ani_double length;
@@ -341,6 +355,110 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
     }
 
     subscribeInfo = commonEventSubscribeInfo;
+}
+
+void AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(
+    ani_env* env, std::shared_ptr<SubscriberInstance> subscriber, ani_object &infoObject)
+{
+    ani_class cls = nullptr;
+    ani_status status = ANI_ERROR;
+    CreateNewObjectByClass(env, "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfoImpl;", cls, infoObject);
+    if ((infoObject == nullptr) || (cls == nullptr)) {
+        EVENT_LOGE("CommonEventSubscribeInfoToAni infoObject or cls is null.");
+        return;
+    }
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is null.");
+        return;
+    }
+
+    // set events [Array<string>]
+    ani_object eventsParamRef = GetAniStringArray(env, subscriber->GetSubscribeInfo().GetMatchingSkills().GetEvents());
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(events), eventsParamRef);
+
+    ani_string string = nullptr;
+    // set publisherPermission [string]
+    status = env->String_NewUTF8(
+        subscriber->GetSubscribeInfo().GetPermission().c_str(),
+        subscriber->GetSubscribeInfo().GetPermission().size(), &string);
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherPermission), string);
+
+    // set publisherDeviceId [string]
+    status = env->String_NewUTF8(
+        subscriber->GetSubscribeInfo().GetDeviceId().c_str(),
+        subscriber->GetSubscribeInfo().GetDeviceId().size(), &string);
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherDeviceId), string);
+
+    // set publisherBundleName [string]
+    status = env->String_NewUTF8(
+        subscriber->GetSubscribeInfo().GetPublisherBundleName().c_str(),
+        subscriber->GetSubscribeInfo().GetPublisherBundleName().size(), &string);
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherBundleName), string);
+
+    // set userId [number]
+    ani_object userIdObject;
+    CreateAniDoubleObject(env, userIdObject, static_cast<ani_double>(subscriber->GetSubscribeInfo().GetUserId()));
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(userId), userIdObject);
+
+    // set priority [number]
+    ani_object priorityObject;
+    CreateAniDoubleObject(env, priorityObject, static_cast<ani_double>(subscriber->GetSubscribeInfo().GetPriority()));
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(priority), priorityObject);
+}
+
+ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std::string> strs)
+{
+    if (env == nullptr) {
+        EVENT_LOGE("GetAniStringArray fail, env is nullptr or strs is empty");
+        return nullptr;
+    }
+    int length = strs.size();
+    ani_object arrayObj = newArrayClass(env, length);
+    if (arrayObj == nullptr) {
+        return nullptr;
+    }
+    ani_size i = 0;
+    for (auto &str : strs) {
+        EVENT_LOGI("GetAniStringArray: %{public}s", str.c_str());
+        ani_string aniStr;
+        if ((env->String_NewUTF8(str.c_str(),  str.size(), &aniStr) != ANI_OK) || aniStr == nullptr) {
+            EVENT_LOGE("String_NewUTF8 faild");
+            return nullptr;
+        }
+        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "ILstd/core/Object;:V", i, aniStr);
+        if (status != ANI_OK) {
+            EVENT_LOGE("Object_CallMethodByName_Void failed %{public}d", status);
+            return nullptr;
+        }
+        i++;
+    }
+    return arrayObj;
+}
+
+ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
+{
+    EVENT_LOGD("newArrayClass call");
+    if (env == nullptr || length < 0) {
+        EVENT_LOGE("CreateDouble fail, env is nullptr or length is less than zero");
+        return nullptr;
+    }
+    ani_class arrayCls = nullptr;
+    if (ANI_OK != env->FindClass("Lescompat/Array;", &arrayCls)) {
+        EVENT_LOGE("FindClass Lescompat/Array; Failed");
+        return nullptr;
+    }
+    ani_method arrayCtor;
+    if (ANI_OK != env->Class_FindMethod(arrayCls, "<ctor>", "I:V", &arrayCtor)) {
+        EVENT_LOGE("Class_FindMethod <ctor> Failed");
+        return nullptr;
+    }
+    ani_object arrayObj = nullptr;
+    if (ANI_OK != env->Object_New(arrayCls, arrayCtor, &arrayObj, length)) {
+        EVENT_LOGE("Object_New Array Faild");
+        return nullptr;
+    }
+    EVENT_LOGD("newArrayClass end");
+    return arrayObj;
 }
 
 void AniCommonEventUtils::CreateNewObjectByClass(

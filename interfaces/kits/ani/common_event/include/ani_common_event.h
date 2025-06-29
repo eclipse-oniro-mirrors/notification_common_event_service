@@ -32,6 +32,7 @@ public:
     void SetEnv(ani_env* env);
     void SetVm(ani_vm* etsVm);
     void SetCallback(const ani_object& callback);
+    ani_object GetCallback();
     void ClearEnv();
 
 private:
@@ -58,6 +59,8 @@ struct subscriberInstanceInfo {
     std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> commonEventResult = nullptr;
 };
 
+std::shared_ptr<SubscriberInstance> GetSubscriber(ani_env* env, ani_ref subscribeRef);
+std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> GetAsyncCommonEventResult (ani_env* env, ani_ref subscribeRef);
 std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper* wrapper);
 
 } // namespace EventManagerFwkAni
