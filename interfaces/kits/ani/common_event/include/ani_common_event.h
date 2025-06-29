@@ -20,24 +20,30 @@
 #include <mutex>
 
 #include "common_event_manager.h"
+#include "ffrt.h"
+#include "napi_common_event.h"
+
 namespace OHOS {
 namespace EventManagerFwkAni {
-class SubscriberInstance : public OHOS::EventFwk::CommonEventSubscriber {
+using namespace OHOS::EventFwk;
+
+class SubscriberInstance : public OHOS::EventFwk::CommonEventSubscriber,
+    public std::enable_shared_from_this<SubscriberInstance> {
 public:
     SubscriberInstance(const OHOS::EventFwk::CommonEventSubscribeInfo& sp);
     virtual ~SubscriberInstance();
 
     void OnReceiveEvent(const OHOS::EventFwk::CommonEventData& data) override;
     unsigned long long GetID();
-    void SetEnv(ani_env* env);
     void SetVm(ani_vm* etsVm);
+    ani_vm* GetVm();
     void SetCallback(const ani_object& callback);
     ani_object GetCallback();
     void ClearEnv();
 
 private:
-    std::mutex envMutex_;
-    std::mutex callbackMutex_;
+    ffrt::mutex envMutex_;
+    ffrt::mutex callbackMutex_;
     ani_env* env_ = nullptr;
     ani_object callback_ = nullptr;
     std::atomic_ullong id_;
@@ -59,10 +65,30 @@ struct subscriberInstanceInfo {
     std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> commonEventResult = nullptr;
 };
 
-std::shared_ptr<SubscriberInstance> GetSubscriber(ani_env* env, ani_ref subscribeRef);
-std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> GetAsyncCommonEventResult (ani_env* env, ani_ref subscribeRef);
-std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper* wrapper);
+static constexpr uint8_t DO_NOT_SUBSCRIBE = 0;
+static constexpr uint8_t SUBSCRIBE_IN_NAPI_ENV = 1;
+static constexpr uint8_t SUBSCRIBE_IN_ANI_ENV = 2;
 
+struct SubscriberInstanceRelationship {
+    std::shared_ptr<SubscriberInstance> aniSubscriber_;
+    std::shared_ptr<EventManagerFwkNapi::SubscriberInstance> napiSubscriber_;
+    ani_ref napiSubscriberRef_;
+    ani_ref aniSubscriberRef_;
+    uint8_t subscribeEnv_ = DO_NOT_SUBSCRIBE;
+    bool aniSubscriberDestroyed_ = false;
+    bool napiSubscriberDestroyed_ = false;
+    ffrt::mutex relationMutex_;
+};
+
+std::shared_ptr<SubscriberInstance> GetSubscriber(ani_env* env, ani_ref subscribeRef);
+std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(ani_env* env, ani_ref subscribeRef);
+std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(std::shared_ptr<SubscriberInstance> subscriber);
+std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper* wrapper);
+ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberWrapper);
+void SetNapiSubscriberCallback(std::shared_ptr<EventManagerFwkNapi::SubscriberInstance> subscriberInstance);
+int32_t UnsubscribeAndRemoveInstance(ani_env* env, const std::shared_ptr<SubscriberInstance> &subscriber);
+std::shared_ptr<SubscriberInstanceRelationship> GetTransferRelation(std::shared_ptr<SubscriberInstance> aniSubscriber,
+    std::shared_ptr<EventManagerFwkNapi::SubscriberInstance> napiSubscriber);
 } // namespace EventManagerFwkAni
 } // namespace OHOS
 #endif // BASE_NOTIFICATION_COMMON_EVENT_MANAGER_INCLUDE_ANI_COMMON_EVENT_MANAGER_H
