@@ -28,10 +28,27 @@ namespace OHOS {
 namespace EventManagerFwkAni {
 using namespace OHOS::EventFwk;
 using namespace OHOS::AbilityRuntime;
+namespace {
+constexpr const char* STATIC_SUBSCRIBER_EXTENSION_CONTEXT_CLASS_NAME =
+    "L@ohos/application/StaticSubscriberExtensionContext/StaticSubscriberExtensionContext;";
+}
 
 ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
-    std::shared_ptr<EventFwk::StaticSubscriberExtensionContext> context,
-    const std::shared_ptr<AppExecFwk::OHOSApplication> &application);
+    std::shared_ptr<EventFwk::StaticSubscriberExtensionContext> context);
+
+class StsStaticSubscriberExtensionContext final {
+public:
+    explicit StsStaticSubscriberExtensionContext(const std::shared_ptr<StaticSubscriberExtensionContext>& context)
+        : context_(context) {}
+    ~StsStaticSubscriberExtensionContext() = default;
+
+    void StartAbilityInner(ani_env *env, ani_object aniObj, ani_object wantObj);
+    static StsStaticSubscriberExtensionContext* GetAbilityContext(ani_env *env, ani_object obj);
+    std::shared_ptr<StaticSubscriberExtensionContext> GetAbilityContext();
+
+private:
+    std::weak_ptr<StaticSubscriberExtensionContext> context_;
+};
 }  // namespace EventManagerFwkAni
 }  // namespace OHOS
 #endif // BASE_NOTIFICATION_COMMON_EVENT_MANAGER_INCLUDE_ANI_STATIC_SUBSCRIBER_EXTENSION_CONTEXT_H

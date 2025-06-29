@@ -222,6 +222,10 @@ struct AsyncCallbackRemoveSticky {
     CallbackPromiseInfo info;
 };
 
+typedef int32_t (*AniSubscriberCallback)(const std::shared_ptr<SubscriberInstance> &subscriber);
+typedef void (*AniAsyncResultCloneCallback)(const std::shared_ptr<SubscriberInstance> &subscriber,
+    const std::shared_ptr<EventFwk::AsyncCommonEventResult> result);
+
 class SubscriberInstance : public CommonEventSubscriber, public std::enable_shared_from_this<SubscriberInstance> {
 public:
     SubscriberInstance(const CommonEventSubscribeInfo &sp);
@@ -238,6 +242,15 @@ public:
     unsigned long long GetID();
     napi_env GetEnv();
     napi_ref GetCallbackRef();
+    void SetAniUnsubscribeCallback(AniSubscriberCallback callback);
+    void SetAniAsyncResultCloneCallback(AniAsyncResultCloneCallback callback);
+    void SetAniGcCallback(AniSubscriberCallback callback);
+    void SetAniSubscribeCallback(AniSubscriberCallback callback);
+    AniAsyncResultCloneCallback GetAniAsyncResultCloneCallback();
+    AniSubscriberCallback GetAniUnsubscribeCallback();
+    AniSubscriberCallback GetAniGcCallback();
+    AniSubscriberCallback GetAniSubscribeCallback();
+
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
@@ -247,6 +260,10 @@ private:
     napi_threadsafe_function tsfn_ = nullptr;
     std::mutex envMutex_;
     std::mutex refMutex_;
+    AniAsyncResultCloneCallback asyncResultCloneCallback_ = nullptr;
+    AniSubscriberCallback unsubscribeCallback_ = nullptr;
+    AniSubscriberCallback gcCallback_ = nullptr;
+    AniSubscriberCallback subscribeCallback_ = nullptr;
 };
 
 struct CommonEventDataWorker {
@@ -308,6 +325,8 @@ void PaddingAsyncCallbackInfoGetSubscribeInfo(const napi_env &env, const size_t 
 void PaddingNapiCreateAsyncWorkCallbackInfo(AsyncCallbackInfoSubscribeInfo *&asynccallbackinfo);
 
 void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *asynccallbackinfo, napi_value &result);
+
+void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscribeInfo, napi_value &result);
 
 napi_value GetSubscribeInfo(napi_env env, napi_callback_info info);
 
@@ -462,6 +481,15 @@ napi_value GetPublisherBundleNameByCreateSubscriber(
     const napi_env &env, const napi_value &argv, CommonEventSubscribeInfo &info);
 
 napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info info);
+
+napi_value TransferedCommonEventSubscriberConstructor(napi_env env, const CommonEventSubscribeInfo &info);
+
+int32_t UnsubscribeAndRemoveInstance(const napi_env &env, std::shared_ptr<SubscriberInstance> &subscriber);
+
+std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(
+    const std::shared_ptr<SubscriberInstance> &subscriber);
+void SetAsyncCommonEventResult(const std::shared_ptr<SubscriberInstance> &subscriber,
+    std::shared_ptr<AsyncCommonEventResult> asyncCommonEventResult);
 
 napi_value CommonEventSubscriberInit(napi_env env, napi_value exports);
 
