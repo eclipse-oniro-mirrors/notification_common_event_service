@@ -185,8 +185,10 @@ namespace commonEventManager {
             }
         }, (error:Object): void => {
             hilog.error(0x0000, TAG, 'unsubscribe error');
-            let err: BusinessError = error as BusinessError;
-            callback(err, undefined);
+            if (callback != undefined) {
+                let err: BusinessError = error as BusinessError;
+                callback(err, undefined);
+            }
         });
     }
 
