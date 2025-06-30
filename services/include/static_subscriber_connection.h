@@ -66,7 +66,7 @@ public:
 private:
     sptr<StaticSubscriberProxy> GetProxy(const sptr<IRemoteObject> &remoteObject);
     sptr<StaticSubscriberProxy> proxy_ = nullptr;
-    std::recursive_mutex mutex_;
+    ffrt::recursive_mutex mutex_;
     std::vector<CommonEventData> events_;
     std::vector<std::string> action_;
     std::shared_ptr<ffrt::queue> staticNotifyQueue_ = nullptr;
