@@ -25,7 +25,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
     EVENT_LOGI_LIMIT("enter");
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
     sptr<StaticSubscriberConnection> sThis = this;
     auto proxy = sThis->GetProxy(remoteObject);
     std::string bundleName = element.GetURI();
@@ -38,7 +38,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
 
 void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
 {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
     if (proxy_ == nullptr) {
         events_.push_back(event);
         EVENT_LOGW("proxy_ is null, Cache events");
@@ -62,7 +62,7 @@ void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
 
 void StaticSubscriberConnection::RemoveEvent(const std::string &action)
 {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
     auto it = std::find(action_.begin(), action_.end(), action);
     if (it != action_.end()) {
         action_.erase(it);
