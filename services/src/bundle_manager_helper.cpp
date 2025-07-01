@@ -217,5 +217,16 @@ bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag 
     }
     return sptrBundleMgr_->GetApplicationInfos(flag, userId, appInfos);
 }
+
+int32_t BundleManagerHelper::GetDefaultUidByBundleName(const std::string &bundle, const int32_t userId)
+{
+    int32_t uid = -1;
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!GetBundleMgrProxy()) {
+        return uid;
+    }
+    return sptrBundleMgr_->GetUidByBundleName(bundle, userId);
+}
 }  // namespace EventFwk
 }  // namespace OHOS

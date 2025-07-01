@@ -24,6 +24,8 @@ bool g_mockGetResConfigFileRet = true;
 std::vector<std::string> g_mockProfileInfos;
 bool g_mockIsClearBundleManagerHelperCalled = false;
 bool g_mockBundleName = false;
+int32_t g_mockUid = -1;
+bool g_mockIsSystemApp = false;
 }
 
 bool IsClearBundleManagerHelperCalled()
@@ -36,6 +38,16 @@ void SetBundleNameMock()
     g_mockBundleName = true;
 }
 
+void SetUidMock(int32_t uid)
+{
+    g_mockUid = uid;
+}
+
+void SetSystemMock(bool mockRet)
+{
+    g_mockIsSystemApp = mockRet;
+}
+
 void ResetBundleManagerHelperMock()
 {
     g_mockQueryExtensionInfosRet = true;
@@ -44,6 +56,8 @@ void ResetBundleManagerHelperMock()
     g_mockProfileInfos.clear();
     g_mockIsClearBundleManagerHelperCalled = false;
     g_mockBundleName = false;
+    g_mockIsSystemApp = false;
+    g_mockUid = -1;
 }
 
 void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
@@ -237,12 +251,12 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
 
 bool BundleManagerHelper::CheckIsSystemAppByUid(uid_t uid)
 {
-    return true;
+    return g_mockIsSystemApp;
 }
 
 bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundleName, const int32_t &userId)
 {
-    return true;
+    return g_mockIsSystemApp;
 }
 
 bool BundleManagerHelper::GetBundleMgrProxy()
@@ -259,6 +273,11 @@ bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag 
     std::vector<AppExecFwk::ApplicationInfo> &appInfos)
 {
     return true;
+}
+
+int32_t BundleManagerHelper::GetDefaultUidByBundleName(const std::string &bundle, const int32_t userId)
+{
+    return g_mockUid;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

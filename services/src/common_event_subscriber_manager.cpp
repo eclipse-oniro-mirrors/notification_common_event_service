@@ -394,7 +394,6 @@ bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
             return true;
         }
     }
- 
     return false;
 }
  
