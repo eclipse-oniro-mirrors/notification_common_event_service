@@ -198,25 +198,13 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
             continue;
         }
-        if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->
-            CheckIsSystemAppByBundleName(subscriber.bundleName, subscriber.userId)) {
-            EVENT_LOGW("subscriber %{public}s is not system app, not allow.", subscriber.bundleName.c_str());
+        if (!CheckSubscriberWhetherMatched(subscriber, publishInfo)) {
+            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
             continue;
         }
         if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
             EVENT_LOGW("publisher does not have required permission %{public}s", subscriber.permission.c_str());
             SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-            continue;
-        }
-        if (!VerifySubscriberPermission(subscriber.bundleName, subscriber.userId,
-            publishInfo.GetSubscriberPermissions())) {
-            EVENT_LOGW("subscriber %{public}s does not have required permissions", subscriber.bundleName.c_str());
-            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-            continue;
-        }
-        if (!publishInfo.GetBundleName().empty() && subscriber.bundleName != publishInfo.GetBundleName()) {
-            EVENT_LOGW("subscriber bundleName is not match, subscriber.bundleName = %{public}s, "
-                "bundleName = %{public}s", subscriber.bundleName.c_str(), publishInfo.GetBundleName().c_str());
             continue;
         }
         if (!IsFilterParameters(subscriber, data)) {
@@ -256,6 +244,64 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
         ffrt_->submit(task, ffrt::task_attr().delay(g_bootDelayTime * TIME_UNIT_SIZE));
     }
 #endif
+}
+
+bool StaticSubscriberManager::CheckSubscriberBySpecifiedUids(
+    const int32_t &subscriberUid, const std::vector<int32_t> &specifiedSubscriberUids)
+{
+    for (auto it = specifiedSubscriberUids.begin(); it != specifiedSubscriberUids.end(); ++it) {
+        if (*it == subscriberUid) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool StaticSubscriberManager::CheckSubscriberWhetherMatched(
+    const StaticSubscriberInfo &subscriber, const CommonEventPublishInfo &publishInfo)
+{
+    auto specifiedSubscriberUids = publishInfo.GetSubscriberUid();
+    auto specifiedSubscriberType = publishInfo.GetSubscriberType();
+    uint16_t filterSettings = publishInfo.GetFilterSettings();
+    if (filterSettings == 0) {
+        return true;
+    }
+    uint16_t checkResult = 0;
+    if (!publishInfo.GetBundleName().empty() &&
+        publishInfo.GetBundleName() == subscriber.bundleName) {
+        checkResult |= SUBSCRIBER_FILTER_BUNDLE_INDEX;
+    }
+    auto isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->
+        CheckIsSystemAppByBundleName(subscriber.bundleName, subscriber.userId);
+    bool isTypeMatched = specifiedSubscriberType == static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE) ||
+        (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE) && isSystemApp);
+    if (specifiedSubscriberType != UNINITIALIZATED_SUBSCRIBER_TYPE && isTypeMatched) {
+        checkResult |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
+    }
+
+    auto subscriberUid = DelayedSingleton<BundleManagerHelper>::GetInstance()->
+        GetDefaultUidByBundleName(subscriber.bundleName, subscriber.userId);
+    if (!specifiedSubscriberUids.empty() &&
+        CheckSubscriberBySpecifiedUids(static_cast<int32_t>(subscriberUid), specifiedSubscriberUids)) {
+        checkResult |= SUBSCRIBER_FILTER_SUBSCRIBER_UID_INDEX;
+    }
+    std::vector<std::string> publisherRequiredPermissions = publishInfo.GetSubscriberPermissions();
+    if (!publisherRequiredPermissions.empty() &&
+        VerifySubscriberPermission(subscriber.bundleName, subscriber.userId, publisherRequiredPermissions)) {
+        checkResult |= SUBSCRIBER_FILTER_PERMISSION_INDEX;
+    }
+    bool result = false;
+    if (publishInfo.GetValidationRule() == ValidationRule::AND) {
+        result = (checkResult == filterSettings);
+    } else {
+        result = ((checkResult & filterSettings) != 0);
+    }
+    if (!result) {
+        EVENT_LOGW("%{public}s not matched,%{public}d_%{public}u_%{public}u", subscriber.bundleName.c_str(),
+            static_cast<int32_t>(publishInfo.GetValidationRule()),
+            static_cast<uint32_t>(checkResult), static_cast<uint32_t>(filterSettings));
+    }
+    return result;
 }
 
 void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,

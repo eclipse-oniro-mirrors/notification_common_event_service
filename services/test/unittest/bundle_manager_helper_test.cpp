@@ -61,6 +61,11 @@ public:
     {
         return nullptr;
     }
+
+    int GetUidByBundleName(const std::string &bundleName, const int userId) override
+    {
+        return 100001;
+    }
 };
 
 /**
@@ -228,4 +233,52 @@ HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1200, Level1)
     bundleManagerHelper->sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
     bundleManagerHelper->ClearBundleManagerHelper();
     GTEST_LOG_(INFO) << "BundleManagerHelper_1200 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_0013
+ * @tc.desc: test QueryExtensionInfos function and GetBundleMgrProxy is true and osAccountIds.size() is 0.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1300, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0013 start";
+    BundleManagerHelper bundleManagerHelper;
+    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
+    bundleManagerHelper.sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
+    std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
+    int32_t userId = 1;
+    EXPECT_EQ(false, bundleManagerHelper.QueryExtensionInfos(extensionInfos, userId));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_0013 end";
+}
+
+/**
+ * @tc.name: BundleManagerHelper_1400
+ * @tc.desc: test CheckIsSystemAppByBundleName function and GetBundleMgrProxy is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1400, Level1)
+{
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1400 start";
+    BundleManagerHelper bundleManagerHelper;
+    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
+    bundleManagerHelper.sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
+    std::string bundleName = "aa";
+    int32_t userId = 1;
+    EXPECT_EQ(false, bundleManagerHelper.CheckIsSystemAppByBundleName(bundleName, userId));
+    GTEST_LOG_(INFO) << "BundleManagerHelper_1400 end";
+}
+
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1500, Level1)
+{
+    std::shared_ptr<BundleManagerHelper> bundleManagerHelper = std::make_shared<BundleManagerHelper>();
+    bundleManagerHelper->sptrBundleMgr_ = nullptr;
+    EXPECT_EQ(-1, bundleManagerHelper->GetDefaultUidByBundleName("bundleName", 100));
+}
+
+HWTEST_F(BundleManagerHelperTest, BundleManagerHelper_1600, Level1)
+{
+    std::shared_ptr<BundleManagerHelper> bundleManagerHelper = std::make_shared<BundleManagerHelper>();
+    bundleManagerHelper->sptrBundleMgr_ = new (std::nothrow) TestIBundleMgr();
+    EXPECT_EQ(100001, bundleManagerHelper->GetDefaultUidByBundleName("bundleName", 100));
 }
