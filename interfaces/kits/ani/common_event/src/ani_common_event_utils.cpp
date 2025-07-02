@@ -134,8 +134,8 @@ bool AniCommonEventUtils::GetDoubleOrUndefined(ani_env* env, ani_object param, c
     }
 
     ani_double result = 0;
-    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) !=
-        ANI_OK) {
+    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result))
+        != ANI_OK) {
         EVENT_LOGE("status : %{public}d", status);
         return false;
     }
