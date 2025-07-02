@@ -29,7 +29,6 @@ std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 static std::map<std::shared_ptr<SubscriberInstance>, std::shared_ptr<AsyncCommonEventResult>> subscriberInstances;
 static std::mutex subscriberInsMutex;
 
-
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
     EVENT_LOGI("publishExecute call.");
@@ -57,10 +56,9 @@ static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_
     CommonEventPublishInfo commonEventPublishInfo;
     Want want;
     want.SetAction(eventIdStr);
-    commonEventData.SetWant(want);
-
     AniCommonEventUtils::ConvertCommonEventPublishData(
         env, optionsObject, want, commonEventData, commonEventPublishInfo);
+	commonEventData.SetWant(want);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
     EVENT_LOGI("publishWithOptionsExecute result: %{public}d.", errorCode);
     return errorCode;
@@ -191,8 +189,33 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     }
     subscriberInstance->SetVm(etsVm);
     auto result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
-
+    if (result == ANI_OK) {
+        EVENT_LOGD("result is ANI_OK");
+        std::lock_guard<std::mutex> lock(subscriberInsMutex);
+        subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
+    } else {
+        subscriberInstance = nullptr;
+    }
     EVENT_LOGI("subscribeExecute result: %{public}d.", result);
+    return result;
+}
+
+static int32_t removeSubscriberInstance(ani_env* env, SubscriberInstanceWrapper* wrapper)
+{
+    int32_t result = ERR_OK;
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (auto iter = subscriberInstances.begin(); iter != subscriberInstances.end();) {
+        if (iter->first.get() == wrapper->GetSubscriber().get()) {
+            result = CommonEventManager::NewUnSubscribeCommonEvent(iter->first);
+            ani_ref callbackRef = static_cast<ani_ref>(iter->first->GetCallback());
+            if (result == ANI_OK && callbackRef != nullptr) {
+                env->GlobalReference_Delete(callbackRef);
+            }
+            iter = subscriberInstances.erase(iter);
+        } else {
+            ++iter;
+        }
+    }
     return result;
 }
 
@@ -221,7 +244,7 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
         EVENT_LOGE("subscriberInstance is null.");
         return ANI_INVALID_ARGS;
     }
-    auto result = CommonEventManager::NewUnSubscribeCommonEvent(subscriberInstance);
+    auto result = removeSubscriberInstance(env, wrapper);
     EVENT_LOGI("unsubscribeExecute result: %{public}d.", result);
     return result;
 }
@@ -275,6 +298,28 @@ static uint32_t setStaticSubscriberStateWithEventsExecute(ani_env* env, ani_bool
     }
     EVENT_LOGD("setStaticSubscriberStateWithEventsExecute result: %{public}d.", returncode);
     return returncode;
+}
+
+std::shared_ptr<SubscriberInstance> GetSubscriber(ani_env* env, ani_ref subscribeRef)
+{
+    EVENT_LOGD("GetSubscriber excute");
+    auto ret = ANI_OK;
+
+    ani_long wrapper_long {};
+    ret = env->Object_GetPropertyByName_Long(
+        static_cast<ani_object>(subscribeRef), "subscriberInstanceWrapper", &wrapper_long);
+    if (ret != ANI_OK) {
+        EVENT_LOGE("subscribeExecute Object_GetPropertyByName_Long error. result: %{public}d.", ret);
+        return nullptr;
+    }
+
+    SubscriberInstanceWrapper* wrapper = nullptr;
+    wrapper = reinterpret_cast<SubscriberInstanceWrapper*>(wrapper_long);
+    if (wrapper == nullptr) {
+        EVENT_LOGE("unsubscribeExecute wrapper is null.");
+        return nullptr;
+    }
+    return GetSubscriberByWrapper(wrapper);
 }
 
 std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper* wrapper)
@@ -375,6 +420,12 @@ void SubscriberInstance::SetCallback(const ani_object& callback)
     callback_ = callback;
 }
 
+ani_object SubscriberInstance::GetCallback()
+{
+    std::lock_guard<std::mutex> lockRef(callbackMutex_);
+    return callback_;
+}
+
 void SubscriberInstance::ClearEnv()
 {
     EVENT_LOGD("Env expired, clear SubscriberInstance env");
@@ -409,8 +460,264 @@ static void clean([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object obj
     if (ANI_OK != env->Object_GetFieldByName_Long(object, "ptr", &ptr)) {
         return;
     }
-    delete reinterpret_cast<SubscriberInstanceWrapper *>(ptr);
+    SubscriberInstanceWrapper* wrapper = nullptr;
+    wrapper = reinterpret_cast<SubscriberInstanceWrapper*>(ptr);
+    if (wrapper == nullptr) {
+        EVENT_LOGE("clean wrapper is null.");
+        return;
+    }
+    auto result = removeSubscriberInstance(env, wrapper);
+    EVENT_LOGD("clean result: %{public}d.", result);
+    return;
 }
+
+std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(ani_env* env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance GetAsyncCommonEventResult.");
+    auto subscriberInstance = GetSubscriber(env, object);
+    if (subscriberInstance == nullptr) {
+        EVENT_LOGE("subscriberInstance is null.");
+        return nullptr;
+    }
+    if (subscriberInstances.size() == 0) {
+        EVENT_LOGE("subscriberInstances is null.");
+        return nullptr;
+    }
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (auto subscriberRes : subscriberInstances) {
+        if (subscriberRes.first.get() == subscriberInstance.get()) {
+            return subscriberInstances[subscriberRes.first];
+        }
+    }
+    return nullptr;
+}
+
+static ani_double getCode(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance getCode.");
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    int32_t code = 0;
+    if (subscriberRes != nullptr) {
+        code = subscriberRes->GetCode();
+    }
+    ani_double returncode = static_cast<ani_double>(code);
+    return returncode;
+}
+
+static uint32_t setCode(ani_env *env, ani_object object, ani_int code)
+{
+    EVENT_LOGD("subscriberInstance setCode.");
+    int32_t returncode = 0;
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    if (subscriberRes == nullptr) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    bool returnBoolean = subscriberRes->SetCode(code);
+    if (!returnBoolean) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    return returncode;
+}
+
+static ani_string getData(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance getData.");
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    std::string str = "";
+    if (subscriberRes != nullptr) {
+        str = subscriberRes->GetData();
+    }
+    ani_string aniResult = nullptr;
+    AniCommonEventUtils::GetAniString(env, str, aniResult);
+    return aniResult;
+}
+
+static uint32_t setData(ani_env *env, ani_object object, ani_string data)
+{
+    EVENT_LOGD("subscriberInstance setData.");
+    int32_t returncode = 0;
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    if (subscriberRes == nullptr) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    std::string stdData;
+    AniCommonEventUtils::GetStdString(env, data, stdData);
+    ani_boolean returnBoolean = static_cast<ani_boolean>(subscriberRes->SetData(stdData));
+    if (!returnBoolean) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    return returncode;
+}
+
+static uint32_t setCodeAndData(ani_env *env, ani_object object, ani_int code, ani_string data)
+{
+    EVENT_LOGD("subscriberInstance setCodeAndData.");
+    int32_t returncode = 0;
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    if (subscriberRes == nullptr) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    std::string stdData;
+    int32_t intCode = static_cast<ani_boolean>(code);
+    AniCommonEventUtils::GetStdString(env, data, stdData);
+    bool returnBoolean = subscriberRes->SetCodeAndData(intCode, stdData);
+    if (!returnBoolean) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    return returncode;
+}
+
+static ani_boolean isOrderedCommonEvent(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance isOrderedCommonEvent.");
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    ani_boolean returnBoolean = ANI_FALSE;
+    if (subscriberRes != nullptr) {
+        returnBoolean = subscriberRes->IsOrderedCommonEvent() ? ANI_TRUE : ANI_FALSE;
+    }
+    return returnBoolean;
+}
+
+static ani_boolean isStickyCommonEvent(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance isStickyCommonEvent.");
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    ani_boolean returnBoolean = ANI_FALSE;
+    if (subscriberRes != nullptr) {
+        returnBoolean = subscriberRes->IsStickyCommonEvent() ? ANI_TRUE : ANI_FALSE;
+    }
+    return returnBoolean;
+}
+
+static uint32_t abortCommonEvent(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance abortCommonEvent.");
+    int32_t returncode = 0;
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    if (subscriberRes == nullptr) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    if (!(subscriberRes->AbortCommonEvent())) {
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    return returncode;
+}
+
+static uint32_t clearAbortCommonEvent(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance clearAbortCommonEvent.");
+    int32_t returncode = 0;
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    if (subscriberRes == nullptr) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    if (!(subscriberRes->ClearAbortCommonEvent())) {
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    return returncode;
+}
+
+static ani_boolean getAbortCommonEvent(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance getAbortCommonEvent.");
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    ani_boolean returnBoolean = ANI_FALSE;
+    if (subscriberRes != nullptr) {
+        returnBoolean = subscriberRes->GetAbortCommonEvent() ? ANI_TRUE : ANI_FALSE;
+    }
+    return returnBoolean;
+}
+
+static ani_object getSubscribeInfo(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance getSubscribeInfo.");
+    auto subscriberInstance = GetSubscriber(env, object);
+    ani_object infoObject {};
+    if (subscriberInstance == nullptr) {
+        EVENT_LOGE("subscriberInstance is null.");
+        ani_ref nullObject;
+        env->GetNull(&nullObject);
+        return static_cast<ani_object>(nullObject);
+    }
+    AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(env, subscriberInstance, infoObject);
+    if (infoObject == nullptr) {
+        EVENT_LOGE("infoObject is null.");
+        ani_ref nullObject;
+        env->GetNull(&nullObject);
+        return static_cast<ani_object>(nullObject);
+    }
+    return infoObject;
+}
+
+static uint32_t finishCommonEvent(ani_env *env, ani_object object)
+{
+    EVENT_LOGD("subscriberInstance finishCommonEvent.");
+    auto subscriberRes = GetAsyncCommonEventResult(env, object);
+    int32_t returncode = 0;
+    if (subscriberRes == nullptr) {
+        EVENT_LOGE("subscriberRes is null");
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    if (!(subscriberRes->FinishCommonEvent())) {
+        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
+        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
+        return returncode;
+    }
+    return returncode;
+}
+
+static std::array commonEventSubscriberFunctions = {
+    ani_native_function{"nativeGetCode", nullptr, reinterpret_cast<void *>(OHOS::EventManagerFwkAni::getCode)},
+    ani_native_function{"nativeSetCode", nullptr, reinterpret_cast<void *>(OHOS::EventManagerFwkAni::setCode)},
+    ani_native_function{"nativeGetData", nullptr, reinterpret_cast<void *>(OHOS::EventManagerFwkAni::getData)},
+    ani_native_function{"nativeSetData", nullptr, reinterpret_cast<void *>(OHOS::EventManagerFwkAni::setData)},
+    ani_native_function{"nativeSetCodeAndData", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::setCodeAndData)},
+    ani_native_function{"nativeIsOrderedCommonEvent", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::isOrderedCommonEvent)},
+    ani_native_function{"nativeIsStickyCommonEvent", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::isStickyCommonEvent)},
+    ani_native_function{"nativeAbortCommonEvent", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::abortCommonEvent)},
+    ani_native_function{"nativeClearAbortCommonEvent", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::clearAbortCommonEvent)},
+    ani_native_function{"nativeGetAbortCommonEvent", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::getAbortCommonEvent)},
+    ani_native_function{"nativeGetSubscribeInfo", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::getSubscribeInfo)},
+    ani_native_function{"nativeFinishCommonEvent", nullptr,
+        reinterpret_cast<void *>(OHOS::EventManagerFwkAni::finishCommonEvent)},
+};
 
 ani_status init(ani_env *env, ani_namespace kitNs)
 {
@@ -487,6 +794,19 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
         return ANI_INVALID_TYPE;
     }
 
+    ani_class commonEventSubscriberCls;
+    status = env->FindClass("LcommonEvent/commonEventSubscriber/CommonEventSubscriberInner;",
+        &commonEventSubscriberCls);
+    if (status != ANI_OK) {
+        EVENT_LOGE("Not found LcommonEvent/commonEventSubscriber/CommonEventSubscriberInner");
+        return ANI_INVALID_ARGS;
+    }
+    status = env->Class_BindNativeMethods(commonEventSubscriberCls, commonEventSubscriberFunctions.data(),
+        commonEventSubscriberFunctions.size());
+    if (status != ANI_OK) {
+        EVENT_LOGE("Cannot bind native methods to LcommonEvent/commonEventSubscriber/CommonEventSubscriberInner");
+        return ANI_INVALID_TYPE;
+    }
     *result = ANI_VERSION_1;
     return ANI_OK;
 }
