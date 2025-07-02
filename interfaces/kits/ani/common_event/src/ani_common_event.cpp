@@ -56,10 +56,10 @@ static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_
     CommonEventPublishInfo commonEventPublishInfo;
     Want want;
     want.SetAction(eventIdStr);
-    commonEventData.SetWant(want);
 
     AniCommonEventUtils::ConvertCommonEventPublishData(
         env, optionsObject, want, commonEventData, commonEventPublishInfo);
+    commonEventData.SetWant(want);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
     EVENT_LOGI("publishWithOptionsExecute result: %{public}d.", errorCode);
     return errorCode;
