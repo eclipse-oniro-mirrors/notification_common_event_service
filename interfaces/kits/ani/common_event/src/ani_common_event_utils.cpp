@@ -114,6 +114,36 @@ bool AniCommonEventUtils::GetStringOrUndefined(ani_env* env, ani_object param, c
     return true;
 }
 
+bool AniCommonEventUtils::GetDoubleOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res)
+{
+    ani_ref obj = nullptr;
+    ani_boolean isUndefined = true;
+    ani_status status = ANI_ERROR;
+
+    if ((status = env->Object_GetPropertyByName_Ref(param, name, &obj)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if ((status = env->Reference_IsUndefined(obj, &isUndefined)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if (isUndefined) {
+        EVENT_LOGW("%{public}s : undefined", name);
+        return false;
+    }
+
+    ani_double result = 0;
+    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) !=
+        ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+
+    res = static_cast<int32_t>(result);
+    return true;
+}
+
 bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res)
 {
     ani_ref obj = nullptr;
@@ -230,7 +260,7 @@ void AniCommonEventUtils::ConvertCommonEventPublishData(ani_env* env, ani_object
 {
     // Get the code.
     int32_t code;
-    if (GetIntOrUndefined(env, optionsObject, "code", code)) {
+    if (GetDoubleOrUndefined(env, optionsObject, "code", code)) {
         EVENT_LOGI("ConvertCommonEventPublishData code: %{public}d.", code);
         commonEventData.SetCode(code);
     } else {
@@ -338,7 +368,7 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
 
     // Get the userId.
     int32_t userId;
-    if (GetIntOrUndefined(env, infoObject, "userId", userId)) {
+    if (GetDoubleOrUndefined(env, infoObject, "userId", userId)) {
         EVENT_LOGI("ConvertCommonEventPublishData userId: %{public}d.", userId);
         commonEventSubscribeInfo.SetUserId(userId);
     } else {
@@ -347,7 +377,7 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
 
     // Get the priority.
     int32_t priority;
-    if (GetIntOrUndefined(env, infoObject, "priority", priority)) {
+    if (GetDoubleOrUndefined(env, infoObject, "priority", priority)) {
         EVENT_LOGI("ConvertCommonEventPublishData priority: %{public}d.", priority);
         commonEventSubscribeInfo.SetPriority(priority);
     } else {
