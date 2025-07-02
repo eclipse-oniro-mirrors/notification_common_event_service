@@ -126,7 +126,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     }
 
     public setCode(code: number, callback: AsyncCallback<void>): void {
-        let pcode: Int = code.intValue();
+        let pcode: Int = code.toInt();
         let p = taskpool.execute((): int => { return this.nativeSetCode(pcode); });
         p.then((data: NullishType): void => {
             callback(null, undefined);
@@ -137,7 +137,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     }
 
     public setCode(code: number): Promise<void> {
-        let pcode: Int = code.intValue();
+        let pcode: Int = code.toInt();
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeSetCode(pcode); });
             p.then((data: NullishType): void => {
@@ -151,7 +151,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public setCodeSync(code: number): void {
         try {
-            let pcode: Int = code.intValue();
+            let pcode: Int = code.toInt();
             this.nativeSetCode(pcode);
             return;
         } catch (err) {
@@ -225,7 +225,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     }
 
     public setCodeAndData(code: number, data: string, callback: AsyncCallback<void>): void {
-        let pcode: Int = code.intValue();
+        let pcode: Int = code.toInt();
         let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(pcode, data); });
         p.then((e: NullishType): void => {
             callback(null, undefined);
@@ -236,7 +236,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     }
 
     public setCodeAndData(code: number, data: string): Promise<void> {
-        let pcode: Int = code.intValue();
+        let pcode: Int = code.toInt();
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(pcode, data); });
             p.then((data: NullishType): void => {
@@ -250,7 +250,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public setCodeAndDataSync(code: number, data: string): void {
         try {
-            let pcode: Int = code.intValue();
+            let pcode: Int = code.toInt();
             this.nativeSetCodeAndData(pcode, data);
             return;
         } catch (err) {
