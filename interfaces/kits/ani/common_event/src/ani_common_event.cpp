@@ -481,7 +481,7 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(ani_env* env, 
     }
     if (subscriberInstances.size() == 0) {
         EVENT_LOGE("subscriberInstances is null.");
-        return subscriberInstance->GoAsyncCommonEvent();
+        return nullptr;
     }
     std::lock_guard<std::mutex> lock(subscriberInsMutex);
     for (auto subscriberRes : subscriberInstances) {
@@ -511,15 +511,11 @@ static uint32_t setCode(ani_env *env, ani_object object, ani_int code)
     auto subscriberRes = GetAsyncCommonEventResult(env, object);
     if (subscriberRes == nullptr) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     bool returnBoolean = subscriberRes->SetCode(code);
     if (!returnBoolean) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     return returncode;
@@ -545,8 +541,6 @@ static uint32_t setData(ani_env *env, ani_object object, ani_string data)
     auto subscriberRes = GetAsyncCommonEventResult(env, object);
     if (subscriberRes == nullptr) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     std::string stdData;
@@ -554,8 +548,6 @@ static uint32_t setData(ani_env *env, ani_object object, ani_string data)
     ani_boolean returnBoolean = static_cast<ani_boolean>(subscriberRes->SetData(stdData));
     if (!returnBoolean) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     return returncode;
@@ -568,8 +560,6 @@ static uint32_t setCodeAndData(ani_env *env, ani_object object, ani_int code, an
     auto subscriberRes = GetAsyncCommonEventResult(env, object);
     if (subscriberRes == nullptr) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     std::string stdData;
@@ -578,8 +568,6 @@ static uint32_t setCodeAndData(ani_env *env, ani_object object, ani_int code, an
     bool returnBoolean = subscriberRes->SetCodeAndData(intCode, stdData);
     if (!returnBoolean) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     return returncode;
@@ -614,13 +602,9 @@ static uint32_t abortCommonEvent(ani_env *env, ani_object object)
     auto subscriberRes = GetAsyncCommonEventResult(env, object);
     if (subscriberRes == nullptr) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     if (!(subscriberRes->AbortCommonEvent())) {
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     return returncode;
@@ -633,13 +617,9 @@ static uint32_t clearAbortCommonEvent(ani_env *env, ani_object object)
     auto subscriberRes = GetAsyncCommonEventResult(env, object);
     if (subscriberRes == nullptr) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     if (!(subscriberRes->ClearAbortCommonEvent())) {
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     return returncode;
@@ -684,13 +664,9 @@ static uint32_t finishCommonEvent(ani_env *env, ani_object object)
     int32_t returncode = 0;
     if (subscriberRes == nullptr) {
         EVENT_LOGE("subscriberRes is null");
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     if (!(subscriberRes->FinishCommonEvent())) {
-        returncode = Notification::ERR_NOTIFICATION_CESM_ERROR;
-        OHOS::AbilityRuntime::ThrowStsError(env, returncode, FindCesErrMsg(returncode));
         return returncode;
     }
     return returncode;
