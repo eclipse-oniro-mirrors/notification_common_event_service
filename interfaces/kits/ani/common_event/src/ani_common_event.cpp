@@ -481,7 +481,7 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(ani_env* env, 
     }
     if (subscriberInstances.size() == 0) {
         EVENT_LOGE("subscriberInstances is null.");
-        return nullptr;
+        return subscriberInstance;
     }
     std::lock_guard<std::mutex> lock(subscriberInsMutex);
     for (auto subscriberRes : subscriberInstances) {
