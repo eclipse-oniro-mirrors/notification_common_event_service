@@ -42,6 +42,7 @@ public:
         ani_env* env, std::shared_ptr<SubscriberInstance> subscriber, ani_object &infoObject);
     static void ConvertCommonEventDataToEts(ani_env* env, ani_object& ani_data, const CommonEventData& commonEventData);
     static bool GetStringOrUndefined(ani_env* env, ani_object param, const char* name, std::string& res);
+    static bool GetDoubleOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res);
     static bool GetIntOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res);
     static bool GetBooleanOrUndefined(ani_env* env, ani_object param, const char* name, bool& res);
     static bool GetStringArrayOrUndefined(
