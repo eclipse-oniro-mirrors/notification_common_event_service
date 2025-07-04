@@ -25,8 +25,6 @@ using namespace OHOS::FFI;
 using CommonEventManagerImpl = OHOS::CommonEventManager::CommonEventManagerImpl;
 
 namespace OHOS::CommonEventManager {
-    const int32_t ERR_INVALID_INSTANCE_ID = -1;
-
     extern "C"
     {
         int32_t CJ_PublishEvent(char *event, int32_t userId)
@@ -305,8 +303,7 @@ namespace OHOS::CommonEventManager {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
             }
-            ret.code = SUCCESS_CODE;
-            ret.data = instance->GetSubscribeInfoId();
+            ret.code = instance->GetSubscribeInfoId(ret.data);
             return ret;
         }
 

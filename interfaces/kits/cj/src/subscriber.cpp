@@ -120,8 +120,12 @@ namespace OHOS::CommonEventManager {
         return subscriber;
     }
 
-    int64_t SubscriberManager::GetSubscribeInfoId()
+    int32_t SubscriberManager::GetSubscribeInfoId(int64_t &id)
     {
-        return subscriber->GetSubscribeInfoId();
+        if (subscriber == nullptr) {
+            return ERR_INVALID_INSTANCE_ID;
+        }
+        id = subscriber->GetSubscribeInfoId();
+        return SUCCESS_CODE;
     }
 } // namespace OHOS::CommonEventManager
