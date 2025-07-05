@@ -20,7 +20,8 @@
 
 namespace OHOS::CommonEventManager {
     using AsyncCommonEventResult = OHOS::EventFwk::AsyncCommonEventResult;
-
+    const int32_t ERR_INVALID_INSTANCE_ID = -1;
+    
     struct AsyncCallbackInfoSubscribe {
         std::function<void(CCommonEventData)> callback;
         std::shared_ptr<SubscriberImpl> subscriber = nullptr;

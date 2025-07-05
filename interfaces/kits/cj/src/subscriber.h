@@ -64,7 +64,7 @@ namespace OHOS::CommonEventManager {
 
         std::shared_ptr<SubscriberImpl> GetSubscriber();
 
-        int64_t GetSubscribeInfoId();
+        int32_t GetSubscribeInfoId(int64_t &id);
 
     private:
         friend class OHOS::FFI::RuntimeType;
