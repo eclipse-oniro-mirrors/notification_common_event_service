@@ -18,7 +18,7 @@ import StaticSubscriberExtensionContext from '@ohos.application.StaticSubscriber
 
 export default class StaticSubscriberExtensionAbility {
 
-  context: StaticSubscriberExtensionContext = {} as StaticSubscriberExtensionContext;
+  context: StaticSubscriberExtensionContext = {};
 
   onReceiveEvent(event: CommonEventData): void {
     console.log("StsonReceiveEvent, event:" + event.code);
