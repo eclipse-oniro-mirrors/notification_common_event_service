@@ -13,20 +13,14 @@
  * limitations under the License.
  */
 
-export interface CommonEventSubscribeInfo {
-    events: Array<string>;
-    publisherPermission?: string;
-    publisherDeviceId?: string;
-    userId?: number;
-    priority?: number;
-    publisherBundleName?: string;
-}
+import{ CommonEventData } from 'commonEvent.commonEventData';
+import StaticSubscriberExtensionContext from '@ohos.application.StaticSubscriberExtensionContext';
 
-class CommonEventSubscribeInfoImpl implements CommonEventSubscribeInfo {
-    public events: Array<string> = {};
-    public publisherPermission?: string | undefined;
-    public publisherDeviceId?: string | undefined;
-    public userId?: number | undefined;
-    public priority?: number | undefined;
-    public publisherBundleName?: string | undefined;
+export default class StaticSubscriberExtensionAbility {
+
+  context: StaticSubscriberExtensionContext = {} as StaticSubscriberExtensionContext;
+
+  onReceiveEvent(event: CommonEventData): void {
+    console.log("StsonReceiveEvent, event:" + event.code);
+  }
 }

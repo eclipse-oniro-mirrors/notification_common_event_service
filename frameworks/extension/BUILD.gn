@@ -80,9 +80,15 @@ ohos_shared_library("static_subscriber_extension") {
   }
   branch_protector_ret = "pac_ret"
 
-  include_dirs = []
+  include_dirs = [
+    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
+    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
+  ]
 
   sources = [
+    "${ces_extension_path}/src/ani_common_event_utils.cpp",
+    "${ces_extension_path}/src/ani_static_subscriber_extension.cpp",
+    "${ces_extension_path}/src/ani_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/static_subscriber_extension.cpp",
@@ -102,6 +108,7 @@ ohos_shared_library("static_subscriber_extension") {
     "ability_base:want",
     "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
+    "ability_runtime:ani_common",
     "ability_runtime:app_context",
     "ability_runtime:extensionkit_native",
     "ability_runtime:napi_common",
@@ -112,8 +119,8 @@ ohos_shared_library("static_subscriber_extension") {
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "ipc:ipc_core",
-    "ipc:ipc_napi",
     "napi:ace_napi",
+    "runtime_core:ani",
   ]
 
   subsystem_name = "notification"
@@ -137,7 +144,13 @@ ohos_shared_library("static_subscriber_extension_module") {
   }
   branch_protector_ret = "pac_ret"
 
-  include_dirs = [ "${ces_core_path}/include" ]
+  include_dirs = [
+    "${ability_runtime_path}/interfaces/kits/native/ability/native",
+    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
+    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
+    "${ability_runtime_services_path}/common/include",
+    "${ces_core_path}/include",
+  ]
 
   sources = [ "${ces_extension_path}/src/loader/static_subscriber_extension_module_loader.cpp" ]
 
@@ -157,7 +170,6 @@ ohos_shared_library("static_subscriber_extension_module") {
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
-    "ipc:ipc_napi",
     "napi:ace_napi",
   ]
 

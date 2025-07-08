@@ -21,6 +21,7 @@
 #include <iostream>
 #include <unistd.h>
 
+#include "ani_common_event.h"
 #include "common_event_manager.h"
 
 namespace OHOS {
@@ -31,22 +32,30 @@ using CommonEventData = OHOS::EventFwk::CommonEventData;
 class AniCommonEventUtils {
 public:
     static void GetStdString(ani_env* env, ani_string str, std::string& result);
+    static ani_status GetAniString(ani_env* env, const std::string str, ani_string &aniStr);
     static void GetStdStringArrayClass(ani_env* env, ani_object arrayObj, std::vector<std::string>& strings);
     static void ConvertCommonEventPublishData(ani_env* env, ani_object optionsObject, EventFwk::Want& want,
         EventFwk::CommonEventData& commonEventData, EventFwk::CommonEventPublishInfo& commonEventPublishInfo);
     static void ConvertCommonEventSubscribeInfo(
         ani_env* env, ani_object infoObject, CommonEventSubscribeInfo& subscribeInfo);
+    static void GetCommonEventSubscribeInfoToEts(
+        ani_env* env, std::shared_ptr<SubscriberInstance> subscriber, ani_object &infoObject);
     static void ConvertCommonEventDataToEts(ani_env* env, ani_object& ani_data, const CommonEventData& commonEventData);
     static bool GetStringOrUndefined(ani_env* env, ani_object param, const char* name, std::string& res);
+    static bool GetDoubleOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res);
     static bool GetIntOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res);
     static bool GetBooleanOrUndefined(ani_env* env, ani_object param, const char* name, bool& res);
     static bool GetStringArrayOrUndefined(
         ani_env* env, ani_object param, const char* name, std::vector<std::string>& res);
+    static bool GetWantParamsOrUndefined(
+        ani_env* env, ani_object param, const char* name, AAFwk::WantParams& wantParams);
     static void CreateNewObjectByClass(ani_env* env, const char* className, ani_class &cls, ani_object& ani_data);
     template<typename valueType>
     static void CallSetter(ani_env* env, ani_class cls, ani_object object, const char* setterName, valueType value);
     static void CreateAniDoubleObject(ani_env* env, ani_object &object, ani_double value);
     static void CreateBusinessErrorObject(ani_env* env, ani_object &object, int32_t code, const std::string &message);
+    static ani_object GetAniStringArray(ani_env *env, std::vector<std::string> strs);
+    static ani_object newArrayClass(ani_env *env, int length);
 };
 } // namespace EventManagerFwkAni
 } // namespace OHOS
