@@ -38,7 +38,7 @@ public:
     }
 
     void StartAbilityInner([[maybe_unused]] ani_env *env,
-        [[maybe_unused]] ani_object aniObj, ani_object wantObj, ani_object call);
+        [[maybe_unused]] ani_object aniObj, ani_object wantObj);
     static StaticSubscriberExtensionContext* GetAbilityContext(ani_env *env, ani_object obj);
 
 private:
@@ -51,34 +51,34 @@ constexpr const char* STATIC_SUBSCRIBER_EXTENSION_CONTEXT_CLASS_NAME =
 }
 
 static void StartAbility([[maybe_unused]] ani_env *env,
-    [[maybe_unused]] ani_object aniObj, ani_object wantObj, ani_object call)
+    [[maybe_unused]] ani_object aniObj, ani_object wantObj)
 {
     EVENT_LOGD("StartAbility");
-    StsStaticSubscriberExtensionContext::GetInstance().StartAbilityInner(env, aniObj, wantObj, call);
+    StsStaticSubscriberExtensionContext::GetInstance().StartAbilityInner(env, aniObj, wantObj);
 }
 
 void StsStaticSubscriberExtensionContext::StartAbilityInner([[maybe_unused]] ani_env *env,
-    [[maybe_unused]] ani_object aniObj, ani_object wantObj, ani_object call)
+    [[maybe_unused]] ani_object aniObj, ani_object wantObj)
 {
     EVENT_LOGD("StartAbilityInner");
     AAFwk::Want want;
-    ani_object aniObject = nullptr;
     ErrCode innerErrCode = ERR_OK;
     if (!AppExecFwk::UnwrapWant(env, wantObj, want)) {
         EVENT_LOGE("UnwrapWant filed");
-        aniObject = CreateStsInvalidParamError(env, "UnwrapWant filed");
-        AppExecFwk::AsyncCallback(env, call, aniObject, nullptr);
+        ThrowStsError(env, AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
         return;
     }
     auto context = StsStaticSubscriberExtensionContext::GetAbilityContext(env, aniObj);
     if (context == nullptr) {
         EVENT_LOGE("GetAbilityContext is nullptr");
-        innerErrCode = static_cast<int32_t>(AbilityErrorCode::ERROR_CODE_INVALID_CONTEXT);
-        aniObject = CreateStsError(env, static_cast<AbilityErrorCode>(innerErrCode));
-        AppExecFwk::AsyncCallback(env, call, aniObject, nullptr);
+        ThrowStsError(env, AbilityErrorCode::ERROR_CODE_INVALID_CONTEXT);
         return;
     }
     innerErrCode = context->StartAbility(want);
+    if (innerErrCode != ERR_OK) {
+        EVENT_LOGE("StartAbility failed, code = %{public}d", innerErrCode);
+        ThrowStsErrorByNativeErr(env, innerErrCode);
+    }
 }
 
 StaticSubscriberExtensionContext* StsStaticSubscriberExtensionContext::GetAbilityContext(ani_env *env, ani_object obj)
