@@ -78,7 +78,7 @@ void StsStaticSubscriberExtensionContext::StartAbilityInner([[maybe_unused]] ani
         AppExecFwk::AsyncCallback(env, call, aniObject, nullptr);
         return;
     }
-        innerErrCode = context->StartAbility(want);
+    innerErrCode = context->StartAbility(want);
 }
 
 StaticSubscriberExtensionContext* StsStaticSubscriberExtensionContext::GetAbilityContext(ani_env *env, ani_object obj)
