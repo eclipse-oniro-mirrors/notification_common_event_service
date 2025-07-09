@@ -15,6 +15,7 @@
 
 #include "static_subscriber_extension.h"
 
+#include "ani_static_subscriber_extension.h"
 #include "event_log_wrapper.h"
 #include "js_static_subscriber_extension.h"
 #include "runtime.h"
@@ -33,6 +34,8 @@ StaticSubscriberExtension* StaticSubscriberExtension::Create(const std::unique_p
     switch (runtime->GetLanguage()) {
         case AbilityRuntime::Runtime::Language::JS:
             return JsStaticSubscriberExtension::Create(runtime);
+        case AbilityRuntime::Runtime::Language::STS:
+            return EventManagerFwkAni::StsStaticSubscriberExtension::Create(runtime);
         default:
             return new (std::nothrow) StaticSubscriberExtension();
     }

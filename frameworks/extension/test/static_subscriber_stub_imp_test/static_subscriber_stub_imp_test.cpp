@@ -20,6 +20,7 @@
 #define private public
 #define protected public
 #include "static_subscriber_stub_impl.h"
+#include "js_static_subscriber_extension.h"
 #include "js_runtime.h"
 #undef private
 #undef protected
@@ -61,7 +62,7 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
     AbilityRuntime::Runtime::Options options;
     std::unique_ptr<AbilityRuntime::Runtime> runtime = AbilityRuntime::Runtime::Create(options);
 
-    std::shared_ptr<JsStaticSubscriberExtension> extension = std::make_shared<JsStaticSubscriberExtension>(
+    std::shared_ptr<StaticSubscriberExtension> extension = std::make_shared<JsStaticSubscriberExtension>(
         static_cast<AbilityRuntime::JsRuntime&>(*runtime));
     sptr<StaticSubscriberStubImpl> object = new (std::nothrow) StaticSubscriberStubImpl(extension);
     EXPECT_TRUE(object != nullptr);
@@ -80,7 +81,7 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
 HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "StaticSubscriberStubImpl_OnReceiveEvent_002 start.";
-    const std::shared_ptr<JsStaticSubscriberExtension> extension;
+    const std::shared_ptr<StaticSubscriberExtension> extension;
     sptr<StaticSubscriberStubImpl> object = new (std::nothrow) StaticSubscriberStubImpl(extension);
     EXPECT_TRUE(object != nullptr);
     const CommonEventData data;
