@@ -15,12 +15,17 @@
 
 #include "ani_static_subscriber_extension.h"
 
+#include "ability_handler.h"
 #include "ani_common_want.h"
 #include "ani_common_event_utils.h"
+#include "ani_static_subscriber_extension_context.h"
 #include "application_context.h"
 #include "context.h"
 #include "connection_manager.h"
 #include "event_log_wrapper.h"
+#include "extension_base.h"
+#include "native_engine/native_engine.h"
+#include "ets_runtime.h"
 #include "static_subscriber_stub_impl.h"
 
 namespace OHOS {
@@ -32,9 +37,9 @@ using namespace OHOS::EventManagerFwkAni;
 
 StsStaticSubscriberExtension* StsStaticSubscriberExtension::Create(const std::unique_ptr<Runtime>& runtime)
 {
-    return new StsStaticSubscriberExtension(static_cast<STSRuntime&>(*runtime));
+    return new StsStaticSubscriberExtension(static_cast<ETSRuntime&>(*runtime));
 }
-StsStaticSubscriberExtension::StsStaticSubscriberExtension(STSRuntime &stsRuntime) : stsRuntime_(stsRuntime) {}
+StsStaticSubscriberExtension::StsStaticSubscriberExtension(ETSRuntime &stsRuntime) : stsRuntime_(stsRuntime) {}
 StsStaticSubscriberExtension::~StsStaticSubscriberExtension()
 {
     EVENT_LOGD("~StsStaticSubscriberExtension called");

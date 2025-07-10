@@ -81,8 +81,6 @@ ohos_shared_library("static_subscriber_extension") {
   branch_protector_ret = "pac_ret"
 
   include_dirs = [
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
     "${interfaces_path}/kits/ani/common_event/include",
   ]
 
@@ -120,6 +118,7 @@ ohos_shared_library("static_subscriber_extension") {
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "ipc:ipc_napi",
     "napi:ace_napi",
     "runtime_core:ani",
   ]
@@ -146,10 +145,6 @@ ohos_shared_library("static_subscriber_extension_module") {
   branch_protector_ret = "pac_ret"
 
   include_dirs = [
-    "${ability_runtime_path}/interfaces/kits/native/ability/native",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
-    "${ability_runtime_services_path}/common/include",
     "${ces_core_path}/include",
   ]
 
@@ -171,6 +166,7 @@ ohos_shared_library("static_subscriber_extension_module") {
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "ipc:ipc_napi",
     "napi:ace_napi",
   ]
 

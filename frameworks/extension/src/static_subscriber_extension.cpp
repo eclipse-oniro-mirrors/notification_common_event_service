@@ -34,7 +34,7 @@ StaticSubscriberExtension* StaticSubscriberExtension::Create(const std::unique_p
     switch (runtime->GetLanguage()) {
         case AbilityRuntime::Runtime::Language::JS:
             return JsStaticSubscriberExtension::Create(runtime);
-        case AbilityRuntime::Runtime::Language::STS:
+        case AbilityRuntime::Runtime::Language::ETS:
             return EventManagerFwkAni::StsStaticSubscriberExtension::Create(runtime);
         default:
             return new (std::nothrow) StaticSubscriberExtension();

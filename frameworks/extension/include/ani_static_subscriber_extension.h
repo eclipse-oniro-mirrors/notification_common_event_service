@@ -18,16 +18,19 @@
 
 #include <ani.h>
 #include <memory>
+#include <unordered_set>
 
 #include "ani_static_subscriber_extension_context.h"
 #include "ability_handler.h"
 #include "common_event_data.h"
 #include "common_event_manager.h"
+#include "extension_base.h"
+#include "native_engine/native_engine.h"
+#include "ohos_application.h"
 #include "static_subscriber_extension.h"
 #include "static_subscriber_extension_context.h"
-#include "sts_runtime.h"
-
-class STSNativeReference;
+#include "ets_runtime.h"
+#include "ets_native_reference.h"
 
 namespace OHOS {
 namespace EventManagerFwkAni {
@@ -38,7 +41,7 @@ using CommonEventData = OHOS::EventFwk::CommonEventData;
 
 class StsStaticSubscriberExtension : public StaticSubscriberExtension {
 public:
-    explicit StsStaticSubscriberExtension(AbilityRuntime::STSRuntime &stsRuntime);
+    explicit StsStaticSubscriberExtension(AbilityRuntime::ETSRuntime &stsRuntime);
     virtual ~StsStaticSubscriberExtension() override;
 
     static StsStaticSubscriberExtension* Create(const std::unique_ptr<AbilityRuntime::Runtime>& stsRuntime);
@@ -68,9 +71,8 @@ private:
     void BindContext(ani_env *env, const std::shared_ptr<OHOSApplication> &application);
     ani_object CreateSTSContext(ani_env *env, std::shared_ptr<StaticSubscriberExtensionContext> context,
         const std::shared_ptr<OHOSApplication> &application);
-    std::map<uint64_t, std::shared_ptr<STSNativeReferenceWrapper>> contentSessions_;
-    AbilityRuntime::STSRuntime& stsRuntime_;
-    std::unique_ptr<STSNativeReference> stsObj_;
+    AbilityRuntime::ETSRuntime& stsRuntime_;
+    std::unique_ptr<ETSNativeReference> stsObj_;
 };
 }  // namespace EventManagerFwkAni
 }  // namespace OHOS
