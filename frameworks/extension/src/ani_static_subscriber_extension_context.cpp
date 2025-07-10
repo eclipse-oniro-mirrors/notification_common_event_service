@@ -15,7 +15,6 @@
 #include "ani_static_subscriber_extension_context.h"
 
 #include "ability_manager_client.h"
-#include "ani_common_event_throw_error.h"
 #include "ani_common_want.h"
 #include "ani_common_start_options.h"
 #include "ets_error_utils.h"

@@ -36,7 +36,6 @@ type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Error) => void;
 const TAG: string = 'commonEventSubscriber';
 export interface CommonEventSubscriber {
-    subscriberInstanceWrapper : long;
     getCode(callback: AsyncCallback<number>): void;
     getCode(): Promise<number>;
     getCodeSync(): number;
@@ -76,7 +75,7 @@ export interface CommonEventSubscriber {
 
 class CommonEventSubscriberInner implements CommonEventSubscriber {
     static {loadLibrary("ani_commoneventmanager.z")}
-    public native subscriberInstanceWrapper: long = 0;
+    private subscriberInstanceWrapper: long = 0;
 
     public native nativeGetCode(): number;
     public native nativeSetCode(code: int): int;

@@ -18,6 +18,7 @@
 #include "ani_common_event_utils.h"
 #include "ces_inner_error_code.h"
 #include "event_log_wrapper.h"
+
 namespace OHOS {
 namespace EventManagerFwkAni {
 
