@@ -22,7 +22,7 @@ export interface CommonEventData {
 }
 
 class CommonEventDataImpl implements CommonEventData {
-    public event: string = "";
+    public event: string = '';
     public bundleName?: string | undefined;
     public code?: number | undefined;
     public data?: string | undefined;
