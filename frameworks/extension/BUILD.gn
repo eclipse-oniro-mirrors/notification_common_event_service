@@ -83,6 +83,7 @@ ohos_shared_library("static_subscriber_extension") {
   include_dirs = [
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
+    "${interfaces_path}/kits/ani/common_event/include",
   ]
 
   sources = [

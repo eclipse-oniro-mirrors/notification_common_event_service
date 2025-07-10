@@ -149,12 +149,13 @@ namespace commonEventManager {
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'subscribe result:%{public}d.', resultCode.intValue());
             if (resultCode != 0) {
-                let a: CommonEventData;
                 let r: BusinessError = { code: resultCode.intValue(), data: undefined };
-                callback(r, a);
+                callback(r, undefined);
             }
-        }, (err:Object): void => {
+        }, (error: Object): void => {
             hilog.error(0x0000, TAG, 'subscribe error');
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
         });
     }
 
@@ -165,7 +166,6 @@ namespace commonEventManager {
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'unsubscribe result:%{public}d.', resultCode.intValue());
             if (callback != undefined) {
-                let resultCode: Int  = e as Int;
                 if (resultCode == 0) {
                     callback(null, undefined);
                 } else {
@@ -173,8 +173,12 @@ namespace commonEventManager {
                     callback(r, undefined);
                 }
             }
-        }, (err:Object): void => {
+        }, (error: Object): void => {
             hilog.error(0x0000, TAG, 'unsubscribe error');
+            if (callback != undefined) {
+                let err: BusinessError = error as BusinessError;
+                callback(err, undefined);
+            }
         });
     }
 
