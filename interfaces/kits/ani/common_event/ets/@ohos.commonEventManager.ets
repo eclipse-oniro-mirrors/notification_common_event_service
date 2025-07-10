@@ -25,7 +25,7 @@ const ERROR_PARAM_INVALID = 401;
 const errorParamInvalid: BusinessError<string> = {code: ERROR_PARAM_INVALID, data: "Invalid parameter"};
 
 type ResolveCallback<T> = (data: T) => void;
-type RejectCallback = (err: Error) => void;
+type RejectCallback = (err: Object) => void;
 
 namespace commonEventManager {
     loadLibrary("ani_commoneventmanager.z");
@@ -54,8 +54,10 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.intValue(), data: undefined };
                 callback(r, undefined);
             }
-        }, (err:Object): void => {
+        }, (error:Object): void => {
             hilog.error(0x0000, TAG, 'publish error.');
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
         });
     }
 
@@ -71,13 +73,15 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.intValue(), data: undefined };
                 callback(r, undefined);
             }
-        }, (err:Object): void => {
+        }, (error:Object): void => {
             hilog.error(0x0000, TAG, 'publish with option error.');
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
         });
     }
 
     export function publishAsUser(event: string, userId: number, callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as int;
+        let publishAsUserId: Int  = userId as Int;
         let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, publishAsUserId);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
@@ -87,8 +91,10 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.intValue(), data: undefined };
                 callback(r, undefined);
             }
-        }, (err:Object): void => {
+        }, (error:Object): void => {
             hilog.error(0xD001202, TAG, 'publishAsUser error.');
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
         });
     }
 
@@ -104,8 +110,10 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.intValue(), data: undefined };
                 callback(r, undefined);
             }
-        }, (err:Object): void => {
+        }, (error:Object): void => {
             hilog.error(0xD001202, TAG, 'publishAsUser with option error.');
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
         });
     }
 
@@ -117,8 +125,10 @@ namespace commonEventManager {
             let result: CommonEventSubscriber = e as CommonEventSubscriber;
             hilog.info(0x0000, TAG, 'createSubscriber result.');
             callback(null, result);
-        }, (err:Object): void => {
+        }, (error: Object): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
         });
     }
 
@@ -130,7 +140,7 @@ namespace commonEventManager {
                 hilog.info(0x0000, TAG, 'createSubscriber Promise result.');
                 let result: CommonEventSubscriber  = e as CommonEventSubscriber;
                 resolve(result);
-            }, (err: Error): void => {
+            }, (err: Object): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
             });
         });
@@ -152,7 +162,7 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.intValue(), data: undefined };
                 callback(r, undefined);
             }
-        }, (error: Object): void => {
+        }, (error:Object): void => {
             hilog.error(0x0000, TAG, 'subscribe error');
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
@@ -173,7 +183,7 @@ namespace commonEventManager {
                     callback(r, undefined);
                 }
             }
-        }, (error: Object): void => {
+        }, (error:Object): void => {
             hilog.error(0x0000, TAG, 'unsubscribe error');
             if (callback != undefined) {
                 let err: BusinessError = error as BusinessError;
@@ -203,7 +213,7 @@ namespace commonEventManager {
             let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
             task.then((data: NullishType): void => {
                 resolve(undefined);
-            }, (error: Error): void => {
+            }, (error: Object): void => {
                 hilog.error(0xD001202, TAG, 'removeStickyCommonEvent Promise error');
                 reject(error);
             });
@@ -226,7 +236,7 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
         task.then((e: NullishType): void => {
             resolve(undefined);
-        }, (error: Error): void => {
+        }, (error: Object): void => {
             hilog.error(0xD001202, TAG, 'setStaticSubscriberState Promise error');
             reject(error);
         });
@@ -239,7 +249,7 @@ namespace commonEventManager {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateWithEventsExecute, enable, events);
         task.then((e: NullishType): void => {
             resolve(undefined);
-        }, (error: Error): void => {
+        }, (error: Object): void => {
             hilog.error(0xD001202, TAG, 'setStaticSubscriberStateExecute Promise error.');
             reject(error);
         });
@@ -459,7 +469,7 @@ namespace commonEventManager {
         COMMON_EVENT_DYNAMIC_ICON_CHANGED = 'usual.event.DYNAMIC_ICON_CHANGED',
         COMMON_EVENT_MINORSMODE_ON = 'usual.event.MINORSMODE_ON',
         COMMON_EVENT_MINORSMODE_OFF = 'usual.event.MINORSMODE_OFF',
-        COMMON_EVENT_BUNDLE_RESOURCES_CHANGED = 'usual.event.BUNDLE_RESOURCES_CHANGED',    
+        COMMON_EVENT_BUNDLE_RESOURCES_CHANGED = 'usual.event.BUNDLE_RESOURCES_CHANGED',
         COMMON_EVENT_DATA_SHARE_READY = 'usual.event.DATA_SHARE_READY',
         COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED = 'usual.event.VPN_CONNECTION_STATUS_CHANGED',
         COMMON_EVENT_RESTORE_START = 'usual.event.RESTORE_START',
