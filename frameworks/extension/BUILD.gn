@@ -80,9 +80,14 @@ ohos_shared_library("static_subscriber_extension") {
   }
   branch_protector_ret = "pac_ret"
 
-  include_dirs = []
+  include_dirs = [
+    "${interfaces_path}/kits/ani/common_event/include",
+  ]
 
   sources = [
+    "${ces_extension_path}/src/ani_common_event_utils.cpp",
+    "${ces_extension_path}/src/ani_static_subscriber_extension.cpp",
+    "${ces_extension_path}/src/ani_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/static_subscriber_extension.cpp",
@@ -102,6 +107,7 @@ ohos_shared_library("static_subscriber_extension") {
     "ability_base:want",
     "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
+    "ability_runtime:ani_common",
     "ability_runtime:app_context",
     "ability_runtime:extensionkit_native",
     "ability_runtime:napi_common",
@@ -114,6 +120,7 @@ ohos_shared_library("static_subscriber_extension") {
     "ipc:ipc_core",
     "ipc:ipc_napi",
     "napi:ace_napi",
+    "runtime_core:ani",
   ]
 
   subsystem_name = "notification"
@@ -137,7 +144,9 @@ ohos_shared_library("static_subscriber_extension_module") {
   }
   branch_protector_ret = "pac_ret"
 
-  include_dirs = [ "${ces_core_path}/include" ]
+  include_dirs = [
+    "${ces_core_path}/include",
+  ]
 
   sources = [ "${ces_extension_path}/src/loader/static_subscriber_extension_module_loader.cpp" ]
 
