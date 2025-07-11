@@ -76,7 +76,7 @@ void CommonEventStickyManager::DumpState(
 
     std::vector<CommonEventRecordPtr> records;
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     GetStickyCommonEventRecords(event, userId, records);
 
@@ -172,7 +172,7 @@ void CommonEventStickyManager::DumpState(
 void CommonEventStickyManager::FindStickyEventsLocked(
     const std::vector<std::string> &events, std::vector<CommonEventRecordPtr> &commonEventRecords)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     for (auto event : events) {
         auto it = commonEventRecords_.find(event);
@@ -184,7 +184,7 @@ void CommonEventStickyManager::FindStickyEventsLocked(
 
 bool CommonEventStickyManager::GetStickyCommonEventLocked(const std::string &event, CommonEventData &eventData)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     auto it = commonEventRecords_.find(event);
     if (it != commonEventRecords_.end()) {
@@ -207,7 +207,7 @@ int CommonEventStickyManager::UpdateStickyEventLocked(const std::string &event, 
         return ERR_INVALID_VALUE;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     commonEventRecords_[event] = record;
 
@@ -236,7 +236,7 @@ void CommonEventStickyManager::GetStickyCommonEventRecords(
 
 int32_t CommonEventStickyManager::RemoveStickyCommonEvent(const std::string &event, uint32_t callerUid)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     auto it = commonEventRecords_.find(event);
     if (it != commonEventRecords_.end()) {

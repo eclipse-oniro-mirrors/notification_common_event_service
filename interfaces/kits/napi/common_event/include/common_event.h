@@ -18,6 +18,7 @@
 
 #include "common_event_constant.h"
 #include "common_event_manager.h"
+#include "ffrt.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include <memory>
@@ -45,7 +46,7 @@ struct subscriberInstanceInfo {
 
 static thread_local napi_ref g_CommonEventSubscriber = nullptr;
 static std::map<std::shared_ptr<SubscriberInstance>, subscriberInstanceInfo> subscriberInstances;
-static std::mutex subscriberInsMutex;
+static ffrt::mutex subscriberInsMutex;
 
 struct CallbackPromiseInfo {
     napi_ref callback = nullptr;
@@ -220,8 +221,8 @@ private:
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
     napi_threadsafe_function tsfn_ = nullptr;
-    std::mutex envMutex_;
-    std::mutex refMutex_;
+    ffrt::mutex envMutex_;
+    ffrt::mutex refMutex_;
 };
 
 struct CommonEventDataWorker {

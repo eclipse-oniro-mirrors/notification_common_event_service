@@ -46,7 +46,7 @@ CommonEventDeathRecipient::~CommonEventDeathRecipient()
 void CommonEventDeathRecipient::SubscribeSAManager()
 {
     if (statusChangeListener_ == nullptr) {
-        std::lock_guard<std::mutex> lock(listenerMutex_);
+        std::lock_guard<ffrt::mutex> lock(listenerMutex_);
         if (statusChangeListener_ == nullptr) {
             auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
             if (samgrProxy == nullptr) {
@@ -78,7 +78,7 @@ CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SystemAbilityStatu
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!isSAOffline_) {
         return;
     }
@@ -96,7 +96,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSyste
     int32_t systemAbilityId, const std::string& deviceId)
 {
     EVENT_LOGI("CES died");
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     isSAOffline_ = true;
 }
 }  // namespace EventFwk

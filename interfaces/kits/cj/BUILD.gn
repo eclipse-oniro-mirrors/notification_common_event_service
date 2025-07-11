@@ -57,6 +57,7 @@ ohos_shared_library("cj_common_event_manager_ffi") {
       "ability_runtime:abilitykit_native",
       "ability_runtime:napi_base_context",
       "c_utils:utils",
+      "ffrt:libffrt",
       "hilog:libhilog",
       "napi:cj_bind_ffi",
       "napi:cj_bind_native",

@@ -141,7 +141,7 @@ std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager
 std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::GetSubscriberRecord(
     const sptr<IRemoteObject> &commonEventListener)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     for (auto it = subscribers_.begin(); it != subscribers_.end(); ++it) {
         if (commonEventListener == (*it)->commonEventListener) {
@@ -243,7 +243,7 @@ void CommonEventSubscriberManager::DumpState(const std::string &event, const int
 
     std::vector<SubscriberRecordPtr> records;
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     GetSubscriberRecordsByEvent(event, userId, records);
 
     if (records.size() == 0) {
@@ -281,7 +281,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
         return false;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     pid_t pid = record->eventRecordInfo.pid;
 
@@ -340,7 +340,7 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
         commonEventListener->RemoveDeathRecipient(death_);
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     std::vector<std::string> events;
 
     for (auto it = subscribers_.begin(); it != subscribers_.end(); ++it) {
@@ -408,7 +408,7 @@ bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedType(
 void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const CommonEventRecord &eventRecord,
     std::vector<SubscriberRecordPtr> &records)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (eventSubscribers_.size() <= 0) {
         return;
     }
@@ -673,7 +673,7 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
         if (recordPtr->eventRecordInfo.uid == uid) {
             if (freezeState) {
@@ -693,7 +693,7 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
         for (auto it = pidList.begin(); it != pidList.end(); it++) {
             if (recordPtr->eventRecordInfo.pid == *it) {
@@ -714,7 +714,7 @@ void CommonEventSubscriberManager::UpdateAllFreezeInfos(const bool &freezeState,
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
         if (freezeState) {
             recordPtr->freezeTime = freezeTime;
@@ -737,7 +737,7 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
     }
 
     auto record = std::make_shared<CommonEventRecord>(eventRecord);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {
         auto eventRecordsItem = frozenRecordsItem->second.find(*subscriberRecord);
@@ -769,7 +769,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
     EVENT_LOGD("enter");
 
     std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenEvents;
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     auto infoItem = frozenEvents_.find(uid);
     if (infoItem != frozenEvents_.end()) {
         frozenEvents = infoItem->second;
@@ -783,7 +783,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
 std::map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEvents()
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return std::move(frozenEvents_);
 }
 
@@ -820,7 +820,7 @@ void CommonEventSubscriberManager::InsertFrozenEventsMap(
     }
 
     auto record = std::make_shared<CommonEventRecord>(eventRecord);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     auto frozenRecordsItem = frozenEventsMap_.find(subscriberRecord->eventRecordInfo.pid);
     if (frozenRecordsItem != frozenEventsMap_.end()) {
         auto eventRecordsItem = frozenRecordsItem->second.find(*subscriberRecord);
@@ -852,7 +852,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
     EVENT_LOGD("enter");
 
     std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenEvents;
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     auto infoItem = frozenEventsMap_.find(pid);
     if (infoItem != frozenEventsMap_.end()) {
         frozenEvents = infoItem->second;
@@ -866,7 +866,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
 std::map<pid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEventsMap()
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return std::move(frozenEventsMap_);
 }
 

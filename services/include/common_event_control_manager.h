@@ -175,8 +175,8 @@ private:
     bool pendingTimeoutMessage_;
     bool scheduled_;
     const int64_t TIMEOUT = 10000;  // How long we allow a receiver to run before giving up on it. Unit: ms
-    std::mutex orderedMutex_;
-    std::mutex unorderedMutex_;
+    ffrt::mutex orderedMutex_;
+    ffrt::mutex unorderedMutex_;
 
     std::shared_ptr<ffrt::queue> orderedQueue_ = nullptr;
     std::shared_ptr<ffrt::queue> unorderedQueue_ = nullptr;

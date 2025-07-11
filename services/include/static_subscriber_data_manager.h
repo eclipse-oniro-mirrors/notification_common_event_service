@@ -21,6 +21,7 @@
 #include <string>
 
 #include "distributed_kv_data_manager.h"
+#include "ffrt.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -48,7 +49,7 @@ private:
     const DistributedKv::StoreId storeId_ { "static_subscriber_infos" };
     DistributedKv::DistributedKvDataManager dataManager_;
     std::shared_ptr<DistributedKv::SingleKvStore> kvStorePtr_;
-    mutable std::mutex kvStorePtrMutex_;
+    mutable ffrt::mutex kvStorePtrMutex_;
 };
 } // namespace EventFwk
 } // namespace OHOS

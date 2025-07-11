@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "common_event_subscriber.h"
+#include "ffrt.h"
 #include "oh_commonevent.h"
 #include "want_params.h"
 
@@ -81,8 +82,8 @@ public:
     ResultCacheItem* GetAsyncResult(const SubscriberObserver* subscriber);
     static std::shared_ptr<SubscriberManager> GetInstance();
 private:
-    static std::mutex instanceMutex_;
-    static std::mutex resultCacheMutex_;
+    static ffrt::mutex instanceMutex_;
+    static ffrt::mutex resultCacheMutex_;
     static std::shared_ptr<SubscriberManager> instance_;
     static std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> resultCache_;
 };

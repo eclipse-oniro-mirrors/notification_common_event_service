@@ -171,7 +171,7 @@ SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : Com
 SubscriberInstance::~SubscriberInstance()
 {
     EVENT_LOGD("destructor SubscriberInstance[%{public}llu]", id_.load());
-    std::lock_guard<std::mutex> lock(envMutex_);
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
     if (env_ != nullptr && tsfn_ != nullptr) {
         napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
     }
@@ -191,21 +191,21 @@ void SubscriberInstance::SetEnv(const napi_env &env)
 napi_env SubscriberInstance::GetEnv()
 {
     EVENT_LOGD("Enter");
-    std::lock_guard<std::mutex> lock(envMutex_);
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
     return env_;
 }
 
 void SubscriberInstance::ClearEnv()
 {
     EVENT_LOGD("Env expired, clear SubscriberInstance env");
-    std::lock_guard<std::mutex> lock(envMutex_);
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
     env_ = nullptr;
     tsfn_ = nullptr;
 }
 
 void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
-    std::lock_guard<std::mutex> lockRef(refMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
     if (ref == nullptr) {
         napi_delete_reference(env_, ref_);
     }
@@ -214,7 +214,7 @@ void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 
 napi_ref SubscriberInstance::GetCallbackRef()
 {
-    std::lock_guard<std::mutex> lockRef(refMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
     return ref_;
 }
 
@@ -229,7 +229,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
 
     if (this->IsOrderedCommonEvent()) {
         EVENT_LOGD("IsOrderedCommonEvent is true");
-        std::lock_guard<std::mutex> lock(subscriberInsMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         for (auto subscriberInstance : subscriberInstances) {
             if (subscriberInstance.first.get() == this) {
                 EVENT_LOGD("Get success.");
@@ -238,8 +238,8 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
             }
         }
     }
-    std::lock_guard<std::mutex> lock(envMutex_);
-    std::lock_guard<std::mutex> lockRef(refMutex_);
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
     if (env_ != nullptr && tsfn_ != nullptr && ref_ != nullptr) {
         CommonEventDataWorker *commonEventDataWorker = new (std::nothrow) CommonEventDataWorker();
         if (commonEventDataWorker == nullptr) {
@@ -377,7 +377,7 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncResult(const SubscriberInstance 
         EVENT_LOGE("Invalidity objectInfo");
         return nullptr;
     }
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
     for (auto subscriberInstance : subscriberInstances) {
         if (subscriberInstance.first.get() == objectInfo) {
             return subscriberInstance.second.commonEventResult;
@@ -1123,7 +1123,7 @@ std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWra
         EVENT_LOGE("subscriber is null");
         return nullptr;
     }
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
     for (auto subscriberInstance : subscriberInstances) {
         if (subscriberInstance.first.get() == wrapper->GetSubscriber().get()) {
             return subscriberInstance.first;
@@ -1150,7 +1150,7 @@ napi_value GetSubscriberByUnsubscribe(
 void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance> &subscriber)
 {
     EVENT_LOGD("NapiDeleteSubscribe start");
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
     auto subscribe = subscriberInstances.find(subscriber);
     if (subscribe != subscriberInstances.end()) {
         for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {
@@ -1444,7 +1444,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             }
             napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
             if (asyncCallbackInfo->errorCode == NO_ERROR) {
-                std::lock_guard<std::mutex> lock(subscriberInsMutex);
+                std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
                 subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
             } else {
                 SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));

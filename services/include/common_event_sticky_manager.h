@@ -18,6 +18,7 @@
 
 #include "common_event_record.h"
 #include "common_event_subscribe_info.h"
+#include "ffrt.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -86,7 +87,7 @@ private:
         const std::string &event, const int32_t &userId, std::vector<CommonEventRecordPtr> &records);
 
 private:
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     std::map<std::string, CommonEventRecordPtr> commonEventRecords_;
 };
 }  // namespace EventFwk

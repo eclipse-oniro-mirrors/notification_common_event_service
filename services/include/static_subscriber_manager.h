@@ -136,8 +136,8 @@ private:
     std::map<std::string, std::vector<std::string>> disableEvents_;
     bool hasInitAllowList_ = false;
     bool hasInitValidSubscribers_ = false;
-    std::mutex subscriberMutex_;
-    std::mutex disableEventsMutex_;
+    ffrt::mutex subscriberMutex_;
+    ffrt::mutex disableEventsMutex_;
     std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };
 }  // namespace EventFwk

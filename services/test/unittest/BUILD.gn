@@ -209,6 +209,7 @@ ohos_unittest("bundle_manager_death_recipient_unit_test") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "ffrt:libffrt",
     "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
@@ -279,6 +280,7 @@ ohos_unittest("static_subscriber_data_manager_unit_test") {
   deps = [ "${ces_native_path}:cesfwk_innerkits" ]
 
   external_deps = [
+    "ffrt:libffrt",
     "googletest:gtest_main",
     "hilog:libhilog",
     "json:nlohmann_json_static",
@@ -980,6 +982,7 @@ ohos_unittest("capi_common_event_test") {
     "ability_runtime:abilitykit_native",
     "ability_runtime:napi_base_context",
     "c_utils:utils",
+    "ffrt:libffrt",
     "googletest:gmock_main",
     "googletest:gtest_main",
     "hilog:libhilog",
