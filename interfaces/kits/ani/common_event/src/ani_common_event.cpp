@@ -24,7 +24,7 @@ using namespace OHOS::EventFwk;
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 static std::map<std::shared_ptr<SubscriberInstance>, std::shared_ptr<AsyncCommonEventResult>> subscriberInstances;
-static std::mutex subscriberInsMutex;
+static ffrt::mutex subscriberInsMutex;
 
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
@@ -73,18 +73,21 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     ret = env->FindClass("LcommonEvent/commonEventSubscriber/CommonEventSubscriberInner;", &cls);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute FindClass error. result: %{public}d.", ret);
+        delete wrapper;
         return nullptr;
     }
     ani_method ctor;
     ret = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Class_FindMethod error. result: %{public}d.", ret);
+        delete wrapper;
         return nullptr;
     }
     ani_object subscriberObj;
     ret = env->Object_New(cls, ctor, &subscriberObj);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Object_New error. result: %{public}d.", ret);
+        delete wrapper;
         return nullptr;
     }
 
@@ -92,12 +95,14 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     ret = env->Class_FindMethod(cls, "<set>subscriberInstanceWrapper", nullptr, &wrapperField);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Class_FindField error. result: %{public}d.", ret);
+        delete wrapper;
         return nullptr;
     }
 
     ret = env->Object_CallMethod_Void(subscriberObj, wrapperField, reinterpret_cast<ani_long>(wrapper));
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Object_SetField_Long error. result: %{public}d.", ret);
+        delete wrapper;
         return nullptr;
     }
 
@@ -105,6 +110,7 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     ret = env->GlobalReference_Create(subscriberObj, &resultRef);
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute GlobalReference_Create error. result: %{public}d.", ret);
+        delete wrapper;
         return nullptr;
     }
     EVENT_LOGI("createSubscriberExecute end.");
@@ -197,7 +203,7 @@ std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWra
         EVENT_LOGE("subscriber is null");
         return nullptr;
     }
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
     for (auto subscriberInstance : subscriberInstances) {
         if (subscriberInstance.first.get() == wrapper->GetSubscriber().get()) {
             return subscriberInstance.first;
@@ -221,7 +227,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
 {
     EVENT_LOGI("OnReceiveEvent execute action = %{public}s", data.GetWant().GetAction().c_str());
     if (this->IsOrderedCommonEvent()) {
-        std::lock_guard<std::mutex> lock(subscriberInsMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         for (auto subscriberInstance : subscriberInstances) {
             if (subscriberInstance.first.get() == this) {
                 subscriberInstances[subscriberInstance.first] = GoAsyncCommonEvent();
@@ -277,7 +283,7 @@ unsigned long long SubscriberInstance::GetID()
 void SubscriberInstance::SetEnv(ani_env* env)
 {
     EVENT_LOGD("SetEnv");
-    std::lock_guard<std::mutex> lock(envMutex_);
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
     env_ = env;
 }
 
@@ -289,14 +295,14 @@ void SubscriberInstance::SetVm(ani_vm* etsVm)
 
 void SubscriberInstance::SetCallback(const ani_object& callback)
 {
-    std::lock_guard<std::mutex> lockRef(callbackMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(callbackMutex_);
     callback_ = callback;
 }
 
 void SubscriberInstance::ClearEnv()
 {
     EVENT_LOGD("Env expired, clear SubscriberInstance env");
-    std::lock_guard<std::mutex> lock(envMutex_);
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
     env_ = nullptr;
 }
 

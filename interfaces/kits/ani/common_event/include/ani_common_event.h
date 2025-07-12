@@ -20,6 +20,8 @@
 #include <mutex>
 
 #include "common_event_manager.h"
+#include "ffrt.h"
+
 namespace OHOS {
 namespace EventManagerFwkAni {
 class SubscriberInstance : public OHOS::EventFwk::CommonEventSubscriber {
@@ -35,8 +37,8 @@ public:
     void ClearEnv();
 
 private:
-    std::mutex envMutex_;
-    std::mutex callbackMutex_;
+    ffrt::mutex envMutex_;
+    ffrt::mutex callbackMutex_;
     ani_env* env_ = nullptr;
     ani_object callback_ = nullptr;
     std::atomic_ullong id_;
