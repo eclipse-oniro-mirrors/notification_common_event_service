@@ -68,7 +68,7 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
 
     for (ani_int i = 0; i < static_cast<ani_int>(length); i++) {
         ani_ref stringEntryRef;
-        ret = env->Object_CallMethodByName_Ref(arrayObj, "$_get", "I:Lstd/core/Object;", &stringEntryRef, i);
+        ret = env->Object_CallMethodByName_Ref(arrayObj, "$_get", "i:C{std.core.Object}", &stringEntryRef, i);
         if (ret != ANI_OK) {
             EVENT_LOGE("GetStdStringArrayClass Object_CallMethodByName_Ref error. result: %{public}d.", ret);
             return;
@@ -505,7 +505,7 @@ void AniCommonEventUtils::CreateNewObjectByClass(
         EVENT_LOGE("CreateNewObjectByClass cls is null.");
         return;
     }
-    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateNewObjectByClass Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -529,7 +529,7 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
         return;
     }
 
-    aniResult = env->FindClass("L@ohos/base/BusinessError;", &cls);
+    aniResult = env->FindClass("@ohos.base.BusinessError", &cls);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateBusinessErrorObject findClass error. result: %{public}d.", aniResult);
         return;
@@ -538,7 +538,7 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
         EVENT_LOGE("CreateBusinessErrorObject cls is null.");
         return;
     }
-    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateBusinessErrorObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -577,12 +577,12 @@ void AniCommonEventUtils::CreateAniDoubleObject(ani_env* env, ani_object &object
     ani_status aniResult = ANI_ERROR;
     ani_class clsDouble = nullptr;
     ani_method ctor;
-    aniResult = env->FindClass("Lstd/core/Double;", &clsDouble);
+    aniResult = env->FindClass("std.core.Double", &clsDouble);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateAniDoubleObject FindClass error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Class_FindMethod(clsDouble, "<ctor>", "D:V", &ctor);
+    aniResult = env->Class_FindMethod(clsDouble, "<ctor>", "d:", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateAniDoubleObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -600,7 +600,7 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     EVENT_LOGI("ConvertCommonEventDataToEts called");
 
     ani_class cls = nullptr;
-    CreateNewObjectByClass(env, "LcommonEvent/commonEventData/CommonEventDataImpl;", cls, ani_data);
+    CreateNewObjectByClass(env, "commonEvent.commonEventData.CommonEventDataImpl", cls, ani_data);
     if ((ani_data == nullptr) || (cls == nullptr)) {
         EVENT_LOGE("ConvertCommonEventDataToEts ani_data or cls is null.");
         return;
