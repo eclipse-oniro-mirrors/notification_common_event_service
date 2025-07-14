@@ -90,6 +90,16 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public native nativeGetSubscribeInfo(): CommonEventSubscribeInfo;
     public native nativeFinishCommonEvent(): int;
 
+    private static native transferToDynamicSubscriber(input: Object): Any;
+    private static native transferToStaticSubscriber(input: Any): Object;
+    
+    static transferDynamic(input: Object): Any {
+        return CommonEventSubscriberInner.transferToDynamicSubscriber(input);
+    }
+    static transferStatic(input: Any): Object {
+        return CommonEventSubscriberInner.transferToStaticSubscriber(input);
+    }
+
     public getCode(callback: AsyncCallback<number>): void {
         let p = taskpool.execute((): number => { return this.nativeGetCode(); });
         p.then((data: NullishType): void => {

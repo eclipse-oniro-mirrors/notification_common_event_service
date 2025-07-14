@@ -118,6 +118,18 @@ void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *as
     SetPublisherBundleNameResult(env, asyncCallbackInfo->publisherBundleName, result);
 }
 
+void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscribeInfo, napi_value &result)
+{
+    EVENT_LOGD("SetNapiResult start");
+
+    SetEventsResult(env, subscribeInfo.GetMatchingSkills().GetEvents(), result);
+    SetPublisherPermissionResult(env, subscribeInfo.GetPermission(), result);
+    SetPublisherDeviceIdResult(env, subscribeInfo.GetDeviceId(), result);
+    SetPublisherUserIdResult(env, subscribeInfo.GetUserId(), result);
+    SetPublisherPriorityResult(env, subscribeInfo.GetPriority(), result);
+    SetPublisherBundleNameResult(env, subscribeInfo.GetPublisherBundleName(), result);
+}
+
 napi_value SetCode(napi_env env, napi_callback_info info)
 {
     EVENT_LOGD("SetCode excute");
