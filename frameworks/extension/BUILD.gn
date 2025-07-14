@@ -107,6 +107,7 @@ ohos_shared_library("static_subscriber_extension") {
     "ability_runtime:ability_business_error",
     "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
+    "ability_runtime:abilitykit_utils",
     "ability_runtime:ani_common",
     "ability_runtime:app_context",
     "ability_runtime:extensionkit_native",
