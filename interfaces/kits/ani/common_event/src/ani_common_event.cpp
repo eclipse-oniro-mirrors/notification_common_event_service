@@ -998,40 +998,42 @@ static std::array commonEventSubscriberFunctions = {
         reinterpret_cast<void *>(OHOS::EventManagerFwkAni::transferToStaticSubscriber)},
 };
 
+static std::array commonEventManagerMethods = {
+    ani_native_function { "publishExecute", "Lstd/core/String;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
+    ani_native_function { "publishWithOptionsExecute",
+        "Lstd/core/String;LcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
+    ani_native_function { "publishAsUserExecute", "Lstd/core/String;I:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserExecute) },
+    ani_native_function { "publishAsUserWithOptionsExecute",
+        "Lstd/core/String;ILcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserWithOptionsExecute) },
+    ani_native_function { "createSubscriberExecute",
+        "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfo;:LcommonEvent/commonEventSubscriber/"
+        "CommonEventSubscriber;",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
+    ani_native_function {
+        "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
+    ani_native_function {
+        "subscribeToEventExecute",
+        nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeToEventExecute) },
+    ani_native_function { "unsubscribeExecute", "LcommonEvent/commonEventSubscriber/CommonEventSubscriber;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::unsubscribeExecute) },
+    ani_native_function { "removeStickyCommonEventExecute", "Lstd/core/String;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::removeStickyCommonEventExecute) },
+    ani_native_function { "setStaticSubscriberStateExecute", "Z:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateExecute) },
+    ani_native_function { "setStaticSubscriberStateWithEventsExecute", nullptr,
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateWithEventsExecute) },
+};
+
+
 ani_status init(ani_env *env, ani_namespace kitNs)
 {
     ani_status status = ANI_ERROR;
-    std::array methods = {
-        ani_native_function { "publishExecute", "Lstd/core/String;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
-        ani_native_function { "publishWithOptionsExecute",
-            "Lstd/core/String;LcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
-        ani_native_function { "publishAsUserExecute", "Lstd/core/String;I:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserExecute) },
-        ani_native_function { "publishAsUserWithOptionsExecute",
-            "Lstd/core/String;ILcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserWithOptionsExecute) },
-        ani_native_function { "createSubscriberExecute",
-            "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfo;:LcommonEvent/commonEventSubscriber/"
-            "CommonEventSubscriber;",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
-        ani_native_function {
-            "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
-        ani_native_function {
-            "subscribeToEventExecute",
-            nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeToEventExecute) },
-        ani_native_function { "unsubscribeExecute", "LcommonEvent/commonEventSubscriber/CommonEventSubscriber;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::unsubscribeExecute) },
-        ani_native_function { "removeStickyCommonEventExecute", "Lstd/core/String;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::removeStickyCommonEventExecute) },
-        ani_native_function { "setStaticSubscriberStateExecute", "Z:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateExecute) },
-        ani_native_function { "setStaticSubscriberStateWithEventsExecute", nullptr,
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateWithEventsExecute) },
-    };
-
-    status = env->Namespace_BindNativeFunctions(kitNs, methods.data(), methods.size());
+    status =
+        env->Namespace_BindNativeFunctions(kitNs, commonEventManagerMethods.data(), commonEventManagerMethods.size());
     if (status != ANI_OK) {
         EVENT_LOGE("Cannot bind native methods to L@ohos/event/common_event_manager/commonEventManager");
         return ANI_INVALID_TYPE;
