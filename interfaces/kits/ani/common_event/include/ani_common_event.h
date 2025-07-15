@@ -65,18 +65,11 @@ struct subscriberInstanceInfo {
     std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> commonEventResult = nullptr;
 };
 
-static constexpr uint8_t DO_NOT_SUBSCRIBE = 0;
-static constexpr uint8_t SUBSCRIBE_IN_NAPI_ENV = 1;
-static constexpr uint8_t SUBSCRIBE_IN_ANI_ENV = 2;
-
 struct SubscriberInstanceRelationship {
+    std::vector<std::shared_ptr<SubscriberInstance>> aniSubscribers_;
+    std::vector<std::shared_ptr<EventManagerFwkNapi::SubscriberInstance>> napiSubscribers_;
     std::shared_ptr<SubscriberInstance> aniSubscriber_;
     std::shared_ptr<EventManagerFwkNapi::SubscriberInstance> napiSubscriber_;
-    ani_ref napiSubscriberRef_;
-    ani_ref aniSubscriberRef_;
-    uint8_t subscribeEnv_ = DO_NOT_SUBSCRIBE;
-    bool aniSubscriberDestroyed_ = false;
-    bool napiSubscriberDestroyed_ = false;
     ffrt::mutex relationMutex_;
 };
 
