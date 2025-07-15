@@ -25,7 +25,7 @@ const ERROR_PARAM_INVALID = 401;
 const errorParamInvalid: BusinessError<string> = {code: ERROR_PARAM_INVALID, data: "Invalid parameter"};
 
 type ResolveCallback<T> = (data: T) => void;
-type RejectCallback = (err: Object) => void;
+type RejectCallback = (err: Error) => void;
 
 namespace commonEventManager {
     loadLibrary("ani_commoneventmanager.z");
@@ -245,7 +245,7 @@ namespace commonEventManager {
                     let err: BusinessError = { code: resultCode.intValue(), data: undefined };
                     reject(err);
                 }
-            }, (error: Object): void => {
+            }, (error: Error): void => {
                 hilog.error(0xD001202, TAG, 'removeStickyCommonEvent Promise error');
                 reject(error);
             });
@@ -280,7 +280,7 @@ namespace commonEventManager {
                 let err: BusinessError = { code: resultCode.intValue(), data: undefined };
                 reject(err);
             }
-        }, (error: Object): void => {
+        }, (error: Error): void => {
             hilog.error(0xD001202, TAG, 'setStaticSubscriberState Promise error');
             reject(error);
         });
@@ -299,7 +299,7 @@ namespace commonEventManager {
                     let err: BusinessError = { code: resultCode.intValue(), data: undefined };
                     reject(err);
                 }
-            }, (error: Object): void => {
+            }, (error: Error): void => {
                 hilog.error(0xD001202, TAG, 'setStaticSubscriberStateExecute Promise error.');
                 reject(error);
             });
