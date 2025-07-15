@@ -254,7 +254,7 @@ bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEven
     
     NotifyUnorderedEventLocked(eventRecord);
 
-    std::lock_guard<std::mutex> lock(unorderedMutex_);
+    std::lock_guard<ffrt::mutex> lock(unorderedMutex_);
     auto it = std::find(unorderedEventQueue_.begin(), unorderedEventQueue_.end(), eventRecord);
     if (it != unorderedEventQueue_.end()) {
         unorderedEventQueue_.erase(it);
@@ -322,7 +322,7 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::GetMatchingOrdere
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(orderedMutex_);
+    std::lock_guard<ffrt::mutex> lock(orderedMutex_);
 
     if (!orderedEventQueue_.empty()) {
         std::shared_ptr<OrderedEventRecord> firstRecord = orderedEventQueue_.front();
@@ -393,7 +393,7 @@ bool CommonEventControlManager::EnqueueUnorderedRecord(const std::shared_ptr<Ord
         return false;
     }
 
-    std::lock_guard<std::mutex> lock(unorderedMutex_);
+    std::lock_guard<ffrt::mutex> lock(unorderedMutex_);
 
     unorderedEventQueue_.emplace_back(eventRecordPtr);
 
@@ -407,7 +407,7 @@ bool CommonEventControlManager::EnqueueOrderedRecord(const std::shared_ptr<Order
         return false;
     }
 
-    std::lock_guard<std::mutex> lock(orderedMutex_);
+    std::lock_guard<ffrt::mutex> lock(orderedMutex_);
 
     orderedEventQueue_.emplace_back(eventRecordPtr);
 
@@ -499,7 +499,7 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 
     std::shared_ptr<OrderedEventRecord> sp = nullptr;
     {
-        std::lock_guard<std::mutex> lock(orderedMutex_);
+        std::lock_guard<ffrt::mutex> lock(orderedMutex_);
         do {
             if (orderedEventQueue_.empty()) {
                 EVENT_LOGD("orderedEventQueue_ is empty");
@@ -701,7 +701,7 @@ void CommonEventControlManager::GetUnorderedEventRecords(
     const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> unorderedLock(unorderedMutex_);
+    std::lock_guard<ffrt::mutex> unorderedLock(unorderedMutex_);
     if (event.empty() && userId == ALL_USER) {
         records = unorderedEventQueue_;
     } else if (event.empty()) {
@@ -729,7 +729,7 @@ void CommonEventControlManager::GetOrderedEventRecords(
     const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records)
 {
     EVENT_LOGD("enter");
-    std::lock_guard<std::mutex> orderedLock(orderedMutex_);
+    std::lock_guard<ffrt::mutex> orderedLock(orderedMutex_);
     if (event.empty() && userId == ALL_USER) {
         records = orderedEventQueue_;
     } else if (event.empty()) {

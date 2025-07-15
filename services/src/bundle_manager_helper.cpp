@@ -41,7 +41,7 @@ std::string BundleManagerHelper::GetBundleName(const uid_t uid)
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     std::string bundleName = "";
 
     if (!GetBundleMgrProxyAsync()) {
@@ -58,7 +58,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
         return false;
@@ -75,7 +75,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
     DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
     EVENT_LOGD("active userId = %{public}d", userId);
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!GetBundleMgrProxy()) {
         return false;
     }
@@ -89,7 +89,7 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     if (!GetBundleMgrProxy()) {
         return false;
@@ -103,7 +103,7 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(const uid_t uid)
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     bool isSystemApp = false;
 
@@ -120,7 +120,7 @@ bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundle
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     bool isSystemApp = false;
 
@@ -195,7 +195,7 @@ void BundleManagerHelper::ClearBundleManagerHelper()
 {
     EVENT_LOGD("enter");
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     if ((sptrBundleMgr_ != nullptr) && (sptrBundleMgr_->AsObject() != nullptr)) {
         sptrBundleMgr_->AsObject()->RemoveDeathRecipient(bmsDeath_);
@@ -211,7 +211,7 @@ bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag 
     DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
     EVENT_LOGD("active userId = %{public}d", userId);
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!GetBundleMgrProxy()) {
         return false;
     }
@@ -222,7 +222,7 @@ int32_t BundleManagerHelper::GetDefaultUidByBundleName(const std::string &bundle
 {
     int32_t uid = -1;
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!GetBundleMgrProxy()) {
         return uid;
     }

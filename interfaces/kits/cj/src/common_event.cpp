@@ -18,6 +18,7 @@
 #include "common_event_manager_impl.h"
 
 #include "common_event_manager.h"
+#include "ffrt.h"
 #include "securec.h"
 using namespace OHOS::FFI;
 using CommonEventManagerImpl = OHOS::CommonEventManager::CommonEventManagerImpl;
@@ -25,12 +26,12 @@ using CommonEventManagerImpl = OHOS::CommonEventManager::CommonEventManagerImpl;
 namespace OHOS::CommonEventManager {
 
     static std::map<std::shared_ptr<SubscriberImpl>, SubscriberInstanceInfo> subscriberImpls;
-    static std::mutex subscriberImplMutex;
+    static ffrt::mutex subscriberImplMutex;
 
     void SetPublishResult(OHOS::CommonEventManager::SubscriberImpl *subImpl)
     {
         LOGI("SetPublishResult start");
-        std::lock_guard<std::mutex> lock(subscriberImplMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberImplMutex);
         for (auto subscriberImpl : subscriberImpls) {
             if (subscriberImpl.first.get() == subImpl) {
                 LOGI("Get success.");
@@ -47,7 +48,7 @@ namespace OHOS::CommonEventManager {
             LOGE("Invalidity objectInfo");
             return nullptr;
         }
-        std::lock_guard<std::mutex> lock(subscriberImplMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberImplMutex);
         for (auto subscriberImpl : subscriberImpls) {
             if (subscriberImpl.first.get() == objectInfo) {
                 return subscriberImpl.second.commonEventResult;
@@ -68,7 +69,7 @@ namespace OHOS::CommonEventManager {
             LOGE("SetSubscribeInfo failed: out of memory.");
             return;
         }
-        std::lock_guard<std::mutex> lock(subscriberImplMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberImplMutex);
         subscriberImpls[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
     }
 
@@ -82,7 +83,7 @@ namespace OHOS::CommonEventManager {
 
     int64_t GetManagerId(int64_t id, bool &haveId)
     {
-        std::lock_guard<std::mutex> lock(subscriberImplMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberImplMutex);
         for (auto subscriberImpl : subscriberImpls) {
             if (subscriberImpl.first->GetSubscribeInfoId() == id) {
                 std::shared_ptr<OHOS::CommonEventManager::SubscriberImpl> newSubscriber = subscriberImpl.first;
@@ -100,7 +101,7 @@ namespace OHOS::CommonEventManager {
     void DeleteSubscribe(std::shared_ptr<SubscriberImpl> subscriber)
     {
         LOGI("DeleteSubscribe start");
-        std::lock_guard<std::mutex> lock(subscriberImplMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberImplMutex);
         auto subscribe = subscriberImpls.find(subscriber);
         if (subscribe != subscriberImpls.end()) {
             for (auto asyncCallbackInfoSubscribe : subscribe->second.asyncCallbackInfo) {

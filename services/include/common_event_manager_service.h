@@ -199,7 +199,7 @@ private:
     int32_t CheckUserIdParams(const int32_t &userId);
 private:
     static sptr<CommonEventManagerService> instance_;
-    static std::mutex instanceMutex_;
+    static ffrt::mutex instanceMutex_;
 
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
     ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;

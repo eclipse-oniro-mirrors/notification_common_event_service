@@ -68,15 +68,15 @@ void SubscriberObserver::SetCallback(CommonEvent_ReceiveCallback callback)
     callback_ = callback;
 }
 
-std::mutex SubscriberManager::instanceMutex_;
-std::mutex SubscriberManager::resultCacheMutex_;
+ffrt::mutex SubscriberManager::instanceMutex_;
+ffrt::mutex SubscriberManager::resultCacheMutex_;
 std::shared_ptr<SubscriberManager> SubscriberManager::instance_;
 std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> SubscriberManager::resultCache_;
 
 std::shared_ptr<SubscriberManager> SubscriberManager::GetInstance()
 {
     if (instance_ == nullptr) {
-        std::lock_guard<std::mutex> lock(instanceMutex_);
+        std::lock_guard<ffrt::mutex> lock(instanceMutex_);
         if (instance_ == nullptr) {
             instance_ = std::make_shared<SubscriberManager>();
         }
@@ -134,7 +134,7 @@ CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* s
         return static_cast<CommonEvent_ErrCode>(ret);
     }
     {
-        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
         resultCache_.emplace(observer, ResultCacheItem());
     }
     return static_cast<CommonEvent_ErrCode>(ret);
@@ -149,7 +149,7 @@ CommonEvent_ErrCode SubscriberManager::UnSubscribe(const CommonEvent_Subscriber*
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
     int32_t ret = OHOS::EventFwk::CommonEventManager::NewUnSubscribeCommonEvent(observer);
     {
-        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
         resultCache_.erase(observer);
     }
     return static_cast<CommonEvent_ErrCode>(ret);
@@ -162,7 +162,7 @@ void SubscriberManager::SetAsyncResult(SubscriberObserver* subscriber)
         return;
     }
     {
-        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
         for (auto& iter : resultCache_) {
             if (iter.first.get() == subscriber) {
                 iter.second.result = subscriber->GoAsyncCommonEvent();
@@ -179,7 +179,7 @@ ResultCacheItem* SubscriberManager::GetAsyncResult(const SubscriberObserver* sub
         return nullptr;
     }
     {
-        std::lock_guard<std::mutex> lock(resultCacheMutex_);
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
         for (auto& iter : resultCache_) {
             if (iter.first.get() == subscriber) {
                 return &iter.second;

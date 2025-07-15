@@ -68,6 +68,7 @@ ohos_shared_library("commonevent") {
     "ability_runtime:abilitykit_native",
     "ability_runtime:napi_common",
     "c_utils:utils",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "libuv:uv",
     "napi:ace_napi",

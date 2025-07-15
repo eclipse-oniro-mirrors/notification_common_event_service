@@ -18,8 +18,8 @@
 
 #include <mutex>
 
-#include "event_handler.h"
 #include "common_event_subscriber.h"
+#include "event_handler.h"
 #include "event_receive_stub.h"
 
 namespace OHOS {

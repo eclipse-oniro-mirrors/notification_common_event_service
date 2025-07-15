@@ -69,6 +69,7 @@ ohos_shared_library("commoneventmanager") {
     "ability_runtime:napi_common",
     "ability_runtime:runtime",
     "c_utils:utils",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "libuv:uv",
     "napi:ace_napi",

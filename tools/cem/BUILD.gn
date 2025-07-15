@@ -57,6 +57,7 @@ ohos_source_set("tools_cem_source_set") {
     "ability_base:want",
     "c_utils:utils",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]

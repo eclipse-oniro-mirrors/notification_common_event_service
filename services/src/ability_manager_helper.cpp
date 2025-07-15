@@ -115,7 +115,7 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
 void AbilityManagerHelper::Clear()
 {
     EVENT_LOGI("enter");
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     if ((abilityMgr_ != nullptr) && (abilityMgr_->AsObject() != nullptr)) {
         abilityMgr_->AsObject()->RemoveDeathRecipient(deathRecipient_);

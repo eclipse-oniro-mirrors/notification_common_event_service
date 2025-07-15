@@ -22,6 +22,7 @@
 #include "bms_death_recipient.h"
 #include "bundle_mgr_interface.h"
 #include "extension_ability_info.h"
+#include "ffrt.h"
 #include "iremote_object.h"
 #include "refbase.h"
 #include "singleton.h"
@@ -109,7 +110,7 @@ private:
 
 private:
     sptr<IBundleMgr> sptrBundleMgr_;
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     sptr<BMSDeathRecipient> bmsDeath_;
 };
 }  // namespace EventFwk

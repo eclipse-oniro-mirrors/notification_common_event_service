@@ -21,6 +21,7 @@
 #include <vector>
 #include <stdint.h>
 #include "singleton.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -39,7 +40,7 @@ public:
     bool CheckIsFloodAttack(pid_t appUid);
 
 private:
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     std::map<pid_t, std::vector<int64_t>> floodAttackAppStatistics_;
     const uint32_t FLOOD_ATTACK_NUMBER_MAX = 20;  // Frequency of decision
     const int64_t FLOOD_ATTACK_INTERVAL_MAX = 5;  // Period of decision (unit: millisecond)

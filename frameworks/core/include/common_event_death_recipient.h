@@ -40,11 +40,11 @@ private:
         void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
     private:
         bool isSAOffline_ = false;
-        std::mutex mutex_;
+        ffrt::mutex mutex_;
         std::shared_ptr<ffrt::queue> queue_ = nullptr;
     };
 
-    std::mutex listenerMutex_;
+    ffrt::mutex listenerMutex_;
     sptr<ISystemAbilityStatusChange> statusChangeListener_ = nullptr;
 };
 }  // namespace EventFwk

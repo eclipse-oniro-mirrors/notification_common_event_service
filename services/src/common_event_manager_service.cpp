@@ -45,12 +45,12 @@ const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check
 using namespace OHOS::Notification;
 
 sptr<CommonEventManagerService> CommonEventManagerService::instance_;
-std::mutex CommonEventManagerService::instanceMutex_;
+ffrt::mutex CommonEventManagerService::instanceMutex_;
 
 sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
 {
     if (instance_ == nullptr) {
-        std::lock_guard<std::mutex> lock(instanceMutex_);
+        std::lock_guard<ffrt::mutex> lock(instanceMutex_);
         if (instance_ == nullptr) {
             instance_ = new (std::nothrow) CommonEventManagerService();
         }

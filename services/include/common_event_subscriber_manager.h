@@ -23,6 +23,7 @@
 #include "common_event_record.h"
 #include "common_event_subscribe_info.h"
 #include "event_log_wrapper.h"
+#include "ffrt.h"
 #include "iremote_object.h"
 #include "parameter.h"
 #include "singleton.h"
@@ -255,7 +256,7 @@ private:
         int subscribeUid, std::vector<SubscriberRecordPtr> &records, SubscriberRecordPtr it);
 
 private:
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     sptr<IRemoteObject::DeathRecipient> death_;
     std::map<std::string, std::set<SubscriberRecordPtr>> eventSubscribers_;
     std::vector<SubscriberRecordPtr> subscribers_;

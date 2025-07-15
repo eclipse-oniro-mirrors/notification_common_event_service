@@ -71,7 +71,7 @@ private:
     bool GetAbilityMgrProxy();
     void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection, const std::string &action);
 
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     sptr<AAFwk::IAbilityManager> abilityMgr_;
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

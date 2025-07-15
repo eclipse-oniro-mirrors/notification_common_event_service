@@ -87,7 +87,7 @@ int32_t StaticSubscriberDataManager::UpdateStaticSubscriberState(
         return ret;
     }
 
-    std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
+    std::lock_guard<ffrt::mutex> lock(kvStorePtrMutex_);
     if (!CheckKvStore()) {
         EVENT_LOGE("Kvstore is nullptr.");
         return ERR_NO_INIT;
@@ -123,7 +123,7 @@ int32_t StaticSubscriberDataManager::QueryStaticSubscriberStateData(
     std::map<std::string, std::vector<std::string>> &disableEvents, std::set<std::string> &bundleList)
 
 {
-    std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
+    std::lock_guard<ffrt::mutex> lock(kvStorePtrMutex_);
     if (!CheckKvStore()) {
         EVENT_LOGE("Kvstore is nullptr.");
         return ERR_NO_INIT;
@@ -169,7 +169,7 @@ int32_t StaticSubscriberDataManager::DeleteDisableEventElementByBundleName(const
         return ERR_INVALID_VALUE;
     }
 
-    std::lock_guard<std::mutex> lock(kvStorePtrMutex_);
+    std::lock_guard<ffrt::mutex> lock(kvStorePtrMutex_);
     if (!CheckKvStore()) {
         EVENT_LOGE("Kvstore is nullptr.");
         return ERR_NO_INIT;
