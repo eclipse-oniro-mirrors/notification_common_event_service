@@ -69,6 +69,9 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     auto ret = ANI_OK;
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
+    if (wrapper == nullptr) {
+        return nullptr;
+    }
     ani_class cls;
     ret = env->FindClass("LcommonEvent/commonEventSubscriber/CommonEventSubscriberInner;", &cls);
     if (ret != ANI_OK) {
