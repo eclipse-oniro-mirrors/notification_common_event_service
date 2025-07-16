@@ -179,10 +179,10 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     int32_t result = ERR_OK;
     if (relation != nullptr) {
         std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-        if (!relation->aniSubscriber_ && !relation->napiSubscriber_) {
+        if (relation->subscribeEnv_ == DO_NOT_SUBSCRIBE) {
             result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
             if (result == ERR_OK) {
-                relation->aniSubscriber_ = subscriberInstance;
+                relation->subscribeEnv_ = SUBSCRIBE_IN_ANI_ENV;
                 std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
                 subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
             }
@@ -287,16 +287,15 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
         return UnsubscribeAndRemoveInstance(env, subscriberInstance);
     }
     std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-    if (relation->napiSubscriber_) {
+    if (relation->subscribeEnv_ == SUBSCRIBE_IN_NAPI_ENV) {
         result = EventManagerFwkNapi::UnsubscribeAndRemoveInstance(relation->napiSubscriber_->GetEnv(),
             relation->napiSubscriber_);
-        relation->napiSubscriber_ = nullptr;
-    } else if (relation->aniSubscriber_) {
+    } else if (relation->subscribeEnv_ == SUBSCRIBE_IN_ANI_ENV) {
         result = UnsubscribeAndRemoveInstance(env, relation->aniSubscriber_);
-        relation->aniSubscriber_ = nullptr;
     } else {
         EVENT_LOGD("transfered no subscribe");
     }
+    relation->subscribeEnv_ = DO_NOT_SUBSCRIBE;
     return result;
 }
 
@@ -398,10 +397,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
         auto asyncCommonEvent = GoAsyncCommonEvent();
         auto relation = GetTransferRelation(subscriber, nullptr);
         if (relation != nullptr) {
-            std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-            for (const auto &subscriber : relation->napiSubscribers_) {
-                EventManagerFwkNapi::SetAsyncCommonEventResult(subscriber, asyncCommonEvent);
-            }
+            EventManagerFwkNapi::SetAsyncCommonEventResult(relation->napiSubscriber_, asyncCommonEvent);
         }
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         auto item = subscriberInstances.find(subscriber);
@@ -432,6 +428,8 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
         EVENT_LOGE("subscribeCallbackThreadFunciton fnObject is null.");
         return;
     }
+
+    EVENT_LOGI("FunctionalObject_Call.");
     std::vector<ani_ref> args = { nullObject, reinterpret_cast<ani_ref>(ani_data) };
     if (GetIsToEvent()) {
         args.erase(args.begin());
@@ -509,18 +507,9 @@ std::shared_ptr<SubscriberInstanceRelationship> GetTransferRelation(std::shared_
 {
     std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
     for (auto const &item : transferRelations) {
-        if (napiSubscriber != nullptr) {
-            auto subscriberItem = std::find(item->napiSubscribers_.begin(), item->napiSubscribers_.end(),
-                napiSubscriber);
-            if (subscriberItem != item->napiSubscribers_.end()) {
-                return item;
-            }
-        } else if (aniSubscriber != nullptr) {
-            auto subscriberItem = std::find(item->aniSubscribers_.begin(), item->aniSubscribers_.end(),
-                aniSubscriber);
-            if (subscriberItem != item->aniSubscribers_.end()) {
-                return item;
-            }
+        if ((napiSubscriber != nullptr && item->napiSubscriber_.get() == napiSubscriber.get()) ||
+            (aniSubscriber != nullptr && item->aniSubscriber_.get() == aniSubscriber.get())) {
+            return item;
         }
     }
     return nullptr;
@@ -537,6 +526,11 @@ static ani_ref transferToStaticSubscriber(ani_env *env, [[maybe_unused]] ani_cla
         return undefinedRef;
     }
     auto napiSubscriber = wrapper->GetSubscriber();
+    auto relation = GetTransferRelation(nullptr, napiSubscriber);
+    if (relation != nullptr) {
+        EVENT_LOGW("already transfered");
+        return relation->aniSubscriberRef_;
+    }
     auto aniWrapper = new (std::nothrow) SubscriberInstanceWrapper(napiSubscriber->GetSubscribeInfo());
     if (aniWrapper == nullptr) {
         EVENT_LOGE("null aniWrapper");
@@ -548,23 +542,14 @@ static ani_ref transferToStaticSubscriber(ani_env *env, [[maybe_unused]] ani_cla
         aniWrapper = nullptr;
         return undefinedRef;
     }
-    SetNapiSubscriberCallback(napiSubscriber);
     auto asyncCommonEventResult = EventManagerFwkNapi::GetAsyncCommonEventResult(napiSubscriber);
-
-    auto relation = GetTransferRelation(nullptr, napiSubscriber);
-    if (relation != nullptr) {
-        relation->aniSubscribers_.push_back(aniWrapper->GetSubscriber());
-        if (asyncCommonEventResult != nullptr || napiSubscriber->GetCallbackRef() != nullptr) {
-            std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
-            subscriberInstances[aniWrapper->GetSubscriber()] = asyncCommonEventResult;
-        }
-        return subscriberObj;
-    }
     relation = std::make_shared<SubscriberInstanceRelationship>();
-    relation->aniSubscribers_.push_back(aniWrapper->GetSubscriber());
-    relation->napiSubscribers_.push_back(napiSubscriber);
+    relation->aniSubscriber_ = aniWrapper->GetSubscriber();
+    relation->napiSubscriber_ = napiSubscriber;
+    relation->aniSubscriberRef_ = subscriberObj;
+    relation->napiSubscriberRef_ = static_cast<ani_ref>(input);
     if (asyncCommonEventResult != nullptr || napiSubscriber->GetCallbackRef() != nullptr) {
-        relation->napiSubscriber_ = napiSubscriber;
+        relation->subscribeEnv_ = SUBSCRIBE_IN_NAPI_ENV;
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[aniWrapper->GetSubscriber()] = asyncCommonEventResult;
     }
@@ -572,6 +557,7 @@ static ani_ref transferToStaticSubscriber(ani_env *env, [[maybe_unused]] ani_cla
         std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
         transferRelations.push_back(relation);
     }
+    SetNapiSubscriberCallback(napiSubscriber);
     return subscriberObj;
 }
 
@@ -584,11 +570,10 @@ static int32_t unsubscribeCallback(const std::shared_ptr<EventManagerFwkNapi::Su
         return result;
     }
     std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-    if (relation->napiSubscriber_ != nullptr) {
+    if (relation->subscribeEnv_ == SUBSCRIBE_IN_NAPI_ENV) {
         result = EventManagerFwkNapi::UnsubscribeAndRemoveInstance(relation->napiSubscriber_->GetEnv(),
             relation->napiSubscriber_);
-        relation->napiSubscriber_ = nullptr;
-    } else if (relation->aniSubscriber_ != nullptr) {
+    } else if (relation->subscribeEnv_ == SUBSCRIBE_IN_ANI_ENV) {
         ani_env* etsEnv;
         ani_status aniResult = ANI_OK;
         ani_options aniArgs {0, nullptr};
@@ -599,8 +584,8 @@ static int32_t unsubscribeCallback(const std::shared_ptr<EventManagerFwkNapi::Su
         }
         result = UnsubscribeAndRemoveInstance(etsEnv, relation->aniSubscriber_);
         relation->aniSubscriber_->GetVm()->DetachCurrentThread();
-        relation->aniSubscriber_ = nullptr;
     }
+    relation->subscribeEnv_ = DO_NOT_SUBSCRIBE;
     return result;
 }
 
@@ -612,13 +597,13 @@ static int32_t subscribeCallback(const std::shared_ptr<EventManagerFwkNapi::Subs
         return CommonEventManager::NewSubscribeCommonEvent(napiSubscriber);
     }
     std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-    if (relation->napiSubscriber_ || relation->aniSubscriber_) {
-        EVENT_LOGW("transfered subscriber already subscribed");
+    if (relation->subscribeEnv_ != DO_NOT_SUBSCRIBE) {
+        EVENT_LOGW("transfered subscriber already subscribed in 1.%{public}d context", relation->subscribeEnv_);
         return ERR_OK;
     }
     auto result = CommonEventManager::NewSubscribeCommonEvent(napiSubscriber);
     if (result == ERR_OK) {
-        relation->napiSubscriber_ = napiSubscriber;
+        relation->subscribeEnv_ = SUBSCRIBE_IN_NAPI_ENV;
     }
     return result;
 };
@@ -634,17 +619,12 @@ static int32_t gcCallback(const std::shared_ptr<EventManagerFwkNapi::SubscriberI
     bool allDestroyed = false;
     {
         std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-        auto subscriberItem = std::find(relation->napiSubscribers_.begin(), relation->napiSubscribers_.end(),
-            napiSubscriber);
-        if (subscriberItem != relation->napiSubscribers_.end()) {
-            relation->napiSubscribers_.erase(subscriberItem);
-        }
-        if (relation->aniSubscribers_.empty() && relation->napiSubscribers_.empty()) {
-            if (relation->napiSubscriber_) {
+        relation->napiSubscriberDestroyed_ = true;
+        if (relation->aniSubscriberDestroyed_) {
+            if (relation->subscribeEnv_ == SUBSCRIBE_IN_NAPI_ENV) {
                 result = EventManagerFwkNapi::UnsubscribeAndRemoveInstance(relation->napiSubscriber_->GetEnv(),
                     relation->napiSubscriber_);
-                relation->napiSubscriber_ = nullptr;
-            } else if (relation->aniSubscriber_) {
+            } else if (relation->subscribeEnv_ == SUBSCRIBE_IN_ANI_ENV) {
                 ani_env* etsEnv;
                 ani_status aniResult = ANI_OK;
                 ani_options aniArgs {0, nullptr};
@@ -655,7 +635,6 @@ static int32_t gcCallback(const std::shared_ptr<EventManagerFwkNapi::SubscriberI
                 }
                 result = UnsubscribeAndRemoveInstance(etsEnv, relation->aniSubscriber_);
                 relation->aniSubscriber_->GetVm()->DetachCurrentThread();
-                relation->aniSubscriber_ = nullptr;
             }
             allDestroyed = true;
         }
@@ -679,11 +658,8 @@ static void asyncResultCloneCallback(const std::shared_ptr<EventManagerFwkNapi::
         return;
     }
     EVENT_LOGI("sync common event data");
-    std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-    for (const auto &subscriber : relation->aniSubscribers_) {
-        std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
-        subscriberInstances[subscriber] = result;
-    }
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
+    subscriberInstances[relation->aniSubscriber_] = result;
     return;
 };
 
@@ -698,6 +674,11 @@ static ani_ref transferToDynamicSubscriber(ani_env *env, [[maybe_unused]] ani_cl
         EVENT_LOGE("aniSubscriber is null.");
         return undefinedRef;
     }
+    auto relation = GetTransferRelation(aniSubscriber, nullptr);
+    if (relation != nullptr) {
+        EVENT_LOGW("already transfered");
+        return relation->napiSubscriberRef_;
+    }
     napi_value napiSubscriberValue = EventManagerFwkNapi::TransferedCommonEventSubscriberConstructor(jsEnv,
         aniSubscriber->GetSubscribeInfo());
     if (napiSubscriberValue == nullptr) {
@@ -705,31 +686,23 @@ static ani_ref transferToDynamicSubscriber(ani_env *env, [[maybe_unused]] ani_cl
         return undefinedRef;
     }
     ani_ref result {};
-    arkts_napi_scope_close_n(jsEnv, 1, &napiSubscriberValue, &result);
-
     auto napiSubscriber = EventManagerFwkNapi::GetSubscriber(jsEnv, napiSubscriberValue);
-    SetNapiSubscriberCallback(napiSubscriber);
-    auto asyncResult = GetAsyncCommonEventResult(aniSubscriber);
-
-    auto relation = GetTransferRelation(aniSubscriber, nullptr);
-    if (relation != nullptr) {
-        relation->napiSubscribers_.push_back(napiSubscriber);
-        if (asyncResult != nullptr || aniSubscriber->GetCallback() != nullptr) {
-            EventManagerFwkNapi::SetAsyncCommonEventResult(napiSubscriber, asyncResult);
-        }
-        return result;
-    }
     relation = std::make_shared<SubscriberInstanceRelationship>();
-    relation->aniSubscribers_.push_back(aniSubscriber);
-    relation->napiSubscribers_.push_back(napiSubscriber);
+    relation->aniSubscriber_ = aniSubscriber;
+    relation->napiSubscriber_ = napiSubscriber;
+    relation->aniSubscriberRef_ = static_cast<ani_ref>(input);
+    relation->napiSubscriberRef_ = result;
+    std::shared_ptr<EventFwk::AsyncCommonEventResult> asyncResult = GetAsyncCommonEventResult(aniSubscriber);
     if (asyncResult != nullptr || aniSubscriber->GetCallback() != nullptr) {
-        relation->aniSubscriber_ = aniSubscriber;
+        relation->subscribeEnv_ = SUBSCRIBE_IN_ANI_ENV;
         EventManagerFwkNapi::SetAsyncCommonEventResult(napiSubscriber, asyncResult);
     }
     {
         std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
         transferRelations.push_back(relation);
     }
+    SetNapiSubscriberCallback(napiSubscriber);
+    arkts_napi_scope_close_n(jsEnv, 1, &napiSubscriberValue, &result);
     return result;
 }
 
@@ -767,16 +740,12 @@ static void clean([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object obj
     bool allDestroyed = false;
     {
         std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
-        auto subscriberItem = std::find(relation->aniSubscribers_.begin(), relation->aniSubscribers_.end(),
-            subscriberInstance);
-        if (subscriberItem != relation->aniSubscribers_.end()) {
-            relation->aniSubscribers_.erase(subscriberItem);
-        }
-        if (relation->aniSubscribers_.empty() && relation->napiSubscribers_.empty()) {
-            if (relation->napiSubscriber_ != nullptr) {
+        relation->aniSubscriberDestroyed_ = true;
+        if (relation->napiSubscriberDestroyed_) {
+            if (relation->subscribeEnv_ == SUBSCRIBE_IN_NAPI_ENV) {
                 EventManagerFwkNapi::UnsubscribeAndRemoveInstance(relation->napiSubscriber_->GetEnv(),
                     relation->napiSubscriber_);
-            } else if (relation->aniSubscriber_ != nullptr) {
+            } else if (relation->subscribeEnv_ == SUBSCRIBE_IN_ANI_ENV) {
                 UnsubscribeAndRemoveInstance(env, relation->aniSubscriber_);
             }
             allDestroyed = true;
