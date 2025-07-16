@@ -201,6 +201,56 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     return result;
 }
 
+
+static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_object callback)
+{
+    EVENT_LOGD("subscribeToEventExecute call.");
+    auto subscriberInstance = GetSubscriber(env, subscribeRef);
+    if (subscriberInstance == nullptr) {
+        EVENT_LOGE("subscriberInstance is null.");
+        return ANI_INVALID_ARGS;
+    }
+    ani_ref resultRef = nullptr;
+    auto ret = env->GlobalReference_Create(callback, &resultRef);
+    if (ret != ANI_OK || resultRef == nullptr) {
+        EVENT_LOGE("GlobalReference_Create error. result: %{public}d.", ret);
+        return ANI_INVALID_ARGS;
+    }
+    subscriberInstance->SetCallback(static_cast<ani_object>(resultRef));
+    subscriberInstance->SetIsToEvent(true);
+    ani_vm* etsVm;
+    ret = env->GetVM(&etsVm);
+    if (ret != ANI_OK) {
+        EVENT_LOGE("OnReceiveEvent GetVM error. result: %{public}d.", ret);
+        return ANI_INVALID_ARGS;
+    }
+    subscriberInstance->SetVm(etsVm);
+    auto relation = GetTransferRelation(subscriberInstance, nullptr);
+    int32_t result = ERR_OK;
+    if (relation != nullptr) {
+        std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
+        if (relation->subscribeEnv_ == DO_NOT_SUBSCRIBE) {
+            result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
+            if (result == ERR_OK) {
+                relation->subscribeEnv_ = SUBSCRIBE_IN_ANI_ENV;
+                std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
+                subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
+            }
+            EVENT_LOGI("transfered subscribe result: %{public}d", result);
+            return result;
+        }
+        EVENT_LOGI("transfered already subscribe");
+        return result;
+    }
+    result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
+    if (result == ERR_OK) {
+        std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
+        subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
+    }
+    EVENT_LOGI("subscribeToEventExecute result: %{public}d", result);
+    return result;
+}
+
 int32_t UnsubscribeAndRemoveInstance(ani_env* env, const std::shared_ptr<SubscriberInstance> &subscriber)
 {
     EVENT_LOGD("unsubscribe 1.2 subscriber");
@@ -381,6 +431,9 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
 
     EVENT_LOGI("FunctionalObject_Call.");
     std::vector<ani_ref> args = { nullObject, reinterpret_cast<ani_ref>(ani_data) };
+    if (GetIsToEvent()) {
+        args.erase(args.begin());
+    }
     ani_ref result;
     aniResult = etsEnv->FunctionalObject_Call(fnObject, args.size(), args.data(), &result);
     if (aniResult != ANI_OK) {
@@ -414,6 +467,18 @@ ani_object SubscriberInstance::GetCallback()
 {
     std::lock_guard<ffrt::mutex> lockRef(callbackMutex_);
     return callback_;
+}
+
+void SubscriberInstance::SetIsToEvent(bool isToEvent)
+{
+    std::lock_guard<ffrt::mutex> lockRef(isToEventMutex_);
+    isToEvent_ = isToEvent;
+}
+
+bool SubscriberInstance::GetIsToEvent()
+{
+    std::lock_guard<ffrt::mutex> lockRef(isToEventMutex_);
+    return isToEvent_;
 }
 
 SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeInfo& info)
@@ -933,37 +998,42 @@ static std::array commonEventSubscriberFunctions = {
         reinterpret_cast<void *>(OHOS::EventManagerFwkAni::transferToStaticSubscriber)},
 };
 
+static std::array commonEventManagerMethods = {
+    ani_native_function { "publishExecute", "Lstd/core/String;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
+    ani_native_function { "publishWithOptionsExecute",
+        "Lstd/core/String;LcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
+    ani_native_function { "publishAsUserExecute", "Lstd/core/String;I:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserExecute) },
+    ani_native_function { "publishAsUserWithOptionsExecute",
+        "Lstd/core/String;ILcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserWithOptionsExecute) },
+    ani_native_function { "createSubscriberExecute",
+        "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfo;:LcommonEvent/commonEventSubscriber/"
+        "CommonEventSubscriber;",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
+    ani_native_function {
+        "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
+    ani_native_function {
+        "subscribeToEventExecute",
+        nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeToEventExecute) },
+    ani_native_function { "unsubscribeExecute", "LcommonEvent/commonEventSubscriber/CommonEventSubscriber;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::unsubscribeExecute) },
+    ani_native_function { "removeStickyCommonEventExecute", "Lstd/core/String;:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::removeStickyCommonEventExecute) },
+    ani_native_function { "setStaticSubscriberStateExecute", "Z:I",
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateExecute) },
+    ani_native_function { "setStaticSubscriberStateWithEventsExecute", nullptr,
+        reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateWithEventsExecute) },
+};
+
+
 ani_status init(ani_env *env, ani_namespace kitNs)
 {
     ani_status status = ANI_ERROR;
-    std::array methods = {
-        ani_native_function { "publishExecute", "Lstd/core/String;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishExecute) },
-        ani_native_function { "publishWithOptionsExecute",
-            "Lstd/core/String;LcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishWithOptionsExecute) },
-        ani_native_function { "publishAsUserExecute", "Lstd/core/String;I:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserExecute) },
-        ani_native_function { "publishAsUserWithOptionsExecute",
-            "Lstd/core/String;ILcommonEvent/commonEventPublishData/CommonEventPublishData;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserWithOptionsExecute) },
-        ani_native_function { "createSubscriberExecute",
-            "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfo;:LcommonEvent/commonEventSubscriber/"
-            "CommonEventSubscriber;",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
-        ani_native_function {
-            "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
-        ani_native_function { "unsubscribeExecute", "LcommonEvent/commonEventSubscriber/CommonEventSubscriber;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::unsubscribeExecute) },
-        ani_native_function { "removeStickyCommonEventExecute", "Lstd/core/String;:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::removeStickyCommonEventExecute) },
-        ani_native_function { "setStaticSubscriberStateExecute", "Z:I",
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateExecute) },
-        ani_native_function { "setStaticSubscriberStateWithEventsExecute", nullptr,
-            reinterpret_cast<void*>(OHOS::EventManagerFwkAni::setStaticSubscriberStateWithEventsExecute) },
-    };
-
-    status = env->Namespace_BindNativeFunctions(kitNs, methods.data(), methods.size());
+    status =
+        env->Namespace_BindNativeFunctions(kitNs, commonEventManagerMethods.data(), commonEventManagerMethods.size());
     if (status != ANI_OK) {
         EVENT_LOGE("Cannot bind native methods to L@ohos/event/common_event_manager/commonEventManager");
         return ANI_INVALID_TYPE;

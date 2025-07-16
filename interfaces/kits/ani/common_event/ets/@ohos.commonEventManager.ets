@@ -14,7 +14,7 @@
  */
 
 import hilog from '@ohos.hilog';
-import{ AsyncCallback, BusinessError } from '@ohos.base';
+import{ AsyncCallback, Callback, BusinessError } from '@ohos.base';
 import{ CommonEventPublishData } from 'commonEvent.commonEventPublishData';
 import{ CommonEventData } from 'commonEvent.commonEventData';
 import{ CommonEventSubscribeInfo } from 'commonEvent.commonEventSubscribeInfo';
@@ -37,6 +37,8 @@ namespace commonEventManager {
     export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
     export native function subscribeExecute(subscriber: CommonEventSubscriber,
         callback: AsyncCallback<CommonEventData, void>):int;
+    export native function subscribeToEventExecute(subscriber: CommonEventSubscriber,
+        callback: Callback<CommonEventData>):int;
     export native function unsubscribeExecute(subscriber: CommonEventSubscriber):int;
     export native function removeStickyCommonEventExecute(event: string):int;
     export native function setStaticSubscriberStateExecute(enable: boolean):int;
@@ -168,6 +170,27 @@ namespace commonEventManager {
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
         });
+    }
+
+    export function subscribeToEvent(subscriber: CommonEventSubscriber, callback: Callback<CommonEventData>): Promise<void> {
+        hilog.info(0x0000, TAG, 'subscribeToEvent call.');
+        let p = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
+            let task = taskpool.execute(commonEventManager.subscribeToEventExecute, subscriber, callback);
+            task.then((e: NullishType)=> {
+                let resultCode: Int  = e as Int;
+                hilog.info(0x0000, TAG, 'subscribeToEvent result: %{public}d.', resultCode.toInt());
+                if (resultCode != 0) {
+                    let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    reject(r);
+                } else {
+                    resolve(undefined);
+                }
+            }, (err: Error): void => {
+                hilog.error(0x0000, TAG, 'subscribeToEvent error');
+                reject(err);
+            });
+        });
+        return p;
     }
 
     export function unsubscribe(subscriber: CommonEventSubscriber, callback?: AsyncCallback<void, void>): void {

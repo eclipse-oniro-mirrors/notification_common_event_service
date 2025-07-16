@@ -39,13 +39,17 @@ public:
     ani_vm* GetVm();
     void SetCallback(const ani_object& callback);
     ani_object GetCallback();
+    void SetIsToEvent(bool isToEvent);
+    bool GetIsToEvent();
     void ClearEnv();
 
 private:
     ffrt::mutex envMutex_;
     ffrt::mutex callbackMutex_;
+    ffrt::mutex isToEventMutex_;
     ani_env* env_ = nullptr;
     ani_object callback_ = nullptr;
+    bool isToEvent_ = false;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
     ani_vm* etsVm_ = nullptr;
