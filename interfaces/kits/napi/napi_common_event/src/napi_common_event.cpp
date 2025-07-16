@@ -20,6 +20,7 @@
 #include <uv.h>
 
 #include "ces_inner_error_code.h"
+#include "common_event_manager.h"
 #include "event_log_wrapper.h"
 #include "napi_common.h"
 #include "node_api.h"
@@ -241,6 +242,46 @@ napi_ref SubscriberInstance::GetCallbackRef()
     return ref_;
 }
 
+void SubscriberInstance::SetAniAsyncResultCloneCallback(AniAsyncResultCloneCallback callback)
+{
+    asyncResultCloneCallback_ = callback;
+}
+
+AniAsyncResultCloneCallback SubscriberInstance::GetAniAsyncResultCloneCallback()
+{
+    return asyncResultCloneCallback_;
+}
+
+void SubscriberInstance::SetAniUnsubscribeCallback(AniSubscriberCallback callback)
+{
+    unsubscribeCallback_ = callback;
+}
+
+AniSubscriberCallback SubscriberInstance::GetAniUnsubscribeCallback()
+{
+    return unsubscribeCallback_;
+}
+
+void SubscriberInstance::SetAniGcCallback(AniSubscriberCallback callback)
+{
+    gcCallback_ = callback;
+}
+
+AniSubscriberCallback SubscriberInstance::GetAniGcCallback()
+{
+    return gcCallback_;
+}
+
+void SubscriberInstance::SetAniSubscribeCallback(AniSubscriberCallback callback)
+{
+    subscribeCallback_ = callback;
+}
+
+AniSubscriberCallback SubscriberInstance::GetAniSubscribeCallback()
+{
+    return subscribeCallback_;
+}
+
 void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
 {
     tsfn_ = tsfn;
@@ -254,7 +295,11 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData &data)
         std::lock_guard<std::mutex> lock(subscriberInsMutex);
         for (auto subscriberInstance : subscriberInstances) {
             if (subscriberInstance.first.get() == this) {
-                subscriberInstances[subscriberInstance.first].commonEventResult = GoAsyncCommonEvent();
+                auto result = GoAsyncCommonEvent();
+                subscriberInstances[subscriberInstance.first].commonEventResult = result;
+                if (asyncResultCloneCallback_ != nullptr) {
+                    (*asyncResultCloneCallback_)(subscriberInstance.first, result);
+                }
                 break;
             }
         }
@@ -499,6 +544,12 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             EVENT_LOGD("Subscribe napi_create_async_work excute");
             AsyncCallbackInfoSubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoSubscribe *>(data);
             if (asyncCallbackInfo) {
+                auto aniSubscribeCallback = asyncCallbackInfo->subscriber->GetAniSubscribeCallback();
+                if (aniSubscribeCallback != nullptr) {
+                    asyncCallbackInfo->errorCode = (*aniSubscribeCallback)(asyncCallbackInfo->subscriber);
+                    return;
+                }
+                EVENT_LOGI("no transfer subscribe 1.1 subscriber");
                 asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(
                     asyncCallbackInfo->subscriber);
             }
@@ -718,6 +769,17 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
         subscriberInstances.erase(subscribe);
     }
 }
+int32_t UnsubscribeAndRemoveInstance(const napi_env &env, std::shared_ptr<SubscriberInstance> &subscriber)
+{
+    EVENT_LOGD("unsubscribe 1.1 subscriber");
+    auto result = CommonEventManager::NewUnSubscribeCommonEvent(subscriber);
+    if (result != ERR_OK) {
+        EVENT_LOGE("unsubscribe failed result: %{public}d.", result);
+        return result;
+    }
+    NapiDeleteSubscribe(env, subscriber);
+    return result;
+}
 
 napi_value Unsubscribe(napi_env env, napi_callback_info info)
 {
@@ -769,6 +831,12 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
             EVENT_LOGD("Unsubscribe napi_create_async_work start");
             AsyncCallbackInfoUnsubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoUnsubscribe *>(data);
             if (asyncCallbackInfo) {
+                auto aniUnsubscribeCallback = asyncCallbackInfo->subscriber->GetAniUnsubscribeCallback();
+                if (aniUnsubscribeCallback != nullptr) {
+                    asyncCallbackInfo->errorCode = (*aniUnsubscribeCallback)(asyncCallbackInfo->subscriber);
+                    return;
+                }
+                EVENT_LOGI("no transfer unsubscribe 1.1 subscriber");
                 asyncCallbackInfo->errorCode = CommonEventManager::NewUnSubscribeCommonEvent(
                     asyncCallbackInfo->subscriber);
             }
@@ -874,7 +942,12 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
             EVENT_LOGD("Constructor destroy");
             auto subscriber = GetSubscriberByWrapper(wrapper);
             if (subscriber != nullptr) {
-                CommonEventManager::UnSubscribeCommonEvent(subscriber);
+                auto gcCallback = subscriber->GetAniGcCallback();
+                if (gcCallback != nullptr) {
+                    (*gcCallback)(subscriber);
+                } else {
+                    CommonEventManager::UnSubscribeCommonEvent(subscriber);
+                }
                 NapiDeleteSubscribe(env, subscriber);
             }
             delete wrapper;
@@ -887,16 +960,41 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
     return thisVar;
 }
 
-void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscribeInfo, napi_value &result)
+napi_value TransferedCommonEventSubscriberConstructor(napi_env env, const CommonEventSubscribeInfo &info)
 {
-    EVENT_LOGD("SetNapiResult start");
+    napi_value subscribeInfoValue = nullptr;
+    napi_create_object(env, &subscribeInfoValue);
+    SetNapiResult(env, info, subscribeInfoValue);
+    napi_value constructor = nullptr;
+    napi_get_reference_value(env, g_CommonEventSubscriber, &constructor);
+    napi_value thisVar = nullptr;
+    napi_new_instance(env, constructor, 1, &subscribeInfoValue, &thisVar);
+    return thisVar;
+}
 
-    SetEventsResult(env, subscribeInfo.GetMatchingSkills().GetEvents(), result);
-    SetPublisherPermissionResult(env, subscribeInfo.GetPermission(), result);
-    SetPublisherDeviceIdResult(env, subscribeInfo.GetDeviceId(), result);
-    SetPublisherUserIdResult(env, subscribeInfo.GetUserId(), result);
-    SetPublisherPriorityResult(env, subscribeInfo.GetPriority(), result);
-    SetPublisherBundleNameResult(env, subscribeInfo.GetPublisherBundleName(), result);
+std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(const std::shared_ptr<SubscriberInstance> &subscriber)
+{
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (auto subscriberInstance : subscriberInstances) {
+        if (subscriberInstance.first.get() == subscriber.get()) {
+            return subscriberInstance.second.commonEventResult;
+        }
+    }
+    return nullptr;
+}
+
+void SetAsyncCommonEventResult(const std::shared_ptr<SubscriberInstance> &subscriber,
+    std::shared_ptr<AsyncCommonEventResult> asyncCommonEventResult)
+{
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    for (const auto &subscriberInstance : subscriberInstances) {
+        if (subscriberInstance.first.get() == subscriber.get()) {
+            subscriberInstances[subscriberInstance.first].commonEventResult = asyncCommonEventResult;
+            return;
+        }
+    }
+    subscriberInstances[subscriber].commonEventResult = asyncCommonEventResult;
+    return;
 }
 
 napi_value GetSubscribeInfoSync(napi_env env, napi_callback_info info)
@@ -922,7 +1020,7 @@ napi_value GetSubscribeInfoSync(napi_env env, napi_callback_info info)
 
 napi_value IsOrderedCommonEventSync(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGD("isOrderedCommonEventSync start");
+    EVENT_LOGI("isOrderedCommonEventSync start");
 
     size_t argc = 0;
     napi_value thisVar = nullptr;
@@ -950,7 +1048,7 @@ napi_value IsOrderedCommonEventSync(napi_env env, napi_callback_info info)
 
 napi_value GetCodeSync(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGD("getCodeSync start");
+    EVENT_LOGI("getCodeSync start");
     size_t argc = 1;
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));

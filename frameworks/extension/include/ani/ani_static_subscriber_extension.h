@@ -72,7 +72,6 @@ private:
     void BindContext(ani_env *env, const std::shared_ptr<OHOSApplication> &application);
     ani_object CreateSTSContext(ani_env *env, std::shared_ptr<StaticSubscriberExtensionContext> context,
         const std::shared_ptr<OHOSApplication> &application);
-    std::map<uint64_t, std::shared_ptr<STSNativeReferenceWrapper>> contentSessions_;
     AbilityRuntime::STSRuntime& stsRuntime_;
     std::unique_ptr<STSNativeReference> stsObj_;
 };
