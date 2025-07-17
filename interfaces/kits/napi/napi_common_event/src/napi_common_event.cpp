@@ -1124,7 +1124,6 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(const std::sha
 void SetAsyncCommonEventResult(const std::shared_ptr<SubscriberInstance> &subscriber,
     std::shared_ptr<AsyncCommonEventResult> asyncCommonEventResult)
 {
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
     for (const auto &subscriberInstance : subscriberInstances) {
         if (subscriberInstance.first.get() == subscriber.get()) {
             subscriberInstances[subscriberInstance.first].commonEventResult = asyncCommonEventResult;
@@ -1132,6 +1131,14 @@ void SetAsyncCommonEventResult(const std::shared_ptr<SubscriberInstance> &subscr
         }
     }
     subscriberInstances[subscriber].commonEventResult = asyncCommonEventResult;
+    return;
+}
+
+void SetAsyncCommonEventResultWithLocked(const std::shared_ptr<SubscriberInstance> &subscriber,
+    std::shared_ptr<AsyncCommonEventResult> asyncCommonEventResult)
+{
+    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    SetAsyncCommonEventResult(subscriber, asyncCommonEventResult);
     return;
 }
 
