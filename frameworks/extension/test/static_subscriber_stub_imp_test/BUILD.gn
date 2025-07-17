@@ -46,6 +46,7 @@ ohos_unittest("static_subscriber_stub_imp_test") {
     "googletest:gtest_main",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "ipc:ipc_napi",
     "napi:ace_napi",
   ]
 }
