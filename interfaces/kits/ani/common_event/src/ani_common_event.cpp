@@ -28,26 +28,24 @@ static ffrt::mutex subscriberInsMutex;
 
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
-    EVENT_LOGI("publishExecute call.");
     std::string eventIdStr;
     AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
-    EVENT_LOGI("publishExecute eventIdStr: %{public}s.", eventIdStr.c_str());
+    EVENT_LOGD("publishExecute eventIdStr: %{public}s.", eventIdStr.c_str());
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
     Want want;
     want.SetAction(eventIdStr);
     commonEventData.SetWant(want);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
-    EVENT_LOGI("publishExecute result: %{public}d.", errorCode);
+    EVENT_LOGD("publishExecute result: %{public}d.", errorCode);
     return errorCode;
 }
 
 static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_object optionsObject)
 {
-    EVENT_LOGI("publishWithOptionsExecute call.");
     std::string eventIdStr;
     AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
-    EVENT_LOGI("publishWithOptionsExecute eventIdStr: %{public}s.", eventIdStr.c_str());
+    EVENT_LOGD("publishWithOptionsExecute eventIdStr: %{public}s.", eventIdStr.c_str());
 
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
@@ -58,13 +56,12 @@ static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_
     AniCommonEventUtils::ConvertCommonEventPublishData(
         env, optionsObject, want, commonEventData, commonEventPublishInfo);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
-    EVENT_LOGI("publishWithOptionsExecute result: %{public}d.", errorCode);
+    EVENT_LOGD("publishWithOptionsExecute result: %{public}d.", errorCode);
     return errorCode;
 }
 
 static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
-    EVENT_LOGI("createSubscriberExecute call.");
     CommonEventSubscribeInfo subscribeInfo;
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     auto ret = ANI_OK;
@@ -116,13 +113,11 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
         delete wrapper;
         return nullptr;
     }
-    EVENT_LOGI("createSubscriberExecute end.");
     return resultRef;
 }
 
 static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object callback)
 {
-    EVENT_LOGI("subscribeExecute call.");
     auto ret = ANI_OK;
 
     ani_long wrapper_long {};
@@ -166,13 +161,12 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     subscriberInstance->SetVm(etsVm);
     auto result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
 
-    EVENT_LOGI("subscribeExecute result: %{public}d.", result);
+    EVENT_LOGD("subscribeExecute result: %{public}d.", result);
     return result;
 }
 
 static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
 {
-    EVENT_LOGI("unsubscribeExecute call.");
     auto ret = ANI_OK;
 
     ani_long wrapper_long {};
@@ -196,7 +190,7 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
         return ANI_INVALID_ARGS;
     }
     auto result = CommonEventManager::NewUnSubscribeCommonEvent(subscriberInstance);
-    EVENT_LOGI("unsubscribeExecute result: %{public}d.", result);
+    EVENT_LOGD("unsubscribeExecute result: %{public}d.", result);
     return result;
 }
 
@@ -217,18 +211,18 @@ std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWra
 
 SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo& sp) : CommonEventSubscriber(sp)
 {
-    EVENT_LOGI("create SubscriberInstance");
+    EVENT_LOGD("create SubscriberInstance");
     id_ = ++subscriberID_;
 }
 
 SubscriberInstance::~SubscriberInstance()
 {
-    EVENT_LOGI("destroy SubscriberInstance");
+    EVENT_LOGD("destroy SubscriberInstance");
 }
 
 void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
 {
-    EVENT_LOGI("OnReceiveEvent execute action = %{public}s", data.GetWant().GetAction().c_str());
+    EVENT_LOGD("execute action = %{public}s", data.GetWant().GetAction().c_str());
     if (this->IsOrderedCommonEvent()) {
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         for (auto subscriberInstance : subscriberInstances) {
@@ -262,7 +256,6 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
         return;
     }
 
-    EVENT_LOGI("FunctionalObject_Call.");
     std::vector<ani_ref> args = { nullObject, reinterpret_cast<ani_ref>(ani_data) };
     ani_ref result;
     aniResult = etsEnv->FunctionalObject_Call(fnObject, args.size(), args.data(), &result);
