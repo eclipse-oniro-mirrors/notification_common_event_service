@@ -102,7 +102,6 @@ ohos_shared_library("static_subscriber_extension") {
     "ability_base:want",
     "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
-    "ability_runtime:ani_common",
     "ability_runtime:app_context",
     "ability_runtime:extensionkit_native",
     "ability_runtime:napi_common",

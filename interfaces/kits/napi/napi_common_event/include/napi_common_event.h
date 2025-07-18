@@ -490,6 +490,8 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(
     const std::shared_ptr<SubscriberInstance> &subscriber);
 void SetAsyncCommonEventResult(const std::shared_ptr<SubscriberInstance> &subscriber,
     std::shared_ptr<AsyncCommonEventResult> asyncCommonEventResult);
+void SetAsyncCommonEventResultWithLocked(const std::shared_ptr<SubscriberInstance> &subscriber,
+    std::shared_ptr<AsyncCommonEventResult> asyncCommonEventResult);
 
 napi_value CommonEventSubscriberInit(napi_env env, napi_value exports);
 

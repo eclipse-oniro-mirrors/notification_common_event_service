@@ -93,8 +93,7 @@ void AniCommonEventUtils::CreateAniDoubleObject(ani_env* env, ani_object &object
 void AniCommonEventUtils::ConvertCommonEventDataToEts(
     ani_env* env, ani_object& ani_data, const CommonEventData& commonEventData)
 {
-    EVENT_LOGI("ConvertCommonEventDataToEts called");
-
+    EVENT_LOGD("called");
     ani_class cls = nullptr;
     CreateNewObjectByClass(env, "LcommonEvent/commonEventData/CommonEventDataImpl;", cls, ani_data);
     if ((ani_data == nullptr) || (cls == nullptr)) {
