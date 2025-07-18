@@ -346,7 +346,7 @@ void AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(
 {
     ani_class cls = nullptr;
     ani_status status = ANI_ERROR;
-    CreateNewObjectByClass(env, "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfoImpl;", cls, infoObject);
+    CreateNewObjectByClass(env, "commonEvent.commonEventSubscribeInfo.CommonEventSubscribeInfoImpl", cls, infoObject);
     if ((infoObject == nullptr) || (cls == nullptr)) {
         EVENT_LOGE("CommonEventSubscribeInfoToAni infoObject or cls is null.");
         return;
@@ -408,7 +408,7 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
             EVENT_LOGE("String_NewUTF8 faild");
             return nullptr;
         }
-        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "ILstd/core/Object;:V", i, aniStr);
+        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "iC{std.core.Object}:", i, aniStr);
         if (status != ANI_OK) {
             EVENT_LOGE("Object_CallMethodByName_Void failed %{public}d", status);
             return nullptr;
@@ -426,12 +426,12 @@ ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
         return nullptr;
     }
     ani_class arrayCls = nullptr;
-    if (ANI_OK != env->FindClass("Lescompat/Array;", &arrayCls)) {
+    if (ANI_OK != env->FindClass("escompat.Array", &arrayCls)) {
         EVENT_LOGE("FindClass Lescompat/Array; Failed");
         return nullptr;
     }
     ani_method arrayCtor;
-    if (ANI_OK != env->Class_FindMethod(arrayCls, "<ctor>", "I:V", &arrayCtor)) {
+    if (ANI_OK != env->Class_FindMethod(arrayCls, "<ctor>", "i:", &arrayCtor)) {
         EVENT_LOGE("Class_FindMethod <ctor> Failed");
         return nullptr;
     }
@@ -458,7 +458,7 @@ void AniCommonEventUtils::CreateNewObjectByClass(
         EVENT_LOGE("CreateNewObjectByClass cls is null.");
         return;
     }
-    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateNewObjectByClass Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -481,7 +481,7 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
         return;
     }
 
-    aniResult = env->FindClass("L@ohos/base/BusinessError;", &cls);
+    aniResult = env->FindClass("@ohos.base.BusinessError", &cls);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateBusinessErrorObject findClass error. result: %{public}d.", aniResult);
         return;
@@ -490,7 +490,7 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
         EVENT_LOGE("CreateBusinessErrorObject cls is null.");
         return;
     }
-    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateBusinessErrorObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -550,7 +550,7 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     ani_env* env, ani_object& ani_data, const CommonEventData& commonEventData)
 {
     ani_class cls = nullptr;
-    CreateNewObjectByClass(env, "LcommonEvent/commonEventData/CommonEventDataImpl;", cls, ani_data);
+    CreateNewObjectByClass(env, "commonEvent.commonEventData.CommonEventDataImpl", cls, ani_data);
     if ((ani_data == nullptr) || (cls == nullptr)) {
         EVENT_LOGE("ConvertCommonEventDataToEts ani_data or cls is null.");
         return;

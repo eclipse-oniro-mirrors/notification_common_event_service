@@ -38,7 +38,7 @@ void AniCommonEventUtils::CreateNewObjectByClass(
         EVENT_LOGE("CreateNewObjectByClass cls is null.");
         return;
     }
-    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateNewObjectByClass Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -95,7 +95,7 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
 {
     EVENT_LOGD("called");
     ani_class cls = nullptr;
-    CreateNewObjectByClass(env, "LcommonEvent/commonEventData/CommonEventDataImpl;", cls, ani_data);
+    CreateNewObjectByClass(env, "commonEvent.commonEventData.CommonEventDataImpl", cls, ani_data);
     if ((ani_data == nullptr) || (cls == nullptr)) {
         EVENT_LOGE("ConvertCommonEventDataToEts ani_data or cls is null.");
         return;

@@ -30,7 +30,7 @@ using namespace OHOS::EventFwk;
 using namespace OHOS::AbilityRuntime;
 namespace {
 constexpr const char* STATIC_SUBSCRIBER_EXTENSION_CONTEXT_CLASS_NAME =
-    "L@ohos/application/StaticSubscriberExtensionContext/StaticSubscriberExtensionContext;";
+    "@ohos.application.StaticSubscriberExtensionContext.StaticSubscriberExtensionContext";
 }
 
 ani_object CreateStaticSubscriberExtensionContext(ani_env *env,

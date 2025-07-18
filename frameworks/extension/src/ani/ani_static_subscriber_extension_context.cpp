@@ -103,7 +103,7 @@ ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
         delete stsStaticSubscriberExtensionContext;
         return nullptr;
     }
-    if ((status = env->Class_FindMethod(cls, "<ctor>", "J:V", &method)) != ANI_OK) {
+    if ((status = env->Class_FindMethod(cls, "<ctor>", "l:", &method)) != ANI_OK) {
         EVENT_LOGE("find Method status: %{public}d", status);
         delete stsStaticSubscriberExtensionContext;
         return nullptr;
