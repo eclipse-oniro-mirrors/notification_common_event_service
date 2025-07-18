@@ -29,7 +29,7 @@ ShellCommand::ShellCommand(int argc, char *argv[], std::string name)
     argv_ = argv;
     name_ = name;
 
-    if (argc < MIN_ARGUMENT_NUMBER) {
+    if (argc < MIN_ARGUMENT_NUMBER || argv == nullptr) {
         cmd_ = "help";
         return;
     }

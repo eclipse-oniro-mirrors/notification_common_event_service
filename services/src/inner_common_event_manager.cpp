@@ -117,20 +117,19 @@ bool InnerCommonEventManager::GetJsonByFilePath(const char *filePath, std::vecto
 #ifdef CONFIG_POLICY_ENABLE
     CfgFiles *cfgFiles = GetCfgFiles(filePath);
     if (cfgFiles == nullptr) {
-        EVENT_LOGE("Not found filePath:%{public}s.", filePath);
+        EVENT_LOGE("Not found file");
         return false;
     }
 
     for (int32_t i = 0; i <= MAX_CFG_POLICY_DIRS_CNT - 1; i++) {
         if (cfgFiles->paths[i] && *(cfgFiles->paths[i]) != '\0' && GetJsonFromFile(cfgFiles->paths[i], localRoot)) {
-            EVENT_LOGD("Config file path:%{public}s.", cfgFiles->paths[i]);
             roots.push_back(localRoot);
             ret = true;
         }
     }
     FreeCfgFiles(cfgFiles);
 #else
-    EVENT_LOGD("Use default config file path:%{public}s.", filePath);
+    EVENT_LOGD("Use default config file");
     ret = GetJsonFromFile(filePath, localRoot);
     if (ret) {
         roots.push_back(localRoot);
