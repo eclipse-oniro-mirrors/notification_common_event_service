@@ -425,7 +425,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
         return;
     }
     std::vector<ani_ref> args;
-    if (GetIsToEvent()) {
+    if (!GetIsToEvent()) {
         args.push_back(nullObject);
     }
     args.push_back(reinterpret_cast<ani_ref>(ani_data));

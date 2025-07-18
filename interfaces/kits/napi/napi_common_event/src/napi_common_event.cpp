@@ -542,10 +542,10 @@ void AsyncExecuteCallbackSubscribe(napi_env env, void *data)
     if (asyncCallbackInfo) {
         auto aniSubscribeCallback = asyncCallbackInfo->subscriber->GetAniSubscribeCallback();
         if (aniSubscribeCallback != nullptr) {
+            EVENT_LOGD("subscribe transferred subscriber");
             asyncCallbackInfo->errorCode = (*aniSubscribeCallback)(asyncCallbackInfo->subscriber);
             return;
         }
-        EVENT_LOGI("no transfer subscribe 1.1 subscriber");
         asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(
             asyncCallbackInfo->subscriber);
     }
@@ -965,10 +965,10 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo) {
                 auto aniUnsubscribeCallback = asyncCallbackInfo->subscriber->GetAniUnsubscribeCallback();
                 if (aniUnsubscribeCallback != nullptr) {
+                    EVENT_LOGD("unsubscribe transferred subscriber");
                     asyncCallbackInfo->errorCode = (*aniUnsubscribeCallback)(asyncCallbackInfo->subscriber);
                     return;
                 }
-                EVENT_LOGI("no transfer unsubscribe 1.1 subscriber");
                 asyncCallbackInfo->errorCode = CommonEventManager::NewUnSubscribeCommonEvent(
                     asyncCallbackInfo->subscriber);
             }
@@ -1165,7 +1165,7 @@ napi_value GetSubscribeInfoSync(napi_env env, napi_callback_info info)
 
 napi_value IsOrderedCommonEventSync(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGI("isOrderedCommonEventSync start");
+    EVENT_LOGD("isOrderedCommonEventSync start");
 
     size_t argc = 0;
     napi_value thisVar = nullptr;
@@ -1193,7 +1193,7 @@ napi_value IsOrderedCommonEventSync(napi_env env, napi_callback_info info)
 
 napi_value GetCodeSync(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGI("getCodeSync start");
+    EVENT_LOGD("getCodeSync start");
     size_t argc = 1;
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, nullptr, &thisVar, NULL));
