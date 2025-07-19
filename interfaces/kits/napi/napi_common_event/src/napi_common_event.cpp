@@ -84,7 +84,7 @@ SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeI
         return;
     }
 
-    EVENT_LOGI("Constructor objectInfo");
+    EVENT_LOGI("New subscriber");
     subscriber = std::shared_ptr<SubscriberInstance>(objectInfo);
 }
 

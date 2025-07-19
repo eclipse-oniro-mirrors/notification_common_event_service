@@ -97,7 +97,7 @@ bool StaticSubscriberManager::InitValidSubscribers()
         validSubscribers_.clear();
     }
     if (!InitAllowList()) {
-        EVENT_LOGE_LIMIT("Failed to init allowCommonEvent list");
+        EVENT_LOGE("Failed to init AllowList");
         return false;
     }
     std::set<std::string> bundleList;
@@ -217,12 +217,12 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             bootStartHaps.push_back(subscriber);
         } else {
             PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
-            EVENT_LOGI("ConnectAbility %{public}s end, StaticSubscriber = %{public}s",
+            EVENT_LOGI("ConnectAbility %{public}s end, Subscriber = %{public}s",
                 data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
         }
 #else
         PublishCommonEventConnecAbility(data, service, subscriber.userId, subscriber.bundleName, subscriber.name);
-        EVENT_LOGI("ConnectAbility %{public}s end, StaticSubscriber = %{public}s", data.GetWant().GetAction().c_str(),
+        EVENT_LOGI("ConnectAbility %{public}s end, Subscriber = %{public}s", data.GetWant().GetAction().c_str(),
                    subscriber.bundleName.c_str());
 #endif
     }
@@ -237,7 +237,7 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             for (auto subscriber : bootStartHaps) {
                 StaticSubscriberManager::GetInstance()->PublishCommonEventConnecAbility(data, service,
                     subscriber.userId, subscriber.bundleName, subscriber.name);
-                EVENT_LOGI("ConnectAbility %{public}s end,send StaticSubscriber = %{public}s",
+                EVENT_LOGI("ConnectAbility %{public}s end, Subscriber = %{public}s",
                     data.GetWant().GetAction().c_str(), subscriber.bundleName.c_str());
             }
         };
@@ -317,7 +317,7 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
         data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
         data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_FOREGROUND) &&
         !InitValidSubscribers()) {
-        EVENT_LOGE("Failed to init subscribers map");
+        EVENT_LOGE("Failed to init subscribers");
         return;
     }
 
@@ -537,7 +537,7 @@ void StaticSubscriberManager::UpdateSubscriber(const CommonEventData &data)
         return;
     }
     if (find(osAccountIds.begin(), osAccountIds.end(), userId) == osAccountIds.end()) {
-        EVENT_LOGW("userId is not active, no need to update.");
+        EVENT_LOGW_LIMIT("userId is not active, no need to update.");
         return;
     }
     EVENT_LOGD("active uid = %{public}d, userId = %{public}d", uid, userId);

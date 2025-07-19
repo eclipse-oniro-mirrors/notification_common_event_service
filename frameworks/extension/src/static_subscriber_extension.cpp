@@ -29,7 +29,7 @@ StaticSubscriberExtension* StaticSubscriberExtension::Create(const std::unique_p
         return new (std::nothrow) StaticSubscriberExtension();
     }
 
-    EVENT_LOGI("Create runtime");
+    EVENT_LOGD("Create runtime");
     switch (runtime->GetLanguage()) {
         case AbilityRuntime::Runtime::Language::JS:
             return JsStaticSubscriberExtension::Create(runtime);
@@ -43,7 +43,7 @@ void StaticSubscriberExtension::Init(const std::shared_ptr<AbilityLocalRecord>& 
     std::shared_ptr<AbilityHandler>& handler,
     const sptr<IRemoteObject>& token)
 {
-    EVENT_LOGI("Init");
+    EVENT_LOGD("Init");
     ExtensionBase<StaticSubscriberExtensionContext>::Init(record, application, handler, token);
 }
 

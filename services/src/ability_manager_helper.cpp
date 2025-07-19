@@ -39,8 +39,7 @@ int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGI("enter, target bundle = %{public}s", want.GetBundle().c_str());
-
+    EVENT_LOGD("enter, target bundle = %{public}s", want.GetBundle().c_str());
     int result = -1;
     ffrt::task_handle handle = ffrt_->submit_h([&]() {
         std::string connectionKey =
@@ -53,7 +52,7 @@ int AbilityManagerHelper::ConnectAbility(
         auto it = subscriberConnection_.find(connectionKey);
         if (it != subscriberConnection_.end()) {
             it->second->NotifyEvent(event);
-            EVENT_LOGI("Static cache sends events!");
+            EVENT_LOGD("Static cache sends events!");
             result = ERR_OK;
             return;
         }
@@ -66,14 +65,15 @@ int AbilityManagerHelper::ConnectAbility(
             return;
         }
         result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
-        if (result == ERR_OK) {
-            subscriberConnection_[connectionKey] = connection;
-            DisconnectServiceAbilityDelay(connection, "");
+        if (result != ERR_OK) {
+            EVENT_LOGE("Connect failed, result=%{public}d", result);
+            return;
         }
-        EVENT_LOGI("connection sends events!");
+        subscriberConnection_[connectionKey] = connection;
+        DisconnectServiceAbilityDelay(connection, "");
+        EVENT_LOGD("Connect success");
     });
     ffrt_->wait(handle);
-    EVENT_LOGI("result = %{public}d", result);
     return result;
 }
 
@@ -128,7 +128,7 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(
 {
     EVENT_LOGD("enter");
     if (connection == nullptr) {
-        EVENT_LOGE("connection is nullptr");
+        EVENT_LOGW("connection is nullptr");
         return;
     }
     std::function<void()> task = [connection, action, this]() {
@@ -142,26 +142,26 @@ void AbilityManagerHelper::DisconnectAbility(
 {
     EVENT_LOGD("enter");
     if (connection == nullptr) {
-        EVENT_LOGE("connection is nullptr");
+        EVENT_LOGW("connection is nullptr");
         return;
     }
 
     auto it = std::find_if(subscriberConnection_.begin(), subscriberConnection_.end(),
         [&connection](const auto &pair) { return pair.second == connection; });
     if (it == subscriberConnection_.end()) {
-        EVENT_LOGE("failed to find connection!");
+        EVENT_LOGW("failed to find connection!");
         return;
     }
     if (connection) {
         connection->RemoveEvent(action);
         if (!connection->IsEmptyAction()) {
-            EVENT_LOGW("Event within 15 seconds!");
+            EVENT_LOGD("Event within 15 seconds!");
             return;
         }
     }
     IN_PROCESS_CALL_WITHOUT_RET(abilityMgr_->DisconnectAbility(connection));
     subscriberConnection_.erase(it);
-    EVENT_LOGI("erase connection!");
+    EVENT_LOGD("erase connection!");
 }
 }  // namespace EventFwk
 }  // namespace OHOS

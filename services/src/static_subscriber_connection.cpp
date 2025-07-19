@@ -24,12 +24,11 @@ namespace EventFwk {
 void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
-    EVENT_LOGI_LIMIT("enter");
     std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
     sptr<StaticSubscriberConnection> sThis = this;
     auto proxy = sThis->GetProxy(remoteObject);
     std::string bundleName = element.GetURI();
-    EVENT_LOGD("OnAbilityConnectDone end, bundle = %{public}s", bundleName.c_str());
+    EVENT_LOGI("called, %{public}s", bundleName.c_str());
     for (auto &event : events_) {
         NotifyEvent(event);
     }
@@ -41,7 +40,7 @@ void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
     std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
     if (proxy_ == nullptr) {
         events_.push_back(event);
-        EVENT_LOGW("proxy_ is null, Cache events");
+        EVENT_LOGW_LIMIT("Cache events");
         return;
     }
     action_.push_back(event.GetWant().GetAction());
@@ -49,12 +48,12 @@ void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
     staticNotifyQueue_->submit([event, wThis]() {
         sptr<StaticSubscriberConnection> sThis = wThis.promote();
         if (!sThis) {
-            EVENT_LOGE("StaticSubscriberConnection expired, skip NotifyEvent");
+            EVENT_LOGE("Connection expired, skip Notify");
             return;
         }
         int32_t funcResult = -1;
         ErrCode ec = sThis->proxy_->OnReceiveEvent(event, funcResult);
-        EVENT_LOGI("Notify %{public}s to %{public}s end, code is %{public}d, action, connectionKey, errCode",
+        EVENT_LOGI("Notify %{public}s to %{public}s end, code %{public}d",
             event.GetWant().GetAction().c_str(), sThis->connectionKey_.c_str(), ec);
         AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(sThis, event.GetWant().GetAction());
     });
@@ -81,8 +80,6 @@ sptr<StaticSubscriberProxy> StaticSubscriberConnection::GetProxy(const sptr<IRem
 }
 
 void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
-{
-    EVENT_LOGI_LIMIT("enter");
-}
+{}
 }  // namespace EventFwk
 }  // namespace OHOS

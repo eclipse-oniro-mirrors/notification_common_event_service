@@ -24,6 +24,8 @@
 #include "refbase.h"
 #include "system_ability_definition.h"
 #include "ces_inner_error_code.h"
+
+#include <algorithm>
 #include <memory>
 #include <mutex>
 
@@ -266,7 +268,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
         }
         return ERR_NOTIFICATION_SEND_ERROR;
     } else {
-        EVENT_LOGW("No specified subscriber has been registered");
+        EVENT_LOGW("No subscription");
     }
 
     return ERR_OK;
@@ -305,7 +307,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
         }
         return ERR_NOTIFICATION_SEND_ERROR;
     } else {
-        EVENT_LOGW("No specified subscriber has been registered");
+        EVENT_LOGW("No subscription");
     }
     return ERR_OK;
 }
@@ -514,15 +516,11 @@ uint8_t CommonEvent::CreateCommonEventListener(
     auto eventListener = eventListeners_.find(subscriber);
     if (eventListener != eventListeners_.end()) {
         commonEventListener = eventListener->second->AsObject();
-        EVENT_LOGW("subscriber has common event listener");
+        EVENT_LOGW("Already subscribed");
         return ALREADY_SUBSCRIBED;
     } else {
         if (eventListeners_.size() == SUBSCRIBER_MAX_SIZE) {
-            EVENT_LOGE("the maximum number of subscriptions has been reached");
-            for (auto listenerItem : eventListeners_) {
-                std::string matchingSkills = listenerItem.first->GetSubscribeInfo().GetMatchingSkills().ToString();
-                EVENT_LOGE("Each subscription matchingSkills is %{public}s", matchingSkills.c_str());
-            }
+            LogCachedSubscriber();
             return SUBSCRIBE_EXCEED_LIMIT;
         }
 
@@ -536,6 +534,30 @@ uint8_t CommonEvent::CreateCommonEventListener(
     }
 
     return INITIAL_SUBSCRIPTION;
+}
+
+void CommonEvent::LogCachedSubscriber()
+{
+    std::map<std::string, int32_t> eventCounts;
+    for (auto listenerItem : eventListeners_) {
+        std::string matchingSkills = listenerItem.first->GetSubscribeInfo().GetMatchingSkills().ToString();
+        eventCounts[matchingSkills]++;
+    }
+    std::vector<std::pair<std::string, int32_t>> vec;
+    for (const auto &item : eventCounts) {
+        vec.push_back(item);
+    }
+    std::sort(vec.begin(), vec.end(), [](const std::pair<std::string, int32_t> &before,
+        const std::pair<std::string, int32_t> &after) {
+        return before.second > after.second;
+    });
+    std::string logString = "";
+    for (const auto &item : vec) {
+        if (item.second > 1) {
+            logString += item.first + ":"+ std::to_string(item.second);
+        }
+    }
+    EVENT_LOGE_LIMIT("The maximum number of subscriptions has been reached, %{public}s", logString.c_str());
 }
 
 bool CommonEvent::Reconnect()

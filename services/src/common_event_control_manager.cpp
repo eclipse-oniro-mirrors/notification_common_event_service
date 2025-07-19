@@ -167,11 +167,9 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         EVENT_LOGE("commonEventData == nullptr");
         return false;
     }
-    EVENT_LOGI("Send %{public}s to subscriber %{public}s (pid = %{public}d, uid = %{public}d) when unfreezed",
+    EVENT_LOGI("Send %{public}s to subscriber %{public}s when unfreezed",
         eventRecord.commonEventData->GetWant().GetAction().c_str(),
-        subscriberRecord.eventRecordInfo.bundleName.c_str(),
-        subscriberRecord.eventRecordInfo.pid,
-        subscriberRecord.eventRecordInfo.uid);
+        subscriberRecord.eventRecordInfo.subId.c_str());
     commonEventListenerProxy->NotifyEvent(*(eventRecord.commonEventData),
         false, eventRecord.publishInfo->IsSticky());
     AccessTokenHelper::RecordSensitivePermissionUsage(subscriberRecord.eventRecordInfo.callerToken,
@@ -635,10 +633,7 @@ void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
 
     if (sp->nextReceiver > 0) {
         std::shared_ptr<EventSubscriberRecord> subscriberRecord = sp->receivers[sp->nextReceiver - 1];
-        EVENT_LOGW("Timeout: When %{public}s (pid = %{public}d, uid = %{public}d) process common event %{public}s",
-            subscriberRecord->eventRecordInfo.bundleName.c_str(),
-            subscriberRecord->eventRecordInfo.pid,
-            subscriberRecord->eventRecordInfo.uid,
+        EVENT_LOGW("Timeout: When %{public}s process %{public}s", subscriberRecord->eventRecordInfo.subId.c_str(),
             sp->commonEventData->GetWant().GetAction().c_str());
         SendOrderedEventProcTimeoutHiSysEvent(subscriberRecord, sp->commonEventData->GetWant().GetAction());
 

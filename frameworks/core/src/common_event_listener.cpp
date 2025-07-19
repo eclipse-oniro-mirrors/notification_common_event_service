@@ -122,7 +122,6 @@ void CommonEventListener::InitListenerQueue()
 bool CommonEventListener::IsReady()
 {
     if (!listenerQueue_ && !handler_) {
-        EVENT_LOGE("ffrt queue is not ready");
         return false;
     }
     return true;

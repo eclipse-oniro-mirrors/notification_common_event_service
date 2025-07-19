@@ -251,8 +251,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         }
     }
     
-    EVENT_LOGI("%{public}s(pid=%{public}d, uid=%{public}d), publish=%{public}s to %{public}d",
-        bundleName.c_str(), pid, uid, data.GetWant().GetAction().c_str(), user);
+    EVENT_LOGI("pid=%{public}d publish %{public}s to %{public}d", pid, data.GetWant().GetAction().c_str(), user);
 
     if (staticSubscriberManager_ != nullptr) {
         staticSubscriberManager_->PublishCommonEvent(data, publishInfo, callerToken, user, service, bundleName);
