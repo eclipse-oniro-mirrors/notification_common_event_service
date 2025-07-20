@@ -15,7 +15,7 @@
 
 export interface CommonEventPublishData {
     bundleName?: string;
-    code?: number;
+    code?: int;
     data?: string;
     subscriberPermissions?: Array<string>;
     isOrdered?: boolean;

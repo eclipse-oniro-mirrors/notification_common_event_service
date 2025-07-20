@@ -82,9 +82,8 @@ namespace commonEventManager {
         });
     }
 
-    export function publishAsUser(event: string, userId: number, callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
-        let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, publishAsUserId);
+    export function publishAsUser(event: string, userId: int, callback: AsyncCallback<void, void>): void {
+        let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, userId);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {
@@ -100,10 +99,9 @@ namespace commonEventManager {
         });
     }
 
-    export function publishAsUser(event: string, userId: number, options: CommonEventPublishData,
+    export function publishAsUser(event: string, userId: int, options: CommonEventPublishData,
         callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
-        let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, publishAsUserId, options);
+        let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, userId, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {

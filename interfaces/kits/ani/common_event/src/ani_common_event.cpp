@@ -817,7 +817,7 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(std::shared_pt
     return nullptr;
 }
 
-static ani_double getCode(ani_env *env, ani_object object)
+static ani_int getCode(ani_env *env, ani_object object)
 {
     EVENT_LOGD("subscriberInstance getCode.");
     auto subscriberRes = GetAsyncCommonEventResult(env, object);
@@ -825,8 +825,7 @@ static ani_double getCode(ani_env *env, ani_object object)
     if (subscriberRes != nullptr) {
         code = subscriberRes->GetCode();
     }
-    ani_double returncode = static_cast<ani_double>(code);
-    return returncode;
+    return code;
 }
 
 static uint32_t setCode(ani_env *env, ani_object object, ani_int code)
