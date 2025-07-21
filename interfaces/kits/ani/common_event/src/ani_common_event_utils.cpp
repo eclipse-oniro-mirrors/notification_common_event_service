@@ -166,7 +166,7 @@ bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, cons
         return false;
     }
 
-    res = static_cast<int32_t>(result);
+    res = result;
     return true;
 }
 
@@ -256,7 +256,7 @@ void AniCommonEventUtils::ConvertCommonEventPublishData(ani_env* env, ani_object
 {
     // Get the code.
     int32_t code;
-    if (GetDoubleOrUndefined(env, optionsObject, "code", code)) {
+    if (GetIntOrUndefined(env, optionsObject, "code", code)) {
         commonEventData.SetCode(code);
     }
 
@@ -328,13 +328,13 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
 
     // Get the userId.
     int32_t userId;
-    if (GetDoubleOrUndefined(env, infoObject, "userId", userId)) {
+    if (GetIntOrUndefined(env, infoObject, "userId", userId)) {
         commonEventSubscribeInfo.SetUserId(userId);
     }
 
     // Get the priority.
     int32_t priority;
-    if (GetDoubleOrUndefined(env, infoObject, "priority", priority)) {
+    if (GetIntOrUndefined(env, infoObject, "priority", priority)) {
         commonEventSubscribeInfo.SetPriority(priority);
     }
 
@@ -379,14 +379,14 @@ void AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(
         subscriber->GetSubscribeInfo().GetPublisherBundleName().size(), &string);
     CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherBundleName), string);
 
-    // set userId [number]
+    // set userId [int]
     ani_object userIdObject;
-    CreateAniDoubleObject(env, userIdObject, static_cast<ani_double>(subscriber->GetSubscribeInfo().GetUserId()));
+    CreateAniIntObject(env, userIdObject, subscriber->GetSubscribeInfo().GetUserId());
     CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(userId), userIdObject);
 
-    // set priority [number]
+    // set priority [int]
     ani_object priorityObject;
-    CreateAniDoubleObject(env, priorityObject, static_cast<ani_double>(subscriber->GetSubscribeInfo().GetPriority()));
+    CreateAniIntObject(env, priorityObject, subscriber->GetSubscribeInfo().GetPriority());
     CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(priority), priorityObject);
 }
 
@@ -422,7 +422,7 @@ ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
 {
     EVENT_LOGD("newArrayClass call");
     if (env == nullptr || length < 0) {
-        EVENT_LOGE("CreateDouble fail, env is nullptr or length is less than zero");
+        EVENT_LOGE("newArrayClass fail, env is nullptr or length is less than zero");
         return nullptr;
     }
     ani_class arrayCls = nullptr;
@@ -524,24 +524,24 @@ void AniCommonEventUtils::CallSetter(
     return;
 }
 
-void AniCommonEventUtils::CreateAniDoubleObject(ani_env* env, ani_object &object, ani_double value)
+void AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, ani_int value)
 {
     ani_status aniResult = ANI_ERROR;
-    ani_class clsDouble = nullptr;
+    ani_class clsInt = nullptr;
     ani_method ctor;
-    aniResult = env->FindClass("Lstd/core/Double;", &clsDouble);
+    aniResult = env->FindClass("Lstd/core/Int;", &clsInt);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE("CreateAniDoubleObject FindClass error. result: %{public}d.", aniResult);
+        EVENT_LOGE("CreateAniIntObject FindClass error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Class_FindMethod(clsDouble, "<ctor>", "D:V", &ctor);
+    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "I:V", &ctor);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE("CreateAniDoubleObject Class_FindMethod error. result: %{public}d.", aniResult);
+        EVENT_LOGE("CreateAniIntObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Object_New(clsDouble, ctor, &object, value);
+    aniResult = env->Object_New(clsInt, ctor, &object, value);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE("CreateAniDoubleObject Object_New error. result: %{public}d.", aniResult);
+        EVENT_LOGE("CreateAniIntObject Object_New error. result: %{public}d.", aniResult);
         return;
     }
 }
@@ -571,9 +571,9 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
     CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(data), string);
 
-    // set code [number]
+    // set code [int]
     ani_object codeObject;
-    CreateAniDoubleObject(env, codeObject, static_cast<ani_double>(commonEventData.GetCode()));
+    CreateAniIntObject(env, codeObject, commonEventData.GetCode());
     CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
 
     // set parameters [Record]

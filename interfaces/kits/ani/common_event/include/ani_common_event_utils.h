@@ -52,7 +52,7 @@ public:
     static void CreateNewObjectByClass(ani_env* env, const char* className, ani_class &cls, ani_object& ani_data);
     template<typename valueType>
     static void CallSetter(ani_env* env, ani_class cls, ani_object object, const char* setterName, valueType value);
-    static void CreateAniDoubleObject(ani_env* env, ani_object &object, ani_double value);
+    static void CreateAniIntObject(ani_env* env, ani_object &object, ani_int value);
     static void CreateBusinessErrorObject(ani_env* env, ani_object &object, int32_t code, const std::string &message);
     static ani_object GetAniStringArray(ani_env *env, std::vector<std::string> strs);
     static ani_object newArrayClass(ani_env *env, int length);
