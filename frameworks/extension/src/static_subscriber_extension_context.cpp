@@ -70,9 +70,7 @@ ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
         return err;
     }
     
-    err = AAFwk::AbilityManagerClient::GetInstance()->StartAbility(want, token_);
-    EVENT_LOGI("End calling StartAbility. err=%{public}d", err);
-    return err;
+    return AAFwk::AbilityManagerClient::GetInstance()->StartAbility(want, token_);
 }
 
 bool StaticSubscriberExtensionContext::VerifyCallingPermission(const std::string& permissionName) const

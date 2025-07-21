@@ -292,3 +292,16 @@ HWTEST_F(CommonEventBranchTest, SetStaticSubscriberState_001, TestSize.Level1)
     EXPECT_EQ(
         OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, commonEvent.SetStaticSubscriberState(true));
 }
+
+HWTEST_F(CommonEventBranchTest, SubscribeCommonEvent_001, TestSize.Level1)
+{
+    CommonEvent commonEvent;
+    MatchingSkills matchingSkills_;
+    matchingSkills_.AddEvent("test_event");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+
+    commonEvent.LogCachedSubscriber();
+
+    EXPECT_EQ(true, commonEvent.SubscribeCommonEvent(subscriber));
+}

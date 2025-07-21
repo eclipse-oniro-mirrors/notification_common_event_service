@@ -576,7 +576,7 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
 
 ErrCode CommonEventManagerService::RemoveStickyCommonEvent(const std::string& event, int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI("enter %{public}s", event.c_str());
 
     if (!IsReady()) {
         EVENT_LOGE("CommonEventManagerService not ready");

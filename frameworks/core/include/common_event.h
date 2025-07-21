@@ -237,6 +237,8 @@ private:
     bool PublishParameterCheck(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
+    void LogCachedSubscriber();
+
 private:
     static std::mutex instanceMutex_;
     static std::shared_ptr<CommonEvent> instance_;

@@ -947,7 +947,7 @@ std::vector<std::pair<pid_t, uint32_t>> CommonEventSubscriberManager::GetTopSubs
 
 void CommonEventSubscriberManager::PrintSubscriberCounts(std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts)
 {
-    EVENT_LOGI("Start to print top App by subscribers in descending order");
+    EVENT_LOGI("Print top App by subscribers in descending order");
     int index = 1;
     for (auto vtIt = vtSubscriberCounts.begin(); vtIt != vtSubscriberCounts.end(); vtIt++) {
         EVENT_LOGI("top%{public}d pid=%{public}d subscribers=%{public}d", index, vtIt->first, vtIt->second);

@@ -78,7 +78,7 @@ napi_value JsStaticSubscriberExtensionContext::OnStartAbility(napi_env env, napi
 
     AAFwk::Want want;
     AppExecFwk::UnwrapWant(env, argv[0], want);
-    EVENT_LOGI("Start ability, ability name is %{public}s.", want.GetElement().GetAbilityName().c_str());
+    EVENT_LOGD("Start ability, ability name is %{public}s.", want.GetElement().GetAbilityName().c_str());
 
     auto innerErrorCode = std::make_shared<int32_t>(ERR_OK);
     AbilityRuntime::NapiAsyncTask::ExecuteCallback execute = [weak = context_, want, innerErrorCode]() {
@@ -114,7 +114,7 @@ napi_value JsStaticSubscriberExtensionContext::OnStartAbility(napi_env env, napi
 napi_value CreateJsStaticSubscriberExtensionContext(napi_env env,
     std::shared_ptr<StaticSubscriberExtensionContext> context)
 {
-    EVENT_LOGI("Create js static subscriber extension context");
+    EVENT_LOGD("Create js static subscriber extension context");
     std::shared_ptr<OHOS::AppExecFwk::AbilityInfo> abilityInfo = nullptr;
     if (context) {
         abilityInfo = context->GetAbilityInfo();
