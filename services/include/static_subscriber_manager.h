@@ -126,7 +126,10 @@ private:
     template<typename T, typename QueryFunc, typename UnboxFunc>
     bool CheckSpecificParam(const std::string &paramName, const T &paramValue, const Want &want, QueryFunc queryFunc,
         UnboxFunc unboxFunc) const;
-
+    bool CheckSubscriberWhetherMatched(const StaticSubscriberInfo &subscriber,
+        const CommonEventPublishInfo &publishInfo);
+    bool CheckSubscriberBySpecifiedUids(const int32_t &subscriberUid,
+        const std::vector<int32_t> &specifiedSubscriberUids);
     std::map<std::string, std::vector<StaticSubscriberInfo>> validSubscribers_;
     std::map<std::string, StaticSubscriber> staticSubscribers_;
     // key is bundle, value is eventNames

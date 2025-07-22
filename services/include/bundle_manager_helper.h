@@ -100,6 +100,8 @@ public:
     bool GetApplicationInfos(const AppExecFwk::ApplicationFlag &flag,
         std::vector<AppExecFwk::ApplicationInfo> &appInfos);
 
+    int32_t GetDefaultUidByBundleName(const std::string &bundle, const int32_t userId);
+
 private:
     bool GetBundleMgrProxy();
     bool GetBundleMgrProxyAsync();

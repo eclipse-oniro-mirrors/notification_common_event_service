@@ -45,6 +45,8 @@ extern void ResetAccountMock();
 extern void ResetBundleManagerHelperMock();
 extern void ResetAccessTokenHelperMock();
 extern void SetBundleNameMock();
+extern void SetUidMock(int32_t uid);
+extern void SetSystemMock(bool mockRet);
 
 namespace {
     constexpr uint8_t TEST_MUL_SIZE = 2;
@@ -84,7 +86,10 @@ public:
     void TearDown();
 };
 
-void StaticSubscriberManagerUnitTest::SetUpTestCase() {}
+void StaticSubscriberManagerUnitTest::SetUpTestCase()
+{
+    SetSystemMock(true);
+}
 
 void StaticSubscriberManagerUnitTest::TearDownTestCase() {}
 
@@ -3821,4 +3826,332 @@ HWTEST_F(StaticSubscriberManagerUnitTest, CheckFilterParameters_0200, Function |
     wantParams.SetParam(PARAM_4, AAFwk::String::Box(INVALID_PARAM_VALUE_4));
     want.SetParams(wantParams);
     EXPECT_FALSE(manager->CheckFilterParameters(filterParameters, want));
+}
+
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberBySpecifiedUids_EmptyList, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    std::vector<int32_t> emptyList;
+    EXPECT_FALSE(manager->CheckSubscriberBySpecifiedUids(1, emptyList));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberBySpecifiedUids_SubscriberNotInList, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    std::vector<int32_t> list = {2, 3, 4};
+    EXPECT_FALSE(manager->CheckSubscriberBySpecifiedUids(1, list));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberBySpecifiedUids_SubscriberInList, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    std::vector<int32_t> list = {1, 2, 3};
+    EXPECT_TRUE(manager->CheckSubscriberBySpecifiedUids(1, list));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberWhetherMatched_AllConditionsMatched_ReturnTrue, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("testBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::AND);
+    SetUidMock(1);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(true);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberWhetherMatched_BundleNameNotMatched_ReturnFalse, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("otherBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::AND);
+    SetUidMock(1);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(true);
+
+    EXPECT_FALSE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberWhetherMatched_SubscriberTypeNotMatched_ReturnFalse,
+    Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("testBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetValidationRule(ValidationRule::AND);
+    SetSystemMock(false);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(true);
+    SetUidMock(1);
+
+    EXPECT_FALSE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberWhetherMatched_SubscriberUidNotMatched_ReturnFalse,
+    Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("testBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetValidationRule(ValidationRule::AND);
+    SetSystemMock(true);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(true);
+    SetUidMock(2);
+
+    EXPECT_FALSE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, ATC_CheckSubscriberWhetherMatched_PermissionNotMatched_ReturnFalse, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("testBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetValidationRule(ValidationRule::AND);
+    publishInfo.SetSubscriberPermissions({"permission"});
+    SetSystemMock(true);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(false);
+    SetUidMock(1);
+
+    EXPECT_FALSE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenFilterSettingsIsZero,
+    Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    CommonEventPublishInfo publishInfo;
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+/**
+* @tc.name  : CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenBundleNameMatches
+* @tc.number: CheckSubscriberWhetherMatched_Test_002
+* @tc.desc  : 当订阅者的bundleName与发布的事件信息中的bundleName匹配时，函数应返回true
+*/
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenBundleNameMatches, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "com.example.app";
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("com.example.app");
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+/**
+* @tc.name  : CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenSubscriberTypeMatches
+* @tc.number: CheckSubscriberWhetherMatched_Test_003
+* @tc.desc  : 当订阅者类型匹配时，函数应返回true
+*/
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenSubscriberTypeMatches,
+    Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "com.example.app";
+    subscriber.userId = 0;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE));
+    SetSystemMock(true);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+/**
+* @tc.name  : CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenSubscriberUidMatches
+* @tc.number: CheckSubscriberWhetherMatched_Test_004
+* @tc.desc  : 当订阅者UID匹配时，函数应返回true
+*/
+HWTEST_F(StaticSubscriberManagerUnitTest, CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenSubscriberUidMatches,
+    Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "com.example.app";
+    subscriber.userId = 0;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSubscriberUid({12345});
+    SetUidMock(12345);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+/**
+* @tc.name  : CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenSubscriberPermissionsMatch
+* @tc.number: CheckSubscriberWhetherMatched_Test_005
+* @tc.desc  : 当订阅者权限匹配时，函数应返回true
+*/
+HWTEST_F(StaticSubscriberManagerUnitTest,
+    CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenSubscriberPermissionsMatch, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "com.example.app";
+    subscriber.userId = 0;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSubscriberPermissions({"permission1"});
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(true);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest,
+    CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenValidationRuleIsORAndBundleNameMatches, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("testBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::OR);
+    SetUidMock(2);
+    SetSystemMock(false);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(false);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest,
+    CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenValidationRuleIsORAndUidMatches, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("otherBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::OR);
+    SetUidMock(1);
+    SetSystemMock(false);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(false);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest,
+    CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenValidationRuleIsORAndPermissionMatches, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("otherBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::OR);
+    SetUidMock(2);
+    SetSystemMock(false);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(true);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest,
+    CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenValidationRuleIsORAndTypeMatches, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("otherBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::OR);
+    SetUidMock(2);
+    SetSystemMock(true);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(false);
+
+    EXPECT_TRUE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest,
+    CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenValidationRuleIsORAndAllConditionsNotMatched, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("otherBundle");
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE));
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::OR);
+    SetSystemMock(false);
+    SetUidMock(2);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(false);
+
+    EXPECT_FALSE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
+}
+
+HWTEST_F(StaticSubscriberManagerUnitTest,
+    CheckSubscriberWhetherMatched_ShouldReturnTrue_WhenValidationRuleIsORAndAllConditionsNotMatchedAndNoType, Level0)
+{
+    auto manager = std::make_shared<StaticSubscriberManager>();
+    StaticSubscriberManager::StaticSubscriberInfo subscriber;
+    subscriber.bundleName = "testBundle";
+    subscriber.userId = 1;
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetBundleName("otherBundle");
+    publishInfo.SetSubscriberUid({1});
+    publishInfo.SetSubscriberPermissions({"permission"});
+    publishInfo.SetValidationRule(ValidationRule::OR);
+    SetUidMock(2);
+    MockGetHapTokenID(100);
+    MockVerifyAccessToken(false);
+
+    EXPECT_FALSE(manager->CheckSubscriberWhetherMatched(subscriber, publishInfo));
 }
