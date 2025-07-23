@@ -17,7 +17,7 @@
 #include "ability_manager_client.h"
 #include "ani_common_want.h"
 #include "ani_common_start_options.h"
-#include "ets_error_utils.h"
+#include "ani_event_errors_utils.h"
 #include "ets_extension_context.h"
 #include "event_log_wrapper.h"
 #include "native_engine/native_engine.h"
@@ -35,19 +35,19 @@ void StsStaticSubscriberExtensionContext::StartAbilityInner([[maybe_unused]] ani
     ErrCode innerErrCode = ERR_OK;
     if (!AppExecFwk::UnwrapWant(env, wantObj, want)) {
         EVENT_LOGE("UnwrapWant filed");
-        EtsErrorUtil::ThrowError(env, AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
+        ThrowError(env, ERROR_CODE_INVALID_PARAM);
         return;
     }
     auto context = GetAbilityContext();
     if (context == nullptr) {
         EVENT_LOGE("GetAbilityContext is nullptr");
-        EtsErrorUtil::ThrowError(env, AbilityErrorCode::ERROR_CODE_INVALID_CONTEXT);
+        ThrowError(env, ERROR_CODE_INVALID_CONTEXT);
         return;
     }
     innerErrCode = context->StartAbility(want);
     if (innerErrCode != ERR_OK) {
         EVENT_LOGE("StartAbility failed, code = %{public}d", innerErrCode);
-        EtsErrorUtil::ThrowErrorByNativeErr(env, innerErrCode);
+        ThrowErrorByNativeError(env, innerErrCode);
     }
 }
 
