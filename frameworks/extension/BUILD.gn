@@ -162,6 +162,7 @@ ohos_shared_library("static_subscriber_extension_ani") {
 
   external_deps = [
     "ability_base:want",
+    "ability_runtime:ability_business_error",
     "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
     "ability_runtime:ani_common",

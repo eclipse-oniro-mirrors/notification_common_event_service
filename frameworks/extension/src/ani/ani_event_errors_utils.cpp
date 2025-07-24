@@ -15,6 +15,7 @@
 #include "ani_event_errors_utils.h"
 
 #include "event_log_wrapper.h"
+#include "ability_business_error.h"
 
 namespace OHOS {
 namespace EventManagerFwkAni {
@@ -124,15 +125,9 @@ ani_object CreateError(ani_env *env, ani_int code, const std::string &msg)
 
 int32_t GetExternalCode(int32_t errCode)
 {
-    for (const auto &errorConvert : ERRORS_CONVERT) {
-        if (errCode == errorConvert.second) {
-            return errCode;
-        }
-        if (errCode == errorConvert.first) {
-            return errorConvert.second;
-        }
-    }
-    return ERROR_CODE_INNER;
+    int32_t externalCode = static_cast<int32_t>(AbilityRuntime::GetJsErrorCodeByNativeError(errCode));
+    EVENT_LOGD("GetExternalCode %{public}d to %{public}d", errCode, externalCode);
+    return externalCode;
 }
 
 std::string FindErrorMsg(const int32_t errCode)
