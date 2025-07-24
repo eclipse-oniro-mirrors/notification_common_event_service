@@ -142,8 +142,8 @@ ohos_shared_library("static_subscriber_extension_ani") {
   include_dirs = []
 
   sources = [
-    "${ces_extension_path}/src/ani/ani_event_errors_utils.cpp",
     "${ces_extension_path}/src/ani/ani_common_event_utils.cpp",
+    "${ces_extension_path}/src/ani/ani_event_errors_utils.cpp",
     "${ces_extension_path}/src/ani/ani_static_subscriber_extension.cpp",
     "${ces_extension_path}/src/ani/ani_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/static_subscriber_extension.cpp",
