@@ -84,8 +84,8 @@ ohos_shared_library("static_subscriber_extension") {
 
   sources = [
     "${ces_extension_path}/src/ani_common_event_utils.cpp",
-    "${ces_extension_path}/src/ani_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/ani_static_subscriber_extension.cpp",
+    "${ces_extension_path}/src/ani_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension.cpp",
     "${ces_extension_path}/src/js_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/static_subscriber_extension.cpp",
