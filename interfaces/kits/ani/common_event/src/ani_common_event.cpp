@@ -30,26 +30,26 @@ static std::mutex subscriberInsMutex;
 
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
-    EVENT_LOGI("publishExecute call.");
+    EVENT_LOGD("publishExecute call.");
     std::string eventIdStr;
     AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
-    EVENT_LOGI("publishExecute eventIdStr: %{public}s.", eventIdStr.c_str());
+    EVENT_LOGD("publishExecute eventIdStr: %{public}s.", eventIdStr.c_str());
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
     Want want;
     want.SetAction(eventIdStr);
     commonEventData.SetWant(want);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
-    EVENT_LOGI("publishExecute result: %{public}d.", errorCode);
+    EVENT_LOGD("publishExecute result: %{public}d.", errorCode);
     return errorCode;
 }
 
 static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_object optionsObject)
 {
-    EVENT_LOGI("publishWithOptionsExecute call.");
+    EVENT_LOGD("publishWithOptionsExecute call.");
     std::string eventIdStr;
     AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
-    EVENT_LOGI("publishWithOptionsExecute eventIdStr: %{public}s.", eventIdStr.c_str());
+    EVENT_LOGD("publishWithOptionsExecute eventIdStr: %{public}s.", eventIdStr.c_str());
 
     CommonEventData commonEventData;
     CommonEventPublishInfo commonEventPublishInfo;
@@ -59,7 +59,7 @@ static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_
         env, optionsObject, want, commonEventData, commonEventPublishInfo);
     commonEventData.SetWant(want);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
-    EVENT_LOGI("publishWithOptionsExecute result: %{public}d.", errorCode);
+    EVENT_LOGD("publishWithOptionsExecute result: %{public}d.", errorCode);
     return errorCode;
 }
 
@@ -105,7 +105,7 @@ static uint32_t publishAsUserWithOptionsExecute(ani_env* env, ani_string eventId
 
 static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
-    EVENT_LOGI("createSubscriberExecute call.");
+    EVENT_LOGD("createSubscriberExecute call.");
     CommonEventSubscribeInfo subscribeInfo;
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
@@ -139,13 +139,13 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
         return nullptr;
     }
 
-    EVENT_LOGI("createSubscriberExecute end.");
+    EVENT_LOGD("createSubscriberExecute end.");
     return subscriberObj;
 }
 
 static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object callback)
 {
-    EVENT_LOGI("subscribeExecute call.");
+    EVENT_LOGD("subscribeExecute call.");
     auto ret = ANI_OK;
 
     ani_long wrapper_long {};
@@ -195,7 +195,7 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     } else {
         subscriberInstance = nullptr;
     }
-    EVENT_LOGI("subscribeExecute result: %{public}d.", result);
+    EVENT_LOGD("subscribeExecute result: %{public}d.", result);
     return result;
 }
 
@@ -220,7 +220,7 @@ static int32_t removeSubscriberInstance(ani_env* env, SubscriberInstanceWrapper*
 
 static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
 {
-    EVENT_LOGI("unsubscribeExecute call.");
+    EVENT_LOGD("unsubscribeExecute call.");
     auto ret = ANI_OK;
 
     ani_long wrapper_long {};
@@ -244,7 +244,7 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
         return ANI_INVALID_ARGS;
     }
     auto result = removeSubscriberInstance(env, wrapper);
-    EVENT_LOGI("unsubscribeExecute result: %{public}d.", result);
+    EVENT_LOGD("unsubscribeExecute result: %{public}d.", result);
     return result;
 }
 
@@ -332,13 +332,13 @@ std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWra
 
 SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo& sp) : CommonEventSubscriber(sp)
 {
-    EVENT_LOGI("create SubscriberInstance");
+    EVENT_LOGD("create SubscriberInstance");
     id_ = ++subscriberID_;
 }
 
 SubscriberInstance::~SubscriberInstance()
 {
-    EVENT_LOGI("destroy SubscriberInstance");
+    EVENT_LOGD("destroy SubscriberInstance");
     if (env_ != nullptr && callback_ != nullptr) {
         env_->GlobalReference_Delete(callback_);
     }
@@ -346,7 +346,7 @@ SubscriberInstance::~SubscriberInstance()
 
 void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
 {
-    EVENT_LOGI("OnReceiveEvent execute action = %{public}s", data.GetWant().GetAction().c_str());
+    EVENT_LOGD("OnReceiveEvent execute action = %{public}s", data.GetWant().GetAction().c_str());
     if (this->IsOrderedCommonEvent()) {
         std::lock_guard<std::mutex> lock(subscriberInsMutex);
         for (auto subscriberInstance : subscriberInstances) {
@@ -380,7 +380,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
         return;
     }
 
-    EVENT_LOGI("FunctionalObject_Call.");
+    EVENT_LOGD("FunctionalObject_Call.");
     std::vector<ani_ref> args = { nullObject, reinterpret_cast<ani_ref>(ani_data) };
     ani_ref result;
     aniResult = etsEnv->FunctionalObject_Call(fnObject, args.size(), args.data(), &result);
@@ -434,7 +434,7 @@ SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeI
         return;
     }
 
-    EVENT_LOGI("Constructor objectInfo");
+    EVENT_LOGD("Constructor objectInfo");
     subscriber = std::shared_ptr<SubscriberInstance>(objectInfo);
     if (subscriber == nullptr) {
         EVENT_LOGE("subscriber is null");
@@ -729,7 +729,7 @@ ani_status init(ani_env *env, ani_namespace kitNs)
 extern "C" {
 ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
 {
-    EVENT_LOGI("ANI_Constructor call.");
+    EVENT_LOGD("ANI_Constructor call.");
     ani_env* env;
     ani_status status = ANI_ERROR;
     if (ANI_OK != vm->GetEnv(ANI_VERSION_1, &env)) {
