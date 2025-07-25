@@ -143,6 +143,7 @@ ohos_shared_library("static_subscriber_extension_ani") {
 
   sources = [
     "${ces_extension_path}/src/ani/ani_common_event_utils.cpp",
+    "${ces_extension_path}/src/ani/ani_event_errors_utils.cpp",
     "${ces_extension_path}/src/ani/ani_static_subscriber_extension.cpp",
     "${ces_extension_path}/src/ani/ani_static_subscriber_extension_context.cpp",
     "${ces_extension_path}/src/static_subscriber_extension.cpp",
@@ -161,6 +162,7 @@ ohos_shared_library("static_subscriber_extension_ani") {
 
   external_deps = [
     "ability_base:want",
+    "ability_runtime:ability_business_error",
     "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
     "ability_runtime:ani_common",
