@@ -14,6 +14,7 @@
  */
 #include "ani_common_event_utils.h"
 
+#include "ani_common_want.h"
 #include "event_log_wrapper.h"
 
 namespace OHOS {
@@ -41,6 +42,20 @@ void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string
     result.resize(sz);
 }
 
+ani_status AniCommonEventUtils::GetAniString(ani_env* env, const std::string str, ani_string& aniStr)
+{
+    if (env == nullptr) {
+        EVENT_LOGE("GetAniStringByString fail, env is nullptr");
+        return ANI_INVALID_ARGS;
+    }
+    ani_status status = env->String_NewUTF8(str.c_str(), str.size(), &aniStr);
+    if (status != ANI_OK) {
+        EVENT_LOGE("String_NewUTF8 failed %{public}d", status);
+        return status;
+    }
+    return status;
+}
+
 void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayObj, std::vector<std::string>& strings)
 {
     ani_double length;
@@ -62,6 +77,10 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
         std::string itemStr;
         GetStdString(env, static_cast<ani_string>(stringEntryRef), itemStr);
         strings.emplace_back(itemStr);
+    }
+
+    for (const auto& s : strings) {
+        EVENT_LOGI("GetStdStringArrayClass Array String Content: %{public}s.", s.c_str());
     }
 }
 
@@ -95,6 +114,36 @@ bool AniCommonEventUtils::GetStringOrUndefined(ani_env* env, ani_object param, c
     return true;
 }
 
+bool AniCommonEventUtils::GetDoubleOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res)
+{
+    ani_ref obj = nullptr;
+    ani_boolean isUndefined = true;
+    ani_status status = ANI_ERROR;
+
+    if ((status = env->Object_GetPropertyByName_Ref(param, name, &obj)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if ((status = env->Reference_IsUndefined(obj, &isUndefined)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if (isUndefined) {
+        EVENT_LOGW("%{public}s : undefined", name);
+        return false;
+    }
+
+    ani_double result = 0;
+    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result))
+        != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+
+    res = static_cast<int32_t>(result);
+    return true;
+}
+
 bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, const char* name, int32_t& res)
 {
     ani_ref obj = nullptr;
@@ -115,7 +164,7 @@ bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, cons
     }
 
     ani_int result = 0;
-    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "intValue", nullptr, &result)) !=
+    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) !=
         ANI_OK) {
         EVENT_LOGE("status : %{public}d", status);
         return false;
@@ -179,43 +228,97 @@ bool AniCommonEventUtils::GetStringArrayOrUndefined(
     return true;
 }
 
+bool AniCommonEventUtils::GetWantParamsOrUndefined(
+    ani_env* env, ani_object param, const char* name, AAFwk::WantParams& wantParams)
+{
+    ani_ref obj = nullptr;
+    ani_boolean isUndefined = true;
+    ani_status status = ANI_ERROR;
+    if ((status = env->Object_GetPropertyByName_Ref(param, name, &obj)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if ((status = env->Reference_IsUndefined(obj, &isUndefined)) != ANI_OK) {
+        EVENT_LOGE("status : %{public}d", status);
+        return false;
+    }
+    if (isUndefined) {
+        EVENT_LOGW("%{public}s : undefined", name);
+        return false;
+    }
+
+    if (!UnwrapWantParams(env, obj, wantParams)) {
+        EVENT_LOGE("GetWantParamsOrUndefined UnwrapWantParams error.");
+        return false;
+    }
+
+    return true;
+}
+
 void AniCommonEventUtils::ConvertCommonEventPublishData(ani_env* env, ani_object optionsObject, Want& want,
     CommonEventData &commonEventData, CommonEventPublishInfo &commonEventPublishInfo)
 {
     // Get the code.
     int32_t code;
-    if (GetIntOrUndefined(env, optionsObject, "code", code)) {
+    if (GetDoubleOrUndefined(env, optionsObject, "code", code)) {
+        EVENT_LOGI("ConvertCommonEventPublishData code: %{public}d.", code);
         commonEventData.SetCode(code);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData code not exit");
     }
 
     // Get the data.
     std::string dataStr;
     if (GetStringOrUndefined(env, optionsObject, "data", dataStr)) {
+        EVENT_LOGI("ConvertCommonEventPublishData data: %{public}s.", dataStr.c_str());
         commonEventData.SetData(dataStr);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData data not exit");
     }
 
     // Get the isOrdered.
     bool isOrdered;
     if (GetBooleanOrUndefined(env, optionsObject, "isOrdered", isOrdered)) {
+        EVENT_LOGI("ConvertCommonEventPublishData isOrdered: %{public}d.", isOrdered);
         commonEventPublishInfo.SetOrdered(isOrdered);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData isOrdered not exit");
     }
 
     // Get the isSticky.
     bool isSticky;
     if (GetBooleanOrUndefined(env, optionsObject, "isSticky", isSticky)) {
+        EVENT_LOGI("ConvertCommonEventPublishData isSticky: %{public}d.", isSticky);
         commonEventPublishInfo.SetSticky(isSticky);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData isSticky not exit");
     }
 
     // Get the bundleName.
     std::string bundleNameStr;
     if (GetStringOrUndefined(env, optionsObject, "bundleName", bundleNameStr)) {
+        EVENT_LOGI("ConvertCommonEventPublishData bundleName: %{public}s.", bundleNameStr.c_str());
         commonEventPublishInfo.SetBundleName(bundleNameStr);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData bundleName not exit");
     }
 
     // Get the subscriberPermissions.
     std::vector<std::string> subscriberPermissionsStr;
     if (GetStringArrayOrUndefined(env, optionsObject, "subscriberPermissions", subscriberPermissionsStr)) {
+        EVENT_LOGI("ConvertCommonEventPublishData subscriberPermissionsStr success.");
         commonEventPublishInfo.SetSubscriberPermissions(subscriberPermissionsStr);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData bundleName not exit");
+    }
+
+    // Get the parameters [Record]
+    AAFwk::WantParams wantParams;
+    if (GetWantParamsOrUndefined(env, optionsObject, "parameters", wantParams)) {
+        EVENT_LOGI("ConvertCommonEventPublishData parameters success.");
+        want.SetParams(wantParams);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData parameters not exit");
     }
 }
 
@@ -224,7 +327,11 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
 {
     // Get the events.
     std::vector<std::string> eventsStr;
-    GetStringArrayOrUndefined(env, infoObject, "events", eventsStr);
+    if (GetStringArrayOrUndefined(env, infoObject, "events", eventsStr)) {
+        EVENT_LOGI("ConvertCommonEventPublishData events success.");
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData events not exit");
+    }
 
     MatchingSkills matchingSkills;
     for (const auto &event : eventsStr) {
@@ -235,34 +342,153 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
     // Get the publisherPermission.
     std::string publisherPermissionStr;
     if (GetStringOrUndefined(env, infoObject, "publisherPermission", publisherPermissionStr)) {
+        EVENT_LOGI("ConvertCommonEventSubscribeInfo publisherPermission: %{public}s.", publisherPermissionStr.c_str());
         commonEventSubscribeInfo.SetPermission(publisherPermissionStr);
+    } else {
+        EVENT_LOGI("ConvertCommonEventSubscribeInfo publisherPermission not exit");
     }
 
     // Get the publisherDeviceId.
     std::string publisherDeviceIdStr;
     if (GetStringOrUndefined(env, infoObject, "publisherDeviceId", publisherDeviceIdStr)) {
+        EVENT_LOGI("ConvertCommonEventSubscribeInfo publisherDeviceId: %{public}s.", publisherDeviceIdStr.c_str());
         commonEventSubscribeInfo.SetDeviceId(publisherDeviceIdStr);
+    } else {
+        EVENT_LOGI("ConvertCommonEventSubscribeInfo publisherDeviceId not exit");
     }
 
     // Get the publisherBundleName.
     std::string publisherBundleNameStr;
     if (GetStringOrUndefined(env, infoObject, "publisherBundleName", publisherBundleNameStr)) {
+        EVENT_LOGI("ConvertCommonEventSubscribeInfo publisherBundleName: %{public}s.", publisherBundleNameStr.c_str());
         commonEventSubscribeInfo.SetPublisherBundleName(publisherBundleNameStr);
+    } else {
+        EVENT_LOGI("ConvertCommonEventSubscribeInfo publisherBundleName not exit");
     }
 
     // Get the userId.
     int32_t userId;
-    if (GetIntOrUndefined(env, infoObject, "userId", userId)) {
+    if (GetDoubleOrUndefined(env, infoObject, "userId", userId)) {
+        EVENT_LOGI("ConvertCommonEventPublishData userId: %{public}d.", userId);
         commonEventSubscribeInfo.SetUserId(userId);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData userId not exit");
     }
 
     // Get the priority.
     int32_t priority;
-    if (GetIntOrUndefined(env, infoObject, "priority", priority)) {
+    if (GetDoubleOrUndefined(env, infoObject, "priority", priority)) {
+        EVENT_LOGI("ConvertCommonEventPublishData priority: %{public}d.", priority);
         commonEventSubscribeInfo.SetPriority(priority);
+    } else {
+        EVENT_LOGI("ConvertCommonEventPublishData priority not exit");
     }
 
     subscribeInfo = commonEventSubscribeInfo;
+}
+
+void AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(
+    ani_env* env, std::shared_ptr<SubscriberInstance> subscriber, ani_object &infoObject)
+{
+    ani_class cls = nullptr;
+    ani_status status = ANI_ERROR;
+    CreateNewObjectByClass(env, "LcommonEvent/commonEventSubscribeInfo/CommonEventSubscribeInfoImpl;", cls, infoObject);
+    if ((infoObject == nullptr) || (cls == nullptr)) {
+        EVENT_LOGE("CommonEventSubscribeInfoToAni infoObject or cls is null.");
+        return;
+    }
+    if (subscriber == nullptr) {
+        EVENT_LOGE("subscriber is null.");
+        return;
+    }
+
+    // set events [Array<string>]
+    ani_object eventsParamRef = GetAniStringArray(env, subscriber->GetSubscribeInfo().GetMatchingSkills().GetEvents());
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(events), eventsParamRef);
+
+    ani_string string = nullptr;
+    // set publisherPermission [string]
+    status = env->String_NewUTF8(
+        subscriber->GetSubscribeInfo().GetPermission().c_str(),
+        subscriber->GetSubscribeInfo().GetPermission().size(), &string);
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherPermission), string);
+
+    // set publisherDeviceId [string]
+    status = env->String_NewUTF8(
+        subscriber->GetSubscribeInfo().GetDeviceId().c_str(),
+        subscriber->GetSubscribeInfo().GetDeviceId().size(), &string);
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherDeviceId), string);
+
+    // set publisherBundleName [string]
+    status = env->String_NewUTF8(
+        subscriber->GetSubscribeInfo().GetPublisherBundleName().c_str(),
+        subscriber->GetSubscribeInfo().GetPublisherBundleName().size(), &string);
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherBundleName), string);
+
+    // set userId [number]
+    ani_object userIdObject;
+    CreateAniDoubleObject(env, userIdObject, static_cast<ani_double>(subscriber->GetSubscribeInfo().GetUserId()));
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(userId), userIdObject);
+
+    // set priority [number]
+    ani_object priorityObject;
+    CreateAniDoubleObject(env, priorityObject, static_cast<ani_double>(subscriber->GetSubscribeInfo().GetPriority()));
+    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(priority), priorityObject);
+}
+
+ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std::string> strs)
+{
+    if (env == nullptr) {
+        EVENT_LOGE("GetAniStringArray fail, env is nullptr or strs is empty");
+        return nullptr;
+    }
+    int length = strs.size();
+    ani_object arrayObj = newArrayClass(env, length);
+    if (arrayObj == nullptr) {
+        return nullptr;
+    }
+    ani_size i = 0;
+    for (auto &str : strs) {
+        EVENT_LOGI("GetAniStringArray: %{public}s", str.c_str());
+        ani_string aniStr;
+        if ((env->String_NewUTF8(str.c_str(),  str.size(), &aniStr) != ANI_OK) || aniStr == nullptr) {
+            EVENT_LOGE("String_NewUTF8 faild");
+            return nullptr;
+        }
+        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "ILstd/core/Object;:V", i, aniStr);
+        if (status != ANI_OK) {
+            EVENT_LOGE("Object_CallMethodByName_Void failed %{public}d", status);
+            return nullptr;
+        }
+        i++;
+    }
+    return arrayObj;
+}
+
+ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
+{
+    EVENT_LOGD("newArrayClass call");
+    if (env == nullptr || length < 0) {
+        EVENT_LOGE("CreateDouble fail, env is nullptr or length is less than zero");
+        return nullptr;
+    }
+    ani_class arrayCls = nullptr;
+    if (ANI_OK != env->FindClass("Lescompat/Array;", &arrayCls)) {
+        EVENT_LOGE("FindClass Lescompat/Array; Failed");
+        return nullptr;
+    }
+    ani_method arrayCtor;
+    if (ANI_OK != env->Class_FindMethod(arrayCls, "<ctor>", "I:V", &arrayCtor)) {
+        EVENT_LOGE("Class_FindMethod <ctor> Failed");
+        return nullptr;
+    }
+    ani_object arrayObj = nullptr;
+    if (ANI_OK != env->Object_New(arrayCls, arrayCtor, &arrayObj, length)) {
+        EVENT_LOGE("Object_New Array Faild");
+        return nullptr;
+    }
+    EVENT_LOGD("newArrayClass end");
+    return arrayObj;
 }
 
 void AniCommonEventUtils::CreateNewObjectByClass(
@@ -294,6 +520,7 @@ void AniCommonEventUtils::CreateNewObjectByClass(
 void AniCommonEventUtils::CreateBusinessErrorObject(
     ani_env* env, ani_object& object, int32_t code, const std::string& message)
 {
+    EVENT_LOGI("CreateBusinessErrorObject called.");
     ani_status aniResult = ANI_ERROR;
     ani_class cls;
     ani_method ctor = nullptr;
@@ -370,6 +597,8 @@ void AniCommonEventUtils::CreateAniDoubleObject(ani_env* env, ani_object &object
 void AniCommonEventUtils::ConvertCommonEventDataToEts(
     ani_env* env, ani_object& ani_data, const CommonEventData& commonEventData)
 {
+    EVENT_LOGI("ConvertCommonEventDataToEts called");
+
     ani_class cls = nullptr;
     CreateNewObjectByClass(env, "LcommonEvent/commonEventData/CommonEventDataImpl;", cls, ani_data);
     if ((ani_data == nullptr) || (cls == nullptr)) {
@@ -398,6 +627,8 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
 
     // set parameters [Record]
+    ani_ref wantParamRef = WrapWantParams(env, commonEventData.GetWant().GetParams());
+    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(parameters), wantParamRef);
 }
 
 } // namespace EventManagerFwkAni

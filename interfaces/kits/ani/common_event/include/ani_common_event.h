@@ -20,8 +20,6 @@
 #include <mutex>
 
 #include "common_event_manager.h"
-#include "ffrt.h"
-
 namespace OHOS {
 namespace EventManagerFwkAni {
 class SubscriberInstance : public OHOS::EventFwk::CommonEventSubscriber {
@@ -34,11 +32,12 @@ public:
     void SetEnv(ani_env* env);
     void SetVm(ani_vm* etsVm);
     void SetCallback(const ani_object& callback);
+    ani_object GetCallback();
     void ClearEnv();
 
 private:
-    ffrt::mutex envMutex_;
-    ffrt::mutex callbackMutex_;
+    std::mutex envMutex_;
+    std::mutex callbackMutex_;
     ani_env* env_ = nullptr;
     ani_object callback_ = nullptr;
     std::atomic_ullong id_;
@@ -60,6 +59,8 @@ struct subscriberInstanceInfo {
     std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> commonEventResult = nullptr;
 };
 
+std::shared_ptr<SubscriberInstance> GetSubscriber(ani_env* env, ani_ref subscribeRef);
+std::shared_ptr<OHOS::EventFwk::AsyncCommonEventResult> GetAsyncCommonEventResult (ani_env* env, ani_ref subscribeRef);
 std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWrapper* wrapper);
 
 } // namespace EventManagerFwkAni

@@ -82,7 +82,9 @@
                 "selinux_adapter",
                 "runtime_core"
             ],
-            "third_party": []
+            "third_party": [
+                "libuv"
+            ]
         },
         "build": {
             "group_type": {

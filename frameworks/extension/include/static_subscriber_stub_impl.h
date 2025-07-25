@@ -17,14 +17,14 @@
 #define OHOS_COMMON_EVENT_SERVICE_STATIC_SUBSCRIBER_STUB_IMPL_H
 
 #include <memory>
-#include "js_static_subscriber_extension.h"
+#include "static_subscriber_extension.h"
 #include "static_subscriber_stub.h"
 
 namespace OHOS {
 namespace EventFwk {
 class StaticSubscriberStubImpl : public StaticSubscriberStub {
 public:
-    explicit StaticSubscriberStubImpl(const std::shared_ptr<JsStaticSubscriberExtension>& extension)
+    explicit StaticSubscriberStubImpl(const std::shared_ptr<StaticSubscriberExtension>& extension)
         : extension_(extension) {}
 
     virtual ~StaticSubscriberStubImpl() = default;
@@ -32,7 +32,7 @@ public:
     ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override;
 
 private:
-    std::weak_ptr<JsStaticSubscriberExtension> extension_;
+    std::weak_ptr<StaticSubscriberExtension> extension_;
 };
 } // namespace EventFwk
 } // namespace OHOS
