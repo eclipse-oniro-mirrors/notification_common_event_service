@@ -1,1 +1,8 @@
 frameworks/native/src/common_event_support.cpp @cheerful_ricky
+[FWK NOTIFICATION]
+frameworks/ @fwk_notification
+interfaces/ @fwk_notification
+sa_profile/ @fwk_notification
+services/ @fwk_notification
+test/ @fwk_notification
+tools/ @fwk_notification
