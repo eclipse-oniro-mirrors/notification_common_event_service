@@ -61,7 +61,7 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
     AbilityRuntime::Runtime::Options options;
     std::unique_ptr<AbilityRuntime::Runtime> runtime = AbilityRuntime::Runtime::Create(options);
 
-    std::shared_ptr<StaticSubscriberExtension> extension = std::make_shared<JsStaticSubscriberExtension>(
+    std::shared_ptr<StaticSubscriberExtension> extension = std::make_shared<StaticSubscriberExtension>(
         static_cast<AbilityRuntime::JsRuntime&>(*runtime));
     sptr<StaticSubscriberStubImpl> object = new (std::nothrow) StaticSubscriberStubImpl(extension);
     EXPECT_TRUE(object != nullptr);
