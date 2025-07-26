@@ -179,21 +179,26 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
         return ANI_INVALID_ARGS;
     }
     std::array functions = {
-        ani_native_function { "nativeStartAbilitySync", "L@ohos/app/ability/Want/Want;:V",
-            reinterpret_cast<void*>(NativeStartAbility) },
+        ani_native_function { "nativeStartAbilitySync", "C{@ohos.app.ability.Want.Want}:",
+            reinterpret_cast<void*>(NativeStartAbility) }};
+    if ((status = env->Class_BindNativeMethods(cls, functions.data(), functions.size())) != ANI_OK) {
+        EVENT_LOGE("bind method status : %{public}d", status);
+        return ANI_INVALID_TYPE;
+    }
+    std::array staticMethods = {
         ani_native_function { "transferToDynamicContext", nullptr,
             reinterpret_cast<void*>(TransferToDynamicContext) },
         ani_native_function { "transferToStaticContext", nullptr,
             reinterpret_cast<void*>(TransferToStaticContext) },
     };
-    if ((status = env->Class_BindNativeMethods(cls, functions.data(), functions.size())) != ANI_OK) {
+    if ((status = env->Class_BindStaticNativeMethods(cls, staticMethods.data(), staticMethods.size())) != ANI_OK) {
         EVENT_LOGE("bind method status : %{public}d", status);
         return ANI_INVALID_TYPE;
     }
     ani_class cleanCls;
-    status = env->FindClass("L@ohos/application/StaticSubscriberExtensionContext/Cleaner;", &cleanCls);
+    status = env->FindClass("@ohos.application.StaticSubscriberExtensionContext.Cleaner", &cleanCls);
     if (status != ANI_OK) {
-        EVENT_LOGE("Not found L@ohos/application/StaticSubscriberExtensionContext/Cleaner");
+        EVENT_LOGE("Not found @ohos.application.StaticSubscriberExtensionContext.Cleaner");
         return ANI_INVALID_ARGS;
     }
     std::array cleanMethod = {
@@ -270,7 +275,7 @@ void StsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventDat
 
         ani_object ani_data {};
         AniCommonEventUtils::ConvertCommonEventDataToEts(env, ani_data, commonEventData);
-        const char* signature  = "LcommonEvent/commonEventData/CommonEventData;:V";
+        const char* signature  = "C{commonEvent.commonEventData.CommonEventData}:";
         CallObjectMethod(false, "onReceiveEvent", signature, ani_data);
     };
     handler_->PostTask(task, "CommonEvent" + data->GetWant().GetAction());
