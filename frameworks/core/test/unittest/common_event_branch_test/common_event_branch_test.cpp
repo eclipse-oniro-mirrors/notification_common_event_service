@@ -303,5 +303,5 @@ HWTEST_F(CommonEventBranchTest, SubscribeCommonEvent_001, TestSize.Level1)
 
     commonEvent.LogCachedSubscriber();
 
-    EXPECT_EQ(true, commonEvent.SubscribeCommonEvent(subscriber));
+    EXPECT_EQ(1500008, commonEvent.SubscribeCommonEvent(subscriber));
 }

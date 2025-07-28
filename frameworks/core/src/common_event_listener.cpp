@@ -151,7 +151,7 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
 
     commonEventSubscriber_->OnReceiveEvent(commonEventData);
 
-    if ((commonEventSubscriber_->GetAsyncCommonEventResult() != nullptr) && ordered) {
+    if (ordered && (commonEventSubscriber_->GetAsyncCommonEventResult() != nullptr)) {
         commonEventSubscriber_->GetAsyncCommonEventResult()->FinishCommonEvent();
     }
     EVENT_LOGD("end");
