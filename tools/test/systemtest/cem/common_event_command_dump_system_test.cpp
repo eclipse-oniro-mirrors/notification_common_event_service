@@ -26,7 +26,7 @@ using namespace OHOS::EventFwk;
 namespace {
 const std::string STRING_EVENT = "com.ces.event";
 #ifdef CEM_BUILD_VARIANT_USER
-const std::string STRING_NO_SUBSCRIBERS = "error: user version cannot use dump.\n"
+const std::string STRING_NO_SUBSCRIBERS = "error: user version cannot use dump.\n";
 #else
 const std::string STRING_NO_SUBSCRIBERS =
     "Subscribers:\tNo information\n"
