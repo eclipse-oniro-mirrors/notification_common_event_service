@@ -20,7 +20,7 @@
 #include "ets_extension_context.h"
 #include "event_log_wrapper.h"
 #include "native_engine/native_engine.h"
-#include "ets_error_utils.h"
+#include "ani_event_errors_utils.h"
 
 namespace OHOS {
 namespace EventManagerFwkAni {
@@ -64,19 +64,19 @@ void StsStaticSubscriberExtensionContext::StartAbilityInner([[maybe_unused]] ani
     ErrCode innerErrCode = ERR_OK;
     if (!AppExecFwk::UnwrapWant(env, wantObj, want)) {
         EVENT_LOGE("UnwrapWant filed");
-        AbilityRuntime::EtsErrorUtil::ThrowError(env, AbilityErrorCode::ERROR_CODE_INVALID_PARAM);
+        OHOS::EventManagerFwkAni::ThrowError(env, ERROR_CODE_INVALID_PARAM);
         return;
     }
     auto context = StsStaticSubscriberExtensionContext::GetAbilityContext(env, aniObj);
     if (context == nullptr) {
         EVENT_LOGE("GetAbilityContext is nullptr");
-        AbilityRuntime::EtsErrorUtil::ThrowError(env, AbilityErrorCode::ERROR_CODE_INVALID_CONTEXT);
+        OHOS::EventManagerFwkAni::ThrowError(env, ERROR_CODE_INVALID_CONTEXT);
         return;
     }
     innerErrCode = context->StartAbility(want);
     if (innerErrCode != ERR_OK) {
         EVENT_LOGE("StartAbility failed, code = %{public}d", innerErrCode);
-        AbilityRuntime::EtsErrorUtil::ThrowErrorByNativeErr(env, innerErrCode);
+        OHOS::EventManagerFwkAni::ThrowErrorByNativeError(env, innerErrCode);
     }
 }
 
