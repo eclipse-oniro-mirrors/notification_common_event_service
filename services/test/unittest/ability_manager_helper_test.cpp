@@ -327,7 +327,7 @@ public:
     }
 
     int StartAbilityByCall(const Want &want, const sptr<IAbilityConnection> &connect,
-        const sptr<IRemoteObject> &callerToken, int32_t accountId) override
+        const sptr<IRemoteObject> &callerToken, int32_t accountId, bool isSilent) override
     {
         return 1;
     }
