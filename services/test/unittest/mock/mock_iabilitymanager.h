@@ -121,7 +121,7 @@ public:
     MOCK_METHOD(int, MoveMissionToFront, (int32_t missionId, const StartOptions &startOptions), (override));
     MOCK_METHOD(int, StartAbilityByCall,
         (const Want &want, const sptr<IAbilityConnection> &connect, const sptr<IRemoteObject> &callerToken,
-            int32_t accountId),
+            int32_t accountId, bool isSilent),
         (override));
     MOCK_METHOD(int, ReleaseCall, (const sptr<IAbilityConnection> &connect, const AppExecFwk::ElementName &element),
         (override));
