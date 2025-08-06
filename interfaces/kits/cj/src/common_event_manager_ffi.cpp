@@ -156,13 +156,9 @@ namespace OHOS::CommonEventManager {
             if (!subscriber) {
                 return ret;
             }
-            ret.data = MallocCString(GetSubscriberData(subscriber));
-            if (ret.data == nullptr) {
-                LOGE("CJ_GetData failed: out of memory.")
-                ret.code = ERR_NO_MEMORY;
-            } else {
-                ret.code = NO_ERROR;
-            }
+            int32_t code = NO_ERROR;
+            ret.data = MallocCString(GetSubscriberData(subscriber), code);
+            ret.code = code;
             return ret;
         }
 
@@ -309,7 +305,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_FinishCommonEvent(int64_t id)
         {
-            int32_t errorCode = ERR_CES_FAILED;
+            int32_t errorCode = NO_ERROR;
             auto instance = FFIData::GetData<SubscriberManager>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
