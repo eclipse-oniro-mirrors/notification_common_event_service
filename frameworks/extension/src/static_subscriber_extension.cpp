@@ -15,9 +15,7 @@
 
 #include "static_subscriber_extension.h"
 
-#include "ani_static_subscriber_extension.h"
 #include "event_log_wrapper.h"
-#include "js_static_subscriber_extension.h"
 #include "runtime.h"
 #include "static_subscriber_extension_context.h"
 
@@ -26,19 +24,7 @@ namespace EventFwk {
 using namespace OHOS::AppExecFwk;
 StaticSubscriberExtension* StaticSubscriberExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
-    if (!runtime) {
-        return new (std::nothrow) StaticSubscriberExtension();
-    }
-
-    EVENT_LOGD("Create runtime");
-    switch (runtime->GetLanguage()) {
-        case AbilityRuntime::Runtime::Language::JS:
-            return JsStaticSubscriberExtension::Create(runtime);
-        case AbilityRuntime::Runtime::Language::ETS:
-            return EventManagerFwkAni::StsStaticSubscriberExtension::Create(runtime);
-        default:
-            return new (std::nothrow) StaticSubscriberExtension();
-    }
+    return new (std::nothrow) StaticSubscriberExtension();
 }
 
 void StaticSubscriberExtension::Init(const std::shared_ptr<AbilityLocalRecord>& record,

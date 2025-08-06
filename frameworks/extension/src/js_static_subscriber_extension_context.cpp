@@ -31,25 +31,12 @@ namespace {
 constexpr size_t ARGC_ZERO = 0;
 constexpr size_t ARGC_ONE = 1;
 constexpr size_t ARGC_TWO = 2;
-class JsStaticSubscriberExtensionContext final {
-public:
-    explicit JsStaticSubscriberExtensionContext(const std::shared_ptr<StaticSubscriberExtensionContext>& context)
-        : context_(context) {}
-    ~JsStaticSubscriberExtensionContext() = default;
-
-    static void Finalizer(napi_env env, void* data, void* hint)
-    {
-        EVENT_LOGI("Finalizer is called");
-        std::unique_ptr<JsStaticSubscriberExtensionContext>(
-            static_cast<JsStaticSubscriberExtensionContext*>(data));
-    }
-
-    static napi_value StartAbility(napi_env env, napi_callback_info info);
-private:
-    napi_value OnStartAbility(napi_env env, napi_callback_info info, bool isStartRecent = false);
-    std::weak_ptr<StaticSubscriberExtensionContext> context_;
-};
 } // namespace
+
+std::shared_ptr<StaticSubscriberExtensionContext> JsStaticSubscriberExtensionContext::GetAbilityContext()
+{
+    return context_.lock();
+}
 
 napi_value JsStaticSubscriberExtensionContext::StartAbility(napi_env env, napi_callback_info info)
 {
