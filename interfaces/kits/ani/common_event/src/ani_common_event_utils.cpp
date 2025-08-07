@@ -68,7 +68,7 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
 
     for (ani_int i = 0; i < static_cast<ani_int>(length); i++) {
         ani_ref stringEntryRef;
-        ret = env->Object_CallMethodByName_Ref(arrayObj, "$_get", "I:Lstd/core/Object;", &stringEntryRef, i);
+        ret = env->Object_CallMethodByName_Ref(arrayObj, "$_get", "i:C{std.core.Object}", &stringEntryRef, i);
         if (ret != ANI_OK) {
             EVENT_LOGE("GetStdStringArrayClass Object_CallMethodByName_Ref error. result: %{public}d.", ret);
             return;
@@ -529,12 +529,12 @@ void AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, a
     ani_status aniResult = ANI_ERROR;
     ani_class clsInt = nullptr;
     ani_method ctor;
-    aniResult = env->FindClass("Lstd/core/Int;", &clsInt);
+    aniResult = env->FindClass("std.core.Int", &clsInt);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateAniIntObject FindClass error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "I:V", &ctor);
+    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "i:", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateAniIntObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
