@@ -396,12 +396,12 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
         EVENT_LOGE("GetAniStringArray fail, env is nullptr or strs is empty");
         return nullptr;
     }
-    int length = strs.size();
+    int32_t length = static_cast<int32_t>(strs.size());
     ani_object arrayObj = newArrayClass(env, length);
     if (arrayObj == nullptr) {
         return nullptr;
     }
-    ani_size i = 0;
+    int32_t i = 0;
     for (auto &str : strs) {
         ani_string aniStr;
         if ((env->String_NewUTF8(str.c_str(),  str.size(), &aniStr) != ANI_OK) || aniStr == nullptr) {
