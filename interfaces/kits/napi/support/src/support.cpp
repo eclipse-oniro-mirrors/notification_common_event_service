@@ -714,6 +714,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED,
         "COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SCREEN_CAPTURE,
+        "COMMON_EVENT_SCREEN_CAPTURE");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 

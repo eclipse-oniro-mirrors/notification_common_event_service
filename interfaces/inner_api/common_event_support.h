@@ -1439,6 +1439,12 @@ public:
      */
     static const std::string COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED;
 
+    /**
+     * Indicates that the device has updated the custom roaming region of device.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CUSTOM_SCREEN_CAPTURE;
+
 public:
     CommonEventSupport();
 

@@ -181,6 +181,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET,
         {PermissionState::DEFAULT, {"ohos.permission.USE_TRUSTED_RING"}}
     },
+    {CommonEventSupport::COMMON_EVENT_SCREEN_CAPTURE,
+        {PermissionState::DEFAULT, {"ohos.permission.CAPTURE_SCREEN"}}
+    },
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
