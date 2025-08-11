@@ -58,15 +58,15 @@ ani_status AniCommonEventUtils::GetAniString(ani_env* env, const std::string str
 
 void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayObj, std::vector<std::string>& strings)
 {
-    ani_double length;
+    ani_int length;
     auto ret = ANI_ERROR;
-    ret = env->Object_GetPropertyByName_Double(arrayObj, "length", &length);
+    ret = env->Object_GetPropertyByName_Int(arrayObj, "length", &length);
     if (ret != ANI_OK) {
         EVENT_LOGE("GetStdStringArrayClass Object_GetPropertyByName_Double error. result: %{public}d.", ret);
         return;
     }
 
-    for (ani_int i = 0; i < static_cast<ani_int>(length); i++) {
+    for (int32_t i = 0; i < length; i++) {
         ani_ref stringEntryRef;
         ret = env->Object_CallMethodByName_Ref(arrayObj, "$_get", "I:Lstd/core/Object;", &stringEntryRef, i);
         if (ret != ANI_OK) {
@@ -396,12 +396,12 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
         EVENT_LOGE("GetAniStringArray fail, env is nullptr or strs is empty");
         return nullptr;
     }
-    int length = strs.size();
+    int32_t length = static_cast<int32_t>(strs.size());
     ani_object arrayObj = newArrayClass(env, length);
     if (arrayObj == nullptr) {
         return nullptr;
     }
-    ani_size i = 0;
+    int32_t i = 0;
     for (auto &str : strs) {
         ani_string aniStr;
         if ((env->String_NewUTF8(str.c_str(),  str.size(), &aniStr) != ANI_OK) || aniStr == nullptr) {
