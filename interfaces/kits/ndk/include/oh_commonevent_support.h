@@ -437,6 +437,7 @@ static const char* const COMMON_EVENT_KIOSK_MODE_ON = "usual.event.KIOSK_MODE_ON
  * This is a protected common event that can only be sent by system.
  */
 static const char* const COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_OFF";
+
 #ifdef __cplusplus
 }
 #endif
