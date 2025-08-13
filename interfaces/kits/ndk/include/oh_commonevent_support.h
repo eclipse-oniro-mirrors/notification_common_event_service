@@ -442,7 +442,7 @@ static const char* const COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_O
  * Indicates that the device has exited kiosk mode.
  * This is a protected common event that can only be sent by system.
  */
-static const char* const COMMON_EVENT_SCREEN_CAPTURE = "usual.event.SCREEN_CAPTURE";
+static const char* const COMMON_EVENT_SCREEN_SHARE = "usual.event.SCREEN_SHARE";
 #ifdef __cplusplus
 }
 #endif

@@ -1592,7 +1592,7 @@ const std::string CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED
  * Indicates that the device screen capture.
  * This is a protected common event that can only be sent by system.
  */
- const std::string CommonEventSupport::COMMON_EVENT_SCREEN_CAPTURE = "usual.event.SCREEN_CAPTURE";
+ const std::string CommonEventSupport::COMMON_EVENT_SCREEN_SHARE = "usual.event.SCREEN_SHARE";
 
 CommonEventSupport::CommonEventSupport()
 {
