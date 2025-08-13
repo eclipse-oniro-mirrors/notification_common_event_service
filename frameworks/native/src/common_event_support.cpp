@@ -3023,10 +3023,10 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED);
 
     /**
-     * Indicates that the device has updated the custom roaming region of device.
+     * Indicates that the device screen capture.
      * This is a protected common event that can only be sent by system.
      */
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_CAPTURE);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_SHARE);
     return;
 }
 
