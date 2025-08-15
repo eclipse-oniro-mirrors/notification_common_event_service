@@ -17,12 +17,14 @@
 #include "ani_common_want.h"
 #include "event_log_wrapper.h"
 
+#include <ani_signature_builder.h>
+
 namespace OHOS {
 namespace EventManagerFwkAni {
 
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
-#define SETTER_METHOD_NAME(property) "<set>" #property
+using namespace arkts::ani_signature;
 
 void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string& result)
 {
@@ -358,36 +360,36 @@ void AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(
 
     // set events [Array<string>]
     ani_object eventsParamRef = GetAniStringArray(env, subscriber->GetSubscribeInfo().GetMatchingSkills().GetEvents());
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(events), eventsParamRef);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("events").c_str(), eventsParamRef);
 
     ani_string string = nullptr;
     // set publisherPermission [string]
     status = env->String_NewUTF8(
         subscriber->GetSubscribeInfo().GetPermission().c_str(),
         subscriber->GetSubscribeInfo().GetPermission().size(), &string);
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherPermission), string);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("publisherPermission").c_str(), string);
 
     // set publisherDeviceId [string]
     status = env->String_NewUTF8(
         subscriber->GetSubscribeInfo().GetDeviceId().c_str(),
         subscriber->GetSubscribeInfo().GetDeviceId().size(), &string);
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherDeviceId), string);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("publisherDeviceId").c_str(), string);
 
     // set publisherBundleName [string]
     status = env->String_NewUTF8(
         subscriber->GetSubscribeInfo().GetPublisherBundleName().c_str(),
         subscriber->GetSubscribeInfo().GetPublisherBundleName().size(), &string);
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherBundleName), string);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("publisherBundleName").c_str(), string);
 
     // set userId [int]
     ani_object userIdObject;
     CreateAniIntObject(env, userIdObject, subscriber->GetSubscribeInfo().GetUserId());
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(userId), userIdObject);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("userId").c_str(), userIdObject);
 
     // set priority [int]
     ani_object priorityObject;
     CreateAniIntObject(env, priorityObject, subscriber->GetSubscribeInfo().GetPriority());
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(priority), priorityObject);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("priority").c_str(), priorityObject);
 }
 
 ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std::string> strs)
@@ -560,25 +562,25 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     // set event [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetAction().c_str(), commonEventData.GetWant().GetAction().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(event), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("event").c_str(), string);
 
     // set bundleName [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetBundle().c_str(), commonEventData.GetWant().GetBundle().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(bundleName), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("bundleName").c_str(), string);
 
     // set data [string]
     env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(data), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("data").c_str(), string);
 
     // set code [int]
     ani_object codeObject;
     CreateAniIntObject(env, codeObject, commonEventData.GetCode());
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("code").c_str(), codeObject);
 
     // set parameters [Record]
     ani_ref wantParamRef = WrapWantParams(env, commonEventData.GetWant().GetParams());
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(parameters), wantParamRef);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("parameters").c_str(), wantParamRef);
 }
 
 } // namespace EventManagerFwkAni
