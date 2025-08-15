@@ -385,7 +385,8 @@ const std::string CommonEventSupport::COMMON_EVENT_USER_FOREGROUND = "usual.even
 
 /**
  * Indicates the action of a common event that a user switch is happening.
- * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS permission.
+ * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS
+ * permission or ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS permission.
  */
 const std::string CommonEventSupport::COMMON_EVENT_USER_SWITCHED = "usual.event.USER_SWITCHED";
 
@@ -1914,7 +1915,7 @@ void CommonEventSupport::Init()
     /**
      * Indicates the action of a common event that a user switch is happening.
      * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS
-     * permission.
+     * permission or ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS permission.
      */
     commonEventSupport_.emplace_back(COMMON_EVENT_USER_SWITCHED);
     /**

@@ -333,7 +333,7 @@ public:
     /**
      * Indicates the action of a common event that a user switch is happening.
      * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS
-     * permission.
+     * permission or ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS permission.
      */
     static const std::string COMMON_EVENT_USER_SWITCHED;
     /**
