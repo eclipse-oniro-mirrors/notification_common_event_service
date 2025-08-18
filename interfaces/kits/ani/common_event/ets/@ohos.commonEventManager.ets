@@ -198,7 +198,13 @@ namespace commonEventManager {
         }
         let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
         task.then((e: NullishType)=>{
-            callback(null, undefined);
+            let resultCode: Int  = e as Int;
+            if (resultCode == 0) {
+                callback(null, undefined);
+            } else {
+                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                callback(r, undefined);
+            }
         }, (error: Object): void => {
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
@@ -211,10 +217,15 @@ namespace commonEventManager {
         }
         let p = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
-            task.then((data: NullishType): void => {
-                resolve(undefined);
+            task.then((e: NullishType): void => {
+                let resultCode: Int  = e as Int;
+                if (resultCode == 0) {
+                    resolve(undefined);
+                } else {
+                    let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    reject(err);
+                }
             }, (error: Object): void => {
-                hilog.error(0xD001202, TAG, 'removeStickyCommonEvent Promise error');
                 reject(error);
             });
         });
@@ -224,7 +235,13 @@ namespace commonEventManager {
     export function setStaticSubscriberState(enable: boolean, callback: AsyncCallback<void, void>): void {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
         task.then((e: NullishType)=>{
-            callback(null, undefined);
+            let resultCode: Int  = e as Int;
+            if (resultCode == 0) {
+                callback(null, undefined);
+            } else {
+                let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                callback(err, undefined);
+            }
         }, (error: Object): void => {
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
@@ -235,9 +252,14 @@ namespace commonEventManager {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
         task.then((e: NullishType): void => {
-            resolve(undefined);
+            let resultCode: Int  = e as Int;
+            if (resultCode == 0) {
+                resolve(undefined);
+            } else {
+                let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                reject(err);
+            }
         }, (error: Object): void => {
-            hilog.error(0xD001202, TAG, 'setStaticSubscriberState Promise error');
             reject(error);
         });
     });
@@ -246,16 +268,21 @@ namespace commonEventManager {
 
     export function setStaticSubscriberState(enable: boolean, events?: Array<string>): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
-        let task = taskpool.execute(commonEventManager.setStaticSubscriberStateWithEventsExecute, enable, events);
-        task.then((e: NullishType): void => {
-            resolve(undefined);
-        }, (error: Object): void => {
-            hilog.error(0xD001202, TAG, 'setStaticSubscriberStateExecute Promise error.');
-            reject(error);
+            let task = taskpool.execute(commonEventManager.setStaticSubscriberStateWithEventsExecute, enable, events);
+            task.then((e: NullishType): void => {
+                let resultCode: Int  = e as Int;
+                if (resultCode == 0) {
+                    resolve(undefined);
+                } else {
+                    let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    reject(err);
+                }
+            }, (error: Object): void => {
+                reject(error);
+            });
         });
-    });
         return pPromise;
-}
+    }
 
     export enum Support {
         COMMON_EVENT_BOOT_COMPLETED = 'usual.event.BOOT_COMPLETED',
@@ -474,6 +501,14 @@ namespace commonEventManager {
         COMMON_EVENT_VPN_CONNECTION_STATUS_CHANGED = 'usual.event.VPN_CONNECTION_STATUS_CHANGED',
         COMMON_EVENT_RESTORE_START = 'usual.event.RESTORE_START',
         COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED = 'usual.event.MANAGED_BROWSER_POLICY_CHANGED',
+        COMMON_EVENT_USER_LOCKING = 'usual.event.USER_LOCKING',
+        COMMON_EVENT_USER_LOCKED = 'usual.event.USER_LOCKED',
+        COMMON_EVENT_DEFAULT_APPLICATION_CHANGED = 'usual.event.DEFAULT_APPLICATION_CHANGED',
+        COMMON_EVENT_SHORTCUT_CHANGED = 'usual.event.SHORTCUT_CHANGED',
+        COMMON_EVENT_KIOSK_MODE_ON = 'usual.event.KIOSK_MODE_ON',
+        COMMON_EVENT_KIOSK_MODE_OFF = 'usual.event.KIOSK_MODE_OFF',
+        COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED = 'usual.event.CUSTOM_CONFIG_POLICY_UPDATED',
+        COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED = 'usual.event.CUSTOM_ROAMING_REGION_UPDATED',
     }
 
 }
