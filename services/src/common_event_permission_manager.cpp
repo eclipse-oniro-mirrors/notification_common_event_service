@@ -185,6 +185,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_TRUSTED_RING_RESET,
         {PermissionState::DEFAULT, {"ohos.permission.USE_TRUSTED_RING"}}
     },
+    {CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_CLOUD_DISK_INFO"}}
+    },
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
@@ -205,7 +208,8 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED,
     CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED,
     CommonEventSupport::COMMON_EVENT_SCREEN_SHARE,
-    CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED
+    CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED,
+    CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {
