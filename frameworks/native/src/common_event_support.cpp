@@ -1524,6 +1524,12 @@ const std::string CommonEventSupport::COMMON_EVENT_SECOND_MOUNTED = "usual.event
 const std::string CommonEventSupport::COMMON_EVENT_RESTORE_START = "usual.event.RESTORE_START";
 
 /**
+ * Indicates that an application finished restore.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_RESTORE_END = "usual.event.RESTORE_END";
+
+/**
  * Indicates that the managed browser policy is changed.
  * This is a protected common event that can only be sent by system.
  */
@@ -2960,6 +2966,12 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RESTORE_START);
+
+    /**
+     * Indicates that an application finished restore.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_RESTORE_END);
 
     /**
      * Indicates that the managed browser policy is changed.

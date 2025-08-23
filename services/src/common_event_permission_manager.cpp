@@ -166,6 +166,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_RESTORE_START,
         {PermissionState::DEFAULT, {"ohos.permission.START_RESTORE_NOTIFICATION"}}
     },
+    {CommonEventSupport::COMMON_EVENT_RESTORE_END,
+        {PermissionState::DEFAULT, {"ohos.permission.RESTORE_END_NOTIFICATION"}}
+    },
     {CommonEventSupport::COMMON_EVENT_DEFAULT_APPLICATION_CHANGED,
         {PermissionState::DEFAULT, {"ohos.permission.CHANGE_DEFAULT_APPLICATION"}}
     },
@@ -190,6 +193,7 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_CHARGE_TYPE_CHANGED,
     CommonEventSupport::COMMON_EVENT_DYNAMIC_ICON_CHANGED,
     CommonEventSupport::COMMON_EVENT_RESTORE_START,
+    CommonEventSupport::COMMON_EVENT_RESTORE_END,
     CommonEventSupport::COMMON_EVENT_DEFAULT_APPLICATION_CHANGED,
     CommonEventSupport::COMMON_EVENT_SHORTCUT_CHANGED,
     CommonEventSupport::COMMON_EVENT_TRUSTED_RING_CHECKIN,
