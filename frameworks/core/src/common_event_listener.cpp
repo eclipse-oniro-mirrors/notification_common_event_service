@@ -23,7 +23,6 @@ namespace OHOS {
 namespace EventFwk {
 std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::commonRunner_ = nullptr;
 std::atomic<int> ffrtIndex = 0;
-std::mutex CommonEventListener::onRemoteRequestMutex_;
 
 CommonEventListener::CommonEventListener(const std::shared_ptr<CommonEventSubscriber> &commonEventSubscriber)
     : commonEventSubscriber_(commonEventSubscriber)
@@ -142,17 +141,19 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
         EVENT_LOGE("Failed to create AsyncCommonEventResult");
         return;
     }
-
-    if (!commonEventSubscriber_) {
+    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        subscriber = commonEventSubscriber_;
+    }
+    if (!subscriber) {
         EVENT_LOGE("CommonEventSubscriber ptr is nullptr");
         return;
     }
-    commonEventSubscriber_->SetAsyncCommonEventResult(result);
-
-    commonEventSubscriber_->OnReceiveEvent(commonEventData);
-
-    if (ordered && (commonEventSubscriber_->GetAsyncCommonEventResult() != nullptr)) {
-        commonEventSubscriber_->GetAsyncCommonEventResult()->FinishCommonEvent();
+    subscriber->SetAsyncCommonEventResult(result);
+    subscriber->OnReceiveEvent(commonEventData);
+    if (ordered && (subscriber->GetAsyncCommonEventResult() != nullptr)) {
+        subscriber->GetAsyncCommonEventResult()->FinishCommonEvent();
     }
     EVENT_LOGD("end");
 }
@@ -167,41 +168,15 @@ void CommonEventListener::Stop()
             queue = listenerQueue_;
             listenerQueue_ = nullptr;
         }
-
-        if (handler_) {
-            handler_.reset();
-        }
-
-        if (commonEventSubscriber_ == nullptr) {
-            EVENT_LOGE("commonEventSubscriber_ is nullptr");
-            return;
-        }
-        EVENT_LOGD("event size: %{public}zu",
-            commonEventSubscriber_->GetSubscribeInfo().GetMatchingSkills().CountEvent());
-        if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
-            EVENT_LOGD("stop listener in HANDLER mode");
-            return;
-        }
-
-        if (runner_) {
-            runner_.reset();
-        }
+        handler_ = nullptr;
+        commonEventSubscriber_ = nullptr;
+        runner_ = nullptr;
     }
     if (queue) {
-        delete static_cast<ffrt::queue*>(queue);
+        ffrt::submit([queue]() {
+            delete static_cast<ffrt::queue*>(queue);
+        });
     }
-}
-
-int32_t CommonEventListener::CallbackEnter([[maybe_unused]] uint32_t code)
-{
-    onRemoteRequestMutex_.lock();
-    return 0;
-}
-
-int32_t CommonEventListener::CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result)
-{
-    onRemoteRequestMutex_.unlock();
-    return 0;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
