@@ -45,14 +45,6 @@ public:
     {
         return ERR_OK;
     }
-    int32_t CallbackEnter([[maybe_unused]] uint32_t code) override
-    {
-        return 0;
-    }
-    int32_t CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result) override
-    {
-        return 0;
-    }
 };
 
 class EventReceiveStubTest : public CommonEventSubscriber, public testing::Test {
