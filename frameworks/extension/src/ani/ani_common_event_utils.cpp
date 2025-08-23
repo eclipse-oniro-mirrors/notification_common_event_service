@@ -75,12 +75,12 @@ void AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, a
     ani_status aniResult = ANI_ERROR;
     ani_class clsInt = nullptr;
     ani_method ctor;
-    aniResult = env->FindClass("Lstd/core/Int;", &clsInt);
+    aniResult = env->FindClass("std.core.Int;", &clsInt);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateAniIntObject FindClass error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "I:V", &ctor);
+    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "i:", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateAniIntObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
