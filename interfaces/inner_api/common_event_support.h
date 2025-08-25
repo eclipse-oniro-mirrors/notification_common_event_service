@@ -1445,6 +1445,12 @@ public:
      */
     static const std::string COMMON_EVENT_SCREEN_SHARE;
 
+    /**
+     * Indicates that exit str when cancel before alerting.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CANCEL_BEFORE_ALERTING;
+
 public:
     CommonEventSupport();
 

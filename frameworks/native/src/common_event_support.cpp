@@ -1594,6 +1594,13 @@ const std::string CommonEventSupport::COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED
  */
 const std::string CommonEventSupport::COMMON_EVENT_SCREEN_SHARE = "usual.event.SCREEN_SHARE";
 
+/**
+ * Indicates that exit str when cancel before alerting.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_CANCEL_BEFORE_ALERTING =
+    "usual.event.CANCEL_BEFORE_ALERTING";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -3027,6 +3034,12 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_SHARE);
+
+    /**
+     * Indicates that exit str when cancel before alerting.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CANCEL_BEFORE_ALERTING);
     return;
 }
 
