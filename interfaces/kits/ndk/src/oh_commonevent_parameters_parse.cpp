@@ -21,7 +21,7 @@ int32_t GetStringFromParams(const CArrParameters& parameters, const std::string&
 {
     AAFwk::IString* ao = AAFwk::IString::Query(parameters.wantParams.GetParam(key));
     if (ao == nullptr) {
-        EVENT_LOGE("No value");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "No value");
         return 0;
     }
 
@@ -29,7 +29,7 @@ int32_t GetStringFromParams(const CArrParameters& parameters, const std::string&
     size_t size = nativeValue.length() + 1;
     *str = static_cast<char*>(malloc(size));
     if (*str == nullptr) {
-        EVENT_LOGE("malloc fail");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "malloc fail");
         return 0;
     }
     parameters.allocatedPointers.push_back(*str);

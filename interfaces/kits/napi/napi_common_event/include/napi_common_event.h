@@ -58,7 +58,8 @@ private:
     napi_value OnSetStaticSubscriberState(napi_env env, const napi_callback_info info);
 };
 
-static thread_local napi_ref g_CommonEventSubscriber = nullptr;
+static ffrt::mutex g_subscriberConstructorRefSetMutex;
+static std::set<std::pair<napi_env, napi_ref> *> g_subscriberConstructorRefSets;
 static std::map<std::shared_ptr<SubscriberInstance>, subscriberInstanceInfo> subscriberInstances;
 static ffrt::mutex subscriberInsMutex;
 
@@ -511,6 +512,8 @@ napi_value ParseParametersByRemoveSticky(const napi_env &env,
 void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status status, void *data);
 
 napi_value RemoveStickyCommonEvent(napi_env env, napi_callback_info info);
+
+napi_value GetSubscriberConstructor(napi_env env);
 }  // namespace EventManagerFwkNapi
 }  // namespace OHOS
 

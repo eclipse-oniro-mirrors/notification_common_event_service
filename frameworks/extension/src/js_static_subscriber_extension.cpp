@@ -38,15 +38,15 @@ using namespace OHOS::AppExecFwk;
 
 napi_value AttachStaticSubscriberExtensionContext(napi_env env, void* value, void*)
 {
-    EVENT_LOGD("AttachStaticSubscriberExtensionContext");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "AttachStaticSubscriberExtensionContext");
     if (value == nullptr) {
-        EVENT_LOGE("invalid parameter.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "invalid parameter.");
         return nullptr;
     }
 
     auto ptr = reinterpret_cast<std::weak_ptr<StaticSubscriberExtensionContext>*>(value)->lock();
     if (ptr == nullptr) {
-        EVENT_LOGE("invalid context.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "invalid context.");
         return nullptr;
     }
 
@@ -54,19 +54,19 @@ napi_value AttachStaticSubscriberExtensionContext(napi_env env, void* value, voi
     auto napiContextObj = AbilityRuntime::JsRuntime::LoadSystemModuleByEngine(env,
         "application.StaticSubscriberExtensionContext", &object, 1)->GetNapiValue();
     if (napiContextObj == nullptr) {
-        EVENT_LOGE("load context failed.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "load context failed.");
         return nullptr;
     }
     napi_coerce_to_native_binding_object(env, napiContextObj, AbilityRuntime::DetachCallbackFunc,
         AttachStaticSubscriberExtensionContext, value, nullptr);
     auto workContext = new (std::nothrow) std::weak_ptr<StaticSubscriberExtensionContext>(ptr);
     if (workContext == nullptr) {
-        EVENT_LOGE("invalid StaticSubscriberExtensionContext.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "invalid StaticSubscriberExtensionContext.");
         return nullptr;
     }
     napi_wrap(env, napiContextObj, workContext,
         [](napi_env, void* data, void*) {
-            EVENT_LOGI("Finalizer for weak_ptr static subscriber extension context is called");
+            EVENT_LOGI(LOG_TAG_CES_NAPI, "Finalizer for weak_ptr static subscriber extension context is called");
             delete static_cast<std::weak_ptr<StaticSubscriberExtensionContext>*>(data);
         }, nullptr, nullptr);
     return napiContextObj;
@@ -82,7 +82,7 @@ JsStaticSubscriberExtension::JsStaticSubscriberExtension(AbilityRuntime::JsRunti
     : jsRuntime_(jsRuntime) {}
 JsStaticSubscriberExtension::~JsStaticSubscriberExtension()
 {
-    EVENT_LOGD("Js static subscriber extension destructor.");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Js static subscriber extension destructor.");
     auto context = GetContext();
     if (context) {
         context->Unbind();
@@ -98,7 +98,7 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
 {
     StaticSubscriberExtension::Init(record, application, handler, token);
     if (Extension::abilityInfo_->srcEntrance.empty()) {
-        EVENT_LOGE("srcEntrance of abilityInfo is empty");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "srcEntrance of abilityInfo is empty");
         return;
     }
 
@@ -109,19 +109,19 @@ void JsStaticSubscriberExtension::Init(const std::shared_ptr<AppExecFwk::Ability
 
     std::string moduleName(Extension::abilityInfo_->moduleName);
     moduleName.append("::").append(abilityInfo_->name);
-    EVENT_LOGD("moduleName: %{public}s, srcPath: %{public}s.", moduleName.c_str(), srcPath.c_str());
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "moduleName: %{public}s, srcPath: %{public}s.", moduleName.c_str(), srcPath.c_str());
     AbilityRuntime::HandleScope handleScope(jsRuntime_);
     napi_env env = jsRuntime_.GetNapiEnv();
 
     jsObj_ = jsRuntime_.LoadModule(moduleName, srcPath, abilityInfo_->hapPath,
         abilityInfo_->compileMode == CompileMode::ES_MODULE);
     if (jsObj_ == nullptr) {
-        EVENT_LOGE("Failed to load module");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to load module");
         return;
     }
     napi_value obj = jsObj_->GetNapiValue();
     if (obj == nullptr) {
-        EVENT_LOGE("Failed to get static subscriber extension object");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to get static subscriber extension object");
         return;
     }
     ExecNapiWrap(env, obj);
@@ -131,7 +131,7 @@ void JsStaticSubscriberExtension::ExecNapiWrap(napi_env env, napi_value obj)
 {
     auto context = GetContext();
     if (context == nullptr) {
-        EVENT_LOGE("Failed to get context");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to get context");
         return;
     }
 
@@ -139,18 +139,18 @@ void JsStaticSubscriberExtension::ExecNapiWrap(napi_env env, napi_value obj)
     auto shellContextRef = AbilityRuntime::JsRuntime::LoadSystemModuleByEngine(
         env, "application.StaticSubscriberExtensionContext", &contextObj, ARGC_ONE);
     if (shellContextRef == nullptr) {
-        EVENT_LOGE("Failed to get shell context reference");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to get shell context reference");
         return;
     }
     napi_value nativeObj = shellContextRef->GetNapiValue();
     if (nativeObj == nullptr) {
-        EVENT_LOGE("Failed to get context native object");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to get context native object");
         return;
     }
 
     auto workContext = new (std::nothrow) std::weak_ptr<StaticSubscriberExtensionContext>(context);
     if (workContext == nullptr) {
-        EVENT_LOGE("invalid StaticSubscriberExtensionContext.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "invalid StaticSubscriberExtensionContext.");
         return;
     }
     napi_coerce_to_native_binding_object(env, nativeObj, AbilityRuntime::DetachCallbackFunc,
@@ -158,36 +158,36 @@ void JsStaticSubscriberExtension::ExecNapiWrap(napi_env env, napi_value obj)
     context->Bind(jsRuntime_, shellContextRef.release());
     napi_set_named_property(env, obj, "context", nativeObj);
 
-    EVENT_LOGD("Set static subscriber extension context");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Set static subscriber extension context");
     napi_wrap(env, nativeObj, workContext,
         [](napi_env, void* data, void*) {
-        EVENT_LOGI("Finalizer for weak_ptr static subscriber extension context is called");
+        EVENT_LOGI(LOG_TAG_CES_NAPI, "Finalizer for weak_ptr static subscriber extension context is called");
         delete static_cast<std::weak_ptr<StaticSubscriberExtensionContext>*>(data);
         }, nullptr, nullptr);
 
-    EVENT_LOGI("Init end.");
+    EVENT_LOGI(LOG_TAG_CES_NAPI, "Init end.");
 }
 
 void JsStaticSubscriberExtension::OnStart(const AAFwk::Want& want)
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "%{public}s called.", __func__);
     Extension::OnStart(want);
 }
 
 void JsStaticSubscriberExtension::OnStop()
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "%{public}s called.", __func__);
     Extension::OnStop();
 }
 
 sptr<IRemoteObject> JsStaticSubscriberExtension::OnConnect(const AAFwk::Want& want)
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "%{public}s called.", __func__);
     Extension::OnConnect(want);
     sptr<StaticSubscriberStubImpl> remoteObject = new (std::nothrow) StaticSubscriberStubImpl(
         std::static_pointer_cast<JsStaticSubscriberExtension>(shared_from_this()));
     if (remoteObject == nullptr) {
-        EVENT_LOGE("failed to create StaticSubscriberStubImpl!");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "failed to create StaticSubscriberStubImpl!");
         return nullptr;
     }
     return remoteObject->AsObject();
@@ -195,7 +195,7 @@ sptr<IRemoteObject> JsStaticSubscriberExtension::OnConnect(const AAFwk::Want& wa
 
 void JsStaticSubscriberExtension::OnDisconnect(const AAFwk::Want& want)
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "%{public}s called.", __func__);
     Extension::OnDisconnect(want);
 }
 
@@ -206,9 +206,9 @@ std::weak_ptr<JsStaticSubscriberExtension> JsStaticSubscriberExtension::GetWeakP
 
 void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData> data)
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "%{public}s called.", __func__);
     if (handler_ == nullptr) {
-        EVENT_LOGE("handler is invalid");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "handler is invalid");
         return;
     }
     std::weak_ptr<JsStaticSubscriberExtension> wThis = GetWeakPtr();
@@ -219,11 +219,11 @@ void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData
             return;
         }
         if (data == nullptr) {
-            EVENT_LOGE("OnReceiveEvent common event data is invalid");
+            EVENT_LOGE(LOG_TAG_CES_NAPI, "OnReceiveEvent common event data is invalid");
             return;
         }
         if (!sThis->jsObj_) {
-            EVENT_LOGE("Not found StaticSubscriberExtension.js");
+            EVENT_LOGE(LOG_TAG_CES_NAPI, "Not found StaticSubscriberExtension.js");
             return;
         }
 
@@ -252,18 +252,18 @@ void JsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData
         napi_value argv[] = {commonEventData};
         napi_value obj = sThis->jsObj_->GetNapiValue();
         if (obj == nullptr) {
-            EVENT_LOGE("Failed to get StaticSubscriberExtension object");
+            EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to get StaticSubscriberExtension object");
             return;
         }
 
         napi_value method = nullptr;
         napi_get_named_property(env, obj, "onReceiveEvent", &method);
         if (method == nullptr) {
-            EVENT_LOGE("Failed to get onReceiveEvent from StaticSubscriberExtension object");
+            EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to get onReceiveEvent from StaticSubscriberExtension object");
             return;
         }
         napi_call_function(env, obj, method, ARGC_ONE, argv, nullptr);
-        EVENT_LOGD("JsStaticSubscriberExtension js receive event called.");
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "JsStaticSubscriberExtension js receive event called.");
     };
     handler_->PostTask(task, "CommonEvent" + data->GetWant().GetAction());
 }

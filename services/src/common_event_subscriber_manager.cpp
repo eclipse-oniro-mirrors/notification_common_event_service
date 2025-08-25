@@ -61,27 +61,27 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
     const struct tm &recordTime, const EventRecordInfo &eventRecordInfo)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
 
     if (eventSubscribeInfo == nullptr) {
-        EVENT_LOGE("eventSubscribeInfo is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "eventSubscribeInfo is null");
         return nullptr;
     }
 
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("commonEventListener is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "commonEventListener is null");
         return nullptr;
     }
 
     std::vector<std::string> events = eventSubscribeInfo->GetMatchingSkills().GetEvents();
     if (events.size() == 0 || events.size() > SUBSCRIBE_EVENT_MAX_NUM) {
-        EVENT_LOGE("subscribed events size is error");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "subscribed events size is error");
         return nullptr;
     }
 
     auto record = std::make_shared<EventSubscriberRecord>();
     if (record == nullptr) {
-        EVENT_LOGE("Failed to create EventSubscriberRecord");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "Failed to create EventSubscriberRecord");
         return nullptr;
     }
 
@@ -99,13 +99,17 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
     }
 
     if (eventRecordInfo.uid != SAMGR_UID) {
+        std::string unsafeEventsLogger = "";
         for (auto event : events) {
             bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(event);
             if (!isSystemEvent && eventSubscribeInfo->GetPermission().empty() &&
                 eventSubscribeInfo->GetPublisherBundleName().empty() && eventSubscribeInfo->GetPublisherUid() == 0) {
-                EVENT_LOGW("Subscribe %{public}s without any restrict subid = %{public}s, bundle = %{public}s",
-                    event.c_str(), eventRecordInfo.subId.c_str(), eventRecordInfo.bundleName.c_str());
+                unsafeEventsLogger.append(event).append(",");
             }
+        }
+        if (!unsafeEventsLogger.empty()) {
+            EVENT_LOGW(LOG_TAG_SUBSCRIBER, "Subscribe %{public}s without any restrict subid = %{public}s",
+                unsafeEventsLogger.c_str(), eventRecordInfo.subId.c_str());
         }
     }
 
@@ -115,10 +119,10 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
 int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &commonEventListener)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
 
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("commonEventListener is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "commonEventListener is null");
         return ERR_INVALID_VALUE;
     }
 
@@ -129,7 +133,7 @@ int CommonEventSubscriberManager::RemoveSubscriber(const sptr<IRemoteObject> &co
 std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager::GetSubscriberRecords(
     const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
 
     auto records = std::vector<SubscriberRecordPtr>();
 
@@ -156,7 +160,7 @@ void CommonEventSubscriberManager::DumpDetailed(
     const std::string &title, const SubscriberRecordPtr &record, const std::string format, std::string &dumpInfo)
 {
     if (record == nullptr || record->eventSubscribeInfo == nullptr) {
-        EVENT_LOGE("record or eventSubscribeInfo is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "record or eventSubscribeInfo is null");
         return;
     }
     char systime[LENGTH];
@@ -238,7 +242,7 @@ void CommonEventSubscriberManager::DumpDetailed(
 void CommonEventSubscriberManager::DumpState(const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
 
     std::vector<SubscriberRecordPtr> records;
 
@@ -268,15 +272,15 @@ void CommonEventSubscriberManager::DumpState(const std::string &event, const int
 __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
     const std::vector<std::string> &events, const SubscriberRecordPtr &record)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
 
     if (events.size() == 0) {
-        EVENT_LOGE("No subscribed events");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "No subscribed events");
         return false;
     }
 
     if (record == nullptr) {
-        EVENT_LOGE("record is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "record is null");
         return false;
     }
 
@@ -294,13 +298,13 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
         AAFwk::ExitReason reason = { AAFwk::REASON_RESOURCE_CONTROL, "Kill Reason: CES Register exceed limit"};
         AAFwk::AbilityManagerClient::GetInstance()->RecordProcessExitReason(killedPid, reason);
         int killResult = kill(killedPid, SIGNAL_KILL);
-        EVENT_LOGI("kill pid=%{public}d which has the most subscribers %{public}s", killedPid,
+        EVENT_LOGW(LOG_TAG_SUBSCRIBER, "kill pid=%{public}d which has the most subscribers %{public}s", killedPid,
             killResult < 0 ? "failed" : "successfully");
         int result = HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::FRAMEWORK, "PROCESS_KILL",
             HiviewDFX::HiSysEvent::EventType::FAULT, "PID", killedPid, "PROCESS_NAME",
             record->eventRecordInfo.bundleName, "MSG", CES_REGISTER_EXCEED_LIMIT);
-        EVENT_LOGW("hisysevent write result=%{public}d, send event [FRAMEWORK,PROCESS_KILL], pid=%{public}d,"
-            " processName=%{public}s, msg=%{public}s", result, killedPid, record->eventRecordInfo.bundleName.c_str(),
+        EVENT_LOGW(LOG_TAG_SUBSCRIBER, "hisysevent write result=%{public}d,send[FRAMEWORK,PROCESS_KILL],pid=%{public}d"
+            ",processName=%{public}s,msg=%{public}s", result, killedPid, record->eventRecordInfo.bundleName.c_str(),
             CES_REGISTER_EXCEED_LIMIT);
     }
 
@@ -310,8 +314,8 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
             infoItem->second.insert(record);
 
             if (infoItem->second.size() > MAX_SUBSCRIBER_NUM_PER_EVENT && record->eventSubscribeInfo != nullptr) {
-                EVENT_LOGW("%{public}s event has %{public}zu subscriber, please check", event.c_str(),
-                    infoItem->second.size());
+                EVENT_LOGW(LOG_TAG_SUBSCRIBER, "%{public}s event has %{public}zu subscriber, please check",
+                    event.c_str(), infoItem->second.size());
                 SendSubscriberExceedMaximumHiSysEvent(record->eventSubscribeInfo->GetUserId(), event,
                     infoItem->second.size());
             }
@@ -331,7 +335,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
 int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener)
 {
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("commonEventListener is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "commonEventListener is null");
         return ERR_INVALID_VALUE;
     }
     
@@ -347,7 +351,7 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
             RemoveFrozenEventsBySubscriber((*it));
             RemoveFrozenEventsMapBySubscriber((*it));
             events = (*it)->eventSubscribeInfo->GetMatchingSkills().GetEvents();
-            EVENT_LOGI("Unsubscribe %{public}s", (*it)->eventRecordInfo.subId.c_str());
+            EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Unsubscribe %{public}s", (*it)->eventRecordInfo.subId.c_str());
             pid_t pid = (*it)->eventRecordInfo.pid;
             subscriberCounts_[pid] > 1 ? subscriberCounts_[pid]-- : subscriberCounts_.erase(pid);
             subscribers_.erase(it);
@@ -381,7 +385,7 @@ bool CommonEventSubscriberManager::CheckSubscriberByUserId(
         (subscriberUserId >= SUBSCRIBE_USER_SYSTEM_BEGIN && subscriberUserId <= SUBSCRIBE_USER_SYSTEM_END))) {
         return true;
     }
-    EVENT_LOGD("Subscriber userId [%{public}d] isn't equal to publish required userId %{public}d",
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "Subscriber userId [%{public}d] isn't equal to publish required userId %{public}d",
         subscriberUserId, userId);
     return false;
 }
@@ -453,13 +457,13 @@ bool CommonEventSubscriberManager::CheckPublisherWhetherMatched(
     auto uid = eventRecord.eventRecordInfo.uid;
     auto subscriberRequiredBundle = subscriberRecord->eventSubscribeInfo->GetPublisherBundleName();
     if (!subscriberRequiredBundle.empty() && subscriberRequiredBundle != bundleName) {
-        EVENT_LOGD("Publisher[%{public}s] isn't equal to subscriber required bundleName[%{public}s] is not matched",
-            bundleName.c_str(), subscriberRequiredBundle.c_str());
+        EVENT_LOGD(LOG_TAG_SUBSCRIBER, "Publisher[%{public}s] isn't equal to subscriber required bundleName"
+            "[%{public}s] is not matched", bundleName.c_str(), subscriberRequiredBundle.c_str());
         return false;
     }
     auto subscriberRequiredUid = subscriberRecord->eventSubscribeInfo->GetPublisherUid();
     if (subscriberRequiredUid > 0 && uid > 0 && static_cast<uid_t>(subscriberRequiredUid) != uid) {
-        EVENT_LOGD("Publisher[%{public}d] isn't equal to subscriber required uid[%{public}d]",
+        EVENT_LOGD(LOG_TAG_SUBSCRIBER, "Publisher[%{public}d] isn't equal to subscriber required uid[%{public}d]",
             uid, subscriberRequiredUid);
         return false;
     }
@@ -508,7 +512,7 @@ bool CommonEventSubscriberManager::CheckSubscriberWhetherMatched(
         result = ((checkResult & filterSettings) != 0);
     }
     if (!result) {
-        EVENT_LOGD("Not match,%{public}d_%{public}u_%{public}u",
+        EVENT_LOGD(LOG_TAG_SUBSCRIBER, "Not match,%{public}d_%{public}u_%{public}u",
             static_cast<int32_t>(eventRecord.publishInfo->GetValidationRule()),
             static_cast<uint32_t>(checkResult), static_cast<uint32_t>(filterSettings));
     }
@@ -518,14 +522,14 @@ bool CommonEventSubscriberManager::CheckSubscriberWhetherMatched(
 bool CommonEventSubscriberManager::CheckSubscriberPermission(
     const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
     bool ret = false;
     std::string lackPermission {};
     std::string event = eventRecord.commonEventData->GetWant().GetAction();
     bool isSystemAPIEvent = DelayedSingleton<CommonEventPermissionManager>::GetInstance()->IsSystemAPIEvent(event);
     if (isSystemAPIEvent && !(subscriberRecord->eventRecordInfo.isSubsystem
         || subscriberRecord->eventRecordInfo.isSystemApp)) {
-        EVENT_LOGW("Invalid permission for system api event.");
+        EVENT_LOGW(LOG_TAG_SUBSCRIBER, "Invalid permission for system api event.");
         return false;
     }
     if (subscriberRecord->eventRecordInfo.uid == eventRecord.eventRecordInfo.uid) {
@@ -558,8 +562,9 @@ bool CommonEventSubscriberManager::CheckSubscriberPermission(
         lackPermission = lackPermission.substr(0, lackPermission.length() - CONNECTOR.length());
     }
     if (!ret) {
-        EVENT_LOGD("No permission to receive %{public}s, due to %{public}s lacks the %{public}s permission.",
-            event.c_str(), subscriberRecord->eventRecordInfo.subId.c_str(), lackPermission.c_str());
+        EVENT_LOGD(LOG_TAG_SUBSCRIBER, "No permission to receive %{public}s, due to %{public}s lacks the "
+            "%{public}s permission", event.c_str(), subscriberRecord->eventRecordInfo.subId.c_str(),
+            lackPermission.c_str());
     }
     return ret;
 }
@@ -578,7 +583,7 @@ bool CommonEventSubscriberManager::CheckSubscriberRequiredPermission(const Subsc
     bool ret = AccessTokenHelper::VerifyAccessToken(eventRecord.eventRecordInfo.callerToken,
         subscriberRequiredPermission);
     if (!ret) {
-        EVENT_LOGD("No permission to send %{public}s "
+        EVENT_LOGD(LOG_TAG_SUBSCRIBER, "No permission to send %{public}s "
                     "to %{public}s due to subscriber requires the %{public}s permission.",
             eventRecord.commonEventData->GetWant().GetAction().c_str(),
             subscriberRecord->eventRecordInfo.subId.c_str(),
@@ -600,7 +605,7 @@ bool CommonEventSubscriberManager::CheckPublisherRequiredPermissions(const Subsc
         bool ret = AccessTokenHelper::VerifyAccessToken(
             subscriberRecord->eventRecordInfo.callerToken, publisherRequiredPermission);
         if (!ret) {
-            EVENT_LOGD("No permission to receive %{public}s to %{public}s"
+            EVENT_LOGD(LOG_TAG_SUBSCRIBER, "No permission to receive %{public}s to %{public}s"
                         "due to publisher requires the %{public}s permission.",
                 eventRecord.commonEventData->GetWant().GetAction().c_str(),
                 subscriberRecord->eventRecordInfo.subId.c_str(),
@@ -670,7 +675,7 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByEvent(
 void CommonEventSubscriberManager::UpdateFreezeInfo(
     const uid_t &uid, const bool &freezeState, const int64_t &freezeTime)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
@@ -681,7 +686,7 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
                 recordPtr->freezeTime = 0;
             }
             recordPtr->isFreeze = freezeState;
-            EVENT_LOGD("recordPtr->uid: %{public}d, recordPtr->isFreeze: %{public}d",
+            EVENT_LOGD(LOG_TAG_FREEZED, "recordPtr->uid: %{public}d, recordPtr->isFreeze: %{public}d",
                 recordPtr->eventRecordInfo.uid, recordPtr->isFreeze);
         }
     }
@@ -690,7 +695,7 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
 void CommonEventSubscriberManager::UpdateFreezeInfo(
     std::set<int> pidList, const bool &freezeState, const int64_t &freezeTime)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
@@ -702,7 +707,7 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
                     recordPtr->freezeTime = 0;
                 }
                 recordPtr->isFreeze = freezeState;
-                EVENT_LOGD("recordPtr->pid: %{public}d, recordPtr->isFreeze: %{public}d",
+                EVENT_LOGD(LOG_TAG_FREEZED, "recordPtr->pid: %{public}d, recordPtr->isFreeze: %{public}d",
                     recordPtr->eventRecordInfo.pid, recordPtr->isFreeze);
             }
         }
@@ -711,7 +716,7 @@ void CommonEventSubscriberManager::UpdateFreezeInfo(
 
 void CommonEventSubscriberManager::UpdateAllFreezeInfos(const bool &freezeState, const int64_t &freezeTime)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto recordPtr : subscribers_) {
@@ -722,16 +727,16 @@ void CommonEventSubscriberManager::UpdateAllFreezeInfos(const bool &freezeState,
         }
         recordPtr->isFreeze = freezeState;
     }
-    EVENT_LOGD("all subscribers update freeze state to %{public}d", freezeState);
+    EVENT_LOGD(LOG_TAG_FREEZED, "all subscribers update freeze state to %{public}d", freezeState);
 }
 
 void CommonEventSubscriberManager::InsertFrozenEvents(
     const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     if (subscriberRecord == nullptr) {
-        EVENT_LOGE("subscriberRecord is null");
+        EVENT_LOGE(LOG_TAG_FREEZED, "subscriberRecord is null");
         return;
     }
 
@@ -765,7 +770,7 @@ void CommonEventSubscriberManager::InsertFrozenEvents(
 std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscriberManager::GetFrozenEvents(
     const uid_t &uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenEvents;
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -781,14 +786,14 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
 
 std::map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEvents()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     return std::move(frozenEvents_);
 }
 
 void CommonEventSubscriberManager::RemoveFrozenEvents(const uid_t &uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
     auto infoItem = frozenEvents_.find(uid);
     if (infoItem != frozenEvents_.end()) {
         frozenEvents_.erase(uid);
@@ -797,7 +802,7 @@ void CommonEventSubscriberManager::RemoveFrozenEvents(const uid_t &uid)
 
 void CommonEventSubscriberManager::RemoveFrozenEventsBySubscriber(const SubscriberRecordPtr &subscriberRecord)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     auto frozenRecordsItem = frozenEvents_.find(subscriberRecord->eventRecordInfo.uid);
     if (frozenRecordsItem != frozenEvents_.end()) {
@@ -811,10 +816,10 @@ void CommonEventSubscriberManager::RemoveFrozenEventsBySubscriber(const Subscrib
 void CommonEventSubscriberManager::InsertFrozenEventsMap(
     const SubscriberRecordPtr &subscriberRecord, const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     if (subscriberRecord == nullptr) {
-        EVENT_LOGE("subscriberRecord is null");
+        EVENT_LOGE(LOG_TAG_FREEZED, "subscriberRecord is null");
         return;
     }
 
@@ -848,7 +853,7 @@ void CommonEventSubscriberManager::InsertFrozenEventsMap(
 std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscriberManager::GetFrozenEventsMapByPid(
     const pid_t &pid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> frozenEvents;
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -864,14 +869,14 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
 
 std::map<pid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEventsMap()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     return std::move(frozenEventsMap_);
 }
 
 void CommonEventSubscriberManager::RemoveFrozenEventsMapByPid(const pid_t &pid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
     auto infoItem = frozenEventsMap_.find(pid);
     if (infoItem != frozenEventsMap_.end()) {
         frozenEventsMap_.erase(pid);
@@ -880,7 +885,7 @@ void CommonEventSubscriberManager::RemoveFrozenEventsMapByPid(const pid_t &pid)
 
 void CommonEventSubscriberManager::RemoveFrozenEventsMapBySubscriber(const SubscriberRecordPtr &subscriberRecord)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
 
     auto frozenRecordsItem = frozenEventsMap_.find(subscriberRecord->eventRecordInfo.pid);
     if (frozenRecordsItem != frozenEventsMap_.end()) {
@@ -907,12 +912,12 @@ bool CommonEventSubscriberManager::CheckSubscriberCountReachedMaxinum()
     uint32_t maxSubscriberNum = GetUintParameter("hiviewdfx.ces.subscriber_limit",
         DEFAULT_MAX_SUBSCRIBER_NUM_ALL_APP);
     if (subscriberCount == (uint32_t)(maxSubscriberNum * WARNING_REPORT_PERCENTAGE)) {
-        EVENT_LOGW("subscribers reaches the alarm threshold");
+        EVENT_LOGW(LOG_TAG_SUBSCRIBER, "subscribers reaches the alarm threshold");
         PrintSubscriberCounts(GetTopSubscriberCounts());
         return false;
     }
     if (subscriberCount == maxSubscriberNum) {
-        EVENT_LOGE("subscribers reaches the maxinum");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "subscribers reaches the maxinum");
         PrintSubscriberCounts(GetTopSubscriberCounts());
         return true;
     }
@@ -946,10 +951,11 @@ std::vector<std::pair<pid_t, uint32_t>> CommonEventSubscriberManager::GetTopSubs
 
 void CommonEventSubscriberManager::PrintSubscriberCounts(std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts)
 {
-    EVENT_LOGI("Print top App by subscribers in descending order");
+    EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Print top App by subscribers in descending order");
     int index = 1;
     for (auto vtIt = vtSubscriberCounts.begin(); vtIt != vtSubscriberCounts.end(); vtIt++) {
-        EVENT_LOGI("top%{public}d pid=%{public}d subscribers=%{public}d", index, vtIt->first, vtIt->second);
+        EVENT_LOGI(LOG_TAG_SUBSCRIBER, "top%{public}d pid=%{public}d subscribers=%{public}d",
+            index, vtIt->first, vtIt->second);
         index++;
     }
 }

@@ -57,11 +57,11 @@ std::string ShellCommand::ExecCommand()
 {
     int result = CreateCommandMap();
     if (result != OHOS::ERR_OK) {
-        EVENT_LOGE("failed to create command map.\n");
+        EVENT_LOGE(LOG_TAG_CES, "failed to create command map.\n");
     }
     result = OnCommand();
     if (result != OHOS::ERR_OK) {
-        EVENT_LOGE("failed to execute your command.\n");
+        EVENT_LOGE(LOG_TAG_CES, "failed to execute your command.\n");
         resultReceiver_ = "error: failed to execute your command.\n";
     }
     return resultReceiver_;

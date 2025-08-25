@@ -30,13 +30,13 @@ CommonEventDeathRecipient::~CommonEventDeathRecipient()
     if (statusChangeListener_ != nullptr) {
         auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (samgrProxy == nullptr) {
-            EVENT_LOGE("GetSystemAbilityManager failed");
+            EVENT_LOGE(LOG_TAG_CES, "GetSystemAbilityManager failed");
             return;
         }
         
         int32_t ret = samgrProxy->UnSubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, statusChangeListener_);
         if (ret != ERR_OK) {
-            EVENT_LOGE("SubscribeSystemAbility to sa manager failed");
+            EVENT_LOGE(LOG_TAG_CES, "SubscribeSystemAbility to sa manager failed");
             return;
         }
         statusChangeListener_ = nullptr;
@@ -50,19 +50,19 @@ void CommonEventDeathRecipient::SubscribeSAManager()
         if (statusChangeListener_ == nullptr) {
             auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
             if (samgrProxy == nullptr) {
-                EVENT_LOGE("GetSystemAbilityManager failed");
+                EVENT_LOGE(LOG_TAG_CES, "GetSystemAbilityManager failed");
                 return;
             }
             
             sptr<SystemAbilityStatusChangeListener> listener =
                 new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
             if (listener == nullptr) {
-                EVENT_LOGE("new SystemAbilityStatusChangeListener failed");
+                EVENT_LOGE(LOG_TAG_CES, "new SystemAbilityStatusChangeListener failed");
                 return;
             }
             int32_t ret = samgrProxy->SubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, listener);
             if (ret != ERR_OK) {
-                EVENT_LOGE("SubscribeSystemAbility to sa manager failed");
+                EVENT_LOGE(LOG_TAG_CES, "SubscribeSystemAbility to sa manager failed");
                 return;
             }
             statusChangeListener_ = listener;
@@ -82,7 +82,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
     if (!isSAOffline_) {
         return;
     }
-    EVENT_LOGI("CES restarted, try to reconnect");
+    EVENT_LOGI(LOG_TAG_CES, "CES restarted, try to reconnect");
     if (CommonEvent::GetInstance()->Reconnect()) {
         auto resubscrebeFund = [] () {
             CommonEvent::GetInstance()->Resubscribe();
@@ -95,7 +95,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
-    EVENT_LOGI("CES died");
+    EVENT_LOGW(LOG_TAG_CES, "CES died");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     isSAOffline_ = true;
 }

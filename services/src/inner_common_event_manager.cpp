@@ -46,6 +46,7 @@ const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check
 }  // namespace
 
 static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
+static const int32_t FFRT_WAIT_TIMEOUT = 500; // 500ms
 #ifdef CONFIG_POLICY_ENABLE
     constexpr static const char* CONFIG_FILE = "etc/notification/common_event_config.json";
 #else
@@ -57,7 +58,7 @@ InnerCommonEventManager::InnerCommonEventManager() : controlPtr_(std::make_share
 {
     supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_CES_CHECK_SA_PERMISSION, "false");
     if (!GetJsonByFilePath(CONFIG_FILE, eventConfigJson_)) {
-        EVENT_LOGE("Failed to get config file.");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get config file.");
     }
 
     getCcmPublishControl();
@@ -89,17 +90,17 @@ bool InnerCommonEventManager::GetJsonFromFile(const char *path, nlohmann::json &
 {
     std::ifstream file(path);
     if (!file.good()) {
-        EVENT_LOGE("Failed to open file %{public}s.", path);
+        EVENT_LOGE(LOG_TAG_CES, "Failed to open file %{public}s.", path);
         return false;
     }
     root = nlohmann::json::parse(file, nullptr, false);
     file.close();
     if (root.is_discarded() || !root.is_structured()) {
-        EVENT_LOGE("Failed to parse json from file %{public}s.", path);
+        EVENT_LOGE(LOG_TAG_CES, "Failed to parse json from file %{public}s.", path);
         return false;
     }
     if (root.is_null() || root.empty() || !root.is_object()) {
-        EVENT_LOGE("GetJsonFromFile fail as invalid root.");
+        EVENT_LOGE(LOG_TAG_CES, "GetJsonFromFile fail as invalid root.");
         return false;
     }
     return true;
@@ -107,9 +108,9 @@ bool InnerCommonEventManager::GetJsonFromFile(const char *path, nlohmann::json &
 
 bool InnerCommonEventManager::GetJsonByFilePath(const char *filePath, std::vector<nlohmann::json> &roots)
 {
-    EVENT_LOGD("Get json value by file path.");
+    EVENT_LOGD(LOG_TAG_CES, "Get json value by file path.");
     if (filePath == nullptr) {
-        EVENT_LOGE("GetJsonByFilePath fail as filePath is null.");
+        EVENT_LOGE(LOG_TAG_CES, "GetJsonByFilePath fail as filePath is null.");
         return false;
     }
     bool ret = false;
@@ -117,7 +118,7 @@ bool InnerCommonEventManager::GetJsonByFilePath(const char *filePath, std::vecto
 #ifdef CONFIG_POLICY_ENABLE
     CfgFiles *cfgFiles = GetCfgFiles(filePath);
     if (cfgFiles == nullptr) {
-        EVENT_LOGE("Not found file");
+        EVENT_LOGE(LOG_TAG_CES, "Not found file");
         return false;
     }
 
@@ -129,7 +130,7 @@ bool InnerCommonEventManager::GetJsonByFilePath(const char *filePath, std::vecto
     }
     FreeCfgFiles(cfgFiles);
 #else
-    EVENT_LOGD("Use default config file");
+    EVENT_LOGD(LOG_TAG_CES, "Use default config file");
     ret = GetJsonFromFile(filePath, localRoot);
     if (ret) {
         roots.push_back(localRoot);
@@ -141,7 +142,7 @@ bool InnerCommonEventManager::GetJsonByFilePath(const char *filePath, std::vecto
 bool InnerCommonEventManager::GetConfigJson(const std::string &keyCheck, nlohmann::json &configJson) const
 {
     if (eventConfigJson_.size() <= 0) {
-        EVENT_LOGE("Failed to get config json cause empty configJsons.");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get config json cause empty configJsons.");
         return false;
     }
     bool ret = false;
@@ -161,7 +162,7 @@ bool InnerCommonEventManager::GetConfigJson(const std::string &keyCheck, nlohman
         }
     });
     if (!ret) {
-        EVENT_LOGE("Cannot find keyCheck: %{public}s in configJsons.", keyCheck.c_str());
+        EVENT_LOGE(LOG_TAG_CES, "Cannot find keyCheck: %{public}s in configJsons.", keyCheck.c_str());
     }
     return ret;
 }
@@ -172,17 +173,17 @@ void InnerCommonEventManager::getCcmPublishControl()
     std::string JsonPoint = "/";
     JsonPoint.append("publishControl");
     if (!GetConfigJson(JsonPoint, root)) {
-        EVENT_LOGE("Failed to get JsonPoint CCM config file.");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get JsonPoint CCM config file.");
         return;
     }
     if (!root.contains("publishControl")) {
-        EVENT_LOGE("not found jsonKey publishControl");
+        EVENT_LOGE(LOG_TAG_CES, "not found jsonKey publishControl");
         return;
     }
     // 访问数据
     const nlohmann::json& publish_control = root["publishControl"];
     if (publish_control.is_null() || publish_control.empty()) {
-        EVENT_LOGE("GetCcm publishControl failed as invalid publishControl json.");
+        EVENT_LOGE(LOG_TAG_CES, "GetCcm publishControl failed as invalid publishControl json.");
         return;
     }
     for (const auto& item : publish_control) {
@@ -199,12 +200,12 @@ void InnerCommonEventManager::getCcmPublishControl()
 bool InnerCommonEventManager::IsPublishAllowed(const std::string &event, int32_t uid)
 {
     if (publishControlMap_.empty()) {
-        EVENT_LOGD("PublishControlMap event no need control");
+        EVENT_LOGD(LOG_TAG_CES, "PublishControlMap event no need control");
         return true;
     }
     auto it = publishControlMap_.find(event);
     if (it != publishControlMap_.end()) {
-        EVENT_LOGD("PublishControlMap event = %{public}s,uid = %{public}d", event.c_str(), it->second[0]);
+        EVENT_LOGD(LOG_TAG_CES, "PublishControlMap event = %{public}s,uid = %{public}d", event.c_str(), it->second[0]);
         return std::find(it->second.begin(), it->second.end(), uid) != it->second.end();
     }
     return true;
@@ -217,19 +218,19 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     if (data.GetWant().GetAction().empty()) {
-        EVENT_LOGE("the commonEventdata action is null");
+        EVENT_LOGE(LOG_TAG_CES, "the commonEventdata action is null");
         return false;
     }
 
     if ((!publishInfo.IsOrdered()) && (commonEventListener != nullptr)) {
-        EVENT_LOGE("When publishing unordered events, the subscriber object is not required.");
+        EVENT_LOGE(LOG_TAG_CES, "When publishing unordered events, the subscriber object is not required.");
         return false;
     }
 
     std::string action = data.GetWant().GetAction();
     bool isAllowed = IsPublishAllowed(action, uid);
     if (!isAllowed) {
-        EVENT_LOGE("Publish event = %{public}s not allowed uid = %{public}d.", action.c_str(), uid);
+        EVENT_LOGE(LOG_TAG_CES, "Publish event = %{public}s not allowed uid = %{public}d.", action.c_str(), uid);
         return false;
     }
     bool isSystemEvent = DelayedSingleton<CommonEventSupport>::GetInstance()->IsSystemEvent(action);
@@ -241,9 +242,9 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     }
 
     if (isSystemEvent) {
-        EVENT_LOGD("System common event");
+        EVENT_LOGD(LOG_TAG_CES, "System common event");
         if (!comeFrom.isSystemApp && !comeFrom.isSubsystem) {
-            EVENT_LOGE(
+            EVENT_LOGE(LOG_TAG_CES,
                 "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
                 ", userId = %{public}d", bundleName.c_str(), pid, uid, userId);
             SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
@@ -251,7 +252,8 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         }
     }
     
-    EVENT_LOGD("pid=%{public}d publish %{public}s to %{public}d", pid, data.GetWant().GetAction().c_str(), user);
+    EVENT_LOGD(LOG_TAG_CES, "pid=%{public}d publish %{public}s to %{public}d", pid,
+        data.GetWant().GetAction().c_str(), user);
 
     if (staticSubscriberManager_ != nullptr) {
         staticSubscriberManager_->PublishCommonEvent(data, publishInfo, callerToken, user, service, bundleName);
@@ -279,7 +281,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
     }
 
     if (!controlPtr_) {
-        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
         SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
         return false;
     }
@@ -304,15 +306,13 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     int64_t taskStartTime = SystemTime::GetNowSysTime();
-    EVENT_LOGD("enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
-        bundleName.c_str(), pid, uid, subscribeInfo.GetUserId());
 
     if (subscribeInfo.GetMatchingSkills().CountEvent() == 0) {
-        EVENT_LOGE("the subscriber has no event");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "the subscriber has no event");
         return false;
     }
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("commonEventListener is nullptr");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "commonEventListener is nullptr");
         return false;
     }
 
@@ -326,7 +326,6 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 
     std::shared_ptr<CommonEventSubscribeInfo> sp = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo_);
 
-    // create EventRecordInfo here
     EventRecordInfo eventRecordInfo;
     eventRecordInfo.pid = pid;
     eventRecordInfo.uid = uid;
@@ -336,19 +335,20 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     eventRecordInfo.isSystemApp = comeFrom.isSystemApp;
     eventRecordInfo.isProxy = comeFrom.isProxy;
 
-    // generate subscriber id : pid_uid_instanceKey_subCount_time
-    int64_t now = SystemTime::GetNowSysTime();
     std::string subId = std::to_string(pid) + "_" + std::to_string(uid) + "_" +
-        std::to_string(instanceKey) + "_" + std::to_string(subCount.load()) + "_" + std::to_string(now);
+        std::to_string(instanceKey) + "_" + std::to_string(subCount.load()) + "_" + std::to_string(userId);
     subCount.fetch_add(1);
     eventRecordInfo.subId = subId;
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
 
-    now = SystemTime::GetNowSysTime();
-    EVENT_LOGI("Subscribe %{public}s(userId = %{public}d, subId = %{public}s, "
-        "ffrtCost %{public}s ms, taskCost %{public}s ms)", bundleName.c_str(), userId, subId.c_str(),
-        std::to_string(taskStartTime - startTime).c_str(), std::to_string(now - taskStartTime).c_str());
+    int32_t now = SystemTime::GetNowSysTime();
+    std::string timeoutLogger;
+    if (taskStartTime - startTime > FFRT_WAIT_TIMEOUT) {
+        timeoutLogger.append(" ffrtCost ").append(std::to_string(taskStartTime - startTime)).append("ms,taskCost ")
+            .append(std::to_string(now - taskStartTime)).append("ms");
+    }
+    EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Subscribe %{public}s%{public}s", subId.c_str(), timeoutLogger.c_str());
     PublishStickyEvent(sp, record);
     return true;
 };
@@ -356,21 +356,21 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &commonEventListener)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (commonEventListener == nullptr) {
-        EVENT_LOGE("commonEventListener is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "commonEventListener is nullptr");
         return false;
     }
 
     if (!controlPtr_) {
-        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
         return false;
     }
 
     std::shared_ptr<OrderedEventRecord> sp = controlPtr_->GetMatchingOrderedReceiver(commonEventListener);
     if (sp) {
-        EVENT_LOGD("Unsubscribe the subscriber who is waiting to receive finish feedback");
+        EVENT_LOGD(LOG_TAG_CES, "Unsubscribe the subscriber who is waiting to receive finish feedback");
         int32_t code = sp->commonEventData->GetCode();
         std::string data = sp->commonEventData->GetData();
         controlPtr_->FinishReceiverAction(sp, code, data, sp->resultAbort);
@@ -381,7 +381,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &
 
 bool InnerCommonEventManager::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(event, eventData);
 }
@@ -389,7 +389,7 @@ bool InnerCommonEventManager::GetStickyCommonEvent(const std::string &event, Com
 void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     switch (dumpType) {
         case DumpEventType::SUBSCRIBER: {
@@ -420,17 +420,17 @@ void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::stri
     }
 
     if (!controlPtr_) {
-        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
     }
 }
 
 void InnerCommonEventManager::FinishReceiver(
     const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!controlPtr_) {
-        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
         return;
     }
 
@@ -444,17 +444,17 @@ void InnerCommonEventManager::FinishReceiver(
 
 void InnerCommonEventManager::Freeze(const uid_t &uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(
         uid, true, SystemTime::GetNowSysTime());
 }
 
 void InnerCommonEventManager::Unfreeze(const uid_t &uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(uid, false);
     if (!controlPtr_) {
-        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
         return;
     }
     controlPtr_->PublishFreezeCommonEvent(uid);
@@ -462,12 +462,12 @@ void InnerCommonEventManager::Unfreeze(const uid_t &uid)
 
 bool InnerCommonEventManager::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateFreezeInfo(
         pidList, isFreeze, SystemTime::GetNowSysTime());
     if (!isFreeze) {
         if (!controlPtr_) {
-            EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+            EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
             return false;
         }
         return controlPtr_->PublishFreezeCommonEvent(pidList);
@@ -477,10 +477,10 @@ bool InnerCommonEventManager::SetFreezeStatus(std::set<int> pidList, bool isFree
 
 void InnerCommonEventManager::UnfreezeAll()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->UpdateAllFreezeInfos(false);
     if (!controlPtr_) {
-        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
         return;
     }
     controlPtr_->PublishAllFreezeCommonEvents();
@@ -488,7 +488,7 @@ void InnerCommonEventManager::UnfreezeAll()
 
 bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool result = AccessTokenHelper::VerifyAccessToken(record.eventRecordInfo.callerToken, permission);
     // Only subsystems and system apps with permissions can publish sticky common events
@@ -497,8 +497,8 @@ bool InnerCommonEventManager::ProcessStickyEvent(const CommonEventRecord &record
         DelayedSingleton<CommonEventStickyManager>::GetInstance()->UpdateStickyEvent(record);
         return true;
     } else {
-        EVENT_LOGE("No permission to send a sticky common event from %{public}s (pid = %{public}d, uid = %{public}d)",
-            record.eventRecordInfo.bundleName.c_str(), record.eventRecordInfo.pid, record.eventRecordInfo.uid);
+        EVENT_LOGE(LOG_TAG_CES, "No permission to send a sticky common event from %{public}s,pid = %{public}d",
+            record.eventRecordInfo.bundleName.c_str(), record.eventRecordInfo.pid);
         return false;
     }
 }
@@ -523,10 +523,10 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, EventComeFrom &comeFrom, int32_t &userId)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (userId < UNDEFINED_USER) {
-        EVENT_LOGE("Invalid User ID %{public}d", userId);
+        EVENT_LOGE(LOG_TAG_CES, "Invalid User ID %{public}d", userId);
         return false;
     }
 
@@ -546,7 +546,8 @@ bool InnerCommonEventManager::CheckUserId(const pid_t &pid, const uid_t &uid,
         if (userId == UNDEFINED_USER) {
             DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId);
         } else {
-            EVENT_LOGE("No permission to subscribe or send a common event to another user from uid = %{public}d", uid);
+            EVENT_LOGE(LOG_TAG_CES, "No permission to subscribe or send a common event to another"
+                "user from uid = %{public}d", uid);
             return false;
         }
     }
@@ -558,15 +559,15 @@ bool InnerCommonEventManager::PublishStickyEvent(
     const std::shared_ptr<CommonEventSubscribeInfo> &sp, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_STICKY, "enter");
 
     if (!sp) {
-        EVENT_LOGE("sp is null");
+        EVENT_LOGE(LOG_TAG_STICKY, "sp is null");
         return false;
     }
 
     if (!subscriberRecord) {
-        EVENT_LOGE("subscriberRecord is null");
+        EVENT_LOGE(LOG_TAG_STICKY, "subscriberRecord is null");
         return false;
     }
 
@@ -577,24 +578,26 @@ bool InnerCommonEventManager::PublishStickyEvent(
 
     for (auto commonEventRecord : commonEventRecords) {
         if (!commonEventRecord) {
-            EVENT_LOGW("commonEventRecord is nullptr and get next");
+            EVENT_LOGW(LOG_TAG_STICKY, "commonEventRecord is nullptr and get next");
             continue;
         }
-        EVENT_LOGI("publish %{public}s",
+        EVENT_LOGI(LOG_TAG_STICKY, "publish %{public}s",
             commonEventRecord->commonEventData->GetWant().GetAction().c_str());
 
         if (!commonEventRecord->publishInfo->GetBundleName().empty() &&
             commonEventRecord->publishInfo->GetBundleName() != subscriberRecord->eventRecordInfo.bundleName) {
-            EVENT_LOGW("Event only assigned to [%{public}s]",
+            EVENT_LOGD(LOG_TAG_STICKY, "Event only assigned to [%{public}s]",
                 commonEventRecord->publishInfo->GetBundleName().c_str());
             continue;
         }
 
         commonEventRecord->publishInfo->SetOrdered(false);
         if (!controlPtr_) {
-            EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+            EVENT_LOGE(LOG_TAG_STICKY, "CommonEventControlManager ptr is nullptr");
             return false;
         }
+        EVENT_LOGI(LOG_TAG_STICKY, "publish %{public}s",
+            commonEventRecord->commonEventData->GetWant().GetAction().c_str());
         controlPtr_->PublishStickyCommonEvent(*commonEventRecord, subscriberRecord);
     }
 

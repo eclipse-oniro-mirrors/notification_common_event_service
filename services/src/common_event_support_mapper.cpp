@@ -26,7 +26,7 @@ CommonEventSupportMapper::CommonEventSupportMapper()
 
 void CommonEventSupportMapper::Init()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     map_.insert(std::make_pair(
         CommonEventSupport::COMMON_EVENT_TEST_ACTION1, CommonEventSupport::COMMON_EVENT_TEST_ACTION2));
@@ -36,7 +36,7 @@ void CommonEventSupportMapper::Init()
 
 bool CommonEventSupportMapper::GetMappedSupport(const std::string &support, std::string &mappedSupport)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     auto iter = map_.begin();
     for (; iter != map_.end(); ++iter) {

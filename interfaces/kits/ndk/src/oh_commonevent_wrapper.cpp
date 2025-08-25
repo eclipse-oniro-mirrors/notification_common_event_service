@@ -23,22 +23,24 @@
 #include <memory>
 #include <new>
 
-SubscriberObserver::SubscriberObserver(const OHOS::EventFwk::CommonEventSubscribeInfo &subscribeInfo)
-    :OHOS::EventFwk::CommonEventSubscriber(subscribeInfo)
+using namespace OHOS::EventFwk;
+
+SubscriberObserver::SubscriberObserver(const CommonEventSubscribeInfo &subscribeInfo)
+    :CommonEventSubscriber(subscribeInfo)
 {}
 
 SubscriberObserver::~SubscriberObserver()
 {}
 
-void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data)
+void SubscriberObserver::OnReceiveEvent(const CommonEventData &data)
 {
     CommonEvent_RcvData *cData = new (std::nothrow) CommonEvent_RcvData();
     if (cData == nullptr) {
-        EVENT_LOGE("Failed to create CommonEventRcvData");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Failed to create CommonEventRcvData");
         return;
     }
     if (IsOrderedCommonEvent()) {
-        EVENT_LOGD("SetAsyncResult");
+        EVENT_LOGD(LOG_TAG_CES_CAPI, "SetAsyncResult");
         SubscriberManager::GetInstance()->SetAsyncResult(this);
     }
     auto want = data.GetWant();
@@ -48,7 +50,7 @@ void SubscriberObserver::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &d
     cData->bundleName = want.GetBundle();
     cData->parameters = new (std::nothrow) CArrParameters();
     if (cData->parameters == nullptr) {
-        EVENT_LOGE("Failed to init cData parameters");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Failed to init cData parameters");
         delete cData;
         cData = nullptr;
         return;
@@ -88,16 +90,16 @@ CommonEvent_Subscriber* SubscriberManager::CreateSubscriber(const CommonEvent_Su
     CommonEvent_ReceiveCallback callback)
 {
     if (subscribeInfo == nullptr) {
-        EVENT_LOGE("SubscribeInfo is null");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "SubscribeInfo is null");
         return nullptr;
     }
-    OHOS::EventFwk::MatchingSkills matchingSkills;
+    MatchingSkills matchingSkills;
     for (const auto& iter : subscribeInfo->events) {
         if (!iter.empty()) {
             matchingSkills.AddEvent(iter);
         }
     }
-    OHOS::EventFwk::CommonEventSubscribeInfo commonEventSubscribeInfo(matchingSkills);
+    CommonEventSubscribeInfo commonEventSubscribeInfo(matchingSkills);
     if (!subscribeInfo->permission.empty()) {
         commonEventSubscribeInfo.SetPermission(subscribeInfo->permission);
     }
@@ -122,11 +124,11 @@ void SubscriberManager::DestroySubscriber(CommonEvent_Subscriber* subscriber)
 CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "subscriber is null");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
-    int32_t ret = OHOS::EventFwk::CommonEventManager::NewSubscribeCommonEvent(observer);
+    int32_t ret = CommonEventManager::NewSubscribeCommonEvent(observer);
     if (ret == OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT) {
         return COMMONEVENT_ERR_SUBSCRIBER_NUM_EXCEEDED;
     }
@@ -143,11 +145,11 @@ CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* s
 CommonEvent_ErrCode SubscriberManager::UnSubscribe(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "subscriber is null");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
-    int32_t ret = OHOS::EventFwk::CommonEventManager::NewUnSubscribeCommonEvent(observer);
+    int32_t ret = CommonEventManager::NewUnSubscribeCommonEvent(observer);
     {
         std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
         resultCache_.erase(observer);
@@ -158,7 +160,7 @@ CommonEvent_ErrCode SubscriberManager::UnSubscribe(const CommonEvent_Subscriber*
 void SubscriberManager::SetAsyncResult(SubscriberObserver* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "subscriber is null");
         return;
     }
     {
@@ -175,7 +177,7 @@ void SubscriberManager::SetAsyncResult(SubscriberObserver* subscriber)
 ResultCacheItem* SubscriberManager::GetAsyncResult(const SubscriberObserver* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "subscriber is null");
         return nullptr;
     }
     {
@@ -186,6 +188,6 @@ ResultCacheItem* SubscriberManager::GetAsyncResult(const SubscriberObserver* sub
             }
         }
     }
-    EVENT_LOGI("subscriber not found");
+    EVENT_LOGW(LOG_TAG_CES_CAPI, "subscriber not found");
     return nullptr;
 }

@@ -21,22 +21,22 @@ namespace OHOS {
 namespace EventFwk {
 void SubscriberDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
 {
-    EVENT_LOGD("OnRemoteDied start");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "OnRemoteDied start");
 
     if (remote == nullptr) {
-        EVENT_LOGE("remote object is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "remote object is null");
         return;
     }
 
     sptr<IRemoteObject> object = remote.promote();
     if (!object) {
-        EVENT_LOGE("object is null");
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "object is null");
         return;
     }
 
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveSubscriber(object);
 
-    EVENT_LOGD("OnRemoteDied end");
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "OnRemoteDied end");
 }
 }  // namespace EventFwk
 }  // namespace OHOS

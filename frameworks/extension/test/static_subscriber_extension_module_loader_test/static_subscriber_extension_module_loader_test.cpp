@@ -59,7 +59,7 @@ void StaticSubscriberExtensionModuleLoaderTest::TearDown()
  */
 HWTEST_F(StaticSubscriberExtensionModuleLoaderTest, StaticSubscriberExtensionModuleLoader_0100, TestSize.Level1)
 {
-    EVENT_LOGI("start");
+    EVENT_LOGD(LOG_TAG_CES, "start");
     void *handle = dlopen(STATIC_SUBSCRIBER_EXTENSION_MODULE_LIB_PATH, RTLD_LAZY);
     if (handle != nullptr) {
         auto object = reinterpret_cast<StaticSubscriberExtensionModuleLoader*>(
@@ -67,7 +67,7 @@ HWTEST_F(StaticSubscriberExtensionModuleLoaderTest, StaticSubscriberExtensionMod
         EXPECT_NE(object, nullptr);
         dlclose(handle);
     }
-    EVENT_LOGI("end");
+    EVENT_LOGD(LOG_TAG_CES, "end");
 }
 
 /**
@@ -78,11 +78,11 @@ HWTEST_F(StaticSubscriberExtensionModuleLoaderTest, StaticSubscriberExtensionMod
  */
 HWTEST_F(StaticSubscriberExtensionModuleLoaderTest, StaticSubscriberExtensionModuleLoader_0200, TestSize.Level1)
 {
-    EVENT_LOGI("start");
+    EVENT_LOGD(LOG_TAG_CES, "start");
     std::unique_ptr<AbilityRuntime::Runtime> runtime;
     auto extension = StaticSubscriberExtensionModuleLoader::GetInstance().Create(runtime);
     EXPECT_NE(extension, nullptr);
-    EVENT_LOGI("end");
+    EVENT_LOGD(LOG_TAG_CES, "end");
 }
 
 /**
@@ -93,7 +93,7 @@ HWTEST_F(StaticSubscriberExtensionModuleLoaderTest, StaticSubscriberExtensionMod
  */
 HWTEST_F(StaticSubscriberExtensionModuleLoaderTest, StaticSubscriberExtensionModuleLoader_0300, TestSize.Level1)
 {
-    EVENT_LOGI("start");
+    EVENT_LOGD(LOG_TAG_CES, "start");
     auto params = StaticSubscriberExtensionModuleLoader::GetInstance().GetParams();
 
     std::string key = "type";
@@ -107,7 +107,7 @@ HWTEST_F(StaticSubscriberExtensionModuleLoaderTest, StaticSubscriberExtensionMod
     if (iter != params.end()) {
         EXPECT_STREQ(iter->second.c_str(), "StaticSubscriberExtension");
     }
-    EVENT_LOGI("end");
+    EVENT_LOGD(LOG_TAG_CES, "end");
 }
 } // namespace EventFwk
 } // namespace OHOS
