@@ -14,6 +14,7 @@
  */
 
 #include "common_event.h"
+#include "common_event_manager.h"
 #include "native_log.h"
 #include "parameter_parse.h"
 
@@ -28,6 +29,14 @@ namespace OHOS::CommonEventManager {
         LOGI("constructor SubscriberImpl");
         valid_ = std::make_shared<bool>(false);
         infoId_ = infoId;
+    }
+
+    SubscriberImpl::SubscriberImpl(std::shared_ptr<CommonEventSubscribeInfo> sp)
+        : CommonEventSubscriber(*sp)
+    {
+        id_ = ++subscriberID_;
+        LOGI("constructor SubscriberImpl");
+        valid_ = std::make_shared<bool>(false);
     }
 
     SubscriberImpl::~SubscriberImpl()
@@ -105,14 +114,32 @@ namespace OHOS::CommonEventManager {
         *valid_ = true;
     }
 
-    SubscriberManager::SubscriberManager(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId)
+    sptr<SubscriberManager> SubscriberManager::Create(std::shared_ptr<CommonEventSubscribeInfo> info)
     {
-        auto objectInfo = new (std::nothrow) SubscriberImpl(info, infoId);
-        subscriber = std::shared_ptr<SubscriberImpl>(objectInfo);
+        auto ptr = FFIData::Create<SubscriberManager>();
+        if (ptr != nullptr) {
+            ptr->subscriber = std::make_shared<SubscriberImpl>(info);
+            ptr->subscriber->SetSubscriberManagerId(ptr->GetID());
+        }
+        return ptr;
+    }
+
+    sptr<SubscriberManager> SubscriberManager::Create(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId)
+    {
+        auto ptr = FFIData::Create<SubscriberManager>();
+        if (ptr != nullptr) {
+            ptr->subscriber = std::make_shared<SubscriberImpl>(info, infoId);
+            ptr->subscriber->SetSubscriberManagerId(ptr->GetID());
+        }
+        return ptr;
     }
 
     SubscriberManager::~SubscriberManager()
     {
+        if (subscriber != nullptr) {
+            OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber);
+            DeleteSubscribe(subscriber);
+        }
     }
 
     std::shared_ptr<SubscriberImpl> SubscriberManager::GetSubscriber()

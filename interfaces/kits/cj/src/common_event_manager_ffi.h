@@ -31,6 +31,7 @@ extern "C"
     FFI_EXPORT int32_t CJ_RemoveStickyCommonEvent(char *event);
     FFI_EXPORT int64_t CJ_CreateCommonEventSubscribeInfo(CArrString events);
     FFI_EXPORT int64_t CJ_CreateSubscriber(int64_t id);
+    FFI_EXPORT int64_t FfiCommonEventManagerCreateSubscriber(CSubscribeInfo *info, int32_t *errorCode);
     FFI_EXPORT int32_t CJ_Subscribe(int64_t id, void (*callbackRef)(const CCommonEventData data));
     FFI_EXPORT int32_t CJ_Unsubscribe(int64_t id);
 

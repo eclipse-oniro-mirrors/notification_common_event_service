@@ -30,6 +30,7 @@ namespace OHOS::CommonEventManager {
     class SubscriberImpl : public CommonEventSubscriber {
     public:
         SubscriberImpl(std::shared_ptr<CommonEventSubscribeInfo> sp, int64_t infoId);
+        explicit SubscriberImpl(std::shared_ptr<CommonEventSubscribeInfo> sp);
         ~SubscriberImpl() override;
 
         void OnReceiveEvent(const CommonEventData &data) override;
@@ -49,21 +50,22 @@ namespace OHOS::CommonEventManager {
         std::shared_ptr<bool> valid_;
         std::atomic_ullong id_;
         static std::atomic_ullong subscriberID_;
-        int64_t infoId_;
+        int64_t infoId_ = -1;
         int64_t managerId_ = -1;
     };
 
     class SubscriberManager : public OHOS::FFI::FFIData {
     public:
+        static sptr<SubscriberManager> Create(std::shared_ptr<CommonEventSubscribeInfo> info);
+        static sptr<SubscriberManager> Create(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId);
         OHOS::FFI::RuntimeType *GetRuntimeType() override
         {
             return GetClassType();
         }
-        SubscriberManager(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId);
+        SubscriberManager() = default;
         ~SubscriberManager() override;
 
         std::shared_ptr<SubscriberImpl> GetSubscriber();
-
         int32_t GetSubscribeInfoId(int64_t &id);
 
     private:
