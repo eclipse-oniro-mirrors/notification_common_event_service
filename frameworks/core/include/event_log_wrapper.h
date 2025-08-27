@@ -30,17 +30,13 @@
 #define CUR_FILE_NAME (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define EVENT_LOGF(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_FATAL, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, CUR_FILE_NAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    ((void)HILOG_IMPL(LOG_CORE, LOG_FATAL, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
 #define EVENT_LOGE(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_ERROR, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, CUR_FILE_NAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    ((void)HILOG_IMPL(LOG_CORE, LOG_ERROR, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
 #define EVENT_LOGW(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_WARN, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, CUR_FILE_NAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    ((void)HILOG_IMPL(LOG_CORE, LOG_WARN, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
 #define EVENT_LOGI(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_INFO, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, CUR_FILE_NAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    ((void)HILOG_IMPL(LOG_CORE, LOG_INFO, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
 #define EVENT_LOGD(fmt, ...)            \
     ((void)HILOG_IMPL(LOG_CORE, LOG_DEBUG, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, \
     "[%{public}s(%{public}s:%{public}d)]" fmt, CUR_FILE_NAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
@@ -57,9 +53,7 @@ do {                                                                            
         uint32_t supressedCnt = supressed;                                              \
         supressed = 0;                                                                  \
         if (supressedCnt != 0) {                                                        \
-            ((void)HILOG_IMPL((type), (level), EVENT_LOG_DOMAIN, EVENT_LOG_TAG,    \
-            "[%{public}s(%{public}s:%{public}d)]log suppressed cnt %{public}u",         \
-            CUR_FILE_NAME, __FUNCTION__, __LINE__, supressedCnt));                       \
+            EVENT_LOGI("log suppressed cnt %{public}u", supressedCnt);                  \
         }                                                                               \
         (canPrint) = true;                                                              \
     } else {                                                                            \
