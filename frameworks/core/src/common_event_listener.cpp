@@ -173,9 +173,7 @@ void CommonEventListener::Stop()
         runner_ = nullptr;
     }
     if (queue) {
-        ffrt::submit([queue]() {
-            delete static_cast<ffrt::queue*>(queue);
-        });
+        delete static_cast<ffrt::queue*>(queue);
     }
 }
 }  // namespace EventFwk
