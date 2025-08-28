@@ -70,16 +70,42 @@ namespace OHOS::CommonEventManager {
                 return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
             }
             auto info = instance->GetInfoPtr();
-            auto ptr = FFIData::Create<SubscriberManager>(info, id);
+            auto ptr = SubscriberManager::Create(info, id);
             if (!ptr) {
                 return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
             }
-            auto subscriber = ptr->GetSubscriber();
-            if (!subscriber) {
-                return ERR_INVALID_INSTANCE_CODE;
-            }
-            subscriber->SetSubscriberManagerId(ptr->GetID());
             return ptr->GetID();
+        }
+
+        int64_t FfiCommonEventManagerCreateSubscriber(CSubscribeInfo *info, int32_t *errorCode)
+        {
+            OHOS::EventFwk::MatchingSkills matchingSkills;
+            for (int64_t i = 0; i < info->events.size; ++i) {
+                std::string event(info->events.head[i]);
+                matchingSkills.AddEvent(event);
+            }
+            auto infoPtr = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
+            if (info->publisherPermission) {
+                std::string permission(info->publisherPermission);
+                infoPtr->SetPermission(permission);
+            }
+            if (info->publisherDeviceId) {
+                std::string deviceId(info->publisherDeviceId);
+                infoPtr->SetDeviceId(deviceId);
+            }
+            if (info->publisherBundleName) {
+                std::string bundleName(info->publisherBundleName);
+                infoPtr->SetPublisherBundleName(bundleName);
+            }
+            infoPtr->SetUserId(info->userId);
+            infoPtr->SetPriority(info->priority);
+
+            auto mgrPtr = SubscriberManager::Create(infoPtr);
+            if (!mgrPtr) {
+                *errorCode = ERR_INVALID_INSTANCE_ID;
+                return 0;
+            }
+            return mgrPtr->GetID();
         }
 
         int32_t CJ_Subscribe(int64_t id, void (*callbackRef)(const CCommonEventData data))
