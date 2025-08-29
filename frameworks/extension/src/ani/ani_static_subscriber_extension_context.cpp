@@ -62,7 +62,7 @@ StsStaticSubscriberExtensionContext* StsStaticSubscriberExtensionContext::GetAbi
     ani_long nativeContextLong;
     ani_status status = ANI_ERROR;
     if (env == nullptr) {
-        EVENT_LOGD("null env");
+        EVENT_LOGE("null env");
         return nullptr;
     }
 
