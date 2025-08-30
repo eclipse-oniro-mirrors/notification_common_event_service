@@ -152,6 +152,7 @@ static void ContextClean([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_obj
 {
     ani_long ptr;
     if (ANI_OK != env->Object_GetFieldByName_Long(object, "ptr", &ptr)) {
+        EVENT_LOGE("Object_GetFieldByName_Long fail");
         return;
     }
     StsStaticSubscriberExtensionContext* context = reinterpret_cast<StsStaticSubscriberExtensionContext*>(ptr);
@@ -265,6 +266,7 @@ void StsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventDat
     auto task = [wThis, commonEventData, this]() {
         std::shared_ptr<StsStaticSubscriberExtension> sThis = wThis.lock();
         if (sThis == nullptr) {
+            EVENT_LOGE("sThis nullptr");
             return;
         }
         ani_env* env = sThis->stsRuntime_.GetAniEnv();
@@ -336,6 +338,7 @@ void StsStaticSubscriberExtension::CallObjectMethod(bool withResult, const char 
         return;
     }
     if (method == nullptr) {
+        EVENT_LOGE("method nullptr");
         return;
     }
 
