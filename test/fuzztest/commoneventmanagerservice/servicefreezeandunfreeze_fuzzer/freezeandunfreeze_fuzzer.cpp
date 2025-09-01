@@ -26,7 +26,7 @@ using namespace OHOS::EventFwk;
 namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     bool funcResult1 = false;
@@ -38,6 +38,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
         pidList.insert(fdp->ConsumeIntegral<int32_t>());
     }
     service->SetFreezeStatus(pidList, fdp->ConsumeBool(), funcResult1);
+    usleep(10000);
     return true;
 }
 }

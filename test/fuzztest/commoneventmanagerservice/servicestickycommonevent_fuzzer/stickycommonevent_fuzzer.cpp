@@ -27,7 +27,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
     std::string event = fdp->ConsumeRandomLengthString();
 
-    sptr<EventFwk::CommonEventManagerService> service = EventFwk::CommonEventManagerService::GetInstance();
+    sptr<EventFwk::CommonEventManagerService> service = new (std::nothrow) EventFwk::CommonEventManagerService();
     service->Init();
     
     AAFwk::Want want;
@@ -47,6 +47,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     service->GetStickyCommonEvent(fdp->ConsumeRandomLengthString(), stickyCommonEvent, funcResult1);
 
     service->RemoveStickyCommonEvent(event, funcResult);
+    usleep(10000);
     return true;
 }
 }
