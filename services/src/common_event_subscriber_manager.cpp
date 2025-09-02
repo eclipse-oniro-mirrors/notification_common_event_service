@@ -181,7 +181,6 @@ void CommonEventSubscriberManager::DumpDetailed(
     }
     userId = format + "USERID: " + userId + "\n";
     std::string permission = format + "Permission: " + record->eventSubscribeInfo->GetPermission() + "\n";
-    std::string deviceId = format + "DevicedID: " + record->eventSubscribeInfo->GetDeviceId() + "\n";
 
     std::string events = format + "\tEvent: ";
     std::string separator;
@@ -232,7 +231,7 @@ void CommonEventSubscriberManager::DumpDetailed(
         freezeTime = format + "FreezeTime: " + std::to_string(record->freezeTime) + "\n";
     }
 
-    dumpInfo = title + recordTime + pid + uid + bundleName + priority + userId + permission + deviceId +
+    dumpInfo = title + recordTime + pid + uid + bundleName + priority + userId + permission +
                matchingSkills + isFreeze + freezeTime;
 }
 
