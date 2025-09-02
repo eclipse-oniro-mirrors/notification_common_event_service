@@ -28,7 +28,7 @@ namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
 
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     AAFwk::Want want;

@@ -41,7 +41,7 @@ public:
 
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     MatchingSkills matchingSkills;
@@ -58,6 +58,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     bool funcResult1 = false;
     service->FinishReceiver(commonEventListener, fdp->ConsumeIntegral<int32_t>(),
         fdp->ConsumeRandomLengthString(), fdp->ConsumeBool(), funcResult1);
+    usleep(10000);
     return true;
 }
 }

@@ -26,7 +26,7 @@ using namespace OHOS::EventFwk;
 namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     std::vector<std::string> events;
@@ -35,6 +35,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     }
     int32_t funcResult1 = -1;
     service->SetStaticSubscriberStateByEvents(events, fdp->ConsumeBool(), funcResult1);
+    usleep(10000);
     return true;
 }
 }
