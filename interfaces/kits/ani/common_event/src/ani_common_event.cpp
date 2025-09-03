@@ -131,20 +131,21 @@ ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberW
 
 static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
+    ani_object nullObj = AniCommonEventUtils::GetNullObject(env);
     CommonEventSubscribeInfo subscribeInfo;
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {
         EVENT_LOGE("null wrapper");
-        return nullptr;
+        return nullObj;
     }
     ani_ref subscriberObj = CreateSubscriberRef(env, wrapper);
     if (subscriberObj == nullptr) {
         EVENT_LOGE("null subscriberObj");
         delete wrapper;
         wrapper = nullptr;
-        return nullptr;
+        return nullObj;
     }
     return subscriberObj;
 }
@@ -965,18 +966,15 @@ static ani_object getSubscribeInfo(ani_env *env, ani_object object)
     EVENT_LOGD("subscriberInstance getSubscribeInfo.");
     auto subscriberInstance = GetSubscriber(env, object);
     ani_object infoObject {};
+    ani_object nullObj = AniCommonEventUtils::GetNullObject(env);
     if (subscriberInstance == nullptr) {
         EVENT_LOGE("subscriberInstance is null.");
-        ani_ref nullObject;
-        env->GetNull(&nullObject);
-        return static_cast<ani_object>(nullObject);
+        return nullObj;
     }
     AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(env, subscriberInstance, infoObject);
     if (infoObject == nullptr) {
         EVENT_LOGE("infoObject is null.");
-        ani_ref nullObject;
-        env->GetNull(&nullObject);
-        return static_cast<ani_object>(nullObject);
+        return nullObj;
     }
     return infoObject;
 }
@@ -1038,8 +1036,8 @@ static std::array commonEventManagerMethods = {
         "C{std.core.String}iC{commonEvent.commonEventPublishData.CommonEventPublishData}:i",
         reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserWithOptionsExecute) },
     ani_native_function { "createSubscriberExecute",
-        "C{commonEvent.commonEventSubscribeInfo.CommonEventSubscribeInfo}:C{commonEvent.commonEventSubscriber."
-        "CommonEventSubscriber}",
+        "C{commonEvent.commonEventSubscribeInfo.CommonEventSubscribeInfo}:X{C{commonEvent.commonEventSubscriber."
+        "CommonEventSubscriber}N}",
         reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
     ani_native_function {
         "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },

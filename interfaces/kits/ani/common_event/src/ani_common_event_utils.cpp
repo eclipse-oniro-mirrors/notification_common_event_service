@@ -26,6 +26,13 @@ using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
 using namespace arkts::ani_signature;
 
+ani_object AniCommonEventUtils::GetNullObject(ani_env *env)
+{
+    ani_ref nullRef;
+    env->GetNull(&nullRef);
+    return static_cast<ani_object>(nullRef);
+}
+
 void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string& result)
 {
     auto ret = ANI_ERROR;

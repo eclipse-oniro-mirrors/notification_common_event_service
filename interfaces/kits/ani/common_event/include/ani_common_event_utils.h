@@ -56,6 +56,7 @@ public:
     static void CreateBusinessErrorObject(ani_env* env, ani_object &object, int32_t code, const std::string &message);
     static ani_object GetAniStringArray(ani_env *env, std::vector<std::string> strs);
     static ani_object newArrayClass(ani_env *env, int length);
+    static ani_object GetNullObject(ani_env *env);
 };
 } // namespace EventManagerFwkAni
 } // namespace OHOS
