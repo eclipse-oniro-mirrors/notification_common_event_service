@@ -167,8 +167,6 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         EVENT_LOGE("commonEventData == nullptr");
         return false;
     }
-    EVENT_LOGI("Send %{public}s when %{public}d unfreezed",
-        eventRecord.commonEventData->GetWant().GetAction().c_str(), subscriberRecord.eventRecordInfo.pid);
     commonEventListenerProxy->NotifyEvent(*(eventRecord.commonEventData),
         false, eventRecord.publishInfo->IsSticky());
     AccessTokenHelper::RecordSensitivePermissionUsage(subscriberRecord.eventRecordInfo.callerToken,
@@ -195,7 +193,7 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
     int32_t succCnt = 0;
     int32_t failCnt = 0;
     int32_t freezeCnt = 0;
-    std::string freezedPids = "";
+    std::string freezedPidsLogger = "";
     for (auto vec : eventRecord->receivers) {
         if (vec == nullptr) {
             EVENT_LOGE("invalid vec");
@@ -208,8 +206,11 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(vec, *eventRecord);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
                 vec, *eventRecord);
-            freezedPids.append(std::to_string(vec->eventRecordInfo.pid));
-            freezedPids.append(",");
+            if (freezedPidsLogger.empty()) {
+                freezedPidsLogger.append(" freezePid[");
+            }
+            freezedPidsLogger.append(std::to_string(vec->eventRecordInfo.pid));
+            freezedPidsLogger.append(",");
             EVENT_LOGD("Notify %{public}s to freeze subscriber, subId = %{public}s",
                 eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             freezeCnt++;
@@ -239,10 +240,13 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
         AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
             eventRecord->commonEventData->GetWant().GetAction());
     }
-    EVENT_LOGI("Pid %{public}d publish %{public}s to %{public}d end(%{public}zu, %{public}d, %{public}d,"
-        "%{public}d), freezePid[%{public}s]",
+    if (!freezedPidsLogger.empty()) {
+        freezedPidsLogger.append("]");
+    }
+    EVENT_LOGI("Pid %{public}d publish %{public}s to %{public}d end(%{public}zu,%{public}d,%{public}d,"
+        "%{public}d)%{public}s",
         eventRecord->eventRecordInfo.pid, eventRecord->commonEventData->GetWant().GetAction().c_str(),
-        eventRecord->userId, eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPids.c_str());
+        eventRecord->userId, eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPidsLogger.c_str());
 }
 
 bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)

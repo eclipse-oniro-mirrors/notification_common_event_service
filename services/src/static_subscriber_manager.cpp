@@ -347,7 +347,7 @@ bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bund
             continue;
         }
         if (!AccessTokenHelper::VerifyAccessToken(tokenId, permission)) {
-            EVENT_LOGW("subscriber does not have required permission : %{public}s", permission.c_str());
+            EVENT_LOGD("subscriber does not have required permission : %{public}s", permission.c_str());
             return false;
         }
     }
