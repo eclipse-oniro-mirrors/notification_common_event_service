@@ -85,7 +85,7 @@ SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeI
         return;
     }
 
-    EVENT_LOGI("New subscriber");
+    EVENT_LOGD("New subscriber");
     subscriber = std::shared_ptr<SubscriberInstance>(objectInfo);
 }
 
@@ -543,7 +543,7 @@ void AsyncExecuteCallbackSubscribe(napi_env env, void *data)
             asyncCallbackInfo->errorCode = (*aniSubscribeCallback)(asyncCallbackInfo->subscriber);
             return;
         }
-        EVENT_LOGI("no transfer subscribe 1.1 subscriber");
+        EVENT_LOGD("no transfer subscribe 1.1 subscriber");
         asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(
             asyncCallbackInfo->subscriber);
     }
@@ -966,7 +966,7 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
                     asyncCallbackInfo->errorCode = (*aniUnsubscribeCallback)(asyncCallbackInfo->subscriber);
                     return;
                 }
-                EVENT_LOGI("no transfer unsubscribe 1.1 subscriber");
+                EVENT_LOGD("no transfer unsubscribe 1.1 subscriber");
                 asyncCallbackInfo->errorCode = CommonEventManager::NewUnSubscribeCommonEvent(
                     asyncCallbackInfo->subscriber);
             }
