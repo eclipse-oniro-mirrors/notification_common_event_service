@@ -14,10 +14,12 @@
  */
 #include "unsubscribecommonevent_fuzzer.h"
 
+#define private public
 #include "common_event_data.h"
 #include "common_event_listener.h"
 #include "common_event_manager_service.h"
 #include "common_event_subscriber.h"
+#include "common_utils.h"
 #include "refbase.h"
 #include "fuzz_common_base.h"
 
@@ -60,6 +62,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     
     service->UnsubscribeCommonEvent(commonEventListener, funcResult);
     usleep(10000);
+    CleanFfrt(service);
     return true;
 }
 }

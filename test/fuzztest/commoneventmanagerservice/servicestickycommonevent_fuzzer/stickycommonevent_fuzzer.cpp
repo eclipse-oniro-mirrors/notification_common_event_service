@@ -14,8 +14,10 @@
  */
 #include "stickycommonevent_fuzzer.h"
 
+#define private public
 #include "common_event_manager_service.h"
 #include "common_event_data.h"
+#include "common_utils.h"
 #include "fuzz_common_base.h"
 #include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
@@ -48,6 +50,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 
     service->RemoveStickyCommonEvent(event, funcResult);
     usleep(10000);
+    CleanFfrt(service);
     return true;
 }
 }
