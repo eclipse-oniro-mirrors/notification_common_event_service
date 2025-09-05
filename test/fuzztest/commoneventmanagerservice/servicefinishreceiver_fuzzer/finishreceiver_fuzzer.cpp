@@ -14,10 +14,12 @@
  */
 #include "finishreceiver_fuzzer.h"
 
+#define private public
 #include "common_event_data.h"
 #include "common_event_listener.h"
 #include "common_event_manager_service.h"
 #include "common_event_subscriber.h"
+#include "common_utils.h"
 #include "fuzz_common_base.h"
 #include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
@@ -59,6 +61,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     service->FinishReceiver(commonEventListener, fdp->ConsumeIntegral<int32_t>(),
         fdp->ConsumeRandomLengthString(), fdp->ConsumeBool(), funcResult1);
     usleep(10000);
+    CleanFfrt(service);
     return true;
 }
 }
