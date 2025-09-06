@@ -827,9 +827,8 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     std::string type = "\t\tType: " + record->commonEventData->GetWant().GetType() + "\n";
     std::string bundle = "\t\tBundleName: " + record->commonEventData->GetWant().GetBundle() + "\n";
     std::string ability = "\t\tAbilityName: " + record->commonEventData->GetWant().GetElement().GetAbilityName() + "\n";
-    std::string deviced = "\t\tDevicedID: " + record->commonEventData->GetWant().GetElement().GetDeviceID() + "\n";
 
-    std::string want = "\tWant:\n" + action + entities + scheme + uri + flags + type + bundle + ability + deviced;
+    std::string want = "\tWant:\n" + action + entities + scheme + uri + flags + type + bundle + ability;
     std::string code = "\tCode: " + std::to_string(record->commonEventData->GetCode()) + "\n";
     std::string data = "\tData: " + record->commonEventData->GetData() + "\n";
 
