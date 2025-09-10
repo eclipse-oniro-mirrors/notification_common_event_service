@@ -429,7 +429,7 @@ ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
     }
     ani_class arrayCls = nullptr;
     if (ANI_OK != env->FindClass("escompat.Array", &arrayCls)) {
-        EVENT_LOGE("FindClass Lescompat/Array; Failed");
+        EVENT_LOGE("FindClass escompat.Array Failed");
         return nullptr;
     }
     ani_method arrayCtor;
