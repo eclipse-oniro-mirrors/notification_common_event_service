@@ -74,7 +74,7 @@ export interface CommonEventSubscriber {
 }
 
 class CommonEventSubscriberInner implements CommonEventSubscriber {
-    static {loadLibrary("ani_commoneventmanager.z")}
+    static {loadLibraryWithPermissionCheck("ani_commoneventmanager.z", "commonEvent.commonEventSubscriber")}
     private subscriberInstanceWrapper: long = 0;
 
     public native nativeGetCode(): number;

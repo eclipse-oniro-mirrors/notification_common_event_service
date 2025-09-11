@@ -28,7 +28,7 @@ type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Object) => void;
 
 namespace commonEventManager {
-    loadLibrary("ani_commoneventmanager.z");
+    loadLibraryWithPermissionCheck("ani_commoneventmanager.z", "@ohos.commonEventManager");
     export native function publishExecute(event: string):int;
     export native function publishWithOptionsExecute(event: string, options: CommonEventPublishData):int;
     export native function publishAsUserExecute(event: string, userId: int):int;
