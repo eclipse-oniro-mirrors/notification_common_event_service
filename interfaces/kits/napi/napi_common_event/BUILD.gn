@@ -110,6 +110,7 @@ ohos_shared_library("commoneventmanager") {
     "c_utils:utils",
     "ffrt:libffrt",
     "hilog:libhilog",
+    "ipc:ipc_single",
     "napi:ace_napi",
   ]
 

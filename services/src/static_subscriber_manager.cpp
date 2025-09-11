@@ -186,14 +186,14 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             continue;
         }
         if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
-            EVENT_LOGW("subscriber %{public}s userId is invalid, subscriber.userId = %{public}d",
+            EVENT_LOGD("subscriber %{public}s userId is invalid, subscriber.userId = %{public}d",
                 subscriber.bundleName.c_str(), subscriber.userId);
             SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
             continue;
         }
         if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
             && (subscriber.userId != userId)) {
-            EVENT_LOGW("subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
+            EVENT_LOGD("subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
                 "userId = %{public}d", subscriber.bundleName.c_str(), subscriber.userId, userId);
             SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
             continue;
@@ -203,12 +203,12 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
             continue;
         }
         if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
-            EVENT_LOGW("publisher does not have required permission %{public}s", subscriber.permission.c_str());
+            EVENT_LOGD("publisher does not have required permission %{public}s", subscriber.permission.c_str());
             SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
             continue;
         }
         if (!IsFilterParameters(subscriber, data)) {
-            EVENT_LOGW("subscriber filter parameters is not match, subscriber.bundleName = %{public}s",
+            EVENT_LOGD("subscriber filter parameters is not match, subscriber.bundleName = %{public}s",
                 subscriber.bundleName.c_str());
             continue;
         }
@@ -297,7 +297,7 @@ bool StaticSubscriberManager::CheckSubscriberWhetherMatched(
         result = ((checkResult & filterSettings) != 0);
     }
     if (!result) {
-        EVENT_LOGW("%{public}s not matched,%{public}d_%{public}u_%{public}u", subscriber.bundleName.c_str(),
+        EVENT_LOGD("%{public}s not matched,%{public}d_%{public}u_%{public}u", subscriber.bundleName.c_str(),
             static_cast<int32_t>(publishInfo.GetValidationRule()),
             static_cast<uint32_t>(checkResult), static_cast<uint32_t>(filterSettings));
     }
@@ -347,7 +347,7 @@ bool StaticSubscriberManager::VerifySubscriberPermission(const std::string &bund
             continue;
         }
         if (!AccessTokenHelper::VerifyAccessToken(tokenId, permission)) {
-            EVENT_LOGW("subscriber does not have required permission : %{public}s", permission.c_str());
+            EVENT_LOGD("subscriber does not have required permission : %{public}s", permission.c_str());
             return false;
         }
     }

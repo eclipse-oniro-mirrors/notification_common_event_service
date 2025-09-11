@@ -47,7 +47,8 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVER_STARTUP_COMPLETED"}}
     },
     {CommonEventSupport::COMMON_EVENT_USER_SWITCHED,
-        {PermissionState::DEFAULT, {"ohos.permission.MANAGE_LOCAL_ACCOUNTS"}}
+        {PermissionState::OR,
+            {"ohos.permission.MANAGE_LOCAL_ACCOUNTS", "ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS"}}
     },
     {CommonEventSupport::COMMON_EVENT_USER_STARTING,
         {PermissionState::DEFAULT, {"ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS"}}

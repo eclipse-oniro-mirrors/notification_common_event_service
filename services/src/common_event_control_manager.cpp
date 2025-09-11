@@ -167,9 +167,6 @@ bool CommonEventControlManager::NotifyFreezeEvents(
         EVENT_LOGE("commonEventData == nullptr");
         return false;
     }
-    EVENT_LOGI("Send %{public}s to subscriber %{public}s when unfreezed",
-        eventRecord.commonEventData->GetWant().GetAction().c_str(),
-        subscriberRecord.eventRecordInfo.subId.c_str());
     commonEventListenerProxy->NotifyEvent(*(eventRecord.commonEventData),
         false, eventRecord.publishInfo->IsSticky());
     AccessTokenHelper::RecordSensitivePermissionUsage(subscriberRecord.eventRecordInfo.callerToken,
@@ -196,6 +193,7 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
     int32_t succCnt = 0;
     int32_t failCnt = 0;
     int32_t freezeCnt = 0;
+    std::string freezedPidsLogger = "";
     for (auto vec : eventRecord->receivers) {
         if (vec == nullptr) {
             EVENT_LOGE("invalid vec");
@@ -208,7 +206,12 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEvents(vec, *eventRecord);
             DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertFrozenEventsMap(
                 vec, *eventRecord);
-            EVENT_LOGE("Notify %{public}s to freeze subscriber, subId = %{public}s",
+            if (freezedPidsLogger.empty()) {
+                freezedPidsLogger.append(" freezePid[");
+            }
+            freezedPidsLogger.append(std::to_string(vec->eventRecordInfo.pid));
+            freezedPidsLogger.append(",");
+            EVENT_LOGD("Notify %{public}s to freeze subscriber, subId = %{public}s",
                 eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
             freezeCnt++;
             continue;
@@ -237,9 +240,13 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
         AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
             eventRecord->commonEventData->GetWant().GetAction());
     }
-    EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}d, %{public}d, %{public}d)",
-        eventRecord->commonEventData->GetWant().GetAction().c_str(),
-        eventRecord->receivers.size(), succCnt, failCnt, freezeCnt);
+    if (!freezedPidsLogger.empty()) {
+        freezedPidsLogger.append("]");
+    }
+    EVENT_LOGI("Pid %{public}d publish %{public}s to %{public}d end(%{public}zu,%{public}d,%{public}d,"
+        "%{public}d)%{public}s",
+        eventRecord->eventRecordInfo.pid, eventRecord->commonEventData->GetWant().GetAction().c_str(),
+        eventRecord->userId, eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPidsLogger.c_str());
 }
 
 bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)
@@ -532,11 +539,16 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
                         EVENT_LOGE("Failed to get IEventReceive proxy");
                         return;
                     }
-                    receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
+                    int32_t result = receiver->NotifyEvent(*(sp->commonEventData), true, sp->publishInfo->IsSticky());
+                    if (result != ERR_OK) {
+                        EVENT_LOGE("Notify %{public}s fail to final receiver",
+                            sp->commonEventData->GetWant().GetAction().c_str());
+                    }
                     sp->resultTo = nullptr;
                 }
-                EVENT_LOGI("Notify %{public}s end(%{public}zu, %{public}zu)",
-                    sp->commonEventData->GetWant().GetAction().c_str(), numReceivers, sp->nextReceiver);
+                EVENT_LOGI("Pid %{public}d publish %{public}s to %{public}d end(%{public}zu, %{public}zu)",
+                    sp->eventRecordInfo.pid, sp->commonEventData->GetWant().GetAction().c_str(), sp->userId,
+                    numReceivers, sp->nextReceiver);
                 CancelTimeout();
 
                 orderedEventQueue_.erase(orderedEventQueue_.begin());
@@ -827,9 +839,8 @@ void CommonEventControlManager::DumpStateByCommonEventRecord(
     std::string type = "\t\tType: " + record->commonEventData->GetWant().GetType() + "\n";
     std::string bundle = "\t\tBundleName: " + record->commonEventData->GetWant().GetBundle() + "\n";
     std::string ability = "\t\tAbilityName: " + record->commonEventData->GetWant().GetElement().GetAbilityName() + "\n";
-    std::string deviced = "\t\tDevicedID: " + record->commonEventData->GetWant().GetElement().GetDeviceID() + "\n";
 
-    std::string want = "\tWant:\n" + action + entities + scheme + uri + flags + type + bundle + ability + deviced;
+    std::string want = "\tWant:\n" + action + entities + scheme + uri + flags + type + bundle + ability;
     std::string code = "\tCode: " + std::to_string(record->commonEventData->GetCode()) + "\n";
     std::string data = "\tData: " + record->commonEventData->GetData() + "\n";
 

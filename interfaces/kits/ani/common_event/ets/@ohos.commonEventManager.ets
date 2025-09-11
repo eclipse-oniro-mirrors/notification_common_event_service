@@ -28,7 +28,7 @@ type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Object) => void;
 
 namespace commonEventManager {
-    loadLibrary("ani_commoneventmanager.z");
+    loadLibraryWithPermissionCheck("ani_commoneventmanager.z", "@ohos.commonEventManager");
     export native function publishExecute(event: string):int;
     export native function publishWithOptionsExecute(event: string, options: CommonEventPublishData):int;
     export native function publishAsUserExecute(event: string, userId: int):int;
@@ -359,27 +359,39 @@ namespace commonEventManager {
         COMMON_EVENT_WIFI_P2P_GROUP_STATE_CHANGED = 'usual.event.wifi.p2p.GROUP_STATE_CHANGED',
         COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_UPDATE =
             'usual.event.bluetooth.handsfree.ag.CONNECT_STATE_UPDATE',
+        COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_CHANGE =
+            'usual.event.bluetooth.handsfree.ag.CONNECT_STATE_CHANGE',
         COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CURRENT_DEVICE_UPDATE =
             'usual.event.bluetooth.handsfree.ag.CURRENT_DEVICE_UPDATE',
         COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_AUDIO_STATE_UPDATE =
             'usual.event.bluetooth.handsfree.ag.AUDIO_STATE_UPDATE',
         COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_UPDATE =
             'usual.event.bluetooth.a2dpsource.CONNECT_STATE_UPDATE',
+        COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_CHANGE =
+            'usual.event.bluetooth.a2dpsource.CONNECT_STATE_CHANGE',   
         COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CURRENT_DEVICE_UPDATE =
             'usual.event.bluetooth.a2dpsource.CURRENT_DEVICE_UPDATE',
         COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAYING_STATE_UPDATE =
             'usual.event.bluetooth.a2dpsource.PLAYING_STATE_UPDATE',
         COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_UPDATE =
             'usual.event.bluetooth.a2dpsource.AVRCP_CONNECT_STATE_UPDATE',
+        COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_CHANGE =
+            'usual.event.bluetooth.a2dpsource.AVRCP_CONNECT_STATE_CHANGE',
         COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_UPDATE =
             'usual.event.bluetooth.a2dpsource.CODEC_VALUE_UPDATE',
+        COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE =
+            'usual.event.bluetooth.a2dpsource.CODEC_VALUE_CHANGE',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED = 'usual.event.bluetooth.remotedevice.DISCOVERED',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CLASS_VALUE_UPDATE =
             'usual.event.bluetooth.remotedevice.CLASS_VALUE_UPDATE',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_CONNECTED = 'usual.event.bluetooth.remotedevice.ACL_CONNECTED',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_DISCONNECTED = 'usual.event.bluetooth.remotedevice.ACL_DISCONNECTED',
+        COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_STATE_CHANGE =
+            'usual.event.bluetooth.remotedevice.ACL_STATE_CHANGE',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_NAME_UPDATE = 'usual.event.bluetooth.remotedevice.NAME_UPDATE',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE = 'usual.event.bluetooth.remotedevice.PAIR_STATE',
+        COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE_CHANGE =
+            'usual.event.bluetooth.remotedevice.PAIR_STATE_CHANGE',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE_UPDATE =
             'usual.event.bluetooth.remotedevice.BATTERY_VALUE_UPDATE',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_SDP_RESULT = 'usual.event.bluetooth.remotedevice.SDP_RESULT',
@@ -509,6 +521,7 @@ namespace commonEventManager {
         COMMON_EVENT_KIOSK_MODE_OFF = 'usual.event.KIOSK_MODE_OFF',
         COMMON_EVENT_CUSTOM_CONFIG_POLICY_UPDATED = 'usual.event.CUSTOM_CONFIG_POLICY_UPDATED',
         COMMON_EVENT_CUSTOM_ROAMING_REGION_UPDATED = 'usual.event.CUSTOM_ROAMING_REGION_UPDATED',
+        COMMON_EVENT_SCREEN_SHARE = 'usual.event.SCREEN_SHARE',
         COMMON_EVENT_RESTORE_END = 'usual.event.RESTORE_END',
     }
 

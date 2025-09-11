@@ -125,7 +125,8 @@ public:
         (override));
     MOCK_METHOD(int, ReleaseCall, (const sptr<IAbilityConnection> &connect, const AppExecFwk::ElementName &element),
         (override));
-    MOCK_METHOD(int, StartUser, (int userId, sptr<IUserCallback> callback, bool isAppRecovery), (override));
+    MOCK_METHOD(int, StartUser,
+        (int userId, uint64_t displayId, sptr<IUserCallback> callback, bool isAppRecovery), (override));
     MOCK_METHOD(int, StopUser, (int userId, const sptr<IUserCallback> &callback), (override));
 #ifdef SUPPORT_SCREEN
     MOCK_METHOD(int, SetMissionLabel, (const sptr<IRemoteObject> &abilityToken, const std::string &label), (override));

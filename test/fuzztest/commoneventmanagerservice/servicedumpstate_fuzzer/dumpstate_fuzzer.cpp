@@ -14,8 +14,10 @@
  */
 #include "dumpstate_fuzzer.h"
 
+#define private public
 #include "common_event_manager_service.h"
 #include "common_event_data.h"
+#include "common_utils.h"
 #include "fuzz_common_base.h"
 #include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
@@ -27,7 +29,7 @@ using namespace OHOS::EventFwk;
 namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     AAFwk::Want want;
@@ -55,6 +57,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     service->DumpState(dumpType, fdp->ConsumeRandomLengthString(), fdp->ConsumeIntegralInRange<int32_t>(-3, 1000),
         state, funcResult1);
     usleep(10000);
+    CleanFfrt(service);
     return true;
 }
 }

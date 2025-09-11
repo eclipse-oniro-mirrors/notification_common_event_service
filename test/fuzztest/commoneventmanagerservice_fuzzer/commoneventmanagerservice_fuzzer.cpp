@@ -29,8 +29,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     int32_t code = fdp->ConsumeIntegral<int32_t>();
     bool enabled = fdp->ConsumeBool();
     EventFwk::CommonEventManagerService::GetInstance();
-    sptr<EventFwk::CommonEventManagerService> service =
-        sptr<EventFwk::CommonEventManagerService>(new EventFwk::CommonEventManagerService());
+    sptr<EventFwk::CommonEventManagerService> service = new (std::nothrow) EventFwk::CommonEventManagerService();
     service->Init();
     AAFwk::Want want;
     EventFwk::CommonEventData commonEventData;

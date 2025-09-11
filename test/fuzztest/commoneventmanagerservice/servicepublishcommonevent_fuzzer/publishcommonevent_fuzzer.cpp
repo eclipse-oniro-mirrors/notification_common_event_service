@@ -15,7 +15,9 @@
 #include "publishcommonevent_fuzzer.h"
 
 #include "common_event_data.h"
+#define private public
 #include "common_event_manager_service.h"
+#include "common_utils.h"
 #include "refbase.h"
 #include "fuzz_common_base.h"
 #include <fuzzer/FuzzedDataProvider.h>
@@ -28,7 +30,7 @@ namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
 
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     AAFwk::Want want;
@@ -60,6 +62,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
         fdp->ConsumeIntegral<uint32_t>(), fdp->ConsumeIntegral<int32_t>(),
         fdp->ConsumeIntegralInRange<int32_t>(-3, 1000), funcResult1);
     usleep(10000);
+    CleanFfrt(service);
     return true;
 }
 }

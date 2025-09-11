@@ -48,6 +48,15 @@ struct CCommonEventData {
     CArrParameters parameters;
 };
 
+struct CSubscribeInfo {
+    CArrString events;
+    int32_t priority;
+    int32_t userId;
+    char *publisherPermission;
+    char *publisherDeviceId;
+    char *publisherBundleName;
+};
+
 namespace OHOS::CommonEventManager {
     constexpr int32_t NO_ERROR = 0;
     constexpr int32_t ERR_CES_FAILED = 1;

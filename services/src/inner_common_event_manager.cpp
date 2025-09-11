@@ -251,7 +251,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         }
     }
     
-    EVENT_LOGI("pid=%{public}d publish %{public}s to %{public}d", pid, data.GetWant().GetAction().c_str(), user);
+    EVENT_LOGD("pid=%{public}d publish %{public}s to %{public}d", pid, data.GetWant().GetAction().c_str(), user);
 
     if (staticSubscriberManager_ != nullptr) {
         staticSubscriberManager_->PublishCommonEvent(data, publishInfo, callerToken, user, service, bundleName);
@@ -580,12 +580,9 @@ bool InnerCommonEventManager::PublishStickyEvent(
             EVENT_LOGW("commonEventRecord is nullptr and get next");
             continue;
         }
-        EVENT_LOGI("Publish sticky event : %{public}s",
-            commonEventRecord->commonEventData->GetWant().GetAction().c_str());
-
         if (!commonEventRecord->publishInfo->GetBundleName().empty() &&
             commonEventRecord->publishInfo->GetBundleName() != subscriberRecord->eventRecordInfo.bundleName) {
-            EVENT_LOGW("Event only assigned to [%{public}s]",
+            EVENT_LOGD("Event only assigned to [%{public}s]",
                 commonEventRecord->publishInfo->GetBundleName().c_str());
             continue;
         }
@@ -595,6 +592,8 @@ bool InnerCommonEventManager::PublishStickyEvent(
             EVENT_LOGE("CommonEventControlManager ptr is nullptr");
             return false;
         }
+        EVENT_LOGI("publish %{public}s",
+            commonEventRecord->commonEventData->GetWant().GetAction().c_str());
         controlPtr_->PublishStickyCommonEvent(*commonEventRecord, subscriberRecord);
     }
 

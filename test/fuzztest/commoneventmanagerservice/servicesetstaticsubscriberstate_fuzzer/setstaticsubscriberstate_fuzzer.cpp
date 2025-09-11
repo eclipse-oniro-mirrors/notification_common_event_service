@@ -14,7 +14,9 @@
  */
 #include "setstaticsubscriberstate_fuzzer.h"
 
+#define private public
 #include "common_event_manager_service.h"
+#include "common_utils.h"
 #include "fuzz_common_base.h"
 #include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
@@ -26,7 +28,7 @@ using namespace OHOS::EventFwk;
 namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     std::vector<std::string> events;
@@ -35,6 +37,8 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     }
     int32_t funcResult1 = -1;
     service->SetStaticSubscriberStateByEvents(events, fdp->ConsumeBool(), funcResult1);
+    usleep(10000);
+    CleanFfrt(service);
     return true;
 }
 }

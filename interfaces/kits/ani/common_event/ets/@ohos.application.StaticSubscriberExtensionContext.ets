@@ -22,7 +22,7 @@ const TAG: string = 'commonEventManager';
 type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Error) => void;
 
-loadLibrary("ani_commoneventmanager.z");
+loadLibraryWithPermissionCheck("ani_commoneventmanager.z", "@ohos.application.StaticSubscriberExtensionContext");
 export class StaticSubscriberExtensionContext extends ExtensionContext {
     nativeStaticSubscriberExtensionContext: long = 0;
     native nativeStartAbilitySync(want: Want): void;

@@ -333,7 +333,7 @@ public:
     /**
      * Indicates the action of a common event that a user switch is happening.
      * To subscribe to this common event, your application must have the ohos.permission.MANAGE_LOCAL_ACCOUNTS
-     * permission.
+     * permission or ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS permission.
      */
     static const std::string COMMON_EVENT_USER_SWITCHED;
     /**
@@ -479,6 +479,12 @@ public:
     static const std::string COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_UPDATE;
 
     /**
+     * Indicates the action of a common event that bluetooth handsfree ag connection state change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_CHANGE;
+
+    /**
      * Indicates the action of a common event that the device connected to the Bluetooth handsfree is active.
      * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
      */
@@ -495,6 +501,12 @@ public:
      * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
      */
     static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_UPDATE;
+
+    /**
+     * Indicates the action of a common event that bluetooth a2dp source connection state change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_CHANGE;
 
     /**
      * Indicates the action of a common event that the device connected using Bluetooth A2DP is active.
@@ -514,10 +526,22 @@ public:
     static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_UPDATE;
 
     /**
+     * Indicates the action of a common event that bluetooth avrcp connection state change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_CHANGE;
+
+    /**
      * Indicates the action of a common event that the audio codec state of Bluetooth A2DP has changed.
      * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
      */
     static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_UPDATE;
+
+    /**
+     * Indicates the action of a common event that bluetooth codec change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE;
 
     /**
      * Indicates the action of a common event that a remote Bluetooth device has been discovered.
@@ -547,6 +571,12 @@ public:
     static const std::string COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_DISCONNECTED;
 
     /**
+     * Indicates the action of a common event that bluetooth remote device acl state change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_STATE_CHANGE;
+
+    /**
      * Indicates the action of a common event that the friendly name of a remote Bluetooth device has been retrieved for
      * the first time or has been changed since the last retrieval.
      * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
@@ -558,6 +588,12 @@ public:
      * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
      */
     static const std::string COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE;
+
+    /**
+     * Indicates the action of a common event that bluetooth pair state change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE_CHANGE;
 
     /**
      * Indicates the action of a common event that the battery level of a remote Bluetooth device has been retrieved
@@ -1450,6 +1486,12 @@ public:
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_SCREEN_SHARE;
+
+    /**
+     * Indicates that exit str when cancel before alerting.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CANCEL_BEFORE_ALERTING;
 
 public:
     CommonEventSupport();

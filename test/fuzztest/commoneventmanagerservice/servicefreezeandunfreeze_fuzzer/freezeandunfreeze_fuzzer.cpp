@@ -14,8 +14,10 @@
  */
 #include "freezeandunfreeze_fuzzer.h"
 
+#define private public
 #include "common_event_manager_service.h"
 #include "common_event_data.h"
+#include "common_utils.h"
 #include "fuzz_common_base.h"
 #include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
@@ -26,7 +28,7 @@ using namespace OHOS::EventFwk;
 namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    sptr<CommonEventManagerService> service = CommonEventManagerService::GetInstance();
+    sptr<CommonEventManagerService> service = new (std::nothrow) CommonEventManagerService();
     service->Init();
 
     bool funcResult1 = false;
@@ -38,6 +40,8 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
         pidList.insert(fdp->ConsumeIntegral<int32_t>());
     }
     service->SetFreezeStatus(pidList, fdp->ConsumeBool(), funcResult1);
+    usleep(10000);
+    CleanFfrt(service);
     return true;
 }
 }

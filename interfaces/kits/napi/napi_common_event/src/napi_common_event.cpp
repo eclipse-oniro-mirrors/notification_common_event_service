@@ -85,7 +85,7 @@ SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeI
         return;
     }
 
-    EVENT_LOGI("New subscriber");
+    EVENT_LOGD("New subscriber");
     subscriber = std::shared_ptr<SubscriberInstance>(objectInfo);
 }
 
@@ -407,10 +407,9 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
             EVENT_LOGD("CreateSubscriber napi_create_async_work end");
             AsyncCallbackInfoCreate *asyncCallbackInfo = static_cast<AsyncCallbackInfoCreate *>(data);
             if (asyncCallbackInfo) {
-                napi_value constructor = nullptr;
+                napi_value constructor = GetSubscriberConstructor(env);
                 napi_value subscribeInfoRefValue = nullptr;
                 napi_get_reference_value(env, asyncCallbackInfo->subscribeInfo, &subscribeInfoRefValue);
-                napi_get_reference_value(env, g_CommonEventSubscriber, &constructor);
                 napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &asyncCallbackInfo->result);
 
                 if (asyncCallbackInfo->result == nullptr) {
@@ -470,10 +469,9 @@ napi_value CreateSubscriberSync(napi_env env, napi_callback_info info)
     napi_create_reference(env, argv[0], 1, &subscribeInfo);
 
     napi_value result = nullptr;
-    napi_value constructor = nullptr;
+    napi_value constructor = GetSubscriberConstructor(env);
     napi_value subscribeInfoRefValue = nullptr;
     napi_get_reference_value(env, subscribeInfo, &subscribeInfoRefValue);
-    napi_get_reference_value(env, g_CommonEventSubscriber, &constructor);
     napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &result);
 
     if (result == nullptr) {
@@ -545,7 +543,7 @@ void AsyncExecuteCallbackSubscribe(napi_env env, void *data)
             asyncCallbackInfo->errorCode = (*aniSubscribeCallback)(asyncCallbackInfo->subscriber);
             return;
         }
-        EVENT_LOGI("no transfer subscribe 1.1 subscriber");
+        EVENT_LOGD("no transfer subscribe 1.1 subscriber");
         asyncCallbackInfo->errorCode = CommonEventManager::NewSubscribeCommonEvent(
             asyncCallbackInfo->subscriber);
     }
@@ -968,7 +966,7 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
                     asyncCallbackInfo->errorCode = (*aniUnsubscribeCallback)(asyncCallbackInfo->subscriber);
                     return;
                 }
-                EVENT_LOGI("no transfer unsubscribe 1.1 subscriber");
+                EVENT_LOGD("no transfer unsubscribe 1.1 subscriber");
                 asyncCallbackInfo->errorCode = CommonEventManager::NewUnSubscribeCommonEvent(
                     asyncCallbackInfo->subscriber);
             }
@@ -1103,8 +1101,7 @@ napi_value TransferedCommonEventSubscriberConstructor(napi_env env, const Common
     napi_value subscribeInfoValue = nullptr;
     napi_create_object(env, &subscribeInfoValue);
     SetNapiResult(env, info, subscribeInfoValue);
-    napi_value constructor = nullptr;
-    napi_get_reference_value(env, g_CommonEventSubscriber, &constructor);
+    napi_value constructor = GetSubscriberConstructor(env);
     napi_value thisVar = nullptr;
     napi_new_instance(env, constructor, 1, &subscribeInfoValue, &thisVar);
     return thisVar;
@@ -2250,6 +2247,29 @@ napi_value CommonEventManagerInit(napi_env env, napi_value exports)
     return NapiStaicSubscribeInit(env, exports);
 }
 
+napi_value GetSubscriberConstructor(napi_env env)
+{
+    napi_value constructor = nullptr;
+    std::lock_guard<ffrt::mutex> lock(g_subscriberConstructorRefSetMutex);
+    for (auto item : g_subscriberConstructorRefSets) {
+        if (item->first == env) {
+            napi_get_reference_value(env, item->second, &constructor);
+            return constructor;
+        }
+    }
+    return constructor;
+}
+
+static void SubscriberConstructorCleanupCallback(void *data)
+{
+    EVENT_LOGD("env expired, clean subscriber constructor");
+    std::pair<napi_env, napi_ref> *wrapper = static_cast<std::pair<napi_env, napi_ref> *>(data);
+    napi_delete_reference(wrapper->first, wrapper->second);
+    std::lock_guard<ffrt::mutex> lock(g_subscriberConstructorRefSetMutex);
+    g_subscriberConstructorRefSets.erase(wrapper);
+    delete wrapper;
+}
+
 napi_value CommonEventSubscriberInit(napi_env env, napi_value exports)
 {
     EVENT_LOGD("enter");
@@ -2289,8 +2309,14 @@ napi_value CommonEventSubscriberInit(napi_env env, napi_value exports)
             sizeof(properties) / sizeof(*properties),
             properties,
             &constructor));
-
-    napi_create_reference(env, constructor, 1, &g_CommonEventSubscriber);
+    napi_ref constructorRef = nullptr;
+    napi_create_reference(env, constructor, 1, &constructorRef);
+    {
+        std::lock_guard<ffrt::mutex> lock(g_subscriberConstructorRefSetMutex);
+        auto constructorWrapper = new std::pair<napi_env, napi_ref>(env, constructorRef);
+        g_subscriberConstructorRefSets.insert(constructorWrapper);
+        napi_add_env_cleanup_hook(env, SubscriberConstructorCleanupCallback, constructorWrapper);
+    }
     napi_set_named_property(env, exports, "commonEventSubscriber", constructor);
     return exports;
 }
