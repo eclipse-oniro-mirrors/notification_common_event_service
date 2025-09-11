@@ -34,7 +34,7 @@ namespace commonEventManager {
     export native function publishAsUserExecute(event: string, userId: int):int;
     export native function publishAsUserWithOptionsExecute(event: string, userId: int,
         options: CommonEventPublishData):int;
-    export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
+    export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber|null;
     export native function subscribeExecute(subscriber: CommonEventSubscriber,
         callback: AsyncCallback<CommonEventData, void>):int;
     export native function subscribeToEventExecute(subscriber: CommonEventSubscriber,
@@ -118,13 +118,11 @@ namespace commonEventManager {
     }
 
     export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo,
-        callback: AsyncCallback<CommonEventSubscriber, void>): void {
+        callback: AsyncCallback<CommonEventSubscriber|null, void>): void {
         hilog.info(0x0000, TAG, 'createSubscriber callback call.');
         let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
-        task.then((e: NullishType)=>{
-            let result: CommonEventSubscriber = e as CommonEventSubscriber;
-            hilog.info(0x0000, TAG, 'createSubscriber result.');
-            callback(null, result);
+        task.then((data: NullishType)=>{
+            callback(null, data as CommonEventSubscriber|null);
         }, (error: Object): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
             let err: BusinessError = error as BusinessError;
@@ -132,23 +130,22 @@ namespace commonEventManager {
         });
     }
 
-    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber> {
+    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber|null> {
         hilog.info(0x0000, TAG, 'createSubscriber Promise call');
-        let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
+        let p = new Promise<CommonEventSubscriber|null>((resolve: (v: CommonEventSubscriber|null) => void,
             reject: (error: Error) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
-            p1.then((e :NullishType)=>{
-                hilog.info(0x0000, TAG, 'createSubscriber Promise result.');
-                let result: CommonEventSubscriber  = e as CommonEventSubscriber;
-                resolve(result);
+            p1.then((data :NullishType)=>{
+                resolve(data as CommonEventSubscriber|null);
             }, (err:Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
+                reject(err);
             });
         });
         return p;
     }
 
-    export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber{
+    export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber|null{
         hilog.info(0x0000, TAG, 'createSubscriberSync call');
         return commonEventManager.createSubscriberExecute(subscribeInfo);
     }

@@ -66,9 +66,9 @@ export interface CommonEventSubscriber {
     getAbortCommonEvent(callback: AsyncCallback<boolean>): void;
     getAbortCommonEvent(): Promise<boolean>;
     getAbortCommonEventSync(): boolean;
-    getSubscribeInfo(callback: AsyncCallback<CommonEventSubscribeInfo>): void;
-    getSubscribeInfo(): Promise<CommonEventSubscribeInfo>;
-    getSubscribeInfoSync(): CommonEventSubscribeInfo;
+    getSubscribeInfo(callback: AsyncCallback<CommonEventSubscribeInfo|null>): void;
+    getSubscribeInfo(): Promise<CommonEventSubscribeInfo|null>;
+    getSubscribeInfoSync(): CommonEventSubscribeInfo|null;
     finishCommonEvent(callback: AsyncCallback<void>): void;
     finishCommonEvent(): Promise<void>;
 }
@@ -87,7 +87,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public native nativeAbortCommonEvent(): int;
     public native nativeClearAbortCommonEvent(): int;
     public native nativeGetAbortCommonEvent(): boolean;
-    public native nativeGetSubscribeInfo(): CommonEventSubscribeInfo;
+    public native nativeGetSubscribeInfo(): CommonEventSubscribeInfo|null;
     public native nativeFinishCommonEvent(): int;
 
     private static native transferToDynamicSubscriber(input: Object): Any;
@@ -433,25 +433,22 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         }
     }
 
-    public getSubscribeInfo(callback: AsyncCallback<CommonEventSubscribeInfo>): void {
-        let p = taskpool.execute((): CommonEventSubscribeInfo => { return this.nativeGetSubscribeInfo(); });
+    public getSubscribeInfo(callback: AsyncCallback<CommonEventSubscribeInfo|null>): void {
+        let p = taskpool.execute((): CommonEventSubscribeInfo|null => { return this.nativeGetSubscribeInfo(); });
         p.then((data: NullishType): void => {
-            let ret : CommonEventSubscribeInfo = data as CommonEventSubscribeInfo;
-            callback(null, ret);
+            callback(null, data as CommonEventSubscribeInfo|null);
         }, (error: Error): void => {
-            let ret : CommonEventSubscribeInfo ;
             let err: BusinessError = error as BusinessError;
-            callback(err, ret);
+            callback(err, undefined);
         })
     }
 
-    public getSubscribeInfo(): Promise<CommonEventSubscribeInfo> {
-        let pPromise = new Promise<CommonEventSubscribeInfo>((resolve: ResolveCallback<CommonEventSubscribeInfo>,
+    public getSubscribeInfo(): Promise<CommonEventSubscribeInfo|null> {
+        let pPromise = new Promise<CommonEventSubscribeInfo|null>((resolve: ResolveCallback<CommonEventSubscribeInfo|null>,
                 reject: RejectCallback): void => {
-            let p = taskpool.execute((): CommonEventSubscribeInfo => { return this.nativeGetSubscribeInfo(); });
+            let p = taskpool.execute((): CommonEventSubscribeInfo|null => { return this.nativeGetSubscribeInfo(); });
             p.then((data: NullishType): void => {
-                let ret : CommonEventSubscribeInfo = data as CommonEventSubscribeInfo;
-                resolve(ret);
+                resolve(data as CommonEventSubscribeInfo|null);
             }, (error: Error): void => {
                 reject(error);
             });
@@ -459,7 +456,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         return pPromise;
     }
 
-    public getSubscribeInfoSync(): CommonEventSubscribeInfo {
+    public getSubscribeInfoSync(): CommonEventSubscribeInfo|null {
         return this.nativeGetSubscribeInfo();
     }
 
