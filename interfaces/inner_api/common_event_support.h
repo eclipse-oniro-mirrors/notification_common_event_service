@@ -1493,6 +1493,14 @@ public:
      */
     static const std::string COMMON_EVENT_CANCEL_BEFORE_ALERTING;
 
+    /**
+     * Indicates that the cloud disk root info has changed.
+     * To subscribe to this common event, your application must have the ohos.permission.ACCESS_CLOUD_DISK_INFO
+     * permission.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_CLOUD_DISK_STATE_CHANGED;
+
 public:
     CommonEventSupport();
 

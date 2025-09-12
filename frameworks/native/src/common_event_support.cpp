@@ -1650,6 +1650,13 @@ const std::string CommonEventSupport::COMMON_EVENT_SCREEN_SHARE = "usual.event.S
 const std::string CommonEventSupport::COMMON_EVENT_CANCEL_BEFORE_ALERTING =
     "usual.event.CANCEL_BEFORE_ALERTING";
 
+/**
+ * Indicates that the cloud disk root info has changed.
+ * To subscribe to this common event, your application must have the ohos.permission.ACCESS_CLOUD_DISK_INFO permission.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED = "usual.event.CLOUD_DISK_STATE_CHANGED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -3131,6 +3138,14 @@ void CommonEventSupport::Init()
      * This is a protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CANCEL_BEFORE_ALERTING);
+
+    /**
+     * Indicates that the cloud disk sync folder info has changed.
+     * To subscribe to this common event, your application must have the ohos.permission.ACCESS_CLOUD_DISK_INFO
+     * permission.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED);
     return;
 }
 
