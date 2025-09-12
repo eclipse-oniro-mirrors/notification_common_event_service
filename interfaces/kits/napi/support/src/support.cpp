@@ -700,6 +700,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_RESTORE_START");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_RESTORE_END,
+        "COMMON_EVENT_RESTORE_END");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED,
         "COMMON_EVENT_MANAGED_BROWSER_POLICY_CHANGED");
     SetNamedPropertyByStr(env,
