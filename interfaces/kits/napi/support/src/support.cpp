@@ -210,6 +210,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_UPDATE");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CURRENT_DEVICE_UPDATE,
         "COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CURRENT_DEVICE_UPDATE");
     SetNamedPropertyByStr(env,
@@ -220,6 +224,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_UPDATE,
         "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_UPDATE");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_CHANGE");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CURRENT_DEVICE_UPDATE,
@@ -234,8 +242,16 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_UPDATE");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_UPDATE,
         "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_UPDATE");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED,
@@ -254,12 +270,20 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_DISCONNECTED");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_STATE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_STATE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_NAME_UPDATE,
         "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_NAME_UPDATE");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE,
         "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE_CHANGE");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_BATTERY_VALUE_UPDATE,
