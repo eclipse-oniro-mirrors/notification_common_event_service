@@ -35,6 +35,7 @@ ohos_unittest("static_subscriber_extension_test") {
     "ability_runtime:ability_context_native",
     "ability_runtime:abilitykit_native",
     "ability_runtime:app_context",
+    "ability_runtime:extensionkit_native",
     "ability_runtime:napi_common",
     "ability_runtime:runtime",
     "c_utils:utils",
