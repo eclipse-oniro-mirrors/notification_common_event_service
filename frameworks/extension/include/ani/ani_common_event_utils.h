@@ -32,7 +32,7 @@ public:
     static void CreateNewObjectByClass(ani_env* env, const char* className, ani_class &cls, ani_object& ani_data);
     template<typename valueType>
     static void CallSetter(ani_env* env, ani_class cls, ani_object object, const char* setterName, valueType value);
-    static void CreateAniDoubleObject(ani_env* env, ani_object &object, ani_double value);
+    static void CreateAniIntObject(ani_env* env, ani_object &object, ani_int value);
 };
 } // namespace EventManagerFwkAni
 } // namespace OHOS

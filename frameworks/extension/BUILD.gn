@@ -181,6 +181,7 @@ ohos_shared_library("static_subscriber_extension_ani") {
     "ipc:ipc_napi",
     "napi:ace_napi",
     "runtime_core:ani",
+    "runtime_core:ani_helpers",
   ]
 
   subsystem_name = "notification"

@@ -69,10 +69,8 @@ public:
 
 private:
     void BindContext(ani_env *env, const std::shared_ptr<OHOSApplication> &application);
-    ani_object CreateSTSContext(ani_env *env, std::shared_ptr<StaticSubscriberExtensionContext> context,
-        const std::shared_ptr<OHOSApplication> &application);
     AbilityRuntime::ETSRuntime& stsRuntime_;
-    std::unique_ptr<AppExecFwk::ETSNativeReference> stsObj_;
+    std::unique_ptr<ETSNativeReference> stsObj_;
 };
 }  // namespace EventManagerFwkAni
 }  // namespace OHOS

@@ -49,6 +49,7 @@ ohos_shared_library("ani_commoneventmanager") {
 
   include_dirs = [
     "${interfaces_path}/kits/ani/common_event/include",
+    "${interfaces_path}/kits/napi/napi_common_event/include",
     "${ces_core_path}/include",
   ]
 
@@ -59,16 +60,21 @@ ohos_shared_library("ani_commoneventmanager") {
     "src/ani_common_event_utils.cpp",
   ]
 
-  deps = [ "${ces_native_path}:cesfwk_innerkits" ]
+  deps = [
+    "${ces_native_path}:cesfwk_innerkits",
+    "${interfaces_path}/kits/napi/napi_common_event:napi_commoneventmanager",
+  ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ani_common",
+    "ability_runtime:napi_common",
     "ability_runtime:runtime",
     "c_utils:utils",
     "hilog:libhilog",
     "napi:ace_napi",
     "runtime_core:ani",
+    "runtime_core:ani_helpers",
   ]
 
   subsystem_name = "notification"
