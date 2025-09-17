@@ -71,6 +71,7 @@ ohos_shared_library("ani_commoneventmanager") {
     "ability_runtime:napi_common",
     "ability_runtime:runtime",
     "c_utils:utils",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "napi:ace_napi",
     "runtime_core:ani",

@@ -158,7 +158,7 @@ ohos_shared_library("static_subscriber_extension_ani") {
   deps = [
     ":static_subscriber_extension",
     ":static_subscriber_ipc",
-    "${ces_native_path}:cesfwk_innerkits"
+    "${ces_native_path}:cesfwk_innerkits",
   ]
 
   external_deps = [

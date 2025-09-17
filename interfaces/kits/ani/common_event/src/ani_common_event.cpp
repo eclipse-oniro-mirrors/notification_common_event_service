@@ -29,8 +29,8 @@ namespace EventManagerFwkAni {
 
 std::atomic_ullong SubscriberInstance::subscriberID_ = 0;
 static std::map<std::shared_ptr<SubscriberInstance>, std::shared_ptr<AsyncCommonEventResult>> subscriberInstances;
-static std::mutex subscriberInsMutex;
-static std::mutex transferRelationMutex;
+static ffrt::mutex subscriberInsMutex;
+static ffrt::mutex transferRelationMutex;
 static std::vector<std::shared_ptr<SubscriberInstanceRelationship>> transferRelations;
 
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
@@ -175,12 +175,12 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     auto relation = GetTransferRelation(subscriberInstance, nullptr);
     int32_t result = ERR_OK;
     if (relation != nullptr) {
-        std::lock_guard<std::mutex> lock(relation->relationMutex_);
+        std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
         if (!relation->aniSubscriber_ && !relation->napiSubscriber_) {
             result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
             if (result == ERR_OK) {
                 relation->aniSubscriber_ = subscriberInstance;
-                std::lock_guard<std::mutex> lock(subscriberInsMutex);
+                std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
                 subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
             }
             return result;
@@ -190,7 +190,7 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     }
     result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
     if (result == ERR_OK) {
-        std::lock_guard<std::mutex> lock(subscriberInsMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
     }
     return result;
@@ -223,12 +223,12 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
     auto relation = GetTransferRelation(subscriberInstance, nullptr);
     int32_t result = ERR_OK;
     if (relation != nullptr) {
-        std::lock_guard<std::mutex> lock(relation->relationMutex_);
+        std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
         if (!relation->aniSubscriber_ && !relation->napiSubscriber_) {
             result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
             if (result == ERR_OK) {
                 relation->aniSubscriber_ = subscriberInstance;
-                std::lock_guard<std::mutex> lock(subscriberInsMutex);
+                std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
                 subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
             }
             return result;
@@ -238,7 +238,7 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
     }
     result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
     if (result == ERR_OK) {
-        std::lock_guard<std::mutex> lock(subscriberInsMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
     }
     return result;
@@ -251,7 +251,7 @@ int32_t UnsubscribeAndRemoveInstance(ani_env* env, const std::shared_ptr<Subscri
         EVENT_LOGE("unsubscribe failed result: %{public}d.", result);
         return result;
     }
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
     auto item = subscriberInstances.find(subscriber);
     if (item != subscriberInstances.end()) {
         ani_ref callbackRef = static_cast<ani_ref>(item->first->GetCallback());
@@ -277,7 +277,7 @@ static uint32_t unsubscribeExecute(ani_env* env, ani_ref subscribeRef)
         EVENT_LOGD("no transfered");
         return UnsubscribeAndRemoveInstance(env, subscriberInstance);
     }
-    std::lock_guard<std::mutex> lock(relation->relationMutex_);
+    std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
     if (relation->napiSubscriber_) {
         result = EventManagerFwkNapi::UnsubscribeAndRemoveInstance(relation->napiSubscriber_->GetEnv(),
             relation->napiSubscriber_);
@@ -364,7 +364,7 @@ std::shared_ptr<SubscriberInstance> GetSubscriberByWrapper(SubscriberInstanceWra
         EVENT_LOGE("subscriber is null");
         return nullptr;
     }
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
     auto item = subscriberInstances.find(wrapper->GetSubscriber());
     if (item != subscriberInstances.end()) {
         return item->first;
@@ -389,16 +389,16 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
         auto thisSubscriber = shared_from_this();
         auto relation = GetTransferRelation(thisSubscriber, nullptr);
         if (relation != nullptr) {
-            std::lock_guard<std::mutex> lock(relation->relationMutex_);
+            std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
             for (const auto &subscriber : relation->napiSubscribers_) {
                 EventManagerFwkNapi::SetAsyncCommonEventResultWithLocked(subscriber, asyncCommonEvent);
             }
-            std::lock_guard<std::mutex> lockSubscriberIns(subscriberInsMutex);
+            std::lock_guard<ffrt::mutex> lockSubscriberIns(subscriberInsMutex);
             for (const auto &subscriber : relation->aniSubscribers_) {
                 subscriberInstances[subscriber] = asyncCommonEvent;
             }
         } else {
-            std::lock_guard<std::mutex> lock(subscriberInsMutex);
+            std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
             subscriberInstances[thisSubscriber] = asyncCommonEvent;
         }
     }
@@ -454,25 +454,25 @@ ani_vm* SubscriberInstance::GetVm()
 
 void SubscriberInstance::SetCallback(const ani_object& callback)
 {
-    std::lock_guard<std::mutex> lockRef(callbackMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(callbackMutex_);
     callback_ = callback;
 }
 
 ani_object SubscriberInstance::GetCallback()
 {
-    std::lock_guard<std::mutex> lockRef(callbackMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(callbackMutex_);
     return callback_;
 }
 
 void SubscriberInstance::SetIsToEvent(bool isToEvent)
 {
-    std::lock_guard<std::mutex> lockRef(isToEventMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(isToEventMutex_);
     isToEvent_ = isToEvent;
 }
 
 bool SubscriberInstance::GetIsToEvent()
 {
-    std::lock_guard<std::mutex> lockRef(isToEventMutex_);
+    std::lock_guard<ffrt::mutex> lockRef(isToEventMutex_);
     return isToEvent_;
 }
 
@@ -500,7 +500,7 @@ std::shared_ptr<SubscriberInstance> SubscriberInstanceWrapper::GetSubscriber()
 std::shared_ptr<SubscriberInstanceRelationship> GetTransferRelation(std::shared_ptr<SubscriberInstance> aniSubscriber,
     std::shared_ptr<EventManagerFwkNapi::SubscriberInstance> napiSubscriber)
 {
-    std::lock_guard<std::mutex> lock(transferRelationMutex);
+    std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
     for (auto const &item : transferRelations) {
         if (napiSubscriber != nullptr) {
             auto subscriberItem = std::find(item->napiSubscribers_.begin(), item->napiSubscribers_.end(),
@@ -548,7 +548,7 @@ static ani_ref transferToStaticSubscriber(ani_env *env, [[maybe_unused]] ani_cla
     if (relation != nullptr) {
         relation->aniSubscribers_.push_back(aniWrapper->GetSubscriber());
         if (asyncCommonEventResult != nullptr || napiSubscriber->GetCallbackRef() != nullptr) {
-            std::lock_guard<std::mutex> lock(subscriberInsMutex);
+            std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
             subscriberInstances[aniWrapper->GetSubscriber()] = asyncCommonEventResult;
         }
         return subscriberObj;
@@ -558,11 +558,11 @@ static ani_ref transferToStaticSubscriber(ani_env *env, [[maybe_unused]] ani_cla
     relation->napiSubscribers_.push_back(napiSubscriber);
     if (asyncCommonEventResult != nullptr || napiSubscriber->GetCallbackRef() != nullptr) {
         relation->napiSubscriber_ = napiSubscriber;
-        std::lock_guard<std::mutex> lock(subscriberInsMutex);
+        std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[aniWrapper->GetSubscriber()] = asyncCommonEventResult;
     }
     {
-        std::lock_guard<std::mutex> lock(transferRelationMutex);
+        std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
         transferRelations.push_back(relation);
     }
     return subscriberObj;
@@ -576,7 +576,7 @@ static int32_t unsubscribeCallback(const std::shared_ptr<EventManagerFwkNapi::Su
         EVENT_LOGW("no transfer");
         return result;
     }
-    std::lock_guard<std::mutex> lock(relation->relationMutex_);
+    std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
     if (relation->napiSubscriber_ != nullptr) {
         result = EventManagerFwkNapi::UnsubscribeAndRemoveInstance(relation->napiSubscriber_->GetEnv(),
             relation->napiSubscriber_);
@@ -604,7 +604,7 @@ static int32_t subscribeCallback(const std::shared_ptr<EventManagerFwkNapi::Subs
         EVENT_LOGW("no transfer");
         return CommonEventManager::NewSubscribeCommonEvent(napiSubscriber);
     }
-    std::lock_guard<std::mutex> lock(relation->relationMutex_);
+    std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
     if (relation->napiSubscriber_ || relation->aniSubscriber_) {
         EVENT_LOGW("transfered subscriber already subscribed");
         return ERR_OK;
@@ -626,7 +626,7 @@ static int32_t gcCallback(const std::shared_ptr<EventManagerFwkNapi::SubscriberI
     int32_t result = ERR_OK;
     bool allDestroyed = false;
     {
-        std::lock_guard<std::mutex> lock(relation->relationMutex_);
+        std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
         auto subscriberItem = std::find(relation->napiSubscribers_.begin(), relation->napiSubscribers_.end(),
             napiSubscriber);
         if (subscriberItem != relation->napiSubscribers_.end()) {
@@ -654,7 +654,7 @@ static int32_t gcCallback(const std::shared_ptr<EventManagerFwkNapi::SubscriberI
         }
     }
     if (allDestroyed) {
-        std::lock_guard<std::mutex> lock(transferRelationMutex);
+        std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
         auto item = std::find(transferRelations.begin(), transferRelations.end(), relation);
         if (item != transferRelations.end()) {
             transferRelations.erase(item);
@@ -671,11 +671,11 @@ static void asyncResultCloneCallback(const std::shared_ptr<EventManagerFwkNapi::
         EVENT_LOGW("no transfer");
         return;
     }
-    std::lock_guard<std::mutex> lock(relation->relationMutex_);
+    std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
     for (const auto &subscriber : relation->napiSubscribers_) {
         EventManagerFwkNapi::SetAsyncCommonEventResult(subscriber, result);
     }
-    std::lock_guard<std::mutex> lockSubscriberIns(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lockSubscriberIns(subscriberInsMutex);
     for (const auto &subscriber : relation->aniSubscribers_) {
         subscriberInstances[subscriber] = result;
     }
@@ -722,7 +722,7 @@ static ani_ref transferToDynamicSubscriber(ani_env *env, [[maybe_unused]] ani_cl
         EventManagerFwkNapi::SetAsyncCommonEventResultWithLocked(napiSubscriber, asyncResult);
     }
     {
-        std::lock_guard<std::mutex> lock(transferRelationMutex);
+        std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
         transferRelations.push_back(relation);
     }
     return result;
@@ -761,7 +761,7 @@ static void clean([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object obj
     }
     bool allDestroyed = false;
     {
-        std::lock_guard<std::mutex> lock(relation->relationMutex_);
+        std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
         auto subscriberItem = std::find(relation->aniSubscribers_.begin(), relation->aniSubscribers_.end(),
             subscriberInstance);
         if (subscriberItem != relation->aniSubscribers_.end()) {
@@ -778,7 +778,7 @@ static void clean([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object obj
         }
     }
     if (allDestroyed) {
-        std::lock_guard<std::mutex> lock(transferRelationMutex);
+        std::lock_guard<ffrt::mutex> lock(transferRelationMutex);
         auto item = std::find(transferRelations.begin(), transferRelations.end(), relation);
         if (item != transferRelations.end()) {
             transferRelations.erase(item);
@@ -808,7 +808,7 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncCommonEventResult(std::shared_pt
         EVENT_LOGE("subscriberInstances is null.");
         return nullptr;
     }
-    std::lock_guard<std::mutex> lock(subscriberInsMutex);
+    std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
     for (auto subscriberRes : subscriberInstances) {
         if (subscriberRes.first.get() == subscriber.get()) {
             return subscriberRes.second;

@@ -20,6 +20,7 @@
 #include <mutex>
 
 #include "common_event_manager.h"
+#include "ffrt.h"
 #include "napi_common_event.h"
 
 namespace OHOS {
@@ -43,9 +44,9 @@ public:
     void ClearEnv();
 
 private:
-    std::mutex envMutex_;
-    std::mutex callbackMutex_;
-    std::mutex isToEventMutex_;
+    ffrt::mutex envMutex_;
+    ffrt::mutex callbackMutex_;
+    ffrt::mutex isToEventMutex_;
     ani_env* env_ = nullptr;
     ani_object callback_ = nullptr;
     bool isToEvent_ = false;
@@ -73,7 +74,7 @@ struct SubscriberInstanceRelationship {
     std::vector<std::shared_ptr<EventManagerFwkNapi::SubscriberInstance>> napiSubscribers_;
     std::shared_ptr<SubscriberInstance> aniSubscriber_;
     std::shared_ptr<EventManagerFwkNapi::SubscriberInstance> napiSubscriber_;
-    std::mutex relationMutex_;
+    ffrt::mutex relationMutex_;
 };
 
 std::shared_ptr<SubscriberInstance> GetSubscriber(ani_env* env, ani_ref subscribeRef);
