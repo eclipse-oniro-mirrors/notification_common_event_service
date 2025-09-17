@@ -55,7 +55,7 @@ bool OsAccountManagerHelper::CheckUserExists(const int32_t &userId)
     bool isAccountExists = false;
     int32_t ret = OHOS::AccountSA::OsAccountManager::IsOsAccountExists(userId, isAccountExists);
     if (ret != ERR_OK) {
-        EVENT_LOGE("Failed to call OsAccount, code is %{public}d", ret);
+        EVENT_LOGE(LOG_TAG_CES, "Failed to call OsAccount, code is %{public}d", ret);
     }
     return isAccountExists;
 }
@@ -69,7 +69,7 @@ ErrCode OsAccountManagerHelper::GetCurrentActiveUserId(int32_t &id)
 {
     int32_t ret = OHOS::AccountSA::OsAccountManager::GetForegroundOsAccountLocalId(id);
     if (ret != ERR_OK) {
-        EVENT_LOGE_LIMIT("Failed to call OsAccountManager::GetForegroundOsAccountLocalId, code is %{public}d", ret);
+        EVENT_LOGE_LIMIT(LOG_TAG_CES, "Failed to call GetForegroundOsAccountLocalId, code is %{public}d", ret);
     }
     return ret;
 }

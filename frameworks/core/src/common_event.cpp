@@ -56,10 +56,10 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
-        EVENT_LOGE("failed to check publish parameter");
+        EVENT_LOGE(LOG_TAG_CES, "failed to check publish parameter");
         return false;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -83,10 +83,10 @@ int32_t CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const int32_t &userId)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
-        EVENT_LOGE("failed to check publish parameter");
+        EVENT_LOGE(LOG_TAG_CES, "failed to check publish parameter");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -110,10 +110,10 @@ bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEv
     const std::shared_ptr<CommonEventSubscriber> &subscriber, const uid_t &uid, const int32_t &callerToken)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
-        EVENT_LOGE("failed to check publish parameter");
+        EVENT_LOGE(LOG_TAG_CES, "failed to check publish parameter");
         return false;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -139,10 +139,10 @@ bool CommonEvent::PublishCommonEventAsUser(const CommonEventData &data, const Co
     const int32_t &callerToken, const int32_t &userId)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<IRemoteObject> commonEventListener = nullptr;
     if (!PublishParameterCheck(data, publishInfo, subscriber, commonEventListener)) {
-        EVENT_LOGE("failed to check publish parameter");
+        EVENT_LOGE(LOG_TAG_CES, "failed to check publish parameter");
         return false;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -167,20 +167,20 @@ __attribute__((no_sanitize("cfi"))) bool CommonEvent::PublishParameterCheck(cons
     const CommonEventPublishInfo &publishInfo, const std::shared_ptr<CommonEventSubscriber> &subscriber,
     sptr<IRemoteObject> &commonEventListener)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     if (data.GetWant().GetAction() == std::string()) {
-        EVENT_LOGE("the commonEventdata action is null");
+        EVENT_LOGE(LOG_TAG_CES, "the commonEventdata action is null");
         return false;
     }
 
     if (!publishInfo.IsOrdered() && (subscriber != nullptr)) {
-        EVENT_LOGE("When publishing unordered events, the subscriber object is not required.");
+        EVENT_LOGE(LOG_TAG_CES, "When publishing unordered events, the subscriber object is not required.");
         return false;
     }
 
     if (subscriber) {
         if (CreateCommonEventListener(subscriber, commonEventListener) == SUBSCRIBE_FAILED) {
-            EVENT_LOGE("failed to CreateCommonEventListener");
+            EVENT_LOGE(LOG_TAG_CES, "failed to CreateCommonEventListener");
             return false;
         }
     }
@@ -192,15 +192,15 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (subscriber == nullptr) {
-        EVENT_LOGE("the subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES, "the subscriber is null");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
 
     if (subscriber->GetSubscribeInfo().GetMatchingSkills().CountEvent() == 0) {
-        EVENT_LOGE("the subscriber has no event");
+        EVENT_LOGE(LOG_TAG_CES, "the subscriber has no event");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -218,7 +218,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
             funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
         if (funcResult != ERR_OK) {
-            EVENT_LOGD("subscribe common event failed, remove event listener");
+            EVENT_LOGD(LOG_TAG_CES, "subscribe common event failed, remove event listener");
             std::lock_guard<std::mutex> lock(eventListenersMutex_);
             auto eventListener = eventListeners_.find(subscriber);
             if (eventListener != eventListeners_.end()) {
@@ -239,10 +239,10 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (subscriber == nullptr) {
-        EVENT_LOGE("the subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES, "the subscriber is null");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -253,7 +253,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     auto eventListener = eventListeners_.find(subscriber);
     int32_t funcResult = -1;
     if (eventListener != eventListeners_.end()) {
-        EVENT_LOGD("before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
+        EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
         if (eventListener->second->AsObject() == nullptr) {
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
@@ -268,7 +268,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
         }
         return ERR_NOTIFICATION_SEND_ERROR;
     } else {
-        EVENT_LOGW("No subscription");
+        EVENT_LOGW(LOG_TAG_CES, "No subscription");
     }
 
     return ERR_OK;
@@ -278,10 +278,10 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (subscriber == nullptr) {
-        EVENT_LOGE("the subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES, "the subscriber is null");
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -292,7 +292,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
     auto eventListener = eventListeners_.find(subscriber);
     int32_t funcResult = -1;
     if (eventListener != eventListeners_.end()) {
-        EVENT_LOGD("before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
+        EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
         if (eventListener->second->AsObject() == nullptr) {
             return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
@@ -307,17 +307,17 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
         }
         return ERR_NOTIFICATION_SEND_ERROR;
     } else {
-        EVENT_LOGW("No subscription");
+        EVENT_LOGW(LOG_TAG_CES, "No subscription");
     }
     return ERR_OK;
 }
 
 bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (event.empty()) {
-        EVENT_LOGE("event is empty");
+        EVENT_LOGE(LOG_TAG_CES, "event is empty");
         return false;
     }
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
@@ -335,10 +335,10 @@ bool CommonEvent::GetStickyCommonEvent(const std::string &event, CommonEventData
 bool CommonEvent::FinishReceiver(
     const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &data, const bool &abortEvent)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (proxy == nullptr) {
-        EVENT_LOGE("the proxy is null");
+        EVENT_LOGE(LOG_TAG_CES, "the proxy is null");
         return false;
     }
     sptr<ICommonEvent> cesProxy = GetCommonEventProxy();
@@ -356,7 +356,7 @@ bool CommonEvent::FinishReceiver(
 bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
@@ -372,7 +372,7 @@ bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, c
 
 bool CommonEvent::Freeze(const uid_t &uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
@@ -388,7 +388,7 @@ bool CommonEvent::Freeze(const uid_t &uid)
 
 bool CommonEvent::Unfreeze(const uid_t &uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
@@ -404,7 +404,7 @@ bool CommonEvent::Unfreeze(const uid_t &uid)
 
 bool CommonEvent::UnfreezeAll()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
@@ -420,7 +420,7 @@ bool CommonEvent::UnfreezeAll()
 
 int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
@@ -436,7 +436,7 @@ int32_t CommonEvent::RemoveStickyCommonEvent(const std::string &event)
 
 int32_t CommonEvent::SetStaticSubscriberState(bool enable)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<ICommonEvent> proxy_ = GetCommonEventProxy();
     if (!proxy_) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
@@ -451,7 +451,7 @@ int32_t CommonEvent::SetStaticSubscriberState(bool enable)
 
 int32_t CommonEvent::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
 {
-    EVENT_LOGD("Called.");
+    EVENT_LOGD(LOG_TAG_CES, "Called.");
     sptr<ICommonEvent> proxy_ = GetCommonEventProxy();
     if (!proxy_) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
@@ -466,7 +466,7 @@ int32_t CommonEvent::SetStaticSubscriberState(const std::vector<std::string> &ev
 
 bool CommonEvent::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<ICommonEvent> proxy_ = GetCommonEventProxy();
     if (!proxy_) {
         return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
@@ -481,23 +481,23 @@ bool CommonEvent::SetFreezeStatus(std::set<int> pidList, bool isFreeze)
 
 sptr<ICommonEvent> CommonEvent::GetCommonEventProxy()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (!systemAbilityManager) {
-        EVENT_LOGE("Failed to get system ability mgr.");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability mgr.");
         return nullptr;
     }
 
     sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(COMMON_EVENT_SERVICE_ID);
     if (!remoteObject) {
-        EVENT_LOGE("Failed to get COMMON Event Manager.");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get COMMON Event Manager.");
         return nullptr;
     }
 
     auto proxy = iface_cast<ICommonEvent>(remoteObject);
     if (!proxy || !proxy->AsObject()) {
-        EVENT_LOGE("Failed to get COMMON Event Manager's proxy");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get COMMON Event Manager's proxy");
         return nullptr;
     }
     return proxy;
@@ -507,7 +507,7 @@ uint8_t CommonEvent::CreateCommonEventListener(
     const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES, "subscriber is null");
         return SUBSCRIBE_FAILED;
     }
 
@@ -516,7 +516,7 @@ uint8_t CommonEvent::CreateCommonEventListener(
     auto eventListener = eventListeners_.find(subscriber);
     if (eventListener != eventListeners_.end()) {
         commonEventListener = eventListener->second->AsObject();
-        EVENT_LOGW("Already subscribed");
+        EVENT_LOGW(LOG_TAG_CES, "Already subscribed");
         return ALREADY_SUBSCRIBED;
     } else {
         if (eventListeners_.size() == SUBSCRIBER_MAX_SIZE) {
@@ -526,7 +526,7 @@ uint8_t CommonEvent::CreateCommonEventListener(
 
         sptr<CommonEventListener> listener = new (std::nothrow) CommonEventListener(subscriber);
         if (!listener) {
-            EVENT_LOGE("the common event listener is null");
+            EVENT_LOGE(LOG_TAG_CES, "the common event listener is null");
             return SUBSCRIBE_FAILED;
         }
         commonEventListener = listener->AsObject();
@@ -554,21 +554,22 @@ void CommonEvent::LogCachedSubscriber()
     std::string logString = "";
     for (const auto &item : vec) {
         if (item.second > 1) {
-            logString += item.first + ":"+ std::to_string(item.second);
+            logString.append(item.first).append(":").append(std::to_string(item.second)).append(",");
         }
     }
-    EVENT_LOGE_LIMIT("The maximum number of subscriptions has been reached, %{public}s", logString.c_str());
+    EVENT_LOGE_LIMIT(LOG_TAG_CES, "The maximum number of subscriptions has been reached, %{public}s",
+        logString.c_str());
 }
 
 bool CommonEvent::Reconnect()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     for (int32_t i = 0; i < MAX_RETRY_TIME; i++) {
         // try to connect ces
         if (!GetCommonEventProxy()) {
             // Sleep 1000 milliseconds before reconnect.
             std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
-            EVENT_LOGE("Resubscribe failed, try again.");
+            EVENT_LOGE(LOG_TAG_CES, "Resubscribe failed, try again.");
             continue;
         }
         return true;
@@ -579,7 +580,7 @@ bool CommonEvent::Reconnect()
 
 __attribute__((no_sanitize("cfi"))) bool CommonEvent::Resubscribe()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<ICommonEvent> proxy = GetCommonEventProxy();
     if (!proxy) {
         return false;
@@ -590,7 +591,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEvent::Resubscribe()
         auto subscriber = it->first;
         auto listener = it->second;
         if (listener == nullptr) {
-            EVENT_LOGE("null listener");
+            EVENT_LOGE(LOG_TAG_CES, "null listener");
             it = eventListeners_.erase(it);
             continue;
         }
@@ -601,7 +602,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEvent::Resubscribe()
             funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         }
         if (funcResult != ERR_OK) {
-            EVENT_LOGW("subscribe common event failed, remove event listener");
+            EVENT_LOGW(LOG_TAG_CES, "subscribe common event failed, remove event listener");
             it = eventListeners_.erase(it);
         } else {
             it++;

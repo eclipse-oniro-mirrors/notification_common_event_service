@@ -34,7 +34,7 @@ const std::string EVENT_PARAM_RESULT_CODE = "RESULT_CODE";
 void EventReport::SendHiSysEvent(const std::string &eventName, const EventInfo &eventInfo)
 {
 #ifndef HAS_HISYSEVENT_PART
-    EVENT_LOGD("Hisysevent is disabled");
+    EVENT_LOGD(LOG_TAG_CES, "Hisysevent is disabled");
 #else
     auto iter = cesSysEventFuncMap_.find(eventName);
     if (iter == cesSysEventFuncMap_.end()) {

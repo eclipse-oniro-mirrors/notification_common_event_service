@@ -36,11 +36,11 @@ CommonEventListener::~CommonEventListener()
 ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, bool ordered, bool sticky)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsReady()) {
-        EVENT_LOGE("not ready");
+        EVENT_LOGE(LOG_TAG_CES, "not ready");
         return IPC_INVOKER_ERR;
     }
 
@@ -48,7 +48,7 @@ ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData,
     std::function<void()> onReceiveEventFunc = [wp, commonEventData, ordered, sticky] () {
         sptr<CommonEventListener> sThis = wp.promote();
         if (sThis == nullptr) {
-            EVENT_LOGE("invalid listener");
+            EVENT_LOGE(LOG_TAG_CES, "invalid listener");
             return;
         }
         sThis->OnReceiveEvent(commonEventData, ordered, sticky);
@@ -66,33 +66,33 @@ ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData,
 
 __attribute__((no_sanitize("cfi"))) ErrCode CommonEventListener::Init()
 {
-    EVENT_LOGD("ready to init");
+    EVENT_LOGD(LOG_TAG_CES, "ready to init");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!commonEventSubscriber_) {
-        EVENT_LOGE("Failed to init due to subscriber is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to init due to subscriber is nullptr");
         return ERR_INVALID_OPERATION;
     }
     auto threadMode = commonEventSubscriber_->GetSubscribeInfo().GetThreadMode();
-    EVENT_LOGD("thread mode: %{public}d", threadMode);
+    EVENT_LOGD(LOG_TAG_CES, "thread mode: %{public}d", threadMode);
     if (threadMode == CommonEventSubscribeInfo::HANDLER) {
         if (!runner_) {
             runner_ = EventRunner::GetMainEventRunner();
             if (!runner_) {
-                EVENT_LOGE("Failed to init due to create runner error");
+                EVENT_LOGE(LOG_TAG_CES, "Failed to init due to create runner error");
                 return ERR_INVALID_OPERATION;
             }
         }
         if (!handler_) {
             handler_ = std::make_shared<EventHandler>(runner_);
             if (!handler_) {
-                EVENT_LOGE("Failed to init due to create handler error");
+                EVENT_LOGE(LOG_TAG_CES, "Failed to init due to create handler error");
                 return ERR_INVALID_OPERATION;
             }
         }
     } else {
         InitListenerQueue();
         if (listenerQueue_ == nullptr) {
-            EVENT_LOGE("Failed to init due to create ffrt queue error");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to init due to create ffrt queue error");
             return ERR_INVALID_OPERATION;
         }
     }
@@ -130,7 +130,7 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
+    EVENT_LOGD(LOG_TAG_CES, "enter %{public}s", commonEventData.GetWant().GetAction().c_str());
 
     int32_t code = commonEventData.GetCode();
     std::string data = commonEventData.GetData();
@@ -138,7 +138,7 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     std::shared_ptr<AsyncCommonEventResult> result =
         std::make_shared<AsyncCommonEventResult>(code, data, ordered, sticky, this);
     if (result == nullptr) {
-        EVENT_LOGE("Failed to create AsyncCommonEventResult");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to create AsyncCommonEventResult");
         return;
     }
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
@@ -147,7 +147,7 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
         subscriber = commonEventSubscriber_;
     }
     if (!subscriber) {
-        EVENT_LOGE("CommonEventSubscriber ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventSubscriber ptr is nullptr");
         return;
     }
     subscriber->SetAsyncCommonEventResult(result);
@@ -155,12 +155,12 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     if (ordered && (subscriber->GetAsyncCommonEventResult() != nullptr)) {
         subscriber->GetAsyncCommonEventResult()->FinishCommonEvent();
     }
-    EVENT_LOGD("end");
+    EVENT_LOGD(LOG_TAG_CES, "end");
 }
 
 void CommonEventListener::Stop()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     void *queue = nullptr;
     {
         std::lock_guard<std::mutex> lock(mutex_);

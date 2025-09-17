@@ -52,55 +52,55 @@ constexpr const char* STATIC_SUBSCRIBER_EXTENSION_CONTEXT_CLASS_NAME =
 static void StartAbility([[maybe_unused]] ani_env *env,
     [[maybe_unused]] ani_object aniObj, ani_object wantObj)
 {
-    EVENT_LOGD("StartAbility");
+    EVENT_LOGD(LOG_TAG_CES, "StartAbility");
     StsStaticSubscriberExtensionContext::GetInstance().StartAbilityInner(env, aniObj, wantObj);
 }
 
 void StsStaticSubscriberExtensionContext::StartAbilityInner([[maybe_unused]] ani_env *env,
     [[maybe_unused]] ani_object aniObj, ani_object wantObj)
 {
-    EVENT_LOGD("StartAbilityInner");
+    EVENT_LOGD(LOG_TAG_CES, "StartAbilityInner");
     AAFwk::Want want;
     ErrCode innerErrCode = ERR_OK;
     if (!AppExecFwk::UnwrapWant(env, wantObj, want)) {
-        EVENT_LOGE("UnwrapWant filed");
+        EVENT_LOGE(LOG_TAG_CES, "UnwrapWant filed");
         OHOS::EventManagerFwkAni::ThrowError(env, ERROR_CODE_INVALID_PARAM);
         return;
     }
     auto context = StsStaticSubscriberExtensionContext::GetAbilityContext(env, aniObj);
     if (context == nullptr) {
-        EVENT_LOGE("GetAbilityContext is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "GetAbilityContext is nullptr");
         OHOS::EventManagerFwkAni::ThrowError(env, ERROR_CODE_INVALID_CONTEXT);
         return;
     }
     innerErrCode = context->StartAbility(want);
     if (innerErrCode != ERR_OK) {
-        EVENT_LOGE("StartAbility failed, code = %{public}d", innerErrCode);
+        EVENT_LOGE(LOG_TAG_CES, "StartAbility failed, code = %{public}d", innerErrCode);
         OHOS::EventManagerFwkAni::ThrowErrorByNativeError(env, innerErrCode);
     }
 }
 
 StaticSubscriberExtensionContext* StsStaticSubscriberExtensionContext::GetAbilityContext(ani_env *env, ani_object obj)
 {
-    EVENT_LOGD("GetAbilityContext");
+    EVENT_LOGD(LOG_TAG_CES, "GetAbilityContext");
     ani_class cls = nullptr;
     ani_long nativeContextLong;
     ani_field contextField = nullptr;
     ani_status status = ANI_ERROR;
     if (env == nullptr) {
-        EVENT_LOGD("null env");
+        EVENT_LOGD(LOG_TAG_CES, "null env");
         return nullptr;
     }
     if ((status = env->FindClass(STATIC_SUBSCRIBER_EXTENSION_CONTEXT_CLASS_NAME, &cls)) != ANI_OK) {
-        EVENT_LOGD("GetAbilityContext find class status: %{public}d", status);
+        EVENT_LOGD(LOG_TAG_CES, "GetAbilityContext find class status: %{public}d", status);
         return nullptr;
     }
     if ((status = env->Class_FindField(cls, "nativeStaticSubscriberExtensionContext", &contextField)) != ANI_OK) {
-        EVENT_LOGD("GetAbilityContext find field status: %{public}d", status);
+        EVENT_LOGD(LOG_TAG_CES, "GetAbilityContext find field status: %{public}d", status);
         return nullptr;
     }
     if ((status = env->Object_GetField_Long(obj, contextField, &nativeContextLong)) != ANI_OK) {
-        EVENT_LOGD("GetAbilityContext get filed status: %{public}d", status);
+        EVENT_LOGD(LOG_TAG_CES, "GetAbilityContext get filed status: %{public}d", status);
         return nullptr;
     }
     return (StaticSubscriberExtensionContext*)nativeContextLong;
@@ -111,7 +111,7 @@ ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
     const std::shared_ptr<OHOS::AppExecFwk::OHOSApplication> &application)
 {
     if (env == nullptr) {
-        EVENT_LOGE("null env");
+        EVENT_LOGE(LOG_TAG_CES, "null env");
         return nullptr;
     }
     std::shared_ptr<OHOS::AppExecFwk::AbilityInfo> abilityInfo = nullptr;
@@ -124,7 +124,7 @@ ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
     ani_method method = nullptr;
     ani_status status = ANI_ERROR;
     if ((status = env->FindClass(STATIC_SUBSCRIBER_EXTENSION_CONTEXT_CLASS_NAME, &cls)) != ANI_OK) {
-        EVENT_LOGE("find class status : %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "find class status : %{public}d", status);
         return nullptr;
     }
     std::array functions = {
@@ -132,28 +132,28 @@ ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
             reinterpret_cast<void*>(StartAbility) },
     };
     if ((status = env->Class_BindNativeMethods(cls, functions.data(), functions.size())) != ANI_OK) {
-        EVENT_LOGE("bind method status : %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "bind method status : %{public}d", status);
         return nullptr;
     }
     if ((status = env->Class_FindMethod(cls, "<ctor>", ":V", &method)) != ANI_OK) {
-        EVENT_LOGE("find Method status: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "find Method status: %{public}d", status);
         return nullptr;
     }
     if ((status = env->Object_New(cls, method, &contextObj)) != ANI_OK) {
-        EVENT_LOGE("new Object status: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "new Object status: %{public}d", status);
         return nullptr;
     }
     if ((status = env->Class_FindField(cls, "nativeStaticSubscriberExtensionContext", &field)) != ANI_OK) {
-        EVENT_LOGE("find field status: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "find field status: %{public}d", status);
         return nullptr;
     }
     ani_long nativeContextLong = (ani_long)context.get();
     if ((status = env->Object_SetField_Long(contextObj, field, nativeContextLong)) != ANI_OK) {
-        EVENT_LOGE("set field status: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "set field status: %{public}d", status);
         return nullptr;
     }
     if (application == nullptr) {
-        EVENT_LOGE("application null");
+        EVENT_LOGE(LOG_TAG_CES, "application null");
         return nullptr;
     }
     OHOS::AbilityRuntime::CreateEtsExtensionContext(env, cls, contextObj, context, context->GetAbilityInfo());

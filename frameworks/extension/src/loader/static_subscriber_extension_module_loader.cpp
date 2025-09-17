@@ -34,7 +34,7 @@ __attribute__((no_sanitize("cfi"))) StaticSubscriberExtension* CreateStsExtensio
 {
     void *handle = dlopen(STS_STATIC_SUBSCRIBER_EXT_LIB_NAME, RTLD_LAZY);
     if (handle == nullptr) {
-        EVENT_LOGE("open sts_static_subscriber_extension library %{public}s failed, reason: %{public}sn",
+        EVENT_LOGE(LOG_TAG_CES, "open sts_static_subscriber_extension library %{public}s failed, reason: %{public}sn",
             STS_STATIC_SUBSCRIBER_EXT_LIB_NAME, dlerror());
         return new (std::nothrow) StaticSubscriberExtension();
     }
@@ -42,7 +42,7 @@ __attribute__((no_sanitize("cfi"))) StaticSubscriberExtension* CreateStsExtensio
     auto func = reinterpret_cast<CREATE_FUNC>(dlsym(handle, STS_STATIC_SUBSCRIBER_EXT_CREATE_FUNC));
     if (func == nullptr) {
         dlclose(handle);
-        EVENT_LOGE("get sts_static_subscriber_extension symbol %{public}s in %{public}s failed",
+        EVENT_LOGE(LOG_TAG_CES, "get sts_static_subscriber_extension symbol %{public}s in %{public}s failed",
             STS_STATIC_SUBSCRIBER_EXT_CREATE_FUNC, STS_STATIC_SUBSCRIBER_EXT_LIB_NAME);
         return new (std::nothrow) StaticSubscriberExtension();
     }
@@ -50,7 +50,7 @@ __attribute__((no_sanitize("cfi"))) StaticSubscriberExtension* CreateStsExtensio
     auto instance = func(runtime);
     if (instance == nullptr) {
         dlclose(handle);
-        EVENT_LOGE("get sts_static_subscriber_extension instance in %{public}s failed",
+        EVENT_LOGE(LOG_TAG_CES, "get sts_static_subscriber_extension instance in %{public}s failed",
             STS_STATIC_SUBSCRIBER_EXT_CREATE_FUNC);
         return new (std::nothrow) StaticSubscriberExtension();
     }
@@ -63,12 +63,11 @@ StaticSubscriberExtensionModuleLoader::~StaticSubscriberExtensionModuleLoader() 
 AbilityRuntime::Extension* StaticSubscriberExtensionModuleLoader::Create(
     const std::unique_ptr<AbilityRuntime::Runtime>& runtime) const
 {
-    EVENT_LOGD("Create module loader.");
+    EVENT_LOGD(LOG_TAG_CES, "Create module loader.");
     if (!runtime) {
         return StaticSubscriberExtension::Create(runtime);
     }
 
-    EVENT_LOGI("Create runtime");
     switch (runtime->GetLanguage()) {
         case AbilityRuntime::Runtime::Language::JS:
             return JsStaticSubscriberExtension::Create(runtime);
@@ -81,7 +80,7 @@ AbilityRuntime::Extension* StaticSubscriberExtensionModuleLoader::Create(
 
 std::map<std::string, std::string> StaticSubscriberExtensionModuleLoader::GetParams()
 {
-    EVENT_LOGD("Get params.");
+    EVENT_LOGD(LOG_TAG_CES, "Get params.");
     std::map<std::string, std::string> params;
     // type means extension type in ExtensionAbilityType of extension_ability_info.h, 7 means static_subscriber.
     params.insert(std::pair<std::string, std::string>("type", "7"));

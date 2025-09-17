@@ -148,7 +148,7 @@ public:
         } else if (action == EVENTCASE2) {
             ProcessSubscriberTestCase2(data);
         } else if (action == EVENTCASE3) {
-            EVENT_LOGI("SubscriberTest: ProcessSubscriberTestCase3:  start");
+            EVENT_LOGD(LOG_TAG_CES, "SubscriberTest: ProcessSubscriberTestCase3:  start");
         } else {
         }
     }
@@ -156,14 +156,14 @@ public:
 private:
     void ProcessSubscriberTestCase1(CommonEventData data)
     {
-        EVENT_LOGI("SubscriberTest: ProcessSubscriberTestCase1:  start");
+        EVENT_LOGD(LOG_TAG_CES, "SubscriberTest: ProcessSubscriberTestCase1:  start");
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
         std::function<void()> asyncProcessFunc = std::bind(&SubscriberTest::AsyncProcess, this, commonEventListener);
         handler_->PostTask(asyncProcessFunc);
     }
     void ProcessSubscriberTestCase2(CommonEventData data)
     {
-        EVENT_LOGI("SubscriberTest: ProcessSubscriberTest2Case2:  start");
+        EVENT_LOGD(LOG_TAG_CES, "SubscriberTest: ProcessSubscriberTest2Case2:  start");
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
         std::function<void()> asyncProcessFunc = std::bind(&SubscriberTest::AsyncProcess, this, commonEventListener);
         handler_->PostTask(asyncProcessFunc);
@@ -200,7 +200,7 @@ public:
         } else if (action == EVENTCASE2) {
             ProcessSubscriberTest2Case2(data);
         } else if (action == EVENTCASE3) {
-            EVENT_LOGI("SubscriberTest2: ProcessSubscriberTest2Case3:  start");
+            EVENT_LOGD(LOG_TAG_CES, "SubscriberTest2: ProcessSubscriberTest2Case3:  start");
         } else {
         }
     }
@@ -208,7 +208,7 @@ public:
 private:
     void ProcessSubscriberTest2Case1(CommonEventData data)
     {
-        EVENT_LOGI("SubscriberTest2: ProcessSubscriberTest2Case1:  start");
+        EVENT_LOGD(LOG_TAG_CES, "SubscriberTest2: ProcessSubscriberTest2Case1:  start");
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
         if (innerCommonEventManager_) {
             std::vector<std::string> state;
@@ -221,11 +221,11 @@ private:
     }
     void ProcessSubscriberTest2Case2(CommonEventData data)
     {
-        EVENT_LOGI("SubscriberTest2: ProcessSubscriberTest2Case2:  start");
+        EVENT_LOGD(LOG_TAG_CES, "SubscriberTest2: ProcessSubscriberTest2Case2:  start");
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
         std::function<void()> asyncProcessFunc = std::bind(&SubscriberTest2::AsyncProcess, this, commonEventListener2);
         handler_->PostTask(asyncProcessFunc);
-        EVENT_LOGI("SubscriberTest2: ProcessSubscriberTest2Case2:  end");
+        EVENT_LOGD(LOG_TAG_CES, "SubscriberTest2: ProcessSubscriberTest2Case2:  end");
     }
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
@@ -267,7 +267,7 @@ public:
 private:
     void ProcessSubscriberTestLastCase1(CommonEventData data)
     {
-        EVENT_LOGI("SubscriberTestLast: ProcessSubscriberTestLastCase1:  start");
+        EVENT_LOGD(LOG_TAG_CES, "SubscriberTestLast: ProcessSubscriberTestLastCase1:  start");
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
         std::function<void()> asyncProcessFunc =
             std::bind(&SubscriberTestLast::AsyncProcess, this, commonEventListener3);
@@ -275,7 +275,7 @@ private:
     }
     void ProcessSubscriberTestLastCase2(CommonEventData data)
     {
-        EVENT_LOGI("SubscriberTestLast: ProcessSubscriberTest2Case2:  start");
+        EVENT_LOGD(LOG_TAG_CES, "SubscriberTestLast: ProcessSubscriberTest2Case2:  start");
     }
 
     void AsyncProcess(OHOS::sptr<OHOS::IRemoteObject> commonEventListener)
@@ -415,7 +415,7 @@ void CommonEventDumpTest::DumpInfoCount(const std::vector<std::string> &state, i
     bool isPending = false;
     bool isHistory = false;
     for (auto vec : state) {
-        EVENT_LOGI("DumpInfoCount:  %{public}s", vec.c_str());
+        EVENT_LOGD(LOG_TAG_CES, "DumpInfoCount:  %{public}s", vec.c_str());
         auto pos = vec.find("No information");
         if (pos != string::npos) {
             auto pos2 = vec.find("\tSubscribers:\tNo information");

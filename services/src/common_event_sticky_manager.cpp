@@ -24,16 +24,16 @@ constexpr int32_t LENGTH = 80;
 int CommonEventStickyManager::FindStickyEvents(
     const SubscribeInfoPtr &subscribeInfo, std::vector<CommonEventRecordPtr> &commonEventRecords)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_STICKY, "enter");
 
     if (subscribeInfo == nullptr) {
-        EVENT_LOGE("subscribeInfo is null");
+        EVENT_LOGE(LOG_TAG_STICKY, "subscribeInfo is null");
         return ERR_INVALID_VALUE;
     }
 
     auto events = subscribeInfo->GetMatchingSkills().GetEvents();
     if (events.size() == 0) {
-        EVENT_LOGW("No subscribed events");
+        EVENT_LOGW(LOG_TAG_STICKY, "No subscribed events");
         return ERR_INVALID_VALUE;
     }
 
@@ -44,10 +44,10 @@ int CommonEventStickyManager::FindStickyEvents(
 
 bool CommonEventStickyManager::GetStickyCommonEvent(const std::string &event, CommonEventData &eventData)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_STICKY, "enter");
 
     if (event.empty()) {
-        EVENT_LOGE("Invalid event name");
+        EVENT_LOGE(LOG_TAG_STICKY, "Invalid event name");
         return false;
     }
 
@@ -56,11 +56,11 @@ bool CommonEventStickyManager::GetStickyCommonEvent(const std::string &event, Co
 
 int CommonEventStickyManager::UpdateStickyEvent(const CommonEventRecord &eventRecord)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_STICKY, "enter");
 
     auto commonEventRecordPtr = std::make_shared<CommonEventRecord>(eventRecord);
     if (commonEventRecordPtr == nullptr) {
-        EVENT_LOGE("Failed to create CommonEventRecord");
+        EVENT_LOGE(LOG_TAG_STICKY, "Failed to create CommonEventRecord");
         return ERR_INVALID_VALUE;
     }
 
@@ -72,7 +72,7 @@ int CommonEventStickyManager::UpdateStickyEvent(const CommonEventRecord &eventRe
 void CommonEventStickyManager::DumpState(
     const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_STICKY, "enter");
 
     std::vector<CommonEventRecordPtr> records;
 
@@ -197,12 +197,12 @@ bool CommonEventStickyManager::GetStickyCommonEventLocked(const std::string &eve
 int CommonEventStickyManager::UpdateStickyEventLocked(const std::string &event, const CommonEventRecordPtr &record)
 {
     if (event.empty()) {
-        EVENT_LOGE("Invalid event name");
+        EVENT_LOGE(LOG_TAG_STICKY, "Invalid event name");
         return ERR_INVALID_VALUE;
     }
 
     if (record == nullptr) {
-        EVENT_LOGE("Invalid common event record");
+        EVENT_LOGE(LOG_TAG_STICKY, "Invalid common event record");
         return ERR_INVALID_VALUE;
     }
 

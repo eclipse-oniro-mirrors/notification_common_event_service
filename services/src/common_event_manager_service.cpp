@@ -64,20 +64,20 @@ CommonEventManagerService::CommonEventManagerService()
       handler_(nullptr)
 {
     supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_CES_CHECK_SA_PERMISSION, "false");
-    EVENT_LOGD("instance created");
+    EVENT_LOGD(LOG_TAG_CES, "instance created");
 }
 
 CommonEventManagerService::~CommonEventManagerService()
 {
-    EVENT_LOGD("instance destroyed");
+    EVENT_LOGD(LOG_TAG_CES, "instance destroyed");
 }
 
 ErrCode __attribute__((weak)) CommonEventManagerService::Init()
 {
-    EVENT_LOGD("ready to init");
+    EVENT_LOGD(LOG_TAG_CES, "ready to init");
     innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     if (!innerCommonEventManager_) {
-        EVENT_LOGE("Failed to init without inner service");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to init without inner service");
         return ERR_INVALID_OPERATION;
     }
 
@@ -90,12 +90,12 @@ ErrCode __attribute__((weak)) CommonEventManagerService::Init()
 bool CommonEventManagerService::IsReady() const
 {
     if (!innerCommonEventManager_) {
-        EVENT_LOGE("innerCommonEventManager is null");
+        EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager is null");
         return false;
     }
 
     if (!commonEventSrvQueue_) {
-        EVENT_LOGE("queue object is null");
+        EVENT_LOGE(LOG_TAG_CES, "queue object is null");
         return false;
     }
 
@@ -105,7 +105,7 @@ bool CommonEventManagerService::IsReady() const
 ErrCode CommonEventManagerService::PublishCommonEvent(
     const CommonEventData& event, const CommonEventPublishInfo& publishinfo, int32_t userId, int32_t& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     return PublishCommonEvent(event, publishinfo, nullptr, userId, funcResult);
 }
 
@@ -113,10 +113,10 @@ ErrCode CommonEventManagerService::PublishCommonEvent(const CommonEventData& eve
     const CommonEventPublishInfo& publishinfo, const sptr<IRemoteObject>& commonEventListener, int32_t userId,
     int32_t& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = ERR_NOTIFICATION_CESM_ERROR;
         return ERR_OK;
     }
@@ -124,7 +124,7 @@ ErrCode CommonEventManagerService::PublishCommonEvent(const CommonEventData& eve
     if (userId != ALL_USER && userId != CURRENT_USER && userId != UNDEFINED_USER) {
         bool isSubsystem = AccessTokenHelper::VerifyNativeToken(IPCSkeleton::GetCallingTokenID());
         if (!isSubsystem && !AccessTokenHelper::IsSystemApp()) {
-            EVENT_LOGE("publish to special user must be system application.");
+            EVENT_LOGE(LOG_TAG_CES, "publish to special user must be system application.");
             funcResult = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
             return ERR_OK;
         }
@@ -138,7 +138,7 @@ ErrCode CommonEventManagerService::PublishCommonEvent(const CommonEventData& eve
 ErrCode CommonEventManagerService::PublishCommonEvent(const CommonEventData& event,
     const CommonEventPublishInfo& publishinfo, uint32_t uid, int32_t callerToken, int32_t userId, bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     return PublishCommonEvent(event, publishinfo, nullptr, uid, callerToken, userId, funcResult);
 }
 
@@ -146,17 +146,17 @@ ErrCode CommonEventManagerService::PublishCommonEvent(const CommonEventData& eve
     const CommonEventPublishInfo& publishinfo, const sptr<IRemoteObject>& commonEventListener, uint32_t uid,
     int32_t callerToken, int32_t userId, bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!IsReady()) {
-        EVENT_LOGE("PublishCommonEvent not ready");
+        EVENT_LOGE(LOG_TAG_CES, "PublishCommonEvent not ready");
         funcResult = false;
         return ERR_OK;
     }
 
     auto callingUid = IPCSkeleton::GetCallingUid();
     if (callingUid != FOUNDATION_UID) {
-        EVENT_LOGE("Only foundation can publish common event as proxy uid = %{public}d.", callingUid);
+        EVENT_LOGE(LOG_TAG_CES, "Only foundation can publish common event as proxy uid = %{public}d.", callingUid);
         funcResult = false;
         return ERR_OK;
     }
@@ -171,12 +171,12 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     if (AccessTokenHelper::IsDlpHap(clientToken)) {
-        EVENT_LOGE("DLP hap not allowed to send common event");
+        EVENT_LOGE(LOG_TAG_CES, "DLP hap not allowed to send common event");
         return ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP;
     }
     struct tm recordTime = {0};
     if (!GetSystemCurrentTime(&recordTime)) {
-        EVENT_LOGE("Failed to GetSystemCurrentTime");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to GetSystemCurrentTime");
         return ERR_NOTIFICATION_SYS_ERROR;
     }
     int32_t errCode = CheckUserIdParams(userId);
@@ -185,7 +185,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
     }
 
     if (DelayedSingleton<PublishManager>::GetInstance()->CheckIsFloodAttack(uid)) {
-        EVENT_LOGE("Too many common events have been sent in a short period from (pid = %{public}d, uid = "
+        EVENT_LOGE(LOG_TAG_CES, "Too many events have been sent in a short period from (pid = %{public}d, uid = "
                    "%{public}d, userId = %{public}d)", pid, uid, userId);
         return ERR_NOTIFICATION_CES_EVENT_FREQ_TOO_HIGH;
     }
@@ -204,7 +204,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
         weakThis] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         std::string bundleName = "";
@@ -213,7 +213,7 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
         }
         sptr<CommonEventManagerService> commonEventManagerService = weakThis.promote();
         if (commonEventManagerService == nullptr) {
-            EVENT_LOGE("CommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "CommonEventManager not exist");
             return;
         }
         bool ret = innerCommonEventManager->PublishCommonEvent(event,
@@ -227,10 +227,10 @@ int32_t CommonEventManagerService::PublishCommonEventDetailed(const CommonEventD
             bundleName,
             commonEventManagerService);
         if (!ret) {
-            EVENT_LOGE("failed to publish event %{public}s", event.GetWant().GetAction().c_str());
+            EVENT_LOGE(LOG_TAG_CES, "failed to publish event %{public}s", event.GetWant().GetAction().c_str());
         }
     };
-    EVENT_LOGD("Start to submit publish commonEvent <%{public}d>", uid);
+    EVENT_LOGD(LOG_TAG_CES, "Start to submit publish commonEvent <%{public}d>", uid);
     commonEventSrvQueue_->submit(publishCommonEventFunc);
     return ERR_OK;
 }
@@ -239,17 +239,17 @@ ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
     const sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         return ERR_OK;
     }
 
     struct tm recordTime = {0};
     if (!GetSystemCurrentTime(&recordTime)) {
-        EVENT_LOGE("Failed to GetSystemCurrentTime");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to GetSystemCurrentTime");
         funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         return ERR_OK;
     }
@@ -281,7 +281,7 @@ ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
         startTime] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         bool ret = innerCommonEventManager->SubscribeCommonEvent(subscribeInfo,
@@ -294,11 +294,11 @@ ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
             instanceKey,
             startTime);
         if (!ret) {
-            EVENT_LOGE("failed to subscribe event");
+            EVENT_LOGE(LOG_TAG_CES, "failed to subscribe event");
         }
     };
 
-    EVENT_LOGD("Start to submit subscribe commonEvent <%{public}d>", callingUid);
+    EVENT_LOGD(LOG_TAG_CES, "Start to submit subscribe commonEvent <%{public}d>", callingUid);
     commonEventSrvQueue_->submit(subscribeCommonEventFunc);
     funcResult = ERR_OK;
     return ERR_OK;
@@ -308,10 +308,10 @@ ErrCode CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObje
     int32_t& funcResult)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         return ERR_OK;
     }
@@ -320,12 +320,12 @@ ErrCode CommonEventManagerService::UnsubscribeCommonEvent(const sptr<IRemoteObje
     std::function<void()> unsubscribeCommonEventFunc = [wp, commonEventListener] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         bool ret = innerCommonEventManager->UnsubscribeCommonEvent(commonEventListener);
         if (!ret) {
-            EVENT_LOGE("failed to unsubscribe event");
+            EVENT_LOGE(LOG_TAG_CES, "failed to unsubscribe event");
         }
     };
 
@@ -338,10 +338,10 @@ ErrCode CommonEventManagerService::UnsubscribeCommonEventSync(const sptr<IRemote
     int32_t& funcResult)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
         return ERR_OK;
     }
@@ -350,12 +350,12 @@ ErrCode CommonEventManagerService::UnsubscribeCommonEventSync(const sptr<IRemote
     std::function<void()> unsubscribeCommonEventFunc = [wp, commonEventListener] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         bool ret = innerCommonEventManager->UnsubscribeCommonEvent(commonEventListener);
         if (!ret) {
-            EVENT_LOGE("failed to unsubscribe event");
+            EVENT_LOGE(LOG_TAG_CES, "failed to unsubscribe event");
         }
     };
 
@@ -368,23 +368,23 @@ ErrCode CommonEventManagerService::UnsubscribeCommonEventSync(const sptr<IRemote
 ErrCode CommonEventManagerService::GetStickyCommonEvent(const std::string& event, CommonEventData& eventData,
     bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_STICKY, "enter");
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_STICKY, "CommonEventManagerService not ready");
         funcResult = false;
         return ERR_OK;
     }
 
     if (event.empty()) {
-        EVENT_LOGE("event is empty");
+        EVENT_LOGE(LOG_TAG_STICKY, "event is empty");
         funcResult = false;
         return ERR_OK;
     }
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     bool isSubsystem = AccessTokenHelper::VerifyNativeToken(callerToken);
     if (!isSubsystem && !AccessTokenHelper::IsSystemApp()) {
-        EVENT_LOGE("Not system application or subsystem request.");
+        EVENT_LOGE(LOG_TAG_STICKY, "Not system application or subsystem request.");
         funcResult = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
         return ERR_OK;
     }
@@ -393,7 +393,7 @@ ErrCode CommonEventManagerService::GetStickyCommonEvent(const std::string& event
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool ret = AccessTokenHelper::VerifyAccessToken(callerToken, permission);
     if (!ret) {
-        EVENT_LOGE("No permission to get a sticky common event from %{public}s (uid = %{public}d)",
+        EVENT_LOGE(LOG_TAG_STICKY, "No permission to get a sticky common event from %{public}s (uid = %{public}d)",
             bundleName.c_str(),
             callingUid);
         funcResult = false;
@@ -406,16 +406,16 @@ ErrCode CommonEventManagerService::GetStickyCommonEvent(const std::string& event
 ErrCode CommonEventManagerService::DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
     std::vector<std::string>& state, bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
-        EVENT_LOGE("Not subsystem or shell request");
+        EVENT_LOGE(LOG_TAG_CES, "Not subsystem or shell request");
         funcResult = false;
         return ERR_INVALID_VALUE;
     }
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = false;
         return ERR_INVALID_VALUE;
     }
@@ -431,10 +431,10 @@ ErrCode CommonEventManagerService::DumpState(uint8_t dumpType, const std::string
 ErrCode CommonEventManagerService::FinishReceiver(const sptr<IRemoteObject>& proxy, int32_t code,
     const std::string& receiverData, bool abortEvent, bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = false;
         return ERR_OK;
     }
@@ -442,7 +442,7 @@ ErrCode CommonEventManagerService::FinishReceiver(const sptr<IRemoteObject>& pro
     std::function<void()> finishReceiverFunc = [wp, proxy, code, receiverData, abortEvent] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         innerCommonEventManager->FinishReceiver(proxy, code, receiverData, abortEvent);
@@ -455,18 +455,18 @@ ErrCode CommonEventManagerService::FinishReceiver(const sptr<IRemoteObject>& pro
 
 ErrCode CommonEventManagerService::Freeze(uint32_t uid, bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     auto tokenId = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
         AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
-        EVENT_LOGE("Not subsystem request");
+        EVENT_LOGE(LOG_TAG_CES, "Not subsystem request");
         funcResult = false;
         return ERR_OK;
     }
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = false;
         return ERR_OK;
     }
@@ -474,7 +474,7 @@ ErrCode CommonEventManagerService::Freeze(uint32_t uid, bool& funcResult)
     std::function<void()> freezeFunc = [wp, uid] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         innerCommonEventManager->Freeze(uid);
@@ -487,18 +487,18 @@ ErrCode CommonEventManagerService::Freeze(uint32_t uid, bool& funcResult)
 
 ErrCode CommonEventManagerService::Unfreeze(uint32_t uid, bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     auto tokenId = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
         AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
-        EVENT_LOGE("Not subsystem request");
+        EVENT_LOGE(LOG_TAG_CES, "Not subsystem request");
         funcResult = false;
         return ERR_OK;
     }
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = false;
         return ERR_OK;
     }
@@ -507,7 +507,7 @@ ErrCode CommonEventManagerService::Unfreeze(uint32_t uid, bool& funcResult)
     std::function<void()> unfreezeFunc = [wp, uid] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         innerCommonEventManager->Unfreeze(uid);
@@ -520,18 +520,18 @@ ErrCode CommonEventManagerService::Unfreeze(uint32_t uid, bool& funcResult)
 
 ErrCode CommonEventManagerService::UnfreezeAll(bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     auto tokenId = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
         AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
-        EVENT_LOGE("Not subsystem request");
+        EVENT_LOGE(LOG_TAG_CES, "Not subsystem request");
         funcResult = false;
         return ERR_OK;
     }
     
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = false;
         return ERR_OK;
     }
@@ -540,7 +540,7 @@ ErrCode CommonEventManagerService::UnfreezeAll(bool& funcResult)
     std::function<void()> unfreezeAllFunc = [wp] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         innerCommonEventManager->UnfreezeAll();
@@ -553,22 +553,22 @@ ErrCode CommonEventManagerService::UnfreezeAll(bool& funcResult)
 
 int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &args)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyShellToken(callerToken) && !AccessTokenHelper::VerifyNativeToken(callerToken)) {
-        EVENT_LOGE("Not subsystem or shell request");
+        EVENT_LOGE(LOG_TAG_CES, "Not subsystem or shell request");
         return ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED;
     }
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         return ERR_INVALID_VALUE;
     }
     std::string result;
     innerCommonEventManager_->HiDump(args, result);
     int ret = dprintf(fd, "%s\n", result.c_str());
     if (ret < 0) {
-        EVENT_LOGE("dprintf error");
+        EVENT_LOGE(LOG_TAG_CES, "dprintf error");
         return ERR_INVALID_VALUE;
     }
     return ERR_OK;
@@ -576,10 +576,10 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
 
 ErrCode CommonEventManagerService::RemoveStickyCommonEvent(const std::string& event, int32_t& funcResult)
 {
-    EVENT_LOGI("enter %{public}s", event.c_str());
+    EVENT_LOGI(LOG_TAG_STICKY, "Remove %{public}s", event.c_str());
 
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_STICKY, "CommonEventManagerService not ready");
         funcResult = ERR_NOTIFICATION_CESM_ERROR;
         return ERR_OK;
     }
@@ -587,7 +587,7 @@ ErrCode CommonEventManagerService::RemoveStickyCommonEvent(const std::string& ev
     auto tokenId = IPCSkeleton::GetCallingTokenID();
     bool isSubsystem = AccessTokenHelper::VerifyNativeToken(tokenId);
     if (!isSubsystem && !AccessTokenHelper::IsSystemApp()) {
-        EVENT_LOGE("Not system application or subsystem request.");
+        EVENT_LOGE(LOG_TAG_STICKY, "Not system application or subsystem request.");
         funcResult = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
         return ERR_OK;
     }
@@ -595,7 +595,7 @@ ErrCode CommonEventManagerService::RemoveStickyCommonEvent(const std::string& ev
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool ret = AccessTokenHelper::VerifyAccessToken(tokenId, permission);
     if (!ret && (!isSubsystem || supportCheckSaPermission_.compare("true") == 0)) {
-        EVENT_LOGE("No permission.");
+        EVENT_LOGE(LOG_TAG_STICKY, "No permission.");
         funcResult = ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED;
         return ERR_OK;
     }
@@ -606,7 +606,7 @@ ErrCode CommonEventManagerService::RemoveStickyCommonEvent(const std::string& ev
 ErrCode CommonEventManagerService::SetStaticSubscriberState(bool enable, int32_t& funcResult)
 {
     if (!AccessTokenHelper::IsSystemApp()) {
-        EVENT_LOGE("Not system application");
+        EVENT_LOGE(LOG_TAG_STATIC, "Not system application");
         funcResult = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
         return ERR_OK;
     }
@@ -618,7 +618,7 @@ ErrCode CommonEventManagerService::SetStaticSubscriberStateByEvents(const std::v
     int32_t& funcResult)
 {
     if (!AccessTokenHelper::IsSystemApp()) {
-        EVENT_LOGE("Not system application.");
+        EVENT_LOGE(LOG_TAG_CES, "Not system application.");
         funcResult = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
         return ERR_OK;
     }
@@ -628,17 +628,17 @@ ErrCode CommonEventManagerService::SetStaticSubscriberStateByEvents(const std::v
 
 ErrCode CommonEventManagerService::SetFreezeStatus(const std::set<int32_t>& pidList, bool isFreeze, bool& funcResult)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     auto tokenId = IPCSkeleton::GetCallingTokenID();
     if (!AccessTokenHelper::VerifyNativeToken(tokenId) ||
         AccessTokenHelper::GetCallingProcessName(tokenId) != RESOURCE_MANAGER_PROCESS_NAME) {
-        EVENT_LOGE("Not subsystem request");
+        EVENT_LOGE(LOG_TAG_CES, "Not subsystem request");
         funcResult = false;
         return ERR_OK;
     }
     
     if (!IsReady()) {
-        EVENT_LOGE("CommonEventManagerService not ready");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventManagerService not ready");
         funcResult = false;
         return ERR_OK;
     }
@@ -647,7 +647,7 @@ ErrCode CommonEventManagerService::SetFreezeStatus(const std::set<int32_t>& pidL
     std::function<void()> setFreezeStatusFunc = [wp, pidList, isFreeze] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
-            EVENT_LOGE("innerCommonEventManager not exist");
+            EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
         }
         innerCommonEventManager->SetFreezeStatus(pidList, isFreeze);
@@ -662,7 +662,7 @@ int32_t CommonEventManagerService::CheckUserIdParams(const int32_t &userId)
 {
     if (userId != ALL_USER && userId != CURRENT_USER && userId != UNDEFINED_USER
         && !OsAccountManagerHelper::GetInstance()->CheckUserExists(userId)) {
-        EVENT_LOGE("UserId %{public}d is not exists in OsAccount", userId);
+        EVENT_LOGE(LOG_TAG_CES, "UserId %{public}d is not exists in OsAccount", userId);
         return ERR_NOTIFICATION_CES_USERID_INVALID;
     }
     return ERR_OK;

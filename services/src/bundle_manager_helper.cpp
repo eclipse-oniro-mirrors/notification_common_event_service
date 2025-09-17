@@ -39,7 +39,7 @@ BundleManagerHelper::~BundleManagerHelper()
 
 std::string BundleManagerHelper::GetBundleName(const uid_t uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
     std::string bundleName = "";
@@ -56,7 +56,7 @@ std::string BundleManagerHelper::GetBundleName(const uid_t uid)
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos,
     const int32_t &userId)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
 
@@ -70,10 +70,10 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
 
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     int userId = SUBSCRIBE_USER_SYSTEM_BEGIN;
     DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
-    EVENT_LOGD("active userId = %{public}d", userId);
+    EVENT_LOGD(LOG_TAG_CES, "active userId = %{public}d", userId);
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!GetBundleMgrProxy()) {
@@ -87,7 +87,7 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
 bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInfo &extension,
                                            std::vector<std::string> &profileInfos)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
 
@@ -101,7 +101,7 @@ bool BundleManagerHelper::GetResConfigFile(const AppExecFwk::ExtensionAbilityInf
 
 bool BundleManagerHelper::CheckIsSystemAppByUid(const uid_t uid)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
 
@@ -118,7 +118,7 @@ bool BundleManagerHelper::CheckIsSystemAppByUid(const uid_t uid)
 
 bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundleName, const int32_t &userId)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
 
@@ -131,7 +131,8 @@ bool BundleManagerHelper::CheckIsSystemAppByBundleName(const std::string &bundle
     int32_t uid = sptrBundleMgr_->GetUidByBundleName(bundleName, userId);
     IPCSkeleton::SetCallingIdentity(identity);
     if (uid < 0) {
-        EVENT_LOGW("get invalid uid from bundle %{public}s of userId %{public}d", bundleName.c_str(), userId);
+        EVENT_LOGW(LOG_TAG_CES, "get invalid uid from bundle %{public}s of userId %{public}d",
+            bundleName.c_str(), userId);
     }
     isSystemApp = sptrBundleMgr_->CheckIsSystemAppByUid(uid);
 
@@ -150,14 +151,14 @@ bool BundleManagerHelper::GetBundleMgrProxy()
 
 bool BundleManagerHelper::GetBundleMgrProxyInner(bool isAsync)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     sptr<IRemoteObject> remoteObject;
 
     if (!sptrBundleMgr_) {
         sptr<ISystemAbilityManager> systemAbilityManager =
             SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (!systemAbilityManager) {
-            EVENT_LOGE("Failed to get system ability mgr.");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability mgr.");
             return false;
         }
 
@@ -168,23 +169,23 @@ bool BundleManagerHelper::GetBundleMgrProxyInner(bool isAsync)
         }
 
         if (!remoteObject) {
-            EVENT_LOGE("Failed to get bundle manager service.");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to get bundle manager service.");
             return false;
         }
 
         sptrBundleMgr_ = iface_cast<IBundleMgr>(remoteObject);
         if ((!sptrBundleMgr_) || (!sptrBundleMgr_->AsObject())) {
-            EVENT_LOGE("Failed to get system bundle manager services ability");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to get system bundle manager services ability");
             return false;
         }
 
         bmsDeath_ = new (std::nothrow) BMSDeathRecipient();
         if (!bmsDeath_) {
-            EVENT_LOGE("Failed to create death Recipient ptr BMSDeathRecipient");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to create death Recipient ptr BMSDeathRecipient");
             return false;
         }
         if (!sptrBundleMgr_->AsObject()->AddDeathRecipient(bmsDeath_)) {
-            EVENT_LOGW("Failed to add death recipient");
+            EVENT_LOGW(LOG_TAG_CES, "Failed to add death recipient");
         }
     }
 
@@ -193,7 +194,7 @@ bool BundleManagerHelper::GetBundleMgrProxyInner(bool isAsync)
 
 void BundleManagerHelper::ClearBundleManagerHelper()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
 
@@ -206,10 +207,10 @@ void BundleManagerHelper::ClearBundleManagerHelper()
 bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag &flag,
     std::vector<AppExecFwk::ApplicationInfo> &appInfos)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     int userId = SUBSCRIBE_USER_SYSTEM_BEGIN;
     DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
-    EVENT_LOGD("active userId = %{public}d", userId);
+    EVENT_LOGD(LOG_TAG_CES, "active userId = %{public}d", userId);
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!GetBundleMgrProxy()) {
