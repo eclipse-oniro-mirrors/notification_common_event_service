@@ -23,35 +23,35 @@ OrderedEventHandler::OrderedEventHandler(
     const std::shared_ptr<EventRunner> &runner, const std::shared_ptr<CommonEventControlManager> &controlManager)
     : EventHandler(runner), controlManager_(controlManager)
 {
-    EVENT_LOGD("OrderedEventHandler is created");
+    EVENT_LOGD(LOG_TAG_CES, "OrderedEventHandler is created");
 }
 
 OrderedEventHandler::~OrderedEventHandler()
 {
-    EVENT_LOGD("OrderedEventHandler is destroyed");
+    EVENT_LOGD(LOG_TAG_CES, "OrderedEventHandler is destroyed");
 }
 
 void OrderedEventHandler::ProcessEvent(const InnerEvent::Pointer &event)
 {
     if (!controlManager_) {
-        EVENT_LOGE("CommonEventControlManager ptr is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
         return;
     }
     switch (event->GetInnerEventId()) {
         case ORDERED_EVENT_START: {
-            EVENT_LOGI("ORDERED_EVENT_START");
+            EVENT_LOGI(LOG_TAG_CES, "ORDERED_EVENT_START");
             controlManager_->ProcessNextOrderedEvent(true);
             break;
         }
 
         case ORDERED_EVENT_TIMEOUT: {
-            EVENT_LOGI("ORDERED_EVENT_TIMEOUT");
+            EVENT_LOGI(LOG_TAG_CES, "ORDERED_EVENT_TIMEOUT");
             controlManager_->CurrentOrderedEventTimeout(true);
             break;
         }
 
         default: {
-            EVENT_LOGW("the eventId is not supported");
+            EVENT_LOGW(LOG_TAG_CES, "the eventId is not supported");
             break;
         }
     }

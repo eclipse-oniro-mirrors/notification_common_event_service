@@ -27,13 +27,13 @@ using namespace OHOS::AppExecFwk;
 
 sptr<IRemoteObject> MockSystemAbilityManager::GetSystemAbility(int32_t systemAbilityId)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     return MockCommonEventStub::GetInstance();
 }
 
 sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     return sptr<MockSystemAbilityManager>(new MockSystemAbilityManager());
 }
 } // namespace OHOS

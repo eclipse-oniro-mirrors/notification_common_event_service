@@ -39,15 +39,17 @@
 extern "C" {
 #endif
 
+using namespace OHOS::EventFwk;
+
 CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum)
 {
     if (eventsNum == 0) {
-        EVENT_LOGE("Events is empty");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Events is empty");
         return nullptr;
     }
     CommonEvent_SubscribeInfo* subscribeInfo = new (std::nothrow) CommonEvent_SubscribeInfo();
     if (subscribeInfo == nullptr) {
-        EVENT_LOGE("Failed to create subscribeInfo");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Failed to create subscribeInfo");
         return nullptr;
     }
     for (int i = 0; i < eventsNum; i++) {
@@ -61,7 +63,7 @@ CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events
 CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEvent_SubscribeInfo* info, const char* permission)
 {
     if (info == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     info->permission = permission == nullptr? std::string(): permission;
@@ -71,7 +73,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublisherPermission(CommonEvent_SubscribeI
 CommonEvent_ErrCode OH_CommonEvent_SetPublisherBundleName(CommonEvent_SubscribeInfo* info, const char* bundleName)
 {
     if (info == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     info->bundleName = bundleName == nullptr? std::string(): bundleName;
@@ -135,7 +137,7 @@ CommonEvent_PublishInfo* OH_CommonEvent_CreatePublishInfo(bool ordered)
 {
     CommonEvent_PublishInfo* publishInfo = new (std::nothrow) CommonEvent_PublishInfo();
     if (publishInfo == nullptr) {
-        EVENT_LOGE("Failed to create PublishInfo");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Failed to create PublishInfo");
         return nullptr;
     }
     publishInfo->ordered = ordered;
@@ -152,7 +154,7 @@ void OH_CommonEvent_DestroyPublishInfo(CommonEvent_PublishInfo* info)
 CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoBundleName(CommonEvent_PublishInfo* info, const char* bundleName)
 {
     if (info == nullptr) {
-        EVENT_LOGE("Invalid info");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid info");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     info->bundleName = bundleName == nullptr ? std::string() : bundleName;
@@ -163,7 +165,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoPermissions(
     CommonEvent_PublishInfo* info, const char* permissions[], int32_t num)
 {
     if (info == nullptr) {
-        EVENT_LOGE("Invalid info");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid info");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
@@ -180,7 +182,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoPermissions(
 CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoCode(CommonEvent_PublishInfo* info, int32_t code)
 {
     if (info == nullptr) {
-        EVENT_LOGE("Invalid info");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid info");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
@@ -192,7 +194,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoData(
     CommonEvent_PublishInfo* info, const char* data, size_t length)
 {
     if (info == nullptr) {
-        EVENT_LOGE("Invalid info");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid info");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     if (data == nullptr) {
@@ -207,7 +209,7 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoParameters(
     CommonEvent_PublishInfo* info, CommonEvent_Parameters* param)
 {
     if (info == nullptr) {
-        EVENT_LOGE("Invalid info");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid info");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
@@ -240,12 +242,12 @@ void OH_CommonEvent_DestroyParameters(CommonEvent_Parameters* param)
 bool OH_CommonEvent_HasKeyInParameters(const CommonEvent_Parameters* para, const char* key)
 {
     if (para == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return false;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return false;
     }
     return parameters->wantParams.HasParam(key);
@@ -254,45 +256,45 @@ bool OH_CommonEvent_HasKeyInParameters(const CommonEvent_Parameters* para, const
 int OH_CommonEvent_GetIntFromParameters(const CommonEvent_Parameters* para, const char* key, const int defaultValue)
 {
     if (para == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
-    return OHOS::EventFwk::GetDataFromParams<OHOS::AAFwk::IInteger, OHOS::AAFwk::Integer, int>(
+    return GetDataFromParams<OHOS::AAFwk::IInteger, OHOS::AAFwk::Integer, int>(
         *parameters, key, defaultValue);
 }
 
 CommonEvent_ErrCode OH_CommonEvent_SetIntToParameters(CommonEvent_Parameters* param, const char* key, int value)
 {
     if (param == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataToParams<OHOS::AAFwk::Integer, int>(*parameters, key, value);
+    return SetDataToParams<OHOS::AAFwk::Integer, int>(*parameters, key, value);
 }
 
 int OH_CommonEvent_GetIntArrayFromParameters(const CommonEvent_Parameters* para, const char* key, int** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
-    return OHOS::EventFwk::GetDataArrayFromParams<OHOS::AAFwk::IInteger, OHOS::AAFwk::Integer, int>(
+    return GetDataArrayFromParams<OHOS::AAFwk::IInteger, OHOS::AAFwk::Integer, int>(
         *parameters, key, array);
 }
 
@@ -300,16 +302,16 @@ CommonEvent_ErrCode OH_CommonEvent_SetIntArrayToParameters(
     CommonEvent_Parameters* param, const char* key, const int* value, size_t num)
 {
     if (param == nullptr || key == nullptr || (value == nullptr && num > 0)) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataArrayToParams<OHOS::AAFwk::Integer, int>(
+    return SetDataArrayToParams<OHOS::AAFwk::Integer, int>(
         *parameters, key, value, num, OHOS::AAFwk::g_IID_IInteger);
 }
 
@@ -317,45 +319,45 @@ long OH_CommonEvent_GetLongFromParameters(const CommonEvent_Parameters* para, co
     const long defaultValue)
 {
     if (para == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
-    return OHOS::EventFwk::GetDataFromParams<OHOS::AAFwk::ILong, OHOS::AAFwk::Long, long>(
+    return GetDataFromParams<OHOS::AAFwk::ILong, OHOS::AAFwk::Long, long>(
         *parameters, key, defaultValue);
 }
 
 CommonEvent_ErrCode OH_CommonEvent_SetLongToParameters(CommonEvent_Parameters* param, const char* key, long value)
 {
     if (param == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataToParams<OHOS::AAFwk::Long, long>(*parameters, key, value);
+    return SetDataToParams<OHOS::AAFwk::Long, long>(*parameters, key, value);
 }
 
 int32_t OH_CommonEvent_GetLongArrayFromParameters(const CommonEvent_Parameters* para, const char* key, long** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
-    return OHOS::EventFwk::GetDataArrayFromParams<OHOS::AAFwk::ILong, OHOS::AAFwk::Long, long>(
+    return GetDataArrayFromParams<OHOS::AAFwk::ILong, OHOS::AAFwk::Long, long>(
         *parameters, key, array);
 }
 
@@ -363,16 +365,16 @@ CommonEvent_ErrCode OH_CommonEvent_SetLongArrayToParameters(CommonEvent_Paramete
     const long* value, size_t num)
 {
     if (param == nullptr || key == nullptr || (value == nullptr && num > 0)) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataArrayToParams<OHOS::AAFwk::Long, long>(
+    return SetDataArrayToParams<OHOS::AAFwk::Long, long>(
         *parameters, key, value, num, OHOS::AAFwk::g_IID_ILong);
 }
 
@@ -380,45 +382,45 @@ bool OH_CommonEvent_GetBoolFromParameters(const CommonEvent_Parameters* para, co
     const bool defaultValue)
 {
     if (para == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
-    return OHOS::EventFwk::GetDataFromParams<OHOS::AAFwk::IBoolean, OHOS::AAFwk::Boolean, bool>(
+    return GetDataFromParams<OHOS::AAFwk::IBoolean, OHOS::AAFwk::Boolean, bool>(
         *parameters, key, defaultValue);
 }
 
 CommonEvent_ErrCode OH_CommonEvent_SetBoolToParameters(CommonEvent_Parameters* param, const char* key, bool value)
 {
     if (param == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataToParams<OHOS::AAFwk::Boolean, bool>(*parameters, key, value);
+    return SetDataToParams<OHOS::AAFwk::Boolean, bool>(*parameters, key, value);
 }
 
 int32_t OH_CommonEvent_GetBoolArrayFromParameters(const CommonEvent_Parameters* para, const char* key, bool** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
-    return OHOS::EventFwk::GetDataArrayFromParams<OHOS::AAFwk::IBoolean, OHOS::AAFwk::Boolean, bool>(
+    return GetDataArrayFromParams<OHOS::AAFwk::IBoolean, OHOS::AAFwk::Boolean, bool>(
         *parameters, key, array);
 }
 
@@ -426,16 +428,16 @@ CommonEvent_ErrCode OH_CommonEvent_SetBoolArrayToParameters(
     CommonEvent_Parameters* param, const char* key, const bool* value, size_t num)
 {
     if (param == nullptr || key == nullptr || (value == nullptr && num > 0)) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataArrayToParams<OHOS::AAFwk::Boolean, bool>(
+    return SetDataArrayToParams<OHOS::AAFwk::Boolean, bool>(
         *parameters, key, value, num, OHOS::AAFwk::g_IID_IBoolean);
 }
 
@@ -443,77 +445,77 @@ char OH_CommonEvent_GetCharFromParameters(const CommonEvent_Parameters* para, co
     const char defaultValue)
 {
     if (para == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
-    return OHOS::EventFwk::GetDataFromParams<OHOS::AAFwk::IChar, OHOS::AAFwk::Char, char>(
+    return GetDataFromParams<OHOS::AAFwk::IChar, OHOS::AAFwk::Char, char>(
         *parameters, key, defaultValue);
 }
 
 CommonEvent_ErrCode OH_CommonEvent_SetCharToParameters(CommonEvent_Parameters* param, const char* key, char value)
 {
     if (param == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataToParams<OHOS::AAFwk::Char, char>(*parameters, key, value);
+    return SetDataToParams<OHOS::AAFwk::Char, char>(*parameters, key, value);
 }
 
 int32_t OH_CommonEvent_GetCharArrayFromParameters(const CommonEvent_Parameters* para, const char* key, char** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
-    return OHOS::EventFwk::GetStringFromParams(*parameters, key, array);
+    return GetStringFromParams(*parameters, key, array);
 }
 
 CommonEvent_ErrCode OH_CommonEvent_SetCharArrayToParameters(
     CommonEvent_Parameters* param, const char* key, const char* value, size_t num)
 {
     if (param == nullptr || key == nullptr || value == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     const std::string str(value, std::min(std::strlen(value), num));
-    return OHOS::EventFwk::SetDataToParams<OHOS::AAFwk::String, std::string>(*parameters, key, str);
+    return SetDataToParams<OHOS::AAFwk::String, std::string>(*parameters, key, str);
 }
 
 double OH_CommonEvent_GetDoubleFromParameters(const CommonEvent_Parameters* para, const char* key,
     const double defaultValue)
 {
     if (para == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return defaultValue;
     }
-    return OHOS::EventFwk::GetDataFromParams<OHOS::AAFwk::IDouble, OHOS::AAFwk::Double, double>(
+    return GetDataFromParams<OHOS::AAFwk::IDouble, OHOS::AAFwk::Double, double>(
         *parameters, key, defaultValue);
 }
 
@@ -521,31 +523,31 @@ CommonEvent_ErrCode OH_CommonEvent_SetDoubleToParameters(
     CommonEvent_Parameters* param, const char* key, double value)
 {
     if (param == nullptr || key == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataToParams<OHOS::AAFwk::Double, double>(*parameters, key, value);
+    return SetDataToParams<OHOS::AAFwk::Double, double>(*parameters, key, value);
 }
 
 int32_t OH_CommonEvent_GetDoubleArrayFromParameters(const CommonEvent_Parameters* para, const char* key,
     double** array)
 {
     if (para == nullptr || key == nullptr || array == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
     auto parameters = reinterpret_cast<const CArrParameters*>(para);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid para");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid para");
         return 0;
     }
-    return OHOS::EventFwk::GetDataArrayFromParams<OHOS::AAFwk::IDouble, OHOS::AAFwk::Double, double>(
+    return GetDataArrayFromParams<OHOS::AAFwk::IDouble, OHOS::AAFwk::Double, double>(
         *parameters, key, array);
 }
 
@@ -553,51 +555,51 @@ CommonEvent_ErrCode OH_CommonEvent_SetDoubleArrayToParameters(
     CommonEvent_Parameters* param, const char* key, const double* value, size_t num)
 {
     if (param == nullptr || key == nullptr || (value == nullptr && num > 0)) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     auto parameters = reinterpret_cast<CArrParameters*>(param);
     if (parameters == nullptr) {
-        EVENT_LOGE("Invalid param");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid param");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    return OHOS::EventFwk::SetDataArrayToParams<OHOS::AAFwk::Double, double>(
+    return SetDataArrayToParams<OHOS::AAFwk::Double, double>(
         *parameters, key, value, num, OHOS::AAFwk::g_IID_IDouble);
 }
 
 CommonEvent_ErrCode OH_CommonEvent_Publish(const char* event)
 {
     if (event == nullptr) {
-        EVENT_LOGE("Invalid event");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid event");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     OHOS::AAFwk::Want want;
     want.SetAction(event);
-    OHOS::EventFwk::CommonEventData data;
-    OHOS::EventFwk::CommonEventPublishInfo publishInfo;
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
     data.SetWant(want);
 
-    auto ret = OHOS::EventFwk::CommonEventManager::NewPublishCommonEvent(data, publishInfo);
+    auto ret = CommonEventManager::NewPublishCommonEvent(data, publishInfo);
     return static_cast<CommonEvent_ErrCode>(ret);
 }
 
 CommonEvent_ErrCode OH_CommonEvent_PublishWithInfo(const char* event, const CommonEvent_PublishInfo* info)
 {
     if (event == nullptr) {
-        EVENT_LOGE("Invalid event");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid event");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
     if (info == nullptr) {
-        EVENT_LOGE("Invalid info");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid info");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 
     OHOS::AAFwk::Want want;
     want.SetAction(event);
-    OHOS::EventFwk::CommonEventData data;
-    OHOS::EventFwk::CommonEventPublishInfo publishInfo;
+    CommonEventData data;
+    CommonEventPublishInfo publishInfo;
     if (info->parameters != nullptr) {
         want.SetParams(info->parameters->wantParams);
     }
@@ -608,14 +610,14 @@ CommonEvent_ErrCode OH_CommonEvent_PublishWithInfo(const char* event, const Comm
     publishInfo.SetBundleName(info->bundleName);
     data.SetWant(want);
 
-    auto ret = OHOS::EventFwk::CommonEventManager::NewPublishCommonEvent(data, publishInfo);
+    auto ret = CommonEventManager::NewPublishCommonEvent(data, publishInfo);
     return static_cast<CommonEvent_ErrCode>(ret);
 }
 
 bool OH_CommonEvent_IsOrderedCommonEvent(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -627,7 +629,7 @@ bool OH_CommonEvent_IsOrderedCommonEvent(const CommonEvent_Subscriber* subscribe
 bool OH_CommonEvent_FinishCommonEvent(CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -638,7 +640,7 @@ bool OH_CommonEvent_FinishCommonEvent(CommonEvent_Subscriber* subscriber)
 bool OH_CommonEvent_GetAbortCommonEvent(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -649,7 +651,7 @@ bool OH_CommonEvent_GetAbortCommonEvent(const CommonEvent_Subscriber* subscriber
 bool OH_CommonEvent_AbortCommonEvent(CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -660,7 +662,7 @@ bool OH_CommonEvent_AbortCommonEvent(CommonEvent_Subscriber* subscriber)
 bool OH_CommonEvent_ClearAbortCommonEvent(CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -671,7 +673,7 @@ bool OH_CommonEvent_ClearAbortCommonEvent(CommonEvent_Subscriber* subscriber)
 int32_t OH_CommonEvent_GetCodeFromSubscriber(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return 0;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -682,7 +684,7 @@ int32_t OH_CommonEvent_GetCodeFromSubscriber(const CommonEvent_Subscriber* subsc
 bool OH_CommonEvent_SetCodeToSubscriber(CommonEvent_Subscriber* subscriber, int32_t code)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -693,7 +695,7 @@ bool OH_CommonEvent_SetCodeToSubscriber(CommonEvent_Subscriber* subscriber, int3
 const char* OH_CommonEvent_GetDataFromSubscriber(const CommonEvent_Subscriber* subscriber)
 {
     if (subscriber == nullptr) {
-        EVENT_LOGE("Invalid subscriber");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return nullptr;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
@@ -708,7 +710,7 @@ const char* OH_CommonEvent_GetDataFromSubscriber(const CommonEvent_Subscriber* s
 bool OH_CommonEvent_SetDataToSubscriber(CommonEvent_Subscriber* subscriber, const char* data, size_t length)
 {
     if (subscriber == nullptr || data == nullptr) {
-        EVENT_LOGE("Invalid subscriber or data");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber or data");
         return false;
     }
     auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));

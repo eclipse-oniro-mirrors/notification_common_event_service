@@ -32,7 +32,7 @@ void StaticSubscriberExtension::Init(const std::shared_ptr<AbilityLocalRecord>& 
     std::shared_ptr<AbilityHandler>& handler,
     const sptr<IRemoteObject>& token)
 {
-    EVENT_LOGD("Init");
+    EVENT_LOGD(LOG_TAG_CES, "Init");
     ExtensionBase<StaticSubscriberExtensionContext>::Init(record, application, handler, token);
 }
 
@@ -45,7 +45,7 @@ std::shared_ptr<StaticSubscriberExtensionContext> StaticSubscriberExtension::Cre
     std::shared_ptr<StaticSubscriberExtensionContext> context =
         ExtensionBase<StaticSubscriberExtensionContext>::CreateAndInitContext(record, application, handler, token);
     if (record == nullptr) {
-        EVENT_LOGE("record is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "record is nullptr");
         return context;
     }
     return context;
@@ -53,7 +53,7 @@ std::shared_ptr<StaticSubscriberExtensionContext> StaticSubscriberExtension::Cre
 
 void StaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData> data)
 {
-    EVENT_LOGD("OnReceiveEvent called.");
+    EVENT_LOGD(LOG_TAG_CES, "OnReceiveEvent called.");
 }
 } // namespace EventFwk
 } // namespace OHOS

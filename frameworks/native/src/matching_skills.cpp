@@ -168,7 +168,7 @@ bool MatchingSkills::Marshalling(Parcel &parcel) const
     }
 
     if (!WriteVectorInfo(parcel, actionU16Entity)) {
-        EVENT_LOGE("matching skills write entity error");
+        EVENT_LOGE(LOG_TAG_CES, "matching skills write entity error");
         return false;
     }
 
@@ -179,7 +179,7 @@ bool MatchingSkills::Marshalling(Parcel &parcel) const
     }
 
     if (!WriteVectorInfo(parcel, actionU16Event)) {
-        EVENT_LOGE("matching skills write event error");
+        EVENT_LOGE(LOG_TAG_CES, "matching skills write event error");
         return false;
     }
 
@@ -190,7 +190,7 @@ bool MatchingSkills::Marshalling(Parcel &parcel) const
     }
 
     if (!WriteVectorInfo(parcel, actionU16Scheme)) {
-        EVENT_LOGE("matching skills write scheme error");
+        EVENT_LOGE(LOG_TAG_CES, "matching skills write scheme error");
         return false;
     }
 
@@ -254,12 +254,12 @@ MatchingSkills *MatchingSkills::Unmarshalling(Parcel &parcel)
     MatchingSkills *matchingSkills = new (std::nothrow) MatchingSkills();
 
     if (matchingSkills == nullptr) {
-        EVENT_LOGE("failed to create obj");
+        EVENT_LOGE(LOG_TAG_CES, "failed to create obj");
         return nullptr;
     }
 
     if (!matchingSkills->ReadFromParcel(parcel)) {
-        EVENT_LOGE("failed to ReadFromParcel");
+        EVENT_LOGE(LOG_TAG_CES, "failed to ReadFromParcel");
         delete matchingSkills;
         matchingSkills = nullptr;
     }
@@ -270,7 +270,7 @@ MatchingSkills *MatchingSkills::Unmarshalling(Parcel &parcel)
 bool MatchingSkills::MatchEvent(const std::string &event) const
 {
     if (event == std::string()) {
-        EVENT_LOGD("event is null");
+        EVENT_LOGD(LOG_TAG_CES, "event is null");
         return false;
     }
 
@@ -280,7 +280,7 @@ bool MatchingSkills::MatchEvent(const std::string &event) const
 bool MatchingSkills::MatchEntity(const std::vector<std::string> &entities) const
 {
     if (entities.empty()) {
-        EVENT_LOGD("match empty entity");
+        EVENT_LOGD(LOG_TAG_CES, "match empty entity");
         return true;
     }
 
@@ -301,7 +301,7 @@ bool MatchingSkills::MatchScheme(const std::string &scheme) const
     }
 
     if (scheme == std::string()) {
-        EVENT_LOGD("scheme is null");
+        EVENT_LOGD(LOG_TAG_CES, "scheme is null");
         return true;
     }
 

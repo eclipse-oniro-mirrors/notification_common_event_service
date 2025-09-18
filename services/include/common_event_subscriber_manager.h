@@ -48,12 +48,12 @@ struct EventSubscriberRecord {
     bool operator<(const EventSubscriberRecord &other) const
     {
         if (commonEventListener == nullptr) {
-            EVENT_LOGE("commonEventListener is null");
+            EVENT_LOGE(LOG_TAG_CES, "commonEventListener is null");
             return false;
         }
 
         if (other.commonEventListener == nullptr) {
-            EVENT_LOGE("other's commonEventListener is null");
+            EVENT_LOGE(LOG_TAG_CES, "other's commonEventListener is null");
             return true;
         }
         return commonEventListener < other.commonEventListener;

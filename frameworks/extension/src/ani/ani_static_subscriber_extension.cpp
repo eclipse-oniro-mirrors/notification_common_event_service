@@ -42,7 +42,7 @@ StsStaticSubscriberExtension* StsStaticSubscriberExtension::Create(const std::un
 StsStaticSubscriberExtension::StsStaticSubscriberExtension(ETSRuntime &stsRuntime) : stsRuntime_(stsRuntime) {}
 StsStaticSubscriberExtension::~StsStaticSubscriberExtension()
 {
-    EVENT_LOGD("~StsStaticSubscriberExtension called");
+    EVENT_LOGD(LOG_TAG_CES, "~StsStaticSubscriberExtension called");
 }
 
 void StsStaticSubscriberExtension::Init(const std::shared_ptr<AbilityLocalRecord> &record,
@@ -50,12 +50,12 @@ void StsStaticSubscriberExtension::Init(const std::shared_ptr<AbilityLocalRecord
     const sptr<IRemoteObject> &token)
 {
     if (record == nullptr) {
-        EVENT_LOGE("record null");
+        EVENT_LOGE(LOG_TAG_CES, "record null");
         return;
     }
     StaticSubscriberExtension::Init(record, application, handler, token);
     if (Extension::abilityInfo_ == nullptr || Extension::abilityInfo_->srcEntrance.empty()) {
-        EVENT_LOGE("StaticSubscriberExtension Init abilityInfo error");
+        EVENT_LOGE(LOG_TAG_CES, "StaticSubscriberExtension Init abilityInfo error");
         return;
     }
     std::string srcPath(Extension::abilityInfo_->moduleName + "/");
@@ -71,13 +71,13 @@ void StsStaticSubscriberExtension::Init(const std::shared_ptr<AbilityLocalRecord
         moduleName, srcPath, abilityInfo_->hapPath, abilityInfo_->compileMode == AppExecFwk::CompileMode::ES_MODULE,
         false, abilityInfo_->srcEntrance);
     if (stsObj_ == nullptr) {
-        EVENT_LOGE("stsObj_ null");
+        EVENT_LOGE(LOG_TAG_CES, "stsObj_ null");
         return;
     }
 
     auto env = stsRuntime_.GetAniEnv();
     if (env == nullptr) {
-        EVENT_LOGE("null env");
+        EVENT_LOGE(LOG_TAG_CES, "null env");
         return;
     }
     BindContext(env, application);
@@ -86,33 +86,33 @@ void StsStaticSubscriberExtension::Init(const std::shared_ptr<AbilityLocalRecord
 
 void StsStaticSubscriberExtension::BindContext(ani_env* env, const std::shared_ptr<OHOSApplication> &application)
 {
-    EVENT_LOGD("StsStaticSubscriberExtension BindContext Call");
+    EVENT_LOGD(LOG_TAG_CES, "StsStaticSubscriberExtension BindContext Call");
     auto context = GetContext();
     if (context == nullptr) {
-        EVENT_LOGE("Failed to get context");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get context");
         return;
     }
 
     ani_object contextObj = CreateSTSContext(env, context, application);
     if (contextObj == nullptr) {
-        EVENT_LOGE("null contextObj");
+        EVENT_LOGE(LOG_TAG_CES, "null contextObj");
         return;
     }
 
     ani_field contextField;
     auto status = env->Class_FindField(stsObj_->aniCls, "context", &contextField);
     if (status != ANI_OK) {
-        EVENT_LOGE("Class_GetField context failed");
+        EVENT_LOGE(LOG_TAG_CES, "Class_GetField context failed");
         ResetEnv(env);
         return;
     }
     ani_ref contextRef = nullptr;
     if (env->GlobalReference_Create(contextObj, &contextRef) != ANI_OK) {
-        EVENT_LOGE("GlobalReference_Create contextObj failed");
+        EVENT_LOGE(LOG_TAG_CES, "GlobalReference_Create contextObj failed");
         return;
     }
     if (env->Object_SetField_Ref(stsObj_->aniObj, contextField, contextRef) != ANI_OK) {
-        EVENT_LOGE("Object_SetField_Ref contextObj failed");
+        EVENT_LOGE(LOG_TAG_CES, "Object_SetField_Ref contextObj failed");
         ResetEnv(env);
     }
 }
@@ -133,10 +133,11 @@ std::weak_ptr<StsStaticSubscriberExtension> StsStaticSubscriberExtension::GetWea
 void StsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventData> data)
 {
     const CommonEventData& commonEventData = *data;
-    EVENT_LOGD("OnReceiveEvent execute action = %{public}s", commonEventData.GetWant().GetAction().c_str());
+    EVENT_LOGD(LOG_TAG_CES, "OnReceiveEvent execute action = %{public}s",
+        commonEventData.GetWant().GetAction().c_str());
 
     if (handler_ == nullptr) {
-        EVENT_LOGE("handler is invalid");
+        EVENT_LOGE(LOG_TAG_CES, "handler is invalid");
         return;
     }
     std::weak_ptr<StsStaticSubscriberExtension> wThis = GetWeakPtr();
@@ -147,7 +148,7 @@ void StsStaticSubscriberExtension::OnReceiveEvent(std::shared_ptr<CommonEventDat
         }
         ani_env* env = sThis->stsRuntime_.GetAniEnv();
         if (!env) {
-            EVENT_LOGE("task env not found env");
+            EVENT_LOGE(LOG_TAG_CES, "task env not found env");
             return;
         }
 
@@ -167,30 +168,30 @@ void StsStaticSubscriberExtension::ResetEnv(ani_env* env)
 
 void StsStaticSubscriberExtension::OnStart(const AAFwk::Want& want)
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES, "%{public}s called.", __func__);
     Extension::OnStart(want);
 }
 
 void StsStaticSubscriberExtension::OnStop()
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES, "%{public}s called.", __func__);
     Extension::OnStop();
 }
 
 void StsStaticSubscriberExtension::OnDisconnect(const AAFwk::Want& want)
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES, "%{public}s called.", __func__);
     Extension::OnDisconnect(want);
 }
 
 sptr<IRemoteObject> StsStaticSubscriberExtension::OnConnect(const AAFwk::Want& want)
 {
-    EVENT_LOGD("%{public}s called.", __func__);
+    EVENT_LOGD(LOG_TAG_CES, "%{public}s called.", __func__);
     Extension::OnConnect(want);
     sptr<StaticSubscriberStubImpl> remoteObject = new (std::nothrow) StaticSubscriberStubImpl(
         std::static_pointer_cast<StsStaticSubscriberExtension>(shared_from_this()));
     if (remoteObject == nullptr) {
-        EVENT_LOGE("failed to create StaticSubscriberStubImpl");
+        EVENT_LOGE(LOG_TAG_CES, "failed to create StaticSubscriberStubImpl");
         return nullptr;
     }
     return remoteObject->AsObject();
@@ -202,15 +203,15 @@ void StsStaticSubscriberExtension::CallObjectMethod(bool withResult, const char 
     ani_method method = nullptr;
     auto env = stsRuntime_.GetAniEnv();
     if (!env) {
-        EVENT_LOGE("env not found StsStaticSubscriberExtensions");
+        EVENT_LOGE(LOG_TAG_CES, "env not found StsStaticSubscriberExtensions");
         return;
     }
     if (stsObj_ == nullptr) {
-        EVENT_LOGE("stsObj_ nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "stsObj_ nullptr");
         return;
     }
     if ((status = env->Class_FindMethod(stsObj_->aniCls, name, signature, &method)) != ANI_OK) {
-        EVENT_LOGE("Class_FindMethod nullptr:%{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "Class_FindMethod nullptr:%{public}d", status);
         return;
     }
     if (method == nullptr) {
@@ -222,14 +223,14 @@ void StsStaticSubscriberExtension::CallObjectMethod(bool withResult, const char 
     if (withResult) {
         va_start(args, signature);
         if ((status = env->Object_CallMethod_Ref_V(stsObj_->aniObj, method, &res, args)) != ANI_OK) {
-            EVENT_LOGE("status : %{public}d", status);
+            EVENT_LOGE(LOG_TAG_CES, "status : %{public}d", status);
         }
         va_end(args);
         return;
     }
     va_start(args, signature);
     if ((status = env->Object_CallMethod_Void_V(stsObj_->aniObj, method, args)) != ANI_OK) {
-        EVENT_LOGE("status : %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "status : %{public}d", status);
     }
     va_end(args);
     return;

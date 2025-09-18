@@ -39,7 +39,7 @@ int AbilityManagerHelper::ConnectAbility(
     const Want &want, const CommonEventData &event, const sptr<IRemoteObject> &callerToken, const int32_t &userId)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter, target bundle = %{public}s", want.GetBundle().c_str());
+    EVENT_LOGD(LOG_TAG_CES, "enter, target bundle = %{public}s", want.GetBundle().c_str());
     int result = -1;
     ffrt::task_handle handle = ffrt_->submit_h([&]() {
         std::string connectionKey =
@@ -52,7 +52,7 @@ int AbilityManagerHelper::ConnectAbility(
         auto it = subscriberConnection_.find(connectionKey);
         if (it != subscriberConnection_.end()) {
             it->second->NotifyEvent(event);
-            EVENT_LOGD("Static cache sends events!");
+            EVENT_LOGD(LOG_TAG_CES, "Static cache sends events!");
             result = ERR_OK;
             return;
         }
@@ -60,18 +60,18 @@ int AbilityManagerHelper::ConnectAbility(
         sptr<StaticSubscriberConnection> connection =
             new (std::nothrow) StaticSubscriberConnection(event, connectionKey);
         if (connection == nullptr) {
-            EVENT_LOGE("failed to create obj!");
+            EVENT_LOGE(LOG_TAG_CES, "failed to create obj!");
             result = -1;
             return;
         }
         result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
         if (result != ERR_OK) {
-            EVENT_LOGE("Connect failed, result=%{public}d", result);
+            EVENT_LOGE(LOG_TAG_CES, "Connect failed, result=%{public}d", result);
             return;
         }
         subscriberConnection_[connectionKey] = connection;
         DisconnectServiceAbilityDelay(connection, "");
-        EVENT_LOGD("Connect success");
+        EVENT_LOGD(LOG_TAG_CES, "Connect success");
     });
     ffrt_->wait(handle);
     return result;
@@ -83,29 +83,29 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
         sptr<ISystemAbilityManager> systemAbilityManager =
             SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (systemAbilityManager == nullptr) {
-            EVENT_LOGE("Failed to get system ability mgr.");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability mgr.");
             return false;
         }
 
         sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(ABILITY_MGR_SERVICE_ID);
         if (remoteObject == nullptr) {
-            EVENT_LOGE("Failed to get ability manager service.");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to get ability manager service.");
             return false;
         }
 
         abilityMgr_ = iface_cast<AAFwk::IAbilityManager>(remoteObject);
         if ((abilityMgr_ == nullptr) || (abilityMgr_->AsObject() == nullptr)) {
-            EVENT_LOGE("Failed to get system ability manager services ability");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability manager services ability");
             return false;
         }
 
         deathRecipient_ = new (std::nothrow) AbilityManagerDeathRecipient();
         if (deathRecipient_ == nullptr) {
-            EVENT_LOGE("Failed to create AbilityManagerDeathRecipient");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to create AbilityManagerDeathRecipient");
             return false;
         }
         if (!abilityMgr_->AsObject()->AddDeathRecipient(deathRecipient_)) {
-            EVENT_LOGW("Failed to add AbilityManagerDeathRecipient");
+            EVENT_LOGW(LOG_TAG_CES, "Failed to add AbilityManagerDeathRecipient");
         }
     }
 
@@ -114,7 +114,6 @@ bool AbilityManagerHelper::GetAbilityMgrProxy()
 
 void AbilityManagerHelper::Clear()
 {
-    EVENT_LOGI("enter");
     std::lock_guard<ffrt::mutex> lock(mutex_);
 
     if ((abilityMgr_ != nullptr) && (abilityMgr_->AsObject() != nullptr)) {
@@ -126,9 +125,9 @@ void AbilityManagerHelper::Clear()
 void AbilityManagerHelper::DisconnectServiceAbilityDelay(
     const sptr<StaticSubscriberConnection> &connection, const std::string &action)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     if (connection == nullptr) {
-        EVENT_LOGW("connection is nullptr");
+        EVENT_LOGW(LOG_TAG_CES, "connection is nullptr");
         return;
     }
     std::function<void()> task = [connection, action, this]() {
@@ -140,28 +139,28 @@ void AbilityManagerHelper::DisconnectServiceAbilityDelay(
 void AbilityManagerHelper::DisconnectAbility(
     const sptr<StaticSubscriberConnection> &connection, const std::string &action)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     if (connection == nullptr) {
-        EVENT_LOGW("connection is nullptr");
+        EVENT_LOGW(LOG_TAG_CES, "connection is nullptr");
         return;
     }
 
     auto it = std::find_if(subscriberConnection_.begin(), subscriberConnection_.end(),
         [&connection](const auto &pair) { return pair.second == connection; });
     if (it == subscriberConnection_.end()) {
-        EVENT_LOGW("failed to find connection!");
+        EVENT_LOGW(LOG_TAG_CES, "failed to find connection!");
         return;
     }
     if (connection) {
         connection->RemoveEvent(action);
         if (!connection->IsEmptyAction()) {
-            EVENT_LOGD("Event within 15 seconds!");
+            EVENT_LOGD(LOG_TAG_CES, "Event within 15 seconds!");
             return;
         }
     }
     IN_PROCESS_CALL_WITHOUT_RET(abilityMgr_->DisconnectAbility(connection));
     subscriberConnection_.erase(it);
-    EVENT_LOGD("erase connection!");
+    EVENT_LOGD(LOG_TAG_CES, "erase connection!");
 }
 }  // namespace EventFwk
 }  // namespace OHOS

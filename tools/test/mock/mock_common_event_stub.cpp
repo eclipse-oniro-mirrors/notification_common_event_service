@@ -41,7 +41,7 @@ ErrCode MockCommonEventStub::PublishCommonEvent(
     int32_t userId,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = ERR_OK;
     return ERR_OK;
 }
@@ -53,7 +53,7 @@ ErrCode MockCommonEventStub::PublishCommonEvent(
     int32_t userId,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = ERR_OK;
     return ERR_OK;
 }
@@ -66,7 +66,7 @@ ErrCode MockCommonEventStub::PublishCommonEvent(
     int32_t userId,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = ERR_OK;
     return ERR_OK;
 }
@@ -80,7 +80,7 @@ ErrCode MockCommonEventStub::PublishCommonEvent(
     int32_t userId,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -91,7 +91,7 @@ int32_t MockCommonEventStub::SubscribeCommonEvent(
     int32_t instanceKey,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     subscribeInfoPtr = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
 
@@ -103,7 +103,7 @@ ErrCode MockCommonEventStub::UnsubscribeCommonEvent(
     const sptr<IRemoteObject>& commonEventListener,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -112,7 +112,7 @@ ErrCode MockCommonEventStub::UnsubscribeCommonEventSync(
     const sptr<IRemoteObject>& commonEventListener,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -122,7 +122,7 @@ ErrCode MockCommonEventStub::GetStickyCommonEvent(
     CommonEventData& eventData,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -134,14 +134,14 @@ ErrCode MockCommonEventStub::DumpState(
     std::vector<std::string>& state,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (subscribeInfoPtr) {
         // get matchingSkills
         auto matchingSkills = subscribeInfoPtr->GetMatchingSkills();
         // get events
         auto events = matchingSkills.GetEvents();
-        EVENT_LOGI("event size %{public}zu", events.size());
+        EVENT_LOGD(LOG_TAG_CES, "event size %{public}zu", events.size());
 
         for (auto it : events) {
             state.emplace_back(it);
@@ -162,7 +162,7 @@ ErrCode MockCommonEventStub::FinishReceiver(
     bool abortEvent,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -171,7 +171,7 @@ ErrCode MockCommonEventStub::Freeze(
     uint32_t uid,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -180,7 +180,7 @@ ErrCode MockCommonEventStub::Unfreeze(
     uint32_t uid,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -188,7 +188,7 @@ ErrCode MockCommonEventStub::Unfreeze(
 ErrCode MockCommonEventStub::UnfreezeAll(
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = true;
     return ERR_OK;
 }
@@ -197,7 +197,7 @@ ErrCode MockCommonEventStub::RemoveStickyCommonEvent(
     const std::string& event,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = ERR_OK;
     return ERR_OK;
 }
@@ -206,7 +206,7 @@ ErrCode MockCommonEventStub::SetStaticSubscriberState(
     bool enable,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = ERR_OK;
     return ERR_OK;
 }
@@ -216,7 +216,7 @@ ErrCode MockCommonEventStub::SetStaticSubscriberStateByEvents(
     bool enable,
     int32_t& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = ERR_OK;
     return ERR_OK;
 }
@@ -226,7 +226,7 @@ ErrCode MockCommonEventStub::SetFreezeStatus(
     bool isFreeze,
     bool& funcResult)
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     funcResult = ERR_OK;
     return ERR_OK;
 }
