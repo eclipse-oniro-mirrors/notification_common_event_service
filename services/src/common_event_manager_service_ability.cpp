@@ -34,32 +34,32 @@ CommonEventManagerServiceAbility::~CommonEventManagerServiceAbility()
 
 void CommonEventManagerServiceAbility::OnStart()
 {
-    EVENT_LOGD("OnStart called.");
+    EVENT_LOGD(LOG_TAG_CES, "OnStart called.");
     if (service_ != nullptr) {
-        EVENT_LOGD("The CommonEventManagerService has existed.");
+        EVENT_LOGD(LOG_TAG_CES, "The CommonEventManagerService has existed.");
         return;
     }
 
     service_ = CommonEventManagerService::GetInstance();
     if (service_ == nullptr) {
-        EVENT_LOGE("failed to create CommonEventManagerService!");
+        EVENT_LOGE(LOG_TAG_CES, "failed to create CommonEventManagerService!");
         return;
     }
     ErrCode errorCode = service_->Init();
     if (errorCode != ERR_OK) {
-        EVENT_LOGE("Failed to init the commonEventManagerService instance.");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to init the commonEventManagerService instance.");
         return;
     }
     
     if (!Publish(service_)) {
-        EVENT_LOGE("Failed to publish CommonEventManagerService to SystemAbilityMgr");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to publish CommonEventManagerService to SystemAbilityMgr");
         return;
     }
 }
 
 void CommonEventManagerServiceAbility::OnStop()
 {
-    EVENT_LOGD("onStop called.");
+    EVENT_LOGD(LOG_TAG_CES, "onStop called.");
     service_ = nullptr;
 }
 }  // namespace EventFwk

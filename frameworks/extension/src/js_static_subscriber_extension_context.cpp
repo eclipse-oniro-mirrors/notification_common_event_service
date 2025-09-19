@@ -40,7 +40,7 @@ std::shared_ptr<StaticSubscriberExtensionContext> JsStaticSubscriberExtensionCon
 
 napi_value JsStaticSubscriberExtensionContext::StartAbility(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGD("called.");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "called.");
     JsStaticSubscriberExtensionContext* me =
         AbilityRuntime::CheckParamsAndGetThis<JsStaticSubscriberExtensionContext>(env, info);
     return (me != nullptr) ? me->OnStartAbility(env, info) : nullptr;
@@ -49,7 +49,7 @@ napi_value JsStaticSubscriberExtensionContext::StartAbility(napi_env env, napi_c
 napi_value JsStaticSubscriberExtensionContext::OnStartAbility(napi_env env, napi_callback_info info,
     bool isStartRecent)
 {
-    EVENT_LOGD("called.");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "called.");
     napi_value undefined = nullptr;
     napi_get_undefined(env, &undefined);
 
@@ -58,20 +58,21 @@ napi_value JsStaticSubscriberExtensionContext::OnStartAbility(napi_env env, napi
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
     if (argc == ARGC_ZERO) {
-        EVENT_LOGE("Not enough params");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Not enough params");
         AbilityRuntime::ThrowTooFewParametersError(env);
         return undefined;
     }
 
     AAFwk::Want want;
     AppExecFwk::UnwrapWant(env, argv[0], want);
-    EVENT_LOGD("Start ability, ability name is %{public}s.", want.GetElement().GetAbilityName().c_str());
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Start ability, ability name is %{public}s.",
+        want.GetElement().GetAbilityName().c_str());
 
     auto innerErrorCode = std::make_shared<int32_t>(ERR_OK);
     AbilityRuntime::NapiAsyncTask::ExecuteCallback execute = [weak = context_, want, innerErrorCode]() {
         auto context = weak.lock();
         if (!context) {
-            EVENT_LOGW("context is released");
+            EVENT_LOGW(LOG_TAG_CES_NAPI, "context is released");
             *innerErrorCode = static_cast<int32_t>(AbilityRuntime::AbilityErrorCode::ERROR_CODE_INVALID_CONTEXT);
             return;
         }
@@ -101,7 +102,7 @@ napi_value JsStaticSubscriberExtensionContext::OnStartAbility(napi_env env, napi
 napi_value CreateJsStaticSubscriberExtensionContext(napi_env env,
     std::shared_ptr<StaticSubscriberExtensionContext> context)
 {
-    EVENT_LOGD("Create js static subscriber extension context");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Create js static subscriber extension context");
     std::shared_ptr<OHOS::AppExecFwk::AbilityInfo> abilityInfo = nullptr;
     if (context) {
         abilityInfo = context->GetAbilityInfo();

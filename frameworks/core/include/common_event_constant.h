@@ -35,6 +35,18 @@ constexpr char const RESOURCE_MANAGER_PROCESS_NAME[] = "resource_schedule_servic
 constexpr int32_t FOUNDATION_UID = 5523;
 constexpr int32_t SAMGR_UID = 5555;
 
+constexpr const char* LOG_TAG_CES = "Ces";
+constexpr const char* LOG_TAG_CES_ANI = "CesAni";
+constexpr const char* LOG_TAG_CES_NAPI = "CesNapi";
+constexpr const char* LOG_TAG_CES_CAPI = "CesCapi";
+constexpr const char* LOG_TAG_CES_CJ = "CesCj";
+constexpr const char* LOG_TAG_ORDERED = "Ordered";
+constexpr const char* LOG_TAG_UNORDERED = "Unordered";
+constexpr const char* LOG_TAG_FREEZED = "Freezed";
+constexpr const char* LOG_TAG_STICKY = "Sticky";
+constexpr const char* LOG_TAG_STATIC = "Static";
+constexpr const char* LOG_TAG_SUBSCRIBER = "Subscriber";
+
 enum DumpEventType {
     ALL,
     SUBSCRIBER,

@@ -127,49 +127,49 @@ bool CommonEventSubscribeInfo::Marshalling(Parcel &parcel) const
 {
     // write permission
     if (!parcel.WriteString16(Str8ToStr16(permission_))) {
-        EVENT_LOGE("Failed to write permission");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write permission");
         return false;
     }
 
     // write priority
     if (!parcel.WriteInt32(priority_)) {
-        EVENT_LOGE("Failed to write priority");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write priority");
         return false;
     }
 
     // write userId
     if (!parcel.WriteInt32(userId_)) {
-        EVENT_LOGE("Failed to write userId");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write userId");
         return false;
     }
 
     // write threadMode
     if (!parcel.WriteUint32(threadMode_)) {
-        EVENT_LOGE("Failed to write threadMode");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write threadMode");
         return false;
     }
 
     // write deviceId
     if (!parcel.WriteString16(Str8ToStr16(deviceId_))) {
-        EVENT_LOGE("Failed to write deviceId");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write deviceId");
         return false;
     }
 
     // write matchingSkills
     if (!parcel.WriteParcelable(&matchingSkills_)) {
-        EVENT_LOGE("Failed to write matchingSkills");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write matchingSkills");
         return false;
     }
 
     // write publisherBundleName
     if (!parcel.WriteString(publisherBundleName_)) {
-        EVENT_LOGE("Failed to write publisherBundleName");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write publisherBundleName");
         return false;
     }
 
     // write publisherUid
     if (!parcel.WriteInt32(publisherUid_)) {
-        EVENT_LOGE("Failed to write publisherUid");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write publisherUid");
         return false;
     }
 
@@ -199,7 +199,7 @@ bool CommonEventSubscribeInfo::ReadFromParcel(Parcel &parcel)
         matchingSkills_ = *skills;
         delete skills;
     } else {
-        EVENT_LOGE("Failed to read matchingSkills");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to read matchingSkills");
         return false;
     }
 
@@ -217,11 +217,11 @@ CommonEventSubscribeInfo *CommonEventSubscribeInfo::Unmarshalling(Parcel &parcel
     CommonEventSubscribeInfo *commonEventSubscribeInfo = new (std::nothrow) CommonEventSubscribeInfo();
 
     if (commonEventSubscribeInfo == nullptr) {
-        EVENT_LOGE("commonEventSubscribeInfo == nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "commonEventSubscribeInfo == nullptr");
         return nullptr;
     }
     if (commonEventSubscribeInfo && !commonEventSubscribeInfo->ReadFromParcel(parcel)) {
-        EVENT_LOGE("failed to read from parcel");
+        EVENT_LOGE(LOG_TAG_CES, "failed to read from parcel");
         delete commonEventSubscribeInfo;
         commonEventSubscribeInfo = nullptr;
     }

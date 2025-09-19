@@ -115,7 +115,7 @@ void cesModuleTest::TearDown()
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0100 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0100 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -125,7 +125,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0100 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0100 end");
 }
 
 /*
@@ -135,7 +135,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0100, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0200 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0200 start");
     std::string eventName = "1";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -146,7 +146,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0200 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0200 end");
 }
 
 /*
@@ -156,7 +156,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0200, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0300 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0300 start");
     std::string eventName = "";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -167,7 +167,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0300 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0300 end");
 }
 
 /*
@@ -177,7 +177,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0300, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0400 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0400 start");
     std::string eventName1 = "TESTEVENT1";
     MatchingSkills matchingSkills1;
     matchingSkills1.AddEvent(eventName1);
@@ -205,7 +205,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level0)
     sptr<CommonEventListener> commonEventListener3 = new CommonEventListener(subscriberPtr3);
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo3, commonEventListener3, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0400 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0400 end");
 }
 
 /*
@@ -215,7 +215,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0400, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0500 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0500 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -227,7 +227,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0500 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0500 end");
 }
 
 /*
@@ -237,7 +237,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0500, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0600 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0600 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PRIORITY";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -249,7 +249,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0600 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0600 end");
 }
 
 /*
@@ -259,7 +259,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0600, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0700 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0700 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_DEVUCEID";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -271,7 +271,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0700 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0700 end");
 }
 
 /*
@@ -282,7 +282,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0700, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0800 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0800 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PRIORITY";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -295,7 +295,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0800 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0800 end");
 }
 
 /*
@@ -306,7 +306,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0800, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_0900 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0900 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_DEVUCEID";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -319,7 +319,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_0900 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_0900 end");
 }
 
 /*
@@ -329,7 +329,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_0900, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1000 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1000 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -342,7 +342,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_1000 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1000 end");
 }
 
 /*
@@ -352,7 +352,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1000, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1100 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1100 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODELETEST";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -364,7 +364,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_1100 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1100 end");
 }
 
 /*
@@ -374,7 +374,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1100, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1200 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1200 start");
     std::string eventName = "2";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -386,7 +386,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_1200 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1200 end");
 }
 
 /*
@@ -396,7 +396,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1200, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1300 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1300 start");
     std::string eventName = "";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -408,7 +408,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_1300 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1300 end");
 }
 
 /*
@@ -418,7 +418,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1300, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1400 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1400 start");
     std::string eventName4 = "TESTEVENT4";
     MatchingSkills matchingSkills4;
     matchingSkills4.AddEvent(eventName4);
@@ -453,7 +453,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level0)
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener3, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
 
-    EVENT_LOGE("CES_TC_ModuleTest_1400 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1400 end");
 }
 
 /*
@@ -463,7 +463,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1400, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1500 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1500 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_ACTION";
     bool stickty = false;
@@ -483,7 +483,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level0)
     commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_1500 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1500 end");
 }
 
 /*
@@ -493,7 +493,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1500, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1600 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1600 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION_ENTITY";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_ACTION_ENTITY";
     std::string entity = "ADDENTITY";
@@ -515,7 +515,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level0)
     commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_1600 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1600 end");
 }
 
 /*
@@ -525,7 +525,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1700 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1700 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_DUMPSTATE";
     bool result = false;
     std::vector<std::string> stateTest;
@@ -540,7 +540,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level0)
     }
     GTEST_LOG_(INFO) << " stateTest size = " << stateTest.size();
     EXPECT_TRUE(result);
-    EVENT_LOGE("CES_TC_ModuleTest_1700 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1700 end");
 }
 
 /*
@@ -550,7 +550,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1700, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1800, Function | MediumTest | Level2)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1800 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1800 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_DUMPSTATE_";
     std::string eventNametest = "TEST_NAME";
     bool result = false;
@@ -564,13 +564,13 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1800, Function | MediumTest | Level2)
             if (stateTest.size() == 1) {
                 result = true;
             } else {
-                EVENT_LOGE(" CES_TC_ModuleTest_1800 stateTest.size() is null ");
+                EVENT_LOGI(LOG_TAG_CES, " CES_TC_ModuleTest_1800 stateTest.size() is null ");
             }
         }
     }
 
     EXPECT_FALSE(result);
-    EVENT_LOGE("CES_TC_ModuleTest_1800 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1800 end");
 }
 
 /*
@@ -580,7 +580,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1800, Function | MediumTest | Level2)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_1900 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1900 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_DUMPSTATE";
     std::string eventNameInput = "";
     bool result = false;
@@ -596,7 +596,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level0)
     }
     GTEST_LOG_(INFO) << " stateTest size = " << stateTest.size();
     EXPECT_TRUE(result);
-    EVENT_LOGE("CES_TC_ModuleTest_1900 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1900 end");
 }
 
 /*
@@ -606,7 +606,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2000 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2000 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION2000";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_ACTION2000";
     MatchingSkills matchingSkills;
@@ -641,7 +641,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level0)
     // expect the subscriber could receive the event within 5 seconds.
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     mtx_.unlock();
-    EVENT_LOGE("CES_TC_ModuleTest_2000 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2000 end");
 }
 
 /*
@@ -651,7 +651,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2000, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2100, Function | MediumTest | Level2)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2100 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2100 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION_ENTITY";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_ACTION_ENTITY";
     bool resulttime = true;
@@ -688,7 +688,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2100, Function | MediumTest | Level2)
     }
     // The publisher sets the Entity, the receiver must set it, otherwise the receiver will not receive the information
     EXPECT_FALSE(resulttime);
-    EVENT_LOGE("CES_TC_ModuleTest_2100 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2100 end");
     mtx_.unlock();
 }
 
@@ -699,7 +699,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2100, Function | MediumTest | Level2)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2200, Function | MediumTest | Level2)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2200 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2200 start");
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
     bool result = false;
@@ -742,7 +742,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2200, Function | MediumTest | Level2)
     EXPECT_FALSE(result);
     int32_t funcResult3 = -1;
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
-    EVENT_LOGE("CES_TC_ModuleTest_2200 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2200 end");
     mtx_.unlock();
 }
 
@@ -753,7 +753,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2200, Function | MediumTest | Level2)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2300, Function | MediumTest | Level2)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2300 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2300 start");
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED;
     bool result = false;
@@ -793,7 +793,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2300, Function | MediumTest | Level2)
     }
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
-    EVENT_LOGE("CES_TC_ModuleTest_2300 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2300 end");
     int32_t funcResult3 = -1;
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
     mtx_.unlock();
@@ -806,7 +806,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2300, Function | MediumTest | Level2)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2400 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2400 start");
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
     bool result = false;
@@ -847,7 +847,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
     }
     // Unable to receive published system events, failed to send system events
     EXPECT_FALSE(result);
-    EVENT_LOGE("CES_TC_ModuleTest_2400 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2400 end");
     int32_t funcResult3 = -1;
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
     mtx_.unlock();
@@ -860,7 +860,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2400, Function | MediumTest | Level2)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2500 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2500 start");
     std::string eventName = "TESTEVENT_MATCHEVENTTEST";
 
     Want wantTest;
@@ -874,7 +874,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level0)
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
     EXPECT_TRUE(matchingSkills.Match(wantTest));
-    EVENT_LOGE("CES_TC_ModuleTest_2500 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2500 end");
 }
 
 /*
@@ -884,7 +884,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2500, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2600 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2600 start");
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_ADDED;
     bool stickty = true;
@@ -924,7 +924,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level0)
     }
 
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
-    EVENT_LOGE("CES_TC_ModuleTest_2600 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2600 end");
     bundleObject->MockSetIsSystemApp(false);
     int32_t funcResult3 = -1;
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
@@ -938,7 +938,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2600, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2700 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2700 start");
     std::string eventName = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
     std::string eventAction = CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED;
     bool stickty = true;
@@ -978,7 +978,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level0)
     }
 
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
-    EVENT_LOGE("CES_TC_ModuleTest_2700 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2700 end");
     bundleObject->MockSetIsSystemApp(false);
     int32_t funcResult3 = -1;
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult3);
@@ -992,7 +992,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2700, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2800 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2800 start");
     std::string eventName = "MODULETEST_ACTION_STICKY";
     std::string eventAction = "MODULETEST_ACTION_STICKY";
     std::string eventActionStr = "MODULETEST_ACTION_STICKYSTR";
@@ -1016,7 +1016,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level0)
     bool funcResult2 = false;
     commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData, funcResult2);
     EXPECT_FALSE(eventActionStr == stickyData.GetWant().GetAction());
-    EVENT_LOGE("CES_TC_ModuleTest_2800 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2800 end");
 }
 
 /*
@@ -1027,7 +1027,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2800, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_2900 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2900 start");
     std::string eventName = "MODULETEST_ACTION_STICKY_FALSE";
     std::string eventAction = "MODULETEST_ACTION_STICKY_FALSE";
     std::string actionTest = "CHECKTESTACTION";
@@ -1052,7 +1052,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
     bool stickyResult = false;
     commonEventManagerService_->GetStickyCommonEvent(eventAction, stickyData, stickyResult);
     EXPECT_FALSE(stickyResult);
-    EVENT_LOGE("CES_TC_ModuleTest_2900 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_2900 end");
 }
 
 /*
@@ -1062,7 +1062,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_2900, Function | MediumTest | Level2)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3000 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3000 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PERMISSION";
     std::string permissin = "PERMISSION";
     MatchingSkills matchingSkills;
@@ -1075,7 +1075,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3000 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3000 end");
 }
 
 /*
@@ -1086,7 +1086,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3000, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3100 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3100 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY";
     std::string permissin = "PERMISSION";
     MatchingSkills matchingSkills;
@@ -1100,7 +1100,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3100 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3100 end");
 }
 
 /*
@@ -1111,7 +1111,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3100, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3200 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3200 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY_DEVICEDID";
     std::string permissin = "PERMISSION";
     std::string deviceId = "DEVICEDID";
@@ -1127,7 +1127,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3200 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3200 end");
 }
 
 /*
@@ -1137,7 +1137,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3200, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3300 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3300 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PERMISSION";
     std::string permissin = "PERMISSION";
     MatchingSkills matchingSkills;
@@ -1151,7 +1151,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3300 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3300 end");
 }
 
 /*
@@ -1162,7 +1162,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3300, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3400 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3400 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY";
     std::string permissin = "PERMISSION";
     MatchingSkills matchingSkills;
@@ -1177,7 +1177,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3400 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3400 end");
 }
 
 /*
@@ -1188,7 +1188,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3400, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3500 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3500 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_PERMISSION_PRIORITY_DEVICEDID";
     std::string permissin = "PERMISSION";
     std::string deviceId = "DEVICEDID";
@@ -1205,7 +1205,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3500 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3500 end");
 }
 
 /*
@@ -1215,7 +1215,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3500, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3600 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3600 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_PERMISSION";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_PERMISSION";
     std::string permissin = "PERMISSION";
@@ -1237,7 +1237,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level0)
     commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3600 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3600 end");
 }
 
 /*
@@ -1247,7 +1247,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3600, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3700 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3700 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_PERMISSION";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_PERMISSION";
     std::string permissin1 = "PERMISSION1";
@@ -1271,7 +1271,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level0)
     commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3700 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3700 end");
 }
 
 /*
@@ -1281,7 +1281,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3700, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3800 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3800 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_PERMISSION";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_PERMISSION";
     std::string permissin1 = "PERMISSION1";
@@ -1307,7 +1307,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level0)
     commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3800 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3800 end");
 }
 
 /*
@@ -1317,7 +1317,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3800, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_3900 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3900 start");
     std::string eventName = "SUBSCRIBEEVENT_MODULETEST_SETTHRERADMODE";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -1330,7 +1330,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level0)
     int32_t funcResult = -1;
     commonEventManagerService_->SubscribeCommonEvent(subscribeInfo, commonEventListener, 0, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_3900 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_3900 end");
 }
 
 /*
@@ -1340,7 +1340,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_3900, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_4000 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4000 start");
     std::string eventName = "UNSUBSCRIBEEVENT_MODULETEST_SETTHRERADMODE";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -1354,7 +1354,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     commonEventManagerService_->UnsubscribeCommonEvent(commonEventListener, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_4000 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4000 end");
 }
 
 /*
@@ -1364,7 +1364,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4000, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_4100 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4100 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_SETTHRERADMODE";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_SETTHRERADMODE";
     MatchingSkills matchingSkills;
@@ -1383,7 +1383,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level0)
     commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_4100 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4100 end");
 }
 
 /*
@@ -1393,7 +1393,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4100, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_4200 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4200 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_SETTHRERADMODE_R";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_SETTHRERADMODE_R";
     MatchingSkills matchingSkills;
@@ -1428,7 +1428,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level0)
     // expect the subscriber could receive the event within 5 seconds.
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     mtx_.unlock();
-    EVENT_LOGE("CES_TC_ModuleTest_4200 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4200 end");
 }
 
 /**
@@ -1439,7 +1439,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4200, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_4300 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4300 start");
 
     // add maximum subscriber, the last subscriber trigger "SUBSCRIBER_EXCEED_MAXIMUM" hisysevent
     std::set<sptr<CommonEventListener>> cesListenerSet;
@@ -1461,7 +1461,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level0)
         EXPECT_EQ(funcResult, ERR_OK);
     }
 
-    EVENT_LOGE("CES_TC_ModuleTest_4300 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4300 end");
 }
 
 /*
@@ -1472,7 +1472,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4300, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_4400 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4400 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION";
     std::string eventAction = "PUBLISHEVENT_MODULETEST_ACTION";
     bool sticky = false;
@@ -1497,7 +1497,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level0)
     commonEventManagerService_->PublishCommonEvent(
         commonEventData, publishInfo, commonEventListener, UNDEFINED_USER, funcResult);
     EXPECT_EQ(funcResult, ERR_OK);
-    EVENT_LOGE("CES_TC_ModuleTest_4400 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4400 end");
 }
 
 /*
@@ -1507,7 +1507,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4400, Function | MediumTest | Level0)
  */
 HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4500, Function | MediumTest | Level0)
 {
-    EVENT_LOGE("CES_TC_ModuleTest_4500 start");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4500 start");
     std::string eventName = "PUBLISHEVENT_MODULETEST_ACTION4500";
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(eventName);
@@ -1542,7 +1542,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_4500, Function | MediumTest | Level0)
     // expect the subscriber could receive the event within 5 seconds.
     EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
     mtx_.unlock();
-    EVENT_LOGE("CES_TC_ModuleTest_4500 end");
+    EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_4500 end");
 }
 }  // namespace EventFwk
 }  // namespace OHOS

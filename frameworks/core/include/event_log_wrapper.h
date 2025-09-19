@@ -18,31 +18,30 @@
 
 #include "hilog/log.h"
 
+#include "common_event_constant.h"
+
 #ifndef EVENT_LOG_DOMAIN
 #define EVENT_LOG_DOMAIN 0xD001202
-#endif
-#ifndef EVENT_LOG_TAG
-#define EVENT_LOG_TAG "Ces"
 #endif
 
 #define EVENT_LOG_LIMIT_INTERVALS 10000 //ms
 
 #define CUR_FILE_NAME (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define EVENT_LOGF(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_FATAL, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
-#define EVENT_LOGE(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_ERROR, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
-#define EVENT_LOGW(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_WARN, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
-#define EVENT_LOGI(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_INFO, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, fmt, ##__VA_ARGS__))
-#define EVENT_LOGD(fmt, ...)            \
-    ((void)HILOG_IMPL(LOG_CORE, LOG_DEBUG, EVENT_LOG_DOMAIN, EVENT_LOG_TAG, \
+#define EVENT_LOGF(tag, fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_FATAL, EVENT_LOG_DOMAIN, tag, fmt, ##__VA_ARGS__))
+#define EVENT_LOGE(tag, fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_ERROR, EVENT_LOG_DOMAIN, tag, fmt, ##__VA_ARGS__))
+#define EVENT_LOGW(tag, fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_WARN, EVENT_LOG_DOMAIN, tag, fmt, ##__VA_ARGS__))
+#define EVENT_LOGI(tag, fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_INFO, EVENT_LOG_DOMAIN, tag, fmt, ##__VA_ARGS__))
+#define EVENT_LOGD(tag, fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_DEBUG, EVENT_LOG_DOMAIN, tag, \
     "[%{public}s(%{public}s:%{public}d)]" fmt, CUR_FILE_NAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
 
 
-#define EVENT_PRINT_LIMIT(type, level, intervals, canPrint)                               \
+#define EVENT_PRINT_LIMIT(tag, type, level, intervals, canPrint)                               \
 do {                                                                                    \
     static auto last = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>();   \
     static uint32_t supressed = 0;                                                      \
@@ -53,7 +52,7 @@ do {                                                                            
         uint32_t supressedCnt = supressed;                                              \
         supressed = 0;                                                                  \
         if (supressedCnt != 0) {                                                        \
-            EVENT_LOGI("log suppressed cnt %{public}u", supressedCnt);                  \
+            EVENT_LOGI(tag, "log suppressed cnt %{public}u", supressedCnt);                  \
         }                                                                               \
         (canPrint) = true;                                                              \
     } else {                                                                            \
@@ -62,50 +61,50 @@ do {                                                                            
     }                                                                                   \
 } while (0)
 
-#define EVENT_LOGF_LIMIT(fmt, ...)                                        \
+#define EVENT_LOGF_LIMIT(tag, fmt, ...)                                        \
 do {                                                                    \
     bool can = true;                                                    \
-    EVENT_PRINT_LIMIT(LOG_CORE, LOG_FATAL, EVENT_LOG_LIMIT_INTERVALS, can); \
+    EVENT_PRINT_LIMIT(tag, LOG_CORE, LOG_FATAL, EVENT_LOG_LIMIT_INTERVALS, can); \
     if (can) {                                                          \
-        EVENT_LOGF(fmt, ##__VA_ARGS__);                                   \
+        EVENT_LOGF(tag, fmt, ##__VA_ARGS__);                                   \
     }                                                                   \
 } while (0)
 
-#define EVENT_LOGE_LIMIT(fmt, ...)                                        \
+#define EVENT_LOGE_LIMIT(tag, fmt, ...)                                        \
 do {                                                                    \
     bool can = true;                                                    \
-    EVENT_PRINT_LIMIT(LOG_CORE, LOG_ERROR, EVENT_LOG_LIMIT_INTERVALS, can); \
+    EVENT_PRINT_LIMIT(tag, LOG_CORE, LOG_ERROR, EVENT_LOG_LIMIT_INTERVALS, can); \
     if (can) {                                                          \
-        EVENT_LOGE(fmt, ##__VA_ARGS__);                                   \
-    }                                                                   \
-} while (0)
-
-
-#define EVENT_LOGW_LIMIT(fmt, ...)                                        \
-do {                                                                    \
-    bool can = true;                                                    \
-    EVENT_PRINT_LIMIT(LOG_CORE, LOG_WARN, EVENT_LOG_LIMIT_INTERVALS, can);  \
-    if (can) {                                                          \
-        EVENT_LOGW(fmt, ##__VA_ARGS__);                                   \
+        EVENT_LOGE(tag, fmt, ##__VA_ARGS__);                                   \
     }                                                                   \
 } while (0)
 
 
-#define EVENT_LOGI_LIMIT(fmt, ...)                                        \
+#define EVENT_LOGW_LIMIT(tag, fmt, ...)                                        \
 do {                                                                    \
     bool can = true;                                                    \
-    EVENT_PRINT_LIMIT(LOG_CORE, LOG_INFO, EVENT_LOG_LIMIT_INTERVALS, can);  \
+    EVENT_PRINT_LIMIT(tag, LOG_CORE, LOG_WARN, EVENT_LOG_LIMIT_INTERVALS, can);  \
     if (can) {                                                          \
-        EVENT_LOGI(fmt, ##__VA_ARGS__);                                   \
+        EVENT_LOGW(tag, fmt, ##__VA_ARGS__);                                   \
     }                                                                   \
 } while (0)
 
-#define EVENT_LOGD_LIMIT(fmt, ...)                                        \
+
+#define EVENT_LOGI_LIMIT(tag, fmt, ...)                                        \
 do {                                                                    \
     bool can = true;                                                    \
-    EVENT_PRINT_LIMIT(LOG_CORE, LOG_DEBUG, EVENT_LOG_LIMIT_INTERVALS, can); \
+    EVENT_PRINT_LIMIT(tag, LOG_CORE, LOG_INFO, EVENT_LOG_LIMIT_INTERVALS, can);  \
     if (can) {                                                          \
-        EVENT_LOGD(fmt, ##__VA_ARGS__);                                   \
+        EVENT_LOGI(tag, fmt, ##__VA_ARGS__);                                   \
+    }                                                                   \
+} while (0)
+
+#define EVENT_LOGD_LIMIT(tag, fmt, ...)                                        \
+do {                                                                    \
+    bool can = true;                                                    \
+    EVENT_PRINT_LIMIT(tag, LOG_CORE, LOG_DEBUG, EVENT_LOG_LIMIT_INTERVALS, can); \
+    if (can) {                                                          \
+        EVENT_LOGD(tag, fmt, ##__VA_ARGS__);                                   \
     }                                                                   \
 } while (0)
 #endif  // FOUNDATION_EVENT_COMMON_LOG_INCLUDE_EVENT_LOG_WRAPPER_H

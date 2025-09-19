@@ -59,7 +59,7 @@ std::string CommonEventData::GetData() const
 
 void CommonEventData::SetWant(const Want &want)
 {
-    EVENT_LOGD("set want");
+    EVENT_LOGD(LOG_TAG_CES, "set want");
     want_ = want;
 }
 
@@ -73,7 +73,7 @@ bool CommonEventData::Marshalling(Parcel &parcel) const
     // write data
     if (GetData().empty()) {
         if (!parcel.WriteInt32(VALUE_NULL)) {
-            EVENT_LOGE("null data");
+            EVENT_LOGE(LOG_TAG_CES, "null data");
             return false;
         }
     } else {
@@ -81,18 +81,18 @@ bool CommonEventData::Marshalling(Parcel &parcel) const
             return false;
         }
         if (!parcel.WriteString16(Str8ToStr16(GetData()))) {
-            EVENT_LOGE("Failed to write data");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to write data");
             return false;
         }
     }
 
     if (!parcel.WriteInt32(code_)) {
-        EVENT_LOGE("Failed to write code");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write code");
         return false;
     }
 
     if (!parcel.WriteParcelable(&want_)) {
-        EVENT_LOGE("Failed to write want");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to write want");
         return false;
     }
 
@@ -116,7 +116,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventData::ReadFromParcel(Parcel 
     // read want
     std::unique_ptr<Want> want(parcel.ReadParcelable<Want>());
     if (!want) {
-        EVENT_LOGE("Failed to ReadParcelable<Want>");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to ReadParcelable<Want>");
         return false;
     }
     want_ = *want;
@@ -129,12 +129,12 @@ CommonEventData *CommonEventData::Unmarshalling(Parcel &parcel)
     CommonEventData *commonEventData = new (std::nothrow) CommonEventData();
 
     if (commonEventData == nullptr) {
-        EVENT_LOGE("CommonEventData == nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventData == nullptr");
         return nullptr;
     }
 
     if (!commonEventData->ReadFromParcel(parcel)) {
-        EVENT_LOGE("failed to ReadFromParcel");
+        EVENT_LOGE(LOG_TAG_CES, "failed to ReadFromParcel");
         delete commonEventData;
         commonEventData = nullptr;
     }

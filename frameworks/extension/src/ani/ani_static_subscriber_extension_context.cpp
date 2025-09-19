@@ -29,23 +29,24 @@ using namespace OHOS::AbilityRuntime;
 void StsStaticSubscriberExtensionContext::StartAbilityInner([[maybe_unused]] ani_env *env,
     [[maybe_unused]] ani_object aniObj, ani_object wantObj)
 {
-    EVENT_LOGD("StartAbilityInner");
+    EVENT_LOGD(LOG_TAG_CES, "StartAbilityInner");
     AAFwk::Want want;
     ErrCode innerErrCode = ERR_OK;
     if (!AppExecFwk::UnwrapWant(env, wantObj, want)) {
-        EVENT_LOGE("UnwrapWant filed");
+        EVENT_LOGE(LOG_TAG_CES, "UnwrapWant filed");
         ThrowError(env, ERROR_CODE_INVALID_PARAM);
         return;
     }
     auto context = GetAbilityContext();
     if (context == nullptr) {
-        EVENT_LOGE("GetAbilityContext is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "GetAbilityContext is nullptr");
         ThrowError(env, ERROR_CODE_INVALID_CONTEXT);
         return;
     }
     innerErrCode = context->StartAbility(want);
     if (innerErrCode != ERR_OK) {
-        EVENT_LOGE("StartAbility failed, code = %{public}d", innerErrCode);
+        EVENT_LOGE(LOG_TAG_CES, "StartAbility failed, code = %{public}d", innerErrCode);
+        OHOS::EventManagerFwkAni::ThrowErrorByNativeError(env, innerErrCode);
         ThrowErrorByNativeError(env, innerErrCode);
     }
 }
@@ -61,17 +62,17 @@ StsStaticSubscriberExtensionContext* StsStaticSubscriberExtensionContext::GetAbi
     ani_long nativeContextLong;
     ani_status status = ANI_ERROR;
     if (env == nullptr) {
-        EVENT_LOGE("null env");
+        EVENT_LOGD(LOG_TAG_CES, "null env");
         return nullptr;
     }
 
     status = env->Object_GetFieldByName_Long(obj, "nativeStaticSubscriberExtensionContext", &nativeContextLong);
     if (status != ANI_OK) {
-        EVENT_LOGE("get property status: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "get property status: %{public}d", status);
         return nullptr;
     }
     if (nativeContextLong == 0) {
-        EVENT_LOGE("nativeContextLong is zero");
+        EVENT_LOGE(LOG_TAG_CES, "nativeContextLong is zero");
         return nullptr;
     }
     return reinterpret_cast<StsStaticSubscriberExtensionContext*>(nativeContextLong);
@@ -81,7 +82,7 @@ ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
     std::shared_ptr<StaticSubscriberExtensionContext> context)
 {
     if (env == nullptr) {
-        EVENT_LOGE("null env");
+        EVENT_LOGE(LOG_TAG_CES, "null env");
         return nullptr;
     }
     std::shared_ptr<OHOS::AppExecFwk::AbilityInfo> abilityInfo = nullptr;
@@ -90,7 +91,7 @@ ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
     }
     auto stsStaticSubscriberExtensionContext = new (std::nothrow) StsStaticSubscriberExtensionContext(context);
     if (stsStaticSubscriberExtensionContext == nullptr) {
-        EVENT_LOGE("null sts context");
+        EVENT_LOGE(LOG_TAG_CES, "null sts context");
         return nullptr;
     }
     ani_object contextObj = nullptr;
@@ -98,18 +99,18 @@ ani_object CreateStaticSubscriberExtensionContext(ani_env *env,
     ani_class cls = nullptr;
     ani_method method = nullptr;
     if ((status = env->FindClass(STATIC_SUBSCRIBER_EXTENSION_CONTEXT_CLASS_NAME, &cls)) != ANI_OK) {
-        EVENT_LOGE("find class status : %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "find class status : %{public}d", status);
         delete stsStaticSubscriberExtensionContext;
         return nullptr;
     }
     if ((status = env->Class_FindMethod(cls, "<ctor>", "l:", &method)) != ANI_OK) {
-        EVENT_LOGE("find Method status: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "find Method status: %{public}d", status);
         delete stsStaticSubscriberExtensionContext;
         return nullptr;
     }
     ani_long nativeContextLong = reinterpret_cast<ani_long>(stsStaticSubscriberExtensionContext);
     if ((status = env->Object_New(cls, method, &contextObj, nativeContextLong)) != ANI_OK) {
-        EVENT_LOGE("new Object status: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_CES, "new Object status: %{public}d", status);
         delete stsStaticSubscriberExtensionContext;
         return nullptr;
     }

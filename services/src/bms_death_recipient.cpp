@@ -22,16 +22,16 @@ namespace OHOS {
 namespace EventFwk {
 void BMSDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &wptrDeath)
 {
-    EVENT_LOGI("bundle manager service died, remove the proxy object");
+    EVENT_LOGW(LOG_TAG_CES, "bundle manager service died, remove the proxy object");
 
     if (wptrDeath == nullptr) {
-        EVENT_LOGE("wptrDeath is null");
+        EVENT_LOGE(LOG_TAG_CES, "wptrDeath is null");
         return;
     }
 
     sptr<IRemoteObject> object = wptrDeath.promote();
     if (!object) {
-        EVENT_LOGE("object is null");
+        EVENT_LOGE(LOG_TAG_CES, "object is null");
         return;
     }
 

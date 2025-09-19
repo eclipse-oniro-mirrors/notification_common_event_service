@@ -39,7 +39,7 @@ bool StaticSubscriberExtensionContext::CheckCallerIsSystemApp()
 {
     auto selfToken = IPCSkeleton::GetSelfTokenID();
     if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(selfToken)) {
-        EVENT_LOGE("current app is not system app, not allow.");
+        EVENT_LOGE(LOG_TAG_CES, "current app is not system app, not allow.");
         return false;
     }
     return true;
@@ -47,11 +47,11 @@ bool StaticSubscriberExtensionContext::CheckCallerIsSystemApp()
 
 ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
 {
-    EVENT_LOGD("called");
+    EVENT_LOGD(LOG_TAG_CES, "called");
     ErrCode err = ERR_OK;
 
     if (!CheckCallerIsSystemApp()) {
-        EVENT_LOGE("This application is not system-app, can not use system-api");
+        EVENT_LOGE(LOG_TAG_CES, "This application is not system-app, can not use system-api");
         err = AAFwk::ERR_NOT_SYSTEM_APP;
         return err;
     }
@@ -59,13 +59,13 @@ ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
     std::string callerBundleName = GetBundleName();
     std::string calledBundleName = want.GetBundle();
     if (calledBundleName != callerBundleName) {
-        EVENT_LOGE("This application won't start no-self-ability.");
+        EVENT_LOGE(LOG_TAG_CES, "This application won't start no-self-ability.");
         err = AAFwk::ERR_NOT_SELF_APPLICATION;
         return err;
     }
 
     if (!VerifyCallingPermission(PERMISSION_START_ABILITIES_FROM_BACKGROUND)) {
-        EVENT_LOGE("Caller has none of PERMISSION_START_ABILITIES_FROM_BACKGROUND, Fail.");
+        EVENT_LOGE(LOG_TAG_CES, "Caller has none of PERMISSION_START_ABILITIES_FROM_BACKGROUND, Fail.");
         err = AAFwk::CHECK_PERMISSION_FAILED;
         return err;
     }
@@ -75,14 +75,14 @@ ErrCode StaticSubscriberExtensionContext::StartAbility(const AAFwk::Want& want)
 
 bool StaticSubscriberExtensionContext::VerifyCallingPermission(const std::string& permissionName) const
 {
-    EVENT_LOGD("VerifyCallingPermission permission %{public}s", permissionName.c_str());
+    EVENT_LOGD(LOG_TAG_CES, "VerifyCallingPermission permission %{public}s", permissionName.c_str());
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     int32_t ret = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
     if (ret == Security::AccessToken::PermissionState::PERMISSION_DENIED) {
-        EVENT_LOGE("permission %{public}s: PERMISSION_DENIED", permissionName.c_str());
+        EVENT_LOGE(LOG_TAG_CES, "permission %{public}s: PERMISSION_DENIED", permissionName.c_str());
         return false;
     }
-    EVENT_LOGD("verify AccessToken success");
+    EVENT_LOGD(LOG_TAG_CES, "verify AccessToken success");
     return true;
 }
 } // namespace EventFwk

@@ -37,7 +37,7 @@ AsyncCommonEventResult::~AsyncCommonEventResult()
 bool AsyncCommonEventResult::SetCode(const int32_t &code)
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -54,7 +54,7 @@ int32_t AsyncCommonEventResult::GetCode() const
 bool AsyncCommonEventResult::SetData(const std::string &data)
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -71,7 +71,7 @@ std::string AsyncCommonEventResult::GetData() const
 bool AsyncCommonEventResult::SetCodeAndData(const int32_t &code, const std::string &data)
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -84,7 +84,7 @@ bool AsyncCommonEventResult::SetCodeAndData(const int32_t &code, const std::stri
 bool AsyncCommonEventResult::AbortCommonEvent()
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -96,7 +96,7 @@ bool AsyncCommonEventResult::AbortCommonEvent()
 bool AsyncCommonEventResult::ClearAbortCommonEvent()
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -112,15 +112,15 @@ bool AsyncCommonEventResult::GetAbortCommonEvent() const
 
 bool AsyncCommonEventResult::FinishCommonEvent()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
     if (finished_) {
-        EVENT_LOGE("Common event already finished.");
+        EVENT_LOGE(LOG_TAG_CES, "Common event already finished.");
         return false;
     }
     finished_ = true;
@@ -145,7 +145,7 @@ bool AsyncCommonEventResult::CheckSynchronous() const
     if (ordered_) {
         ret = true;
     } else {
-        EVENT_LOGE("Subscriber want to set result for an unordered common event.");
+        EVENT_LOGE(LOG_TAG_CES, "Subscriber want to set result for an unordered common event.");
         return false;
     }
 
