@@ -18,7 +18,7 @@ import { AsyncCallback, BusinessError } from '@ohos.base';
 import { CommonEventSubscribeInfo } from 'commonEvent.commonEventSubscribeInfo';
 
 class Cleaner {
-    private ptr: long = 0 
+    private ptr: long = 0
 
     constructor(ptr:long) {
         this.ptr = ptr
@@ -36,21 +36,21 @@ type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Error) => void;
 const TAG: string = 'commonEventSubscriber';
 export interface CommonEventSubscriber {
-    getCode(callback: AsyncCallback<number>): void;
-    getCode(): Promise<number>;
-    getCodeSync(): number;
-    setCode(code: number, callback: AsyncCallback<void>): void;
-    setCode(code: number): Promise<void>;
-    setCodeSync(code: number): void;
+    getCode(callback: AsyncCallback<int>): void;
+    getCode(): Promise<int>;
+    getCodeSync(): int;
+    setCode(code: int, callback: AsyncCallback<void>): void;
+    setCode(code: int): Promise<void>;
+    setCodeSync(code: int): void;
     getData(callback: AsyncCallback<string>): void;
     getData(): Promise<string>;
     getDataSync(): string;
     setData(data: string, callback: AsyncCallback<void>): void;
     setData(data: string): Promise<void>;
     setDataSync(data: string): void;
-    setCodeAndData(code: number, data: string, callback: AsyncCallback<void>): void;
-    setCodeAndData(code: number, data: string): Promise<void>;
-    setCodeAndDataSync(code: number, data: string): void;
+    setCodeAndData(code: int, data: string, callback: AsyncCallback<void>): void;
+    setCodeAndData(code: int, data: string): Promise<void>;
+    setCodeAndDataSync(code: int, data: string): void;
     isOrderedCommonEvent(callback: AsyncCallback<boolean>): void;
     isOrderedCommonEvent(): Promise<boolean>;
     isOrderedCommonEventSync(): boolean;
@@ -77,7 +77,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     static {loadLibraryWithPermissionCheck("ani_commoneventmanager.z", "commonEvent.commonEventSubscriber")}
     private subscriberInstanceWrapper: long = 0;
 
-    public native nativeGetCode(): number;
+    public native nativeGetCode(): int;
     public native nativeSetCode(code: int): int;
     public native nativeGetData(): string;
     public native nativeSetData(data: string): int;
@@ -90,23 +90,33 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public native nativeGetSubscribeInfo(): CommonEventSubscribeInfo;
     public native nativeFinishCommonEvent(): int;
 
-    public getCode(callback: AsyncCallback<number>): void {
-        let p = taskpool.execute((): number => { return this.nativeGetCode(); });
+    private static native transferToDynamicSubscriber(input: Object): Any;
+    private static native transferToStaticSubscriber(input: Any): Object;
+
+    static transferDynamic(input: Object): Any {
+        return CommonEventSubscriberInner.transferToDynamicSubscriber(input);
+    }
+    static transferStatic(input: Any): Object {
+        return CommonEventSubscriberInner.transferToStaticSubscriber(input);
+    }
+
+    public getCode(callback: AsyncCallback<int>): void {
+        let p = taskpool.execute((): int => { return this.nativeGetCode(); });
         p.then((data: NullishType): void => {
-            let ret : number = data as number;
+            let ret : int = data as int;
             callback(null, ret);
         }, (error: Error): void => {
-            let ret: number = -1;
+            let ret: int = 0;
             let err: BusinessError = error as BusinessError;
             callback(err, ret);
         });
     }
 
-    public getCode(): Promise<number> {
-        let pPromise = new Promise<number>((resolve: ResolveCallback<number>, reject: RejectCallback): void => {
-            let p = taskpool.execute((): number => { return this.nativeGetCode(); });
+    public getCode(): Promise<int> {
+        let pPromise = new Promise<int>((resolve: ResolveCallback<int>, reject: RejectCallback): void => {
+            let p = taskpool.execute((): int => { return this.nativeGetCode(); });
             p.then((data: NullishType): void => {
-                let ret : number = data as number;
+                let ret : int = data as int;
                 resolve(ret);
             }, (error: Error): void => {
                 reject(error);
@@ -115,19 +125,18 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         return pPromise;
     }
 
-    public getCodeSync(): number {
-        let ret : number = 0;
+    public getCodeSync(): int {
+        let ret : int = 0;
         try {
-            ret = this.nativeGetCode() as number;
+            ret = this.nativeGetCode() as int;
             return ret;
         } catch (err) {
             return ret;
         }
     }
 
-    public setCode(code: number, callback: AsyncCallback<void>): void {
-        let pcode: Int = code as Int;
-        let p = taskpool.execute((): int => { return this.nativeSetCode(pcode); });
+    public setCode(code: int, callback: AsyncCallback<void>): void {
+        let p = taskpool.execute((): int => { return this.nativeSetCode(code); });
         p.then((data: NullishType): void => {
             callback(null, undefined);
         }, (error: Error): void => {
@@ -136,10 +145,9 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         });
     }
 
-    public setCode(code: number): Promise<void> {
-        let pcode: Int = code as Int;
+    public setCode(code: int): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
-            let p = taskpool.execute((): int => { return this.nativeSetCode(pcode); });
+            let p = taskpool.execute((): int => { return this.nativeSetCode(code); });
             p.then((data: NullishType): void => {
                 resolve(undefined);
             }, (error: Error): void => {
@@ -149,10 +157,9 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         return pPromise;
     }
 
-    public setCodeSync(code: number): void {
+    public setCodeSync(code: int): void {
         try {
-            let pcode: Int = code as Int;
-            this.nativeSetCode(pcode);
+            this.nativeSetCode(code);
             return;
         } catch (err) {
             hilog.error(0xD001202, TAG, 'asyncResult is nullptr');
@@ -224,9 +231,8 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         }
     }
 
-    public setCodeAndData(code: number, data: string, callback: AsyncCallback<void>): void {
-        let pcode: Int = code as Int;
-        let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(pcode, data); });
+    public setCodeAndData(code: int, data: string, callback: AsyncCallback<void>): void {
+        let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(code, data); });
         p.then((e: NullishType): void => {
             callback(null, undefined);
         }, (error: Error): void => {
@@ -235,10 +241,9 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         })
     }
 
-    public setCodeAndData(code: number, data: string): Promise<void> {
-        let pcode: Int = code as Int;
+    public setCodeAndData(code: int, data: string): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
-            let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(pcode, data); });
+            let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(code, data); });
             p.then((data: NullishType): void => {
                 resolve(undefined);
             }, (error: Error): void => {
@@ -248,10 +253,9 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         return pPromise;
     }
 
-    public setCodeAndDataSync(code: number, data: string): void {
+    public setCodeAndDataSync(code: int, data: string): void {
         try {
-            let pcode: Int = code as Int;
-            this.nativeSetCodeAndData(pcode, data);
+            this.nativeSetCodeAndData(code, data);
             return;
         } catch (err) {
             hilog.error(0xD001202, TAG, 'asyncResult is nullptr');
@@ -476,7 +480,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     }
 
     private cleaner: Cleaner | null = null;
-    
+
     constructor(wrapper:long) {
         if(this.subscriberInstanceWrapper == 0){
             this.subscriberInstanceWrapper = wrapper;

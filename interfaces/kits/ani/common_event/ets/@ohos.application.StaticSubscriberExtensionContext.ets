@@ -19,6 +19,21 @@ import hilog from '@ohos.hilog';
 
 const TAG: string = 'commonEventManager';
 
+class Cleaner {
+    private ptr: long = 0 
+
+    constructor(ptr:long) {
+        this.ptr = ptr
+    }
+    native clean(): void
+}
+
+function callback(cleaner: Cleaner): void {
+    cleaner.clean()
+}
+let destroyRegister = new FinalizationRegistry<Cleaner>(callback)
+let unregisterToken = new object()
+
 type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Error) => void;
 
@@ -27,26 +42,47 @@ export class StaticSubscriberExtensionContext extends ExtensionContext {
     nativeStaticSubscriberExtensionContext: long = 0;
     native nativeStartAbilitySync(want: Want): void;
 
+    static native transferToDynamicContext(input: Object): Any;
+    static native transferToStaticContext(input: Any): Object;
+
+    static transferDynamic(input: Object): Any {
+        return StaticSubscriberExtensionContext.transferToDynamicContext(input);
+    }
+    static transferStatic(input: Any): Object {
+        return StaticSubscriberExtensionContext.transferToStaticContext(input);
+    }
+
     startAbility(want: Want, callback: AsyncCallback<void, void>): void {
         let task = taskpool.execute(this.nativeStartAbilitySync, want);
         task.then((e: NullishType)=>{
-          callback(null, undefined);
-      }, (error: Object): void => {
-          let err: BusinessError = error as BusinessError;
-          callback(err, undefined);
-      });
+            callback(null, undefined);
+        }, (error: Object): void => {
+            let err: BusinessError = error as BusinessError;
+            callback(err, undefined);
+        });
     }
 
     startAbility(want: Want): Promise<void> {
-      let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
-      let task = taskpool.execute(this.nativeStartAbilitySync, want);
-      task.then((e: NullishType): void => {
-          resolve(undefined);
-      }, (error: Error): void => {
-          hilog.error(0xD001202, TAG, 'nativeStartAbilitySync Promise error');
-          reject(error);
-      });
-  });
-      return pPromise;
-  }
+        let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
+            let task = taskpool.execute(this.nativeStartAbilitySync, want);
+            task.then((e: NullishType): void => {
+                resolve(undefined);
+            }, (error: Error): void => {
+                hilog.error(0xD001202, TAG, 'nativeStartAbilitySync Promise error');
+                reject(error);
+            });
+        });
+        return pPromise;
+    }
+
+    private cleaner: Cleaner | null = null;
+    constructor(wrapper:long) {
+        this.nativeStaticSubscriberExtensionContext = wrapper;
+        this.registerCleaner(this.nativeStaticSubscriberExtensionContext)
+    }
+
+    registerCleaner(ptr: long): void {
+        this.cleaner = new Cleaner(ptr)
+        destroyRegister.register(this, this.cleaner!, unregisterToken);
+    }
 }

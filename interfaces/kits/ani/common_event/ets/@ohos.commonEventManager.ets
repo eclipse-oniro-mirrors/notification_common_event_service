@@ -14,7 +14,7 @@
  */
 
 import hilog from '@ohos.hilog';
-import{ AsyncCallback, BusinessError } from '@ohos.base';
+import{ AsyncCallback,  Callback, BusinessError } from '@ohos.base';
 import{ CommonEventPublishData } from 'commonEvent.commonEventPublishData';
 import{ CommonEventData } from 'commonEvent.commonEventData';
 import{ CommonEventSubscribeInfo } from 'commonEvent.commonEventSubscribeInfo';
@@ -25,7 +25,7 @@ const ERROR_PARAM_INVALID = 401;
 const errorParamInvalid: BusinessError<string> = {code: ERROR_PARAM_INVALID, data: "Invalid parameter"};
 
 type ResolveCallback<T> = (data: T) => void;
-type RejectCallback = (err: Object) => void;
+type RejectCallback = (err: Error) => void;
 
 namespace commonEventManager {
     loadLibraryWithPermissionCheck("ani_commoneventmanager.z", "@ohos.commonEventManager");
@@ -37,6 +37,8 @@ namespace commonEventManager {
     export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
     export native function subscribeExecute(subscriber: CommonEventSubscriber,
         callback: AsyncCallback<CommonEventData, void>):int;
+    export native function subscribeToEventExecute(subscriber: CommonEventSubscriber,
+        callback: Callback<CommonEventData>):int;
     export native function unsubscribeExecute(subscriber: CommonEventSubscriber):int;
     export native function removeStickyCommonEventExecute(event: string):int;
     export native function setStaticSubscriberStateExecute(enable: boolean):int;
@@ -54,7 +56,7 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(r, undefined);
             }
-        }, (error:Object): void => {
+        }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'publish error.');
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
@@ -73,16 +75,15 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(r, undefined);
             }
-        }, (error:Object): void => {
+        }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'publish with option error.');
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
         });
     }
 
-    export function publishAsUser(event: string, userId: number, callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
-        let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, publishAsUserId);
+    export function publishAsUser(event: string, userId: int, callback: AsyncCallback<void, void>): void {
+        let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, userId);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {
@@ -91,17 +92,16 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(r, undefined);
             }
-        }, (error:Object): void => {
+        }, (error: Error): void => {
             hilog.error(0xD001202, TAG, 'publishAsUser error.');
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
         });
     }
 
-    export function publishAsUser(event: string, userId: number, options: CommonEventPublishData,
+    export function publishAsUser(event: string, userId: int, options: CommonEventPublishData,
         callback: AsyncCallback<void, void>): void {
-        let publishAsUserId: Int  = userId as Int;
-        let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, publishAsUserId, options);
+        let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, userId, options);
         task.then((e: NullishType)=>{
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {
@@ -110,7 +110,7 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(r, undefined);
             }
-        }, (error:Object): void => {
+        }, (error: Error): void => {
             hilog.error(0xD001202, TAG, 'publishAsUser with option error.');
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
@@ -125,7 +125,7 @@ namespace commonEventManager {
             let result: CommonEventSubscriber = e as CommonEventSubscriber;
             hilog.info(0x0000, TAG, 'createSubscriber result.');
             callback(null, result);
-        }, (error:Object): void => {
+        }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
@@ -134,7 +134,8 @@ namespace commonEventManager {
 
     export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber> {
         hilog.info(0x0000, TAG, 'createSubscriber Promise call');
-        let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void) => {
+        let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
+            reject: (error: Error) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
             p1.then((e :NullishType)=>{
                 hilog.info(0x0000, TAG, 'createSubscriber Promise result.');
@@ -142,6 +143,7 @@ namespace commonEventManager {
                 resolve(result);
             }, (err: Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
+                reject(err);
             });
         });
         return p;
@@ -162,11 +164,32 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(r, undefined);
             }
-        }, (error:Object): void => {
+        }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'subscribe error');
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
         });
+    }
+
+    export function subscribeToEvent(subscriber: CommonEventSubscriber, callback: Callback<CommonEventData>): Promise<void> {
+        hilog.info(0x0000, TAG, 'subscribeToEvent call.');
+        let p = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
+            let task = taskpool.execute(commonEventManager.subscribeToEventExecute, subscriber, callback);
+            task.then((e: NullishType)=> {
+                let resultCode: Int  = e as Int;
+                hilog.info(0x0000, TAG, 'subscribeToEvent result: %{public}d.', resultCode.toInt());
+                if (resultCode != 0) {
+                    let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    reject(r);
+                } else {
+                    resolve(undefined);
+                }
+            }, (err: Error): void => {
+                hilog.error(0x0000, TAG, 'subscribeToEvent error');
+                reject(err);
+            });
+        });
+        return p;
     }
 
     export function unsubscribe(subscriber: CommonEventSubscriber, callback?: AsyncCallback<void, void>): void {
@@ -183,7 +206,7 @@ namespace commonEventManager {
                     callback(r, undefined);
                 }
             }
-        }, (error:Object): void => {
+        }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'unsubscribe error');
             if (callback != undefined) {
                 let err: BusinessError = error as BusinessError;
@@ -205,7 +228,7 @@ namespace commonEventManager {
                 let r: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(r, undefined);
             }
-        }, (error: Object): void => {
+        }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
         });
@@ -225,7 +248,7 @@ namespace commonEventManager {
                     let err: BusinessError = { code: resultCode.toInt(), data: undefined };
                     reject(err);
                 }
-            }, (error: Object): void => {
+            }, (error: Error): void => {
                 reject(error);
             });
         });
@@ -242,7 +265,7 @@ namespace commonEventManager {
                 let err: BusinessError = { code: resultCode.toInt(), data: undefined };
                 callback(err, undefined);
             }
-        }, (error: Object): void => {
+        }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
             callback(err, undefined);
         });
@@ -259,7 +282,7 @@ namespace commonEventManager {
                 let err: BusinessError = { code: resultCode.toInt(), data: undefined };
                 reject(err);
             }
-        }, (error: Object): void => {
+        }, (error: Error): void => {
             reject(error);
         });
     });
@@ -277,7 +300,7 @@ namespace commonEventManager {
                     let err: BusinessError = { code: resultCode.toInt(), data: undefined };
                     reject(err);
                 }
-            }, (error: Object): void => {
+            }, (error: Error): void => {
                 reject(error);
             });
         });

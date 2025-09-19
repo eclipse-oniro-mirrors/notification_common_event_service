@@ -38,7 +38,7 @@ void AniCommonEventUtils::CreateNewObjectByClass(
         EVENT_LOGE(LOG_TAG_CES, "CreateNewObjectByClass cls is null.");
         return;
     }
-    aniResult = env->Class_FindMethod(cls, "<ctor>", ":V", &ctor);
+    aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES, "CreateNewObjectByClass Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -68,24 +68,24 @@ void AniCommonEventUtils::CallSetter(
     return;
 }
 
-void AniCommonEventUtils::CreateAniDoubleObject(ani_env* env, ani_object &object, ani_double value)
+void AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, ani_int value)
 {
     ani_status aniResult = ANI_ERROR;
-    ani_class clsDouble = nullptr;
+    ani_class clsInt = nullptr;
     ani_method ctor;
-    aniResult = env->FindClass("Lstd/core/Double;", &clsDouble);
+    aniResult = env->FindClass("Lstd/core/Int;", &clsInt);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES, "CreateAniDoubleObject FindClass error. result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject FindClass error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Class_FindMethod(clsDouble, "<ctor>", "D:V", &ctor);
+    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "I:V", &ctor);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES, "CreateAniDoubleObject Class_FindMethod error. result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Object_New(clsDouble, ctor, &object, value);
+    aniResult = env->Object_New(clsInt, ctor, &object, value);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES, "CreateAniDoubleObject Object_New error. result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject Object_New error. result: %{public}d.", aniResult);
         return;
     }
 }
@@ -96,7 +96,7 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     EVENT_LOGD(LOG_TAG_CES, "ConvertCommonEventDataToEts called");
 
     ani_class cls = nullptr;
-    CreateNewObjectByClass(env, "LcommonEvent/commonEventData/CommonEventDataImpl;", cls, ani_data);
+    CreateNewObjectByClass(env, "commonEvent.commonEventData.CommonEventDataImpl", cls, ani_data);
     if ((ani_data == nullptr) || (cls == nullptr)) {
         EVENT_LOGE(LOG_TAG_CES, "ConvertCommonEventDataToEts ani_data or cls is null.");
         return;
@@ -119,7 +119,7 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
 
     // set code [number]
     ani_object codeObject;
-    CreateAniDoubleObject(env, codeObject, static_cast<ani_double>(commonEventData.GetCode()));
+    CreateAniIntObject(env, codeObject, commonEventData.GetCode());
     CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
 
     // set parameters [Record]

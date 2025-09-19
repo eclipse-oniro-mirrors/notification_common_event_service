@@ -17,8 +17,8 @@ export interface CommonEventSubscribeInfo {
     events: Array<string>;
     publisherPermission?: string;
     publisherDeviceId?: string;
-    userId?: number;
-    priority?: number;
+    userId?: int;
+    priority?: int;
     publisherBundleName?: string;
 }
 
@@ -26,7 +26,7 @@ class CommonEventSubscribeInfoImpl implements CommonEventSubscribeInfo {
     public events: Array<string> = {};
     public publisherPermission?: string | undefined;
     public publisherDeviceId?: string | undefined;
-    public userId?: number | undefined;
-    public priority?: number | undefined;
+    public userId?: int | undefined;
+    public priority?: int | undefined;
     public publisherBundleName?: string | undefined;
 }

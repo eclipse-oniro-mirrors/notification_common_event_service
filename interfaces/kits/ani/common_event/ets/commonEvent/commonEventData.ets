@@ -16,7 +16,7 @@
 export interface CommonEventData {
     event: string;
     bundleName?: string;
-    code?: number;
+    code?: int;
     data?: string;
     parameters?: Record<string, Object>;
 }
@@ -24,7 +24,7 @@ export interface CommonEventData {
 class CommonEventDataImpl implements CommonEventData {
     public event: string = '';
     public bundleName?: string | undefined;
-    public code?: number | undefined;
+    public code?: int | undefined;
     public data?: string | undefined;
     public parameters?: Record<string, Object> | undefined;
 }
