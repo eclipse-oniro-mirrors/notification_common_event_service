@@ -46,6 +46,7 @@ const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check
 }  // namespace
 
 static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
+static const int32_t FFRT_WAIT_TIMEOUT = 500; // 500ms
 #ifdef CONFIG_POLICY_ENABLE
     constexpr static const char* CONFIG_FILE = "etc/notification/common_event_config.json";
 #else
@@ -305,8 +306,6 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     int64_t taskStartTime = SystemTime::GetNowSysTime();
-    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter %{public}s(pid = %{public}d, uid = %{public}d, userId = %{public}d)",
-        bundleName.c_str(), pid, uid, subscribeInfo.GetUserId());
 
     if (subscribeInfo.GetMatchingSkills().CountEvent() == 0) {
         EVENT_LOGE(LOG_TAG_SUBSCRIBER, "the subscriber has no event");
@@ -327,7 +326,6 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
 
     std::shared_ptr<CommonEventSubscribeInfo> sp = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo_);
 
-    // create EventRecordInfo here
     EventRecordInfo eventRecordInfo;
     eventRecordInfo.pid = pid;
     eventRecordInfo.uid = uid;
@@ -337,19 +335,20 @@ bool InnerCommonEventManager::SubscribeCommonEvent(const CommonEventSubscribeInf
     eventRecordInfo.isSystemApp = comeFrom.isSystemApp;
     eventRecordInfo.isProxy = comeFrom.isProxy;
 
-    // generate subscriber id : pid_uid_instanceKey_subCount_time
-    int64_t now = SystemTime::GetNowSysTime();
     std::string subId = std::to_string(pid) + "_" + std::to_string(uid) + "_" +
-        std::to_string(instanceKey) + "_" + std::to_string(subCount.load()) + "_" + std::to_string(now);
+        std::to_string(instanceKey) + "_" + std::to_string(subCount.load()) + "_" + std::to_string(userId);
     subCount.fetch_add(1);
     eventRecordInfo.subId = subId;
     auto record = DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->InsertSubscriber(
         sp, commonEventListener, recordTime, eventRecordInfo);
 
-    now = SystemTime::GetNowSysTime();
-    EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Subscribe %{public}s(userId = %{public}d, subId = %{public}s, "
-        "ffrtCost %{public}s ms, taskCost %{public}s ms)", bundleName.c_str(), userId, subId.c_str(),
-        std::to_string(taskStartTime - startTime).c_str(), std::to_string(now - taskStartTime).c_str());
+    int32_t now = SystemTime::GetNowSysTime();
+    std::string timeoutLogger;
+    if (taskStartTime - startTime > FFRT_WAIT_TIMEOUT) {
+        timeoutLogger.append(" ffrtCost ").append(std::to_string(taskStartTime - startTime)).append("ms,taskCost ")
+            .append(std::to_string(now - taskStartTime)).append("ms");
+    }
+    EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Subscribe %{public}s%{public}s", subId.c_str(), timeoutLogger.c_str());
     PublishStickyEvent(sp, record);
     return true;
 };
