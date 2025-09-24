@@ -697,7 +697,15 @@ bool CommonEventControlManager::FinishReceiverAction(std::shared_ptr<OrderedEven
     bool doNext = false;
     doNext = FinishReceiver(recordPtr, code, receiverData, abortEvent);
     if (doNext) {
-        ProcessNextOrderedEvent(false);
+        std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
+        orderedQueue_->submit([weak]() {
+            auto manager = weak.lock();
+            if (manager == nullptr) {
+                EVENT_LOGE(LOG_TAG_ORDERED, "CommonEventControlManager is null");
+                return;
+            }
+            manager->ProcessNextOrderedEvent(false);
+        });
     }
 
     return true;
