@@ -21,16 +21,15 @@ namespace OHOS {
 namespace EventFwk {
 ErrCode StaticSubscriberStubImpl::OnReceiveEvent(const CommonEventData& data, int32_t& funcResult)
 {
-    EVENT_LOGD("OnReceiveEvent begin.");
+    EVENT_LOGD(LOG_TAG_CES, "OnReceiveEvent begin.");
     auto extension = extension_.lock();
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>(data);
     if (extension != nullptr) {
         extension->OnReceiveEvent(commonEventData);
-        EVENT_LOGI("OnReceiveEvent end successed.");
         funcResult = 0;
         return ERR_OK;
     }
-    EVENT_LOGE("OnReceiveEvent end failed.");
+    EVENT_LOGE(LOG_TAG_CES, "OnReceiveEvent end failed.");
     funcResult = -1;
     return ERR_INVALID_DATA;
 }

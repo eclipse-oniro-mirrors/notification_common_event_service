@@ -3098,7 +3098,7 @@ void CommonEventSupport::Init()
 
 bool CommonEventSupport::IsSystemEvent(std::string &str)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::vector<std::string>::iterator iter = find(commonEventSupport_.begin(), commonEventSupport_.end(), str);
     if (iter != commonEventSupport_.end()) {

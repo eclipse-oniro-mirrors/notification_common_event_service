@@ -43,6 +43,7 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "ability_base:want",
     "access_token:libaccesstoken_sdk",
     "access_token:libtokenid_sdk",
+    "benchmark:benchmark",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
@@ -52,8 +53,6 @@ ohos_benchmarktest("Common_Event_Manager_Service_Test") {
     "ipc:ipc_core",
     "ipc:libdbinder",
   ]
-
-  public_external_deps = [ "benchmark:benchmark" ]
 
   subsystem_name = "notification"
   part_name = "common_event_service"

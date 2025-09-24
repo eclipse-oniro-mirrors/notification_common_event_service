@@ -23,7 +23,6 @@ namespace OHOS {
 namespace EventFwk {
 std::shared_ptr<AppExecFwk::EventRunner> CommonEventListener::commonRunner_ = nullptr;
 std::atomic<int> ffrtIndex = 0;
-std::mutex CommonEventListener::onRemoteRequestMutex_;
 
 CommonEventListener::CommonEventListener(const std::shared_ptr<CommonEventSubscriber> &commonEventSubscriber)
     : commonEventSubscriber_(commonEventSubscriber)
@@ -37,11 +36,11 @@ CommonEventListener::~CommonEventListener()
 ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData, bool ordered, bool sticky)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsReady()) {
-        EVENT_LOGE("not ready");
+        EVENT_LOGE(LOG_TAG_CES, "not ready");
         return IPC_INVOKER_ERR;
     }
 
@@ -49,7 +48,7 @@ ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData,
     std::function<void()> onReceiveEventFunc = [wp, commonEventData, ordered, sticky] () {
         sptr<CommonEventListener> sThis = wp.promote();
         if (sThis == nullptr) {
-            EVENT_LOGE("invalid listener");
+            EVENT_LOGE(LOG_TAG_CES, "invalid listener");
             return;
         }
         sThis->OnReceiveEvent(commonEventData, ordered, sticky);
@@ -67,33 +66,33 @@ ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData,
 
 __attribute__((no_sanitize("cfi"))) ErrCode CommonEventListener::Init()
 {
-    EVENT_LOGD("ready to init");
+    EVENT_LOGD(LOG_TAG_CES, "ready to init");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!commonEventSubscriber_) {
-        EVENT_LOGE("Failed to init due to subscriber is nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to init due to subscriber is nullptr");
         return ERR_INVALID_OPERATION;
     }
     auto threadMode = commonEventSubscriber_->GetSubscribeInfo().GetThreadMode();
-    EVENT_LOGD("thread mode: %{public}d", threadMode);
+    EVENT_LOGD(LOG_TAG_CES, "thread mode: %{public}d", threadMode);
     if (threadMode == CommonEventSubscribeInfo::HANDLER) {
         if (!runner_) {
             runner_ = EventRunner::GetMainEventRunner();
             if (!runner_) {
-                EVENT_LOGE("Failed to init due to create runner error");
+                EVENT_LOGE(LOG_TAG_CES, "Failed to init due to create runner error");
                 return ERR_INVALID_OPERATION;
             }
         }
         if (!handler_) {
             handler_ = std::make_shared<EventHandler>(runner_);
             if (!handler_) {
-                EVENT_LOGE("Failed to init due to create handler error");
+                EVENT_LOGE(LOG_TAG_CES, "Failed to init due to create handler error");
                 return ERR_INVALID_OPERATION;
             }
         }
     } else {
         InitListenerQueue();
         if (listenerQueue_ == nullptr) {
-            EVENT_LOGE("Failed to init due to create ffrt queue error");
+            EVENT_LOGE(LOG_TAG_CES, "Failed to init due to create ffrt queue error");
             return ERR_INVALID_OPERATION;
         }
     }
@@ -131,7 +130,7 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     const CommonEventData &commonEventData, const bool &ordered, const bool &sticky)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD("enter %{public}s", commonEventData.GetWant().GetAction().c_str());
+    EVENT_LOGD(LOG_TAG_CES, "enter %{public}s", commonEventData.GetWant().GetAction().c_str());
 
     int32_t code = commonEventData.GetCode();
     std::string data = commonEventData.GetData();
@@ -139,27 +138,29 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     std::shared_ptr<AsyncCommonEventResult> result =
         std::make_shared<AsyncCommonEventResult>(code, data, ordered, sticky, this);
     if (result == nullptr) {
-        EVENT_LOGE("Failed to create AsyncCommonEventResult");
+        EVENT_LOGE(LOG_TAG_CES, "Failed to create AsyncCommonEventResult");
         return;
     }
-
-    if (!commonEventSubscriber_) {
-        EVENT_LOGE("CommonEventSubscriber ptr is nullptr");
+    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        subscriber = commonEventSubscriber_;
+    }
+    if (!subscriber) {
+        EVENT_LOGE(LOG_TAG_CES, "CommonEventSubscriber ptr is nullptr");
         return;
     }
-    commonEventSubscriber_->SetAsyncCommonEventResult(result);
-
-    commonEventSubscriber_->OnReceiveEvent(commonEventData);
-
-    if (ordered && (commonEventSubscriber_->GetAsyncCommonEventResult() != nullptr)) {
-        commonEventSubscriber_->GetAsyncCommonEventResult()->FinishCommonEvent();
+    subscriber->SetAsyncCommonEventResult(result);
+    subscriber->OnReceiveEvent(commonEventData);
+    if (ordered && (subscriber->GetAsyncCommonEventResult() != nullptr)) {
+        subscriber->GetAsyncCommonEventResult()->FinishCommonEvent();
     }
-    EVENT_LOGD("end");
+    EVENT_LOGD(LOG_TAG_CES, "end");
 }
 
 void CommonEventListener::Stop()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     void *queue = nullptr;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -167,41 +168,15 @@ void CommonEventListener::Stop()
             queue = listenerQueue_;
             listenerQueue_ = nullptr;
         }
-
-        if (handler_) {
-            handler_.reset();
-        }
-
-        if (commonEventSubscriber_ == nullptr) {
-            EVENT_LOGE("commonEventSubscriber_ is nullptr");
-            return;
-        }
-        EVENT_LOGD("event size: %{public}zu",
-            commonEventSubscriber_->GetSubscribeInfo().GetMatchingSkills().CountEvent());
-        if (CommonEventSubscribeInfo::HANDLER == commonEventSubscriber_->GetSubscribeInfo().GetThreadMode()) {
-            EVENT_LOGD("stop listener in HANDLER mode");
-            return;
-        }
-
-        if (runner_) {
-            runner_.reset();
-        }
+        handler_ = nullptr;
+        commonEventSubscriber_ = nullptr;
+        runner_ = nullptr;
     }
     if (queue) {
-        delete static_cast<ffrt::queue*>(queue);
+        ffrt::submit([queue]() {
+            delete static_cast<ffrt::queue*>(queue);
+        });
     }
-}
-
-int32_t CommonEventListener::CallbackEnter([[maybe_unused]] uint32_t code)
-{
-    onRemoteRequestMutex_.lock();
-    return 0;
-}
-
-int32_t CommonEventListener::CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result)
-{
-    onRemoteRequestMutex_.unlock();
-    return 0;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

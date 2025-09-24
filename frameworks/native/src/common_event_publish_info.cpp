@@ -102,7 +102,7 @@ std::vector<int32_t> CommonEventPublishInfo::GetSubscriberUid() const
 void CommonEventPublishInfo::SetSubscriberType(const int32_t &subscriberType)
 {
     if (!isSubscriberType(subscriberType)) {
-        EVENT_LOGW("subscriberType in common event Publish Info is out of range, and has already"
+        EVENT_LOGW(LOG_TAG_CES, "subscriberType in common event Publish Info is out of range, and has already"
             "converted to default value ALL_SUBSCRIBER_TYPE = 0");
         subscriberType_ = static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE);
         return;
@@ -145,7 +145,7 @@ uint16_t CommonEventPublishInfo::GetFilterSettings() const
 
 bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     // write subscriber permissions
     std::vector<std::u16string> permissionVec_;
@@ -153,40 +153,40 @@ bool CommonEventPublishInfo::Marshalling(Parcel &parcel) const
         permissionVec_.emplace_back(Str8ToStr16(subscriberPermissions_[i]));
     }
     if (!parcel.WriteString16Vector(permissionVec_)) {
-        EVENT_LOGE("common event Publish Info write permission failed");
+        EVENT_LOGE(LOG_TAG_CES, "common event Publish Info write permission failed");
         return false;
     }
 
     // write ordered
     if (!parcel.WriteBool(ordered_)) {
-        EVENT_LOGE("common event Publish Info write ordered failed");
+        EVENT_LOGE(LOG_TAG_CES, "common event Publish Info write ordered failed");
         return false;
     }
 
     // write sticky
     if (!parcel.WriteBool(sticky_)) {
-        EVENT_LOGE("common event Publish Info write sticky failed");
+        EVENT_LOGE(LOG_TAG_CES, "common event Publish Info write sticky failed");
         return false;
     }
     // write bundleName
     if (!parcel.WriteString16(Str8ToStr16(bundleName_))) {
-        EVENT_LOGE("common event Publish Info  write bundleName failed");
+        EVENT_LOGE(LOG_TAG_CES, "common event Publish Info  write bundleName failed");
         return false;
     }
     // write subscriberUids
     if (!parcel.WriteInt32Vector(subscriberUids_)) {
-        EVENT_LOGE("common event Publish Info write subscriberUids failed");
+        EVENT_LOGE(LOG_TAG_CES, "common event Publish Info write subscriberUids failed");
         return false;
     }
     
     // write subscriberType
     if (!parcel.WriteInt32(subscriberType_)) {
-        EVENT_LOGE("common event Publish Info write subscriberType failed");
+        EVENT_LOGE(LOG_TAG_CES, "common event Publish Info write subscriberType failed");
         return false;
     }
     // write rule_
     if (!parcel.WriteInt32(static_cast<int32_t>(rule_))) {
-        EVENT_LOGE("common event Publish Info write rule failed");
+        EVENT_LOGE(LOG_TAG_CES, "common event Publish Info write rule failed");
         return false;
     }
     return true;
@@ -206,12 +206,12 @@ bool CommonEventPublishInfo::isSubscriberType(int32_t subscriberType)
 
 bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
 
     // read subscriber permissions
     std::vector<std::u16string> permissionVec_;
     if (!parcel.ReadString16Vector(&permissionVec_)) {
-        EVENT_LOGE("ReadFromParcel read permission error");
+        EVENT_LOGE(LOG_TAG_CES, "ReadFromParcel read permission error");
         return false;
     }
     subscriberPermissions_.clear();
@@ -226,7 +226,7 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
     bundleName_ = Str16ToStr8(parcel.ReadString16());
     // read subscriberUids
     if (!parcel.ReadInt32Vector(&subscriberUids_)) {
-        EVENT_LOGE("ReadFromParcel read subscriberUids error");
+        EVENT_LOGE(LOG_TAG_CES, "ReadFromParcel read subscriberUids error");
         return false;
     }
     // read subscriberType
@@ -234,7 +234,7 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
     int32_t rule = parcel.ReadInt32();
     if (rule < static_cast<int32_t>(ValidationRule::AND) ||
         rule > static_cast<int32_t>(ValidationRule::OR)) {
-        EVENT_LOGE("ReadFromParcel read rule error");
+        EVENT_LOGE(LOG_TAG_CES, "ReadFromParcel read rule error");
         return false;
     }
     rule_ = static_cast<ValidationRule>(rule);
@@ -246,12 +246,12 @@ CommonEventPublishInfo *CommonEventPublishInfo::Unmarshalling(Parcel &parcel)
     CommonEventPublishInfo *commonEventPublishInfo = new (std::nothrow) CommonEventPublishInfo();
 
     if (commonEventPublishInfo == nullptr) {
-        EVENT_LOGE("commonEventPublishInfo == nullptr");
+        EVENT_LOGE(LOG_TAG_CES, "commonEventPublishInfo == nullptr");
         return nullptr;
     }
 
     if (!commonEventPublishInfo->ReadFromParcel(parcel)) {
-        EVENT_LOGE("failed to ReadFromParcel");
+        EVENT_LOGE(LOG_TAG_CES, "failed to ReadFromParcel");
         delete commonEventPublishInfo;
         commonEventPublishInfo = nullptr;
     }

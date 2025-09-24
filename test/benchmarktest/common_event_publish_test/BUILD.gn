@@ -26,14 +26,13 @@ ohos_benchmarktest("Common_Event_Publish_Test") {
 
   external_deps = [
     "ability_base:want",
+    "benchmark:benchmark",
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
-
-  public_external_deps = [ "benchmark:benchmark" ]
 
   subsystem_name = "notification"
   part_name = "common_event_service"

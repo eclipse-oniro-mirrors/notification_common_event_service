@@ -53,7 +53,7 @@ DistributedKv::Status StaticSubscriberDataManager::GetKvStore()
 
     DistributedKv::Status status = dataManager_.GetSingleKvStore(options, appId_, storeId_, kvStorePtr_);
     if (status != DistributedKv::Status::SUCCESS) {
-        EVENT_LOGE("return error: %{public}d", status);
+        EVENT_LOGE(LOG_TAG_STATIC, "return error: %{public}d", status);
     }
     return status;
 }
@@ -69,7 +69,7 @@ bool StaticSubscriberDataManager::CheckKvStore()
         if (status == DistributedKv::Status::SUCCESS && kvStorePtr_ != nullptr) {
             return true;
         }
-        EVENT_LOGI("try times: %{public}d", tryTimes);
+        EVENT_LOGW(LOG_TAG_STATIC, "try times: %{public}d", tryTimes);
         usleep(CHECK_INTERVAL);
         tryTimes--;
     }
@@ -83,20 +83,20 @@ int32_t StaticSubscriberDataManager::UpdateStaticSubscriberState(
     std::set<std::string> bundleList;
     int32_t ret = QueryStaticSubscriberStateData(disableEventsDatabase, bundleList);
     if (ret != ERR_OK) {
-        EVENT_LOGE("Query static subscriber state data failed.");
+        EVENT_LOGE(LOG_TAG_STATIC, "Query static subscriber state data failed.");
         return ret;
     }
 
     std::lock_guard<ffrt::mutex> lock(kvStorePtrMutex_);
     if (!CheckKvStore()) {
-        EVENT_LOGE("Kvstore is nullptr.");
+        EVENT_LOGE(LOG_TAG_STATIC, "Kvstore is nullptr.");
         return ERR_NO_INIT;
     }
 
     for (auto &disableEventsDatabaseIt : disableEventsDatabase) {
         DistributedKv::Key key(disableEventsDatabaseIt.first);
         if (kvStorePtr_->Delete(key) != DistributedKv::Status::SUCCESS) {
-            EVENT_LOGE("Update data from kvstore failed.");
+            EVENT_LOGE(LOG_TAG_STATIC, "Update data from kvstore failed.");
             dataManager_.CloseKvStore(appId_, kvStorePtr_);
             kvStorePtr_ = nullptr;
             return ERR_INVALID_OPERATION;
@@ -107,7 +107,7 @@ int32_t StaticSubscriberDataManager::UpdateStaticSubscriberState(
         DistributedKv::Key key(disableEventsIt.first);
         DistributedKv::Value value = ConvertEventsToValue(disableEventsIt.second);
         if (kvStorePtr_->Put(key, value) != DistributedKv::Status::SUCCESS) {
-            EVENT_LOGE("Update data from kvstore failed.");
+            EVENT_LOGE(LOG_TAG_STATIC, "Update data from kvstore failed.");
             dataManager_.CloseKvStore(appId_, kvStorePtr_);
             kvStorePtr_ = nullptr;
             return ERR_INVALID_OPERATION;
@@ -125,20 +125,20 @@ int32_t StaticSubscriberDataManager::QueryStaticSubscriberStateData(
 {
     std::lock_guard<ffrt::mutex> lock(kvStorePtrMutex_);
     if (!CheckKvStore()) {
-        EVENT_LOGE("Kvstore is nullptr.");
+        EVENT_LOGE(LOG_TAG_STATIC, "Kvstore is nullptr.");
         return ERR_NO_INIT;
     }
 
     std::vector<DistributedKv::Entry> allEntries;
     if (kvStorePtr_->GetEntries(nullptr, allEntries) != DistributedKv::Status::SUCCESS) {
-        EVENT_LOGE("Get entries failed.");
+        EVENT_LOGE(LOG_TAG_STATIC, "Get entries failed.");
         return ERR_INVALID_OPERATION;
     }
 
     if (allEntries.empty()) {
         dataManager_.CloseKvStore(appId_, kvStorePtr_);
         kvStorePtr_ = nullptr;
-        EVENT_LOGD("The all entries is empty.");
+        EVENT_LOGD(LOG_TAG_STATIC, "The all entries is empty.");
         return ERR_OK;
     }
 
@@ -149,7 +149,7 @@ int32_t StaticSubscriberDataManager::QueryStaticSubscriberStateData(
         } else {
             std::vector<std::string> values;
             if (!ConvertValueToEvents(item.value, values)) {
-                EVENT_LOGE("Failed to convert vector from value.");
+                EVENT_LOGE(LOG_TAG_STATIC, "Failed to convert vector from value.");
                 result = ERR_INVALID_OPERATION;
                 break;
             }
@@ -165,20 +165,20 @@ int32_t StaticSubscriberDataManager::QueryStaticSubscriberStateData(
 int32_t StaticSubscriberDataManager::DeleteDisableEventElementByBundleName(const std::string &bundleName)
 {
     if (bundleName.empty()) {
-        EVENT_LOGE("Bundle name is invalid value.");
+        EVENT_LOGE(LOG_TAG_STATIC, "Bundle name is invalid value.");
         return ERR_INVALID_VALUE;
     }
 
     std::lock_guard<ffrt::mutex> lock(kvStorePtrMutex_);
     if (!CheckKvStore()) {
-        EVENT_LOGE("Kvstore is nullptr.");
+        EVENT_LOGE(LOG_TAG_STATIC, "Kvstore is nullptr.");
         return ERR_NO_INIT;
     }
 
-    EVENT_LOGD("Bundle name is %{public}s.", bundleName.c_str());
+    EVENT_LOGD(LOG_TAG_STATIC, "Bundle name is %{public}s.", bundleName.c_str());
     DistributedKv::Key key(bundleName);
     if (kvStorePtr_->Delete(key) != DistributedKv::Status::SUCCESS) {
-        EVENT_LOGE("Delete data [%{public}s] from kvstore failed.", bundleName.c_str());
+        EVENT_LOGE(LOG_TAG_STATIC, "Delete data [%{public}s] from kvstore failed.", bundleName.c_str());
         return ERR_INVALID_OPERATION;
     }
 
@@ -201,11 +201,11 @@ bool StaticSubscriberDataManager::ConvertValueToEvents(
 {
     nlohmann::json jsonObject = nlohmann::json::parse(value.ToString(), nullptr, false);
     if (jsonObject.is_null() || !jsonObject.is_array() || jsonObject.empty()) {
-        EVENT_LOGE("invalid common event obj size");
+        EVENT_LOGE(LOG_TAG_STATIC, "invalid common event obj size");
         return false;
     }
     if (jsonObject.is_discarded()) {
-        EVENT_LOGE("Failed to parse json string.");
+        EVENT_LOGE(LOG_TAG_STATIC, "Failed to parse json string.");
         return false;
     }
     for (size_t index = 0; index < jsonObject.size(); index++) {

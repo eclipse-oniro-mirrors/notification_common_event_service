@@ -41,7 +41,7 @@ bool __attribute__((weak)) AccessTokenHelper::VerifyAccessToken(const AccessToke
 void __attribute__((weak)) AccessTokenHelper::RecordSensitivePermissionUsage(const AccessTokenID &callerToken,
     const std::string &event)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
     if (tokenType != ATokenTypeEnum::TOKEN_HAP) {
         return;

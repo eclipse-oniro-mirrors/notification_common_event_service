@@ -49,7 +49,7 @@ NativeT GetDataFromParams(const CArrParameters& parameters, const std::string& k
 {
     TBase* ao = TBase::Query(parameters.wantParams.GetParam(key));
     if (ao == nullptr) {
-        EVENT_LOGE("No value");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "No value");
         return defaultVal;
     }
     return T::Unbox(ao);
@@ -67,18 +67,18 @@ int32_t GetDataArrayFromParams(const CArrParameters& parameters, const std::stri
 {
     AAFwk::IArray* ao = AAFwk::IArray::Query(parameters.wantParams.GetParam(key));
     if (ao == nullptr) {
-        EVENT_LOGE("No value");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "No value");
         return 0;
     }
 
     long size = 0;
     if (ao->GetLength(size) != COMMONEVENT_ERR_OK) {
-        EVENT_LOGD("fail to get length");
+        EVENT_LOGD(LOG_TAG_CES_CAPI, "fail to get length");
         return 0;
     }
     *array = static_cast<NativeT*>(malloc(sizeof(NativeT) * size));
     if (*array == nullptr) {
-        EVENT_LOGE("malloc fail");
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "malloc fail");
         return 0;
     }
     parameters.allocatedPointers.push_back(*array);

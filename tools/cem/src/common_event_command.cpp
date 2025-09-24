@@ -51,14 +51,14 @@ ErrCode CommonEventCommand::CreateCommandMap()
 
 ErrCode CommonEventCommand::RunAsHelpCommand()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI(LOG_TAG_CES, "enter");
     resultReceiver_.append(HELP_MSG);
     return ERR_OK;
 }
 
 ErrCode CommonEventCommand::RunAsPublishCommand()
 {
-    EVENT_LOGI("enter");
+    EVENT_LOGI(LOG_TAG_CES, "enter");
     ErrCode result = ERR_OK;
     PublishCmdInfo cmdInfo;
     bool hasOption = false;
@@ -166,7 +166,7 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
      resultReceiver_.append(USER_DUMP_COMMON_EVENT_NG);
      return ERR_INVALID_VALUE;
 #endif
-    EVENT_LOGI("enter");
+    EVENT_LOGI(LOG_TAG_CES, "enter");
     ErrCode result = ERR_OK;
     bool hasOption = false;
     DumpCmdInfo cmdInfo;
@@ -181,9 +181,9 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
         bool dumpResult = CommonEvent::GetInstance()->DumpState(
             static_cast<int32_t>(cmdInfo.eventType), cmdInfo.action, cmdInfo.userId, dumpResults);
         if (dumpResult) {
-            EVENT_LOGI("event size %{public}zu", dumpResults.size());
+            EVENT_LOGI(LOG_TAG_CES, "event size %{public}zu", dumpResults.size());
             for (const auto &it : dumpResults) {
-                EVENT_LOGI("event %{public}s", it.c_str());
+                EVENT_LOGI(LOG_TAG_CES, "event %{public}s", it.c_str());
                 resultReceiver_.append(it + "\n");
             }
         } else {

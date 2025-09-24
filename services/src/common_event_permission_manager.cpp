@@ -213,7 +213,7 @@ CommonEventPermissionManager::CommonEventPermissionManager()
 
 void CommonEventPermissionManager::Init()
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     Permission per;
     per.names.reserve(REVERSE);
 
@@ -232,7 +232,7 @@ void CommonEventPermissionManager::Init()
 
 Permission __attribute__((weak)) CommonEventPermissionManager::GetEventPermission(const std::string &event)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES, "enter");
     if (eventMap_.find(event) != eventMap_.end()) {
         return eventMap_.find(event)->second;
     }

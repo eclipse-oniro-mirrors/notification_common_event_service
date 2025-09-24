@@ -35,14 +35,14 @@ static const uint32_t ARGC_TWO = 2;
 
 void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status status, void *data)
 {
-    EVENT_LOGD("enter");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "enter");
     if (!data) {
-        EVENT_LOGE("Invalid async callback data");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Invalid async callback data");
         return;
     }
     AsyncCallbackRemoveSticky *asyncCallbackInfo = static_cast<AsyncCallbackRemoveSticky *>(data);
     if (!asyncCallbackInfo) {
-        EVENT_LOGE("Invalid asyncCallbackInfo");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Invalid asyncCallbackInfo");
         return;
     }
     ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
@@ -58,7 +58,7 @@ void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status stat
 void SetPublisherPermissionResult(
     const napi_env &env, const std::string &permission, napi_value &commonEventSubscribeInfo)
 {
-    EVENT_LOGD("SetPublisherPermissionResult excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetPublisherPermissionResult excute");
 
     napi_value value = nullptr;
     napi_create_string_utf8(env, permission.c_str(), NAPI_AUTO_LENGTH, &value);
@@ -68,7 +68,7 @@ void SetPublisherPermissionResult(
 
 void SetPublisherDeviceIdResult(const napi_env &env, const std::string &deviceId, napi_value &commonEventSubscribeInfo)
 {
-    EVENT_LOGD("SetPublisherDeviceIdResult excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetPublisherDeviceIdResult excute");
 
     napi_value value = nullptr;
     napi_create_string_utf8(env, deviceId.c_str(), NAPI_AUTO_LENGTH, &value);
@@ -78,7 +78,7 @@ void SetPublisherDeviceIdResult(const napi_env &env, const std::string &deviceId
 
 void SetPublisherUserIdResult(const napi_env &env, const int32_t &userId, napi_value &commonEventSubscribeInfo)
 {
-    EVENT_LOGD("SetPublisherUserIdResult excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetPublisherUserIdResult excute");
 
     napi_value value = nullptr;
     napi_create_int32(env, userId, &value);
@@ -88,7 +88,7 @@ void SetPublisherUserIdResult(const napi_env &env, const int32_t &userId, napi_v
 
 void SetPublisherPriorityResult(const napi_env &env, const int32_t &priority, napi_value &commonEventSubscribeInfo)
 {
-    EVENT_LOGD("SetPublisherPriorityResult excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetPublisherPriorityResult excute");
 
     napi_value value = nullptr;
     napi_create_int32(env, priority, &value);
@@ -99,7 +99,7 @@ void SetPublisherPriorityResult(const napi_env &env, const int32_t &priority, na
 void SetPublisherBundleNameResult(
     const napi_env &env, const std::string &publisherBundleName, napi_value &commonEventSubscribeInfo)
 {
-    EVENT_LOGD("Called.");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Called.");
     napi_value value = nullptr;
     napi_create_string_utf8(env, publisherBundleName.c_str(), NAPI_AUTO_LENGTH, &value);
 
@@ -108,7 +108,7 @@ void SetPublisherBundleNameResult(
 
 void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *asyncCallbackInfo, napi_value &result)
 {
-    EVENT_LOGD("SetNapiResult excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetNapiResult excute");
 
     SetEventsResult(env, asyncCallbackInfo->events, result);
     SetPublisherPermissionResult(env, asyncCallbackInfo->permission, result);
@@ -120,7 +120,7 @@ void SetNapiResult(const napi_env &env, const AsyncCallbackInfoSubscribeInfo *as
 
 void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscribeInfo, napi_value &result)
 {
-    EVENT_LOGD("SetNapiResult start");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetNapiResult start");
 
     SetEventsResult(env, subscribeInfo.GetMatchingSkills().GetEvents(), result);
     SetPublisherPermissionResult(env, subscribeInfo.GetPermission(), result);
@@ -132,7 +132,7 @@ void SetNapiResult(const napi_env &env, const CommonEventSubscribeInfo &subscrib
 
 napi_value SetCode(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGD("SetCode excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetCode excute");
     size_t argc = SET_CODE_MAX_PARA;
     napi_value argv[SET_CODE_MAX_PARA] = {nullptr};
     napi_value thisVar = nullptr;
@@ -151,7 +151,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     AsyncCallbackInfoSetCode *asyncCallbackInfo = new (std::nothrow)
         AsyncCallbackInfoSetCode {.env = env, .asyncWork = nullptr, .code = code};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("Create asyncCallbackInfo is defeat.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Create asyncCallbackInfo is defeat.");
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
@@ -160,7 +160,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "subscriber is null");
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
@@ -178,7 +178,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
-            EVENT_LOGD("SetCode napi_create_async_work excute");
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "SetCode napi_create_async_work excute");
             AsyncCallbackInfoSetCode *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetCode *>(data);
             if (asyncCallbackInfo) {
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
@@ -190,7 +190,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
             }
         },
         [](napi_env env, napi_status status, void *data) {
-            EVENT_LOGD("SetCode napi_create_async_work complete");
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "SetCode napi_create_async_work complete");
             AsyncCallbackInfoSetCode *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetCode *>(data);
             if (asyncCallbackInfo) {
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
@@ -200,7 +200,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
-                EVENT_LOGD("NapiSetCode work complete end.");
+                EVENT_LOGD(LOG_TAG_CES_NAPI, "NapiSetCode work complete end.");
             }
         },
         (void *)asyncCallbackInfo,
@@ -209,7 +209,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
-        EVENT_LOGD("Delete napiSetCode callback reference.");
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "Delete napiSetCode callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -218,7 +218,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
 
 napi_value SetData(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGD("SetData excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetData excute");
     size_t argc = SET_DATA_MAX_PARA;
     napi_value argv[SET_DATA_MAX_PARA] = {nullptr};
     napi_value thisVar = nullptr;
@@ -237,7 +237,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
     AsyncCallbackInfoSetData *asyncCallbackInfo = new (std::nothrow)
         AsyncCallbackInfoSetData {.env = env, .asyncWork = nullptr, .data = data};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is defeat");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "asyncCallbackInfo is defeat");
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
@@ -246,7 +246,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
-        EVENT_LOGE("subscriber is null");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "subscriber is null");
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
@@ -264,7 +264,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
-            EVENT_LOGD("SetData work excute");
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "SetData work excute");
             AsyncCallbackInfoSetData *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetData *>(data);
             if (asyncCallbackInfo) {
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
@@ -276,7 +276,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
             }
         },
         [](napi_env env, napi_status status, void *data) {
-            EVENT_LOGD("SetData work complete");
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "SetData work complete");
             AsyncCallbackInfoSetData *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetData *>(data);
             if (asyncCallbackInfo) {
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
@@ -287,7 +287,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
             }
-            EVENT_LOGD("NapiSetData work complete end.");
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "NapiSetData work complete end.");
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
@@ -295,7 +295,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
-        EVENT_LOGD("Delete napiSetData callback reference.");
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "Delete napiSetData callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -304,7 +304,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
 
 napi_value SetCodeAndData(napi_env env, napi_callback_info info)
 {
-    EVENT_LOGD("SetCodeAndData excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetCodeAndData excute");
     size_t argc = SET_CODE_AND_DATA_MAX_PARA;
     napi_value argv[SET_CODE_AND_DATA_MAX_PARA] = {nullptr};
     napi_value thisVar = nullptr;
@@ -324,7 +324,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     AsyncCallbackInfoSetCodeAndData *asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfoSetCodeAndData {
         .env = env, .asyncWork = nullptr, .code = code, .data = data};
     if (asyncCallbackInfo == nullptr) {
-        EVENT_LOGE("asyncCallbackInfo is nullptr");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "asyncCallbackInfo is nullptr");
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
@@ -333,7 +333,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
 
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
-        EVENT_LOGE("subscriber is defeat");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "subscriber is defeat");
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
@@ -351,7 +351,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
-            EVENT_LOGD("SetCodeAndData napi_create_async_work start");
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "SetCodeAndData napi_create_async_work start");
             AsyncCallbackInfoSetCodeAndData *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetCodeAndData *>(data);
             if (asyncCallbackInfo) {
                 std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(
@@ -363,7 +363,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
             }
         },
         [](napi_env env, napi_status status, void *data) {
-            EVENT_LOGD("SetCodeAndData napi_create_async_work complete");
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "SetCodeAndData napi_create_async_work complete");
             AsyncCallbackInfoSetCodeAndData *asyncCallbackInfo = static_cast<AsyncCallbackInfoSetCodeAndData *>(data);
             if (asyncCallbackInfo) {
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, NapiGetNull(env));
@@ -373,7 +373,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
                 napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
                 delete asyncCallbackInfo;
                 asyncCallbackInfo = nullptr;
-                EVENT_LOGD("asyncCallbackInfo is null");
+                EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfo is null");
             }
         },
         (void *)asyncCallbackInfo,
@@ -382,7 +382,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
     if (asyncCallbackInfo->info.isCallback) {
-        EVENT_LOGD("Delete napiSetCodeAndData callback reference.");
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "Delete napiSetCodeAndData callback reference.");
         return NapiGetNull(env);
     } else {
         return promise;
@@ -397,7 +397,7 @@ napi_value NapiStaticSubscribe::SetStaticSubscriberState(napi_env env, napi_call
 
 void SetEventsResult(const napi_env &env, const std::vector<std::string> &events, napi_value &commonEventSubscribeInfo)
 {
-    EVENT_LOGD("SetEventsResult start");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetEventsResult start");
 
     napi_value value = nullptr;
 
@@ -408,7 +408,7 @@ void SetEventsResult(const napi_env &env, const std::vector<std::string> &events
         }
         size_t index = 0;
         for (auto event : events) {
-            EVENT_LOGD("SetEventsResult event: %{public}s", event.c_str());
+            EVENT_LOGD(LOG_TAG_CES_NAPI, "SetEventsResult event: %{public}s", event.c_str());
             napi_create_string_utf8(env, event.c_str(), NAPI_AUTO_LENGTH, &value);
             napi_set_element(env, nEvents, index, value);
             index++;
@@ -417,12 +417,12 @@ void SetEventsResult(const napi_env &env, const std::vector<std::string> &events
         napi_set_named_property(env, commonEventSubscribeInfo, "events", nEvents);
     }
 
-    EVENT_LOGD("SetEventsResult end");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "SetEventsResult end");
 }
 
 void SetCallback(const napi_env &env, const napi_ref &callbackIn, const int32_t &errorCode, const napi_value &result)
 {
-    EVENT_LOGD("Return error: %{public}d", errorCode);
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Return error: %{public}d", errorCode);
     napi_value undefined = nullptr;
     napi_get_undefined(env, &undefined);
 
@@ -466,7 +466,7 @@ void SetPromise(const napi_env &env, const napi_deferred &deferred, const int32_
 
 void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info, const napi_value &result)
 {
-    EVENT_LOGD("ReturnCallbackPromise excute");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "ReturnCallbackPromise excute");
 
     if (info.isCallback) {
         SetCallback(env, info.callback, info.errorCode, result);
@@ -478,7 +478,7 @@ void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info,
 bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info info, std::vector<std::string> &events,
     bool &fromBundle, napi_value &lastParam)
 {
-    EVENT_LOGD("Called.");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Called.");
     napi_value thisVar = nullptr;
     size_t argc = ARGC_TWO;
     napi_value argv[ARGC_TWO] = { nullptr };
@@ -489,7 +489,7 @@ bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info i
     napi_valuetype valueType = napi_undefined;
     NAPI_CALL_BASE(env, napi_typeof(env, argv[INDEX_ONE], &valueType), false);
     if (valueType == napi_undefined || valueType == napi_null) {
-        EVENT_LOGD("Second param is undefined or null");
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "Second param is undefined or null");
         return true;
     }
     if (valueType == napi_function) {
@@ -502,14 +502,14 @@ bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info i
     napi_value jsValue = nullptr;
     for (uint32_t index = 0; index < arraySize; index++) {
         if (napi_get_element(env, argv[INDEX_ONE], index, &jsValue) != napi_ok) {
-            EVENT_LOGE("Get element failed.");
+            EVENT_LOGE(LOG_TAG_CES_NAPI, "Get element failed.");
             std::string msg = "Mandatory parameters are left unspecified.";
             NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return false;
         }
         std::string event;
         if (!AppExecFwk::UnwrapStringFromJS2(env, jsValue, event)) {
-            EVENT_LOGE("Failed to convert value to string.");
+            EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to convert value to string.");
             std::string msg = "Incorrect parameter types.The type of param must be string.";
             NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
             return false;
@@ -521,14 +521,14 @@ bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info i
 
 napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const napi_callback_info info)
 {
-    EVENT_LOGD("Called.");
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Called.");
     napi_value argv[ARGC_TWO] = { nullptr };
     napi_value result = nullptr;
     size_t argc = ARGC_TWO;
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
     if (argc < ARGC_ONE) {
-        EVENT_LOGE("The param is invalid.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "The param is invalid.");
         std::string msg = "Mandatory parameters are left unspecified.";
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         napi_get_undefined(env, &result);
@@ -537,7 +537,7 @@ napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const n
     napi_valuetype valueType = napi_undefined;
     NAPI_CALL(env, napi_typeof(env, argv[INDEX_ZERO], &valueType));
     if (valueType != napi_boolean) {
-        EVENT_LOGE("Parse type failed.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Parse type failed.");
         std::string msg = "Incorrect parameter types.The type of param must be boolean.";
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID, msg);
         napi_get_undefined(env, &result);
@@ -549,7 +549,7 @@ napi_value NapiStaticSubscribe::OnSetStaticSubscriberState(napi_env env, const n
     std::vector<std::string> events;
     bool fromBundle = false;
     if (!ParseSetStaticSubscriberStateParam(env, info, events, fromBundle, lastParam)) {
-        EVENT_LOGE("Parameter judgment error.");
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Parameter judgment error.");
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         napi_get_undefined(env, &result);
         return result;

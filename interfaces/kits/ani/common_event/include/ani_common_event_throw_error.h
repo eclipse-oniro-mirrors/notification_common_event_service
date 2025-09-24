@@ -23,6 +23,8 @@
 
 namespace OHOS {
 namespace EventManagerFwkAni {
+using namespace OHOS::EventFwk;
+
 static const std::unordered_map<int32_t, std::string> ERROR_CODE_TO_MESSAGE {
     {Notification::ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED,
         "The application dose not have permission to call the interface"},
@@ -45,7 +47,7 @@ inline std::string FindCesErrMsg(const int32_t errCode)
 {
     auto findMsg = ERROR_CODE_TO_MESSAGE.find(errCode);
     if (findMsg == ERROR_CODE_TO_MESSAGE.end()) {
-        EVENT_LOGE("FindCesErrMsg Inner error.");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "FindCesErrMsg Inner error.");
         return "Inner error.";
     }
     return findMsg->second;

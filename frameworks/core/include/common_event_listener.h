@@ -53,9 +53,6 @@ public:
      */
     void Stop();
 
-    int32_t CallbackEnter([[maybe_unused]] uint32_t code) override;
-    int32_t CallbackExit([[maybe_unused]] uint32_t code, [[maybe_unused]] int32_t result) override;
-
 private:
     ErrCode Init();
 
@@ -72,7 +69,6 @@ public:
 
 private:
     std::mutex mutex_;
-    static std::mutex onRemoteRequestMutex_;
     std::shared_ptr<CommonEventSubscriber> commonEventSubscriber_;
     std::shared_ptr<EventRunner> runner_;
     std::shared_ptr<EventHandler> handler_;

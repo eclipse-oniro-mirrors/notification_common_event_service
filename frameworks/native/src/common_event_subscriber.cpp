@@ -20,18 +20,18 @@ namespace OHOS {
 namespace EventFwk {
 CommonEventSubscriber::CommonEventSubscriber() : result_(nullptr)
 {
-    EVENT_LOGD("constructor CommonEventSubscriber");
+    EVENT_LOGD(LOG_TAG_CES, "constructor CommonEventSubscriber");
 }
 
 CommonEventSubscriber::CommonEventSubscriber(const CommonEventSubscribeInfo &subscribeInfo)
     : subscribeInfo_(subscribeInfo), result_(nullptr)
 {
-    EVENT_LOGD("constructor CommonEventSubscriber");
+    EVENT_LOGD(LOG_TAG_CES, "constructor CommonEventSubscriber");
 }
 
 CommonEventSubscriber::~CommonEventSubscriber()
 {
-    EVENT_LOGD("destructor CommonEventSubscriber");
+    EVENT_LOGD(LOG_TAG_CES, "destructor CommonEventSubscriber");
 }
 
 const CommonEventSubscribeInfo &CommonEventSubscriber::GetSubscribeInfo() const
@@ -42,7 +42,7 @@ const CommonEventSubscribeInfo &CommonEventSubscriber::GetSubscribeInfo() const
 bool CommonEventSubscriber::SetCode(const int32_t &code)
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -52,7 +52,7 @@ bool CommonEventSubscriber::SetCode(const int32_t &code)
 int32_t CommonEventSubscriber::GetCode() const
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return 0;
     }
 
@@ -62,7 +62,7 @@ int32_t CommonEventSubscriber::GetCode() const
 bool CommonEventSubscriber::SetData(const std::string &data)
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -72,7 +72,7 @@ bool CommonEventSubscriber::SetData(const std::string &data)
 std::string CommonEventSubscriber::GetData() const
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return std::string();
     }
 
@@ -82,7 +82,7 @@ std::string CommonEventSubscriber::GetData() const
 bool CommonEventSubscriber::SetCodeAndData(const int32_t &code, const std::string &data)
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -92,7 +92,7 @@ bool CommonEventSubscriber::SetCodeAndData(const int32_t &code, const std::strin
 bool CommonEventSubscriber::AbortCommonEvent()
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -102,7 +102,7 @@ bool CommonEventSubscriber::AbortCommonEvent()
 bool CommonEventSubscriber::ClearAbortCommonEvent()
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -112,7 +112,7 @@ bool CommonEventSubscriber::ClearAbortCommonEvent()
 bool CommonEventSubscriber::GetAbortCommonEvent() const
 {
     if (!CheckSynchronous()) {
-        EVENT_LOGE("failed to CheckSynchronous");
+        EVENT_LOGE(LOG_TAG_CES, "failed to CheckSynchronous");
         return false;
     }
 
@@ -151,7 +151,7 @@ std::shared_ptr<AsyncCommonEventResult> CommonEventSubscriber::GetAsyncCommonEve
 bool CommonEventSubscriber::CheckSynchronous() const
 {
     if (!result_) {
-        EVENT_LOGE("Call when result is not set.");
+        EVENT_LOGE(LOG_TAG_CES, "Call when result is not set.");
         return false;
     }
     if (!result_->CheckSynchronous()) {
