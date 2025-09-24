@@ -288,7 +288,7 @@ namespace commonEventManager {
         return pPromise;
     }
 
-    export function setStaticSubscriberState(enable: boolean, events?: Array<string>): Promise<void> {
+    export function setStaticSubscriberState(enable: boolean, events: Array<string>): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let task = taskpool.execute(commonEventManager.setStaticSubscriberStateWithEventsExecute, enable, events);
             task.then((e: NullishType): void => {
