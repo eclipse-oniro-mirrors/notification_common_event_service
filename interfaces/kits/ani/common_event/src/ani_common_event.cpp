@@ -112,7 +112,7 @@ static uint32_t publishAsUserWithOptionsExecute(ani_env* env, ani_string eventId
 ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberWrapper)
 {
     if (env == nullptr || subscriberCls == nullptr || subscriberCtor == nullptr) {
-        EVENT_LOGE("CreateSubscriberRef error. has nullptr");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateSubscriberRef error. has nullptr");
         return nullptr;
     }
     ani_object subscriberObj;
@@ -1085,7 +1085,7 @@ ani_status init(ani_env *env, ani_namespace kitNs)
     }
     status = env->Class_FindMethod(subscriberCls, "<ctor>", "l:", &subscriberCtor);
     if (status != ANI_OK) {
-        EVENT_LOGE("Class_FindMethod error. result: %{public}d.", status);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Class_FindMethod error. result: %{public}d.", status);
         return ANI_INVALID_TYPE;
     }
     return status;
