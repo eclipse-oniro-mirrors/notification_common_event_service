@@ -67,17 +67,18 @@ ani_status AniCommonEventUtils::GetAniString(ani_env* env, const std::string str
 
 void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayObj, std::vector<std::string>& strings)
 {
-    ani_int length;
+    ani_array arrayStrings = static_cast<ani_array>(arrayObj);
+    ani_size length;
     auto ret = ANI_ERROR;
-    ret = env->Object_GetPropertyByName_Int(arrayObj, "length", &length);
+    ret = env->Array_GetLength(arrayStrings, &length);
     if (ret != ANI_OK) {
         EVENT_LOGE("GetStdStringArrayClass Object_GetPropertyByName_Double error. result: %{public}d.", ret);
         return;
     }
 
-    for (int32_t i = 0; i < length; i++) {
+    for (ani_size i = 0; i < length; i++) {
         ani_ref stringEntryRef;
-        ret = env->Object_CallMethodByName_Ref(arrayObj, "$_get", "i:C{std.core.Object}", &stringEntryRef, i);
+        ret = env->Array_Get(arrayStrings, i, &stringEntryRef);
         if (ret != ANI_OK) {
             EVENT_LOGE("GetStdStringArrayClass Object_CallMethodByName_Ref error. result: %{public}d.", ret);
             return;
