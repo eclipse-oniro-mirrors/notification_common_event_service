@@ -33,6 +33,9 @@ static ffrt::mutex subscriberInsMutex;
 static ffrt::mutex transferRelationMutex;
 static std::vector<std::shared_ptr<SubscriberInstanceRelationship>> transferRelations;
 
+ani_class subscriberCls;
+ani_method subscriberCtor;
+
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
     std::string eventIdStr;
@@ -108,21 +111,13 @@ static uint32_t publishAsUserWithOptionsExecute(ani_env* env, ani_string eventId
 
 ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberWrapper)
 {
-    ani_class cls;
-    auto ret = ANI_OK;
-    ret = env->FindClass("commonEvent.commonEventSubscriber.CommonEventSubscriberInner", &cls);
-    if (ret != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "createSubscriberExecute FindClass error. result: %{public}d.", ret);
-        return nullptr;
-    }
-    ani_method ctor;
-    ret = env->Class_FindMethod(cls, "<ctor>", "l:", &ctor);
-    if (ret != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "createSubscriberExecute Class_FindMethod error. result: %{public}d.", ret);
+    if (env == nullptr || subscriberCls == nullptr || subscriberCtor == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateSubscriberRef error. has nullptr");
         return nullptr;
     }
     ani_object subscriberObj;
-    ret = env->Object_New(cls, ctor, &subscriberObj, reinterpret_cast<ani_long>(subscriberWrapper));
+    auto ret = env->Object_New(subscriberCls, subscriberCtor, &subscriberObj,
+        reinterpret_cast<ani_long>(subscriberWrapper));
     if (ret != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "createSubscriberExecute Object_New error. result: %{public}d.", ret);
         return nullptr;
@@ -1068,25 +1063,29 @@ ani_status init(ani_env *env, ani_namespace kitNs)
         return ANI_INVALID_TYPE;
     }
 
-    ani_class commonEventSubscriberCls;
     status = env->FindClass("commonEvent.commonEventSubscriber.CommonEventSubscriberInner",
-        &commonEventSubscriberCls);
+        &subscriberCls);
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "Not found commonEvent.commonEventSubscriber.CommonEventSubscriberInner");
         return ANI_INVALID_ARGS;
     }
-    status = env->Class_BindNativeMethods(commonEventSubscriberCls, commonEventSubscriberFunctions.data(),
+    status = env->Class_BindNativeMethods(subscriberCls, commonEventSubscriberFunctions.data(),
         commonEventSubscriberFunctions.size());
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI,
             "Cannot bind native methods to commonEvent.commonEventSubscriber.CommonEventSubscriberInner");
         return ANI_INVALID_TYPE;
     }
-    status = env->Class_BindStaticNativeMethods(commonEventSubscriberCls, commonEventSubscriberStaticFunctions.data(),
+    status = env->Class_BindStaticNativeMethods(subscriberCls, commonEventSubscriberStaticFunctions.data(),
         commonEventSubscriberStaticFunctions.size());
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI,
             "Cannot bind static methods to commonEvent.commonEventSubscriber.CommonEventSubscriberInner");
+        return ANI_INVALID_TYPE;
+    }
+    status = env->Class_FindMethod(subscriberCls, "<ctor>", "l:", &subscriberCtor);
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Class_FindMethod error. result: %{public}d.", status);
         return ANI_INVALID_TYPE;
     }
     return status;
