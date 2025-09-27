@@ -46,7 +46,6 @@ void StsStaticSubscriberExtensionContext::StartAbilityInner([[maybe_unused]] ani
     innerErrCode = context->StartAbility(want);
     if (innerErrCode != ERR_OK) {
         EVENT_LOGE(LOG_TAG_CES, "StartAbility failed, code = %{public}d", innerErrCode);
-        OHOS::EventManagerFwkAni::ThrowErrorByNativeError(env, innerErrCode);
         ThrowErrorByNativeError(env, innerErrCode);
     }
 }
