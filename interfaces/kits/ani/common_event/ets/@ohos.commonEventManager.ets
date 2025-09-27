@@ -14,7 +14,7 @@
  */
 
 import hilog from '@ohos.hilog';
-import{ AsyncCallback,  Callback, BusinessError } from '@ohos.base';
+import{ AsyncCallback, Callback, BusinessError } from '@ohos.base';
 import{ CommonEventPublishData } from 'commonEvent.commonEventPublishData';
 import{ CommonEventData } from 'commonEvent.commonEventData';
 import{ CommonEventSubscribeInfo } from 'commonEvent.commonEventSubscribeInfo';
