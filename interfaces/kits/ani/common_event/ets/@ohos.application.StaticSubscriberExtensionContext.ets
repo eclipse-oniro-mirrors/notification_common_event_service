@@ -37,8 +37,9 @@ let unregisterToken = new object()
 type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Error) => void;
 
-loadLibraryWithPermissionCheck("ani_commoneventmanager.z", "@ohos.application.StaticSubscriberExtensionContext");
 export class StaticSubscriberExtensionContext extends ExtensionContext {
+    static {loadLibraryWithPermissionCheck("static_subscriber_extension_ani.z",
+        "@ohos.application.StaticSubscriberExtensionContext")}
     nativeStaticSubscriberExtensionContext: long = 0;
     native nativeStartAbilitySync(want: Want): void;
 
