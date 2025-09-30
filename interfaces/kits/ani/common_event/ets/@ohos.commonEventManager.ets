@@ -150,7 +150,6 @@ namespace commonEventManager {
     }
 
     export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber{
-        hilog.info(0x0000, TAG, 'createSubscriberSync call');
         return commonEventManager.createSubscriberExecute(subscribeInfo);
     }
 

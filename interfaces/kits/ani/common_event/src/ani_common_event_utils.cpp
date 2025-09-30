@@ -60,8 +60,7 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
 {
     ani_array arrayStrings = static_cast<ani_array>(arrayObj);
     ani_size length;
-    auto ret = ANI_ERROR;
-    ret = env->Array_GetLength(arrayStrings, &length);
+    ani_status ret = env->Array_GetLength(arrayStrings, &length);
     if (ret != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GetStdStringArrayClass Object_GetPropertyByName_Double result: %{public}d.", ret);
         return;
@@ -96,18 +95,10 @@ bool AniCommonEventUtils::GetStringOrUndefined(ani_env* env, ani_object param, c
         return false;
     }
     if (isUndefined) {
-        EVENT_LOGW(LOG_TAG_CES_ANI, "%{public}s : undefined", name);
         return false;
     }
 
-    ani_ref str = nullptr;
-    if ((status = env->Object_CallMethodByName_Ref(reinterpret_cast<ani_object>(obj), "toString", nullptr, &str)) !=
-        ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "status : %{public}d", status);
-        return false;
-    }
-
-    GetStdString(env, reinterpret_cast<ani_string>(str), res);
+    GetStdString(env, reinterpret_cast<ani_string>(obj), res);
     return true;
 }
 
@@ -156,18 +147,15 @@ bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, cons
         return false;
     }
     if (isUndefined) {
-        EVENT_LOGW(LOG_TAG_CES_ANI, "%{public}s : undefined", name);
         return false;
     }
 
-    ani_int result = 0;
-    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) !=
+    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &res)) !=
         ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "status : %{public}d", status);
         return false;
     }
 
-    res = result;
     return true;
 }
 
@@ -217,7 +205,6 @@ bool AniCommonEventUtils::GetStringArrayOrUndefined(
         return false;
     }
     if (isUndefined) {
-        EVENT_LOGW(LOG_TAG_CES_ANI, "%{public}s : undefined", name);
         return false;
     }
 
