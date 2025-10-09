@@ -118,11 +118,11 @@ namespace commonEventManager {
     }
 
     export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo,
-        callback: AsyncCallback<CommonEventSubscriber|null, void>): void {
+        callback: AsyncCallback<CommonEventSubscriber, void>): void {
         hilog.info(0x0000, TAG, 'createSubscriber callback call.');
         let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
         task.then((data: NullishType)=>{
-            callback(null, data as CommonEventSubscriber|null);
+            callback(null, data as CommonEventSubscriber);
         }, (error: Object): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
             let err: BusinessError = error as BusinessError;
@@ -130,13 +130,13 @@ namespace commonEventManager {
         });
     }
 
-    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber|null> {
+    export function createSubscriber(subscribeInfo: CommonEventSubscribeInfo):Promise<CommonEventSubscriber> {
         hilog.info(0x0000, TAG, 'createSubscriber Promise call');
-        let p = new Promise<CommonEventSubscriber|null>((resolve: (v: CommonEventSubscriber|null) => void,
+        let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
             reject: (error: Error) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
             p1.then((data :NullishType)=>{
-                resolve(data as CommonEventSubscriber|null);
+                resolve(data as CommonEventSubscriber);
             }, (err:Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
                 reject(err);
@@ -145,7 +145,7 @@ namespace commonEventManager {
         return p;
     }
 
-    export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber|null{
+    export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber{
         hilog.info(0x0000, TAG, 'createSubscriberSync call');
         return commonEventManager.createSubscriberExecute(subscribeInfo);
     }

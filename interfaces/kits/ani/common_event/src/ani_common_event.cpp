@@ -126,21 +126,22 @@ ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberW
 
 static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
-    ani_object nullObj = AniCommonEventUtils::GetNullObject(env);
     CommonEventSubscribeInfo subscribeInfo;
     AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {
         EVENT_LOGE("null wrapper");
-        return nullObj;
+        AniCommonEventUtils::ThrowError(env, ERROR_CODE_INTERNAL_ERROR, ERROR_MSG_INTERNAL_ERROR);
+        return nullptr;
     }
     ani_ref subscriberObj = CreateSubscriberRef(env, wrapper);
     if (subscriberObj == nullptr) {
         EVENT_LOGE("null subscriberObj");
         delete wrapper;
         wrapper = nullptr;
-        return nullObj;
+        AniCommonEventUtils::ThrowError(env, ERROR_CODE_INTERNAL_ERROR, ERROR_MSG_INTERNAL_ERROR);
+        return nullptr;
     }
     return subscriberObj;
 }
