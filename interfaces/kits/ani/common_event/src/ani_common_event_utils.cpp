@@ -131,7 +131,7 @@ bool AniCommonEventUtils::GetDoubleOrUndefined(ani_env* env, ani_object param, c
     }
 
     ani_double result = 0;
-    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result))
+    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "toDouble", nullptr, &result))
         != ANI_OK) {
         EVENT_LOGE("status : %{public}d", status);
         return false;
@@ -159,7 +159,7 @@ bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, cons
         return false;
     }
 
-    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &res)) !=
+    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "toInt", nullptr, &res)) !=
         ANI_OK) {
         EVENT_LOGE("status : %{public}d", status);
         return false;
@@ -189,7 +189,7 @@ bool AniCommonEventUtils::GetBooleanOrUndefined(ani_env* env, ani_object param, 
 
     ani_boolean result = 0;
     if ((status = env->Object_CallMethodByName_Boolean(
-        reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) != ANI_OK) {
+        reinterpret_cast<ani_object>(obj), "toBoolean", nullptr, &result)) != ANI_OK) {
         EVENT_LOGE("status : %{public}d", status);
         return false;
     }
