@@ -31,9 +31,9 @@ using CommonEventSubscriber = OHOS::EventFwk::CommonEventSubscriber;
 using CommonEventData = OHOS::EventFwk::CommonEventData;
 constexpr const char *BUSINESS_ERROR_CLASS = "L@ohos/base/BusinessError;";
 constexpr const char *ERROR_CLASS_NAME = "Lescompat/Error;";
-constexpr int32_t ERROR_CODE_INTERNAL_ERROR = 1600001;
+constexpr int32_t ERROR_CODE_INTERNAL_ERROR = 1500001;
 constexpr const char* ERROR_MSG_INTERNAL_ERROR =
-    "Internal error. Possible cause: 1.IPC communication failed. 2.Memory operation error";
+    "Internal error.";
 
 class AniCommonEventUtils {
 public:

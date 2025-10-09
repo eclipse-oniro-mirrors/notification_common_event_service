@@ -34,7 +34,7 @@ namespace commonEventManager {
     export native function publishAsUserExecute(event: string, userId: int):int;
     export native function publishAsUserWithOptionsExecute(event: string, userId: int,
         options: CommonEventPublishData):int;
-    export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber|null;
+    export native function createSubscriberExecute(subscribeInfo: CommonEventSubscribeInfo):CommonEventSubscriber;
     export native function subscribeExecute(subscriber: CommonEventSubscriber,
         callback: AsyncCallback<CommonEventData, void>):int;
     export native function subscribeToEventExecute(subscriber: CommonEventSubscriber,
@@ -146,7 +146,6 @@ namespace commonEventManager {
     }
 
     export function createSubscriberSync(subscribeInfo: CommonEventSubscribeInfo): CommonEventSubscriber{
-        hilog.info(0x0000, TAG, 'createSubscriberSync call');
         return commonEventManager.createSubscriberExecute(subscribeInfo);
     }
 
