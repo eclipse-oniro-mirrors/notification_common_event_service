@@ -132,14 +132,16 @@ static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {
         EVENT_LOGE("null wrapper");
-        return AniCommonEventUtils::GetNullObject(env);
+        AniCommonEventUtils::ThrowError(env, ERROR_CODE_INTERNAL_ERROR, ERROR_MSG_INTERNAL_ERROR);
+        return nullptr;
     }
     ani_ref subscriberObj = CreateSubscriberRef(env, wrapper);
     if (subscriberObj == nullptr) {
         EVENT_LOGE("null subscriberObj");
         delete wrapper;
         wrapper = nullptr;
-        return AniCommonEventUtils::GetNullObject(env);
+        AniCommonEventUtils::ThrowError(env, ERROR_CODE_INTERNAL_ERROR, ERROR_MSG_INTERNAL_ERROR);
+        return nullptr;
     }
     return subscriberObj;
 }

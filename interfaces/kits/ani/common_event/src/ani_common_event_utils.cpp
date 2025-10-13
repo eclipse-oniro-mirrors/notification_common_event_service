@@ -578,5 +578,81 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     CallSetter(env, cls, ani_data, Builder::BuildSetterName("parameters").c_str(), wantParamRef);
 }
 
+static ani_object WrapError(ani_env *env, const std::string &msg)
+{
+    if (env == nullptr) {
+        EVENT_LOGE("null env");
+        return nullptr;
+    }
+    ani_status status = ANI_ERROR;
+    ani_string aniMsg = nullptr;
+    if ((status = env->String_NewUTF8(msg.c_str(), msg.size(), &aniMsg)) != ANI_OK) {
+        EVENT_LOGE("String_NewUTF8 failed %{public}d", status);
+        return nullptr;
+    }
+    ani_ref undefRef;
+    if ((status = env->GetUndefined(&undefRef)) != ANI_OK) {
+        EVENT_LOGE("GetUndefined failed %{public}d", status);
+        return nullptr;
+    }
+    ani_class cls = nullptr;
+    if ((status = env->FindClass(ERROR_CLASS_NAME, &cls)) != ANI_OK) {
+        EVENT_LOGE("FindClass failed %{public}d", status);
+        return nullptr;
+    }
+    ani_method method = nullptr;
+    if ((status = env->Class_FindMethod(cls, "<ctor>", "Lstd/core/String;Lescompat/ErrorOptions;:V", &method)) !=
+        ANI_OK) {
+        EVENT_LOGE("Class_FindMethod failed %{public}d", status);
+        return nullptr;
+    }
+    ani_object obj = nullptr;
+    if ((status = env->Object_New(cls, method, &obj, aniMsg, undefRef)) != ANI_OK) {
+        EVENT_LOGE("Object_New failed %{public}d", status);
+        return nullptr;
+    }
+    return obj;
+}
+
+static ani_object CreateError(ani_env *env, ani_int code, const std::string &msg)
+{
+    if (env == nullptr) {
+        EVENT_LOGE("null env");
+        return nullptr;
+    }
+    ani_status status = ANI_ERROR;
+    ani_class cls = nullptr;
+    if ((status = env->FindClass(BUSINESS_ERROR_CLASS, &cls)) != ANI_OK) {
+        EVENT_LOGE("FindClass failed %{public}d", status);
+        return nullptr;
+    }
+    ani_method method = nullptr;
+    if ((status = env->Class_FindMethod(cls, "<ctor>", "ILescompat/Error;:V", &method)) != ANI_OK) {
+        EVENT_LOGE("Class_FindMethod failed %{public}d", status);
+        return nullptr;
+    }
+    ani_object error = WrapError(env, msg);
+    if (error == nullptr) {
+        EVENT_LOGE("error nulll");
+        return nullptr;
+    }
+    ani_object obj = nullptr;
+    if ((status = env->Object_New(cls, method, &obj, code, error)) != ANI_OK) {
+        EVENT_LOGE("Object_New failed %{public}d", status);
+        return nullptr;
+    }
+    return obj;
+}
+
+void AniCommonEventUtils::ThrowError(ani_env *env, int32_t errCode, const std::string &errorMsg)
+{
+    if (env == nullptr) {
+        EVENT_LOGE("null env");
+        return;
+    }
+
+    env->ThrowError(static_cast<ani_error>(CreateError(env, errCode, errorMsg)));
+}
+
 } // namespace EventManagerFwkAni
 } // namespace OHOS
