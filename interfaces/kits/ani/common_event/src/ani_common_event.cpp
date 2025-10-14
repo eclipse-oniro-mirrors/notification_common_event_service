@@ -1032,8 +1032,8 @@ static std::array commonEventManagerMethods = {
         "C{std.core.String}iC{commonEvent.commonEventPublishData.CommonEventPublishData}:i",
         reinterpret_cast<void*>(OHOS::EventManagerFwkAni::publishAsUserWithOptionsExecute) },
     ani_native_function { "createSubscriberExecute",
-        "C{commonEvent.commonEventSubscribeInfo.CommonEventSubscribeInfo}:X{C{commonEvent.commonEventSubscriber."
-        "CommonEventSubscriber}N}",
+        "C{commonEvent.commonEventSubscribeInfo.CommonEventSubscribeInfo}:C{commonEvent.commonEventSubscriber."
+        "CommonEventSubscriber}",
         reinterpret_cast<void*>(OHOS::EventManagerFwkAni::createSubscriberExecute) },
     ani_native_function {
         "subscribeExecute", nullptr, reinterpret_cast<void*>(OHOS::EventManagerFwkAni::subscribeExecute) },
@@ -1106,7 +1106,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
     }
     status = init(env, kitNs);
     if (status != ANI_OK) {
-        EVENT_LOGE("Cannot bind native methods to L@ohos/events/emitter/emitter");
+        EVENT_LOGE("Cannot bind native methods to @ohos.commonEventManager.commonEventManager.");
         return ANI_INVALID_TYPE;
     }
 
