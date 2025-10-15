@@ -26,7 +26,7 @@ namespace EventManagerFwkAni {
 using namespace std;
 
 constexpr const char *BUSINESS_ERROR_CLASS = "@ohos.base.BusinessError";
-constexpr const char *ERROR_CLASS_NAME = "escompat.Error";
+constexpr const char *ERROR_CLASS_NAME = "std.core.Error";
 
 constexpr const char* ERROR_MSG_PERMISSION_DENIED = "The application does not have permission to call the interface.";
 constexpr const char* ERROR_MSG_NOT_SYSTEM_APP = "The application is not system-app, can not use system-api.";
