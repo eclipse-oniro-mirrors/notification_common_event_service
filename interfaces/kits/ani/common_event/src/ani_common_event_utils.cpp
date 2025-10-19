@@ -39,13 +39,13 @@ void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string
     ani_size sz {};
     ret = env->String_GetUTF8Size(str, &sz);
     if (ret != ANI_OK) {
-        EVENT_LOGE("GetStdString String_GetUTF8Size error. result: %{public}d.", ret);
+        EVENT_LOGE("String_GetUTF8Size error. result: %{public}d.", ret);
         return;
     }
     result.resize(sz + 1);
     ret = env->String_GetUTF8SubString(str, 0, sz, result.data(), result.size(), &sz);
     if (ret != ANI_OK) {
-        EVENT_LOGE("GetStdString String_GetUTF8Size error. result: %{public}d.", ret);
+        EVENT_LOGE("String_GetUTF8SubString error. result: %{public}d.", ret);
         return;
     }
     result.resize(sz);
@@ -54,7 +54,7 @@ void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string
 ani_status AniCommonEventUtils::GetAniString(ani_env* env, const std::string str, ani_string& aniStr)
 {
     if (env == nullptr) {
-        EVENT_LOGE("GetAniStringByString fail, env is nullptr");
+        EVENT_LOGE("GetAniString fail, env is nullptr");
         return ANI_INVALID_ARGS;
     }
     ani_status status = env->String_NewUTF8(str.c_str(), str.size(), &aniStr);
@@ -71,7 +71,7 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
     ani_size length;
     ani_status ret = env->Array_GetLength(arrayStrings, &length);
     if (ret != ANI_OK) {
-        EVENT_LOGE("GetStdStringArrayClass Object_GetPropertyByName_Double error. result: %{public}d.", ret);
+        EVENT_LOGE("Array_GetLength error. result: %{public}d.", ret);
         return;
     }
 
@@ -79,7 +79,7 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
         ani_ref stringEntryRef;
         ret = env->Array_Get(arrayStrings, i, &stringEntryRef);
         if (ret != ANI_OK) {
-            EVENT_LOGE("GetStdStringArrayClass Object_CallMethodByName_Ref error. result: %{public}d.", ret);
+            EVENT_LOGE("Array_Get error. result: %{public}d.", ret);
             return;
         }
 
@@ -241,7 +241,7 @@ bool AniCommonEventUtils::GetWantParamsOrUndefined(
     }
 
     if (!UnwrapWantParams(env, obj, wantParams)) {
-        EVENT_LOGE("GetWantParamsOrUndefined UnwrapWantParams error.");
+        EVENT_LOGE("UnwrapWantParams error.");
         return false;
     }
 
