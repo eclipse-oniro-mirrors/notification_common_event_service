@@ -102,7 +102,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public getCode(callback: AsyncCallback<int>): void {
         let p = taskpool.execute((): int => { return this.nativeGetCode(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             let ret : int = data as int;
             callback(null, ret);
         }, (error: Error): void => {
@@ -115,7 +115,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public getCode(): Promise<int> {
         let pPromise = new Promise<int>((resolve: ResolveCallback<int>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeGetCode(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 let ret : int = data as int;
                 resolve(ret);
             }, (error: Error): void => {
@@ -138,7 +138,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public setCode(code: int, callback: AsyncCallback<void>): void {
         let pcode: Int = code as Int;
         let p = taskpool.execute((): int => { return this.nativeSetCode(pcode); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             callback(null, undefined);
         }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
@@ -150,7 +150,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         let pcode: Int = code as Int;
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeSetCode(pcode); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 resolve(undefined);
             }, (error: Error): void => {
                 reject(error);
@@ -171,7 +171,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public getData(callback: AsyncCallback<string>): void {
         let p = taskpool.execute((): string => { return this.nativeGetData(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             let ret : string = data as string;
             callback(null, ret);
         }, (error: Object): void => {
@@ -183,7 +183,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public getData(): Promise<string> {
         let pPromise = new Promise<string>((resolve: ResolveCallback<string>, reject: RejectCallback):void => {
             let p = taskpool.execute((): string => { return this.nativeGetData(); });
-            p.then((data :NullishType): void => {
+            p.then((data :Any): void => {
                 let ret : string = data as string;
                 resolve(ret);
             }, (err:Error): void => {
@@ -205,7 +205,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public setData(data: string, callback: AsyncCallback<void>): void {
         let p = taskpool.execute((): int => { return this.nativeSetData(data); });
-        p.then((e: NullishType): void => {
+        p.then((e: Any): void => {
             callback(null, undefined);
         }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
@@ -216,7 +216,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public setData(data: string): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeSetData(data); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 resolve(undefined);
             }, (error: Error): void => {
                 reject(error);
@@ -237,7 +237,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public setCodeAndData(code: int, data: string, callback: AsyncCallback<void>): void {
         let pcode: Int = code as Int;
         let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(pcode, data); });
-        p.then((e: NullishType): void => {
+        p.then((e: Any): void => {
             callback(null, undefined);
         }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
@@ -249,7 +249,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         let pcode: Int = code as Int;
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeSetCodeAndData(pcode, data); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 resolve(undefined);
             }, (error: Error): void => {
                 reject(error);
@@ -270,7 +270,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public isOrderedCommonEvent(callback: AsyncCallback<boolean>): void {
         let p = taskpool.execute((): boolean => { return this.nativeIsOrderedCommonEvent(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             let ret : boolean = data as boolean;
             callback(null, ret);
         }, (error: Error): void => {
@@ -283,7 +283,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public isOrderedCommonEvent(): Promise<boolean> {
         let pPromise = new Promise<boolean>((resolve: ResolveCallback<boolean>, reject: RejectCallback): void => {
             let p = taskpool.execute((): boolean => { return this.nativeIsOrderedCommonEvent(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 let ret : boolean = data as boolean;
                 resolve(ret);
             }, (error: Error): void => {
@@ -304,7 +304,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public isStickyCommonEvent(callback: AsyncCallback<boolean>): void {
         let p = taskpool.execute((): boolean => { return this.nativeIsStickyCommonEvent(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             let ret : boolean = data as boolean;
             callback(null, ret);
         }, (error: Error): void => {
@@ -317,7 +317,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public isStickyCommonEvent(): Promise<boolean> {
         let pPromise = new Promise<boolean>((resolve: ResolveCallback<boolean>, reject: RejectCallback): void => {
             let p = taskpool.execute((): boolean => { return this.nativeIsStickyCommonEvent(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 let ret : boolean = data as boolean;
                 resolve(ret);
             }, (error: Error): void => {
@@ -338,7 +338,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public abortCommonEvent(callback: AsyncCallback<void>): void {
         let p = taskpool.execute((): int => { return this.nativeAbortCommonEvent(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             callback(null, undefined);
         }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
@@ -349,7 +349,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public abortCommonEvent(): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeAbortCommonEvent(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 resolve(undefined);
             }, (error: Error): void => {
                 reject(error);
@@ -369,7 +369,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public clearAbortCommonEvent(callback: AsyncCallback<void>): void {
         let p = taskpool.execute((): int => { return this.nativeClearAbortCommonEvent(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             callback(null, undefined);
         }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
@@ -380,7 +380,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public clearAbortCommonEvent(): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeClearAbortCommonEvent(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 resolve(undefined);
             }, (error: Error): void => {
                 reject(error);
@@ -400,7 +400,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public getAbortCommonEvent(callback: AsyncCallback<boolean>): void {
         let p = taskpool.execute((): boolean => { return this.nativeGetAbortCommonEvent(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             let ret : boolean = data as boolean;
             callback(null, ret);
         }, (error: Error): void => {
@@ -413,7 +413,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public getAbortCommonEvent(): Promise<boolean> {
         let pPromise = new Promise<boolean>((resolve: ResolveCallback<boolean>, reject: RejectCallback): void => {
             let p = taskpool.execute((): boolean => { return this.nativeGetAbortCommonEvent(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 let ret : boolean = data as boolean;
                 resolve(ret);
             }, (error: Error): void => {
@@ -435,7 +435,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public getSubscribeInfo(callback: AsyncCallback<CommonEventSubscribeInfo|null>): void {
         let p = taskpool.execute((): CommonEventSubscribeInfo|null => { return this.nativeGetSubscribeInfo(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             callback(null, data as CommonEventSubscribeInfo|null);
         }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
@@ -447,7 +447,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
         let pPromise = new Promise<CommonEventSubscribeInfo|null>((resolve: ResolveCallback<CommonEventSubscribeInfo|null>,
                 reject: RejectCallback): void => {
             let p = taskpool.execute((): CommonEventSubscribeInfo|null => { return this.nativeGetSubscribeInfo(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 resolve(data as CommonEventSubscribeInfo|null);
             }, (error: Error): void => {
                 reject(error);
@@ -462,7 +462,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
 
     public finishCommonEvent(callback: AsyncCallback<void>): void {
         let p = taskpool.execute((): int => { return this.nativeFinishCommonEvent(); });
-        p.then((data: NullishType): void => {
+        p.then((data: Any): void => {
             callback(null, undefined);
         }, (error: Error): void => {
             let err: BusinessError = error as BusinessError;
@@ -473,7 +473,7 @@ class CommonEventSubscriberInner implements CommonEventSubscriber {
     public finishCommonEvent(): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let p = taskpool.execute((): int => { return this.nativeFinishCommonEvent(); });
-            p.then((data: NullishType): void => {
+            p.then((data: Any): void => {
                 resolve(undefined);
             }, (error: Error): void => {
                 reject(error);

@@ -47,7 +47,7 @@ namespace commonEventManager {
     export function publish(event: string, callback: AsyncCallback<void, void>): void {
         hilog.info(0x0000, TAG, 'publish called event: %{public}s', event);
         let task = taskpool.execute(commonEventManager.publishExecute, event);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'publish call result:%{public}d.', resultCode.intValue());
             if (resultCode == 0) {
@@ -66,7 +66,7 @@ namespace commonEventManager {
     export function publish(event: string, options: CommonEventPublishData, callback: AsyncCallback<void, void>): void {
         hilog.info(0x0000, TAG, 'publish with option call.');
         let task = taskpool.execute(commonEventManager.publishWithOptionsExecute, event, options);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'publish with option result:%{public}d.', resultCode.intValue());
             if (resultCode == 0) {
@@ -84,7 +84,7 @@ namespace commonEventManager {
 
     export function publishAsUser(event: string, userId: int, callback: AsyncCallback<void, void>): void {
         let task = taskpool.execute(commonEventManager.publishAsUserExecute, event, userId);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {
                 callback(null, undefined);
@@ -102,7 +102,7 @@ namespace commonEventManager {
     export function publishAsUser(event: string, userId: int, options: CommonEventPublishData,
         callback: AsyncCallback<void, void>): void {
         let task = taskpool.execute(commonEventManager.publishAsUserWithOptionsExecute, event, userId, options);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {
                 callback(null, undefined);
@@ -121,7 +121,7 @@ namespace commonEventManager {
         callback: AsyncCallback<CommonEventSubscriber, void>): void {
         hilog.info(0x0000, TAG, 'createSubscriber callback call.');
         let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
-        task.then((data: NullishType)=>{
+        task.then((data: Any)=>{
             callback(null, data as CommonEventSubscriber);
         }, (error: Object): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
@@ -135,7 +135,7 @@ namespace commonEventManager {
         let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
             reject: (error: Error) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
-            p1.then((data :NullishType)=>{
+            p1.then((data :Any)=>{
                 resolve(data as CommonEventSubscriber);
             }, (err:Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
@@ -152,7 +152,7 @@ namespace commonEventManager {
     export function subscribe(subscriber: CommonEventSubscriber, callback: AsyncCallback<CommonEventData, void>): void {
         hilog.info(0x0000, TAG, 'subscribe call.');
         let task = taskpool.execute(commonEventManager.subscribeExecute, subscriber, callback);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'subscribe result:%{public}d.', resultCode.intValue());
             if (resultCode != 0) {
@@ -170,7 +170,7 @@ namespace commonEventManager {
         hilog.info(0x0000, TAG, 'subscribeToEvent call.');
         let p = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let task = taskpool.execute(commonEventManager.subscribeToEventExecute, subscriber, callback);
-            task.then((e: NullishType)=> {
+            task.then((e: Any)=> {
                 let resultCode: Int  = e as Int;
                 hilog.info(0x0000, TAG, 'subscribeToEvent result: %{public}d.', resultCode.toInt());
                 if (resultCode != 0) {
@@ -190,7 +190,7 @@ namespace commonEventManager {
     export function unsubscribe(subscriber: CommonEventSubscriber, callback?: AsyncCallback<void, void>): void {
         hilog.info(0x0000, TAG, 'unsubscribe call.');
         let task = taskpool.execute(commonEventManager.unsubscribeExecute, subscriber);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'unsubscribe result:%{public}d.', resultCode.intValue());
             if (callback != undefined) {
@@ -215,7 +215,7 @@ namespace commonEventManager {
             throw errorParamInvalid;
         }
         let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'unsubscribe result:%{public}d.', resultCode.intValue());
             if (resultCode == 0) {
@@ -236,7 +236,7 @@ namespace commonEventManager {
         }
         let p = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let task = taskpool.execute(commonEventManager.removeStickyCommonEventExecute, event);
-            task.then((e: NullishType): void => {
+            task.then((e: Any): void => {
                 let resultCode: Int  = e as Int;
                 if (resultCode == 0) {
                     resolve(undefined);
@@ -254,7 +254,7 @@ namespace commonEventManager {
 
     export function setStaticSubscriberState(enable: boolean, callback: AsyncCallback<void, void>): void {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {
                 callback(null, undefined);
@@ -271,7 +271,7 @@ namespace commonEventManager {
     export function setStaticSubscriberState(enable: boolean): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
         let task = taskpool.execute(commonEventManager.setStaticSubscriberStateExecute, enable);
-        task.then((e: NullishType): void => {
+        task.then((e: Any): void => {
             let resultCode: Int  = e as Int;
             if (resultCode == 0) {
                 resolve(undefined);
@@ -290,7 +290,7 @@ namespace commonEventManager {
     export function setStaticSubscriberState(enable: boolean, events: Array<string>): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let task = taskpool.execute(commonEventManager.setStaticSubscriberStateWithEventsExecute, enable, events);
-            task.then((e: NullishType): void => {
+            task.then((e: Any): void => {
                 let resultCode: Int  = e as Int;
                 if (resultCode == 0) {
                     resolve(undefined);
