@@ -33,8 +33,8 @@ static ffrt::mutex subscriberInsMutex;
 static ffrt::mutex transferRelationMutex;
 static std::vector<std::shared_ptr<SubscriberInstanceRelationship>> transferRelations;
 
-ani_class subscriberCls;
-ani_method subscriberCtor;
+ani_ref gSubscriberCls;
+ani_method gSubscriberCtor;
 
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
@@ -110,12 +110,12 @@ static uint32_t publishAsUserWithOptionsExecute(ani_env* env, ani_string eventId
 
 ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberWrapper)
 {
-    if (env == nullptr || subscriberCls == nullptr || subscriberCtor == nullptr) {
+    if (env == nullptr || gSubscriberCls == nullptr || gSubscriberCtor == nullptr) {
         EVENT_LOGE("CreateSubscriberRef error. has nullptr");
         return nullptr;
     }
     ani_object subscriberObj;
-    auto ret = env->Object_New(subscriberCls, subscriberCtor, &subscriberObj,
+    auto ret = env->Object_New(static_cast<ani_class>(gSubscriberCls), gSubscriberCtor, &subscriberObj,
         reinterpret_cast<ani_long>(subscriberWrapper));
     if (ret != ANI_OK) {
         EVENT_LOGE("createSubscriberExecute Object_New error. result: %{public}d.", ret);
@@ -1060,7 +1060,7 @@ ani_status init(ani_env *env, ani_namespace kitNs)
         EVENT_LOGE("Cannot bind native methods to @ohos.commonEventManager.commonEventManager");
         return ANI_INVALID_TYPE;
     }
-
+    ani_class subscriberCls;
     status = env->FindClass("commonEvent.commonEventSubscriber.CommonEventSubscriberInner",
         &subscriberCls);
     if (status != ANI_OK) {
@@ -1079,7 +1079,12 @@ ani_status init(ani_env *env, ani_namespace kitNs)
         EVENT_LOGE("Cannot bind static methods to commonEvent.commonEventSubscriber.CommonEventSubscriberInner");
         return ANI_INVALID_TYPE;
     }
-    status = env->Class_FindMethod(subscriberCls, "<ctor>", "l:", &subscriberCtor);
+    status = env->GlobalReference_Create(static_cast<ani_ref>(subscriberCls), &gSubscriberCls);
+    if (status != ANI_OK) {
+        EVENT_LOGE("GlobalReference_Create error. result: %{public}d.", status);
+        return ANI_INVALID_TYPE;
+    }
+    status = env->Class_FindMethod(subscriberCls, "<ctor>", "l:", &gSubscriberCtor);
     if (status != ANI_OK) {
         EVENT_LOGE("Class_FindMethod error. result: %{public}d.", status);
         return ANI_INVALID_TYPE;
