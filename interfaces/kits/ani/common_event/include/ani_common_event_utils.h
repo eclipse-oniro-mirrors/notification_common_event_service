@@ -29,8 +29,8 @@ namespace EventManagerFwkAni {
 using CommonEventSubscribeInfo = OHOS::EventFwk::CommonEventSubscribeInfo;
 using CommonEventSubscriber = OHOS::EventFwk::CommonEventSubscriber;
 using CommonEventData = OHOS::EventFwk::CommonEventData;
-constexpr const char *BUSINESS_ERROR_CLASS = "L@ohos/base/BusinessError;";
-constexpr const char *ERROR_CLASS_NAME = "Lescompat/Error;";
+constexpr const char *BUSINESS_ERROR_CLASS = "@ohos.base.BusinessError";
+constexpr const char *ERROR_CLASS_NAME = "escompat.Error";
 constexpr int32_t ERROR_CODE_INTERNAL_ERROR = 1500001;
 constexpr const char* ERROR_MSG_INTERNAL_ERROR =
     "Internal error.";

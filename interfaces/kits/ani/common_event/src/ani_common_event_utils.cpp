@@ -478,7 +478,7 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
         return;
     }
 
-    aniResult = env->FindClass("@ohos.base.BusinessError", &cls);
+    aniResult = env->FindClass(BUSINESS_ERROR_CLASS, &cls);
     if (aniResult != ANI_OK) {
         EVENT_LOGE("CreateBusinessErrorObject findClass error. result: %{public}d.", aniResult);
         return;
@@ -601,7 +601,7 @@ static ani_object WrapError(ani_env *env, const std::string &msg)
         return nullptr;
     }
     ani_method method = nullptr;
-    if ((status = env->Class_FindMethod(cls, "<ctor>", "Lstd/core/String;Lescompat/ErrorOptions;:V", &method)) !=
+    if ((status = env->Class_FindMethod(cls, "<ctor>", "C{std.core.String}C{escompat.ErrorOptions}:", &method)) !=
         ANI_OK) {
         EVENT_LOGE("Class_FindMethod failed %{public}d", status);
         return nullptr;
@@ -627,7 +627,7 @@ static ani_object CreateError(ani_env *env, ani_int code, const std::string &msg
         return nullptr;
     }
     ani_method method = nullptr;
-    if ((status = env->Class_FindMethod(cls, "<ctor>", "ILescompat/Error;:V", &method)) != ANI_OK) {
+    if ((status = env->Class_FindMethod(cls, "<ctor>", "iC{escompat.Error}:", &method)) != ANI_OK) {
         EVENT_LOGE("Class_FindMethod failed %{public}d", status);
         return nullptr;
     }
