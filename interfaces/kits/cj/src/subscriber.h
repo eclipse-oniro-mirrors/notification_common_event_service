@@ -56,8 +56,8 @@ namespace OHOS::CommonEventManager {
 
     class SubscriberManager : public OHOS::FFI::FFIData {
     public:
-        static sptr<SubscriberManager> Create(std::shared_ptr<CommonEventSubscribeInfo> info);
-        static sptr<SubscriberManager> Create(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId);
+        static int64_t Create(std::shared_ptr<CommonEventSubscribeInfo> info);
+        static int64_t Create(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId);
         OHOS::FFI::RuntimeType *GetRuntimeType() override
         {
             return GetClassType();

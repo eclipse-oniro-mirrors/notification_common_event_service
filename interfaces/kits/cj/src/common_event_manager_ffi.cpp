@@ -50,11 +50,9 @@ namespace OHOS::CommonEventManager {
         int64_t CJ_CreateCommonEventSubscribeInfo(CArrString events)
         {
             auto infoPtr = CommonEventManagerImpl::CreateCommonEventSubscribeInfo(events.head, events.size);
-            auto ptr = FFIData::Create<CommonEventSubscribeInfoImpl>(infoPtr);
-            if (!ptr) {
-                return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
-            }
-            return ptr->GetID();
+            auto info = std::make_shared<CommonEventSubscribeInfoImpl>(infoPtr);
+            auto* ptr = new std::shared_ptr<CommonEventSubscribeInfoImpl>(info);
+            return reinterpret_cast<int64_t>(ptr);
         }
 
         int64_t CJ_CreateSubscriber(int64_t id)
@@ -64,17 +62,14 @@ namespace OHOS::CommonEventManager {
             if (haveId) {
                 return managerId;
             }
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CommonEventSubscribeInfoImpl instance not exist %{public}" PRId64, id);
                 return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
             }
             auto info = instance->GetInfoPtr();
-            auto ptr = SubscriberManager::Create(info, id);
-            if (!ptr) {
-                return static_cast<int64_t>(ERR_INVALID_INSTANCE_ID);
-            }
-            return ptr->GetID();
+            auto mgrAddr = SubscriberManager::Create(info, id);
+            return mgrAddr;
         }
 
         int64_t FfiCommonEventManagerCreateSubscriber(CSubscribeInfo *info, int32_t *errorCode)
@@ -100,17 +95,13 @@ namespace OHOS::CommonEventManager {
             infoPtr->SetUserId(info->userId);
             infoPtr->SetPriority(info->priority);
 
-            auto mgrPtr = SubscriberManager::Create(infoPtr);
-            if (!mgrPtr) {
-                *errorCode = ERR_INVALID_INSTANCE_ID;
-                return 0;
-            }
-            return mgrPtr->GetID();
+            auto mgrAddr = SubscriberManager::Create(infoPtr);
+            return mgrAddr;
         }
 
         int32_t CJ_Subscribe(int64_t id, void (*callbackRef)(const CCommonEventData data))
         {
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
@@ -127,7 +118,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_Unsubscribe(int64_t id)
         {
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
@@ -142,7 +133,7 @@ namespace OHOS::CommonEventManager {
         RetDataI32 CJ_GetCode(int64_t id)
         {
             RetDataI32 ret = {.code = ERR_INVALID_INSTANCE_CODE, .data = 0};
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
@@ -158,7 +149,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_SetCode(int64_t id, int32_t code)
         {
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
@@ -173,7 +164,7 @@ namespace OHOS::CommonEventManager {
         RetDataCString CJ_GetData(int64_t id)
         {
             RetDataCString ret = {.code = ERR_INVALID_INSTANCE_CODE, .data = nullptr};
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
@@ -190,7 +181,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_SetData(int64_t id, char *data)
         {
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
@@ -204,7 +195,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_SetCodeAndData(int64_t id, int32_t code, char *data)
         {
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
@@ -219,7 +210,7 @@ namespace OHOS::CommonEventManager {
         RetDataBool CJ_IsOrderedCommonEvent(int64_t id)
         {
             RetDataBool ret = {.code = ERR_INVALID_INSTANCE_CODE, .data = false};
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
@@ -236,7 +227,7 @@ namespace OHOS::CommonEventManager {
         RetDataBool CJ_IsStickyCommonEvent(int64_t id)
         {
             RetDataBool ret = {.code = ERR_INVALID_INSTANCE_CODE, .data = false};
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
@@ -252,7 +243,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_AbortCommonEvent(int64_t id)
         {
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
@@ -273,7 +264,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_ClearAbortCommonEvent(int64_t id)
         {
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_CODE;
@@ -295,7 +286,7 @@ namespace OHOS::CommonEventManager {
         RetDataBool CJ_GetAbortCommonEvent(int64_t id)
         {
             RetDataBool ret = {.code = ERR_INVALID_INSTANCE_CODE, .data = false};
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
@@ -320,7 +311,7 @@ namespace OHOS::CommonEventManager {
         RetDataI64 CJ_GetSubscribeInfo(int64_t id)
         {
             RetDataI64 ret = {.code = ERR_INVALID_INSTANCE_ID, .data = 0};
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ret;
@@ -332,7 +323,7 @@ namespace OHOS::CommonEventManager {
         int32_t CJ_FinishCommonEvent(int64_t id)
         {
             int32_t errorCode = NO_ERROR;
-            auto instance = FFIData::GetData<SubscriberManager>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
             if (!instance) {
                 LOGE("SubscriberManager instance not exist %{public}" PRId64, id);
                 return ERR_INVALID_INSTANCE_ID;
@@ -350,7 +341,7 @@ namespace OHOS::CommonEventManager {
 
         void CJ_SetPermission(int64_t id, char *value)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CommonEventSubscribeInfoImpl instance not exist %{public}" PRId64, id);
                 return;
@@ -361,7 +352,7 @@ namespace OHOS::CommonEventManager {
 
         void CJ_SetDeviceId(int64_t id, const char *value)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CommonEventSubscribeInfoImpl instance not exist %{public}" PRId64, id);
                 return;
@@ -371,7 +362,7 @@ namespace OHOS::CommonEventManager {
 
         void CJ_SetUserId(int64_t id, int32_t value)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CommonEventSubscribeInfoImpl instance not exist %{public}" PRId64, id);
                 return;
@@ -381,7 +372,7 @@ namespace OHOS::CommonEventManager {
 
         void CJ_SetPriority(int64_t id, int32_t value)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CommonEventSubscribeInfoImpl instance not exist %{public}" PRId64, id);
                 return;
@@ -391,7 +382,7 @@ namespace OHOS::CommonEventManager {
 
         void CJ_SetBundleName(int64_t id, const char *value)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CommonEventSubscribeInfoImpl instance not exist %{public}" PRId64, id);
                 return;
@@ -401,7 +392,7 @@ namespace OHOS::CommonEventManager {
 
         const char *CJ_GetPermission(int64_t id)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CJ_GetPermission instance not exist %{public}" PRId64, id);
                 return nullptr;
@@ -413,7 +404,7 @@ namespace OHOS::CommonEventManager {
 
         const char *CJ_GetDeviceId(int64_t id)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CJ_GetDeviceId instance not exist %{public}" PRId64, id);
                 return nullptr;
@@ -425,7 +416,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_GetUserId(int64_t id)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CJ_GetUserId instance not exist %{public}" PRId64, id);
                 return 0;
@@ -435,7 +426,7 @@ namespace OHOS::CommonEventManager {
 
         int32_t CJ_GetPriority(int64_t id)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CJ_GetPriority instance not exist %{public}" PRId64, id);
                 return 0;
@@ -445,7 +436,7 @@ namespace OHOS::CommonEventManager {
 
         const char *CJ_GetBundleName(int64_t id)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             if (!instance) {
                 LOGE("CJ_GetBundleName instance not exist %{public}" PRId64, id);
                 return nullptr;
@@ -482,7 +473,7 @@ namespace OHOS::CommonEventManager {
 
         CArrString CJ_GetEvents(int64_t id)
         {
-            auto instance = FFIData::GetData<CommonEventSubscribeInfoImpl>(id);
+            auto instance = *reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
             CArrString ret = {.head = nullptr, .size = 0};
             if (!instance) {
                 LOGE("CJ_GetEvents instance not exist %{public}" PRId64, id);
@@ -499,6 +490,18 @@ namespace OHOS::CommonEventManager {
                 ret.size = 0;
             }
             return ret;
+        }
+
+        FFI_EXPORT void FfiOHOSCommonEventManagerReleaseSubscribeInfo(int64_t id)
+        {
+            auto* instance = reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
+            delete instance;
+        }
+
+        FFI_EXPORT void FfiOHOSCommonEventManagerReleaseSubscribeManager(int64_t id)
+        {
+            auto* instance = reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
+            delete instance;
         }
     }
 }
