@@ -114,21 +114,41 @@ namespace OHOS::CommonEventManager {
         *valid_ = true;
     }
 
-    int64_t SubscriberManager::Create(std::shared_ptr<CommonEventSubscribeInfo> info)
+    sptr<SubscriberManager> SubscriberManager::Create(std::shared_ptr<CommonEventSubscribeInfo> info)
     {
-        auto manager = std::make_shared<SubscriberManager>();
+        auto ptr = FFIData::Create<SubscriberManager>();
+        if (ptr != nullptr) {
+            ptr->subscriber = std::make_shared<SubscriberImpl>(info);
+            ptr->subscriber->SetSubscriberManagerId(ptr->GetID());
+        }
+        return ptr;
+    }
+
+    sptr<SubscriberManager> SubscriberManager::Create(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId)
+    {
+        auto ptr = FFIData::Create<SubscriberManager>();
+        if (ptr != nullptr) {
+            ptr->subscriber = std::make_shared<SubscriberImpl>(info, infoId);
+            ptr->subscriber->SetSubscriberManagerId(ptr->GetID());
+        }
+        return ptr;
+    }
+
+    int64_t SubscriberManager::CreateID(std::shared_ptr<CommonEventSubscribeInfo> info)
+    {
+        auto manager = new SubscriberManager();
         manager->subscriber = std::make_shared<SubscriberImpl>(info);
-        auto* ptr = new std::shared_ptr<SubscriberManager>(manager);
+        auto* ptr = new sptr<SubscriberManager>(manager);
         auto mgrAddr = reinterpret_cast<int64_t>(ptr);
         manager->subscriber->SetSubscriberManagerId(mgrAddr);
         return mgrAddr;
     }
 
-    int64_t SubscriberManager::Create(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId)
+    int64_t SubscriberManager::CreateID(std::shared_ptr<CommonEventSubscribeInfo> info, int64_t infoId)
     {
-        auto manager = std::make_shared<SubscriberManager>();
+        auto manager = new SubscriberManager();
         manager->subscriber = std::make_shared<SubscriberImpl>(info, infoId);
-        auto* ptr = new std::shared_ptr<SubscriberManager>(manager);
+        auto* ptr = new sptr<SubscriberManager>(manager);
         auto mgrAddr = reinterpret_cast<int64_t>(ptr);
         manager->subscriber->SetSubscriberManagerId(mgrAddr);
         return mgrAddr;
