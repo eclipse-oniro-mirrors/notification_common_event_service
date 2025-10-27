@@ -246,6 +246,13 @@ const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_RESTARTED = "usual.ev
 const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_DATA_CLEARED = "usual.event.PACKAGE_DATA_CLEARED";
 
 /**
+ * Indicates the action of a common event that the data of an uninstalled bundle is cleared.
+ * This common event can only be published by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_PACKAGE_UNINSTALLED_DATA_CLEARED =
+    "usual.event.PACKAGE_UNINSTALLED_DATA_CLEARED";
+
+/**
  * Indicates the action of a common event that the user has cleared the application package cache.
  * This common event can only be published by the system.
  */
@@ -1857,6 +1864,11 @@ void CommonEventSupport::Init()
      * This common event can only be published by the system.
      */
     commonEventSupport_.emplace_back(COMMON_EVENT_PACKAGE_DATA_CLEARED);
+    /**
+     * Indicates the action of a common event that the data of an uninstalled bundle is cleared.
+     * This common event can only be published by the system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_PACKAGE_UNINSTALLED_DATA_CLEARED);
     /**
      * Indicates the action of a common event that the user has cleared the application package cache.
      * This common event can only be published by the system.

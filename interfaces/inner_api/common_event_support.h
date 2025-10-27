@@ -214,6 +214,11 @@ public:
      */
     static const std::string COMMON_EVENT_PACKAGE_DATA_CLEARED;
     /**
+     * Indicates the action of a common event that the data of an uninstalled bundle is cleared.
+     * This common event can only be published by the system.
+     */
+    static const std::string COMMON_EVENT_PACKAGE_UNINSTALLED_DATA_CLEARED;
+    /**
      * Indicates the action of a common event that the user has cleared the application package cache.
      * This common event can only be published by the system.
      */
