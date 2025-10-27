@@ -831,13 +831,13 @@ namespace OHOS::CommonEventManager {
 
         FFI_EXPORT void FfiOHOSCommonEventManagerReleaseSubscribeInfo(int64_t id)
         {
-            auto* instance = reinterpret_cast<std::shared_ptr<CommonEventSubscribeInfoImpl> *>(id);
+            auto* instance = reinterpret_cast<sptr<CommonEventSubscribeInfoImpl> *>(id);
             delete instance;
         }
 
         FFI_EXPORT void FfiOHOSCommonEventManagerReleaseSubscribeManager(int64_t id)
         {
-            auto* instance = reinterpret_cast<std::shared_ptr<SubscriberManager> *>(id);
+            auto* instance = reinterpret_cast<sptr<SubscriberManager> *>(id);
             delete instance;
         }
     }
