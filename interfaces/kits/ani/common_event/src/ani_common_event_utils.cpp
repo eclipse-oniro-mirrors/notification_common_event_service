@@ -405,7 +405,7 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
             EVENT_LOGE("String_NewUTF8 faild");
             return nullptr;
         }
-        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "iC{std.core.Object}:", i, aniStr);
+        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "iY:", i, aniStr);
         if (status != ANI_OK) {
             EVENT_LOGE("Object_CallMethodByName_Void failed %{public}d", status);
             return nullptr;
