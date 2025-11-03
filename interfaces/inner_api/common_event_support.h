@@ -1506,6 +1506,12 @@ public:
      */
     static const std::string COMMON_EVENT_CLOUD_DISK_STATE_CHANGED;
 
+    /**
+     * Indicates that the lid mode event.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_LID_MODE_CHANGED;
+
 public:
     CommonEventSupport();
 

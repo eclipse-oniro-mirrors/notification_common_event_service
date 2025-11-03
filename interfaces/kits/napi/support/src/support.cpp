@@ -750,6 +750,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED,
         "COMMON_EVENT_CLOUD_DISK_STATE_CHANGED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_LID_MODE_CHANGED,
+        "COMMON_EVENT_LID_MODE_CHANGED");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 
