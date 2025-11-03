@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RecordData } from '@ohos.base';
 
 export interface CommonEventPublishData {
     bundleName?: string;
@@ -20,5 +21,5 @@ export interface CommonEventPublishData {
     subscriberPermissions?: Array<string>;
     isOrdered?: boolean;
     isSticky?: boolean;
-    parameters?: Record<string, Object>;
+    parameters?: Record<string, RecordData>;
 }

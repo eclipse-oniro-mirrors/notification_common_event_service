@@ -29,6 +29,12 @@ namespace EventManagerFwkAni {
 using CommonEventSubscribeInfo = OHOS::EventFwk::CommonEventSubscribeInfo;
 using CommonEventSubscriber = OHOS::EventFwk::CommonEventSubscriber;
 using CommonEventData = OHOS::EventFwk::CommonEventData;
+constexpr const char *BUSINESS_ERROR_CLASS = "@ohos.base.BusinessError";
+constexpr const char *ERROR_CLASS_NAME = "escompat.Error";
+constexpr int32_t ERROR_CODE_INTERNAL_ERROR = 1500001;
+constexpr const char* ERROR_MSG_INTERNAL_ERROR =
+    "Internal error.";
+
 class AniCommonEventUtils {
 public:
     static void GetStdString(ani_env* env, ani_string str, std::string& result);
@@ -56,6 +62,8 @@ public:
     static void CreateBusinessErrorObject(ani_env* env, ani_object &object, int32_t code, const std::string &message);
     static ani_object GetAniStringArray(ani_env *env, std::vector<std::string> strs);
     static ani_object newArrayClass(ani_env *env, int length);
+    static ani_object GetNullObject(ani_env *env);
+    static void ThrowError(ani_env *env, int32_t errCode, const std::string &errorMsg);
 };
 } // namespace EventManagerFwkAni
 } // namespace OHOS
