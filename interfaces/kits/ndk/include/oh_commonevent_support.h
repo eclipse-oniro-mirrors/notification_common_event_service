@@ -439,10 +439,10 @@ static const char* const COMMON_EVENT_KIOSK_MODE_ON = "usual.event.KIOSK_MODE_ON
 static const char* const COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_OFF";
 
 /**
- * Indicates that the lid mode.
+ * Indicates that the lid state.
  * This is a protected common event that can only be sent by system.
  */
-static const char* const COMMON_EVENT_LID_MODE_CHANGED = "usual.event.LID_MODE_CHANGED";
+static const char* const COMMON_EVENT_LID_STATE_CHANGED = "usual.event.LID_STATE_CHANGED";
 
 #ifdef __cplusplus
 }

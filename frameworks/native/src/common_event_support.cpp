@@ -1665,10 +1665,10 @@ const std::string CommonEventSupport::COMMON_EVENT_CANCEL_BEFORE_ALERTING =
 const std::string CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED = "usual.event.CLOUD_DISK_STATE_CHANGED";
 
 /**
- * Indicates that the lid mode has changed.
+ * Indicates that the lid state has changed.
  * This is a protected common event that can only be sent by system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_LID_MODE_CHANGED = "usual.event.LID_MODE_CHANGED";
+const std::string CommonEventSupport::COMMON_EVENT_LID_STATE_CHANGED = "usual.event.LID_STATE_CHANGED";
 
 CommonEventSupport::CommonEventSupport()
 {
@@ -3166,10 +3166,10 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED);
 
     /**
-     * Indicates that the lid mode event.
+     * Indicates that the lid state changed event.
      * This is a protected common event that can only be sent by system.
      */
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_LID_MODE_CHANGED);
+    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_LID_STATE_CHANGED);
     return;
 }
 
