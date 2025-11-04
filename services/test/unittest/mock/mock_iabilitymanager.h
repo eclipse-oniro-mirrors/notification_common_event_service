@@ -74,7 +74,8 @@ public:
         (override));
     MOCK_METHOD(
         int, StopServiceAbility, (const Want &want, int32_t userId, const sptr<IRemoteObject> &token), (override));
-    MOCK_METHOD(int, KillProcess, (const std::string &bundleName, bool clearPageStack, int32_t appIndex), (override));
+    MOCK_METHOD(int, KillProcess, (const std::string &bundleName, bool clearPageStack, int32_t appIndex,
+        const std::string &reason), (override));
 #ifdef ABILITY_COMMAND_FOR_TEST
     MOCK_METHOD(int, ForceTimeoutForTest, (const std::string &abilityName, const std::string &state), (override));
 #endif

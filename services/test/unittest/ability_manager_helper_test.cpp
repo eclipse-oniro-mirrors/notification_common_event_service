@@ -180,7 +180,8 @@ public:
         return 1;
     }
 
-    int KillProcess(const std::string &bundleName, const bool clearPageStack, int32_t appIndex) override
+    int KillProcess(const std::string &bundleName, const bool clearPageStack, int32_t appIndex,
+        const std::string &reason) override
     {
         return 1;
     }
