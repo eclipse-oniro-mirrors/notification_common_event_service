@@ -427,5 +427,74 @@ HWTEST_F(CommonEventControlManagerTest, CommonEventControlManager_2400, Level1)
     GTEST_LOG_(INFO) << "CommonEventControlManager_2400 end";
 }
 
+HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldReturnTrue_WhenEventNotInCache, Level1) {
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    std::string testEvent = "test_event";
+    EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(testEvent));
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[testEvent].second, 0);
+}
+
+HWTEST_F(CommonEventControlManagerTest,
+    CanLogUnorderedEvent_ShouldReturnTrueAndClearCache_WhenEventInCacheAndTimeout, Level1) {
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    std::string testEvent = "test_event";
+    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
+    commonEventControlManager->unorderedEventLogCache_[testEvent] =
+        std::make_pair(now - std::chrono::seconds(11), 5);
+    
+    EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(testEvent));
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 0);
+}
+
+HWTEST_F(CommonEventControlManagerTest,
+    CanLogUnorderedEvent_ShouldReturnFalseAndIncreaseSuppressed_WhenEventInCacheAndNotTimeout, Level1) {
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    std::string testEvent = "test_event";
+    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
+    commonEventControlManager->unorderedEventLogCache_[testEvent] =
+        std::make_pair(now - std::chrono::milliseconds(9), 5);
+    
+    EXPECT_FALSE(commonEventControlManager->CanLogUnorderedEvent(testEvent));
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[testEvent].second, 6);
+}
+
+HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldHandleMultipleEventsCorrectly, Level1) {
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    std::string event1 = "event1";
+    std::string event2 = "event2";
+    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
+    
+    commonEventControlManager->unorderedEventLogCache_[event1] = std::make_pair(now - std::chrono::seconds(11), 5);
+    commonEventControlManager->unorderedEventLogCache_[event2] = std::make_pair(now - std::chrono::milliseconds(9), 5);
+    
+    EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(event1));
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.count(event1), 0);
+    
+    EXPECT_FALSE(commonEventControlManager->CanLogUnorderedEvent(event2));
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[event2].second, 6);
+}
+
+HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldNotClearOtherEvents_WhenOneEventTimeout, Level1) {
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    std::string event1 = "event1";
+    std::string event2 = "event2";
+    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
+
+    commonEventControlManager->unorderedEventLogCache_[event1] = std::make_pair(now - std::chrono::seconds(11), 5);
+    commonEventControlManager->unorderedEventLogCache_[event2] = std::make_pair(now - std::chrono::milliseconds(9), 5);
+
+    EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(event1));
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.count(event2), 1);
+}
 }
 }

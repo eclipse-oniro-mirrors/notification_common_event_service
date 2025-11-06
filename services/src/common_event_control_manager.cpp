@@ -242,10 +242,53 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
     if (!freezedPidsLogger.empty()) {
         freezedPidsLogger.append("]");
     }
-    EVENT_LOGI(LOG_TAG_UNORDERED, "Pid %{public}d publish %{public}s to %{public}d end(%{public}zu,%{public}d,"
-        "%{public}d,%{public}d)%{public}s",
-        eventRecord->eventRecordInfo.pid, eventRecord->commonEventData->GetWant().GetAction().c_str(),
-        eventRecord->userId, eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPidsLogger.c_str());
+    std::string event = eventRecord->commonEventData->GetWant().GetAction();
+    if (CanLogUnorderedEvent(event)) {
+        EVENT_LOGI(LOG_TAG_UNORDERED, "Pid %{public}d publish %{public}s to %{public}d end"
+            "(%{public}zu,%{public}d,%{public}d,%{public}d)%{public}s",
+            eventRecord->eventRecordInfo.pid, event.c_str(), eventRecord->userId,
+            eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPidsLogger.c_str());
+    }
+}
+
+bool CommonEventControlManager::CanLogUnorderedEvent(const std::string &event)
+{
+    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
+    std::lock_guard<ffrt::mutex> lock(logCacheMutex_);
+    auto item = unorderedEventLogCache_.begin();
+    bool canPrint = false;
+    bool findEvent = false;
+    while (item != unorderedEventLogCache_.end()) {
+        auto last = item->second.first;
+        auto duration = now - last;
+        if (item->first != event) {
+            if (duration.count() >= EVENT_LOG_EVENT_LIMIT_INTERVALS) {
+                item = unorderedEventLogCache_.erase(item);
+                continue;
+            }
+            item++;
+            continue;
+        }
+        findEvent = true;
+        auto supressed = item->second.second;
+        if (duration.count() >= EVENT_LOG_EVENT_LIMIT_INTERVALS) {
+            if (supressed != 0) {
+                EVENT_LOGI(LOG_TAG_UNORDERED, "event %{public}s at %{public}lld log suppressed cnt %{public}u",
+                    event.c_str(), last.time_since_epoch().count(), supressed);
+            }
+            canPrint = true;
+            item = unorderedEventLogCache_.erase(item);
+        } else {
+            item->second = std::make_pair(last, supressed + 1);
+            item++;
+            canPrint = false;
+        }
+    }
+    if (!findEvent) {
+        unorderedEventLogCache_[event] = std::make_pair(now, 0);
+        canPrint = true;
+    }
+    return canPrint;
 }
 
 bool CommonEventControlManager::NotifyUnorderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecord)
