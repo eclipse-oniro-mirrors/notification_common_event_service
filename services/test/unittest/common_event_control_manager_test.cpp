@@ -496,5 +496,20 @@ HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldNotClearOther
     EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
     EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.count(event2), 1);
 }
+
+HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldClearOtherEvents_WhenOneEventTimeout, Level1) {
+    std::shared_ptr<CommonEventControlManager> commonEventControlManager =
+        std::make_shared<CommonEventControlManager>();
+    std::string event1 = "event1";
+    std::string event2 = "event2";
+    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
+
+    commonEventControlManager->unorderedEventLogCache_[event1] = std::make_pair(now - std::chrono::seconds(11), 5);
+    commonEventControlManager->unorderedEventLogCache_[event2] = std::make_pair(now - std::chrono::milliseconds(9), 5);
+
+    EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(event2));
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.count(event2), 1);
+}
 }
 }
