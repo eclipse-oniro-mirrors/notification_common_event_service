@@ -394,7 +394,7 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
         return nullptr;
     }
     int32_t length = static_cast<int32_t>(strs.size());
-    ani_object arrayObj = newArrayClass(env, length);
+    ani_array arrayObj = newArrayClass(env, length);
     if (arrayObj == nullptr) {
         return nullptr;
     }
@@ -405,7 +405,7 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
             EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 faild");
             return nullptr;
         }
-        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "iY:", i, aniStr);
+        ani_status status = env->Array_Set(arrayObj, i, aniStr);
         if (status != ANI_OK) {
             EVENT_LOGE(LOG_TAG_CES_ANI, "Object_CallMethodByName_Void failed %{public}d", status);
             return nullptr;
@@ -415,7 +415,7 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
     return arrayObj;
 }
 
-ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
+ani_array AniCommonEventUtils::newArrayClass(ani_env *env, int length)
 {
     EVENT_LOGD(LOG_TAG_CES_ANI, "newArrayClass call");
     if (env == nullptr || length < 0) {
@@ -438,7 +438,7 @@ ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
         return nullptr;
     }
     EVENT_LOGD(LOG_TAG_CES_ANI, "newArrayClass end");
-    return arrayObj;
+    return static_cast<ani_array>(arrayObj);
 }
 
 void AniCommonEventUtils::CreateNewObjectByClass(
