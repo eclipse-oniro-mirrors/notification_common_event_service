@@ -1476,5 +1476,149 @@ HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberWhetherMatched_AllCond
     // Assert
     EXPECT_FALSE(result);
 }
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckWhetherIsAppIndexSubscribed_AllBundleIsEmpty, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    EventRecordInfo publisherEventRecordInfo;
+    publisherEventRecordInfo.bundleName = "";
+    publisherEventRecordInfo.uid = 10000;
+    eventRecord.eventRecordInfo = publisherEventRecordInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "";
+    eventRecordInfo.uid = 10000;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckWhetherIsAppIndexSubscribed(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckWhetherIsAppIndexSubscribed_SubscreiberBundleIsEmpty, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    EventRecordInfo publisherEventRecordInfo;
+    publisherEventRecordInfo.bundleName = "publisherBundle";
+    publisherEventRecordInfo.uid = 10000;
+    eventRecord.eventRecordInfo = publisherEventRecordInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "";
+    eventRecordInfo.uid = 10000;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckWhetherIsAppIndexSubscribed(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckWhetherIsAppIndexSubscribed_PublisherBundleIsEmpty, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    EventRecordInfo publisherEventRecordInfo;
+    publisherEventRecordInfo.bundleName = "";
+    publisherEventRecordInfo.uid = 10000;
+    eventRecord.eventRecordInfo = publisherEventRecordInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "subscriber";
+    eventRecordInfo.uid = 10000;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckWhetherIsAppIndexSubscribed(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckWhetherIsAppIndexSubscribed_BundleIsNotEqual, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    EventRecordInfo publisherEventRecordInfo;
+    publisherEventRecordInfo.bundleName = "publisher";
+    publisherEventRecordInfo.uid = 10000;
+    eventRecord.eventRecordInfo = publisherEventRecordInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "subscriber";
+    eventRecordInfo.uid = 10000;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckWhetherIsAppIndexSubscribed(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckWhetherIsAppIndexSubscribed_BundleIsEqualButUidIsNotEqual, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    EventRecordInfo publisherEventRecordInfo;
+    publisherEventRecordInfo.bundleName = "publisher";
+    publisherEventRecordInfo.uid = 10001;
+    eventRecord.eventRecordInfo = publisherEventRecordInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "publisher";
+    eventRecordInfo.uid = 10000;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckWhetherIsAppIndexSubscribed(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckWhetherIsAppIndexSubscribed_BundleIsEqualAndUidIsEqual, Level0)
+{
+    // Arrange
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    CommonEventRecord eventRecord;
+    EventRecordInfo publisherEventRecordInfo;
+    publisherEventRecordInfo.bundleName = "publisher";
+    publisherEventRecordInfo.uid = 10000;
+    eventRecord.eventRecordInfo = publisherEventRecordInfo;
+
+    SubscriberRecordPtr subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.bundleName = "publisher";
+    eventRecordInfo.uid = 10000;
+    subscriberRecord->eventRecordInfo = eventRecordInfo;
+
+    // Act
+    bool result = manager->CheckWhetherIsAppIndexSubscribed(subscriberRecord, eventRecord);
+
+    // Assert
+    EXPECT_TRUE(result);
+}
 }
 }

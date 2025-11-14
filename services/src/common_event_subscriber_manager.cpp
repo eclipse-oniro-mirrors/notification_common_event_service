@@ -440,6 +440,9 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         if (!CheckSubscriberPermission(subscriberRecord, eventRecord)) {
             continue;
         }
+        if (!CheckWhetherIsAppIndexSubscribed(subscriberRecord, eventRecord)) {
+            continue;
+        }
         if (!CheckPublisherWhetherMatched(subscriberRecord, eventRecord)) {
             continue;
         }
@@ -448,6 +451,20 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
         }
         SubscribeScreenEventToBlackListApp(eventRecord, bundleName, subscriberUid, records, subscriberRecord);
     }
+}
+
+bool CommonEventSubscriberManager::CheckWhetherIsAppIndexSubscribed(const SubscriberRecordPtr &subscriberRecord,
+    const CommonEventRecord &eventRecord)
+{
+    auto publisherBundleName = eventRecord.eventRecordInfo.bundleName;
+    auto publisherUid = eventRecord.eventRecordInfo.uid;
+    auto subscriberBundleName = subscriberRecord->eventRecordInfo.bundleName;
+    auto subscriberUid = subscriberRecord->eventRecordInfo.uid;
+    if (!publisherBundleName.empty() && !subscriberBundleName.empty() &&
+        subscriberBundleName == publisherBundleName && subscriberUid != publisherUid) {
+        return false;
+    }
+    return true;
 }
 
 bool CommonEventSubscriberManager::CheckPublisherWhetherMatched(
