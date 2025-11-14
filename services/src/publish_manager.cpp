@@ -34,7 +34,7 @@ bool PublishManager::CheckIsFloodAttack(pid_t appUid)
     std::lock_guard<ffrt::mutex> lock(mutex_);
     bool isAttacked = false;
     int64_t now = SystemTime::GetNowSysTime();
-    EVENT_LOGD(LOG_TAG_CES, "dispatch common event by app (uid = %{publish}d) at now = %{public}" PRId64, appUid, now);
+    EVENT_LOGD(LOG_TAG_CES, "dispatch common event by app (uid = %{public}d) at now = %{public}" PRId64, appUid, now);
     auto iter = floodAttackAppStatistics_.find(appUid);
     if (iter == floodAttackAppStatistics_.end()) {
         floodAttackAppStatistics_[appUid].emplace_back(now);
@@ -50,7 +50,7 @@ bool PublishManager::CheckIsFloodAttack(pid_t appUid)
         }
     }
     if (iter->second.size() + 1 > FLOOD_ATTACK_NUMBER_MAX) {
-        EVENT_LOGW(LOG_TAG_CES, "CES was maliciously attacked by app (uid = %{publish}d)", appUid);
+        EVENT_LOGW(LOG_TAG_CES, "CES was maliciously attacked by app (uid = %{public}d)", appUid);
         isAttacked = true;
     }
     iter->second.emplace_back(now);
