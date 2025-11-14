@@ -439,6 +439,12 @@ static const char* const COMMON_EVENT_KIOSK_MODE_ON = "usual.event.KIOSK_MODE_ON
 static const char* const COMMON_EVENT_KIOSK_MODE_OFF = "usual.event.KIOSK_MODE_OFF";
 
 /**
+ * Indicates that the tablet switch event.
+ * This is a protected common event that can only be sent by system.
+ */
+static const char* const COMMON_EVENT_TABLET_MODE_CHANGED = "usual.event.TABLET_MODE_CHANGED";
+
+/**
  * Indicates that the lid state.
  * This is a protected common event that can only be sent by system.
  */
