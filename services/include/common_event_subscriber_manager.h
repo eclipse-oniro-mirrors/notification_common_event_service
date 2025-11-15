@@ -227,6 +227,9 @@ private:
 
     bool CheckSubscriberBySpecifiedUids(const int32_t &subscriberUid,
         const std::vector<int32_t> &specifiedSubscriberUids);
+
+    bool CheckWhetherIsAppIndexSubscribed(const SubscriberRecordPtr &subscriberRecord,
+        const CommonEventRecord &eventRecord);
  
     bool CheckSubscriberBySpecifiedType(const int32_t &specifiedSubscriberType, const bool &isSystemApp);
 
