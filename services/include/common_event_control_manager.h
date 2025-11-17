@@ -25,6 +25,9 @@
 #include "ordered_event_record.h"
 #include "ffrt.h"
 
+#define LOG_CACHE_TYPE         \
+    std::pair<std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>, uint32_t>
+
 namespace OHOS {
 namespace EventFwk {
 class CommonEventControlManager : public std::enable_shared_from_this<CommonEventControlManager> {
@@ -167,6 +170,8 @@ private:
         const std::string &eventName);
     
     void NotifyUnorderedEventLocked(std::shared_ptr<OrderedEventRecord> &eventRecord);
+
+    bool CanLogUnorderedEvent(const std::string &event);
 private:
     std::shared_ptr<EventHandler> handler_;
     std::shared_ptr<OrderedEventHandler> handlerOrdered_;
@@ -177,6 +182,8 @@ private:
     const int64_t TIMEOUT = 10000;  // How long we allow a receiver to run before giving up on it. Unit: ms
     ffrt::mutex orderedMutex_;
     ffrt::mutex unorderedMutex_;
+    ffrt::mutex logCacheMutex_;
+    std::unordered_map<std::string, LOG_CACHE_TYPE> unorderedEventLogCache_;
 
     std::shared_ptr<ffrt::queue> orderedQueue_ = nullptr;
     std::shared_ptr<ffrt::queue> unorderedQueue_ = nullptr;

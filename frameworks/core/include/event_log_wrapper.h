@@ -26,6 +26,8 @@
 
 #define EVENT_LOG_LIMIT_INTERVALS 10000 //ms
 
+#define EVENT_LOG_EVENT_LIMIT_INTERVALS 50 //ms
+
 #define CUR_FILE_NAME (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define EVENT_LOGF(tag, fmt, ...)            \
@@ -39,7 +41,6 @@
 #define EVENT_LOGD(tag, fmt, ...)            \
     ((void)HILOG_IMPL(LOG_CORE, LOG_DEBUG, EVENT_LOG_DOMAIN, tag, \
     "[%{public}s(%{public}s:%{public}d)]" fmt, CUR_FILE_NAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
-
 
 #define EVENT_PRINT_LIMIT(tag, type, level, intervals, canPrint)                               \
 do {                                                                                    \
