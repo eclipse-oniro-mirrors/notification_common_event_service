@@ -433,7 +433,8 @@ HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldReturnTrue_Wh
     std::string testEvent = "test_event";
     EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(testEvent));
     EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[testEvent].second, 0);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[0]->event_, testEvent);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[0]->missingCount_, 0);
 }
 
 HWTEST_F(CommonEventControlManagerTest,
@@ -442,11 +443,12 @@ HWTEST_F(CommonEventControlManagerTest,
         std::make_shared<CommonEventControlManager>();
     std::string testEvent = "test_event";
     auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-    commonEventControlManager->unorderedEventLogCache_[testEvent] =
-        std::make_pair(now - std::chrono::seconds(11), 5);
+    auto oldCache = std::make_shared<CommonEventControlManager::EventLogCache>(testEvent,
+        now - std::chrono::seconds(11), 5);
+    commonEventControlManager->unorderedEventLogCache_.push_back(oldCache);
     
     EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(testEvent));
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 0);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
 }
 
 HWTEST_F(CommonEventControlManagerTest,
@@ -455,12 +457,13 @@ HWTEST_F(CommonEventControlManagerTest,
         std::make_shared<CommonEventControlManager>();
     std::string testEvent = "test_event";
     auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-    commonEventControlManager->unorderedEventLogCache_[testEvent] =
-        std::make_pair(now - std::chrono::milliseconds(9), 5);
+    auto oldCache = std::make_shared<CommonEventControlManager::EventLogCache>(testEvent,
+        now - std::chrono::milliseconds(9), 5);
+    commonEventControlManager->unorderedEventLogCache_.push_back(oldCache);
     
     EXPECT_FALSE(commonEventControlManager->CanLogUnorderedEvent(testEvent));
     EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[testEvent].second, 6);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[0]->missingCount_, 6);
 }
 
 HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldHandleMultipleEventsCorrectly, Level1) {
@@ -469,32 +472,42 @@ HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldHandleMultipl
     std::string event1 = "event1";
     std::string event2 = "event2";
     auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-    
-    commonEventControlManager->unorderedEventLogCache_[event1] = std::make_pair(now - std::chrono::seconds(11), 5);
-    commonEventControlManager->unorderedEventLogCache_[event2] = std::make_pair(now - std::chrono::milliseconds(9), 5);
+    auto oldCache1 = std::make_shared<CommonEventControlManager::EventLogCache>(event1,
+        now - std::chrono::seconds(11), 5);
+    auto oldCache2 = std::make_shared<CommonEventControlManager::EventLogCache>(event2,
+        now - std::chrono::milliseconds(9), 5);
+    commonEventControlManager->unorderedEventLogCache_.push_back(oldCache1);
+    commonEventControlManager->unorderedEventLogCache_.push_back(oldCache2);
     
     EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(event1));
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.count(event1), 0);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 2);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[0]->event_, event1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[0]->missingCount_, 0);
     
     EXPECT_FALSE(commonEventControlManager->CanLogUnorderedEvent(event2));
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[event2].second, 6);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 2);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[1]->event_, event2);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[1]->missingCount_, 6);
 }
 
-HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldNotClearOtherEvents_WhenOneEventTimeout, Level1) {
+HWTEST_F(CommonEventControlManagerTest, CanLogUnorderedEvent_ShouldClearOtherEvents_WhenAllEventTimeout, Level1) {
     std::shared_ptr<CommonEventControlManager> commonEventControlManager =
         std::make_shared<CommonEventControlManager>();
     std::string event1 = "event1";
     std::string event2 = "event2";
     auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
 
-    commonEventControlManager->unorderedEventLogCache_[event1] = std::make_pair(now - std::chrono::seconds(11), 5);
-    commonEventControlManager->unorderedEventLogCache_[event2] = std::make_pair(now - std::chrono::milliseconds(9), 5);
+    auto oldCache1 = std::make_shared<CommonEventControlManager::EventLogCache>(event1,
+        now - std::chrono::seconds(11), 5);
+    auto oldCache2 = std::make_shared<CommonEventControlManager::EventLogCache>(event2,
+        now - std::chrono::seconds(9), 5);
+    commonEventControlManager->unorderedEventLogCache_.push_back(oldCache1);
+    commonEventControlManager->unorderedEventLogCache_.push_back(oldCache2);
 
     EXPECT_TRUE(commonEventControlManager->CanLogUnorderedEvent(event1));
     EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.size(), 1);
-    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_.count(event2), 1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[0]->event_, event1);
+    EXPECT_EQ(commonEventControlManager->unorderedEventLogCache_[0]->missingCount_, 0);
 }
 }
 }

@@ -253,39 +253,40 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
 
 bool CommonEventControlManager::CanLogUnorderedEvent(const std::string &event)
 {
-    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
     std::lock_guard<ffrt::mutex> lock(logCacheMutex_);
+    auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
     auto item = unorderedEventLogCache_.begin();
     bool canPrint = false;
     bool findEvent = false;
     while (item != unorderedEventLogCache_.end()) {
-        auto last = item->second.first;
+        auto last = (*item)->lastTime_;
+        auto supressed = (*item)->missingCount_;
         auto duration = now - last;
-        if (item->first != event) {
-            if (duration.count() >= EVENT_LOG_EVENT_LIMIT_INTERVALS) {
-                item = unorderedEventLogCache_.erase(item);
-                continue;
-            }
-            item++;
-            continue;
-        }
-        findEvent = true;
-        auto supressed = item->second.second;
         if (duration.count() >= EVENT_LOG_EVENT_LIMIT_INTERVALS) {
             if (supressed != 0) {
                 EVENT_LOGI(LOG_TAG_UNORDERED, "event %{public}s at %{public}lld log suppressed cnt %{public}u",
-                    event.c_str(), last.time_since_epoch().count(), supressed);
+                    (*item)->event_.c_str(), last.time_since_epoch().count(), supressed);
             }
-            canPrint = true;
-            item = unorderedEventLogCache_.erase(item);
-        } else {
-            item->second = std::make_pair(last, supressed + 1);
-            item++;
-            canPrint = false;
+            if ((*item)->event_ == event) {
+                findEvent = true;
+                canPrint = true;
+                (*item) = std::make_shared<EventLogCache>(event, now, 0);
+                item++;
+            } else {
+                item = unorderedEventLogCache_.erase(item);
+            }
+            continue;
         }
+        if ((*item)->event_ != event) {
+            item++;
+            continue;
+        }
+        ((*item)->missingCount_)++;
+        item++;
+        findEvent = true;
     }
     if (!findEvent) {
-        unorderedEventLogCache_[event] = std::make_pair(now, 0);
+        unorderedEventLogCache_.emplace_back(std::make_shared<EventLogCache>(event, now, 0));
         canPrint = true;
     }
     return canPrint;
