@@ -961,18 +961,15 @@ static ani_object getSubscribeInfo(ani_env *env, ani_object object)
     EVENT_LOGD(LOG_TAG_CES_ANI, "subscriberInstance getSubscribeInfo.");
     auto subscriberInstance = GetSubscriber(env, object);
     ani_object infoObject {};
+    ani_object nullObj = AniCommonEventUtils::GetNullObject(env);
     if (subscriberInstance == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "subscriberInstance is null.");
-        ani_ref nullObject;
-        env->GetNull(&nullObject);
-        return static_cast<ani_object>(nullObject);
+        return nullObj;
     }
     AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(env, subscriberInstance, infoObject);
     if (infoObject == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "infoObject is null.");
-        ani_ref nullObject;
-        env->GetNull(&nullObject);
-        return static_cast<ani_object>(nullObject);
+        return nullObj;
     }
     return infoObject;
 }
@@ -1115,7 +1112,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm* vm, uint32_t* result)
     }
     status = init(env, kitNs);
     if (status != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "Cannot bind native methods to L@ohos/events/emitter/emitter");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Cannot bind native methods to @ohos.commonEventManager.commonEventManager.");
         return ANI_INVALID_TYPE;
     }
 

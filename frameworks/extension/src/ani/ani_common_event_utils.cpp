@@ -17,12 +17,14 @@
 #include "ani_common_want.h"
 #include "event_log_wrapper.h"
 
+#include <ani_signature_builder.h>
+
 namespace OHOS {
 namespace EventManagerFwkAni {
 
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
-#define SETTER_METHOD_NAME(property) "<set>" #property
+using namespace arkts::ani_signature;
 
 void AniCommonEventUtils::CreateNewObjectByClass(
     ani_env* env, const char* className, ani_class& cls, ani_object& ani_data)
@@ -73,12 +75,12 @@ void AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, a
     ani_status aniResult = ANI_ERROR;
     ani_class clsInt = nullptr;
     ani_method ctor;
-    aniResult = env->FindClass("Lstd/core/Int;", &clsInt);
+    aniResult = env->FindClass("std.core.Int", &clsInt);
     if (aniResult != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject FindClass error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "I:V", &ctor);
+    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "i:", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject Class_FindMethod error. result: %{public}d.", aniResult);
         return;
@@ -106,25 +108,25 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     // set event [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetAction().c_str(), commonEventData.GetWant().GetAction().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(event), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("event").c_str(), string);
 
     // set bundleName [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetBundle().c_str(), commonEventData.GetWant().GetBundle().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(bundleName), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("bundleName").c_str(), string);
 
     // set data [string]
     env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(data), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("data").c_str(), string);
 
     // set code [number]
     ani_object codeObject;
     CreateAniIntObject(env, codeObject, commonEventData.GetCode());
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("code").c_str(), codeObject);
 
     // set parameters [Record]
     ani_ref wantParamRef = WrapWantParams(env, commonEventData.GetWant().GetParams());
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(parameters), wantParamRef);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("parameters").c_str(), wantParamRef);
 }
 
 } // namespace EventManagerFwkAni

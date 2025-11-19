@@ -17,12 +17,21 @@
 #include "ani_common_want.h"
 #include "event_log_wrapper.h"
 
+#include <ani_signature_builder.h>
+
 namespace OHOS {
 namespace EventManagerFwkAni {
 
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
-#define SETTER_METHOD_NAME(property) "<set>" #property
+using namespace arkts::ani_signature;
+
+ani_object AniCommonEventUtils::GetNullObject(ani_env *env)
+{
+    ani_ref nullRef;
+    env->GetNull(&nullRef);
+    return static_cast<ani_object>(nullRef);
+}
 
 void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string& result)
 {
@@ -30,13 +39,13 @@ void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string
     ani_size sz {};
     ret = env->String_GetUTF8Size(str, &sz);
     if (ret != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "GetStdString String_GetUTF8Size result: %{public}d.", ret);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "String_GetUTF8Size error. result: %{public}d.", ret);
         return;
     }
     result.resize(sz + 1);
     ret = env->String_GetUTF8SubString(str, 0, sz, result.data(), result.size(), &sz);
     if (ret != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "GetStdString String_GetUTF8Size result: %{public}d.", ret);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "String_GetUTF8SubString error. result: %{public}d.", ret);
         return;
     }
     result.resize(sz);
@@ -45,7 +54,7 @@ void AniCommonEventUtils::GetStdString(ani_env* env, ani_string str, std::string
 ani_status AniCommonEventUtils::GetAniString(ani_env* env, const std::string str, ani_string& aniStr)
 {
     if (env == nullptr) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "GetAniStringByString fail, env is nullptr");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "GetAniString fail, env is nullptr");
         return ANI_INVALID_ARGS;
     }
     ani_status status = env->String_NewUTF8(str.c_str(), str.size(), &aniStr);
@@ -62,7 +71,7 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
     ani_size length;
     ani_status ret = env->Array_GetLength(arrayStrings, &length);
     if (ret != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "GetStdStringArrayClass Object_GetPropertyByName_Double result: %{public}d.", ret);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Array_GetLength error. result: %{public}d.", ret);
         return;
     }
 
@@ -70,7 +79,7 @@ void AniCommonEventUtils::GetStdStringArrayClass(ani_env* env, ani_object arrayO
         ani_ref stringEntryRef;
         ret = env->Array_Get(arrayStrings, i, &stringEntryRef);
         if (ret != ANI_OK) {
-            EVENT_LOGE(LOG_TAG_CES_ANI, "GetStdStringArrayClass Object_CallMethodByName_Ref result: %{public}d.", ret);
+            EVENT_LOGE(LOG_TAG_CES_ANI, "Array_Get error. result: %{public}d.", ret);
             return;
         }
 
@@ -122,7 +131,7 @@ bool AniCommonEventUtils::GetDoubleOrUndefined(ani_env* env, ani_object param, c
     }
 
     ani_double result = 0;
-    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result))
+    if ((status = env->Object_CallMethodByName_Double(reinterpret_cast<ani_object>(obj), "toDouble", nullptr, &result))
         != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "status : %{public}d", status);
         return false;
@@ -150,7 +159,7 @@ bool AniCommonEventUtils::GetIntOrUndefined(ani_env* env, ani_object param, cons
         return false;
     }
 
-    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &res)) !=
+    if ((status = env->Object_CallMethodByName_Int(reinterpret_cast<ani_object>(obj), "toInt", nullptr, &res)) !=
         ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "status : %{public}d", status);
         return false;
@@ -180,7 +189,7 @@ bool AniCommonEventUtils::GetBooleanOrUndefined(ani_env* env, ani_object param, 
 
     ani_boolean result = 0;
     if ((status = env->Object_CallMethodByName_Boolean(
-        reinterpret_cast<ani_object>(obj), "unboxed", nullptr, &result)) != ANI_OK) {
+        reinterpret_cast<ani_object>(obj), "toBoolean", nullptr, &result)) != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "status : %{public}d", status);
         return false;
     }
@@ -232,7 +241,7 @@ bool AniCommonEventUtils::GetWantParamsOrUndefined(
     }
 
     if (!UnwrapWantParams(env, obj, wantParams)) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "GetWantParamsOrUndefined UnwrapWantParams");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "UnwrapWantParams error.");
         return false;
     }
 
@@ -346,46 +355,46 @@ void AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(
 
     // set events [Array<string>]
     ani_object eventsParamRef = GetAniStringArray(env, subscriber->GetSubscribeInfo().GetMatchingSkills().GetEvents());
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(events), eventsParamRef);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("events").c_str(), eventsParamRef);
 
     ani_string string = nullptr;
     // set publisherPermission [string]
     status = env->String_NewUTF8(
         subscriber->GetSubscribeInfo().GetPermission().c_str(),
         subscriber->GetSubscribeInfo().GetPermission().size(), &string);
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherPermission), string);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("publisherPermission").c_str(), string);
 
     // set publisherDeviceId [string]
     status = env->String_NewUTF8(
         subscriber->GetSubscribeInfo().GetDeviceId().c_str(),
         subscriber->GetSubscribeInfo().GetDeviceId().size(), &string);
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherDeviceId), string);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("publisherDeviceId").c_str(), string);
 
     // set publisherBundleName [string]
     status = env->String_NewUTF8(
         subscriber->GetSubscribeInfo().GetPublisherBundleName().c_str(),
         subscriber->GetSubscribeInfo().GetPublisherBundleName().size(), &string);
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(publisherBundleName), string);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("publisherBundleName").c_str(), string);
 
     // set userId [int]
     ani_object userIdObject;
     CreateAniIntObject(env, userIdObject, subscriber->GetSubscribeInfo().GetUserId());
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(userId), userIdObject);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("userId").c_str(), userIdObject);
 
     // set priority [int]
     ani_object priorityObject;
     CreateAniIntObject(env, priorityObject, subscriber->GetSubscribeInfo().GetPriority());
-    CallSetter(env, cls, infoObject, SETTER_METHOD_NAME(priority), priorityObject);
+    CallSetter(env, cls, infoObject, Builder::BuildSetterName("priority").c_str(), priorityObject);
 }
 
 ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std::string> strs)
 {
     if (env == nullptr) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "GetAniStringArray fail, env is nullptr or strs is empty");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "env is nullptr or strs is empty");
         return nullptr;
     }
     int32_t length = static_cast<int32_t>(strs.size());
-    ani_object arrayObj = newArrayClass(env, length);
+    ani_array arrayObj = newArrayClass(env, length);
     if (arrayObj == nullptr) {
         return nullptr;
     }
@@ -396,7 +405,7 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
             EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 faild");
             return nullptr;
         }
-        ani_status status = env->Object_CallMethodByName_Void(arrayObj, "$_set", "iC{std.core.Object}:", i, aniStr);
+        ani_status status = env->Array_Set(arrayObj, i, aniStr);
         if (status != ANI_OK) {
             EVENT_LOGE(LOG_TAG_CES_ANI, "Object_CallMethodByName_Void failed %{public}d", status);
             return nullptr;
@@ -406,16 +415,16 @@ ani_object AniCommonEventUtils::GetAniStringArray(ani_env *env, std::vector<std:
     return arrayObj;
 }
 
-ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
+ani_array AniCommonEventUtils::newArrayClass(ani_env *env, int length)
 {
     EVENT_LOGD(LOG_TAG_CES_ANI, "newArrayClass call");
     if (env == nullptr || length < 0) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "newArrayClass fail, env is nullptr or length is less than zero");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "env is nullptr or length is less than zero");
         return nullptr;
     }
     ani_class arrayCls = nullptr;
     if (ANI_OK != env->FindClass("escompat.Array", &arrayCls)) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "FindClass Lescompat/Array; Failed");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "FindClass escompat.Array Failed");
         return nullptr;
     }
     ani_method arrayCtor;
@@ -429,7 +438,7 @@ ani_object AniCommonEventUtils::newArrayClass(ani_env *env, int length)
         return nullptr;
     }
     EVENT_LOGD(LOG_TAG_CES_ANI, "newArrayClass end");
-    return arrayObj;
+    return static_cast<ani_array>(arrayObj);
 }
 
 void AniCommonEventUtils::CreateNewObjectByClass(
@@ -439,21 +448,21 @@ void AniCommonEventUtils::CreateNewObjectByClass(
     ani_method ctor = nullptr;
     aniResult = env->FindClass(className, &cls);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateNewObjectByClass findClass result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "findClass result: %{public}d.", aniResult);
         return;
     }
     if (cls == nullptr) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateNewObjectByClass cls is null.");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "cls is null.");
         return;
     }
     aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateNewObjectByClass Class_FindMethod result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Class_FindMethod result: %{public}d.", aniResult);
         return;
     }
     aniResult = env->Object_New(cls, ctor, &ani_data);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateNewObjectByClass Object_New result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Object_New result: %{public}d.", aniResult);
     }
     return;
 }
@@ -465,13 +474,13 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
     ani_class cls;
     ani_method ctor = nullptr;
     if (env == nullptr) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateBusinessErrorObject env is null.");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "env is null.");
         return;
     }
 
-    aniResult = env->FindClass("@ohos.base.BusinessError", &cls);
+    aniResult = env->FindClass(BUSINESS_ERROR_CLASS, &cls);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateBusinessErrorObject findClass result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "findClass error. result: %{public}d.", aniResult);
         return;
     }
     if (cls == nullptr) {
@@ -480,12 +489,12 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
     }
     aniResult = env->Class_FindMethod(cls, "<ctor>", ":", &ctor);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateBusinessErrorObject Class_FindMethod result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Class_FindMethod error. result: %{public}d.", aniResult);
         return;
     }
     aniResult = env->Object_New(cls, ctor, &object);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateBusinessErrorObject Object_New result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Object_New error. result: %{public}d.", aniResult);
     }
 
     ani_string string = nullptr;
@@ -502,12 +511,12 @@ void AniCommonEventUtils::CallSetter(
     ani_method setter;
     aniResult = env->Class_FindMethod(cls, setterName, nullptr, &setter);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CallSetter Class_FindMethod result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "CallSetter Class_FindMethod error. result: %{public}d.", aniResult);
         return;
     }
     aniResult = env->Object_CallMethod_Void(object, setter, value);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CallSetter Object_CallMethod_Void result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "CallSetter Object_CallMethod_Void error. result: %{public}d.", aniResult);
     }
     return;
 }
@@ -517,19 +526,19 @@ void AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, a
     ani_status aniResult = ANI_ERROR;
     ani_class clsInt = nullptr;
     ani_method ctor;
-    aniResult = env->FindClass("Lstd/core/Int;", &clsInt);
+    aniResult = env->FindClass("std.core.Int", &clsInt);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateAniIntObject FindClass error. result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "FindClass error. result: %{public}d.", aniResult);
         return;
     }
-    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "I:V", &ctor);
+    aniResult = env->Class_FindMethod(clsInt, "<ctor>", "i:", &ctor);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateAniIntObject Class_FindMethod error. result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Class_FindMethod error. result: %{public}d.", aniResult);
         return;
     }
     aniResult = env->Object_New(clsInt, ctor, &object, value);
     if (aniResult != ANI_OK) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateAniIntObject Object_New error. result: %{public}d.", aniResult);
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Object_New error. result: %{public}d.", aniResult);
         return;
     }
 }
@@ -540,7 +549,7 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     ani_class cls = nullptr;
     CreateNewObjectByClass(env, "commonEvent.commonEventData.CommonEventDataImpl", cls, ani_data);
     if ((ani_data == nullptr) || (cls == nullptr)) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "ConvertCommonEventDataToEts ani_data or cls is null.");
+        EVENT_LOGE(LOG_TAG_CES_ANI, "ani_data or cls is null.");
         return;
     }
 
@@ -548,25 +557,101 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     // set event [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetAction().c_str(), commonEventData.GetWant().GetAction().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(event), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("event").c_str(), string);
 
     // set bundleName [string]
     env->String_NewUTF8(
         commonEventData.GetWant().GetBundle().c_str(), commonEventData.GetWant().GetBundle().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(bundleName), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("bundleName").c_str(), string);
 
     // set data [string]
     env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(data), string);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("data").c_str(), string);
 
     // set code [int]
     ani_object codeObject;
     CreateAniIntObject(env, codeObject, commonEventData.GetCode());
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(code), codeObject);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("code").c_str(), codeObject);
 
     // set parameters [Record]
     ani_ref wantParamRef = WrapWantParams(env, commonEventData.GetWant().GetParams());
-    CallSetter(env, cls, ani_data, SETTER_METHOD_NAME(parameters), wantParamRef);
+    CallSetter(env, cls, ani_data, Builder::BuildSetterName("parameters").c_str(), wantParamRef);
+}
+
+static ani_object WrapError(ani_env *env, const std::string &msg)
+{
+    if (env == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "null env");
+        return nullptr;
+    }
+    ani_status status = ANI_ERROR;
+    ani_string aniMsg = nullptr;
+    if ((status = env->String_NewUTF8(msg.c_str(), msg.size(), &aniMsg)) != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 failed %{public}d", status);
+        return nullptr;
+    }
+    ani_ref undefRef;
+    if ((status = env->GetUndefined(&undefRef)) != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "GetUndefined failed %{public}d", status);
+        return nullptr;
+    }
+    ani_class cls = nullptr;
+    if ((status = env->FindClass(ERROR_CLASS_NAME, &cls)) != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "FindClass failed %{public}d", status);
+        return nullptr;
+    }
+    ani_method method = nullptr;
+    if ((status = env->Class_FindMethod(cls, "<ctor>", "C{std.core.String}C{escompat.ErrorOptions}:", &method)) !=
+        ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Class_FindMethod failed %{public}d", status);
+        return nullptr;
+    }
+    ani_object obj = nullptr;
+    if ((status = env->Object_New(cls, method, &obj, aniMsg, undefRef)) != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Object_New failed %{public}d", status);
+        return nullptr;
+    }
+    return obj;
+}
+
+static ani_object CreateError(ani_env *env, ani_int code, const std::string &msg)
+{
+    if (env == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "null env");
+        return nullptr;
+    }
+    ani_status status = ANI_ERROR;
+    ani_class cls = nullptr;
+    if ((status = env->FindClass(BUSINESS_ERROR_CLASS, &cls)) != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "FindClass failed %{public}d", status);
+        return nullptr;
+    }
+    ani_method method = nullptr;
+    if ((status = env->Class_FindMethod(cls, "<ctor>", "iC{escompat.Error}:", &method)) != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Class_FindMethod failed %{public}d", status);
+        return nullptr;
+    }
+    ani_object error = WrapError(env, msg);
+    if (error == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "error nulll");
+        return nullptr;
+    }
+    ani_object obj = nullptr;
+    if ((status = env->Object_New(cls, method, &obj, code, error)) != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "Object_New failed %{public}d", status);
+        return nullptr;
+    }
+    return obj;
+}
+
+void AniCommonEventUtils::ThrowError(ani_env *env, int32_t errCode, const std::string &errorMsg)
+{
+    if (env == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "null env");
+        return;
+    }
+
+    env->ThrowError(static_cast<ani_error>(CreateError(env, errCode, errorMsg)));
 }
 
 } // namespace EventManagerFwkAni

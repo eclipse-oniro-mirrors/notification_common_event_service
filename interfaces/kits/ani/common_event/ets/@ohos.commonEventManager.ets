@@ -121,10 +121,8 @@ namespace commonEventManager {
         callback: AsyncCallback<CommonEventSubscriber, void>): void {
         hilog.info(0x0000, TAG, 'createSubscriber callback call.');
         let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
-        task.then((e: NullishType)=>{
-            let result: CommonEventSubscriber = e as CommonEventSubscriber;
-            hilog.info(0x0000, TAG, 'createSubscriber result.');
-            callback(null, result);
+        task.then((data: NullishType)=>{
+            callback(null, data as CommonEventSubscriber);
         }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
             let err: BusinessError = error as BusinessError;
@@ -137,10 +135,8 @@ namespace commonEventManager {
         let p = new Promise<CommonEventSubscriber>((resolve: (v: CommonEventSubscriber) => void,
             reject: (error: Error) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
-            p1.then((e :NullishType)=>{
-                hilog.info(0x0000, TAG, 'createSubscriber Promise result.');
-                let result: CommonEventSubscriber  = e as CommonEventSubscriber;
-                resolve(result);
+            p1.then((data :NullishType)=>{
+                resolve(data as CommonEventSubscriber);
             }, (err: Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
                 reject(err);

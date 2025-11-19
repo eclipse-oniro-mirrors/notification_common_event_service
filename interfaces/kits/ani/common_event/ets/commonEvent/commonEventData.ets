@@ -12,13 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RecordData } from '@ohos.base';
 
 export interface CommonEventData {
     event: string;
     bundleName?: string;
     code?: int;
     data?: string;
-    parameters?: Record<string, Object>;
+    parameters?: Record<string, RecordData>;
 }
 
 class CommonEventDataImpl implements CommonEventData {
@@ -26,5 +27,5 @@ class CommonEventDataImpl implements CommonEventData {
     public bundleName?: string | undefined;
     public code?: int | undefined;
     public data?: string | undefined;
-    public parameters?: Record<string, Object> | undefined;
+    public parameters?: Record<string, RecordData> | undefined;
 }
