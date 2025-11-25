@@ -64,13 +64,13 @@ public:
         return nullptr;
     }
 
-    int StartAbility(const Want &want, int32_t userId, int requestCode) override
+    int StartAbility(const Want &want, int32_t userId, int requestCode, uint64_t specifiedFullTokenId = 0) override
     {
         return 1;
     }
 
-    int StartAbility(
-        const Want &want, const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode) override
+    int StartAbility(const Want &want, const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode,
+        uint64_t specifiedFullTokenId = 0) override
     {
         return 1;
     }
