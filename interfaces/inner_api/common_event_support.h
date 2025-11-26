@@ -1507,13 +1507,13 @@ public:
     static const std::string COMMON_EVENT_CLOUD_DISK_STATE_CHANGED;
 
     /**
-     * Indicates that the tablet switch event.
+     * Indicates that the open and closed state of the stand associated with the tablet mode has changed.
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_TABLET_MODE_CHANGED;
 
     /**
-     * Indicates that the lid state changed event.
+     * Indicates that the state (open or closed) of the laptop lid has changed.
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_LID_STATE_CHANGED;
