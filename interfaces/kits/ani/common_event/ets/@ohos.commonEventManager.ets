@@ -542,6 +542,8 @@ namespace commonEventManager {
         COMMON_EVENT_SCREEN_SHARE = 'usual.event.SCREEN_SHARE',
         COMMON_EVENT_RESTORE_END = 'usual.event.RESTORE_END',
         COMMON_EVENT_CLOUD_DISK_STATE_CHANGED = 'usual.event.CLOUD_DISK_STATE_CHANGED',
+        COMMON_EVENT_TABLET_MODE_CHANGED = "usual.event.TABLET_MODE_CHANGED",
+        COMMON_EVENT_LID_STATE_CHANGED = "usual.event.LID_STATE_CHANGED",
     }
 
 }
