@@ -25,9 +25,10 @@ namespace AAFwk {
 class MockIAbilityManager : public IAbilityManager {
 public:
     MOCK_METHOD(sptr<IRemoteObject>, AsObject, (), (override));
-    MOCK_METHOD(int, StartAbility, (const Want &want, int32_t userId, int requestCode), (override));
-    MOCK_METHOD(int, StartAbility,
-        (const Want &want, const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode), (override));
+    MOCK_METHOD(int, StartAbility, (const Want &want, int32_t userId, int requestCode,
+        uint64_t specifiedFullTokenId), (override));
+    MOCK_METHOD(int, StartAbility, (const Want &want, const sptr<IRemoteObject> &callerToken, int32_t userId,
+        int requestCode, uint64_t specifiedFullTokenId), (override));
     MOCK_METHOD(int, StartAbilityWithSpecifyTokenId,
         (const Want &want, const sptr<IRemoteObject> &callerToken, uint32_t specifyTokenId, int32_t userId,
             int requestCode),
