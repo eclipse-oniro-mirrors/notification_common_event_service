@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,6 +44,10 @@ private:
     bool CheckKvStore();
     DistributedKv::Value ConvertEventsToValue(const std::vector<std::string> &events);
     bool ConvertValueToEvents(const DistributedKv::Value &value, std::vector<std::string> &events);
+    int32_t GetValidKey(const std::string &key, const std::vector<int32_t> &userIds,
+        std::set<std::string> &oldkeys, std::vector<std::string> &newkeys);
+    void UpdateDistributedKv(const std::set<std::string> &oldkeys,
+        const std::map<std::string, DistributedKv::Value> &migrateValues);
 
     const DistributedKv::AppId appId_ { "static_subscriber_storage" };
     const DistributedKv::StoreId storeId_ { "static_subscriber_infos" };

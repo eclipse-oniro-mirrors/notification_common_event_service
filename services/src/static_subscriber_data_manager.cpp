@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,9 +17,11 @@
 
 #include <unistd.h>
 
+#include "bundle_manager_helper.h"
 #include "ces_inner_error_code.h"
 #include "event_log_wrapper.h"
 #include "nlohmann/json.hpp"
+#include "os_account_manager_helper.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -142,10 +144,29 @@ int32_t StaticSubscriberDataManager::QueryStaticSubscriberStateData(
         return ERR_OK;
     }
 
-    auto result = ERR_OK;
+    int32_t result = ERR_OK;
+    std::set<std::string> removeOldkeys;
+    std::map<std::string, DistributedKv::Value> migrateValues;
+    std::vector<int32_t> userIds;
+    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(userIds);
     for (const auto &item : allEntries) {
+        std::vector<std::string> newKeys;
+        result = GetValidKey(item.key.ToString(), userIds, removeOldkeys, newKeys);
+        if (result != ERR_OK) {
+            EVENT_LOGE(LOG_TAG_STATIC, "get valid key failed key is %{public}s", item.key.ToString().c_str());
+            continue;
+        }
+        if (newKeys.empty()) {
+            newKeys.push_back(item.key.ToString());
+        } else {
+            for (const auto &newKey : newKeys) {
+                migrateValues.emplace(newKey, item.value);
+            }
+        }
         if (item.value.ToString() == STATIC_SUBSCRIBER_VALUE_DEFAULT) {
-            bundleList.emplace(item.key.ToString());
+            for (const auto &nk : newKeys) {
+                bundleList.emplace(nk);
+            }
         } else {
             std::vector<std::string> values;
             if (!ConvertValueToEvents(item.value, values)) {
@@ -153,10 +174,13 @@ int32_t StaticSubscriberDataManager::QueryStaticSubscriberStateData(
                 result = ERR_INVALID_OPERATION;
                 break;
             }
-            disableEvents.emplace(item.key.ToString(), values);
+            for (const auto &nk : newKeys) {
+                disableEvents.emplace(nk, values);
+            }
         }
     }
 
+    UpdateDistributedKv(removeOldkeys, migrateValues);
     dataManager_.CloseKvStore(appId_, kvStorePtr_);
     kvStorePtr_ = nullptr;
     return result;
@@ -214,6 +238,60 @@ bool StaticSubscriberDataManager::ConvertValueToEvents(
         }
     }
     return true;
+}
+
+int32_t StaticSubscriberDataManager::GetValidKey(const std::string &key, const std::vector<int32_t> &userIds,
+    std::set<std::string> &oldkeys, std::vector<std::string> &newkeys)
+{
+    if (key.empty()) {
+        EVENT_LOGE(LOG_TAG_STATIC, "key is empty");
+        return ERR_INVALID_VALUE;
+    }
+    if (std::isdigit(static_cast<unsigned char>(key[0])) != 0) {
+        return ERR_OK;
+    }
+    if (userIds.empty()) {
+        EVENT_LOGE(LOG_TAG_STATIC, "userIds is empty");
+        return ERR_INVALID_VALUE;
+    }
+    for (const int32_t userId : userIds) {
+        int32_t uid = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetDefaultUidByBundleName(key, userId);
+        if (uid < 0) {
+            continue;
+        }
+        std::string newKey = std::to_string(uid) + key;
+        oldkeys.emplace(key);
+        newkeys.push_back(newKey);
+    }
+    return ERR_OK;
+}
+
+void StaticSubscriberDataManager::UpdateDistributedKv(const std::set<std::string> &oldkeys,
+    const std::map<std::string, DistributedKv::Value> &migrateValues)
+{
+    if (kvStorePtr_ == nullptr) {
+        return;
+    }
+    std::vector<DistributedKv::Key> keyVec;
+    keyVec.reserve(oldkeys.size());
+    for (const auto &oldKey : oldkeys) {
+        keyVec.emplace_back(oldKey);
+    }
+    if (kvStorePtr_->DeleteBatch(keyVec) != DistributedKv::Status::SUCCESS) {
+        EVENT_LOGE(LOG_TAG_STATIC, "Failed to batch delete old keys");
+    }
+    
+    std::vector<DistributedKv::Entry> entryVec;
+    entryVec.reserve(migrateValues.size());
+    for (const auto &pair : migrateValues) {
+        DistributedKv::Entry entry;
+        entry.key = DistributedKv::Key(pair.first);
+        entry.value = pair.second;
+        entryVec.push_back(entry);
+    }
+    if (kvStorePtr_->PutBatch(entryVec) != DistributedKv::Status::SUCCESS) {
+        EVENT_LOGE(LOG_TAG_STATIC, "Failed to batch put new keys");
+    }
 }
 } // namespace EventFwk
 } // namespace OHOS

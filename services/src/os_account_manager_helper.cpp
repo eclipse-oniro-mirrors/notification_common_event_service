@@ -74,5 +74,17 @@ ErrCode OsAccountManagerHelper::GetCurrentActiveUserId(int32_t &id)
     return ret;
 }
 
+ErrCode OsAccountManagerHelper::GetForegroundUserIds(std::vector<int32_t> &foregroundUserIds)
+{
+    std::vector<AccountSA::ForegroundOsAccount> accounts;
+    auto result = AccountSA::OsAccountManager::GetForegroundOsAccounts(accounts);
+    if (result != ERR_OK) {
+        return result;
+    }
+    for (const auto &account : accounts) {
+        foregroundUserIds.push_back(account.localId);
+    }
+    return ERR_OK;
+}
 }  // namespace EventFwk
 }  // namespace OHOS

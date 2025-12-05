@@ -277,9 +277,13 @@ ohos_unittest("static_subscriber_data_manager_unit_test") {
     "static_subscriber_data_manager_unit_test/static_subscriber_data_manager_unit_test.cpp",
   ]
 
-  deps = [ "${ces_native_path}:cesfwk_innerkits" ]
+  deps = [
+    "${ces_native_path}:cesfwk_innerkits",
+    "${services_path}:cesfwk_services_static",
+  ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_core",
     "ffrt:libffrt",
     "googletest:gtest_main",
     "hilog:libhilog",
@@ -620,7 +624,6 @@ ohos_unittest("bundle_manager_helper_test") {
   sources = [
     "${tools_path}/test/mock/mock_common_event_stub.cpp",
     "bundle_manager_helper_test.cpp",
-    "mock/mock_os_account_manager_helper.cpp",
     "mock/mock_service_registry.cpp",
   ]
 
