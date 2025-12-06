@@ -71,16 +71,18 @@ bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionA
 bool BundleManagerHelper::QueryExtensionInfos(std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
     EVENT_LOGD(LOG_TAG_CES, "enter");
-    int userId = SUBSCRIBE_USER_SYSTEM_BEGIN;
-    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
-    EVENT_LOGD(LOG_TAG_CES, "active userId = %{public}d", userId);
-
+    std::vector<int32_t> foregroundUserIds;
+    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetForegroundUserIds(foregroundUserIds);
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!GetBundleMgrProxy()) {
         return false;
     }
-    sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
-        userId, extensionInfos);
+
+    for (const auto &userId : foregroundUserIds) {
+        EVENT_LOGD(LOG_TAG_CES, "foreground userId = %{public}d", userId);
+        sptrBundleMgr_->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::STATICSUBSCRIBER,
+            userId, extensionInfos);
+    }
     return true;
 }
 
@@ -208,15 +210,24 @@ bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag 
     std::vector<AppExecFwk::ApplicationInfo> &appInfos)
 {
     EVENT_LOGD(LOG_TAG_CES, "enter");
-    int userId = SUBSCRIBE_USER_SYSTEM_BEGIN;
-    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetCurrentActiveUserId(userId);
-    EVENT_LOGD(LOG_TAG_CES, "active userId = %{public}d", userId);
-
+    
+    std::vector<int32_t> foregroundUserIds;
+    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetForegroundUserIds(foregroundUserIds);
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!GetBundleMgrProxy()) {
         return false;
     }
-    return sptrBundleMgr_->GetApplicationInfos(flag, userId, appInfos);
+    bool result = true;
+    for (const auto &userId : foregroundUserIds) {
+        EVENT_LOGD(LOG_TAG_CES, "foreground userId = %{public}d", userId);
+        std::vector<AppExecFwk::ApplicationInfo> tempAppInfos;
+        if (!sptrBundleMgr_->GetApplicationInfos(flag, userId, tempAppInfos)) {
+            result = false;
+            continue;
+        }
+        appInfos.insert(appInfos.end(), tempAppInfos.begin(), tempAppInfos.end());
+    }
+    return result;
 }
 
 int32_t BundleManagerHelper::GetDefaultUidByBundleName(const std::string &bundle, const int32_t userId)

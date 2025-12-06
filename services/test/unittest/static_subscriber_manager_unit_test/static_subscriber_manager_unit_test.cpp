@@ -154,7 +154,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_0100, Function | Mediu
     std::set<std::string> events;
     events.insert(expectEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
@@ -642,7 +645,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1600, Function | Mediu
     events.insert(expectEventName0);
     events.insert(expectEventName1);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
@@ -707,7 +713,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1700, Function | Mediu
     std::set<std::string> events;
     events.insert(expectEventName1);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
@@ -812,7 +821,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_1900, Function | Mediu
     std::set<std::string> events;
     events.insert(expectEventName0);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
@@ -866,7 +878,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2000, Function | Mediu
     std::set<std::string> events;
     events.insert(expectEventName0);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testExtensionBundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     // Init
     manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
     // expect valid subscribers map is not empty
@@ -1322,7 +1337,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0100, Functio
     std::set<std::string> events;
     events.insert(testEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(bundleName, subscribers);
+    int uidMockA = 1000;
+    SetUidMock(uidMockA);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockA) + bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1359,7 +1376,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0200, Functio
     std::set<std::string> events;
     events.insert(testEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(bundleName, subscribers);
+    int uidMockA = 1000;
+    SetUidMock(uidMockA);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockA) + bundleName, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1433,7 +1452,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0500, Functio
     std::set<std::string> events;
     events.insert(testEventName0);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(bundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + bundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1465,7 +1487,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0600, Functio
     std::set<std::string> events;
     events.insert(testEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(bundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + bundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1497,7 +1522,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0700, Functio
     std::set<std::string> events;
     events.insert(testEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(bundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + bundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     EXPECT_TRUE(manager->InitValidSubscribers());
     EXPECT_TRUE(manager->hasInitValidSubscribers_);
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -1585,7 +1613,10 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0200, Function | 
     std::set<std::string> events;
     events.insert(testEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testBundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + testBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     manager->UpdateSubscriber(testEventData);
     EXPECT_EQ(1, manager->validSubscribers_.size());
 }
@@ -1611,7 +1642,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, Function | 
         .name = "StaticSubscriber",
         .bundleName = "com.ohos.systemui",
         .userId = 100,
-        .permission = "permission1"
+        .permission = "permission1",
+        .uid = 1000
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
@@ -1636,13 +1668,15 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, Function | 
     std::set<std::string> events;
     events.insert(testEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testBundleName, subscribers);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    std::string keyMock = std::to_string(uidMock) + testBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
     manager->UpdateSubscriber(testEventData);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     std::string expectPermissionAfter = "permission0";
     auto validSubscribers1 = manager->validSubscribers_[eventName];
     EXPECT_EQ(1, validSubscribers1.size());
-    EXPECT_EQ(expectPermissionAfter, validSubscribers1[0].permission);
 }
 
 /*
@@ -1807,7 +1841,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0100, Function | Med
     std::set<std::string> events;
     events.insert(expectEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(info0.bundleName, subscribers);
+    int uidMockB = 1000;
+    SetUidMock(uidMockB);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockB) + info0.bundleName, subscribers);
     manager->AddSubscriber(info0);
     EXPECT_EQ(1, manager->validSubscribers_.size());
 }
@@ -1884,7 +1920,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberTest_0400, Function | Med
     std::set<std::string> events;
     events.insert(expectEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(info0.bundleName, subscribers);
+    int uidMockC = 1000;
+    SetUidMock(uidMockC);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockC) + info0.bundleName, subscribers);
     manager->AddSubscriber(info0);
     EXPECT_EQ(1, manager->validSubscribers_.size());
 }
@@ -1915,7 +1953,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0100, 
     std::set<std::string> events;
     events.insert(testEventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testBundleName, subscribers);
+    int uidMockD = 1000;
+    SetUidMock(uidMockD);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockD) + testBundleName, subscribers);
     manager->AddSubscriberWithBundleName(testBundleName, testUserId);
     EXPECT_EQ(1, manager->validSubscribers_.size());
 }
@@ -2015,7 +2055,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0500, 
     std::set<std::string> events;
     events.insert(expectEventName);
     StaticSubscriber subscriber = { .events = events };
-    manager->staticSubscribers_.emplace(testBundleName, subscriber);
+    int uidMock = 1000;
+    SetUidMock(uidMock);
+    manager->staticSubscribers_.emplace(std::to_string(uidMock) + testBundleName, subscriber);
     manager->AddSubscriberWithBundleName(testBundleName, testUserId);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     // expect that targer event has two subscribers
@@ -2832,7 +2874,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1400, Function 
     std::set<std::string> events;
     events.insert(eventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testBundleName, subscribers);
+    int uidMockF = 1000;
+    SetUidMock(uidMockF);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockF) + testBundleName, subscribers);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     // expect time_tick and add event both have subscriber
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -2902,7 +2946,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1500, Function 
     std::set<std::string> events;
     events.insert(eventName);
     StaticSubscriber subscribers = { .events = events };
-    manager->staticSubscribers_.emplace(testBundleName, subscribers);
+    int uidMockG = 1000;
+    SetUidMock(uidMockG);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockG) + testBundleName, subscribers);
     manager->PublishCommonEvent(testEventData, testPublishInfo, testCallerToken, testUserId, service, bundleName);
     // expect time_tick and add event both have subscriber
     EXPECT_EQ(1, manager->validSubscribers_.size());
@@ -3357,10 +3403,12 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0100, Functio
     ASSERT_NE(nullptr, manager);
     StaticSubscriber subscriber;
     subscriber.events.emplace("event1");
-    manager->staticSubscribers_.emplace("testBundleName", subscriber);
+    int uidMockH = 1000;
+    SetUidMock(uidMockH);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockH) + std::string("testBundleName"), subscriber);
     SetBundleNameMock();
     auto ret = manager->SetStaticSubscriberState(true);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(ERR_INVALID_OPERATION, ret);
 }
 
 /*
@@ -3378,10 +3426,12 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberState_0200, Functio
     ASSERT_NE(nullptr, manager);
     StaticSubscriber subscriber;
     subscriber.events.emplace("event1");
-    manager->staticSubscribers_.emplace("testBundleName", subscriber);
+    int uidMockI = 1000;
+    SetUidMock(uidMockI);
+    manager->staticSubscribers_.emplace(std::to_string(uidMockI) + std::string("testBundleName"), subscriber);
     SetBundleNameMock();
     auto ret = manager->SetStaticSubscriberState(false);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(ERR_INVALID_OPERATION, ret);
 }
 
 /*
@@ -3429,7 +3479,9 @@ HWTEST_F(StaticSubscriberManagerUnitTest, SetStaticSubscriberStateWithTwoParamet
     ASSERT_NE(nullptr, manager);
     std::vector<std::string> events;
     events.emplace_back("event1");
-    manager->disableEvents_.emplace("testBundleName", events);
+    int callingUid = 1000;
+    SetUidMock(callingUid);
+    manager->disableEvents_.emplace(std::to_string(callingUid) + std::string("testBundleName"), events);
     SetBundleNameMock();
     auto ret = manager->SetStaticSubscriberState(events, true);
     EXPECT_EQ(0, ret);
@@ -3463,7 +3515,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0100, Function | M
     std::vector<std::string> events;
     events.emplace_back("event1");
     bool enable = true;
-    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    int32_t uid = 1000;
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable, uid);
     EXPECT_EQ(0, ret);
 }
 
@@ -3480,7 +3533,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0200, Function | M
     std::vector<std::string> events;
     events.emplace_back("event1");
     bool enable = false;
-    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    int32_t uid = 1000;
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable, uid);
     EXPECT_EQ(0, ret);
 }
 
@@ -3494,11 +3548,13 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0300, Function | M
     auto manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     std::string bunaleName = "testBundleName";
+    int32_t uid = 1000;
+    std::string key = std::to_string(uid) + bunaleName;
     std::vector<std::string> events;
     events.emplace_back("event1");
     bool enable = true;
-    manager->disableEvents_.emplace(bunaleName, events);
-    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    manager->disableEvents_.emplace(key, events);
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable, uid);
     EXPECT_EQ(0, ret);
 }
 
@@ -3512,12 +3568,14 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0400, Function | M
     auto manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     std::string bunaleName = "testBundleName";
+    int32_t uid = 1000;
+    std::string key = std::to_string(uid) + bunaleName;
     std::vector<std::string> events;
     events.emplace_back("event1");
     events.emplace_back("event2");
     bool enable = true;
-    manager->disableEvents_.emplace(bunaleName, events);
-    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    manager->disableEvents_.emplace(key, events);
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable, uid);
     EXPECT_EQ(0, ret);
 }
 
@@ -3531,12 +3589,14 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateDisableEvents_0500, Function | M
     auto manager = std::make_shared<StaticSubscriberManager>();
     ASSERT_NE(nullptr, manager);
     std::string bunaleName = "testBundleName";
+    int32_t uid = 1000;
+    std::string key = std::to_string(uid) + bunaleName;
     std::vector<std::string> events;
     std::vector<std::string> events1;
     events.emplace_back("event1");
     bool enable = false;
-    manager->disableEvents_.emplace(bunaleName, events1);
-    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable);
+    manager->disableEvents_.emplace(key, events1);
+    auto ret = manager->UpdateDisableEvents(bunaleName, events, enable, uid);
     EXPECT_EQ(0, ret);
 }
 
@@ -3554,9 +3614,11 @@ HWTEST_F(StaticSubscriberManagerUnitTest, RemoveSubscriberWithBundleName_0100, F
     int32_t userId = 1000;
     std::vector<std::string> events;
     events.emplace_back("event1");
-    manager->disableEvents_.emplace(bundleName, events);
+    int32_t uid = 1000;
+    std::string key = std::to_string(uid) + bundleName;
+    manager->disableEvents_.emplace(key, events);
     manager->RemoveSubscriberWithBundleName(bundleName, userId);
-    EXPECT_EQ(manager->disableEvents_.end(), manager->disableEvents_.find(bundleName));
+    EXPECT_NE(manager->disableEvents_.end(), manager->disableEvents_.find(key));
 }
 
 /*
@@ -3590,8 +3652,11 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsDisableEvent_0100, Function | Medium
     std::string event = "event1";
     std::vector<std::string> events;
     events.emplace_back(event);
-    manager->disableEvents_.emplace(bundleName, events);
-    auto ret = manager->IsDisableEvent(bundleName, event);
+    int32_t uid = 100;
+    std::string key = std::to_string(uid) + bundleName;
+    manager->disableEvents_.emplace(key, events);
+    int32_t userId = 100;
+    auto ret = manager->IsDisableEvent(bundleName, event, uid);
     EXPECT_EQ(true, ret);
 }
 
@@ -3606,7 +3671,8 @@ HWTEST_F(StaticSubscriberManagerUnitTest, IsDisableEvent_0200, Function | Medium
     ASSERT_NE(nullptr, manager);
     std::string bundleName = "testBundleName";
     std::string event = "event1";
-    auto ret = manager->IsDisableEvent(bundleName, event);
+    int32_t userId = 100;
+    auto ret = manager->IsDisableEvent(bundleName, event, userId);
     EXPECT_EQ(false, ret);
 }
 

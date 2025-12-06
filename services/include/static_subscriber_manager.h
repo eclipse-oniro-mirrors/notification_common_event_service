@@ -78,6 +78,7 @@ private:
         std::optional<int32_t> filterCode;
         std::optional<std::string> filterData;
         std::map<std::string, ParameterType> filterParameters;
+        int32_t uid = -1;
 
         bool operator==(const StaticSubscriberInfo &that) const
         {
@@ -105,8 +106,9 @@ private:
         const std::string &permission);
     void SendStaticEventProcErrHiSysEvent(int32_t userId, const std::string &publisherName,
         const std::string &subscriberName, const std::string &eventName);
-    bool IsDisableEvent(const std::string &bundleName, const std::string &event);
-    int32_t UpdateDisableEvents(const std::string &bundleName, const std::vector<std::string> &events, bool enable);
+    bool IsDisableEvent(const std::string &bundleName, const std::string &event, int32_t uid);
+    int32_t UpdateDisableEvents(const std::string &bundleName,
+        const std::vector<std::string> &events, bool enable, int32_t uid);
     void PublishCommonEventConnecAbility(const CommonEventData &data, const sptr<IRemoteObject> &service,
         const int32_t &userId, const std::string &bundleName, const std::string &abilityName);
     void PublishCommonEventInner(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,

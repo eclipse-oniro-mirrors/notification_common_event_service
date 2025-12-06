@@ -65,6 +65,14 @@ public:
      * @return Returns result code.
      */
     ErrCode GetCurrentActiveUserId(int32_t &id);
+
+    /**
+     * Get foreground userIds.
+     *
+     * @param foregroundUserIds foreground userIds.
+     * @return Returns result code.
+     */
+    ErrCode GetForegroundUserIds(std::vector<int32_t> &foregroundUserIds);
 };
 }  // namespace EventFwk
 }  // namespace OHOS
