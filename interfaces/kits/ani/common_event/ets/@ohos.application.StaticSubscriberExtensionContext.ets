@@ -55,7 +55,7 @@ export class StaticSubscriberExtensionContext extends ExtensionContext {
 
     startAbility(want: Want, callback: AsyncCallback<void, void>): void {
         let task = taskpool.execute(this.nativeStartAbilitySync, want);
-        task.then((e: NullishType)=>{
+        task.then((e: Any)=>{
             callback(null, undefined);
         }, (error: Object): void => {
             let err: BusinessError = error as BusinessError;
@@ -66,7 +66,7 @@ export class StaticSubscriberExtensionContext extends ExtensionContext {
     startAbility(want: Want): Promise<void> {
         let pPromise = new Promise<void>((resolve: ResolveCallback<void>, reject: RejectCallback): void => {
             let task = taskpool.execute(this.nativeStartAbilitySync, want);
-            task.then((e: NullishType): void => {
+            task.then((e: Any): void => {
                 resolve(undefined);
             }, (error: Error): void => {
                 hilog.error(0xD001202, TAG, 'nativeStartAbilitySync Promise error');
