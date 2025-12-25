@@ -459,6 +459,142 @@ HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_015, TestSize.Level0)
 }
 
 /*
+ * Feature: CommonEventSubscribeTest
+ * Function: CommonEvent Subscribe
+ * SubFunction: Subscribe common event
+ * FunctionPoints: test subscribe event
+ * EnvConditions: system run normally
+ * CaseDescription:  1. subscribe common event
+ *                   2. success subscribe common event with right parameters
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_016, TestSize.Level0)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(EVENT);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+    int32_t subscribeResult = CommonEventManager::Subscribe(subscriber);
+    EXPECT_EQ(0, subscribeResult);
+    Want want;
+    want.SetAction(EVENT);
+    CommonEventData data;
+    data.SetWant(want);
+
+    mtx.lock();
+    bool publishResult = CommonEventManager::PublishCommonEvent(data);
+
+    EXPECT_EQ(true, publishResult);
+
+    struct tm startTime = {0};
+    EXPECT_EQ(OHOS::GetSystemCurrentTime(&startTime), true);
+
+    struct tm doingTime = {0};
+    int64_t seconds = 0;
+
+    while (!mtx.try_lock()) {
+        EXPECT_EQ(OHOS::GetSystemCurrentTime(&doingTime), true);
+        seconds = OHOS::GetSecondsBetween(startTime, doingTime);
+        if (seconds >= TIME_OUT_SECONDS_LIMIT) {
+            break;
+        }
+    }
+    EXPECT_LT(seconds, TIME_OUT_SECONDS_LIMIT);
+    mtx.unlock();
+}
+
+/*
+ * Feature: CommonEventSubscribeTest
+ * Function: CommonEvent Subscribe
+ * SubFunction: Subscribe common event
+ * FunctionPoints: test subscribe event
+ * EnvConditions: system run normally
+ * CaseDescription:  1. subscribe common event
+ *                   2. different subscriber subscribe event
+ *                   3. success subscribe common event with right parameters
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_017, TestSize.Level0)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(EVENT);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscribera = std::make_shared<SubscriberTest>(subscribeInfo);
+    std::shared_ptr<SubscriberTest> subscriberb = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    int32_t subscribeResulta = CommonEventManager::Subscribe(subscribera);
+
+    EXPECT_EQ(0, subscribeResulta);
+
+    int32_t subscribeResultb = CommonEventManager::Subscribe(subscriberb);
+
+    EXPECT_EQ(0, subscribeResultb);
+}
+
+/*
+ * Feature: CommonEventSubscribeTest
+ * Function: CommonEvent Subscribe
+ * SubFunction: Subscribe common event
+ * FunctionPoints: test subscribe event
+ * EnvConditions: system run normally
+ * CaseDescription:  1. subscribe common event
+ *                   2. fail subscribe common event kit with null subscriber
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_018, TestSize.Level0)
+{
+    int32_t subscribeResult = CommonEventManager::Subscribe(nullptr);
+
+    EXPECT_EQ(401, subscribeResult);
+}
+
+/*
+ * Feature: CommonEventSubscribeTest
+ * Function: CommonEvent Subscribe
+ * SubFunction: Subscribe common event
+ * FunctionPoints: test subscribe event
+ * EnvConditions: system run normally
+ * CaseDescription:  1. subscribe common event
+ *                   2. fail subscribe common event with no event
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_019, TestSize.Level0)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    int32_t subscribeResult = CommonEventManager::Subscribe(subscriber);
+
+    EXPECT_EQ(401, subscribeResult);
+}
+
+/*
+ * Feature: CommonEventSubscribeTest
+ * Function:CommonEvent Subscribe
+ * SubFunction: Subscribe common event
+ * FunctionPoints: test subscribe event
+ * EnvConditions: system run normally
+ * CaseDescription:  1. subscribe common event
+ *                   2. fail subscribe common event because common event listener has subsrciber
+ */
+HWTEST_F(CommonEventSubscribeTest, CommonEventSubscribe_020, TestSize.Level0)
+{
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(EVENT);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<SubscriberTest> subscriber = std::make_shared<SubscriberTest>(subscribeInfo);
+
+    CommonEventManager::Subscribe(subscriber);
+
+    std::string event1 = "test2";
+    matchingSkills.RemoveEvent(EVENT);
+    matchingSkills.AddEvent(event1);
+    CommonEventSubscribeInfo subscribeInfo1(matchingSkills);
+    subscriber->SetSubscribeInfo(subscribeInfo1);
+
+    int32_t subscribeResult = CommonEventManager::Subscribe(subscriber);
+
+    EXPECT_EQ(0, subscribeResult);
+}
+
+/*
  * tc.number: CommonEventManager_001
  * tc.name: test Freeze
  * tc.type: FUNC

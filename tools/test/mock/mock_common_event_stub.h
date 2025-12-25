@@ -30,7 +30,8 @@ public:
     static sptr<MockCommonEventStub> GetInstance();
     MOCK_METHOD4(FinishReceiver, bool(const sptr<IRemoteObject> &proxy, const int32_t &code,
                                      const std::string &receiverData, const bool &abortEvent));
-
+    MOCK_METHOD4(SubscribeCommonEvent, int32_t(const CommonEventSubscribeInfo& subscribeInfo,
+        const sptr<IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult));
     ErrCode PublishCommonEvent(
         const CommonEventData& event,
         const CommonEventPublishInfo& publishInfo,
@@ -60,12 +61,6 @@ public:
         int32_t callerToken,
         int32_t userId,
         bool& funcResult) override;
-
-    ErrCode SubscribeCommonEvent(
-        const CommonEventSubscribeInfo& subscribeInfo,
-        const sptr<IRemoteObject>& commonEventListener,
-        int32_t instanceKey,
-        int32_t& funcResult) override;
 
     ErrCode UnsubscribeCommonEvent(
         const sptr<IRemoteObject>& commonEventListener,

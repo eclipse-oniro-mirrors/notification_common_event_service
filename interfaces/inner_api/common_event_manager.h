@@ -153,6 +153,14 @@ public:
     static bool SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
+     * Subscribes to common events, This interface supports subscription updates.
+     *
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns ERR_OK if success; otherwise failed.
+     */
+    static int32_t Subscribe(const std::shared_ptr<CommonEventSubscriber> &subscriber);
+
+    /**
      * Subscribes to common events.
      *
      * @param subscriber Indicates the common event subscriber.

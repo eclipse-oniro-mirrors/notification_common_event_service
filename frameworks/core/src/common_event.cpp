@@ -188,6 +188,63 @@ __attribute__((no_sanitize("cfi"))) bool CommonEvent::PublishParameterCheck(cons
     return true;
 }
 
+int32_t CommonEvent::CheckCommonEventListener(const std::shared_ptr<CommonEventSubscriber> &subscriber,
+    const sptr<ICommonEvent> &proxy, bool isUpdate)
+{
+    sptr<IRemoteObject> commonEventListener = nullptr;
+    uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
+    int32_t funcResult = -1;
+    if (subscribeState == INITIAL_SUBSCRIPTION) {
+        auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
+        commonEventListener, UNDEFINED_INSTANCE_KEY, funcResult);
+        if (res != ERR_OK) {
+            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+        }
+        if (funcResult != ERR_OK) {
+            EVENT_LOGD(LOG_TAG_CES, "subscribe common event failed, remove event listener");
+            std::lock_guard<std::mutex> lock(eventListenersMutex_);
+            auto eventListener = eventListeners_.find(subscriber);
+            if (eventListener != eventListeners_.end()) {
+                eventListeners_.erase(eventListener);
+            }
+        }
+        return funcResult;
+    } else if (subscribeState == ALREADY_SUBSCRIBED) {
+        if (isUpdate) {
+            auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
+                commonEventListener, UNDEFINED_INSTANCE_KEY, funcResult);
+            return res != ERR_OK ? ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID : ERR_OK;
+        }
+        return ERR_OK;
+    } else if (subscribeState == SUBSCRIBE_EXCEED_LIMIT) {
+        return ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT;
+    } else {
+        return ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT;
+    }
+}
+
+int32_t CommonEvent::Subscribe(
+    const std::shared_ptr<CommonEventSubscriber> &subscriber)
+{
+    NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
+    EVENT_LOGD(LOG_TAG_CES, "enter");
+
+    if (subscriber == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES, "the subscriber is null");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+    if (subscriber->GetSubscribeInfo().GetMatchingSkills().CountEvent() == 0) {
+        EVENT_LOGE(LOG_TAG_CES, "the subscriber has no event");
+        return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+    sptr<ICommonEvent> proxy = GetCommonEventProxy();
+    if (!proxy) {
+        return ERR_NOTIFICATION_CESM_ERROR;
+    }
+    DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
+    return CheckCommonEventListener(subscriber, proxy, true);
+}
+
 __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
     const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
@@ -208,31 +265,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
         return ERR_NOTIFICATION_CESM_ERROR;
     }
     DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
-    sptr<IRemoteObject> commonEventListener = nullptr;
-    uint8_t subscribeState = CreateCommonEventListener(subscriber, commonEventListener);
-    int32_t funcResult = -1;
-    if (subscribeState == INITIAL_SUBSCRIPTION) {
-        auto res = proxy->SubscribeCommonEvent(subscriber->GetSubscribeInfo(),
-        commonEventListener, UNDEFINED_INSTANCE_KEY, funcResult);
-        if (res != ERR_OK) {
-            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        if (funcResult != ERR_OK) {
-            EVENT_LOGD(LOG_TAG_CES, "subscribe common event failed, remove event listener");
-            std::lock_guard<std::mutex> lock(eventListenersMutex_);
-            auto eventListener = eventListeners_.find(subscriber);
-            if (eventListener != eventListeners_.end()) {
-                eventListeners_.erase(eventListener);
-            }
-        }
-        return funcResult;
-    } else if (subscribeState == ALREADY_SUBSCRIBED) {
-        return ERR_OK;
-    } else if (subscribeState == SUBSCRIBE_EXCEED_LIMIT) {
-        return ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT;
-    } else {
-        return ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT;
-    }
+    return CheckCommonEventListener(subscriber, proxy, false);
 }
 
 __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(

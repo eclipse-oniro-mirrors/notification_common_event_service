@@ -39,6 +39,11 @@ const CommonEventSubscribeInfo &CommonEventSubscriber::GetSubscribeInfo() const
     return subscribeInfo_;
 }
 
+void CommonEventSubscriber::SetSubscribeInfo(const CommonEventSubscribeInfo &subscribeInfo)
+{
+    subscribeInfo_ = subscribeInfo;
+}
+
 bool CommonEventSubscriber::SetCode(const int32_t &code)
 {
     if (!CheckSynchronous()) {
