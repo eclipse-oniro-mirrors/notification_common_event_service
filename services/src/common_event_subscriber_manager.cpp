@@ -67,37 +67,31 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
         EVENT_LOGE(LOG_TAG_SUBSCRIBER, "eventSubscribeInfo is null");
         return nullptr;
     }
-
     if (commonEventListener == nullptr) {
         EVENT_LOGE(LOG_TAG_SUBSCRIBER, "commonEventListener is null");
         return nullptr;
     }
-
     std::vector<std::string> events = eventSubscribeInfo->GetMatchingSkills().GetEvents();
     if (events.size() == 0 || events.size() > SUBSCRIBE_EVENT_MAX_NUM) {
         EVENT_LOGE(LOG_TAG_SUBSCRIBER, "subscribed events size is error");
         return nullptr;
     }
-
-    auto record = std::make_shared<EventSubscriberRecord>();
-    if (record == nullptr) {
-        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "Failed to create EventSubscriberRecord");
-        return nullptr;
+    auto record = GetSubscriberRecord(commonEventListener);
+    if (record != nullptr) {
+        UpdateSubscriberRecordLocked(eventSubscribeInfo, recordTime, eventRecordInfo, record);
+    } else {
+        record = std::make_shared<EventSubscriberRecord>();
+        record->eventSubscribeInfo = eventSubscribeInfo;
+        record->commonEventListener = commonEventListener;
+        record->recordTime = recordTime;
+        record->eventRecordInfo = eventRecordInfo;
+        if (death_ != nullptr) {
+            commonEventListener->AddDeathRecipient(death_);
+        }
+        if (!InsertSubscriberRecordLocked(events, record)) {
+            return nullptr;
+        }
     }
-
-    record->eventSubscribeInfo = eventSubscribeInfo;
-    record->commonEventListener = commonEventListener;
-    record->recordTime = recordTime;
-    record->eventRecordInfo = eventRecordInfo;
-
-    if (death_ != nullptr) {
-        commonEventListener->AddDeathRecipient(death_);
-    }
-
-    if (!InsertSubscriberRecordLocked(events, record)) {
-        return nullptr;
-    }
-
     if (eventRecordInfo.uid != SAMGR_UID) {
         std::string unsafeEventsLogger = "";
         for (auto event : events) {
@@ -112,7 +106,6 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::InsertSubsc
                 unsafeEventsLogger.c_str(), eventRecordInfo.subId.c_str());
         }
     }
-
     return record;
 }
 
@@ -308,26 +301,41 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
             CES_REGISTER_EXCEED_LIMIT);
     }
 
-    for (auto event : events) {
-        auto infoItem = eventSubscribers_.find(event);
-        if (infoItem != eventSubscribers_.end()) {
-            infoItem->second.insert(record);
-
-            if (infoItem->second.size() > MAX_SUBSCRIBER_NUM_PER_EVENT && record->eventSubscribeInfo != nullptr) {
-                EVENT_LOGW(LOG_TAG_SUBSCRIBER, "%{public}s event has %{public}zu subscriber, please check",
-                    event.c_str(), infoItem->second.size());
-                SendSubscriberExceedMaximumHiSysEvent(record->eventSubscribeInfo->GetUserId(), event,
-                    infoItem->second.size());
-            }
-        } else {
-            std::set<SubscriberRecordPtr> EventSubscribersPtr;
-            EventSubscribersPtr.insert(record);
-            eventSubscribers_[event] = EventSubscribersPtr;
-        }
-    }
-
+    InsertEventSubscribers(events, record);
     subscribers_.emplace_back(record);
     subscriberCounts_[pid]++;
+
+    return true;
+}
+
+bool CommonEventSubscriberManager::UpdateSubscriberRecordLocked(
+    const SubscribeInfoPtr &eventSubscribeInfo, const struct tm &recordTime,
+    const EventRecordInfo &eventRecordInfo, SubscriberRecordPtr record)
+{
+    EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
+
+    if (record == nullptr) {
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "record is null");
+        return false;
+    }
+    
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+
+    std::vector<std::string> oldEvents = record->eventSubscribeInfo->GetMatchingSkills().GetEvents();
+    std::vector<std::string> newEvents = eventSubscribeInfo->GetMatchingSkills().GetEvents();
+
+    std::vector<std::string> removeEvents;
+    std::set_difference(oldEvents.begin(), oldEvents.end(), newEvents.begin(), newEvents.end(),
+        std::back_inserter(removeEvents));
+    RemoveEventSubscribers(removeEvents, record);
+
+    std::vector<std::string> addEvents;
+    std::set_difference(newEvents.begin(), newEvents.end(), oldEvents.begin(), oldEvents.end(),
+        std::back_inserter(addEvents));
+    record->eventSubscribeInfo = eventSubscribeInfo;
+    record->eventRecordInfo = eventRecordInfo;
+    record->recordTime = recordTime;
+    InsertEventSubscribers(addEvents, record);
 
     return true;
 }
@@ -372,6 +380,45 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
     }
 
     return ERR_OK;
+}
+
+
+void CommonEventSubscriberManager::InsertEventSubscribers(const std::vector<std::string> &events,
+    const SubscriberRecordPtr &record)
+{
+    for (auto event : events) {
+        auto infoItem = eventSubscribers_.find(event);
+        if (infoItem != eventSubscribers_.end()) {
+            infoItem->second.insert(record);
+            if (infoItem->second.size() > MAX_SUBSCRIBER_NUM_PER_EVENT && record->eventSubscribeInfo != nullptr) {
+                EVENT_LOGW(LOG_TAG_SUBSCRIBER, "%{public}s event has %{public}zu subscriber, please check",
+                    event.c_str(), infoItem->second.size());
+                SendSubscriberExceedMaximumHiSysEvent(record->eventSubscribeInfo->GetUserId(), event,
+                    infoItem->second.size());
+            }
+        } else {
+            std::set<SubscriberRecordPtr> EventSubscribersPtr;
+            EventSubscribersPtr.insert(record);
+            eventSubscribers_[event] = EventSubscribersPtr;
+        }
+    }
+}
+
+void CommonEventSubscriberManager::RemoveEventSubscribers(const std::vector<std::string> &events,
+    const SubscriberRecordPtr &record)
+{
+    for (auto event : events) {
+        auto infoItem = eventSubscribers_.find(event);
+        if (infoItem != eventSubscribers_.end()) {
+            auto it = infoItem->second.find(record);
+            if (it != infoItem->second.end()) {
+                infoItem->second.erase(it);
+            }
+            if (infoItem->second.empty()) {
+                eventSubscribers_.erase(infoItem);
+            }
+        }
+    }
 }
 
 bool CommonEventSubscriberManager::CheckSubscriberByUserId(

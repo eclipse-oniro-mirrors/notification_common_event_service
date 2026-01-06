@@ -594,6 +594,178 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2500, Le
 }
 
 /**
+ * @tc.name: UpdateSubscriberRecordLocked_0100
+ * @tc.desc: test UpdateSubscriberRecordLocked function and record is nullptr.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, UpdateSubscriberRecordLocked_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "UpdateSubscriberRecordLocked_0100 start";
+    std::string event1 = "test1";
+    struct tm curTime {0};
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(event1);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<CommonEventSubscribeInfo> commonEventSubscribeInfo =
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::string event = "aa";
+    std::vector<std::string> events;
+    events.emplace_back(event);
+    SubscriberRecordPtr record = nullptr;
+
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
+    EXPECT_EQ(false, commonEventSubscriberManager.UpdateSubscriberRecordLocked(commonEventSubscribeInfo,
+        curTime, eventRecordInfo, record));
+    GTEST_LOG_(INFO) << "UpdateSubscriberRecordLocked_0100 end";
+}
+
+/**
+ * @tc.name: UpdateSubscriberRecordLocked_0200
+ * @tc.desc: test UpdateSubscriberRecordLocked function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, UpdateSubscriberRecordLocked_0200, Level1)
+{
+    std::string event1 = "test1";
+    std::string event2 = "test2";
+    struct tm curTime {0};
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(event1);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<CommonEventSubscribeInfo> commonEventSubscribeInfo =
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
+
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
+
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    MatchingSkills matchingSkills_;
+    matchingSkills.AddEvent(event2);
+    record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    std::set<SubscriberRecordPtr> mults;
+    mults.insert(record);
+    commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
+    commonEventSubscriberManager.eventSubscribers_.emplace(event2, mults);
+    EXPECT_EQ(true, commonEventSubscriberManager.UpdateSubscriberRecordLocked(commonEventSubscribeInfo,
+        curTime, eventRecordInfo, record));
+    GTEST_LOG_(INFO) << "UpdateSubscriberRecordLocked_0200 end";
+}
+
+/**
+ * @tc.name: InsertEventSubscribers_0100
+ * @tc.desc: test InsertEventSubscribers function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, InsertEventSubscribers_0100, Level1)
+{
+    std::string event1 = "test1";
+    std::string event2 = "test2";
+    std::vector<std::string> events;
+    events.push_back(event1);
+    events.push_back(event2);
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(event1);
+    matchingSkills.AddEvent(event2);
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
+    std::set<SubscriberRecordPtr> mults;
+    mults.insert(record);
+    commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
+    commonEventSubscriberManager.InsertEventSubscribers(events, record);
+    EXPECT_EQ(commonEventSubscriberManager.eventSubscribers_.size(), 2);
+}
+
+/**
+ * @tc.name: InsertEventSubscribers_0200
+ * @tc.desc: test InsertEventSubscribers function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, InsertEventSubscribers_0200, Level1)
+{
+    std::string event1 = "test1";
+    std::vector<std::string> events;
+    events.push_back(event1);
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(event1);
+
+    std::set<SubscriberRecordPtr> mults;
+    for (int32_t i = 0; i < 255; i++) {
+        SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+        mults.insert(record);
+    }
+    
+    SubscriberRecordPtr record1 = std::make_shared<EventSubscriberRecord>();
+    record1->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
+    mults.insert(record1);
+
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
+    commonEventSubscriberManager.InsertEventSubscribers(events, record1);
+    EXPECT_EQ(commonEventSubscriberManager.eventSubscribers_[event1].size(), 256);
+}
+
+/**
+ * @tc.name: RemoveEventSubscribers_0100
+ * @tc.desc: test RemoveEventSubscribers function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, RemoveEventSubscribers_0100, Level1)
+{
+    std::string event1 = "test1";
+    std::string event2 = "test2";
+    std::vector<std::string> events;
+    events.push_back(event1);
+    events.push_back(event2);
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(event1);
+
+    std::set<SubscriberRecordPtr> mults;
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
+    mults.insert(record);
+
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
+    commonEventSubscriberManager.RemoveEventSubscribers(events, record);
+    EXPECT_EQ(commonEventSubscriberManager.eventSubscribers_.size(), 0);
+}
+
+/**
+ * @tc.name: RemoveEventSubscribers_0200
+ * @tc.desc: test RemoveEventSubscribers function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, RemoveEventSubscribers_0200, Level1)
+{
+    std::string event1 = "test1";
+    std::string event2 = "test2";
+    std::vector<std::string> events;
+    events.push_back(event1);
+    events.push_back(event2);
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(event1);
+
+    std::set<SubscriberRecordPtr> mults;
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    SubscriberRecordPtr record1 = std::make_shared<EventSubscriberRecord>();
+    record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
+    mults.insert(record);
+
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
+    commonEventSubscriberManager.RemoveEventSubscribers(events, record1);
+    EXPECT_EQ(commonEventSubscriberManager.eventSubscribers_.size(), 1);
+}
+
+/**
  * @tc.name: CommonEventStickyManager_0100
  * @tc.desc: test UpdateStickyEventLocked function.
  * @tc.type: FUNC

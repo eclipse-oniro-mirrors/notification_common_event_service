@@ -220,7 +220,8 @@ private:
     bool CheckPublisherRequiredPermissions(const SubscriberRecordPtr &subscriberRecord,
         const CommonEventRecord &eventRecord);
     bool InsertSubscriberRecordLocked(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
-
+    bool UpdateSubscriberRecordLocked(const SubscribeInfoPtr &eventSubscribeInfo,
+        const struct tm &recordTime, const EventRecordInfo &eventRecordInfo, SubscriberRecordPtr record);
     int RemoveSubscriberRecordLocked(const sptr<IRemoteObject> &commonEventListener);
 
     bool CheckSubscriberByUserId(const int32_t &subscriberUserId, const bool &isSystemApp, const int32_t &userId);
@@ -257,6 +258,9 @@ private:
 
     void SubscribeScreenEventToBlackListApp(const CommonEventRecord &eventRecord, std::string subscribeBundleName,
         int subscribeUid, std::vector<SubscriberRecordPtr> &records, SubscriberRecordPtr it);
+
+    void InsertEventSubscribers(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
+    void RemoveEventSubscribers(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
 
 private:
     ffrt::mutex mutex_;

@@ -52,6 +52,13 @@ public:
     const CommonEventSubscribeInfo &GetSubscribeInfo() const;
 
     /**
+     * Sets the common event subscriber info
+     *
+     * @param subscribeInfo Indicates the common event subscriber info be set
+     */
+    void SetSubscribeInfo(const CommonEventSubscribeInfo &subscribeInfo);
+
+    /**
      * Sets the result code of the current ordered common event.
      *
      * @param code Indicates the result code of the current ordered common event

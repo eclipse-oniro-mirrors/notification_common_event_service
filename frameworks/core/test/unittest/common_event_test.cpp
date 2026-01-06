@@ -25,6 +25,7 @@
 #include "common_event_subscriber.h"
 #include "event_receive_proxy.h"
 #include "matching_skills.h"
+#include "icommon_event.h"
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -35,6 +36,13 @@ namespace {
     constexpr uint16_t SYSTEM_UID = 1000;
     constexpr int32_t ERR_OK = 0;
 }
+
+class CommonEventSubscriberTest : public CommonEventSubscriber {
+public:
+    explicit CommonEventSubscriberTest(const CommonEventSubscribeInfo &subscribeInfo) {};
+    virtual ~CommonEventSubscriberTest() {};
+    virtual void OnReceiveEvent(const CommonEventData &data) {};
+};
 
 class CommonEventTest : public CommonEventSubscriber, public testing::Test {
 public:
@@ -265,6 +273,12 @@ HWTEST_F(CommonEventTest, CommonEventStub_003, TestSize.Level0)
 
     MockCommonEventStub commonEventStub;
     int32_t subscribeCommonEvent = -1;
+    EXPECT_CALL(commonEventStub, SubscribeCommonEvent(::testing::_, ::testing::_, ::testing::_, ::testing::_))
+        .WillOnce(::testing::Invoke([](const CommonEventSubscribeInfo& subscribeInfo,
+            const OHOS::sptr<OHOS::IRemoteObject>& commonEventListener, int32_t instanceKey, int32_t& funcResult) {
+            funcResult = ERR_OK;
+            return true;
+        }));
     commonEventStub.SubscribeCommonEvent(subscribeInfo, nullptr, 0, subscribeCommonEvent);
     EXPECT_EQ(ERR_OK, subscribeCommonEvent);
 }
@@ -536,4 +550,93 @@ HWTEST_F(CommonEventTest, SetStaticSubscriberStateWithTwoParameters_0100, Functi
     events.push_back("StaticCommonEventA");
     int32_t result = commonEvent.SetStaticSubscriberState(events, true);
     EXPECT_EQ(result, OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP);
+}
+
+/*
+ * @tc.number: CheckCommonEventListener_0100
+ * @tc.name: verify CheckCommonEventListener
+ * @tc.desc: Failed to call CheckCommonEventListener API to obtain proxy
+ */
+HWTEST_F(CommonEventTest, CheckCommonEventListener_0100, Function | SmallTest | Level0)
+{
+    CommonEvent commonEvent;
+    OHOS::sptr<ICommonEvent> proxy =  commonEvent.GetCommonEventProxy();
+    std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
+    int32_t result = commonEvent.CheckCommonEventListener(subscriber, proxy, false);
+    EXPECT_EQ(result, OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT);
+}
+
+/*
+ * @tc.number: CheckCommonEventListener_0200
+ * @tc.name: verify CheckCommonEventListener
+ * @tc.desc: Failed to call CheckCommonEventListener API to obtain proxy
+ */
+HWTEST_F(CommonEventTest, CheckCommonEventListener_0200, Function | SmallTest | Level0)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    CommonEvent commonEvent;
+    for (int32_t i = 0; i < 200; i++) {
+        auto subscriber = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
+        commonEvent.eventListeners_.emplace(subscriber, nullptr);
+    }
+    OHOS::sptr<ICommonEvent> proxy =  commonEvent.GetCommonEventProxy();
+    auto subscriber1 = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
+    int32_t result = commonEvent.CheckCommonEventListener(subscriber1, proxy, false);
+    EXPECT_EQ(result, OHOS::Notification::ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT);
+}
+
+/*
+ * @tc.number: CheckCommonEventListener_0300
+ * @tc.name: verify CheckCommonEventListener
+ * @tc.desc: Failed to call CheckCommonEventListener API to obtain proxy
+ */
+HWTEST_F(CommonEventTest, CheckCommonEventListener_0300, Function | SmallTest | Level0)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    CommonEvent commonEvent;
+    OHOS::sptr<ICommonEvent> proxy =  commonEvent.GetCommonEventProxy();
+    
+    auto subscriber = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
+    commonEvent.CheckCommonEventListener(subscriber, proxy, false);
+    int32_t result = commonEvent.CheckCommonEventListener(subscriber, proxy, false);
+    EXPECT_EQ(result, ERR_OK);
+}
+
+/*
+ * @tc.number: CheckCommonEventListener_0400
+ * @tc.name: verify CheckCommonEventListener
+ * @tc.desc: Failed to call CheckCommonEventListener API to obtain proxy
+ */
+HWTEST_F(CommonEventTest, CheckCommonEventListener_0400, Function | SmallTest | Level0)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    CommonEvent commonEvent;
+    OHOS::sptr<ICommonEvent> proxy =  commonEvent.GetCommonEventProxy();
+    
+    auto subscriber = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
+    commonEvent.CheckCommonEventListener(subscriber, proxy, true);
+    int32_t result = commonEvent.CheckCommonEventListener(subscriber, proxy, true);
+    EXPECT_EQ(result, ERR_OK);
+}
+
+/*
+ * @tc.number: CheckCommonEventListener_0500
+ * @tc.name: verify CheckCommonEventListener
+ * @tc.desc: Failed to call CheckCommonEventListener API to obtain proxy
+ */
+HWTEST_F(CommonEventTest, CheckCommonEventListener_0500, Function | SmallTest | Level0)
+{
+    MatchingSkills matchingSkills;
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    CommonEvent commonEvent;
+    auto proxy =  MockCommonEventStub::GetInstance();
+    EXPECT_CALL(*proxy, SubscribeCommonEvent(::testing::_, ::testing::_, ::testing::_, ::testing::_))
+        .Times(1)
+        .WillOnce(::testing::Return(OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID));
+    auto subscriber = std::make_shared<CommonEventSubscriberTest>(subscribeInfo);
+    int32_t result = commonEvent.CheckCommonEventListener(subscriber, proxy, true);
+    EXPECT_EQ(result, OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
 }

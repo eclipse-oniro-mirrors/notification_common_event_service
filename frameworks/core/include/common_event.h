@@ -89,6 +89,14 @@ public:
     int32_t SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber);
 
     /**
+     * Subscribes to common events, This interface supports subscription updates.
+     *
+     * @param subscriber Indicates the common event subscriber.
+     * @return Returns ERR_OK if successful; otherwise failed.
+     */
+    int32_t Subscribe(const std::shared_ptr<CommonEventSubscriber> &subscriber);
+
+    /**
      * Unsubscribes from common events.
      *
      * @param subscriber Indicates the common event subscriber.
@@ -238,6 +246,9 @@ private:
         const std::shared_ptr<CommonEventSubscriber> &subscriber, sptr<IRemoteObject> &commonEventListener);
 
     void LogCachedSubscriber();
+
+    int32_t CheckCommonEventListener(const std::shared_ptr<CommonEventSubscriber> &subscriber,
+        const sptr<ICommonEvent> &proxy, bool isUpdate);
 
 private:
     static std::mutex instanceMutex_;

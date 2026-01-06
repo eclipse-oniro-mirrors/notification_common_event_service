@@ -85,20 +85,6 @@ ErrCode MockCommonEventStub::PublishCommonEvent(
     return ERR_OK;
 }
 
-int32_t MockCommonEventStub::SubscribeCommonEvent(
-    const CommonEventSubscribeInfo& subscribeInfo,
-    const sptr<IRemoteObject>& commonEventListener,
-    int32_t instanceKey,
-    int32_t& funcResult)
-{
-    EVENT_LOGD(LOG_TAG_CES, "enter");
-
-    subscribeInfoPtr = std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
-
-    funcResult = ERR_OK;
-    return ERR_OK;
-}
-
 ErrCode MockCommonEventStub::UnsubscribeCommonEvent(
     const sptr<IRemoteObject>& commonEventListener,
     int32_t& funcResult)

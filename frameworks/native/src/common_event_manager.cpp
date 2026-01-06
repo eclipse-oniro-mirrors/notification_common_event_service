@@ -97,6 +97,11 @@ bool CommonEventManager::SubscribeCommonEvent(const std::shared_ptr<CommonEventS
     return NewSubscribeCommonEvent(subscriber) == ERR_OK ? true : false;
 }
 
+int32_t CommonEventManager::Subscribe(const std::shared_ptr<CommonEventSubscriber> &subscriber)
+{
+    return CommonEvent::GetInstance()->Subscribe(subscriber);
+}
+
 int32_t CommonEventManager::NewSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     return CommonEvent::GetInstance()->SubscribeCommonEvent(subscriber);
