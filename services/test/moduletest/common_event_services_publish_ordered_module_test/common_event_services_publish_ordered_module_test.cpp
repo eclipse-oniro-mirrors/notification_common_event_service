@@ -43,12 +43,12 @@ using OHOS::Parcel;
 
 namespace {
 static OHOS::sptr<OHOS::AppExecFwk::MockBundleMgrService> p_bundleObject = nullptr;
-const std::string EVENTCASE1 = "com.ces.test.event.case1";
-const std::string EVENTCASE2 = "com.ces.test.event.case2";
-const std::string EVENTCASE3 = "com.ces.test.event.case3";
-const std::string EVENTCASE4 = "com.ces.test.event.case4";
-const std::string EVENTCASE5 = "com.ces.test.event.case5";
-const std::string EVENTCASE6 = "com.ces.test.event.case6";
+const std::string EVENTCASE1 = "com.ces.module_test.event.case1";
+const std::string EVENTCASE2 = "com.ces.module_test.event.case2";
+const std::string EVENTCASE3 = "com.ces.module_test.event.case3";
+const std::string EVENTCASE4 = "com.ces.module_test.event.case4";
+const std::string EVENTCASE5 = "com.ces.module_test.event.case5";
+const std::string EVENTCASE6 = "com.ces.module_test.event.case6";
 const std::string INNITDATA = "com.ces.test.initdata";
 const std::string CHANGEDATA = "com.ces.test.changedata";
 std::mutex g_mtx;

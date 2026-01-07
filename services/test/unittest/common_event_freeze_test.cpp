@@ -31,13 +31,13 @@ using namespace testing::ext;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
 namespace {
-const std::string EVENTCASE1 = "com.ces.test.event.case1";
-const std::string EVENTCASE2 = "com.ces.test.event.case2";
-const std::string EVENTCASE3 = "com.ces.test.event.case3";
-const std::string EVENTCASE4 = "com.ces.test.event.case4";
-const std::string EVENTCASE5 = "com.ces.test.event.case5";
-const std::string EVENTCASE6 = "com.ces.test.event.case6";
-const std::string EVENTCASE7 = "com.ces.test.event.case7";
+const std::string EVENTCASE1 = "com.ces.freeze_test.event.case1";
+const std::string EVENTCASE2 = "com.ces.freeze_test.event.case2";
+const std::string EVENTCASE3 = "com.ces.freeze_test.event.case3";
+const std::string EVENTCASE4 = "com.ces.freeze_test.event.case4";
+const std::string EVENTCASE5 = "com.ces.freeze_test.event.case5";
+const std::string EVENTCASE6 = "com.ces.freeze_test.event.case6";
+const std::string EVENTCASE7 = "com.ces.freeze_test.event.case7";
 const std::string INNITDATA = "com.ces.test.initdata";
 const std::string CHANGEDATA = "com.ces.test.changedata";
 const std::string CHANGEDATA2 = "com.ces.test.changedata2";
@@ -46,13 +46,12 @@ constexpr uint8_t CHANGECODE = 1;
 constexpr uint8_t CHANGECODE2 = 2;
 constexpr uint8_t PID = 0;
 constexpr uint16_t SYSTEM_UID = 1000;
-constexpr uid_t UID = 1;
-constexpr uid_t UID2 = 2;
+constexpr uid_t UID = 1023;
+constexpr uid_t UID2 = 2023;
 constexpr uint8_t FREEZE_SLEEP = 1;
-constexpr uint8_t FREEZE_SLEEP2 = 12;
+constexpr uint8_t FREEZE_SLEEP2 = 2;
 bool isFreeze_uid = false;
 bool isFreeze_uid2 = false;
-std::mutex mtx;
 
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
 OHOS::sptr<OHOS::IRemoteObject> commonEventListener;
@@ -70,13 +69,12 @@ public:
     void TearDown();
     bool SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber, uid_t callingUid,
         OHOS::sptr<OHOS::IRemoteObject> &commonEventListener);
-    bool PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-        const std::shared_ptr<CommonEventSubscriber> &subscriber, OHOS::sptr<OHOS::IRemoteObject> &commonEventListener);
     static bool FinishReceiver(
         const OHOS::sptr<OHOS::IRemoteObject> &proxy, const int &code, const std::string &data, const bool &abortEvent);
     bool Freeze(const uid_t &uid);
     bool Unfreeze(const uid_t &uid);
-    void AsyncProcess();
+    void AsyncProcess(const std::string &event, std::shared_ptr<CommonEventSubscriber> subscriber);
+    bool PublishCommonEvent(const std::string &event, std::shared_ptr<CommonEventSubscriber> subscriber);
 
 private:
     std::shared_ptr<EventRunner> runner_;
@@ -96,6 +94,7 @@ public:
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
+        EVENT_LOGI(LOG_TAG_CES, "Subscriber1: receive:  %{public}s", data.GetWant().GetAction().c_str());
         std::string action = data.GetWant().GetAction();
         if (action == EVENTCASE1) {
             ProcessSubscriberTestCase1(data);
@@ -108,7 +107,6 @@ public:
 private:
     void ProcessSubscriberTestCase1(CommonEventData data)
     {
-        EVENT_LOGD(LOG_TAG_CES, "Subscriber1: Type:  %{public}s", data.GetWant().GetType().c_str());
         if (!IsOrderedCommonEvent()) {
             return;
         }
@@ -120,7 +118,6 @@ private:
     }
     void ProcessSubscriberTestCase2(CommonEventData data)
     {
-        EVENT_LOGD(LOG_TAG_CES, "Subscriber1: Type: %{public}s ", data.GetWant().GetType().c_str());
         EXPECT_EQ(INNITCODE, data.GetCode());
         EXPECT_EQ(INNITDATA, data.GetData());
     }
@@ -146,6 +143,7 @@ public:
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
+        EVENT_LOGI(LOG_TAG_CES, "Subscriber2: receive:  %{public}s", data.GetWant().GetAction().c_str());
         std::string action = data.GetWant().GetAction();
         if (action == EVENTCASE1) {
             ProcessSubscriberTest2Case1(data);
@@ -158,7 +156,6 @@ public:
 private:
     void ProcessSubscriberTest2Case1(CommonEventData data)
     {
-        EVENT_LOGD(LOG_TAG_CES, "Subscriber2: Type:  %{public}s", data.GetWant().GetType().c_str());
         if (!IsOrderedCommonEvent()) {
             return;
         }
@@ -175,7 +172,6 @@ private:
     }
     void ProcessSubscriberTest2Case2(CommonEventData data)
     {
-        EVENT_LOGD(LOG_TAG_CES, "Subscriber2: Type: %{public}s ", data.GetWant().GetType().c_str());
         EXPECT_EQ(INNITCODE, data.GetCode());
         EXPECT_EQ(INNITDATA, data.GetData());
     }
@@ -206,6 +202,7 @@ public:
 
     virtual void OnReceiveEvent(const CommonEventData &data)
     {
+        EVENT_LOGI(LOG_TAG_CES, "SubscriberLast: receive:  %{public}s", data.GetWant().GetAction().c_str());
         std::string action = data.GetWant().GetAction();
         if (action == EVENTCASE1) {
             ProcessSubscriberTestLastCase1(data);
@@ -218,7 +215,6 @@ public:
 private:
     void ProcessSubscriberTestLastCase1(CommonEventData data)
     {
-        EVENT_LOGD(LOG_TAG_CES, "SubscriberLast: Type: %{public}s ", data.GetWant().GetType().c_str());
         if (!isFreeze_uid2) {
             EXPECT_EQ(CHANGECODE2, data.GetCode());
             EXPECT_EQ(CHANGEDATA2, data.GetData());
@@ -305,42 +301,6 @@ bool CommonEventFreezeTest::SubscribeCommonEvent(const std::shared_ptr<CommonEve
     return handler_->PostTask(SubscribeCommonEventFunc);
 }
 
-bool CommonEventFreezeTest::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
-    const std::shared_ptr<CommonEventSubscriber> &subscriber, OHOS::sptr<OHOS::IRemoteObject> &commonEventListener)
-{
-    if (commonEventListener == nullptr && publishInfo.IsOrdered()) {
-        OHOS::sptr<IEventReceive> listener = new CommonEventListener(subscriber);
-        if (!listener) {
-            return false;
-        }
-        commonEventListener = listener->AsObject();
-    } else if (!publishInfo.IsOrdered()) {
-        commonEventListener = nullptr;
-    }
-
-    struct tm recordTime = {0};
-    if (!OHOS::GetSystemCurrentTime(&recordTime)) {
-        return false;
-    }
-    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
-    int32_t userId = UNDEFINED_USER;
-    std::string bundleName = "";
-
-    std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
-        innerCommonEventManager_,
-        data,
-        publishInfo,
-        commonEventListener,
-        recordTime,
-        PID,
-        SYSTEM_UID,
-        tokenID,
-        userId,
-        bundleName,
-        nullptr);
-    return handler_->PostTask(PublishCommonEventFunc);
-}
-
 bool CommonEventFreezeTest::FinishReceiver(
     const OHOS::sptr<OHOS::IRemoteObject> &proxy, const int &code, const std::string &data, const bool &abortEvent)
 {
@@ -361,27 +321,76 @@ bool CommonEventFreezeTest::Unfreeze(const uid_t &uid)
     return handler_->PostImmediateTask(UnfreezeFunc);
 }
 
-void CommonEventFreezeTest::AsyncProcess()
+bool CommonEventFreezeTest::PublishCommonEvent(const std::string &event,
+    std::shared_ptr<CommonEventSubscriber> subscriber)
+{
+    Want want;
+    want.SetAction(event);
+    CommonEventData data;
+    data.SetWant(want);
+    data.SetData(INNITDATA);
+    data.SetCode(INNITCODE);
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetOrdered(true);
+
+    if (commonEventListener3 == nullptr && publishInfo.IsOrdered()) {
+        OHOS::sptr<IEventReceive> listener = new CommonEventListener(subscriber);
+        if (!listener) {
+            return false;
+        }
+        commonEventListener3 = listener->AsObject();
+    } else if (!publishInfo.IsOrdered()) {
+        commonEventListener3 = nullptr;
+    }
+
+    struct tm recordTime = {0};
+    if (!OHOS::GetSystemCurrentTime(&recordTime)) {
+        return false;
+    }
+    OHOS::Security::AccessToken::AccessTokenID tokenID = 0;
+    int32_t userId = UNDEFINED_USER;
+    std::string bundleName = "";
+
+    std::function<void()> PublishCommonEventFunc = std::bind(&InnerCommonEventManager::PublishCommonEvent,
+        innerCommonEventManager_,
+        data,
+        publishInfo,
+        commonEventListener3,
+        recordTime,
+        PID,
+        SYSTEM_UID,
+        tokenID,
+        userId,
+        bundleName,
+        nullptr);
+    return handler_->PostTask(PublishCommonEventFunc);
+}
+
+void CommonEventFreezeTest::AsyncProcess(const std::string &event, std::shared_ptr<CommonEventSubscriber> subscriber)
 {
     isFreeze_uid = false;
     isFreeze_uid2 = false;
+    EXPECT_TRUE(PublishCommonEvent(event, subscriber));
     sleep(FREEZE_SLEEP);
-    EVENT_LOGD(LOG_TAG_CES, "Subscriber1 Freeze");
+    EVENT_LOGI(LOG_TAG_CES, "Subscriber1&Subscriber2 Freeze");
     Freeze(UID);
-    EVENT_LOGD(LOG_TAG_CES, "Subscriber2 Freeze");
     Freeze(UID2);
     isFreeze_uid = true;
     isFreeze_uid2 = true;
+    EXPECT_TRUE(PublishCommonEvent(event, subscriber));
     sleep(FREEZE_SLEEP);
-    EVENT_LOGD(LOG_TAG_CES, "Subscriber1 Unfreeze");
+    EVENT_LOGI(LOG_TAG_CES, "Subscriber1 Unfreeze, Subscriber2 Freeze");
     Unfreeze(UID);
     isFreeze_uid = false;
+    EXPECT_TRUE(PublishCommonEvent(event, subscriber));
     sleep(FREEZE_SLEEP2);
-    EVENT_LOGD(LOG_TAG_CES, "Subscriber2 Unfreeze");
+    EVENT_LOGI(LOG_TAG_CES, "Subscriber1 Freeze, Subscriber2 Unfreeze");
+    Freeze(UID);
+    isFreeze_uid = true;
     Unfreeze(UID2);
     isFreeze_uid2 = false;
+    EXPECT_TRUE(PublishCommonEvent(event, subscriber));
     sleep(FREEZE_SLEEP);
-    mtx.unlock();
 }
 
 HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
@@ -414,37 +423,8 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_001, TestSize.Level1)
     // subscribe another event
     EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
 
-    mtx.lock();
-    auto handler = std::make_shared<EventHandler>(EventRunner::Create());
-    std::function<void()> asyncProcessFunc = std::bind(&CommonEventFreezeTest::AsyncProcess, this);
-    handler->PostTask(asyncProcessFunc);
-
     std::shared_ptr<SubscriberTestLast> subscriber = std::make_shared<SubscriberTestLast>();
-    /* Publish */
-    int i = 0;
-    while (!mtx.try_lock()) {
-        // make a want
-        Want want;
-        want.SetAction(EVENTCASE1);
-        i++;
-        want.SetType(std::to_string(i));
-        EVENT_LOGD(LOG_TAG_CES, "PublishCommonEvent: Type: %{public}s ", std::to_string(i).c_str());
-        // make common event data
-        CommonEventData data;
-        data.SetWant(want);
-        data.SetData(INNITDATA);
-        data.SetCode(INNITCODE);
-        CommonEventPublishInfo publishInfo;
-        publishInfo.SetOrdered(true);
-
-        usleep(100000);
-
-        // publish order event
-        EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
-    }
-
-    usleep(100000);
-    mtx.unlock();
+    AsyncProcess(EVENTCASE1, subscriber);
 }
 
 HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
@@ -476,34 +456,8 @@ HWTEST_F(CommonEventFreezeTest, CommonEventFreezeTest_002, TestSize.Level1)
     // subscribe another event
     EXPECT_TRUE(SubscribeCommonEvent(subscriberTest2, UID2, commonEventListener2));
 
-    mtx.lock();
-    auto handler = std::make_shared<EventHandler>(EventRunner::Create());
-    std::function<void()> asyncProcessFunc = std::bind(&CommonEventFreezeTest::AsyncProcess, this);
-    handler->PostTask(asyncProcessFunc);
-
     std::shared_ptr<SubscriberTestLast> subscriber = nullptr;
     /* Publish */
-    int i = 0;
-    while (!mtx.try_lock()) {
-        // make a want
-        Want want;
-        want.SetAction(EVENTCASE2);
-        i++;
-        want.SetType(std::to_string(i));
-        EVENT_LOGD(LOG_TAG_CES, "PublishCommonEvent: Type: %{public}s ", std::to_string(i).c_str());
-        // make common event data
-        CommonEventData data;
-        data.SetWant(want);
-        data.SetData(INNITDATA);
-        data.SetCode(INNITCODE);
-        CommonEventPublishInfo publishInfo;
-        usleep(100000);
-
-        // publish order event
-        EXPECT_TRUE(PublishCommonEvent(data, publishInfo, subscriber, commonEventListener3));
-    }
-
-    usleep(100000);
-    mtx.unlock();
+    AsyncProcess(EVENTCASE2, subscriber);
 }
 }  // namespace
