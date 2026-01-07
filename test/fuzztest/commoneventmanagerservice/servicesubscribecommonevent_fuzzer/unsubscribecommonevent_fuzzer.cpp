@@ -59,7 +59,12 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     int32_t funcResult = -1;
     sptr<IRemoteObject> commonEventListener = new (std::nothrow) CommonEventListener(subscriber);
     service->SubscribeCommonEvent(subscribeInfo, commonEventListener, fdp->ConsumeIntegral<int32_t>(), funcResult);
-    
+
+    matchingSkills.AddEvent(fdp->ConsumeRandomLengthString());
+    CommonEventSubscribeInfo subscribeInfo1(matchingSkills);
+    subscriber->SetSubscribeInfo(subscribeInfo1);
+    service->SubscribeCommonEvent(subscribeInfo1, commonEventListener, fdp->ConsumeIntegral<int32_t>(), funcResult);
+
     service->UnsubscribeCommonEvent(commonEventListener, funcResult);
     usleep(10000);
     CleanFfrt(service);

@@ -188,7 +188,7 @@ __attribute__((no_sanitize("cfi"))) bool CommonEvent::PublishParameterCheck(cons
     return true;
 }
 
-int32_t CommonEvent::CheckCommonEventListener(const std::shared_ptr<CommonEventSubscriber> &subscriber,
+int32_t CommonEvent::SubscribeOrUpdate(const std::shared_ptr<CommonEventSubscriber> &subscriber,
     const sptr<ICommonEvent> &proxy, bool isUpdate)
 {
     sptr<IRemoteObject> commonEventListener = nullptr;
@@ -242,7 +242,7 @@ int32_t CommonEvent::Subscribe(
         return ERR_NOTIFICATION_CESM_ERROR;
     }
     DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
-    return CheckCommonEventListener(subscriber, proxy, true);
+    return SubscribeOrUpdate(subscriber, proxy, true);
 }
 
 __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
@@ -265,7 +265,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::SubscribeCommonEvent(
         return ERR_NOTIFICATION_CESM_ERROR;
     }
     DelayedSingleton<CommonEventDeathRecipient>::GetInstance()->SubscribeSAManager();
-    return CheckCommonEventListener(subscriber, proxy, false);
+    return SubscribeOrUpdate(subscriber, proxy, false);
 }
 
 __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(

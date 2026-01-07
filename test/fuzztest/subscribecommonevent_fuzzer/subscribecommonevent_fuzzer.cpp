@@ -77,6 +77,55 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     }
     return EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber);
 }
+
+bool DoSomethingInterestingWithSubscribe(FuzzedDataProvider *fdp)
+{
+    std::string stringData = fdp->ConsumeRandomLengthString();
+
+    EventFwk::MatchingSkills matchingSkills;
+    Parcel parcel;
+    matchingSkills.AddEvent(stringData);
+    matchingSkills.AddEntity(stringData);
+    matchingSkills.AddScheme(stringData);
+    // set CommonEventSubscribeInfo and test CommonEventSubscribeInfo class function
+    uint8_t mode = fdp->ConsumeIntegral<uint8_t>();
+    EventFwk::CommonEventSubscribeInfo::ThreadMode threadMode =
+        EventFwk::CommonEventSubscribeInfo::ThreadMode(mode);
+    EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    int32_t priority = fdp->ConsumeIntegral<int32_t>();
+    subscribeInfo.ReadFromParcel(parcel);
+    subscribeInfo.Unmarshalling(parcel);
+    subscribeInfo.SetPriority(priority);
+    subscribeInfo.SetPermission(stringData);
+    subscribeInfo.SetDeviceId(stringData);
+    subscribeInfo.SetThreadMode(threadMode);
+    subscribeInfo.SetPublisherBundleName(fdp->ConsumeRandomLengthString());
+    subscribeInfo.GetPriority();
+    subscribeInfo.SetUserId(priority);
+    subscribeInfo.GetUserId();
+    subscribeInfo.GetPermission();
+    subscribeInfo.GetDeviceId();
+    subscribeInfo.GetMatchingSkills();
+    subscribeInfo.Marshalling(parcel);
+
+    std::shared_ptr<EventFwk::TestSubscriber> subscriber =
+        std::make_shared<EventFwk::TestSubscriber>(subscribeInfo);
+    if (subscriber != nullptr) {
+        subscriber->IsOrderedCommonEvent();
+        subscriber->IsStickyCommonEvent();
+    }
+    EventFwk::CommonEventManager::Subscribe(subscriber);
+
+    stringData = fdp->ConsumeRandomLengthString();
+    matchingSkills.AddEvent(stringData);
+    matchingSkills.AddEntity(stringData);
+    matchingSkills.AddScheme(stringData);
+    EventFwk::CommonEventSubscribeInfo subscribeInfo1(matchingSkills);
+    subscriber->SetSubscribeInfo(subscribeInfo1);
+    EventFwk::CommonEventManager::Subscribe(subscriber);
+
+    return true;
+}
 }  // namespace OHOS
 
 /* Fuzzer entry point */
@@ -85,5 +134,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     /* Run your code on data */
     FuzzedDataProvider fdp(data, size);
     OHOS::DoSomethingInterestingWithMyAPI(&fdp);
+    OHOS::DoSomethingInterestingWithSubscribe(&fdp);
     return 0;
 }

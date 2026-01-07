@@ -659,6 +659,47 @@ HWTEST_F(CommonEventSubscriberManagerTest, UpdateSubscriberRecordLocked_0200, Le
 }
 
 /**
+ * @tc.name: UpdateSubscriberRecordLocked_0300
+ * @tc.desc: test UpdateSubscriberRecordLocked function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, UpdateSubscriberRecordLocked_0300, Level1)
+{
+    std::string eventName1 = "atest1";
+    std::string eventName2 = "btest1";
+    std::string eventName3 = "ctest1";
+    std::string eventName4 = "dtest1";
+    struct tm curTime {0};
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(eventName3);
+    matchingSkills.AddEvent(eventName1);
+    matchingSkills.AddEvent(eventName2);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<CommonEventSubscribeInfo> commonEventSubscribeInfo =
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo);
+
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 0;
+    eventRecordInfo.uid = 0;
+    eventRecordInfo.bundleName = "bundleName";
+
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    MatchingSkills matchingSkills_;
+    matchingSkills_.AddEvent(eventName4);
+    matchingSkills_.AddEvent(eventName3);
+    matchingSkills_.AddEvent(eventName1);
+    record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
+    std::set<SubscriberRecordPtr> mults;
+    mults.insert(record);
+    commonEventSubscriberManager.eventSubscribers_.emplace(eventName1, mults);
+    commonEventSubscriberManager.eventSubscribers_.emplace(eventName2, mults);
+    EXPECT_EQ(true, commonEventSubscriberManager.UpdateSubscriberRecordLocked(commonEventSubscribeInfo,
+        curTime, eventRecordInfo, record));
+    GTEST_LOG_(INFO) << "UpdateSubscriberRecordLocked_0300 end";
+}
+
+/**
  * @tc.name: InsertEventSubscribers_0100
  * @tc.desc: test InsertEventSubscribers function.
  * @tc.type: FUNC

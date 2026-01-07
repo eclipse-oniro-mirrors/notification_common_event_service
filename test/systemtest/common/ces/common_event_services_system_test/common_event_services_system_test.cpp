@@ -677,21 +677,25 @@ HWTEST_F(cesSystemTest, CES_SubscriptionEvent_2200, Function | MediumTest | Leve
 /*
  * @tc.number: CES_SubscriptionEvent_2300
  * @tc.name: Subscribe
- * @tc.desc:  Verify the same input empty string three times
+ * @tc.desc:  Subscribe update
  */
 HWTEST_F(cesSystemTest, CES_SubscriptionEvent_2300, Function | MediumTest | Level1)
 {
     struct tm startTime = {0};
     struct tm doingTime = {0};
     int64_t seconds = 0;
-    std::string eventName1 = "test1";
-    std::string eventName2 = "test2";
+    std::string eventName1 = "atest1";
+    std::string eventName2 = "btest1";
+    std::string eventName3 = "ctest1";
+    std::string eventName4 = "dtest1";
 
     Want wantTest;
     wantTest.SetAction(eventName1);
     CommonEventData commonEventData(wantTest);
     MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(eventName3);
     matchingSkills.AddEvent(eventName1);
+    matchingSkills.AddEvent(eventName2);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     auto subscriberPtr1 = std::make_shared<CommonEventServicesSystemTest>(subscribeInfo);
@@ -708,9 +712,11 @@ HWTEST_F(cesSystemTest, CES_SubscriptionEvent_2300, Function | MediumTest | Leve
     }
     mtx_.unlock();
 
-    matchingSkills.RemoveEvent(eventName1);
-    matchingSkills.AddEvent(eventName2);
-    CommonEventSubscribeInfo subscribeInfo1(matchingSkills);
+    MatchingSkills matchingSkills1;
+    matchingSkills1.AddEvent(eventName4);
+    matchingSkills1.AddEvent(eventName3);
+    matchingSkills1.AddEvent(eventName1);
+    CommonEventSubscribeInfo subscribeInfo1(matchingSkills1);
     subscriberPtr1->SetSubscribeInfo(subscribeInfo1);
     EXPECT_EQ(CommonEventManager::Subscribe(subscriberPtr1), 0);
     mtx_.lock();
