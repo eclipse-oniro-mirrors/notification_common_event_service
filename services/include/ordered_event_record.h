@@ -35,28 +35,28 @@ struct OrderedEventRecord : public CommonEventRecord {
         TIMEOUT,
     };
 
-    std::vector<std::shared_ptr<EventSubscriberRecord>> receivers;
-    sptr<IRemoteObject> resultTo;
-    sptr<IRemoteObject> curReceiver;
-    std::vector<int> deliveryState;
+    bool resultAbort;
+    int8_t state;
+    size_t nextReceiver;
     int32_t enqueueClockTime;
     int64_t dispatchTime;
     int64_t receiverTime;
     int64_t finishTime;
-    size_t nextReceiver;
-    int8_t state;
-    bool resultAbort;
+    sptr<IRemoteObject> resultTo;
+    sptr<IRemoteObject> curReceiver;
+    std::vector<int> deliveryState;
+    std::vector<std::shared_ptr<EventSubscriberRecord>> receivers;
 
     OrderedEventRecord()
-        : resultTo(nullptr),
-          curReceiver(nullptr),
+        : resultAbort(false),
+          state(0),
+          nextReceiver(0),
           enqueueClockTime(0),
           dispatchTime(0),
           receiverTime(0),
           finishTime(0),
-          nextReceiver(0),
-          state(0),
-          resultAbort(false)
+          resultTo(nullptr),
+          curReceiver(nullptr)
     {}
 
     inline void FillCommonEventRecord(const CommonEventRecord &commonEventRecord)

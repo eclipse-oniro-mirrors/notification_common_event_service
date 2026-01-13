@@ -32,9 +32,9 @@ enum class PermissionState {
 };
 
 struct Permission {
+    bool isSensitive = false;
     PermissionState state;
     std::vector<std::string> names;
-    bool isSensitive = false;
     Permission() : state(PermissionState::DEFAULT)
     {}
 };

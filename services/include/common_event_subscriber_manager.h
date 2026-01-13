@@ -31,18 +31,18 @@
 namespace OHOS {
 namespace EventFwk {
 struct EventSubscriberRecord {
+    bool isFreeze;
+    struct tm recordTime {0};
+    int64_t freezeTime;
     std::shared_ptr<CommonEventSubscribeInfo> eventSubscribeInfo;
     sptr<IRemoteObject> commonEventListener;
     EventRecordInfo eventRecordInfo;
-    struct tm recordTime {0};
-    bool isFreeze;
-    int64_t freezeTime;
 
     EventSubscriberRecord()
-        : eventSubscribeInfo(nullptr),
-          commonEventListener(nullptr),
-          isFreeze(false),
-          freezeTime(0)
+        : isFreeze(false),
+          freezeTime(0),
+          eventSubscribeInfo(nullptr),
+          commonEventListener(nullptr)
     {}
 
     bool operator<(const EventSubscriberRecord &other) const

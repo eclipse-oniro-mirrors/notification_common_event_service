@@ -71,14 +71,14 @@ public:
 
 private:
     struct StaticSubscriberInfo {
+        int32_t userId = -1;
+        int32_t uid = -1;
         std::string name;
         std::string bundleName;
-        int32_t userId = -1;
         std::string permission;
         std::optional<int32_t> filterCode;
         std::optional<std::string> filterData;
         std::map<std::string, ParameterType> filterParameters;
-        int32_t uid = -1;
 
         bool operator==(const StaticSubscriberInfo &that) const
         {
