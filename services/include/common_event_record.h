@@ -24,31 +24,31 @@
 namespace OHOS {
 namespace EventFwk {
 struct EventRecordInfo {
+    bool isSubsystem;
+    bool isSystemApp;
+    bool isProxy;
     pid_t pid;
     uid_t uid;
     Security::AccessToken::AccessTokenID callerToken;
     std::string bundleName;
-    bool isSubsystem;
-    bool isSystemApp;
-    bool isProxy;
     std::string subId;
 
-    EventRecordInfo() : pid(0), uid(0), callerToken(0), isSubsystem(false), isSystemApp(false), isProxy(false) {}
+    EventRecordInfo() : isSubsystem(false), isSystemApp(false), isProxy(false), pid(0), uid(0), callerToken(0) {}
 };
 
 struct CommonEventRecord {
+    bool isSystemEvent;
+    int32_t userId;
     std::shared_ptr<CommonEventData> commonEventData;
     std::shared_ptr<CommonEventPublishInfo> publishInfo;
     struct tm recordTime {};
     EventRecordInfo eventRecordInfo;
-    int32_t userId;
-    bool isSystemEvent;
 
     CommonEventRecord()
-        : commonEventData(nullptr),
-          publishInfo(nullptr),
+        : isSystemEvent(false),
           userId(UNDEFINED_USER),
-          isSystemEvent(false)
+          commonEventData(nullptr),
+          publishInfo(nullptr)
     {}
 };
 }  // namespace EventFwk

@@ -172,9 +172,9 @@ private:
 
 private:
 struct EventLogCache {
+    uint32_t missingCount_;
     std::string event_;
     std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> lastTime_;
-    uint32_t missingCount_;
     EventLogCache(std::string event,
         std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> time,
         uint32_t count)

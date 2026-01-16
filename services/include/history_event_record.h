@@ -23,14 +23,14 @@ namespace OHOS {
 namespace EventFwk {
 struct HistorySubscriberRecord {
     struct tm recordTime {};
-    std::string bundleName;
+    bool isFreeze;
     int32_t priority;
     int32_t userId;
+    int64_t freezeTime;
+    std::string bundleName;
     std::string permission;
     std::string deviceId;
-    bool isFreeze;
-    int64_t freezeTime;
-    HistorySubscriberRecord() : priority(0), userId(UNDEFINED_USER), isFreeze(false), freezeTime(0)
+    HistorySubscriberRecord() :  isFreeze(false), priority(0), userId(UNDEFINED_USER), freezeTime(0)
     {}
 };
 
@@ -47,44 +47,43 @@ struct HistoryEventRecord {
         TIMEOUT,
     };
 
-    Want want;
-    int32_t code;
-    std::string data;
-
     bool sticky;
     bool ordered;
-    std::vector<std::string> subscriberPermissions;
-
-    struct tm recordTime {};
-    pid_t pid;
-    uid_t uid;
-    int32_t userId;
-    std::string bundleName;
     bool isSystemApp;
     bool isSystemEvent;
-
-    std::vector<HistorySubscriberRecord> receivers;
     bool hasLastSubscribe;
-    std::vector<int> deliveryState;
+    bool resultAbort;
+    int8_t state;
+    pid_t pid;
+    uid_t uid;
+
+    int32_t userId;
+    int32_t code;
     int64_t dispatchTime;
     int64_t receiverTime;
-    int8_t state;
-    bool resultAbort;
+    struct tm recordTime {};
+    std::vector<std::string> subscriberPermissions;
+    std::vector<HistorySubscriberRecord> receivers;
+    std::vector<int> deliveryState;
+    std::string data;
+    std::string bundleName;
 
+    Want want;
+    
     HistoryEventRecord()
-        : code(0),
-          sticky(false),
+        : sticky(false),
           ordered(false),
-          pid(0),
-          uid(0),
-          userId(UNDEFINED_USER),
           isSystemApp(false),
           isSystemEvent(false),
           hasLastSubscribe(false),
-          dispatchTime(0),
-          receiverTime(0),
+          resultAbort(false),
           state(0),
-          resultAbort(false)
+          pid(0),
+          uid(0),
+          userId(UNDEFINED_USER),
+          code(0),
+          dispatchTime(0),
+          receiverTime(0)
     {}
 };
 }  // namespace EventFwk
