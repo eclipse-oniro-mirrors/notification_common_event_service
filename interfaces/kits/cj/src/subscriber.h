@@ -65,7 +65,6 @@ namespace OHOS::CommonEventManager {
             return GetClassType();
         }
         SubscriberManager() = default;
-        ~SubscriberManager() override;
 
         std::shared_ptr<SubscriberImpl> GetSubscriber();
         int32_t GetSubscribeInfoId(int64_t &id);

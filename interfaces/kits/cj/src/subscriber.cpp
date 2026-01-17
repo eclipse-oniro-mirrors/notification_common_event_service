@@ -154,14 +154,6 @@ namespace OHOS::CommonEventManager {
         return mgrAddr;
     }
 
-    SubscriberManager::~SubscriberManager()
-    {
-        if (subscriber != nullptr) {
-            OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber);
-            DeleteSubscribe(subscriber);
-        }
-    }
-
     std::shared_ptr<SubscriberImpl> SubscriberManager::GetSubscriber()
     {
         return subscriber;
