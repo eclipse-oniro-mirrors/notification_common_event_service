@@ -75,6 +75,7 @@ bool StaticSubscriberManager::InitAllowList()
         std::string bundleName = appInfo.bundleName;
         std::string key = std::to_string(appInfo.uid) + bundleName;
         for (auto e : allowCommonEvents) {
+            std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
             if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
                 std::set<std::string> s = {};
                 s.emplace(e);
@@ -114,10 +115,13 @@ bool StaticSubscriberManager::InitValidSubscribers()
     // filter legal extensions and add them to valid map
     for (auto extension : extensions) {
         std::string key = std::to_string(extension.applicationInfo.uid) + extension.bundleName;
-        if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
-            EVENT_LOGI(LOG_TAG_STATIC, "StaticExtension exists, but allowCommonEvent not found, bundle=%{public}s "
-                "uid=%{public}d", extension.bundleName.c_str(), extension.applicationInfo.uid);
-            continue;
+        {
+            std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
+            if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
+                EVENT_LOGI(LOG_TAG_STATIC, "StaticExtension exists, but allowCommonEvent not found, bundle=%{public}s "
+                    "uid=%{public}d", extension.bundleName.c_str(), extension.applicationInfo.uid);
+                continue;
+            }
         }
         EVENT_LOGI(LOG_TAG_STATIC, "StaticExtension exists, bundle=%{public}s uid=%{public}d",
             extension.bundleName.c_str(), extension.applicationInfo.uid);
@@ -133,6 +137,7 @@ bool StaticSubscriberManager::InitValidSubscribers()
         disableEvents_.clear();
     }
     for (auto bundleKey : bundleList) {
+        std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
         auto finder = staticSubscribers_.find(bundleKey);
         if (finder != staticSubscribers_.end()) {
             std::vector<std::string> events;
@@ -317,7 +322,6 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     EVENT_LOGD(LOG_TAG_STATIC, "enter, event = %{public}s, userId = %{public}d",
         data.GetWant().GetAction().c_str(), userId);
 
-    std::lock_guard<ffrt::mutex> lock(subscriberMutex_);
     if ((!hasInitValidSubscribers_ ||
         data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED ||
         data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
@@ -413,14 +417,17 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
             GetDefaultUidByBundleName(extensionBundleName, extensionUserId);
         std::string key = std::to_string(uid) + extensionBundleName;
         for (auto e : commonEventObj[JSON_KEY_EVENTS]) {
-            if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
-                invalidEventsLogger.append(key).append(",");
-                continue;
-            }
-            if (e.is_null() || !e.is_string() ||
-                (staticSubscribers_[key].events.find(e) == staticSubscribers_[key].events.end())) {
-                invalidEventsLogger.append(e).append(",");
-                continue;
+            {
+                std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
+                if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
+                    invalidEventsLogger.append(key).append(",");
+                    continue;
+                }
+                if (e.is_null() || !e.is_string() ||
+                    (staticSubscribers_[key].events.find(e) == staticSubscribers_[key].events.end())) {
+                    invalidEventsLogger.append(e).append(",");
+                    continue;
+                }
             }
             StaticSubscriberInfo subscriber = { .name = extensionName,
                 .bundleName = extensionBundleName,
@@ -491,6 +498,7 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
     for (auto extension : extensions) {
         if ((extension.bundleName == bundleName)) {
             std::string key = std::to_string(extension.applicationInfo.uid) + extension.bundleName;
+            std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
             if (staticSubscribers_.find(key) != staticSubscribers_.end()) {
                 AddSubscriber(extension);
             }
@@ -633,14 +641,17 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
     int32_t callingUid = IPCSkeleton::GetCallingUid();
     auto bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
     std::string key = std::to_string(callingUid) + bundleName;
-    auto staticSubscriberEvent = staticSubscribers_.find(key);
-    if (staticSubscriberEvent == staticSubscribers_.end()) {
-        EVENT_LOGE(LOG_TAG_STATIC, "Cannot find static subscriber bundle name.");
-        return ERR_INVALID_OPERATION;
-    }
     std::vector<std::string> events;
-    for (const auto &event : staticSubscriberEvent->second.events) {
-        events.emplace_back(event);
+    {
+        std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
+        auto staticSubscriberEvent = staticSubscribers_.find(key);
+        if (staticSubscriberEvent == staticSubscribers_.end()) {
+            EVENT_LOGE(LOG_TAG_STATIC, "Cannot find static subscriber bundle name.");
+            return ERR_INVALID_OPERATION;
+        }
+        for (const auto &event : staticSubscriberEvent->second.events) {
+            events.emplace_back(event);
+        }
     }
     return UpdateDisableEvents(bundleName, events, enable, callingUid);
 }
