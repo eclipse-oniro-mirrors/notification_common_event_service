@@ -323,6 +323,8 @@ bool CommonEventSubscriberManager::UpdateSubscriberRecordLocked(
 
     std::vector<std::string> oldEvents = record->eventSubscribeInfo->GetMatchingSkills().GetEvents();
     std::vector<std::string> newEvents = eventSubscribeInfo->GetMatchingSkills().GetEvents();
+    std::sort(oldEvents.begin(), oldEvents.end());
+    std::sort(newEvents.begin(), newEvents.end());
 
     std::vector<std::string> removeEvents;
     std::set_difference(oldEvents.begin(), oldEvents.end(), newEvents.begin(), newEvents.end(),

@@ -247,7 +247,7 @@ private:
 
     void LogCachedSubscriber();
 
-    int32_t CheckCommonEventListener(const std::shared_ptr<CommonEventSubscriber> &subscriber,
+    int32_t SubscribeOrUpdate(const std::shared_ptr<CommonEventSubscriber> &subscriber,
         const sptr<ICommonEvent> &proxy, bool isUpdate);
 
 private:
