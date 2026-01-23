@@ -86,9 +86,11 @@ private:
     ErrCode RunAsDumpCommand();
     void CheckPublishOpt();
     void SetPublishCmdInfo(PublishCmdInfo &cmdInfo, ErrCode &result, bool &hasOption);
+#ifdef CEM_SUPPORT_DUMP
     void CheckDumpOpt();
     void SetDumpCmdInfo(DumpCmdInfo &cmdInfo, ErrCode &result, bool &hasOption);
     void CheckDumpEventType(DumpCmdInfo &cmdInfo, ErrCode &result);
+#endif
 };
 }  // namespace EventFwk
 }  // namespace OHOS

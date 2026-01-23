@@ -107,6 +107,7 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0200, Le
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0200 end";
 }
 
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventSubscriberManager_0300
  * @tc.desc: test DumpDetailed function and record is nullptr.
@@ -225,7 +226,7 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0600, Le
     commonEventSubscriberManager->DumpDetailed(title, record, format, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0600 end";
 }
-
+#endif
 /**
  * @tc.name: CommonEventSubscriberManager_0700
  * @tc.desc: test InsertSubscriberRecordLocked function and record is nullptr.
@@ -530,7 +531,7 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2200, Le
     commonEventSubscriberManager->RemoveFrozenEventsBySubscriber(subscriberRecord);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2200 end";
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventSubscriberManager_2300
  * @tc.desc: test DumpState function when records.size()>0.
@@ -558,7 +559,7 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2300, Le
     commonEventSubscriberManager->UpdateAllFreezeInfos(false, 1);
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_2300 end";
 }
-
+#endif
 /**
  * @tc.name: CommonEventSubscriberManager_2400
  * @tc.desc: test DumpState function when record is nullptr..

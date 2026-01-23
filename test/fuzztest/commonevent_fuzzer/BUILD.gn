@@ -15,6 +15,7 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/config/features.gni")
 import("//build/test.gni")
+import("//build/ohos.gni")
 
 ##############################fuzztest##########################################
 ohos_fuzztest("CommonEventFuzzTest") {
@@ -37,6 +38,9 @@ ohos_fuzztest("CommonEventFuzzTest") {
     "${ces_native_path}:cesfwk_innerkits",
     "${common_event_service_path}/test/fuzztest/fuzz_common_base:fuzz_common_base",
   ]
+  if (build_variant == "root") {
+    defines = [ "CEM_SUPPORT_DUMP" ]
+  }
 
   external_deps = [
     "ability_base:want",

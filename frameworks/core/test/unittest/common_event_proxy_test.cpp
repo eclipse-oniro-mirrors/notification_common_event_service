@@ -261,7 +261,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_005, TestSize.Level1)
     commonEventProxy.PublishCommonEvent(data, publishInfo, commonEventListener, useId, funcResult);
     EXPECT_EQ(false, funcResult);
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * tc.number: PublishCommonEvent_006
  * tc.name: test OnRemoteRequest
@@ -352,7 +352,7 @@ HWTEST_F(CommonEventProxyTest, PublishCommonEvent_008, TestSize.Level1)
     commonEventProxy.DumpState(dumpType, event, userId, state, funcResult);
     EXPECT_EQ(false, funcResult);
 }
-
+#endif
 /*
  * tc.number: SetStaticSubscriberState_001
  * tc.name: test SetStaticSubscriberState

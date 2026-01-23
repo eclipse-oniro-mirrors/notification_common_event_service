@@ -147,7 +147,7 @@ HWTEST_F(CommonEventBranchTest, CommonEvent_009, TestSize.Level1)
     std::shared_ptr<CommonEvent> commonEvent = std::make_shared<CommonEvent>();
     ASSERT_NE(nullptr, commonEvent);
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * tc.number: CommonEvent_010
  * tc.name: DumpState
@@ -163,7 +163,7 @@ HWTEST_F(CommonEventBranchTest, CommonEvent_010, TestSize.Level1)
     std::vector<std::string> state;
     EXPECT_EQ(false, commonEvent.DumpState(dumpType, event, userId, state));
 }
-
+#endif
 /*
  * tc.number: CommonEvent_011
  * tc.name: FinishReceiver

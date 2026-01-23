@@ -58,10 +58,12 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     service->UnsubscribeCommonEvent(commonEventListener, funcResult);
     service->UnsubscribeCommonEventSync(commonEventListener, funcResult);
     service->GetStickyCommonEvent(stringData, commonEventData, funcResult1);
+#ifdef CEM_SUPPORT_DUMP
     uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     std::vector<std::string> state;
     state.emplace_back(stringData);
     service->DumpState(dumpType, stringData, code, state, funcResult1);
+#endif
     service->FinishReceiver(commonEventListener, code, stringData, enabled, funcResult1);
     service->Freeze(code, funcResult1);
     service->Unfreeze(code, funcResult1);

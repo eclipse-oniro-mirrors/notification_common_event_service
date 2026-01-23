@@ -61,11 +61,13 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     commonEventStub.UnsubscribeCommonEventSync(commonEventListener, funcResult);
     // test GetStickyCommonEvent function
     commonEventStub.GetStickyCommonEvent(stringData, commonEventData, funcResultBool);
+#ifdef CEM_SUPPORT_DUMP
     // test DumpState function
     uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     std::vector<std::string> state;
     state.emplace_back(stringData);
     commonEventStub.DumpState(dumpType, stringData, code, state, funcResultBool);
+#endif
     // test FinishReceiver function
     commonEventStub.FinishReceiver(commonEventListener, code, stringData, enabled, funcResultBool);
     // test Freeze function

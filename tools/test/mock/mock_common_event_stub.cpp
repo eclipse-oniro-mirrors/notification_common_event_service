@@ -126,7 +126,7 @@ ErrCode MockCommonEventStub::GetStickyCommonEvent(
     funcResult = true;
     return ERR_OK;
 }
-
+#ifdef CEM_SUPPORT_DUMP
 ErrCode MockCommonEventStub::DumpState(
     uint8_t dumpType,
     const std::string& event,
@@ -154,7 +154,7 @@ ErrCode MockCommonEventStub::DumpState(
     funcResult = true;
     return ERR_OK;
 }
-
+#endif
 ErrCode MockCommonEventStub::FinishReceiver(
     const sptr<IRemoteObject>& proxy,
     int32_t code,

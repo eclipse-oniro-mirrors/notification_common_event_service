@@ -90,7 +90,7 @@ public:
      * @return Returns true if successful; false otherwise.
      */
     bool GetStickyCommonEvent(const std::string &event, CommonEventData &eventData);
-
+#ifdef CEM_SUPPORT_DUMP
     /**
      * Dumps state of common event service.
      *
@@ -101,7 +101,7 @@ public:
      */
     void DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
         std::vector<std::string> &state);
-
+#endif
     /**
      * Finishes Receiver.
      *
@@ -131,7 +131,7 @@ public:
      * Unfreezes all frozen applications.
      */
     void UnfreezeAll();
-
+#ifdef CEM_SUPPORT_DUMP
     /**
      * dump event for hidumper.
      *
@@ -139,7 +139,7 @@ public:
      * @param result the result of dump
      */
     void HiDump(const std::vector<std::u16string> &args, std::string &result);
-
+#endif
     /**
      * Remove sticky common event.
      *

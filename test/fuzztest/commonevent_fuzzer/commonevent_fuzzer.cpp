@@ -35,7 +35,6 @@ public:
 }  // namespace EventFwk
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 {
-    uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     int32_t code = fdp->ConsumeIntegral<int32_t>();
     std::string stringData = fdp->ConsumeRandomLengthString();
     std::vector<std::string> state;
@@ -81,8 +80,12 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber, code, code);
     commonEvent.PublishCommonEventAsUser(commonEventData, commonEventPublishInfo, nullptr, code);
     commonEvent.PublishCommonEventAsUser(commonEventData, commonEventPublishInfo, nullptr, code, code, code);
+#ifdef CEM_SUPPORT_DUMP
+    uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
     // test DumpState function
-    return commonEvent.DumpState(dumpType, stringData, code, state);
+    commonEvent.DumpState(dumpType, stringData, code, state);
+#endif
+    return true;
 }
 }
 

@@ -385,7 +385,7 @@ bool InnerCommonEventManager::GetStickyCommonEvent(const std::string &event, Com
 
     return DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(event, eventData);
 }
-
+#ifdef CEM_SUPPORT_DUMP
 void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
@@ -423,7 +423,7 @@ void InnerCommonEventManager::DumpState(const uint8_t &dumpType, const std::stri
         EVENT_LOGE(LOG_TAG_CES, "CommonEventControlManager ptr is nullptr");
     }
 }
-
+#endif
 void InnerCommonEventManager::FinishReceiver(
     const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent)
 {
@@ -600,7 +600,7 @@ bool InnerCommonEventManager::PublishStickyEvent(
 
     return true;
 }
-
+#ifdef CEM_SUPPORT_DUMP
 void InnerCommonEventManager::HiDump(const std::vector<std::u16string> &args, std::string &result)
 {
     if (args.size() == 0 || args.size() > HIDUMP_OPTION_MAX_SIZE) {
@@ -639,7 +639,7 @@ void InnerCommonEventManager::HiDump(const std::vector<std::u16string> &args, st
         result.append(record).append("\n");
     }
 }
-
+#endif
 void InnerCommonEventManager::SendPublishHiSysEvent(int32_t userId, const std::string &publisherName, int32_t pid,
     int32_t uid, const std::string &event, bool succeed)
 {

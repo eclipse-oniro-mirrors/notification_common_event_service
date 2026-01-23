@@ -185,7 +185,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventPublishTestCase)(benc
         }
     }
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventDumpStateTestCase
  * @tc.desc: DumpState
@@ -216,6 +216,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventDumpStateTestCase)(be
         }
     }
 }
+#endif
 }
 
 // Run the benchmark

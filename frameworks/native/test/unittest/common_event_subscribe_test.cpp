@@ -113,14 +113,14 @@ public:
     {
         return ERR_COMMON;
     }
-
+#ifdef CEM_SUPPORT_DUMP
     virtual ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
         std::vector<std::string>& state, bool& funcResult)
     {
         funcResult = false;
         return OHOS::ERR_OK;
     }
-
+#endif
     virtual ~CommonEventStubTest()
     {}
 

@@ -512,7 +512,7 @@ HWTEST_F(CommonEventStickyTest, RemoveStickyCommonEvent_1100, Function | MediumT
     // EXPECT_FALSE(
     //     OHOS::DelayedSingleton<CommonEventStickyManager>::GetInstance()->GetStickyCommonEvent(EVENT, Stickydata));
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * @tc.number: DumpState_0100
  * @tc.name: DumpState
@@ -567,3 +567,4 @@ HWTEST_F(CommonEventStickyTest, DumpState_0100, TestSize.Level1)
     std::vector<std::string> state;
     stickyManagerPtr->DumpState(event, userId, state);
 }
+#endif

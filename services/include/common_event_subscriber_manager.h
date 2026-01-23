@@ -25,7 +25,6 @@
 #include "event_log_wrapper.h"
 #include "ffrt.h"
 #include "iremote_object.h"
-#include "parameter.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -187,7 +186,7 @@ public:
     * @return Returns all frozen events.
     */
     std::map<pid_t, FrozenRecords> GetAllFrozenEventsMap();
-
+#ifdef CEM_SUPPORT_DUMP
     /**
      * Dumps detailed information for specific subscriber record info.
      *
@@ -198,7 +197,6 @@ public:
      */
     void DumpDetailed(
         const std::string &title, const SubscriberRecordPtr &record, const std::string format, std::string &dumpInfo);
-
     /**
      * Dumps state information.
      *
@@ -207,7 +205,7 @@ public:
      * @param state Indicates the output information.
      */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
-
+#endif
 private:
     bool CheckPublisherWhetherMatched(const SubscriberRecordPtr &subscriberRecord,
         const CommonEventRecord &eventRecord);

@@ -210,12 +210,14 @@ private:
     {
         EVENT_LOGD(LOG_TAG_CES, "SubscriberTest2: ProcessSubscriberTest2Case1:  start");
         std::shared_ptr<AsyncCommonEventResult> result = GoAsyncCommonEvent();
+#ifdef CEM_SUPPORT_DUMP
         if (innerCommonEventManager_) {
             std::vector<std::string> state;
             innerCommonEventManager_->DumpState(static_cast<int32_t>(DumpEventType::ALL), "", ALL_USER, state);
             CommonEventDumpTest::DumpInfoCount(state,
                 DUMP_SUBSCRIBER_COUNT_TWO, DUMP_STICKY_COUNT_TWO, DUMP_PENDING_COUNT_ONE, 0);
         }
+#endif
         std::function<void()> asyncProcessFunc = std::bind(&SubscriberTest2::AsyncProcess, this, commonEventListener2);
         handler_->PostTask(asyncProcessFunc);
     }
@@ -655,7 +657,7 @@ void CommonEventDumpTest::PublishStickyEvent(
     innerCommonEventManager_->PublishCommonEvent(
         eventData, publishInfo, nullptr, curTime, PID, SYSTEM_UID, tokenID, UNDEFINED_USER, "hello");
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * @tc.number: CommonEventDumpTest_0100
  * @tc.name: test dump
@@ -1385,4 +1387,5 @@ HWTEST_F(CommonEventDumpTest, CommonEventDumpPartEventTest_0400, Function | Medi
     GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener->AsObject());
     GetInnerCommonEventManager()->UnsubscribeCommonEvent(listener2->AsObject());
 }
+#endif
 }  // namespace

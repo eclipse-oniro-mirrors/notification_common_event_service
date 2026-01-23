@@ -1214,7 +1214,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventControlManager_0100, Funct
     bool result = commonEventControlManager.PublishAllFreezeCommonEvents();
     EXPECT_EQ(true, result);
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * @tc.number: CommonEventManagerService_0100
  * @tc.name: verify DumpState
@@ -1231,7 +1231,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0100, Funct
         dumpType, event, userId, state, funcResult);
     EXPECT_EQ(false, funcResult);
 }
-
+#endif
 /*
  * @tc.number: CommonEventManagerService_0200
  * @tc.name: verify FinishReceiver
@@ -1247,7 +1247,7 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManagerService_0200, Funct
         nullptr, code, receiverData, abortEvent, funcResult);
     EXPECT_EQ(false, funcResult);
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * @tc.number: CommonEventManagerService_0300
  * @tc.name: verify Dump
@@ -1285,3 +1285,4 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventManager_0100, Function | M
     bool result = CommonEventManager::PublishCommonEvent(data, publishInfo, nullptr, uid, callerToken);
     EXPECT_EQ(false, result);
 }
+#endif

@@ -68,7 +68,7 @@ int CommonEventStickyManager::UpdateStickyEvent(const CommonEventRecord &eventRe
 
     return UpdateStickyEventLocked(event, commonEventRecordPtr);
 }
-
+#ifdef CEM_SUPPORT_DUMP
 void CommonEventStickyManager::DumpState(
     const std::string &event, const int32_t &userId, std::vector<std::string> &state)
 {
@@ -167,7 +167,7 @@ void CommonEventStickyManager::DumpState(
         state.emplace_back(dumpInfo);
     }
 }
-
+#endif
 void CommonEventStickyManager::FindStickyEventsLocked(
     const std::vector<std::string> &events, std::vector<CommonEventRecordPtr> &commonEventRecords)
 {
