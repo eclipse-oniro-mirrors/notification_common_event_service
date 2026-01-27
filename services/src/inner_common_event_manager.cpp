@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,6 @@
 #include "common_event_sticky_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "common_event_support.h"
-#include "common_event_support_mapper.h"
 #include "event_log_wrapper.h"
 #include "event_trace_wrapper.h"
 #include "event_report.h"
@@ -286,16 +285,6 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         return false;
     }
     controlPtr_->PublishCommonEvent(eventRecord, commonEventListener);
-
-    std::string mappedSupport = "";
-    if (DelayedSingleton<CommonEventSupportMapper>::GetInstance()->GetMappedSupport(
-        eventRecord.commonEventData->GetWant().GetAction(), mappedSupport)) {
-        Want want = eventRecord.commonEventData->GetWant();
-        want.SetAction(mappedSupport);
-        CommonEventRecord mappedEventRecord = eventRecord;
-        mappedEventRecord.commonEventData->SetWant(want);
-        controlPtr_->PublishCommonEvent(mappedEventRecord, commonEventListener);
-    }
     return true;
 }
 
