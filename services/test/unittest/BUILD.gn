@@ -1002,7 +1002,6 @@ group("unittest") {
     ":common_event_access_token_helper_test",
     ":common_event_control_manager_branch_test",
     ":common_event_control_manager_test",
-    ":common_event_dump_test",
     ":common_event_freeze_test",
     ":common_event_freeze_unit_test",
     ":common_event_hisysevent_test",
@@ -1024,4 +1023,7 @@ group("unittest") {
     ":static_subscriber_manager_unit_test",
     ":subscriber_deach_recipient_test",
   ]
+  if (build_variant == "root") {
+    deps += [ ":common_event_dump_test" ]
+  }
 }
