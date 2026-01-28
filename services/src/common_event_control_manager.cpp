@@ -810,7 +810,7 @@ void CommonEventControlManager::GetOrderedEventRecords(
         }
     }
 }
-
+#ifdef CEM_SUPPORT_DUMP
 void CommonEventControlManager::DumpStateByCommonEventRecord(
     const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo)
 {
@@ -1004,7 +1004,7 @@ void CommonEventControlManager::DumpState(
         state.emplace_back(stateInfo);
     }
 }
-
+#endif
 void CommonEventControlManager::SendOrderedEventProcTimeoutHiSysEvent(
     const std::shared_ptr<EventSubscriberRecord> &subscriberRecord, const std::string &eventName)
 {

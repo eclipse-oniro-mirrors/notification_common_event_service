@@ -13,6 +13,7 @@
 
 import("//base/notification/common_event_service/event.gni")
 import("//build/test.gni")
+import("//build/ohos.gni")
 
 module_output_path = "common_event_service/common_event_service/benchmarktest"
 

@@ -13,6 +13,7 @@
 
 import("//base/notification/common_event_service/event.gni")
 import("//build/config/components/idl_tool/idl.gni")
+import("//build/ohos.gni")
 
 cflags = [
   "-fno-math-errno",
@@ -91,6 +92,9 @@ ohos_source_set("common_event_proxy") {
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
+  if (build_variant == "root") {
+    defines = [ "CEM_SUPPORT_DUMP" ]
+  }
   subsystem_name = "notification"
   part_name = "common_event_service"
 }
@@ -227,6 +231,9 @@ ohos_shared_library("cesfwk_core") {
   if (ces_hitrace_usage) {
     external_deps += [ "hitrace:hitrace_meter" ]
     defines += [ "HITRACE_METER_ENABLE" ]
+  }
+  if (build_variant == "root") {
+    defines += [ "CEM_SUPPORT_DUMP" ]
   }
 
   subsystem_name = "notification"

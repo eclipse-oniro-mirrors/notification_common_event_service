@@ -141,7 +141,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0600, Level1)
     EXPECT_EQ(false, funcResult);
     GTEST_LOG_(INFO) << "CommonEventManagerService_0600 end";
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventManagerService_0700
  * @tc.desc: test DumpState function.
@@ -192,7 +192,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_0800, Level1)
     EXPECT_EQ(true, funcResult);
     GTEST_LOG_(INFO) << "CommonEventManagerService_0800 end";
 }
-
+#endif
 /**
  * @tc.name: CommonEventManagerService_0900
  * @tc.desc: test FinishReceiver function.
@@ -339,7 +339,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1500, Level1)
     EXPECT_EQ(false, funcResult);
     GTEST_LOG_(INFO) << "CommonEventManagerService_1500 end";
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventManagerService_1600
  * @tc.desc: test Dump function.
@@ -379,7 +379,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerService_1700, Level1)
     EXPECT_EQ(OHOS::ERR_OK, comm->Dump(fd, args));
     GTEST_LOG_(INFO) << "CommonEventManagerService_1700 end";
 }
-
+#endif
 /**
  * @tc.name: CommonEventManagerService_1800
  * @tc.desc: test SetStaticSubscriberState function.

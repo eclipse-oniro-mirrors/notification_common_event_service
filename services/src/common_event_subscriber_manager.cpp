@@ -28,6 +28,7 @@
 #include "event_report.h"
 #include "hisysevent.h"
 #include "hitrace_meter_adapter.h"
+#include "parameter.h"
 #include "subscriber_death_recipient.h"
 #ifdef WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP
 #include <dlfcn.h>
@@ -148,7 +149,7 @@ std::shared_ptr<EventSubscriberRecord> CommonEventSubscriberManager::GetSubscrib
 
     return nullptr;
 }
-
+#ifdef CEM_SUPPORT_DUMP
 void CommonEventSubscriberManager::DumpDetailed(
     const std::string &title, const SubscriberRecordPtr &record, const std::string format, std::string &dumpInfo)
 {
@@ -261,7 +262,7 @@ void CommonEventSubscriberManager::DumpState(const std::string &event, const int
         state.emplace_back(dumpInfo);
     }
 }
-
+#endif
 __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSubscriberRecordLocked(
     const std::vector<std::string> &events, const SubscriberRecordPtr &record)
 {

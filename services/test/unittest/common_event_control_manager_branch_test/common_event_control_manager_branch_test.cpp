@@ -340,7 +340,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_1800, Le
     commonEventControlManager->GetOrderedEventRecords(event, userId, records);
     GTEST_LOG_(INFO) << "CommonEventControlManager_1800 end";
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventControlManager_2200
  * @tc.desc: test DumpStateByCommonEventRecord and record->userId is UNDEFINED_USER.
@@ -594,7 +594,7 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_3800, Le
     commonEventControlManager->DumpStateBySubscriberRecord(record, dumpInfo);
     GTEST_LOG_(INFO) << "CommonEventControlManager_3800 end";
 }
-
+#endif
 /**
  * @tc.name: CommonEventControlManager_4200
  * @tc.desc: test SendOrderedEventProcTimeoutHiSysEvent and subscriberRecord is nullptr.

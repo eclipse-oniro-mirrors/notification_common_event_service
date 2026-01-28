@@ -132,7 +132,7 @@ public:
      */
     bool FinishReceiver(
         const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &data, const bool &abortEvent);
-
+#ifdef CEM_SUPPORT_DUMP
     /**
      * Dumps state of common event service.
      *
@@ -144,7 +144,7 @@ public:
      */
     bool DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
         std::vector<std::string> &state);
-
+#endif
     /**
      * Freezes application.
      *

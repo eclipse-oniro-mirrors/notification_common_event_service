@@ -73,10 +73,11 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventSubscribeTestCase001)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventSubscriberBenchmark>(subscribeInfo);
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
+    int32_t funcRet = -1;
 
     while (state.KeepRunning()) {
         bool result = commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener);
+        subscribeInfo, commonEventListener, -1, funcRet);
         if (!result) {
             state.SkipWithError("SubscribeCommonEvent failed.");
         }
@@ -97,10 +98,11 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventSubscribeTestCase002)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventSubscriberBenchmark>(subscribeInfo);
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
+    int32_t funcRet = -1;
 
     while (state.KeepRunning()) {
         bool result = commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener);
+        subscribeInfo, commonEventListener, -1, funcRet);
         if (!result) {
             state.SkipWithError("SubscribeCommonEvent failed.");
         }
@@ -121,10 +123,11 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventSubscribeTestCase003)
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventSubscriberBenchmark>(subscribeInfo);
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
+    int32_t funcRet = -1;
 
     while (state.KeepRunning()) {
         bool result = commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener);
+        subscribeInfo, commonEventListener, -1, funcRet);
         if (!result) {
             state.SkipWithError("SubscribeCommonEvent failed.");
         }
@@ -185,7 +188,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventPublishTestCase)(benc
         }
     }
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventDumpStateTestCase
  * @tc.desc: DumpState
@@ -200,9 +203,10 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventDumpStateTestCase)(be
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     auto subscriberPtr = std::make_shared<CommonEventSubscriberBenchmark>(subscribeInfo);
     OHOS::sptr<CommonEventListener> commonEventListener = new CommonEventListener(subscriberPtr);
+    int32_t funcRet = -1;
 
     bool result = commonEventManagerService_->SubscribeCommonEvent(
-        subscribeInfo, commonEventListener);
+        subscribeInfo, commonEventListener, -1, funcRet);
     if (!result) {
         state.SkipWithError("DumpState subscribe common event failed.");
     }
@@ -216,6 +220,7 @@ BENCHMARK_F(BenchmarkCommonEventManagerService, CommonEventDumpStateTestCase)(be
         }
     }
 }
+#endif
 }
 
 // Run the benchmark

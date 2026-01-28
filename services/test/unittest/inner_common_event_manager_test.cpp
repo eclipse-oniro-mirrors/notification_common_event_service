@@ -98,7 +98,7 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0200, Level1)
     EXPECT_EQ(false, innerCommonEventManager.UnsubscribeCommonEvent(commonEventListener));
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0200 end";
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: InnerCommonEventManager_0300
  * @tc.desc: test DumpState function.
@@ -212,7 +212,7 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_0800, Level1)
     innerCommonEventManager->DumpState(dumpType, event, userId, state);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_0800 end";
 }
-
+#endif
 /**
  * @tc.name: InnerCommonEventManager_0900
  * @tc.desc: test FinishReceiver function.
@@ -296,7 +296,7 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_1300, Level1)
     EXPECT_EQ(false, innerCommonEventManager.PublishStickyEvent(sp, subscriberRecord));
     GTEST_LOG_(INFO) << "InnerCommonEventManager_1300 end";
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: InnerCommonEventManager_1400
  * @tc.desc: test HiDump function.
@@ -446,7 +446,7 @@ HWTEST_F(InnerCommonEventManagerTest, InnerCommonEventManager_2100, Level1)
     innerCommonEventManager->HiDump(args, result);
     GTEST_LOG_(INFO) << "InnerCommonEventManager_2100 end";
 }
-
+#endif
 /**
  * @tc.name: SetStaticSubscriberStateWithTwoParameters_0100
  * @tc.desc: Failed to call SetStaticSubscriberState API to obtain commonEventproxy.

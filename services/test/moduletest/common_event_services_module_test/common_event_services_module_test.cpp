@@ -517,7 +517,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1600, Function | MediumTest | Level0)
     EXPECT_EQ(funcResult, ERR_OK);
     EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1600 end");
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * @tc.number: CES_TC_ModuleTest_1700
  * @tc.name: CommonEventManagerService DumpState
@@ -598,7 +598,7 @@ HWTEST_F(cesModuleTest, CES_TC_ModuleTest_1900, Function | MediumTest | Level0)
     EXPECT_TRUE(result);
     EVENT_LOGI(LOG_TAG_CES, "CES_TC_ModuleTest_1900 end");
 }
-
+#endif
 /*
  * @tc.number: CES_TC_ModuleTest_2000
  * @tc.name: OnReceiveEvent

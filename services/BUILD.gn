@@ -90,7 +90,7 @@ ohos_shared_library("cesfwk_services") {
   cflags_cc = []
   defines = []
 
-  if (build_variant == "user") {
+  if (build_variant == "root") {
     defines += [ "BUILD_VARIANT_USER" ]
   }
 
@@ -142,6 +142,9 @@ ohos_shared_library("cesfwk_services") {
   if (ces_hitrace_usage) {
     external_deps += [ "hitrace:hitrace_meter" ]
     defines += [ "HITRACE_METER_ENABLE" ]
+  }
+  if (build_variant == "root") {
+    defines += [ "CEM_SUPPORT_DUMP" ]
   }
 
   if (ces_config_policy_enable) {
@@ -211,6 +214,9 @@ ohos_static_library("cesfwk_services_static") {
     external_deps += [ "hisysevent:libhisysevent" ]
   }
 
+  if (build_variant == "root") {
+    defines = [ "CEM_SUPPORT_DUMP" ]
+  }
   if (ces_hitrace_usage) {
     external_deps += [ "hitrace:hitrace_meter" ]
     defines += [ "HITRACE_METER_ENABLE" ]

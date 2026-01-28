@@ -12,12 +12,12 @@
 # limitations under the License.
 
 import("//base/notification/common_event_service/event.gni")
+import("//build/ohos.gni")
 
 group("fuzztest") {
   testonly = true
 
   deps = [
-    "servicedumpstate_fuzzer:ServiceDumpStateFuzzTest",
     "servicefinishreceiver_fuzzer:ServiceFinishReceiverFuzzTest",
     "servicefreezeandunfreeze_fuzzer:ServiceFreezeAndUnfreezeFuzzTest",
     "servicepublishcommonevent_fuzzer:ServicePublishCommonEventFuzzTest",
@@ -25,4 +25,8 @@ group("fuzztest") {
     "servicesubscribecommonevent_fuzzer:ServiceSubscribeCommonEventFuzzTest",
     "serviceunsubscribecommonevent_fuzzer:ServiceUnsubscribeCommonEventFuzzTest",
   ]
+
+  if (build_variant == "root") {
+    deps += [ "servicedumpstate_fuzzer:ServiceDumpStateFuzzTest" ]
+  }
 }

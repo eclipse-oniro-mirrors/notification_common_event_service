@@ -313,7 +313,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_005, TestSize.Level0)
     commonEventStub.GetStickyCommonEvent(event, data, getStickyCommonEvent);
     EXPECT_EQ(true, getStickyCommonEvent);
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /*
  * tc.number: CommonEventStub_006
  * tc.name: test DumpState
@@ -331,7 +331,7 @@ HWTEST_F(CommonEventTest, CommonEventStub_006, TestSize.Level0)
     commonEventStub.DumpState(dumpType, EVENT, userId, state, dumpState);
     EXPECT_EQ(true, dumpState);
 }
-
+#endif
 /*
  * tc.number: CommonEventStub_007
  * tc.name: test FinishReceiver

@@ -56,7 +56,7 @@ public:
      * @return Returns result code.
      */
     int UpdateStickyEvent(const CommonEventRecord &eventRecord);
-
+#ifdef CEM_SUPPORT_DUMP
     /**
      * Dumps the state of the sticky events.
      *
@@ -65,7 +65,7 @@ public:
      * @param state Indicates the state of common event service.
      */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
-
+#endif
     /**
      * Remove sticky common event.
      *

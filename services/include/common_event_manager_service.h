@@ -101,7 +101,7 @@ public:
      * @return Returns true if successful; false otherwise.
      */
     ErrCode GetStickyCommonEvent(const std::string& event, CommonEventData& eventData, bool& funcResult) override;
-
+#ifdef CEM_SUPPORT_DUMP
     /**
      * Dumps state of common event service.
      *
@@ -113,7 +113,7 @@ public:
      */
     ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId, std::vector<std::string>& state,
         bool& funcResult) override;
-
+#endif
     /**
      * Finishes Receiver.
      *
@@ -183,9 +183,9 @@ public:
     * @return Returns true if successful; false otherwise.
     */
     ErrCode SetFreezeStatus(const std::set<int32_t>& pidList, bool isFreeze, bool& funcResult) override;
-
+#ifdef CEM_SUPPORT_DUMP
     int Dump(int fd, const std::vector<std::u16string> &args) override;
-
+#endif
     ErrCode Init();
 
 private:

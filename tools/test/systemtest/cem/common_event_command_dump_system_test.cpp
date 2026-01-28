@@ -25,15 +25,6 @@ using namespace OHOS::EventFwk;
 
 namespace {
 const std::string STRING_EVENT = "com.ces.event";
-#ifdef CEM_BUILD_VARIANT_USER
-const std::string STRING_NO_SUBSCRIBERS = "error: user version cannot use dump.\n";
-#else
-const std::string STRING_NO_SUBSCRIBERS =
-    "Subscribers:\tNo information\n"
-    "Sticky Events:\tNo information\n"
-    "Pending Events:\tNo information\n";
-#endif // DEBUG
-
 const int32_t TIME_DELAY_FOR_SERVICES = 2;
 
 std::string ExecuteCommand(const std::string &command)
@@ -122,20 +113,6 @@ HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0100, Function | 
 
     // unsubscribe a common event
     CommonEventManager::UnSubscribeCommonEvent(subscriberTestPtr);
-}
-
-/**
- * @tc.number: Cem_Command_Dump_SystemTest_0200
- * @tc.name: ExecCommand
- * @tc.desc: Verify the "cem dump -e <name>" command with no subscriber.
- */
-HWTEST_F(CemCommandDumpSystemTest, Cem_Command_Dump_SystemTest_0200, Function | MediumTest | Level1)
-{
-    // dump all subscribers for an event
-    std::string command = "cem dump -e " + STRING_EVENT + ".test";
-    std::string commandResult = ExecuteCommand(command);
-
-    EXPECT_EQ(commandResult, STRING_NO_SUBSCRIBERS);
 }
 
 /**

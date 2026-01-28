@@ -402,7 +402,7 @@ ErrCode CommonEventManagerService::GetStickyCommonEvent(const std::string& event
     funcResult = innerCommonEventManager_->GetStickyCommonEvent(event, eventData);
     return ERR_OK;
 }
-
+#ifdef CEM_SUPPORT_DUMP
 ErrCode CommonEventManagerService::DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
     std::vector<std::string>& state, bool& funcResult)
 {
@@ -427,7 +427,7 @@ ErrCode CommonEventManagerService::DumpState(uint8_t dumpType, const std::string
     funcResult = true;
     return ERR_OK;
 }
-
+#endif
 ErrCode CommonEventManagerService::FinishReceiver(const sptr<IRemoteObject>& proxy, int32_t code,
     const std::string& receiverData, bool abortEvent, bool& funcResult)
 {
@@ -550,7 +550,7 @@ ErrCode CommonEventManagerService::UnfreezeAll(bool& funcResult)
     funcResult = true;
     return ERR_OK;
 }
-
+#ifdef CEM_SUPPORT_DUMP
 int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &args)
 {
     EVENT_LOGD(LOG_TAG_CES, "enter");
@@ -573,7 +573,7 @@ int CommonEventManagerService::Dump(int fd, const std::vector<std::u16string> &a
     }
     return ERR_OK;
 }
-
+#endif
 ErrCode CommonEventManagerService::RemoveStickyCommonEvent(const std::string& event, int32_t& funcResult)
 {
     EVENT_LOGI(LOG_TAG_STICKY, "Remove %{public}s", event.c_str());

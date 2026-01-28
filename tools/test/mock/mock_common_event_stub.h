@@ -79,14 +79,14 @@ public:
         const std::string& event,
         CommonEventData& eventData,
         bool& funcResult) override;
-
+#ifdef CEM_SUPPORT_DUMP
     ErrCode DumpState(
         uint8_t dumpType,
         const std::string& event,
         int32_t userId,
         std::vector<std::string>& state,
         bool& funcResult) override;
-
+#endif
     ErrCode FinishReceiver(
         const sptr<IRemoteObject>& proxy,
         int32_t code,

@@ -162,10 +162,7 @@ void CommonEventCommand::CheckPublishOpt()
 
 ErrCode CommonEventCommand::RunAsDumpCommand()
 {
-#ifdef CEM_BUILD_VARIANT_USER
-     resultReceiver_.append(USER_DUMP_COMMON_EVENT_NG);
-     return ERR_INVALID_VALUE;
-#endif
+#ifdef CEM_SUPPORT_DUMP
     EVENT_LOGI(LOG_TAG_CES, "enter");
     ErrCode result = ERR_OK;
     bool hasOption = false;
@@ -193,8 +190,13 @@ ErrCode CommonEventCommand::RunAsDumpCommand()
         resultReceiver_.append(HELP_MSG_DUMP);
     }
     return result;
+#else
+     resultReceiver_.append(USER_DUMP_COMMON_EVENT_NG);
+     return ERR_INVALID_VALUE;
+#endif
 }
 
+#ifdef CEM_SUPPORT_DUMP
 void CommonEventCommand::SetDumpCmdInfo(DumpCmdInfo &cmdInfo, ErrCode &result, bool &hasOption)
 {
     int option;
@@ -254,5 +256,6 @@ void CommonEventCommand::CheckDumpEventType(DumpCmdInfo &cmdInfo, ErrCode &resul
         result = ERR_INVALID_VALUE;
     }
 }
+#endif
 }  // namespace EventFwk
 }  // namespace OHOS

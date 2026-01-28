@@ -32,8 +32,8 @@ ohos_systemtest("common_event_command_dump_system_test") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
   defines = []
-  if (build_variant == "user") {
-    defines += [ "CEM_BUILD_VARIANT_USER" ]
+  if (build_variant == "root") {
+    defines += [ "CEM_SUPPORT_DUMP" ]
   }
   deps = [
     "${ces_core_path}:cesfwk_core",
@@ -96,8 +96,9 @@ ohos_systemtest("common_event_command_publish_system_test") {
 group("systemtest") {
   testonly = true
 
-  deps = [
-    ":common_event_command_dump_system_test",
-    ":common_event_command_publish_system_test",
-  ]
+  deps = [ ":common_event_command_publish_system_test" ]
+
+  if (build_variant == "root") {
+    deps += [ ":common_event_command_dump_system_test" ]
+  }
 }

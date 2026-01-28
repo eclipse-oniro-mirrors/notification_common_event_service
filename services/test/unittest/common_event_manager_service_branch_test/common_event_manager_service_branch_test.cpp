@@ -373,7 +373,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1200, Le
     EXPECT_EQ(ERR_OK, result);
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1200 end";
 }
-
+#ifdef CEM_SUPPORT_DUMP
 /**
  * @tc.name: CommonEventManagerServiceBranch_1300
  * @tc.desc: 1.test DumpState function.
@@ -466,7 +466,7 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1600, Le
     EXPECT_EQ(ERR_INVALID_VALUE, comm->Dump(fd, args));
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_1600 end";
 }
-
+#endif
 /**
  * @tc.name: CommonEventManagerServiceBranch_1700
  * @tc.desc: 1.test UnsubscribeCommonEvent function.

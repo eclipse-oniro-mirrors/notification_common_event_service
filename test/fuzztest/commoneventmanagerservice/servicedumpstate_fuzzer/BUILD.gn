@@ -15,6 +15,7 @@
 import("//base/notification/common_event_service/event.gni")
 import("//build/config/features.gni")
 import("//build/test.gni")
+import("//build/ohos.gni")
 
 ##############################fuzztest##########################################
 ohos_fuzztest("ServiceDumpStateFuzzTest") {
@@ -38,6 +39,9 @@ ohos_fuzztest("ServiceDumpStateFuzzTest") {
     "${services_path}:cesfwk_services_static",
   ]
 
+  if (build_variant == "root") {
+    defines = [ "CEM_SUPPORT_DUMP" ]
+  }
   external_deps = [
     "ability_base:want",
     "access_token:libaccesstoken_sdk",

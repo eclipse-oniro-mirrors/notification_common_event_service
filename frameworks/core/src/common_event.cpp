@@ -385,7 +385,7 @@ bool CommonEvent::FinishReceiver(
     }
     return funcResult;
 }
-
+#ifdef CEM_SUPPORT_DUMP
 bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, const int32_t &userId,
     std::vector<std::string> &state)
 {
@@ -402,7 +402,7 @@ bool CommonEvent::DumpState(const uint8_t &dumpType, const std::string &event, c
     }
     return funcResult;
 }
-
+#endif
 bool CommonEvent::Freeze(const uid_t &uid)
 {
     EVENT_LOGD(LOG_TAG_CES, "enter");

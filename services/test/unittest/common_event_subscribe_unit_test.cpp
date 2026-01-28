@@ -93,14 +93,14 @@ public:
     {
         return ERR_COMMON;
     }
-
+#ifdef CEM_SUPPORT_DUMP
     virtual ErrCode DumpState(uint8_t dumpType, const std::string& event, int32_t userId,
         std::vector<std::string>& state, bool& funcResult)
     {
         funcResult = false;
         return ERR_OK;
     }
-
+#endif
     virtual ~CommonEventStubTest()
     {}
 
@@ -1020,24 +1020,6 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0001, Function 
 }
 
 /**
- * @tc.name: CommonEventManagerService_0002
- * @tc.desc: DumpState
- * @tc.type: FUNC
- * @tc.require: I5R11Y
- */
-HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function | MediumTest | Level1)
-{
-    uint8_t dumpType = 1;
-    std::string event = "Event";
-    const int32_t userId =2;
-    std::vector<std::string> state;
-    CommonEventManagerService commonEventManagerService;
-    bool funcResult = false;
-    commonEventManagerService.DumpState(dumpType, event, userId, state, funcResult);
-    EXPECT_EQ(funcResult, false);
-}
-
-/**
  * @tc.name: CommonEventManagerService_0003
  * @tc.desc: FinishReceiver
  * @tc.type: FUNC
@@ -1054,6 +1036,25 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0003, Function 
     EXPECT_EQ(funcResult, false);
 }
 
+#ifdef CEM_SUPPORT_DUMP
+/**
+ * @tc.name: CommonEventManagerService_0002
+ * @tc.desc: DumpState
+ * @tc.type: FUNC
+ * @tc.require: I5R11Y
+ */
+ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0002, Function | MediumTest | Level1)
+ {
+     uint8_t dumpType = 1;
+     std::string event = "Event";
+     const int32_t userId =2;
+     std::vector<std::string> state;
+     CommonEventManagerService commonEventManagerService;
+     bool funcResult = false;
+     commonEventManagerService.DumpState(dumpType, event, userId, state, funcResult);
+     EXPECT_EQ(funcResult, false);
+ }
+
 /**
  * @tc.name: CommonEventManagerService_0004
  * @tc.desc: Dump
@@ -1068,3 +1069,4 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventManagerService_0004, Function 
     int result = commonEventManagerService.Dump(fd, args);
     EXPECT_EQ(result, int(OHOS::ERR_INVALID_VALUE));
 }
+#endif

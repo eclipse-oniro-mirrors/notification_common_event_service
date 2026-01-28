@@ -109,7 +109,7 @@ public:
      * @return Returns true if success; false otherwise.
      */
     bool PublishAllFreezeCommonEvents();
-
+#ifdef CEM_SUPPORT_DUMP
     /**
      * Dumps state of common event service.
      *
@@ -118,7 +118,7 @@ public:
      * @param state Indicates the state of common event service.
      */
     void DumpState(const std::string &event, const int32_t &userId, std::vector<std::string> &state);
-
+#endif
 private:
     bool ProcessUnorderedEvent(
         const CommonEventRecord &eventRecord, const std::shared_ptr<EventSubscriberRecord> &subscriberRecord = nullptr);
@@ -156,11 +156,11 @@ private:
 
     void GetUnorderedEventRecords(
         const std::string &event, const int32_t &userId, std::vector<std::shared_ptr<OrderedEventRecord>> &records);
-
+#ifdef CEM_SUPPORT_DUMP
     void DumpStateByCommonEventRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
 
     void DumpStateBySubscriberRecord(const std::shared_ptr<OrderedEventRecord> &record, std::string &dumpInfo);
-
+#endif
     void PublishFrozenEventsInner(const FrozenRecords &frozenEventRecords);
 
     void SendOrderedEventProcTimeoutHiSysEvent(const std::shared_ptr<EventSubscriberRecord> &subscriberRecord,
