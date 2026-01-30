@@ -22,6 +22,7 @@ bool g_mockQueryExtensionInfosRet = true;
 std::vector<ExtensionAbilityInfo> g_mockExtensionInfos;
 bool g_mockGetResConfigFileRet = true;
 std::vector<std::string> g_mockProfileInfos;
+std::vector<AppExecFwk::ApplicationInfo> g_mockAppInfos;
 bool g_mockIsClearBundleManagerHelperCalled = false;
 bool g_mockBundleName = false;
 int32_t g_mockUid = -1;
@@ -220,6 +221,22 @@ void MockGetResConfigFile(bool mockRet, uint8_t mockCase)
     }
 }
 
+void MockGetApplicationInfos(uint8_t mockCase)
+{
+    g_mockAppInfos.clear();
+    switch (mockCase) {
+        case 1: {
+            ApplicationInfo appInfo0;
+            appInfo0.bundleName = "com.ohos.systemui";
+            appInfo0.uid = MOCK_UID;
+            g_mockAppInfos.emplace_back(appInfo0);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 namespace OHOS {
 namespace EventFwk {
 BundleManagerHelper::BundleManagerHelper() : sptrBundleMgr_(nullptr), bmsDeath_(nullptr)
@@ -279,6 +296,8 @@ void BundleManagerHelper::ClearBundleManagerHelper()
 bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag &flag,
     std::vector<AppExecFwk::ApplicationInfo> &appInfos)
 {
+    appInfos = g_mockAppInfos;
+    g_mockAppInfos.clear();
     return true;
 }
 

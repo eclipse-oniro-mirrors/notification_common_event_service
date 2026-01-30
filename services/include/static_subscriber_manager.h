@@ -72,7 +72,6 @@ public:
 private:
     struct StaticSubscriberInfo {
         int32_t userId = -1;
-        int32_t uid = -1;
         std::string name;
         std::string bundleName;
         std::string permission;
@@ -106,9 +105,9 @@ private:
         const std::string &permission);
     void SendStaticEventProcErrHiSysEvent(int32_t userId, const std::string &publisherName,
         const std::string &subscriberName, const std::string &eventName);
-    bool IsDisableEvent(const std::string &bundleName, const std::string &event, int32_t uid);
+    bool IsDisableEvent(const std::string &bundleName, const std::string &event, int32_t userId);
     int32_t UpdateDisableEvents(const std::string &bundleName,
-        const std::vector<std::string> &events, bool enable, int32_t uid);
+        const std::vector<std::string> &events, bool enable, int32_t userId);
     void PublishCommonEventConnecAbility(const CommonEventData &data, const sptr<IRemoteObject> &service,
         const int32_t &userId, const std::string &bundleName, const std::string &abilityName);
     void PublishCommonEventInner(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
