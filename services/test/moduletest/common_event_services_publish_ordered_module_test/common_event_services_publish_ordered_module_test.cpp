@@ -77,19 +77,6 @@ public:
         const std::shared_ptr<CommonEventSubscriber> &subscriber) const;
 };
 
-class TestHandler : public EventHandler {
-public:
-    explicit TestHandler(const std::shared_ptr<EventRunner> &runner) : EventHandler(runner)
-    {
-        GTEST_LOG_(INFO) << "instance created";
-    }
-
-    ~TestHandler() override
-    {
-        GTEST_LOG_(INFO) << "instance destroyed";
-    }
-};
-
 class Subscriber : public CommonEventSubscriber {
 public:
     explicit Subscriber(const CommonEventSubscribeInfo &subscribeInfo) : CommonEventSubscriber(subscribeInfo)
@@ -1142,8 +1129,6 @@ HWTEST_F(CesPublishOrderedEventModuleTest, CommonEventPublishOrderedEventTest_09
 {
     CommonEventControlManager commonEventControlManager;
     std::shared_ptr<CommonEventControlManager> controlManager = std::make_shared<CommonEventControlManager>();
-    commonEventControlManager.handlerOrdered_ =
-        std::make_shared<OrderedEventHandler>(EventRunner::Create(), controlManager);
     EXPECT_EQ(true, commonEventControlManager.GetOrderedEventHandler());
 }
 

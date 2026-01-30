@@ -640,8 +640,6 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0600, Level1)
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data, "");
     abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
-    auto handler = std::make_shared<EventHandler>(EventRunner::Create());
-    abilityManagerHelper->SetEventHandler(handler);
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0600 end";
 }
@@ -690,8 +688,6 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0900, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0900 start";
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
-    auto handler = std::make_shared<EventHandler>(EventRunner::Create());
-    abilityManagerHelper->SetEventHandler(handler);
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data, "");
     abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
@@ -729,8 +725,6 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1100, Level1)
     CommonEventData data;
     sptr<StaticSubscriberConnection> firstConnection = new (std::nothrow) StaticSubscriberConnection(data, "");
     abilityManagerHelper->subscriberConnection_.emplace("test_key", firstConnection);
-    auto handler = std::make_shared<EventHandler>(EventRunner::Create());
-    abilityManagerHelper->SetEventHandler(handler);
     sptr<StaticSubscriberConnection> SecondConnection = new (std::nothrow) StaticSubscriberConnection(data, "");
     abilityManagerHelper->DisconnectServiceAbilityDelay(SecondConnection, "test_action");
     EXPECT_NE(abilityManagerHelper->subscriberConnection_.size(), 0);

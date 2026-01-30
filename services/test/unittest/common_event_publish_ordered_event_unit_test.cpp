@@ -440,8 +440,6 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1800, Function | MediumTest | Level0)
 {
-    commonEventControlManager->handlerOrdered_ =
-        std::make_shared<OrderedEventHandler>(EventRunner::Create(), commonEventControlManager);
     bool result = commonEventControlManager->GetOrderedEventHandler();
     EXPECT_TRUE(result);
 }

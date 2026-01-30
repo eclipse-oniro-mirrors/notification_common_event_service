@@ -307,8 +307,6 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_1000, Le
     ASSERT_NE(nullptr, comm);
     // set IsReady is true
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
-    comm->runner_ = EventRunner::Create("CesSrvMain");
-    comm->handler_ = std::make_shared<EventHandler>(comm->runner_);
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     // test PublishCommonEvent function
     CommonEventData event;

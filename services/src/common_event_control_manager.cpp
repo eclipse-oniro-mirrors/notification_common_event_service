@@ -34,7 +34,7 @@ constexpr int32_t DOUBLE = 2;
 static const int32_t TIME_UNIT_SIZE = 1000;
 
 CommonEventControlManager::CommonEventControlManager()
-    : handler_(nullptr), handlerOrdered_(nullptr), pendingTimeoutMessage_(false), scheduled_(false)
+    : pendingTimeoutMessage_(false), scheduled_(false)
 {
     EVENT_LOGD(LOG_TAG_CES, "enter");
 }

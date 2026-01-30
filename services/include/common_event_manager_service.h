@@ -17,7 +17,6 @@
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_MANAGER_SERVICE_H
 
 #include "common_event_stub.h"
-#include "event_handler.h"
 #include "ffrt.h"
 #include "inner_common_event_manager.h"
 #include "nocopyable.h"
@@ -203,8 +202,6 @@ private:
 
     std::shared_ptr<InnerCommonEventManager> innerCommonEventManager_;
     ServiceRunningState serviceRunningState_ = ServiceRunningState::STATE_NOT_START;
-    std::shared_ptr<EventRunner> runner_;
-    std::shared_ptr<EventHandler> handler_;
     std::shared_ptr<ffrt::queue> commonEventSrvQueue_ = nullptr;
     std::string supportCheckSaPermission_ = "false";
 

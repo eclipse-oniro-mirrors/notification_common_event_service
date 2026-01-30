@@ -59,9 +59,7 @@ sptr<CommonEventManagerService> CommonEventManagerService::GetInstance()
 }
 
 CommonEventManagerService::CommonEventManagerService()
-    : serviceRunningState_(ServiceRunningState::STATE_NOT_START),
-      runner_(nullptr),
-      handler_(nullptr)
+    : serviceRunningState_(ServiceRunningState::STATE_NOT_START)
 {
     supportCheckSaPermission_ = OHOS::system::GetParameter(NOTIFICATION_CES_CHECK_SA_PERMISSION, "false");
     EVENT_LOGD(LOG_TAG_CES, "instance created");

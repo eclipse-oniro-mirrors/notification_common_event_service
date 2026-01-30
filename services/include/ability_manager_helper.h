@@ -20,7 +20,6 @@
 #include "ability_manager_interface.h"
 #include "ability_manager_death_recipient.h"
 #include "common_event_data.h"
-#include "event_handler.h"
 #include "ffrt.h"
 #include "singleton.h"
 #include "static_subscriber_connection.h"
@@ -32,15 +31,6 @@ public:
     AbilityManagerHelper();
 
     virtual ~AbilityManagerHelper() {}
-
-    /**
-     * @brief SetEventHandler.
-     * @param handler event handler
-     */
-    inline void SetEventHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
-    {
-        eventHandler_ = handler;
-    }
 
     /**
      * Connects ability.
@@ -74,7 +64,6 @@ private:
     ffrt::mutex mutex_;
     sptr<AAFwk::IAbilityManager> abilityMgr_;
     sptr<AbilityManagerDeathRecipient> deathRecipient_;
-    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     std::map<std::string, sptr<StaticSubscriberConnection>> subscriberConnection_;
     std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };
