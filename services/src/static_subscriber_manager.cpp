@@ -319,13 +319,10 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
-    EVENT_LOGD(LOG_TAG_STATIC, "enter, event = %{public}s, userId = %{public}d",
-        data.GetWant().GetAction().c_str(), userId);
+    std::string event = data.GetWant().GetAction();
+    EVENT_LOGD(LOG_TAG_STATIC, "enter, event = %{public}s, userId = %{public}d", event.c_str(), userId);
 
-    if ((!hasInitValidSubscribers_ ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED ||
-        data.GetWant().GetAction() == CommonEventSupport::COMMON_EVENT_USER_FOREGROUND) &&
+    if ((!hasInitValidSubscribers_ || event == CommonEventSupport::COMMON_EVENT_USER_FOREGROUND) &&
         !InitValidSubscribers()) {
         EVENT_LOGE(LOG_TAG_STATIC, "Failed to init subscribers");
         return;
