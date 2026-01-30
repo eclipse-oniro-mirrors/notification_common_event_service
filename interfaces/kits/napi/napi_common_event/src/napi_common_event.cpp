@@ -217,11 +217,7 @@ SubscriberInstance::SubscriberInstance(const CommonEventSubscribeInfo &sp) : Com
 SubscriberInstance::~SubscriberInstance()
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "destroy SubscriberInstance[%{public}llu]", id_.load());
-    std::lock_guard<ffrt::mutex> lock(envMutex_);
-    if (env_ != nullptr && tsfn_ != nullptr) {
-        EVENT_LOGD(LOG_TAG_CES_NAPI, "Release threadsafe function");
-        napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-    }
+    ReleaseThreadSafeFunction();
 }
 
 unsigned long long SubscriberInstance::GetID()
@@ -307,6 +303,16 @@ AniSubscriberCallback SubscriberInstance::GetAniSubscribeCallback()
 void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
 {
     tsfn_ = tsfn;
+}
+
+void SubscriberInstance::ReleaseThreadSafeFunction()
+{
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
+    if (env_ != nullptr && tsfn_ != nullptr) {
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "Release threadsafe function");
+        napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
+        tsfn_ = nullptr;
+    }
 }
 
 void SubscriberInstance::SetIsNewVersion(bool isNewVersion)
@@ -886,6 +892,7 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
             EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfoSubscribe is null");
         }
         subscriber->SetCallbackRef(nullptr);
+        subscriber->ReleaseThreadSafeFunction();
         napi_remove_env_cleanup_hook(subscriber->GetEnv(), ClearEnvCallback, subscriber.get());
         subscriberInstances.erase(subscribe);
     }

@@ -238,6 +238,7 @@ public:
     void SetEnv(const napi_env &env);
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
+    void ReleaseThreadSafeFunction();
     void SetIsNewVersion(bool isNewVersion);
     bool IsNewVersion();
     void ClearEnv();
