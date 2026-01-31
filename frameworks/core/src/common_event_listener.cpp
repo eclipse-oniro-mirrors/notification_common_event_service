@@ -67,7 +67,6 @@ ErrCode CommonEventListener::NotifyEvent(const CommonEventData &commonEventData,
 __attribute__((no_sanitize("cfi"))) ErrCode CommonEventListener::Init()
 {
     EVENT_LOGD(LOG_TAG_CES, "ready to init");
-    std::lock_guard<std::mutex> lock(mutex_);
     if (!commonEventSubscriber_) {
         EVENT_LOGE(LOG_TAG_CES, "Failed to init due to subscriber is nullptr");
         return ERR_INVALID_OPERATION;
@@ -143,7 +142,7 @@ __attribute__((no_sanitize("cfi"))) void CommonEventListener::OnReceiveEvent(
     }
     std::shared_ptr<CommonEventSubscriber> subscriber = nullptr;
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<std::mutex> lockSubscriber(subscriberMutex_);
         subscriber = commonEventSubscriber_;
     }
     if (!subscriber) {
@@ -169,7 +168,10 @@ void CommonEventListener::Stop()
             listenerQueue_ = nullptr;
         }
         handler_ = nullptr;
-        commonEventSubscriber_ = nullptr;
+        {
+            std::lock_guard<std::mutex> lockSubscriber(subscriberMutex_);
+            commonEventSubscriber_ = nullptr;
+        }
         runner_ = nullptr;
     }
     if (queue) {
