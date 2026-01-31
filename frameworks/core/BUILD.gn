@@ -119,6 +119,9 @@ ohos_source_set("common_event_stub") {
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
+  if (build_variant == "root") {
+    defines = [ "CEM_SUPPORT_DUMP" ]
+  }
   subsystem_name = "notification"
   part_name = "common_event_service"
 }
