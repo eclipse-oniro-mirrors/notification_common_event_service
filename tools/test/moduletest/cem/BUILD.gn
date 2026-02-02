@@ -106,8 +106,9 @@ ohos_moduletest("common_event_command_publish_module_test") {
 group("moduletest") {
   testonly = true
 
-  deps = [
-    ":common_event_command_dump_module_test",
-    ":common_event_command_publish_module_test",
-  ]
+  deps = [ ":common_event_command_publish_module_test" ]
+
+  if (build_variant == "root") {
+    deps += [ ":common_event_command_dump_module_test" ]
+  }
 }
