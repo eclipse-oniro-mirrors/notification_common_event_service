@@ -17,22 +17,15 @@
 
 namespace {
 bool g_isConnectAbilityCalled = false;
-bool g_isClearCalled = false;
 }
 bool IsConnectAbilityCalled()
 {
     return g_isConnectAbilityCalled;
 }
 
-bool IsClearCalled()
-{
-    return g_isClearCalled;
-}
-
 void ResetAbilityManagerHelperState()
 {
     g_isConnectAbilityCalled = false;
-    g_isClearCalled = false;
 }
 
 namespace OHOS {
@@ -45,14 +38,9 @@ int AbilityManagerHelper::ConnectAbility(
     return 0;
 }
 
-bool AbilityManagerHelper::GetAbilityMgrProxy()
+sptr<AAFwk::IAbilityManager> AbilityManagerHelper::GetAbilityMgrProxy()
 {
-    return true;
-}
-
-void AbilityManagerHelper::Clear()
-{
-    g_isClearCalled = true;
+    return nullptr;
 }
 
 void AbilityManagerHelper::DisconnectServiceAbilityDelay(

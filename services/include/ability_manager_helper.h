@@ -18,7 +18,6 @@
 
 #include "ability_connect_callback_interface.h"
 #include "ability_manager_interface.h"
-#include "ability_manager_death_recipient.h"
 #include "common_event_data.h"
 #include "ffrt.h"
 #include "singleton.h"
@@ -45,25 +44,18 @@ public:
         const sptr<IRemoteObject> &callerToken, const int32_t &userId);
 
     /**
-     * Clears ability manager service remote object.
-     *
-     */
-    void Clear();
-
-    /**
      * @brief Disconnect ability delay.
      * @param connection Indicates the connection want to disconnect.
      */
     void DisconnectServiceAbilityDelay(
         const sptr<StaticSubscriberConnection> &connection, const std::string &action);
+    void RemoveConnection(const sptr<StaticSubscriberConnection> &connection);
 
 private:
-    bool GetAbilityMgrProxy();
+    sptr<AAFwk::IAbilityManager> GetAbilityMgrProxy();
     void DisconnectAbility(const sptr<StaticSubscriberConnection> &connection, const std::string &action);
 
     ffrt::mutex mutex_;
-    sptr<AAFwk::IAbilityManager> abilityMgr_;
-    sptr<AbilityManagerDeathRecipient> deathRecipient_;
     std::map<std::string, sptr<StaticSubscriberConnection>> subscriberConnection_;
     std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };

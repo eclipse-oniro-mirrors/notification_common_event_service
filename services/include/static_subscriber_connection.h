@@ -20,6 +20,7 @@
 
 #include "ability_connect_callback_stub.h"
 #include "common_event_data.h"
+#include "remote_death_recipient.h"
 #include "static_subscriber_proxy.h"
 
 namespace OHOS {
@@ -62,10 +63,12 @@ public:
     {
         return action_.empty();
     }
+    void Clear();
 
 private:
-    sptr<StaticSubscriberProxy> GetProxy(const sptr<IRemoteObject> &remoteObject);
-    sptr<StaticSubscriberProxy> proxy_ = nullptr;
+    void InitProxy(const sptr<IRemoteObject> &remoteObject);
+    sptr<IStaticSubscriber> proxy_ = nullptr;
+    sptr<RemoteDeathRecipient> deathRecipient_ = nullptr;
     ffrt::recursive_mutex mutex_;
     std::vector<CommonEventData> events_;
     std::vector<std::string> action_;

@@ -25,8 +25,7 @@ void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
-    sptr<StaticSubscriberConnection> sThis = this;
-    auto proxy = sThis->GetProxy(remoteObject);
+    InitProxy(remoteObject);
     std::string bundleName = element.GetURI();
     EVENT_LOGI(LOG_TAG_STATIC, "called, %{public}s", bundleName.c_str());
     for (auto &event : events_) {
@@ -68,15 +67,38 @@ void StaticSubscriberConnection::RemoveEvent(const std::string &action)
     }
 }
 
-sptr<StaticSubscriberProxy> StaticSubscriberConnection::GetProxy(const sptr<IRemoteObject> &remoteObject)
+void StaticSubscriberConnection::InitProxy(const sptr<IRemoteObject> &remoteObject)
 {
-    if (proxy_ == nullptr) {
-        proxy_ = new (std::nothrow) StaticSubscriberProxy(remoteObject);
-        if (proxy_ == nullptr) {
-            EVENT_LOGE(LOG_TAG_STATIC, "failed to create StaticSubscriberProxy!");
-        }
+    if (remoteObject == nullptr) {
+        return;
     }
-    return proxy_;
+    proxy_ = iface_cast<IStaticSubscriber>(remoteObject);
+    if (proxy_ == nullptr) {
+        EVENT_LOGE(LOG_TAG_STATIC, "failed to create StaticSubscriberProxy!");
+        return;
+    }
+    wptr<StaticSubscriberConnection> wThis = this;
+    deathRecipient_ = new (std::nothrow) RemoteDeathRecipient([wThis] (const wptr<IRemoteObject> &remote) {
+        sptr<StaticSubscriberConnection> sThis = wThis.promote();
+        if (sThis == nullptr) {
+            return;
+        }
+        AbilityManagerHelper::GetInstance()->RemoveConnection(sThis);
+    });
+    if (deathRecipient_ == nullptr) {
+        EVENT_LOGE(LOG_TAG_STATIC, "Failed to create RemoteDeathRecipient instance");
+        return;
+    }
+    proxy_->AsObject()->AddDeathRecipient(deathRecipient_);
+}
+
+void StaticSubscriberConnection::Clear()
+{
+    std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
+    if (proxy_ && deathRecipient_) {
+        proxy_->AsObject()->RemoveDeathRecipient(deathRecipient_);
+    }
+    proxy_ = nullptr;
 }
 
 void StaticSubscriberConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)

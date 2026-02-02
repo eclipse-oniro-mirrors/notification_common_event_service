@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,9 +18,10 @@
 #define private public
 #include "ability_manager_helper.h"
 #undef private
-#include "mock_common_event_stub.h"
 #include "mock_iabilitymanager.h"
 #include "static_subscriber_connection.h"
+#include "mock_service_registry.h"
+#include "static_subscriber_stub.h"
 
 using namespace testing::ext;
 using namespace OHOS;
@@ -52,544 +53,59 @@ void AbilityManagerHelperTest::SetUp(void)
 void AbilityManagerHelperTest::TearDown(void)
 {}
 
-using TestAbilityManager = AAFwk::IAbilityManager;
-
-class TestAbilityMgr : public TestAbilityManager {
+class MockStaticSubscriber : public StaticSubscriberStub {
 public:
-    TestAbilityMgr() = default;
-    virtual ~TestAbilityMgr()
-    {};
-    sptr<IRemoteObject> AsObject() override
-    {
-        return nullptr;
-    }
-
-    int StartAbility(const Want &want, int32_t userId, int requestCode, uint64_t specifiedFullTokenId = 0) override
-    {
-        return 1;
-    }
-
-    int StartAbility(const Want &want, const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode,
-        uint64_t specifiedFullTokenId = 0) override
-    {
-        return 1;
-    }
-
-    int StartAbility(const Want &want, const AbilityStartSetting &abilityStartSetting,
-        const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode) override
-    {
-        return 1;
-    }
-
-    int32_t StartAbilityByInsightIntent(const Want &want, const sptr<IRemoteObject> &callerToken,
-        uint64_t intentId, int32_t userId = DEFAULT_INVAL_VALUE) override
-    {
-        return 1;
-    }
-
-    int StartAbility(const Want &want, const StartOptions &startOptions,
-        const sptr<IRemoteObject> &callerToken, int32_t userId, int requestCode) override
-    {
-        return 1;
-    }
-
-    int TerminateAbility(
-        const sptr<IRemoteObject> &token, int resultCode, const Want *resultWant = nullptr) override
-    {
-        return 1;
-    }
-
-    int CloseAbility(const sptr<IRemoteObject> &token, int resultCode = DEFAULT_INVAL_VALUE,
-        const Want *resultWant = nullptr) override
-    {
-        return 1;
-    }
-
-    int MinimizeAbility(const sptr<IRemoteObject> &token, bool fromUser = false) override
-    {
-        return 1;
-    }
-
-    int ConnectAbility(const Want &want, const sptr<IAbilityConnection> &connect,
-        const sptr<IRemoteObject> &callerToken, int32_t userId) override
-    {
-        return 1;
-    }
-
-    int DisconnectAbility(sptr<IAbilityConnection> connect) override
-    {
-        return 1;
-    }
-
-    sptr<IAbilityScheduler> AcquireDataAbility(
-        const Uri &uri, bool tryBind, const sptr<IRemoteObject> &callerToken) override
-    {
-        return nullptr;
-    }
-
-    int ReleaseDataAbility(
-        sptr<IAbilityScheduler> dataAbilityScheduler, const sptr<IRemoteObject> &callerToken) override
-    {
-        return 1;
-    }
-
-    int AttachAbilityThread(const sptr<IAbilityScheduler> &scheduler, const sptr<IRemoteObject> &token) override
-    {
-        return 1;
-    }
-
-    int AbilityTransitionDone(const sptr<IRemoteObject> &token, int state, const PacMap &saveData)override
-    {
-        return 1;
-    }
-
-    int ScheduleConnectAbilityDone(
-        const sptr<IRemoteObject> &token, const sptr<IRemoteObject> &remoteObject) override
-    {
-        return 1;
-    }
-
-    int ScheduleDisconnectAbilityDone(const sptr<IRemoteObject> &token) override
-    {
-        return 1;
-    }
-
-    int ScheduleCommandAbilityDone(const sptr<IRemoteObject> &token) override
-    {
-        return 1;
-    }
-
-    int ScheduleCommandAbilityWindowDone(
-        const sptr<IRemoteObject> &token,
-        const sptr<AAFwk::SessionInfo> &sessionInfo,
-        AAFwk::WindowCommand winCmd,
-        AAFwk::AbilityCommand abilityCmd) override
-    {
-        return 1;
-    }
-
-    void DumpState(const std::string &args, std::vector<std::string> &state) override
-    {}
-
-    void DumpSysState(
-        const std::string& args, std::vector<std::string>& state, bool isClient, bool isUserID, int UserID) override
-    {}
-
-    int StopServiceAbility(const Want &want, int32_t userId, const sptr<IRemoteObject> &token = nullptr) override
-    {
-        return 1;
-    }
-
-    int KillProcess(const std::string &bundleName, const bool clearPageStack, int32_t appIndex,
-        const std::string &reason) override
-    {
-        return 1;
-    }
-
-    int UninstallApp(const std::string &bundleName, int32_t uid) override
-    {
-        return 1;
-    }
-
-    sptr<IWantSender> GetWantSender(
-        const WantSenderInfo &wantSenderInfo, const sptr<IRemoteObject> &callerToken, int32_t uid) override
-    {
-        return nullptr;
-    }
-
-    int SendWantSender(sptr<IWantSender> target, SenderInfo &senderInfo) override
-    {
-        return 1;
-    }
-
-    void CancelWantSender(const sptr<IWantSender> &sender) override
-    {}
-
-    int GetPendingWantUid(const sptr<IWantSender> &target) override
-    {
-        return 1;
-    }
-
-    int GetPendingWantUserId(const sptr<IWantSender> &target) override
-    {
-        return 1;
-    }
-
-    std::string GetPendingWantBundleName(const sptr<IWantSender> &target) override
-    {
-        return "";
-    }
-
-    int GetPendingWantCode(const sptr<IWantSender> &target) override
-    {
-        return 1;
-    }
-
-    int GetPendingWantType(const sptr<IWantSender> &target) override
-    {
-        return 1;
-    }
-
-    void RegisterCancelListener(const sptr<IWantSender> &sender, const sptr<IWantReceiver> &receiver) override
-    {}
-
-    void UnregisterCancelListener(const sptr<IWantSender> &sender, const sptr<IWantReceiver> &receiver) override
-    {}
-
-    int GetPendingRequestWant(const sptr<IWantSender> &target, std::shared_ptr<Want> &want) override
-    {
-        return 1;
-    }
-
-    int GetWantSenderInfo(const sptr<IWantSender> &target, std::shared_ptr<WantSenderInfo> &info) override
-    {
-        return 1;
-    }
-
-    int ContinueMission(const std::string &srcDeviceId, const std::string &dstDeviceId, int32_t missionId,
-        const sptr<IRemoteObject> &callBack, AAFwk::WantParams &wantParams) override
-    {
-        return 1;
-    }
-
-    int ContinueAbility(const std::string &deviceId, int32_t missionId, uint32_t versionCode) override
-    {
-        return 1;
-    }
-
-    int StartContinuation(const Want &want, const sptr<IRemoteObject> &abilityToken, int32_t status) override
-    {
-        return 1;
-    }
-
-    void NotifyCompleteContinuation(const std::string &deviceId, int32_t sessionId, bool isSuccess) override
-    {}
-
-    int NotifyContinuationResult(int32_t missionId, int32_t result) override
-    {
-        return 1;
-    }
-
-    int LockMissionForCleanup(int32_t missionId) override
-    {
-        return 1;
-    }
-
-    int UnlockMissionForCleanup(int32_t missionId) override
-    {
-        return 1;
-    }
-
-    int RegisterMissionListener(const sptr<IMissionListener> &listener) override
-    {
-        return 1;
-    }
-
-    int UnRegisterMissionListener(const sptr<IMissionListener> &listener) override
-    {
-        return 1;
-    }
-
-    int GetMissionInfos(
-        const std::string &deviceId, int32_t numMax, std::vector<MissionInfo> &missionInfos) override
-    {
-        return 1;
-    }
-
-    int GetMissionInfo(const std::string &deviceId, int32_t missionId, MissionInfo &missionInfo) override
-    {
-        return 1;
-    }
-
-    int GetMissionSnapshot(const std::string& deviceId, int32_t missionId,
-        MissionSnapshot& snapshot, bool isLowResolution) override
-    {
-        return 1;
-    }
-
-    int CleanMission(int32_t missionId) override
-    {
-        return 1;
-    }
-
-    int CleanAllMissions() override
-    {
-        return 1;
-    }
-
-    int MoveMissionToFront(int32_t missionId) override
-    {
-        return 1;
-    }
-
-    int MoveMissionToFront(int32_t missionId, const StartOptions &startOptions) override
-    {
-        return 1;
-    }
-
-    int StartAbilityByCall(const Want &want, const sptr<IAbilityConnection> &connect,
-        const sptr<IRemoteObject> &callerToken, int32_t accountId, bool isSilent, bool promotePriority,
-        bool isVisible) override
-    {
-        return 1;
-    }
-
-    int ReleaseCall(const sptr<IAbilityConnection> &connect, const AppExecFwk::ElementName &element) override
-    {
-        return 1;
-    }
-
-    int StartUser(int userId, uint64_t displayId, sptr<IUserCallback> callback, bool isAppRecovery) override
-    {
-        return 1;
-    }
-
-    int StopUser(int userId, const sptr<IUserCallback> &callback) override
-    {
-        return 1;
-    }
-
-    int SetMissionLabel(const sptr<IRemoteObject> &abilityToken, const std::string &label) override
-    {
-        return 1;
-    }
-
-    int SetMissionIcon(const sptr<IRemoteObject> &token,
-        const std::shared_ptr<OHOS::Media::PixelMap> &icon) override
-    {
-        return 1;
-    }
-
-    int RegisterWindowManagerServiceHandler(const sptr<IWindowManagerServiceHandler>& handler,
-        bool animationEnabled) override
-    {
-        return 1;
-    }
-
-    void CompleteFirstFrameDrawing(const sptr<IRemoteObject> &abilityToken) override
-    {}
-
-    int GetAbilityRunningInfos(std::vector<AbilityRunningInfo> &info) override
-    {
-        return 1;
-    }
-
-    int GetExtensionRunningInfos(int upperLimit, std::vector<ExtensionRunningInfo> &info) override
-    {
-        return 1;
-    }
-
-    int GetProcessRunningInfos(std::vector<AppExecFwk::RunningProcessInfo> &info) override
-    {
-        return 1;
-    }
-
-    int StartSyncRemoteMissions(const std::string &devId, bool fixConflict, int64_t tag) override
-    {
-        return 1;
-    }
-
-    int StopSyncRemoteMissions(const std::string &devId) override
-    {
-        return 1;
-    }
-
-    int RegisterMissionListener(const std::string &deviceId, const sptr<IRemoteMissionListener> &listener) override
-    {
-        return 1;
-    }
-
-    int UnRegisterMissionListener(const std::string &deviceId,
-        const sptr<IRemoteMissionListener> &listener) override
-    {
-        return 1;
-    }
-
-    int SetAbilityController(const sptr<AppExecFwk::IAbilityController> &abilityController,
-        bool imAStabilityTest) override
-    {
-        return 1;
-    }
-
-    bool IsRunningInStabilityTest() override
-    {
-        return false;
-    }
-
-    int RegisterSnapshotHandler(const sptr<ISnapshotHandler>& handler) override
-    {
-        return 1;
-    }
-
-    int StartUserTest(const Want &want, const sptr<IRemoteObject> &observer) override
-    {
-        return 1;
-    }
-
-    int FinishUserTest(const std::string &msg, const int64_t &resultCode, const std::string &bundleName) override
-    {
-        return 1;
-    }
-
-    int GetTopAbility(sptr<IRemoteObject> &token) override
-    {
-        return 1;
-    }
-
-    int DelegatorDoAbilityForeground(const sptr<IRemoteObject> &token) override
-    {
-        return 1;
-    }
-
-    int DelegatorDoAbilityBackground(const sptr<IRemoteObject> &token) override
-    {
-        return 1;
-    }
-
-    int DoAbilityForeground(const sptr<IRemoteObject> &token, uint32_t flag) override
-    {
-        return 1;
-    }
-
-    int DoAbilityBackground(const sptr<IRemoteObject> &token, uint32_t flag) override
-    {
-        return 1;
-    }
-
-    int32_t GetMissionIdByToken(const sptr<IRemoteObject> &token) override
-    {
-        return 1;
-    }
-
-    void GetAbilityTokenByCalleeObj(const sptr<IRemoteObject> &callStub, sptr<IRemoteObject> &token) override
-    {}
-
-    int32_t IsValidMissionIds(
-        const std::vector<int32_t> &missionIds, std::vector<MissionValidResult> &results) override
-    {
-        return 1;
-    }
-
-    int32_t ReportDrawnCompleted(const sptr<IRemoteObject> &callerToken) override
-    {
-        return 1;
-    }
-
-    int32_t RegisterAppDebugListener(sptr<AppExecFwk::IAppDebugListener> listener) override
-    {
-        return 1;
-    }
-
-    int32_t UnregisterAppDebugListener(sptr<AppExecFwk::IAppDebugListener> listener) override
-    {
-        return 1;
-    }
-
-    int32_t AttachAppDebug(const std::string &bundleName, bool isDebugFromLocal) override
-    {
-        return 1;
-    }
-
-    int32_t DetachAppDebug(const std::string &bundleName, bool isDebugFromLocal) override
-    {
-        return 1;
-    }
-
-    int32_t ExecuteIntent(uint64_t key, const sptr<IRemoteObject> &callerToken,
-        const InsightIntentExecuteParam &param) override
-    {
-        return 1;
-    }
-
-    int32_t ExecuteInsightIntentDone(const sptr<IRemoteObject> &token, uint64_t intentId,
-        const InsightIntentExecuteResult &result) override
-    {
-        return 1;
-    }
-
-    int32_t SetApplicationAutoStartupByEDM(const AutoStartupInfo &info, bool flag) override
-    {
-        return 0;
-    }
-
-    int32_t CancelApplicationAutoStartupByEDM(const AutoStartupInfo &info, bool flag) override
-    {
-        return 0;
-    }
-
-    int32_t GetForegroundUIAbilities(std::vector<AppExecFwk::AbilityStateData> &list) override
-    {
-        return 1;
-    }
-
-    int32_t StartAbilityWithSpecifyTokenId(const Want& want,
-        const sptr<IRemoteObject>& callerToken,
-        uint32_t specifyTokenId,
-        int32_t userId = DEFAULT_INVAL_VALUE,
-        int requestCode = DEFAULT_INVAL_VALUE) override
-    {
-        return 1;
-    }
-
-    int32_t UpdateKioskApplicationList(const std::vector<std::string> &appList) override
-    {
-        return 1;
-    }
-
-    int32_t EnterKioskMode(sptr<IRemoteObject> callerToken) override
-    {
-        return 1;
-    }
-
-    int32_t ExitKioskMode(sptr<IRemoteObject> callerToken) override
-    {
-        return 1;
-    }
+    explicit MockStaticSubscriber() {}
+    ~MockStaticSubscriber() = default;
 
-    int32_t GetKioskStatus(AAFwk::KioskStatus &kioskStatus) override
+    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
     {
-        return 1;
+        return ERR_OK;
     }
 };
-
 /**
- * @tc.name: AbilityManagerHelper_0100
- * @tc.desc: test GetAbilityMgrProxy function and abilityMgr_ is not nullptr.
- * @tc.type: FUNC
- */
+* @tc.name: AbilityManagerHelper_0100
+* @tc.desc: test GetAbilityMgrProxy function and abilityMgr_ is not nullptr.
+* @tc.type: FUNC
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0100, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0100 start";
     AbilityManagerHelper abilityManagerHelper;
-    abilityManagerHelper.abilityMgr_ = new (std::nothrow) TestAbilityMgr();
-    EXPECT_EQ(true, abilityManagerHelper.GetAbilityMgrProxy());
+    sptr<IRemoteObject> mockAbilityManager = new (std::nothrow) MockIAbilityManager();
+    MockSaProxy(mockAbilityManager);
+
+    EXPECT_NE(nullptr, abilityManagerHelper.GetAbilityMgrProxy());
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0100 end";
 }
 
 /**
- * @tc.name: AbilityManagerHelper_0200
- * @tc.desc: test GetAbilityMgrProxy function and abilityMgr_ is nullptr.
- * @tc.type: FUNC
- */
+* @tc.name: AbilityManagerHelper_0200
+* @tc.desc: test GetAbilityMgrProxy function and abilityMgr_ is nullptr.
+* @tc.type: FUNC
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0200, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0200 start";
     AbilityManagerHelper abilityManagerHelper;
-    abilityManagerHelper.abilityMgr_ = nullptr;
-    EXPECT_EQ(false, abilityManagerHelper.GetAbilityMgrProxy());
+    sptr<IRemoteObject> mockAbilityManager = nullptr;
+    MockSaProxy(mockAbilityManager);
+
+    EXPECT_EQ(nullptr, abilityManagerHelper.GetAbilityMgrProxy());
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0200 end";
 }
 
 /**
- * @tc.name: AbilityManagerHelper_0300
- * @tc.desc: test ConnectAbility function and GetAbilityMgrProxy is false.
- * @tc.type: FUNC
- */
+* @tc.name: AbilityManagerHelper_0300
+* @tc.desc: test ConnectAbility function and GetAbilityMgrProxy is false.
+* @tc.type: FUNC
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0300, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0300 start";
     AbilityManagerHelper abilityManagerHelper;
-    abilityManagerHelper.abilityMgr_ = nullptr;
+    sptr<IRemoteObject> mockAbilityManager = nullptr;
+    MockSaProxy(mockAbilityManager);
     Want want;
     CommonEventData event;
     sptr<IRemoteObject> callerToken = nullptr;
@@ -599,41 +115,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0300, Level1)
 }
 
 /**
- * @tc.name: AbilityManagerHelper_0400
- * @tc.desc: test Clear function and abilityMgr_ is nullptr.
- * @tc.type: FUNC
- */
-HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0400, Level1)
-{
-    GTEST_LOG_(INFO) << "AbilityManagerHelper_0400 start";
-    std::shared_ptr<AbilityManagerHelper> abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
-    ASSERT_NE(nullptr, abilityManagerHelper);
-    abilityManagerHelper->abilityMgr_ = nullptr;
-    abilityManagerHelper->Clear();
-    GTEST_LOG_(INFO) << "AbilityManagerHelper_0400 end";
-}
-
-/**
- * @tc.name: AbilityManagerHelper_0500
- * @tc.desc: test Clear function and abilityMgr_ is not nullptr.
- * @tc.type: FUNC
- */
-HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0500, Level1)
-{
-    GTEST_LOG_(INFO) << "AbilityManagerHelper_0500 start";
-    std::shared_ptr<AbilityManagerHelper> abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
-    ASSERT_NE(nullptr, abilityManagerHelper);
-    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
-    abilityManagerHelper->abilityMgr_ = iface_cast<AAFwk::IAbilityManager>(remoteObject);
-    abilityManagerHelper->Clear();
-    GTEST_LOG_(INFO) << "AbilityManagerHelper_0500 end";
-}
-
-/**
- * @tc.name  : test SetEventHandler
- * @tc.number: AbilityManagerHelper_0600
- * @tc.desc  : Test SetEventHandler succeeded.
- */
+* @tc.name  : test SetEventHandler
+* @tc.number: AbilityManagerHelper_0600
+* @tc.desc  : Test SetEventHandler succeeded.
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0600, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0600 start";
@@ -646,10 +131,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0600, Level1)
 }
 
 /**
- * @tc.name  : test DisconnectAbility
- * @tc.number: AbilityManagerHelper_0700
- * @tc.desc  : Test the DisconnectAbility function when the connection is nullptr.
- */
+* @tc.name  : test DisconnectAbility
+* @tc.number: AbilityManagerHelper_0700
+* @tc.desc  : Test the DisconnectAbility function when the connection is nullptr.
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0700, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0700 start";
@@ -663,10 +148,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0700, Level1)
 }
 
 /**
- * @tc.name  : test DisconnectAbility
- * @tc.number: AbilityManagerHelper_0800
- * @tc.desc  : Test the DisconnectAbility function when the connection is not nullptr.
- */
+* @tc.name  : test DisconnectAbility
+* @tc.number: AbilityManagerHelper_0800
+* @tc.desc  : Test the DisconnectAbility function when the connection is not nullptr.
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0800, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0800 start";
@@ -681,10 +166,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0800, Level1)
 }
 
 /**
- * @tc.name  : test DisconnectServiceAbilityDelay
- * @tc.number: AbilityManagerHelper_0900
- * @tc.desc  : Test the DisconnectServiceAbilityDelay function when the connection is nullptr.
- */
+* @tc.name  : test DisconnectServiceAbilityDelay
+* @tc.number: AbilityManagerHelper_0900
+* @tc.desc  : Test the DisconnectServiceAbilityDelay function when the connection is nullptr.
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0900, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_0900 start";
@@ -698,10 +183,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_0900, Level1)
 }
 
 /**
- * @tc.name  : test DisconnectServiceAbilityDelay
- * @tc.number: AbilityManagerHelper_1000
- * @tc.desc  : Test the DisconnectServiceAbilityDelay function when the eventHandler_ is nullptr.
- */
+* @tc.name  : test DisconnectServiceAbilityDelay
+* @tc.number: AbilityManagerHelper_1000
+* @tc.desc  : Test the DisconnectServiceAbilityDelay function when the eventHandler_ is nullptr.
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1000, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1000 start";
@@ -715,10 +200,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1000, Level1)
 }
 
 /**
- * @tc.name  : test DisconnectServiceAbilityDelay
- * @tc.number: AbilityManagerHelper_1100
- * @tc.desc  : Test the DisconnectServiceAbilityDelay function when the input parameters meet the requirements.
- */
+* @tc.name  : test DisconnectServiceAbilityDelay
+* @tc.number: AbilityManagerHelper_1100
+* @tc.desc  : Test the DisconnectServiceAbilityDelay function when the input parameters meet the requirements.
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1100, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1100 start";
@@ -733,16 +218,16 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1100, Level1)
 }
 
 /**
- * @tc.name  : test ConnectAbility multiple times
- * @tc.number: AbilityManagerHelper_1200
- * @tc.desc  : When calling the connection multiple times, the proxy_ is empty
- */
+* @tc.name  : test ConnectAbility multiple times
+* @tc.number: AbilityManagerHelper_1200
+* @tc.desc  : When calling the connection multiple times, the proxy_ is empty
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1200, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1200 start";
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
-    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
-    abilityManagerHelper->abilityMgr_ = new (std::nothrow) TestAbilityMgr();
+    sptr<IRemoteObject> remoteObject = new (std::nothrow) MockIAbilityManager();
+    MockSaProxy(remoteObject);
 
     Want want;
     CommonEventData event;
@@ -770,27 +255,27 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1200, Level1)
 }
 
 /**
- * @tc.name  : test ConnectAbility multiple times
- * @tc.number: AbilityManagerHelper_1300
- * @tc.desc  : When calling the connection multiple times, the proxy_ is not empty
- */
+* @tc.name  : test ConnectAbility multiple times
+* @tc.number: AbilityManagerHelper_1300
+* @tc.desc  : When calling the connection multiple times, the proxy_ is not empty
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1300, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1300 start";
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
-    sptr<IRemoteObject> remoteObject = sptr<IRemoteObject>(new MockCommonEventStub());
-    abilityManagerHelper->abilityMgr_ = new (std::nothrow) TestAbilityMgr();
+    sptr<IRemoteObject> mockAbilityManager = new (std::nothrow) MockIAbilityManager();
+    MockSaProxy(mockAbilityManager);
 
     Want want;
     CommonEventData event;
-    sptr<IRemoteObject> callerToken = nullptr;
+    sptr<IRemoteObject> callerToken = new MockStaticSubscriber();
     int32_t userId = 1;
     CommonEventData data;
     sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data, "");
     std::string connectionKey =
         want.GetBundle() + "_" + want.GetElement().GetAbilityName() + "_" + std::to_string(userId);
     abilityManagerHelper->subscriberConnection_[connectionKey] = connection;
-    abilityManagerHelper->subscriberConnection_[connectionKey]->GetProxy(callerToken);
+    abilityManagerHelper->subscriberConnection_[connectionKey]->InitProxy(callerToken);
 
     int result1 = abilityManagerHelper->ConnectAbility(want, event, callerToken, userId);
     EXPECT_EQ(result1, ERR_OK);
@@ -807,10 +292,10 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1300, Level1)
 }
 
 /**
- * @tc.name  : test DisconnectAbility when connection is not empty and IsEmptyAction returns false
- * @tc.number: AbilityManagerHelper_1400
- * @tc.desc  : Test DisconnectAbility function when action_ has multiple elements.
- */
+* @tc.name  : test DisconnectAbility when connection is not empty and IsEmptyAction returns false
+* @tc.number: AbilityManagerHelper_1400
+* @tc.desc  : Test DisconnectAbility function when action_ has multiple elements.
+*/
 HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1400, Level1)
 {
     GTEST_LOG_(INFO) << "AbilityManagerHelper_1400 start";
@@ -831,15 +316,15 @@ HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_1400, Level1)
 }
 
 /**
- * @tc.name  : ConnectAbility_RealDelay_Disconnect_0001
- * @tc.desc  : Verify that ConnectAbility auto-releases the connection after the delay task.
- * @tc.type: FUNC
- */
+* @tc.name  : ConnectAbility_RealDelay_Disconnect_0001
+* @tc.desc  : Verify that ConnectAbility auto-releases the connection after the delay task.
+* @tc.type: FUNC
+*/
 HWTEST_F(AbilityManagerHelperTest, ConnectAbility_RealDelay_Disconnect_0001, Level1)
 {
     auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
-    auto mockAbilityMgr = new MockIAbilityManager();
-    abilityManagerHelper->abilityMgr_ = mockAbilityMgr;
+    sptr<MockIAbilityManager> mockAbilityMgr = new MockIAbilityManager();
+    MockSaProxy(mockAbilityMgr);
 
     Want want;
     want.SetBundle("test.bundle");
@@ -865,4 +350,148 @@ HWTEST_F(AbilityManagerHelperTest, ConnectAbility_RealDelay_Disconnect_0001, Lev
 
     it = abilityManagerHelper->subscriberConnection_.find(connectionKey);
     EXPECT_EQ(it, abilityManagerHelper->subscriberConnection_.end());
+}
+
+/**
+* @tc.name: AbilityManagerHelper_RemoveConnection_0100
+* @tc.desc: test RemoveConnection function when connection is nullptr.
+* @tc.type: FUNC
+*/
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_RemoveConnection_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0100 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    abilityManagerHelper->RemoveConnection(nullptr);
+    // No crash is expected to be considered as passed
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0100 end";
+}
+
+/**
+* @tc.name: AbilityManagerHelper_RemoveConnection_0200
+* @tc.desc: test RemoveConnection function when connection is not nullptr and not found in subscriberConnection_.
+* @tc.type: FUNC
+*/
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_RemoveConnection_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0200 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data, "");
+    abilityManagerHelper->RemoveConnection(connection);
+    // No crash and warning log is expected to be considered as passed
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0200 end";
+}
+
+/**
+* @tc.name: AbilityManagerHelper_RemoveConnection_0300
+* @tc.desc: test RemoveConnection function when connection is found in subscriberConnection_ but abilityMgr is nullptr.
+* @tc.type: FUNC
+*/
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_RemoveConnection_0300, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0300 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data, "");
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
+    sptr<MockIAbilityManager> mockAbilityMgr = nullptr;
+    MockSaProxy(mockAbilityMgr);
+
+    abilityManagerHelper->RemoveConnection(connection);
+    
+    // Connection should be removed from subscriberConnection_
+    EXPECT_EQ(abilityManagerHelper->subscriberConnection_.size(), 0);
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0300 end";
+}
+
+/**
+* @tc.name: AbilityManagerHelper_RemoveConnection_0400
+* @tc.desc: test RemoveConnection function when connection is found and abilityMgr is not nullptr.
+* @tc.type: FUNC
+*/
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_RemoveConnection_0400, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0400 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    sptr<MockIAbilityManager> mockAbilityMgr = new MockIAbilityManager();
+    MockSaProxy(mockAbilityMgr);
+    
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data, "");
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
+    
+    EXPECT_CALL(*mockAbilityMgr, DisconnectAbility(::testing::_))
+        .Times(1)
+        .WillOnce(::testing::Return(ERR_OK));
+    
+    abilityManagerHelper->RemoveConnection(connection);
+    
+    // Connection should be removed from subscriberConnection_
+    EXPECT_EQ(abilityManagerHelper->subscriberConnection_.size(), 0);
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0400 end";
+}
+
+/**
+* @tc.name: AbilityManagerHelper_RemoveConnection_0500
+* @tc.desc: test RemoveConnection function when DisconnectAbility returns error.
+* @tc.type: FUNC
+*/
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_RemoveConnection_0500, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0500 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    sptr<MockIAbilityManager> mockAbilityMgr = new MockIAbilityManager();
+    MockSaProxy(mockAbilityMgr);
+    
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> connection = new (std::nothrow) StaticSubscriberConnection(data, "");
+    abilityManagerHelper->subscriberConnection_.emplace("test_key", connection);
+    
+    EXPECT_CALL(*mockAbilityMgr, DisconnectAbility(::testing::_))
+        .Times(1)
+        .WillOnce(::testing::Return(ERR_INVALID_VALUE));
+    
+    abilityManagerHelper->RemoveConnection(connection);
+    
+    // Connection should still be removed from subscriberConnection_ even if DisconnectAbility fails
+    EXPECT_EQ(abilityManagerHelper->subscriberConnection_.size(), 0);
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0500 end";
+}
+
+/**
+* @tc.name: AbilityManagerHelper_RemoveConnection_0600
+* @tc.desc: test RemoveConnection function with multiple connections and removing one of them.
+* @tc.type: FUNC
+*/
+HWTEST_F(AbilityManagerHelperTest, AbilityManagerHelper_RemoveConnection_0600, Level1)
+{
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0600 start";
+    auto abilityManagerHelper = std::make_shared<AbilityManagerHelper>();
+    sptr<MockIAbilityManager> mockAbilityMgr = new MockIAbilityManager();
+    MockSaProxy(mockAbilityMgr);
+    CommonEventData data1;
+    sptr<StaticSubscriberConnection> connection1 = new (std::nothrow) StaticSubscriberConnection(data1, "test_key1");
+    abilityManagerHelper->subscriberConnection_.emplace("test_key1", connection1);
+    
+    CommonEventData data2;
+    sptr<StaticSubscriberConnection> connection2 = new (std::nothrow) StaticSubscriberConnection(data2, "test_key2");
+    abilityManagerHelper->subscriberConnection_.emplace("test_key2", connection2);
+    
+    CommonEventData data3;
+    sptr<StaticSubscriberConnection> connection3 = new (std::nothrow) StaticSubscriberConnection(data3, "test_key3");
+    abilityManagerHelper->subscriberConnection_.emplace("test_key3", connection3);
+
+    EXPECT_CALL(*mockAbilityMgr, DisconnectAbility(::testing::_))
+        .Times(1)
+        .WillOnce(::testing::Return(ERR_OK));
+    
+    abilityManagerHelper->RemoveConnection(connection2);
+    
+    // Verify that connection2 is removed while others remain
+    auto iterEnd = abilityManagerHelper->subscriberConnection_.end();
+    EXPECT_EQ(abilityManagerHelper->subscriberConnection_.size(), 2);
+    EXPECT_NE(abilityManagerHelper->subscriberConnection_.find("test_key1"), iterEnd);
+    EXPECT_EQ(abilityManagerHelper->subscriberConnection_.find("test_key2"), iterEnd);
+    EXPECT_NE(abilityManagerHelper->subscriberConnection_.find("test_key3"), iterEnd);
+    GTEST_LOG_(INFO) << "AbilityManagerHelper_RemoveConnection_0600 end";
 }
