@@ -515,7 +515,7 @@ std::shared_ptr<SubscriberInstance> GetSubscriber(const napi_env &env, const nap
     EVENT_LOGD(LOG_TAG_CES_NAPI, "GetSubscriber excute");
 
     SubscriberInstanceWrapper *wrapper = nullptr;
-    napi_unwrap(env, value, (void **)&wrapper);
+    napi_unwrap_s(env, value, &SubscriberInstanceWrapper::typeTag, (void **)&wrapper);
     if (wrapper == nullptr) {
         EVENT_LOGW(LOG_TAG_CES_NAPI, "GetSubscriber wrapper is null");
         return nullptr;
@@ -1079,7 +1079,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
         return NapiGetNull(env);
     }
 
-    napi_wrap(env, thisVar, wrapper,
+    napi_wrap_s(env, thisVar, wrapper,
         [](napi_env env, void *data, void *hint) {
             auto *wrapper = reinterpret_cast<SubscriberInstanceWrapper *>(data);
             EVENT_LOGD(LOG_TAG_CES_NAPI, "Constructor destroy");
@@ -1097,6 +1097,7 @@ napi_value CommonEventSubscriberConstructor(napi_env env, napi_callback_info inf
             wrapper = nullptr;
         },
         nullptr,
+        &SubscriberInstanceWrapper::typeTag,
         nullptr);
 
     EVENT_LOGD(LOG_TAG_CES_NAPI, "end");
