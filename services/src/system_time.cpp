@@ -15,18 +15,18 @@
 
 #include "system_time.h"
 
+#include <chrono>
+
 #include "event_log_wrapper.h"
-#include "inner_event.h"
 
 namespace OHOS {
 namespace EventFwk {
-using namespace OHOS::AppExecFwk;
 
 int64_t SystemTime::GetNowSysTime()
 {
     EVENT_LOGD(LOG_TAG_CES, "enter");
 
-    InnerEvent::TimePoint nowSys = InnerEvent::Clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> nowSys = std::chrono::steady_clock::now();
     auto epoch = nowSys.time_since_epoch();
     auto value = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
     int64_t duration = value.count();

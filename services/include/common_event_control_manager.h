@@ -21,7 +21,6 @@
 #include "common_event_permission_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "history_event_record.h"
-#include "ordered_event_handler.h"
 #include "ordered_event_record.h"
 #include "ffrt.h"
 
@@ -186,8 +185,6 @@ struct EventLogCache {
 };
 
 private:
-    std::shared_ptr<EventHandler> handler_;
-    std::shared_ptr<OrderedEventHandler> handlerOrdered_;
     std::vector<std::shared_ptr<OrderedEventRecord>> orderedEventQueue_;
     std::vector<std::shared_ptr<OrderedEventRecord>> unorderedEventQueue_;
     bool pendingTimeoutMessage_;

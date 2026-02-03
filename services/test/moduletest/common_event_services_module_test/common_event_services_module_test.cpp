@@ -42,7 +42,6 @@ namespace {
 std::mutex mtx_;
 const time_t TIME_OUT_SECONDS_LIMIT = 3;
 static OHOS::sptr<OHOS::AppExecFwk::MockBundleMgrService> bundleObject = nullptr;
-std::shared_ptr<EventHandler> handlerPtr;
 constexpr int32_t ERR_OK = 0;
 constexpr int32_t ERR_NOTIFICATION_CES_NOT_SA_SYSTEM_APP = 1500004;
 }  // namespace
