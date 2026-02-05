@@ -280,6 +280,7 @@ class SubscriberInstanceWrapper {
 public:
     SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info);
     std::shared_ptr<SubscriberInstance> GetSubscriber();
+    static constexpr napi_type_tag typeTag = {0x90b0b31bbb8914a2, 0xbe4b1011840a48a9};
 
 private:
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
