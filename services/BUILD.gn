@@ -50,7 +50,6 @@ config("ces_services_public_config") {
 }
 
 cesfwk_services_sources = [
-  "${ces_services_path}/src/ability_manager_death_recipient.cpp",
   "${ces_services_path}/src/ability_manager_helper.cpp",
   "${ces_services_path}/src/access_token_helper.cpp",
   "${ces_services_path}/src/bms_death_recipient.cpp",

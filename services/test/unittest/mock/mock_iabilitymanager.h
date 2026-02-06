@@ -22,7 +22,7 @@
 
 namespace OHOS {
 namespace AAFwk {
-class MockIAbilityManager : public IAbilityManager {
+class MockIAbilityManager : public IRemoteStub<IAbilityManager> {
 public:
     MOCK_METHOD(sptr<IRemoteObject>, AsObject, (), (override));
     MOCK_METHOD(int, StartAbility, (const Want &want, int32_t userId, int requestCode,

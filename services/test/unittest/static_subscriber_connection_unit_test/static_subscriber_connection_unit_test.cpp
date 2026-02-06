@@ -20,14 +20,12 @@
 #include "static_subscriber_connection.h"
 #undef private
 #undef protected
+#include "static_subscriber_stub.h"
 
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
-
-extern bool IsOnReceiveEventCalled();
-extern void ResetStaticSubscriberProxyMockState();
 
 class StaticSubscriberConnectionUnitTest : public testing::Test {
 public:
@@ -51,6 +49,19 @@ void StaticSubscriberConnectionUnitTest::TearDownTestCase() {}
 void StaticSubscriberConnectionUnitTest::SetUp() {}
 
 void StaticSubscriberConnectionUnitTest::TearDown() {}
+bool g_mockOnReceiveEventRet = false;
+
+class MockStaticSubscriber : public StaticSubscriberStub {
+public:
+    explicit MockStaticSubscriber() {}
+    ~MockStaticSubscriber() = default;
+
+    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
+    {
+        g_mockOnReceiveEventRet = true;
+        return ERR_OK;
+    }
+};
 
 /*
  * @tc.name: OnAbilityConnectDoneTest_0100
@@ -67,13 +78,13 @@ HWTEST_F(StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0100, Func
     sptr<StaticSubscriberConnection> conn = new (std::nothrow) StaticSubscriberConnection(data, "");
     ASSERT_NE(nullptr, conn);
     ElementName element;
-    sptr<IRemoteObject> remoteObject = nullptr;
+    sptr<IRemoteObject> mockSubscriber = nullptr;
     int resultCode = 0;
-    conn->OnAbilityConnectDone(element, remoteObject, resultCode);
+    conn->OnAbilityConnectDone(element, mockSubscriber, resultCode);
     sleep(1);
     conn->OnAbilityDisconnectDone(element, resultCode);
-    EXPECT_TRUE(IsOnReceiveEventCalled());
-    ResetStaticSubscriberProxyMockState();
+    EXPECT_FALSE(g_mockOnReceiveEventRet);
+    g_mockOnReceiveEventRet = false;
 }
 
 /*
@@ -202,39 +213,69 @@ HWTEST_F(StaticSubscriberConnectionUnitTest, IsEmptyAction_0100, Function | Medi
 }
 
 /*
- * @tc.name: GetProxy_0100
- * @tc.desc: Test GetProxy when proxy_ is nullptr (should create new StaticSubscriberProxy).
+ * @tc.name: InitProxy_0100
+ * @tc.desc: Test InitProxy when proxy_ is nullptr (should create new StaticSubscriberProxy).
  * @tc.type: FUNC
  */
-HWTEST_F(StaticSubscriberConnectionUnitTest, GetProxy_0100, Function | MediumTest | Level1)
+HWTEST_F(StaticSubscriberConnectionUnitTest, InitProxy_0100, Function | MediumTest | Level1)
 {
-    GTEST_LOG_(INFO) << "GetProxy_0100 start!";
+    GTEST_LOG_(INFO) << "InitProxy_0100 start!";
     CommonEventData data;
-    StaticSubscriberConnection connection(data, "");
+    auto connection = new StaticSubscriberConnection(data, "");
 
     sptr<IRemoteObject> remoteObject = nullptr;
-    sptr<StaticSubscriberProxy> proxy = connection.GetProxy(remoteObject);
-    EXPECT_NE(proxy, nullptr);
-    EXPECT_EQ(proxy, connection.proxy_);
-    GTEST_LOG_(INFO) << "GetProxy_0100 end!";
+    connection->InitProxy(remoteObject);
+    EXPECT_EQ(connection->proxy_, nullptr);
+    GTEST_LOG_(INFO) << "InitProxy_0100 end!";
 }
 
-/*
- * @tc.name: GetProxy_0200
- * @tc.desc: Test GetProxy when proxy_ is not nullptr (should return existing StaticSubscriberProxy).
- * @tc.type: FUNC
- */
-HWTEST_F(StaticSubscriberConnectionUnitTest, GetProxy_0200, Function | MediumTest | Level1)
+HWTEST_F(StaticSubscriberConnectionUnitTest, InitProxy_0200, Function | MediumTest | Level1)
 {
-    GTEST_LOG_(INFO) << "GetProxy_0200 start!";
+    GTEST_LOG_(INFO) << "InitProxy_0200 start!";
     CommonEventData data;
-    StaticSubscriberConnection connection(data, "");
+    auto connection = new StaticSubscriberConnection(data, "");
 
-    sptr<IRemoteObject> remoteObject = nullptr;
-    sptr<StaticSubscriberProxy> proxy1 = connection.GetProxy(remoteObject);
-    EXPECT_NE(proxy1, nullptr);
+    sptr<IRemoteObject> mockSubscriber = new MockStaticSubscriber();
+    connection->InitProxy(mockSubscriber);
+    EXPECT_NE(connection->proxy_, nullptr);
+    GTEST_LOG_(INFO) << "InitProxy_0200 end!";
+}
 
-    sptr<StaticSubscriberProxy> proxy2 = connection.GetProxy(remoteObject);
-    EXPECT_EQ(proxy1, proxy2);
-    GTEST_LOG_(INFO) << "GetProxy_0200 end!";
+HWTEST_F(StaticSubscriberConnectionUnitTest, Clear_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "Clear_0100 start!";
+    CommonEventData data;
+    auto connection = new StaticSubscriberConnection(data, "");
+    sptr<IRemoteObject> mockSubscriber = new MockStaticSubscriber();
+    connection->InitProxy(mockSubscriber);
+    connection->Clear();
+
+    EXPECT_EQ(connection->proxy_, nullptr);
+    GTEST_LOG_(INFO) << "Clear_0100 end!";
+}
+
+HWTEST_F(StaticSubscriberConnectionUnitTest, Clear_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "Clear_0200 start!";
+    CommonEventData data;
+    auto connection = new StaticSubscriberConnection(data, "");
+    connection->proxy_ = new MockStaticSubscriber();
+    connection->Clear();
+
+    EXPECT_EQ(connection->proxy_, nullptr);
+    GTEST_LOG_(INFO) << "Clear_0200 end!";
+}
+
+HWTEST_F(StaticSubscriberConnectionUnitTest, Clear_0300, Level1)
+{
+    GTEST_LOG_(INFO) << "Clear_0300 start!";
+    CommonEventData data;
+    auto connection = new StaticSubscriberConnection(data, "");
+    sptr<IRemoteObject> mockSubscriber = new MockStaticSubscriber();
+    connection->InitProxy(mockSubscriber);
+    connection->proxy_ = nullptr;
+    connection->Clear();
+
+    EXPECT_EQ(connection->proxy_, nullptr);
+    GTEST_LOG_(INFO) << "Clear_0300 end!";
 }
