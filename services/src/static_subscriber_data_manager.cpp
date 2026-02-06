@@ -15,6 +15,7 @@
 
 #include "static_subscriber_data_manager.h"
 
+#include <charconv>
 #include <unistd.h>
 
 #include "bundle_manager_helper.h"
@@ -30,6 +31,8 @@ constexpr int32_t CHECK_INTERVAL = 100000; // 100ms
 constexpr int32_t MAX_TIMES = 5;           // 5 * 100ms = 500ms
 constexpr const char *STATIC_SUBSCRIBER_STORAGE_DIR = "/data/service/el1/public/database/common_event_service";
 const std::string STATIC_SUBSCRIBER_VALUE_DEFAULT = "0";
+const std::string IS_UPDATED_KEY = "is_updated_key";
+const std::string KEY_IS_ALREADY_UPDATED = "true";
 } // namespace
 StaticSubscriberDataManager::StaticSubscriberDataManager() {}
 
@@ -94,7 +97,9 @@ int32_t StaticSubscriberDataManager::UpdateStaticSubscriberState(
         EVENT_LOGE(LOG_TAG_STATIC, "Kvstore is nullptr.");
         return ERR_NO_INIT;
     }
-
+    DistributedKv::Key updateKey(IS_UPDATED_KEY);
+    DistributedKv::Value updateValue(KEY_IS_ALREADY_UPDATED);
+    kvStorePtr_->Put(updateKey, updateValue);
     for (auto &disableEventsDatabaseIt : disableEventsDatabase) {
         DistributedKv::Key key(disableEventsDatabaseIt.first);
         if (kvStorePtr_->Delete(key) != DistributedKv::Status::SUCCESS) {
@@ -147,11 +152,17 @@ int32_t StaticSubscriberDataManager::QueryStaticSubscriberStateData(
     int32_t result = ERR_OK;
     std::set<std::string> removeOldkeys;
     std::map<std::string, DistributedKv::Value> migrateValues;
-    std::vector<int32_t> userIds;
-    DelayedSingleton<OsAccountManagerHelper>::GetInstance()->QueryActiveOsAccountIds(userIds);
+    bool isUpdatedValue = false;
+    DistributedKv::Value updateValue;
+    if (kvStorePtr_->Get(IS_UPDATED_KEY, updateValue) == DistributedKv::Status::SUCCESS) {
+        isUpdatedValue = (updateValue.ToString() == KEY_IS_ALREADY_UPDATED);
+    }
     for (const auto &item : allEntries) {
+        if (item.key.ToString() == IS_UPDATED_KEY) {
+            continue;
+        }
         std::vector<std::string> newKeys;
-        result = GetValidKey(item.key.ToString(), userIds, removeOldkeys, newKeys);
+        result = isUpdatedValue ? ERR_OK : GetValidKey(item.key.ToString(), removeOldkeys, newKeys);
         if (result != ERR_OK) {
             EVENT_LOGE(LOG_TAG_STATIC, "get valid key failed key is %{public}s", item.key.ToString().c_str());
             continue;
@@ -240,29 +251,22 @@ bool StaticSubscriberDataManager::ConvertValueToEvents(
     return true;
 }
 
-int32_t StaticSubscriberDataManager::GetValidKey(const std::string &key, const std::vector<int32_t> &userIds,
+int32_t StaticSubscriberDataManager::GetValidKey(const std::string &key,
     std::set<std::string> &oldkeys, std::vector<std::string> &newkeys)
 {
     if (key.empty()) {
         EVENT_LOGE(LOG_TAG_STATIC, "key is empty");
         return ERR_INVALID_VALUE;
     }
-    if (std::isdigit(static_cast<unsigned char>(key[0])) != 0) {
+
+    std::string newKey = key;
+    if (!IsNeedUpdateKey(newKey)) {
         return ERR_OK;
     }
-    if (userIds.empty()) {
-        EVENT_LOGE(LOG_TAG_STATIC, "userIds is empty");
-        return ERR_INVALID_VALUE;
-    }
-    for (const int32_t userId : userIds) {
-        int32_t uid = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetDefaultUidByBundleName(key, userId);
-        if (uid < 0) {
-            continue;
-        }
-        std::string newKey = std::to_string(uid) + key;
-        oldkeys.emplace(key);
-        newkeys.push_back(newKey);
-    }
+
+    oldkeys.emplace(key);
+    newkeys.push_back(newKey);
+
     return ERR_OK;
 }
 
@@ -292,6 +296,31 @@ void StaticSubscriberDataManager::UpdateDistributedKv(const std::set<std::string
     if (kvStorePtr_->PutBatch(entryVec) != DistributedKv::Status::SUCCESS) {
         EVENT_LOGE(LOG_TAG_STATIC, "Failed to batch put new keys");
     }
+    DistributedKv::Key updateKey(IS_UPDATED_KEY);
+    DistributedKv::Value updateValue(KEY_IS_ALREADY_UPDATED);
+    kvStorePtr_->Put(updateKey, updateValue);
+}
+
+bool StaticSubscriberDataManager::IsNeedUpdateKey(std::string &key)
+{
+    std::string numStr = "";
+    size_t i = 0;
+    while (i < key.length() && std::isdigit(static_cast<unsigned char>(key[i]))) {
+        ++i;
+    }
+    numStr = key.substr(0, i);
+    key = key.substr(i);
+    int32_t uid = 0;
+    auto res = std::from_chars(numStr.data(), numStr.data() + numStr.size(), uid);
+    if (res.ec != std::errc{}) {
+        return false;
+    }
+    int32_t userId = ALL_USER;
+    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(uid, userId) == ERR_OK) {
+        key = std::to_string(userId) + "_" + key;
+        return true;
+    }
+    return false;
 }
 } // namespace EventFwk
 } // namespace OHOS

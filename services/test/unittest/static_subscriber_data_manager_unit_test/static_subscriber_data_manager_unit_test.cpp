@@ -200,3 +200,39 @@ HWTEST_F(StaticSubscriberDataManagerUnitTest, ConvertValueToEvents_0200, Functio
     auto ret = dataManager->ConvertValueToEvents(value, events);
     EXPECT_EQ(true, ret);
 }
+
+/*
+ * @tc.name: GetValidKey_0100
+ * @tc.desc: Test the GetValidKey function.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberDataManagerUnitTest, GetValidKey_0100, Function | MediumTest | Level1)
+{
+    auto dataManager = std::make_shared<StaticSubscriberDataManager>();
+    ASSERT_NE(nullptr, dataManager);
+    std::string key = "";
+    std::set<std::string> oldkeys;
+    std::vector<std::string> newkeys;
+    auto ret = dataManager->GetValidKey(key, oldkeys, newkeys);
+    EXPECT_EQ(ERR_INVALID_VALUE, ret);
+    key = "testKey";
+    ret = dataManager->GetValidKey("testKey", oldkeys, newkeys);
+    EXPECT_EQ(ERR_OK, ret);
+    key = "1234testKey";
+    ret = dataManager->GetValidKey("1234testKey", oldkeys, newkeys);
+    EXPECT_EQ(ERR_OK, ret);
+}
+
+/*
+ * @tc.name: IsNeedUpdateKey_0100
+ * @tc.desc: Test the IsNeedUpdateKey function, passing in error parameters.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberDataManagerUnitTest, IsNeedUpdateKey_0100, Function | MediumTest | Level1)
+{
+    auto dataManager = std::make_shared<StaticSubscriberDataManager>();
+    ASSERT_NE(nullptr, dataManager);
+    std::string key = "12345";
+    auto ret = dataManager->IsNeedUpdateKey(key);
+    EXPECT_EQ(true, ret);
+}
