@@ -50,6 +50,11 @@ void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
             EVENT_LOGE(LOG_TAG_STATIC, "Connection expired, skip Notify");
             return;
         }
+        std::lock_guard<ffrt::recursive_mutex> lock(sThis->mutex_);
+        if (sThis->proxy_ == nullptr) {
+            EVENT_LOGE(LOG_TAG_STATIC, "Proxy is died, skip Notify");
+            return;
+        }
         int32_t funcResult = -1;
         ErrCode ec = sThis->proxy_->OnReceiveEvent(event, funcResult);
         EVENT_LOGI(LOG_TAG_STATIC, "Notify %{public}s to %{public}s end, code %{public}d",
