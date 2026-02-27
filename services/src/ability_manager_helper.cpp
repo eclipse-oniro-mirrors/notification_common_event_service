@@ -44,11 +44,12 @@ int AbilityManagerHelper::ConnectAbility(
     ffrt::task_handle handle = ffrt_->submit_h([&]() {
         std::string connectionKey =
             want.GetBundle() + "_" + want.GetElement().GetAbilityName() + "_" + std::to_string(userId);
-
-        if (!GetAbilityMgrProxy()) {
-            result = -1;
+        sptr<AAFwk::IAbilityManager> abilityMgr = GetAbilityMgrProxy();
+        if (abilityMgr == nullptr) {
+            EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability manager services ability");
             return;
         }
+        std::lock_guard<ffrt::mutex> lock(mutex_);
         auto it = subscriberConnection_.find(connectionKey);
         if (it != subscriberConnection_.end()) {
             it->second->NotifyEvent(event);
@@ -64,7 +65,7 @@ int AbilityManagerHelper::ConnectAbility(
             result = -1;
             return;
         }
-        result = abilityMgr_->ConnectAbility(want, connection, callerToken, userId);
+        result = abilityMgr->ConnectAbility(want, connection, callerToken, userId);
         if (result != ERR_OK) {
             EVENT_LOGE(LOG_TAG_CES, "Connect failed, result=%{public}d", result);
             return;
@@ -77,49 +78,24 @@ int AbilityManagerHelper::ConnectAbility(
     return result;
 }
 
-bool AbilityManagerHelper::GetAbilityMgrProxy()
+sptr<AAFwk::IAbilityManager> AbilityManagerHelper::GetAbilityMgrProxy()
 {
-    if (abilityMgr_ == nullptr) {
-        sptr<ISystemAbilityManager> systemAbilityManager =
-            SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-        if (systemAbilityManager == nullptr) {
-            EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability mgr.");
-            return false;
-        }
-
-        sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(ABILITY_MGR_SERVICE_ID);
-        if (remoteObject == nullptr) {
-            EVENT_LOGE(LOG_TAG_CES, "Failed to get ability manager service.");
-            return false;
-        }
-
-        abilityMgr_ = iface_cast<AAFwk::IAbilityManager>(remoteObject);
-        if ((abilityMgr_ == nullptr) || (abilityMgr_->AsObject() == nullptr)) {
-            EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability manager services ability");
-            return false;
-        }
-
-        deathRecipient_ = new (std::nothrow) AbilityManagerDeathRecipient();
-        if (deathRecipient_ == nullptr) {
-            EVENT_LOGE(LOG_TAG_CES, "Failed to create AbilityManagerDeathRecipient");
-            return false;
-        }
-        if (!abilityMgr_->AsObject()->AddDeathRecipient(deathRecipient_)) {
-            EVENT_LOGW(LOG_TAG_CES, "Failed to add AbilityManagerDeathRecipient");
-        }
+    sptr<ISystemAbilityManager> systemAbilityManager =
+        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (systemAbilityManager == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get system ability mgr.");
+        return nullptr;
     }
 
-    return true;
-}
-
-void AbilityManagerHelper::Clear()
-{
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-
-    if ((abilityMgr_ != nullptr) && (abilityMgr_->AsObject() != nullptr)) {
-        abilityMgr_->AsObject()->RemoveDeathRecipient(deathRecipient_);
+    sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(ABILITY_MGR_SERVICE_ID);
+    if (remoteObject == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES, "Failed to get ability manager service.");
+        return nullptr;
     }
-    abilityMgr_ = nullptr;
+
+    auto abilityMgr = iface_cast<AAFwk::IAbilityManager>(remoteObject);
+    
+    return abilityMgr;
 }
 
 void AbilityManagerHelper::DisconnectServiceAbilityDelay(
@@ -145,6 +121,7 @@ void AbilityManagerHelper::DisconnectAbility(
         return;
     }
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     auto it = std::find_if(subscriberConnection_.begin(), subscriberConnection_.end(),
         [&connection](const auto &pair) { return pair.second == connection; });
     if (it == subscriberConnection_.end()) {
@@ -158,7 +135,34 @@ void AbilityManagerHelper::DisconnectAbility(
             return;
         }
     }
-    IN_PROCESS_CALL_WITHOUT_RET(abilityMgr_->DisconnectAbility(connection));
+    sptr<AAFwk::IAbilityManager> abilityMgr = GetAbilityMgrProxy();
+    if (abilityMgr) {
+        IN_PROCESS_CALL_WITHOUT_RET(abilityMgr->DisconnectAbility(connection));
+    }
+    connection->Clear();
+    subscriberConnection_.erase(it);
+    EVENT_LOGD(LOG_TAG_CES, "erase connection!");
+}
+
+void AbilityManagerHelper::RemoveConnection(const sptr<StaticSubscriberConnection> &connection)
+{
+    EVENT_LOGD(LOG_TAG_CES, "enter");
+    if (connection == nullptr) {
+        EVENT_LOGW(LOG_TAG_CES, "connection is nullptr");
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    auto it = std::find_if(subscriberConnection_.begin(), subscriberConnection_.end(),
+        [&connection](const auto &pair) { return pair.second == connection; });
+    if (it == subscriberConnection_.end()) {
+        EVENT_LOGW(LOG_TAG_CES, "failed to find connection!");
+        return;
+    }
+    sptr<AAFwk::IAbilityManager> abilityMgr = GetAbilityMgrProxy();
+    if (abilityMgr) {
+        IN_PROCESS_CALL_WITHOUT_RET(abilityMgr->DisconnectAbility(connection));
+    }
+    connection->Clear();
     subscriberConnection_.erase(it);
     EVENT_LOGD(LOG_TAG_CES, "erase connection!");
 }

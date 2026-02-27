@@ -928,43 +928,6 @@ HWTEST_F(CommonEventSubscribeUnitTest, CommonEventSubscribeUnitTest_1200, Functi
 }
 
 /**
- * @tc.name: AbilityManagerHelper_0001
- * @tc.desc: GetAbilityMgrProxy
- * @tc.type: FUNC
- * @tc.require: I5R11Y
- */
-HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0001, Function | MediumTest | Level1)
-{
-    AbilityManagerHelper abilityManagerHelper;
-    abilityManagerHelper.abilityMgr_ = new (std::nothrow) TestAbilityMgr();
-    bool result = abilityManagerHelper.GetAbilityMgrProxy();
-    abilityManagerHelper.Clear();
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: AbilityManagerHelper_0002
- * @tc.desc: ConnectAbility
- * @tc.type: FUNC
- * @tc.require: I5R11Y
- */
-HWTEST_F(CommonEventSubscribeUnitTest, AbilityManagerHelper_0002, Function | MediumTest | Level1)
-{
-    // make a want
-    Want want;
-    want.SetAction(EVENT);
-
-    // make common event data
-    CommonEventData event;
-    OHOS::sptr<OHOS::IRemoteObject> callerToken(nullptr);
-    const int32_t userId = 1;
-    AbilityManagerHelper abilityManagerHelper;
-    abilityManagerHelper.abilityMgr_ = new (std::nothrow) TestAbilityMgr();
-    int result = abilityManagerHelper.ConnectAbility(want, event, callerToken, userId);
-    EXPECT_EQ(result, 2097177);
-}
-
-/**
  * @tc.name: BundleManagerHelper_0001
  * @tc.desc: QueryExtensionInfos
  * @tc.type: FUNC
