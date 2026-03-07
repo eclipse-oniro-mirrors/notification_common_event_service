@@ -171,7 +171,8 @@ public:
         (uint64_t key, const sptr<IRemoteObject> &callerToken, const InsightIntentExecuteParam &param), (override));
     MOCK_METHOD(int32_t, ExecuteInsightIntentDone,
         (const sptr<IRemoteObject> &token, uint64_t intentId, const InsightIntentExecuteResult &result), (override));
-    MOCK_METHOD(int32_t, SetApplicationAutoStartupByEDM, (const AutoStartupInfo &info, bool flag), (override));
+    MOCK_METHOD(int32_t, SetApplicationAutoStartupByEDM, (const AutoStartupInfo &info, bool flag,
+        bool isHiddenStart), (override));
     MOCK_METHOD(int32_t, CancelApplicationAutoStartupByEDM, (const AutoStartupInfo &info, bool flag), (override));
     MOCK_METHOD(int32_t, GetForegroundUIAbilities, (std::vector<AppExecFwk::AbilityStateData> & list), (override));
     MOCK_METHOD(void, ScheduleClearRecoveryPageStack, (), (override));
