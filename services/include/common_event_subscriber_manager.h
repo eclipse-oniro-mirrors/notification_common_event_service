@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -260,15 +261,18 @@ private:
     void InsertEventSubscribers(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
     void RemoveEventSubscribers(const std::vector<std::string> &events, const SubscriberRecordPtr &record);
 
+    void CompactSubscriberDataStructures();
+
 private:
     ffrt::mutex mutex_;
     sptr<IRemoteObject::DeathRecipient> death_;
-    std::map<std::string, std::set<SubscriberRecordPtr>> eventSubscribers_;
+    std::unordered_map<std::string, std::set<SubscriberRecordPtr>> eventSubscribers_;
     std::vector<SubscriberRecordPtr> subscribers_;
     std::map<uid_t, FrozenRecords> frozenEvents_;
     const time_t FREEZE_EVENT_TIMEOUT = 30; // How long we keep records. Unit: second
-    std::map<pid_t, uint32_t> subscriberCounts_;
+    std::unordered_map<pid_t, uint32_t> subscriberCounts_;
     std::map<pid_t, FrozenRecords> frozenEventsMap_;
+    bool hasCompacted_ = false;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

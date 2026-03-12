@@ -20,6 +20,7 @@
 #include "common_event_manager.h"
 #include "common_event_sticky_manager.h"
 #include "common_event_stub.h"
+#include "common_event_support.h"
 #include "common_event_subscriber_manager.h"
 #include "inner_common_event_manager.h"
 #include "common_event_permission_manager.h"
@@ -1833,6 +1834,211 @@ HWTEST_F(CommonEventSubscriberManagerTest, CheckWhetherIsAppIndexSubscribed_Bund
 
     // Assert
     EXPECT_TRUE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CompactSubscriberDataStructures_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0100 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+
+    EXPECT_EQ(false, commonEventSubscriberManager.hasCompacted_);
+    commonEventSubscriberManager.CompactSubscriberDataStructures();
+    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_);
+    EXPECT_EQ(0, commonEventSubscriberManager.subscribers_.size());
+
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0100 end";
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CompactSubscriberDataStructures_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0200 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+
+    for (int i = 0; i < 3; i++) {
+        MatchingSkills matchingSkills;
+        matchingSkills.AddEvent("event" + std::to_string(i));
+        CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+        std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+        sptr<IRemoteObject> commonEventListener = new CommonEventListener(subscriber);
+
+        struct tm recordTime {0};
+        EventRecordInfo eventRecordInfo;
+        eventRecordInfo.pid = 1000 + i;
+        eventRecordInfo.uid = 10000 + i;
+        eventRecordInfo.bundleName = "bundle" + std::to_string(i);
+
+        commonEventSubscriberManager.InsertSubscriber(
+            std::make_shared<CommonEventSubscribeInfo>(subscribeInfo),
+            commonEventListener, recordTime, eventRecordInfo);
+    }
+
+    size_t originalSize = commonEventSubscriberManager.subscribers_.size();
+    EXPECT_EQ(3, originalSize);
+
+    commonEventSubscriberManager.CompactSubscriberDataStructures();
+
+    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_);
+    EXPECT_EQ(3, commonEventSubscriberManager.subscribers_.size());
+    EXPECT_EQ(3, commonEventSubscriberManager.subscriberCounts_.size());
+
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0200 end";
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CompactSubscriberDataStructures_0300, Level1)
+{
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0300 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent("event1");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    sptr<IRemoteObject> commonEventListener = new CommonEventListener(subscriber);
+
+    struct tm recordTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 1000;
+    eventRecordInfo.uid = 10000;
+    eventRecordInfo.bundleName = "bundle1";
+
+    commonEventSubscriberManager.InsertSubscriber(
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo),
+        commonEventListener, recordTime, eventRecordInfo);
+
+    commonEventSubscriberManager.subscribers_.emplace_back(nullptr);
+
+    auto invalidRecord = std::make_shared<EventSubscriberRecord>();
+    invalidRecord->commonEventListener = nullptr;
+    commonEventSubscriberManager.subscribers_.emplace_back(invalidRecord);
+
+    commonEventSubscriberManager.CompactSubscriberDataStructures();
+
+    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_);
+    EXPECT_EQ(1, commonEventSubscriberManager.subscribers_.size());
+
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0300 end";
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CompactSubscriberDataStructures_0400, Level1)
+{
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0400 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent("event1");
+    matchingSkills.AddEvent("event2");
+    matchingSkills.AddEvent("event3");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    sptr<IRemoteObject> commonEventListener = new CommonEventListener(subscriber);
+
+    struct tm recordTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 1000;
+    eventRecordInfo.uid = 10000;
+    eventRecordInfo.bundleName = "bundle1";
+
+    commonEventSubscriberManager.InsertSubscriber(
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo),
+        commonEventListener, recordTime, eventRecordInfo);
+
+    MatchingSkills matchingSkills2;
+    matchingSkills2.AddEvent("event1");
+    CommonEventSubscribeInfo subscribeInfo2(matchingSkills2);
+    std::shared_ptr<DreivedSubscriber> subscriber2 = std::make_shared<DreivedSubscriber>(subscribeInfo2);
+    sptr<IRemoteObject> commonEventListener2 = new CommonEventListener(subscriber2);
+
+    EventRecordInfo eventRecordInfo2;
+    eventRecordInfo2.pid = 2000;
+    eventRecordInfo2.uid = 20000;
+    eventRecordInfo2.bundleName = "bundle2";
+
+    commonEventSubscriberManager.InsertSubscriber(
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo2),
+        commonEventListener2, recordTime, eventRecordInfo2);
+
+    commonEventSubscriberManager.CompactSubscriberDataStructures();
+
+    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_);
+    EXPECT_EQ(2, commonEventSubscriberManager.subscribers_.size());
+    EXPECT_EQ(2, commonEventSubscriberManager.subscriberCounts_.size());
+    EXPECT_EQ(3, commonEventSubscriberManager.eventSubscribers_.size());
+
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0400 end";
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecords_Compact_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_Compact_0100 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent("event1");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    sptr<IRemoteObject> commonEventListener = new CommonEventListener(subscriber);
+
+    struct tm recordTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 1000;
+    eventRecordInfo.uid = 10000;
+    eventRecordInfo.bundleName = "bundle1";
+
+    commonEventSubscriberManager.InsertSubscriber(
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo),
+        commonEventListener, recordTime, eventRecordInfo);
+
+    EXPECT_EQ(false, commonEventSubscriberManager.hasCompacted_);
+
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction(CommonEventSupport::COMMON_EVENT_SCREEN_OFF);
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+
+    commonEventSubscriberManager.GetSubscriberRecords(eventRecord);
+
+    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_);
+
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_Compact_0100 end";
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecords_Compact_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_Compact_0200 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent("event1");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    sptr<IRemoteObject> commonEventListener = new CommonEventListener(subscriber);
+
+    struct tm recordTime {0};
+    EventRecordInfo eventRecordInfo;
+    eventRecordInfo.pid = 1000;
+    eventRecordInfo.uid = 10000;
+    eventRecordInfo.bundleName = "bundle1";
+
+    commonEventSubscriberManager.InsertSubscriber(
+        std::make_shared<CommonEventSubscribeInfo>(subscribeInfo),
+        commonEventListener, recordTime, eventRecordInfo);
+
+    EXPECT_EQ(false, commonEventSubscriberManager.hasCompacted_);
+
+    CommonEventRecord eventRecord;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction("usual.event.BOOT_COMPLETED");
+    commonEventData->SetWant(want);
+    eventRecord.commonEventData = commonEventData;
+
+    commonEventSubscriberManager.GetSubscriberRecords(eventRecord);
+
+    EXPECT_EQ(false, commonEventSubscriberManager.hasCompacted_);
+
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_Compact_0200 end";
 }
 }
 }
