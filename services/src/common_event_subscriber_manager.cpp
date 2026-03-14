@@ -34,6 +34,8 @@
 #include <dlfcn.h>
 #endif
 
+#include <chrono>
+
 namespace OHOS {
 namespace EventFwk {
 constexpr int32_t LENGTH = 80;
@@ -128,7 +130,12 @@ std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager
     const CommonEventRecord &eventRecord)
 {
     EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
-
+    
+    std::string action = eventRecord.commonEventData->GetWant().GetAction();
+    if (!hasCompacted_ && action == CommonEventSupport::COMMON_EVENT_SCREEN_OFF) {
+        CompactSubscriberDataStructures();
+    }
+    
     auto records = std::vector<SubscriberRecordPtr>();
 
     GetSubscriberRecordsByWantLocked(eventRecord, records);
@@ -1025,6 +1032,52 @@ void CommonEventSubscriberManager::PrintSubscriberCounts(std::vector<std::pair<p
             index, vtIt->first, vtIt->second);
         index++;
     }
+}
+
+void CommonEventSubscriberManager::CompactSubscriberDataStructures()
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Start memory fragmentation optimization, current subscriber count: %{public}zu",
+        subscribers_.size());
+
+    auto startTime = std::chrono::high_resolution_clock::now();
+
+    std::vector<SubscriberRecordPtr> compactedSubscribers;
+    compactedSubscribers.reserve(subscribers_.size());
+
+    std::unordered_map<std::string, std::set<SubscriberRecordPtr>> compactedEventSubscribers;
+    std::unordered_map<pid_t, uint32_t> compactedSubscriberCounts;
+
+    for (const auto& subscriber : subscribers_) {
+        if (subscriber == nullptr || subscriber->commonEventListener == nullptr) {
+            continue;
+        }
+        auto newRecord = std::make_shared<EventSubscriberRecord>();
+        newRecord->isFreeze = subscriber->isFreeze;
+        newRecord->recordTime = subscriber->recordTime;
+        newRecord->freezeTime = subscriber->freezeTime;
+        newRecord->eventRecordInfo = subscriber->eventRecordInfo;
+        newRecord->commonEventListener = subscriber->commonEventListener;
+        if (subscriber->eventSubscribeInfo != nullptr) {
+            newRecord->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(
+                *(subscriber->eventSubscribeInfo));
+        }
+        compactedSubscribers.push_back(newRecord);
+        pid_t pid = newRecord->eventRecordInfo.pid;
+        compactedSubscriberCounts[pid]++;
+        std::vector<std::string> events = newRecord->eventSubscribeInfo->GetMatchingSkills().GetEvents();
+        for (const auto& event : events) {
+            compactedEventSubscribers[event].insert(newRecord);
+        }
+    }
+    subscribers_.swap(compactedSubscribers);
+    eventSubscribers_.swap(compactedEventSubscribers);
+    subscriberCounts_.swap(compactedSubscriberCounts);
+    hasCompacted_ = true;
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+    EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Memory fragmentation optimization completed. Copied subscriber count: %{public}zu,"
+        "elapsed time: %{public}lld ms", compactedSubscribers.size(), duration.count());
 }
 }  // namespace EventFwk
 }  // namespace OHOS
