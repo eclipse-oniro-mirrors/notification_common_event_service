@@ -124,6 +124,11 @@ ohos_shared_library("cesfwk_services") {
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
   ]
+  ldflags = [
+    "-flto",
+    "-Wl,--gc-sections",
+    "-Wl,-Bsymbolic",
+  ]
 
   if (has_os_account_part) {
     cflags_cc += [ "-DHAS_OS_ACCOUNT_PART" ]
