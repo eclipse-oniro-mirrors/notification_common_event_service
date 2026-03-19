@@ -639,7 +639,7 @@ const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAY_STA
  * Indicates the action of a common event that bluetooth remote device sco state change.
  * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
  */
-const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_SCO_CONNECT_STATE_CHANGE = 
+const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_SCO_CONNECT_STATE_CHANGE =
     "usual.event.bluetooth.SCO_CONNECT_STATE_CHANGE";
 
 /**
