@@ -400,9 +400,9 @@ namespace commonEventManager {
         COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE =
             'usual.event.bluetooth.a2dpsource.CODEC_VALUE_CHANGE',
         COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAY_STATE_CHANGE =
-            "usual.event.bluetooth.a2dpsource.PLAY_STATE_CHANGE",
+            'usual.event.bluetooth.a2dpsource.PLAY_STATE_CHANGE',
         COMMON_EVENT_BLUETOOTH_SCO_CONNECT_STATE_CHANGE = 
-            "usual.event.bluetooth.SCO_CONNECT_STATE_CHANGE",
+            'usual.event.bluetooth.SCO_CONNECT_STATE_CHANGE',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED = 'usual.event.bluetooth.remotedevice.DISCOVERED',
         COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_CLASS_VALUE_UPDATE =
             'usual.event.bluetooth.remotedevice.CLASS_VALUE_UPDATE',
