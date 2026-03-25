@@ -547,6 +547,18 @@ public:
      * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
      */
     static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE;
+    
+    /**
+     * Indicates the action of a common event that bluetooth remote device a2dp play state change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAY_STATE_CHANGE;
+
+    /**
+     * Indicates the action of a common event that bluetooth remote device sco state change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_SCO_CONNECT_STATE_CHANGE;
 
     /**
      * Indicates the action of a common event that a remote Bluetooth device has been discovered.

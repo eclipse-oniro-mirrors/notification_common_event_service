@@ -254,6 +254,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAY_STATE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAY_STATE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_SCO_CONNECT_STATE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_SCO_CONNECT_STATE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED,
         "COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_DISCOVERED");
     SetNamedPropertyByStr(env,
