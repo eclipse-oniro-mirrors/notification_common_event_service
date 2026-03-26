@@ -1223,7 +1223,7 @@ const std::string CommonEventSupport::COMMON_EVENT_FOUNDATION_READY = "common.ev
  * This common event is published when the UIAbility is started for the first time after installation.
  * This is a protected common event, which can be sent only by the system.
  */
-const std::string CommonEventSupport::COMMON_EVENT_APP_FIRST_LAUNCH = "common.event.APP_FIRST_LAUNCH";
+const std::string CommonEventSupport::COMMON_EVENT_APP_FIRST_LAUNCH = "usual.event.APP_FIRST_LAUNCH";
 
 /**
  * Indicates the action of a common event that the default voice subscription has changed.

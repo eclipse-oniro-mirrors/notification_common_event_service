@@ -141,9 +141,6 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_FOUNDATION_READY,
         {PermissionState::DEFAULT, {"ohos.permission.RECEIVER_STARTUP_COMPLETED"}}
     },
-    {CommonEventSupport::COMMON_EVENT_APP_FIRST_LAUNCH,
-        {PermissionState::DEFAULT, {}}
-    },
     {CommonEventSupport::COMMON_EVENT_SLOT_CHANGE,
         {PermissionState::DEFAULT, {"ohos.permission.NOTIFICATION_CONTROLLER"}}
     },
@@ -201,7 +198,8 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_USER_LOCKED,
     CommonEventSupport::COMMON_EVENT_BUNDLE_SCAN_FINISHED,
     CommonEventSupport::COMMON_EVENT_SCREEN_SHARE,
-    CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED
+    CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED,
+    CommonEventSupport::COMMON_EVENT_APP_FIRST_LAUNCH
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {
