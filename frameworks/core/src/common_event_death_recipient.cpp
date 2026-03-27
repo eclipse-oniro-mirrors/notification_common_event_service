@@ -60,7 +60,7 @@ void CommonEventDeathRecipient::SubscribeSAManager()
                 EVENT_LOGE(LOG_TAG_CES, "new SystemAbilityStatusChangeListener failed");
                 return;
             }
-            int32_t ret = samgrProxy->SubscribeSystemAbility(COMMON_EVENT_SERVICE_ID, listener);
+            int32_t ret = samgrProxy->SubscribeSystemAbilityInImage(COMMON_EVENT_SERVICE_ID, listener);
             if (ret != ERR_OK) {
                 EVENT_LOGE(LOG_TAG_CES, "SubscribeSystemAbility to sa manager failed");
                 return;
