@@ -1086,6 +1086,13 @@ public:
     static const std::string COMMON_EVENT_FOUNDATION_READY;
 
     /**
+     * Indicates the action of a common event that the application is launched for the first time after installation.
+     * This common event is published when the UIAbility is started for the first time after installation.
+     * This is a protected common event, which can be sent only by the system.
+     */
+    static const std::string COMMON_EVENT_APP_FIRST_LAUNCH;
+
+    /**
      * Indicates the action of a common event that the default voice subscription has changed.
      * This is a protected common event that can only be sent by system.
      */

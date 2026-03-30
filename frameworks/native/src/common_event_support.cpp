@@ -1219,6 +1219,13 @@ const std::string CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED = "usual.even
 const std::string CommonEventSupport::COMMON_EVENT_FOUNDATION_READY = "common.event.FOUNDATION_READY";
 
 /**
+ * Indicates the action of a common event that the application is launched for the first time after installation.
+ * This common event is published when the UIAbility is started for the first time after installation.
+ * This is a protected common event, which can be sent only by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_APP_FIRST_LAUNCH = "usual.event.APP_FIRST_LAUNCH";
+
+/**
  * Indicates the action of a common event that the default voice subscription has changed.
  * This is a protected common event that can only be sent by system.
  */
@@ -2761,6 +2768,13 @@ void CommonEventSupport::Init()
      * This is a protected common event, which can be sent only by the system.
      */
     commonEventSupport_.emplace_back(COMMON_EVENT_FOUNDATION_READY);
+
+    /**
+     * Indicates the action of a common event that the application is launched for the first time after installation.
+     * This common event is published when the UIAbility is started for the first time after installation.
+     * This is a protected common event, which can be sent only by the system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_APP_FIRST_LAUNCH);
 
     /**
      * Indicates the action of a common event that the default voice subscription has changed.

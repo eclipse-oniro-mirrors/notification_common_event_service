@@ -501,6 +501,8 @@ napi_value SupportInit(napi_env env, napi_value exports)
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED, "COMMON_EVENT_ACCOUNT_DELETED");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_FOUNDATION_READY, "COMMON_EVENT_FOUNDATION_READY");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_APP_FIRST_LAUNCH, "COMMON_EVENT_APP_FIRST_LAUNCH");
     SetNamedPropertyByStr(env,
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SIM_STATE_CHANGED,
