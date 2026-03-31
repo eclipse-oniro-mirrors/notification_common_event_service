@@ -27,7 +27,7 @@ interface OHOS.EventFwk.ICommonEvent {
     boolean PublishCommonEvent([in] CommonEventData event, [in] CommonEventPublishInfo publishInfo,
         [in] IRemoteObject commonEventListener, [in] unsigned int uid, [in] int callerToken, [in] int userId);
 
-    int SubscribeCommonEvent([in] CommonEventSubscribeInfo subscribeInfo, [in] IRemoteObject commonEventListener, 
+    [customMsgOption flags=MessageOption::TF_IMAGE] int SubscribeCommonEvent([in] CommonEventSubscribeInfo subscribeInfo, [in] IRemoteObject commonEventListener, 
         [in] int instanceKey);
     int UnsubscribeCommonEvent([in] IRemoteObject commonEventListener);
     int UnsubscribeCommonEventSync([in] IRemoteObject commonEventListener);
