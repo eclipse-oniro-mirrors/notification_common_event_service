@@ -80,7 +80,8 @@
                 "node",
                 "cJSON",
                 "selinux_adapter",
-                "runtime_core"
+                "runtime_core",
+                "json"
             ],
             "third_party": []
         },

@@ -71,6 +71,7 @@ ohos_shared_library("cesfwk_innerkits") {
     "ffrt:libffrt",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
   ]
 
   public_external_deps = [ "ability_base:want" ]
