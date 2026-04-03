@@ -90,6 +90,7 @@ ohos_source_set("common_event_proxy") {
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "samgr:samgr_proxy",
   ]
   if (build_variant == "root") {
@@ -117,6 +118,7 @@ ohos_source_set("common_event_stub") {
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "samgr:samgr_proxy",
   ]
   if (build_variant == "root") {
@@ -152,6 +154,7 @@ ohos_source_set("event_receive_proxy") {
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "samgr:samgr_proxy",
   ]
   subsystem_name = "notification"
@@ -176,6 +179,7 @@ ohos_source_set("event_receive_stub") {
     "c_utils:utils",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "samgr:samgr_proxy",
   ]
   subsystem_name = "notification"
@@ -228,6 +232,7 @@ ohos_shared_library("cesfwk_core") {
     "hicollie:libhicollie",
     "hilog:libhilog",
     "ipc:ipc_core",
+    "json:nlohmann_json_static",
     "samgr:samgr_proxy",
   ]
 
