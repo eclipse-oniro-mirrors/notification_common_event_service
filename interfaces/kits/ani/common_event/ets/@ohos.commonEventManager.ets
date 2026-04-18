@@ -474,6 +474,7 @@ namespace commonEventManager {
         COMMON_EVENT_USB_DEVICE_DETACHED = 'usual.event.hardware.usb.action.USB_DEVICE_DETACHED',
         COMMON_EVENT_USB_ACCESSORY_ATTACHED = 'usual.event.hardware.usb.action.USB_ACCESSORY_ATTACHED',
         COMMON_EVENT_USB_ACCESSORY_DETACHED = 'usual.event.hardware.usb.action.USB_ACCESSORY_DETACHED',
+        COMMON_EVENT_USB_CONTROL_DATA = 'usual.event.hardware.usb.action.USB_CONTROL_DATA',
         COMMON_EVENT_DISK_REMOVED = 'usual.event.data.DISK_REMOVED',
         COMMON_EVENT_DISK_UNMOUNTED = 'usual.event.data.DISK_UNMOUNTED',
         COMMON_EVENT_DISK_MOUNTED = 'usual.event.data.DISK_MOUNTED',

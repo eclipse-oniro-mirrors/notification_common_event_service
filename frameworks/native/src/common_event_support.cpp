@@ -1077,6 +1077,13 @@ const std::string CommonEventSupport::COMMON_EVENT_USB_ACCESSORY_DETACHED =
     "usual.event.hardware.usb.action.USB_ACCESSORY_DETACHED";
 
 /**
+ * Indicates the action of a common event that a USB control data.
+ * This is a protected common event, which can be sent only by the system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_USB_CONTROL_DATA =
+    "usual.event.hardware.usb.action.USB_CONTROL_DATA";
+
+/**
  * The storage space is low.
  * This is a protected common event that can only be sent by system.
  */
@@ -2638,6 +2645,12 @@ void CommonEventSupport::Init()
      * This is a protected common event, which can be sent only by the system.
      */
     commonEventSupport_.emplace_back(COMMON_EVENT_USB_ACCESSORY_DETACHED);
+
+    /**
+     * Indicates the action of a common event that a USB control data.
+     * This is a protected common event, which can be sent only by the system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_USB_CONTROL_DATA);
 
     /**
      * The storage space is low.
