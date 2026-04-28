@@ -16,7 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_STICKY_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_STICKY_MANAGER_H
 
-#include "common_event_record.h"
+#include <unordered_map>
 #include "common_event_subscribe_info.h"
 #include "ffrt.h"
 #include "singleton.h"
@@ -88,7 +88,7 @@ private:
 
 private:
     ffrt::mutex mutex_;
-    std::map<std::string, CommonEventRecordPtr> commonEventRecords_;
+    std::unordered_map<std::string, CommonEventRecordPtr> commonEventRecords_;
 };
 }  // namespace EventFwk
 }  // namespace OHOS
