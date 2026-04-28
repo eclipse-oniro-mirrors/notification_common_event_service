@@ -1348,6 +1348,13 @@ public:
     static const std::string COMMON_EVENT_SCREEN_UNLOCKED;
 
     /**
+     * Indicates the action of a common event that the time to exit from the lock screen.
+     * Public events do not concern whether the file system is decrypted.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_SCREEN_LOCK_EXITING;
+
+    /**
     * Indicates the action of a common event that the call audio quality information has been updated.
     * This is a protected common event that can only be sent by system.
     */
@@ -1542,6 +1549,26 @@ public:
      * This is a protected common event that can only be sent by system.
      */
     static const std::string COMMON_EVENT_LID_STATE_CHANGED;
+
+    /**
+    * Indicates that specific volumes on the device have been decrypted.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_VOLUME_DECRYPTED;
+
+    /**
+    * Indicates that specific volumes on the device have been encrypted.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_VOLUME_ENCRYPTED;
+
+    /**
+    * Indicates that specific volumes on the device have had their encryption policy set.
+    * To subscribe to this common event, your application must have the ohos.permission.QUERY_VOLUME_ENCRYPTION_STATUS
+    * permission.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET;
 
 public:
     CommonEventSupport();
