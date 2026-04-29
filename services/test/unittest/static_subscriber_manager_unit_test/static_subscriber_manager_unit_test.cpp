@@ -1358,7 +1358,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, InitValidSubscribersTest_0200, Functio
     // init subscriberList
     std::string eventName = "eventName0";
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     EXPECT_EQ(1, manager->validSubscribers_.size());
     // set staticSubscribers_ value
     std::string testEventName = "usual.event.TIME_TICK";
@@ -1631,7 +1631,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0300, Function | 
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     auto validSubscribers0 = manager->validSubscribers_[eventName];
     EXPECT_EQ(1, validSubscribers0.size());
     std::string expectPermissionBefore = "permission1";
@@ -1686,7 +1686,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, UpdateSubscriberTest_0400, Function | 
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     auto validSubscribers0 = manager->validSubscribers_[eventName];
     EXPECT_EQ(1, validSubscribers0.size());
     std::string expectPermissionBefore = "permission1";
@@ -2252,7 +2252,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_0200, Function 
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     // construct common event data
     Want testWant;
     std::string testNormalEventName = "usual.event.TIME_TICK";
@@ -2821,7 +2821,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1400, Function 
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     // construct common event data
     Want testWant;
     std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED;
@@ -2893,7 +2893,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1500, Function 
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     // construct common event data
     Want testWant;
     std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED;
@@ -2964,7 +2964,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_1600, Function 
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     // construct common event data
     Want testWant;
     std::string testNormalEventName = CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED;
@@ -3329,7 +3329,7 @@ HWTEST_F(StaticSubscriberManagerUnitTest, PublishCommonEventTest_2300, Function 
     };
     std::vector<StaticSubscriberManager::StaticSubscriberInfo> info0;
     info0.emplace_back(testInfo);
-    manager->validSubscribers_.push_back(make_pair(eventName, info0));
+    manager->validSubscribers_.emplace(eventName, info0);
     // construct common event data
     Want testWant;
     std::string testNormalEventName = "usual.event.TIME_TICK";
