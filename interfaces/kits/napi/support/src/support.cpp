@@ -474,6 +474,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_USB_ACCESSORY_DETACHED,
         "COMMON_EVENT_USB_ACCESSORY_DETACHED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_USB_CONTROL_DATA,
+        "COMMON_EVENT_USB_CONTROL_DATA");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_REMOVED, "COMMON_EVENT_DISK_REMOVED");
     SetNamedPropertyByStr(

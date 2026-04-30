@@ -961,6 +961,12 @@ public:
     static const std::string COMMON_EVENT_USB_ACCESSORY_DETACHED;
 
     /**
+     * Indicates action of a common event that a USB control data.
+     * This is a protected common event, which can be sent only by system.
+     */
+    static const std::string COMMON_EVENT_USB_CONTROL_DATA;
+
+    /**
      * The storage space is low.
      * This is a protected common event that can only be sent by system.
      */
