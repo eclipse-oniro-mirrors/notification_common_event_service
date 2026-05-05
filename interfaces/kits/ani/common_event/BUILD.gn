@@ -78,6 +78,13 @@ ohos_shared_library("ani_commoneventmanager") {
     "runtime_core:ani_helpers",
   ]
 
+  defines = []
+
+  if (common_event_service_api_metrics) {
+    external_deps += [ "api_metrics:histogrammanager" ]
+    defines += [ "CES_FEATURE_API_METRICS_HISTOGRAM" ]
+  }
+
   subsystem_name = "notification"
   part_name = "common_event_service"
 }

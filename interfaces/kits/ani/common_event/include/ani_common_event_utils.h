@@ -64,6 +64,7 @@ public:
     static ani_array newArrayClass(ani_env *env, int length);
     static ani_object GetNullObject(ani_env *env);
     static void ThrowError(ani_env *env, int32_t errCode, const std::string &errorMsg);
+    static void HistogramBoolReport(const std::string &name, const bool isSuccess);
 };
 } // namespace EventManagerFwkAni
 } // namespace OHOS

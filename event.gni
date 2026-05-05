@@ -56,6 +56,7 @@ declare_args() {
   ces_config_policy_enable = true
   common_event_service_limit_screen_event = false
   common_event_service_boot_complete_delay = false
+  common_event_service_api_metrics = true
 
   if (!defined(global_parts_info) ||
       defined(global_parts_info.account_os_account)) {
@@ -77,6 +78,11 @@ declare_args() {
   if (defined(global_parts_info) &&
       !defined(global_parts_info.customization_config_policy)) {
     ces_config_policy_enable = false
+  }
+
+  if (defined(global_parts_info) &&
+      !defined(global_parts_info.hiviewdfx_api_metrics)) {
+    common_event_service_api_metrics = false
   }
 
   print("has_hisysevent_part = " + "$has_hisysevent_part")

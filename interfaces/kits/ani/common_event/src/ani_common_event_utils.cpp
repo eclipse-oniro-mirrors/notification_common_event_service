@@ -16,6 +16,9 @@
 
 #include "ani_common_want.h"
 #include "event_log_wrapper.h"
+#ifdef CES_FEATURE_API_METRICS_HISTOGRAM
+#include "histogram_plugin_macros.h"
+#endif
 
 #include <ani_signature_builder.h>
 
@@ -673,5 +676,11 @@ void AniCommonEventUtils::ThrowError(ani_env *env, int32_t errCode, const std::s
     }
 }
 
+void AniCommonEventUtils::HistogramBoolReport(const std::string &name, const bool isSuccess)
+{
+#ifdef CES_FEATURE_API_METRICS_HISTOGRAM
+    HISTOGRAM_BOOLEAN(name.c_str(), isSuccess);
+#endif
+}
 } // namespace EventManagerFwkAni
 } // namespace OHOS
