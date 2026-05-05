@@ -81,7 +81,8 @@
                 "cJSON",
                 "selinux_adapter",
                 "runtime_core",
-                "json"
+                "json",
+                "api_metrics"
             ],
             "third_party": []
         },
