@@ -161,7 +161,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300,
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
     EXPECT_NE(nullptr, result);
     // clear frozen events
-    std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
     size_t expectSize = 0;
     EXPECT_EQ(expectSize, allFrozenRecords.size());
     // make SubscriberRecordPtr
@@ -181,7 +181,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0300,
     commonEventRecord.eventRecordInfo = eventRecordInfo_;
     // insert frozen events
     commonEventSubscriberManager.InsertFrozenEvents(eventSubscriberRecord, commonEventRecord);
-    std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
     expectSize = 1;
     EXPECT_EQ(expectSize, allFrozenRecords1.size());
     GTEST_LOG_(INFO)
@@ -211,7 +211,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400,
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
     EXPECT_NE(nullptr, result);
     // clear frozen events
-    std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
     size_t expectSize = 0;
     EXPECT_EQ(expectSize, allFrozenRecords.size());
     // make SubscriberRecordPtr
@@ -232,7 +232,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_0400,
     // insert frozen events
     commonEventSubscriberManager.InsertFrozenEvents(eventSubscriberRecord, commonEventRecord);
     commonEventSubscriberManager.InsertFrozenEvents(eventSubscriberRecord, commonEventRecord);
-    std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
     expectSize = 1;
     EXPECT_EQ(expectSize, allFrozenRecords1.size());
     GTEST_LOG_(INFO)
@@ -496,7 +496,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
     EXPECT_NE(result, nullptr);
     // clear frozen events
-    std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
     size_t expectSize = 0;
     EXPECT_EQ(allFrozenRecords.size(), expectSize);
     // make SubscriberRecordPtr
@@ -512,7 +512,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1001,
     commonEventRecord.eventRecordInfo = eventRecordInfo_;
     // insert frozen events
     commonEventSubscriberManager.InsertFrozenEvents(eventSubscriberRecord, commonEventRecord);
-    std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
     expectSize = 0;
     EXPECT_EQ(allFrozenRecords1.size(), expectSize);
     GTEST_LOG_(INFO)
@@ -544,7 +544,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
         subscribeInfoPtr, commonEventListener, curTime, eventRecordInfo_);
     EXPECT_NE(result, nullptr);
     // clear frozen events
-    std::map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords = commonEventSubscriberManager.GetAllFrozenEvents();
     size_t expectSize = 0;
     EXPECT_EQ(allFrozenRecords.size(), expectSize);
     // make SubscriberRecordPtr
@@ -555,7 +555,7 @@ HWTEST_F(CommonEventFreezeUnitTest, CommonEventFreezeUnitTest_1002,
     eventSubscriberRecord->isFreeze = true;
     // insert frozen events
     commonEventSubscriberManager.RemoveFrozenEventsBySubscriber(eventSubscriberRecord);
-    std::map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
+    std::unordered_map<uid_t, FrozenRecords> allFrozenRecords1 = commonEventSubscriberManager.GetAllFrozenEvents();
     expectSize = 0;
     EXPECT_EQ(allFrozenRecords1.size(), expectSize);
     GTEST_LOG_(INFO)

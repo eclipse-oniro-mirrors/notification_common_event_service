@@ -113,13 +113,13 @@ bool CommonEventControlManager::PublishAllFreezeCommonEvents()
         return false;
     }
 
-    std::map<uid_t, FrozenRecords> frozenEventRecords =
+    std::unordered_map<uid_t, FrozenRecords> frozenEventRecords =
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetAllFrozenEvents();
     for (auto record : frozenEventRecords) {
         PublishFrozenEventsInner(record.second);
     }
 
-    std::map<pid_t, FrozenRecords> frozenEventRecordsMap =
+    std::unordered_map<pid_t, FrozenRecords> frozenEventRecordsMap =
         DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetAllFrozenEventsMap();
     for (auto record : frozenEventRecordsMap) {
         PublishFrozenEventsInner(record.second);

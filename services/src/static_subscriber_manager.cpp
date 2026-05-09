@@ -83,12 +83,12 @@ bool StaticSubscriberManager::InitAllowList()
         for (auto e : allowCommonEvents) {
             std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
             if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
-                std::set<std::string> s = {};
-                s.emplace(e);
-                StaticSubscriber subscriber = { .events = s};
+                std::vector<std::string> v;
+                v.push_back(e);
+                StaticSubscriber subscriber = { .events = v};
                 staticSubscribers_.insert(std::make_pair(key, subscriber));
             } else {
-                staticSubscribers_[key].events.emplace(e);
+                staticSubscribers_[key].events.push_back(e);
             }
         }
     }
@@ -431,7 +431,9 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
                     continue;
                 }
                 if (e.is_null() || !e.is_string() ||
-                    (staticSubscribers_[key].events.find(e) == staticSubscribers_[key].events.end())) {
+                    (std::find(staticSubscribers_[key].events.begin(),
+                               staticSubscribers_[key].events.end(),
+                               e) == staticSubscribers_[key].events.end())) {
                     invalidEventsLogger.append(e).append(",");
                     continue;
                 }

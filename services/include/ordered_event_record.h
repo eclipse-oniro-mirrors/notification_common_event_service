@@ -44,7 +44,7 @@ struct OrderedEventRecord : public CommonEventRecord {
     int64_t finishTime;
     sptr<IRemoteObject> resultTo;
     sptr<IRemoteObject> curReceiver;
-    std::vector<int> deliveryState;
+    std::vector<uint8_t> deliveryState;
     std::vector<std::shared_ptr<EventSubscriberRecord>> receivers;
 
     OrderedEventRecord()

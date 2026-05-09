@@ -87,7 +87,7 @@ private:
     };
 
     struct StaticSubscriber {
-        std::set<std::string> events;
+        std::vector<std::string> events;
     };
 
     bool InitAllowList();

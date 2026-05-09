@@ -383,13 +383,12 @@ int CommonEventSubscriberManager::RemoveSubscriberRecordLocked(const sptr<IRemot
     }
 
     for (auto event : events) {
-        for (auto it = eventSubscribers_[event].begin(); it != eventSubscribers_[event].end(); ++it) {
-            if ((commonEventListener == (*it)->commonEventListener) || ((*it)->commonEventListener == nullptr)) {
-                eventSubscribers_[event].erase(it);
-                break;
-            }
-        }
-        if (eventSubscribers_[event].size() == 0) {
+        auto& vec = eventSubscribers_[event];
+        vec.erase(std::remove_if(vec.begin(), vec.end(),
+            [&commonEventListener](const SubscriberRecordPtr& rec) {
+                return commonEventListener == rec->commonEventListener || rec->commonEventListener == nullptr;
+            }), vec.end());
+        if (vec.empty()) {
             eventSubscribers_.erase(event);
         }
     }
@@ -404,7 +403,10 @@ void CommonEventSubscriberManager::InsertEventSubscribers(const std::vector<std:
     for (auto event : events) {
         auto infoItem = eventSubscribers_.find(event);
         if (infoItem != eventSubscribers_.end()) {
-            infoItem->second.insert(record);
+            auto& vec = infoItem->second;
+            if (std::find(vec.begin(), vec.end(), record) == vec.end()) {
+                vec.push_back(record);
+            }
             if (infoItem->second.size() > MAX_SUBSCRIBER_NUM_PER_EVENT && record->eventSubscribeInfo != nullptr) {
                 EVENT_LOGW(LOG_TAG_SUBSCRIBER, "%{public}s event has %{public}zu subscriber, please check",
                     event.c_str(), infoItem->second.size());
@@ -412,8 +414,8 @@ void CommonEventSubscriberManager::InsertEventSubscribers(const std::vector<std:
                     infoItem->second.size());
             }
         } else {
-            std::set<SubscriberRecordPtr> EventSubscribersPtr;
-            EventSubscribersPtr.insert(record);
+            std::vector<SubscriberRecordPtr> EventSubscribersPtr;
+            EventSubscribersPtr.push_back(record);
             eventSubscribers_[event] = EventSubscribersPtr;
         }
     }
@@ -425,7 +427,7 @@ void CommonEventSubscriberManager::RemoveEventSubscribers(const std::vector<std:
     for (auto event : events) {
         auto infoItem = eventSubscribers_.find(event);
         if (infoItem != eventSubscribers_.end()) {
-            auto it = infoItem->second.find(record);
+            auto it = std::find(infoItem->second.begin(), infoItem->second.end(), record);
             if (it != infoItem->second.end()) {
                 infoItem->second.erase(it);
             }
@@ -887,11 +889,10 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
     return frozenEvents;
 }
 
-std::map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEvents()
+std::unordered_map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEvents()
 {
     EVENT_LOGD(LOG_TAG_FREEZED, "enter");
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    return std::move(frozenEvents_);
+    return frozenEvents_;
 }
 
 void CommonEventSubscriberManager::RemoveFrozenEvents(const uid_t &uid)
@@ -970,11 +971,10 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
     return frozenEvents;
 }
 
-std::map<pid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEventsMap()
+std::unordered_map<pid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEventsMap()
 {
     EVENT_LOGD(LOG_TAG_FREEZED, "enter");
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    return std::move(frozenEventsMap_);
+    return frozenEventsMap_;
 }
 
 void CommonEventSubscriberManager::RemoveFrozenEventsMapByPid(const pid_t &pid)
@@ -1029,27 +1029,24 @@ bool CommonEventSubscriberManager::CheckSubscriberCountReachedMaxinum()
 
 std::vector<std::pair<pid_t, uint32_t>> CommonEventSubscriberManager::GetTopSubscriberCounts(size_t topNum)
 {
-    topNum = subscriberCounts_.size() < topNum ? subscriberCounts_.size() : topNum;
-
-    std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts;
-    std::set<pid_t> pidSet;
-    for (size_t i = 0; i < topNum; i++) {
-        std::pair<pid_t, uint32_t> curPair;
-        for (auto it = subscriberCounts_.begin(); it != subscriberCounts_.end(); it++) {
-            pid_t pid = it->first;
-            uint32_t count = it->second;
-            if (pidSet.find(pid) != pidSet.end()) {
-                continue;
-            }
-            if (curPair.second < count) {
-                curPair = std::make_pair(pid, count);
-            }
-        }
-        pidSet.insert(curPair.first);
-        vtSubscriberCounts.push_back(curPair);
+    if (subscriberCounts_.empty()) {
+        return {};
     }
 
-    return vtSubscriberCounts;
+    std::vector<std::pair<pid_t, uint32_t>> items;
+    items.reserve(subscriberCounts_.size());
+    for (const auto& [pid, count] : subscriberCounts_) {
+        items.emplace_back(pid, count);
+    }
+
+    size_t k = std::min(topNum, items.size());
+    std::partial_sort(items.begin(), items.begin() + k, items.end(),
+        [](const auto& a, const auto& b) {
+            return a.second > b.second;
+        });
+
+    items.resize(k);
+    return items;
 }
 
 void CommonEventSubscriberManager::PrintSubscriberCounts(std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts)
@@ -1166,7 +1163,7 @@ void CommonEventSubscriberManager::CompactSubscriberDataStructures()
     std::vector<SubscriberRecordPtr> compactedSubscribers;
     compactedSubscribers.reserve(subscribers_.size());
 
-    std::unordered_map<std::string, std::set<SubscriberRecordPtr>> compactedEventSubscribers;
+    std::unordered_map<std::string, std::vector<SubscriberRecordPtr>> compactedEventSubscribers;
     std::unordered_map<pid_t, uint32_t> compactedSubscriberCounts;
 
     for (const auto& subscriber : subscribers_) {
@@ -1188,7 +1185,7 @@ void CommonEventSubscriberManager::CompactSubscriberDataStructures()
         compactedSubscriberCounts[pid]++;
         std::vector<std::string> events = newRecord->eventSubscribeInfo->GetMatchingSkills().GetEvents();
         for (const auto& event : events) {
-            compactedEventSubscribers[event].insert(newRecord);
+            compactedEventSubscribers[event].push_back(newRecord);
         }
     }
     subscribers_.swap(compactedSubscribers);
