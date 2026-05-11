@@ -713,6 +713,12 @@ public:
     static const std::string COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_UPDATE;
 
     /**
+     * Indicates the action of a common event that bluetooth scan mode change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    static const std::string COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_CHANGE;
+
+    /**
      * Indicates the action of a common event that the Bluetooth scanning has been started on the device.
      * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
      */
