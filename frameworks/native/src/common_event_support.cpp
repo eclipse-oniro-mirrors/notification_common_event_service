@@ -820,6 +820,13 @@ const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_UPDA
     "usual.event.bluetooth.host.SCAN_MODE_UPDATE";
 
 /**
+ * Indicates the action of a common event that bluetooth scan mode change.
+ * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+ */
+const std::string CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_CHANGE =
+    "usual.event.bluetooth.host.SCAN_MODE_CHANGE";
+
+/**
  * Indicates the action of a common event that the Bluetooth scanning has been started on the device.
  * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
  */
@@ -2436,6 +2443,12 @@ void CommonEventSupport::Init()
      * To subscribe to this common event, your application must have the ohos.permission.USE_BLUETOOTH permission.
      */
     commonEventSupport_.emplace_back(COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_UPDATE);
+
+    /**
+     * Indicates the action of a common event that bluetooth scan mode change.
+     * To subscribe to this protected common event, your application must have the ohos.permission.ACCESS_BLUETOOTH
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_CHANGE);
 
     /**
      * Indicates the action of a common event that the Bluetooth scanning has been started on the device.
