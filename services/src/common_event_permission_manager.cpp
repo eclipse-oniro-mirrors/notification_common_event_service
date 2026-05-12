@@ -180,6 +180,13 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET,
         {PermissionState::DEFAULT, {"ohos.permission.QUERY_VOLUME_ENCRYPTION_STATUS"}}
     },
+    {CommonEventSupport::COMMON_EVENT_CALL_STATE_CHANGED,
+        {PermissionState::DEFAULT, {"ohos.permission.GET_TELEPHONY_STATE"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_INCOMING_CALL_MISSED,
+        {PermissionState::DEFAULT, {"ohos.permission.GET_TELEPHONY_STATE"}}
+    },
+
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
