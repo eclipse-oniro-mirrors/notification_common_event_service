@@ -261,8 +261,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_0800, Le
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
     MatchingSkills matchingSkills_;
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
-    std::set<SubscriberRecordPtr> mults;
-    mults.insert(record);
+    std::vector<SubscriberRecordPtr> mults;
+    mults.push_back(record);
     commonEventSubscriberManager.eventSubscribers_.emplace(event, mults);
     EXPECT_EQ(true, commonEventSubscriberManager.InsertSubscriberRecordLocked(events, record));
     GTEST_LOG_(INFO) << "CommonEventSubscriberManager_0800 end";
@@ -475,9 +475,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2000, Le
     std::string event = "aa";
     int32_t userId = 99;
     std::vector<SubscriberRecordPtr> records;
-    std::set<SubscriberRecordPtr> sub;
+    std::vector<SubscriberRecordPtr> sub;
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
-    sub.insert(record);
+    sub.push_back(record);
     MatchingSkills matchingSkills_;
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
     int32_t userIds = -1;
@@ -501,9 +501,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CommonEventSubscriberManager_2100, Le
     std::string event = "aa";
     int32_t userId = 99;
     std::vector<SubscriberRecordPtr> records;
-    std::set<SubscriberRecordPtr> sub;
+    std::vector<SubscriberRecordPtr> sub;
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
-    sub.insert(record);
+    sub.push_back(record);
     MatchingSkills matchingSkills_;
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
     int32_t userIds = 101;
@@ -652,8 +652,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, UpdateSubscriberRecordLocked_0200, Le
     MatchingSkills matchingSkills_;
     matchingSkills.AddEvent(event2);
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
-    std::set<SubscriberRecordPtr> mults;
-    mults.insert(record);
+    std::vector<SubscriberRecordPtr> mults;
+    mults.push_back(record);
     commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
     commonEventSubscriberManager.eventSubscribers_.emplace(event2, mults);
     EXPECT_EQ(true, commonEventSubscriberManager.UpdateSubscriberRecordLocked(commonEventSubscribeInfo,
@@ -693,8 +693,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, UpdateSubscriberRecordLocked_0300, Le
     matchingSkills_.AddEvent(eventName3);
     matchingSkills_.AddEvent(eventName1);
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills_);
-    std::set<SubscriberRecordPtr> mults;
-    mults.insert(record);
+    std::vector<SubscriberRecordPtr> mults;
+    mults.push_back(record);
     commonEventSubscriberManager.eventSubscribers_.emplace(eventName1, mults);
     commonEventSubscriberManager.eventSubscribers_.emplace(eventName2, mults);
     EXPECT_EQ(true, commonEventSubscriberManager.UpdateSubscriberRecordLocked(commonEventSubscribeInfo,
@@ -720,8 +720,8 @@ HWTEST_F(CommonEventSubscriberManagerTest, InsertEventSubscribers_0100, Level1)
     CommonEventSubscriberManager commonEventSubscriberManager;
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
-    std::set<SubscriberRecordPtr> mults;
-    mults.insert(record);
+    std::vector<SubscriberRecordPtr> mults;
+    mults.push_back(record);
     commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
     commonEventSubscriberManager.InsertEventSubscribers(events, record);
     EXPECT_EQ(commonEventSubscriberManager.eventSubscribers_.size(), 2);
@@ -740,15 +740,15 @@ HWTEST_F(CommonEventSubscriberManagerTest, InsertEventSubscribers_0200, Level1)
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(event1);
 
-    std::set<SubscriberRecordPtr> mults;
+    std::vector<SubscriberRecordPtr> mults;
     for (int32_t i = 0; i < 255; i++) {
         SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
-        mults.insert(record);
+        mults.push_back(record);
     }
     
     SubscriberRecordPtr record1 = std::make_shared<EventSubscriberRecord>();
     record1->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
-    mults.insert(record1);
+    mults.push_back(record1);
 
     CommonEventSubscriberManager commonEventSubscriberManager;
     commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
@@ -771,10 +771,10 @@ HWTEST_F(CommonEventSubscriberManagerTest, RemoveEventSubscribers_0100, Level1)
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(event1);
 
-    std::set<SubscriberRecordPtr> mults;
+    std::vector<SubscriberRecordPtr> mults;
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
-    mults.insert(record);
+    mults.push_back(record);
 
     CommonEventSubscriberManager commonEventSubscriberManager;
     commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
@@ -797,11 +797,11 @@ HWTEST_F(CommonEventSubscriberManagerTest, RemoveEventSubscribers_0200, Level1)
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(event1);
 
-    std::set<SubscriberRecordPtr> mults;
+    std::vector<SubscriberRecordPtr> mults;
     SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
     SubscriberRecordPtr record1 = std::make_shared<EventSubscriberRecord>();
     record->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(matchingSkills);
-    mults.insert(record);
+    mults.push_back(record);
 
     CommonEventSubscriberManager commonEventSubscriberManager;
     commonEventSubscriberManager.eventSubscribers_.emplace(event1, mults);
@@ -2579,10 +2579,119 @@ HWTEST_F(CommonEventSubscriberManagerTest, GetProcessNameFromProcCmdline_0300, L
     CommonEventSubscriberManager commonEventSubscriberManager;
  
     std::string result = commonEventSubscriberManager.GetProcessNameFromProcCmdline(999999);
- 
+
     EXPECT_TRUE(result.empty());
  
     GTEST_LOG_(INFO) << "GetProcessNameFromProcCmdline_0300 end";
+}
+
+/**
+ * @tc.name: GetTopSubscriberCounts_0100
+ * @tc.desc: test GetTopSubscriberCounts function with empty subscriberCounts_
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetTopSubscriberCounts_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0100 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+ 
+    auto result = commonEventSubscriberManager.GetTopSubscriberCounts(5);
+    EXPECT_TRUE(result.empty());
+ 
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0100 end";
+}
+
+/**
+ * @tc.name: GetTopSubscriberCounts_0200
+ * @tc.desc: test GetTopSubscriberCounts function with multiple entries, return top N sorted by count descending
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetTopSubscriberCounts_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0200 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+ 
+    commonEventSubscriberManager.subscriberCounts_[1001] = 50;
+    commonEventSubscriberManager.subscriberCounts_[1002] = 30;
+    commonEventSubscriberManager.subscriberCounts_[1003] = 100;
+    commonEventSubscriberManager.subscriberCounts_[1004] = 20;
+    commonEventSubscriberManager.subscriberCounts_[1005] = 80;
+ 
+    auto result = commonEventSubscriberManager.GetTopSubscriberCounts(3);
+    EXPECT_EQ(3, result.size());
+    EXPECT_EQ(1003, result[0].first);
+    EXPECT_EQ(100, result[0].second);
+    EXPECT_EQ(1005, result[1].first);
+    EXPECT_EQ(80, result[1].second);
+    EXPECT_EQ(1001, result[2].first);
+    EXPECT_EQ(50, result[2].second);
+ 
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0200 end";
+}
+
+/**
+ * @tc.name: GetTopSubscriberCounts_0300
+ * @tc.desc: test GetTopSubscriberCounts function when topNum is greater than subscriberCounts_ size
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetTopSubscriberCounts_0300, Level1)
+{
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0300 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+ 
+    commonEventSubscriberManager.subscriberCounts_[2001] = 10;
+    commonEventSubscriberManager.subscriberCounts_[2002] = 5;
+ 
+    auto result = commonEventSubscriberManager.GetTopSubscriberCounts(10);
+    EXPECT_EQ(2, result.size());
+    EXPECT_EQ(2001, result[0].first);
+    EXPECT_EQ(10, result[0].second);
+    EXPECT_EQ(2002, result[1].first);
+    EXPECT_EQ(5, result[1].second);
+ 
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0300 end";
+}
+
+/**
+ * @tc.name: GetTopSubscriberCounts_0400
+ * @tc.desc: test GetTopSubscriberCounts function with default topNum=10
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetTopSubscriberCounts_0400, Level1)
+{
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0400 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+ 
+    for (int i = 1; i <= 15; i++) {
+        commonEventSubscriberManager.subscriberCounts_[3000 + i] = i * 10;
+    }
+ 
+    auto result = commonEventSubscriberManager.GetTopSubscriberCounts();
+    EXPECT_EQ(10, result.size());
+    for (size_t i = 0; i < result.size(); i++) {
+        EXPECT_EQ(static_cast<uint32_t>((15 - i) * 10), result[i].second);
+    }
+ 
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0400 end";
+}
+
+/**
+ * @tc.name: GetTopSubscriberCounts_0500
+ * @tc.desc: test GetTopSubscriberCounts function with topNum=0
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetTopSubscriberCounts_0500, Level1)
+{
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0500 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+ 
+    commonEventSubscriberManager.subscriberCounts_[4001] = 100;
+    commonEventSubscriberManager.subscriberCounts_[4002] = 50;
+ 
+    auto result = commonEventSubscriberManager.GetTopSubscriberCounts(0);
+    EXPECT_TRUE(result.empty());
+ 
+    GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0500 end";
 }
 }
 }

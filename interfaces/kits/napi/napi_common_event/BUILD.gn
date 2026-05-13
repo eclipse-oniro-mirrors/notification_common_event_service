@@ -78,6 +78,13 @@ ohos_shared_library("napi_commoneventmanager") {
     "napi:ace_napi",
   ]
 
+  defines = []
+
+  if (common_event_service_api_metrics) {
+    external_deps += [ "api_metrics:histogrammanager" ]
+    defines += [ "CES_FEATURE_API_METRICS_HISTOGRAM" ]
+  }
+
   subsystem_name = "notification"
   part_name = "common_event_service"
 }

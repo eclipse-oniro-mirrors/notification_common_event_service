@@ -516,6 +516,8 @@ void AsyncCompleteCallbackRemoveStickyCommonEvent(napi_env env, napi_status stat
 napi_value RemoveStickyCommonEvent(napi_env env, napi_callback_info info);
 
 napi_value GetSubscriberConstructor(napi_env env);
+
+void HistogramBoolReport(const std::string &name, const bool isSuccess);
 }  // namespace EventManagerFwkNapi
 }  // namespace OHOS
 

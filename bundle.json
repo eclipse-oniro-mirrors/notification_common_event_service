@@ -82,7 +82,8 @@
                 "selinux_adapter",
                 "runtime_core",
                 "json",
-                "ets_frontend"
+                "ets_frontend",
+                "api_metrics"
             ],
             "third_party": []
         },

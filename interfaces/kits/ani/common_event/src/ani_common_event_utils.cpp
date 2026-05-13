@@ -16,6 +16,9 @@
 
 #include "ani_common_want.h"
 #include "event_log_wrapper.h"
+#ifdef CES_FEATURE_API_METRICS_HISTOGRAM
+#include "histogram_plugin_macros.h"
+#endif
 
 #include <ani_signature_builder.h>
 
@@ -29,7 +32,11 @@ using namespace arkts::ani_signature;
 ani_object AniCommonEventUtils::GetNullObject(ani_env *env)
 {
     ani_ref nullRef;
-    env->GetNull(&nullRef);
+    ani_status status = env->GetNull(&nullRef);
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "GetNull failed: %{public}d", status);
+        return nullptr;
+    }
     return static_cast<ani_object>(nullRef);
 }
 
@@ -498,7 +505,10 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
     }
 
     ani_string string = nullptr;
-    env->String_NewUTF8(message.c_str(), message.size(), &string);
+    ani_status strStatus = env->String_NewUTF8(message.c_str(), message.size(), &string);
+    if (strStatus != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 failed: %{public}d", strStatus);
+    }
     aniResult = env->Object_SetFieldByName_Double(object, "code", ani_double(code));
     aniResult = env->Object_SetFieldByName_Ref(object, "data", string);
 }
@@ -555,17 +565,26 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
 
     ani_string string = nullptr;
     // set event [string]
-    env->String_NewUTF8(
+    ani_status status = env->String_NewUTF8(
         commonEventData.GetWant().GetAction().c_str(), commonEventData.GetWant().GetAction().size(), &string);
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 for event failed: %{public}d", status);
+    }
     CallSetter(env, cls, ani_data, Builder::BuildSetterName("event").c_str(), string);
 
     // set bundleName [string]
-    env->String_NewUTF8(
+    status = env->String_NewUTF8(
         commonEventData.GetWant().GetBundle().c_str(), commonEventData.GetWant().GetBundle().size(), &string);
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 for bundleName failed: %{public}d", status);
+    }
     CallSetter(env, cls, ani_data, Builder::BuildSetterName("bundleName").c_str(), string);
 
     // set data [string]
-    env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
+    status = env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 for data failed: %{public}d", status);
+    }
     CallSetter(env, cls, ani_data, Builder::BuildSetterName("data").c_str(), string);
 
     // set code [int]
@@ -651,8 +670,17 @@ void AniCommonEventUtils::ThrowError(ani_env *env, int32_t errCode, const std::s
         return;
     }
 
-    env->ThrowError(static_cast<ani_error>(CreateError(env, errCode, errorMsg)));
+    ani_status status = env->ThrowError(static_cast<ani_error>(CreateError(env, errCode, errorMsg)));
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "ThrowError failed: %{public}d", status);
+    }
 }
 
+void AniCommonEventUtils::HistogramBoolReport(const std::string &name, const bool isSuccess)
+{
+#ifdef CES_FEATURE_API_METRICS_HISTOGRAM
+    HISTOGRAM_BOOLEAN(name.c_str(), isSuccess);
+#endif
+}
 } // namespace EventManagerFwkAni
 } // namespace OHOS

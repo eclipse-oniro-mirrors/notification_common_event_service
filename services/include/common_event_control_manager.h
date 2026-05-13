@@ -16,8 +16,6 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_CONTROL_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_CONTROL_MANAGER_H
 
-#include <list>
-
 #include "common_event_permission_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "history_event_record.h"

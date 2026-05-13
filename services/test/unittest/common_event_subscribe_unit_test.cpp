@@ -389,7 +389,7 @@ public:
 
     int StartAbilityByCall(const Want &want, const sptr<IAbilityConnection> &connect,
         const sptr<IRemoteObject> &callerToken, int32_t accountId, bool isSilent, bool promotePriority,
-        bool isVisible) override
+        bool isVisible, uint64_t specfiedFullTokenId) override
     {
         return 1;
     }
