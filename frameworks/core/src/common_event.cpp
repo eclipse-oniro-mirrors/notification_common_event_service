@@ -202,10 +202,17 @@ int32_t CommonEvent::SubscribeOrUpdate(const std::shared_ptr<CommonEventSubscrib
         }
         if (funcResult != ERR_OK) {
             EVENT_LOGD(LOG_TAG_CES, "subscribe common event failed, remove event listener");
-            std::lock_guard<std::mutex> lock(eventListenersMutex_);
-            auto eventListener = eventListeners_.find(subscriber);
-            if (eventListener != eventListeners_.end()) {
-                eventListeners_.erase(eventListener);
+            sptr<CommonEventListener> listenerToStop = nullptr;
+            {
+                std::lock_guard<std::mutex> lock(eventListenersMutex_);
+                auto eventListener = eventListeners_.find(subscriber);
+                if (eventListener != eventListeners_.end()) {
+                    listenerToStop = eventListener->second;
+                    eventListeners_.erase(eventListener);
+                }
+            }
+            if (listenerToStop != nullptr) {
+                listenerToStop->Stop();
             }
         }
         return funcResult;
