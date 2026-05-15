@@ -194,7 +194,6 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
     int32_t failCnt = 0;
     int32_t freezeCnt = 0;
     std::string freezedPidsLogger = "";
-
     for (auto vec : eventRecord->receivers) {
         if (vec == nullptr) {
             EVENT_LOGE(LOG_TAG_UNORDERED, "invalid vec");
@@ -204,7 +203,6 @@ void CommonEventControlManager::NotifyUnorderedEventLocked(std::shared_ptr<Order
         size_t index = eventRecord->nextReceiver++;
         NotifySingleUnorderedSubscriber(eventRecord, vec, index, succCnt, failCnt, freezeCnt, freezedPidsLogger);
     }
-
     if (!freezedPidsLogger.empty()) {
         freezedPidsLogger.append("]");
     }
@@ -219,7 +217,6 @@ bool CommonEventControlManager::NotifySingleUnorderedSubscriber(
         HandleFrozenUnorderedSubscriber(eventRecord, vec, index, freezeCnt, freezedPidsLogger);
         return true;
     }
-
     sptr<IEventReceive> commonEventListenerProxy = iface_cast<IEventReceive>(vec->commonEventListener);
     if (!commonEventListenerProxy) {
         eventRecord->deliveryState[index] = OrderedEventRecord::SKIPPED;
@@ -228,12 +225,10 @@ bool CommonEventControlManager::NotifySingleUnorderedSubscriber(
         failCnt++;
         return false;
     }
-
     eventRecord->deliveryState[index] = OrderedEventRecord::DELIVERED;
     eventRecord->state.store(OrderedEventRecord::RECEIVING);
     int32_t result = commonEventListenerProxy->NotifyEvent(*(eventRecord->commonEventData), false,
         eventRecord->publishInfo->IsSticky());
-
     if (result != ERR_OK) {
         eventRecord->state.store(OrderedEventRecord::SKIPPED);
         failCnt++;
@@ -241,7 +236,6 @@ bool CommonEventControlManager::NotifySingleUnorderedSubscriber(
             eventRecord->commonEventData->GetWant().GetAction().c_str(), vec->eventRecordInfo.subId.c_str());
         return false;
     }
-
     eventRecord->state.store(OrderedEventRecord::RECEIVED);
     succCnt++;
     AccessTokenHelper::RecordSensitivePermissionUsage(vec->eventRecordInfo.callerToken,
@@ -527,19 +521,15 @@ bool CommonEventControlManager::NotifyOrderedEvent(std::shared_ptr<OrderedEventR
     if (eventRecordPtr->receivers[index]->isFreeze) {
         return NotifyFrozenSubscriber(eventRecordPtr, index);
     }
-
     sptr<IEventReceive> receiver = nullptr;
     if (!PrepareOrderedNotify(eventRecordPtr, index, receiver)) {
         return false;
     }
-
     int32_t result = receiver->NotifyEvent(*(eventRecordPtr->commonEventData), true,
         eventRecordPtr->publishInfo->IsSticky());
-
     if (!HandleOrderedNotifyResult(eventRecordPtr, index, result)) {
         return false;
     }
-
     LogOrderedNotifySuccess(eventRecordPtr, index);
     return true;
 }
@@ -607,11 +597,9 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD(LOG_TAG_ORDERED, "enter");
-
     if (isSendMsg) {
         scheduled_ = false;
     }
-
     std::shared_ptr<OrderedEventRecord> sp = nullptr;
     {
         std::lock_guard<ffrt::mutex> lock(orderedMutex_);
@@ -620,12 +608,10 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
             return;
         }
     }
-
     size_t recIdx = PrepareNextReceiverRecord(sp);
     if (!pendingTimeoutMessage_) {
         SetTimeout();
     }
-
     NotifyOrderedEvent(sp, recIdx);
     if (sp->curReceiver == nullptr) {
         sp->state.store(OrderedEventRecord::IDLE);
@@ -641,14 +627,11 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::ProcessOrderedEve
             EVENT_LOGD(LOG_TAG_ORDERED, "orderedEventQueue_ is empty");
             return nullptr;
         }
-
         sp = orderedEventQueue_.front();
         bool forceReceive = CheckTimeoutForceReceive(sp);
-
         if (sp->state.load() != OrderedEventRecord::IDLE) {
             return nullptr;
         }
-
         size_t numReceivers = sp->receivers.size();
         bool shouldRemove = (sp->receivers.empty()) || (sp->nextReceiver >= numReceivers) ||
             sp->resultAbort || forceReceive;
@@ -719,9 +702,7 @@ size_t CommonEventControlManager::PrepareNextReceiverRecord(std::shared_ptr<Orde
 bool CommonEventControlManager::SetTimeout()
 {
     EVENT_LOGD(LOG_TAG_ORDERED, "enter");
-
     bool ret = true;
-
     if (!pendingTimeoutMessage_) {
         pendingTimeoutMessage_ = true;
         std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
@@ -741,7 +722,6 @@ bool CommonEventControlManager::SetTimeout()
 bool CommonEventControlManager::CancelTimeout()
 {
     EVENT_LOGD(LOG_TAG_ORDERED, "enter");
-
     if (pendingTimeoutMessage_) {
         pendingTimeoutMessage_ = false;
         orderedQueue_->cancel(orderedHandler);
@@ -753,22 +733,18 @@ bool CommonEventControlManager::CancelTimeout()
 void CommonEventControlManager::CurrentOrderedEventTimeout(bool isFromMsg)
 {
     EVENT_LOGD(LOG_TAG_ORDERED, "enter");
-
     if (isFromMsg) {
         pendingTimeoutMessage_ = false;
     }
-
     std::shared_ptr<OrderedEventRecord> sp = GetFrontOrderedRecord();
     if (sp == nullptr) {
         EVENT_LOGE(LOG_TAG_ORDERED, "empty orderedEventQueue_");
         return;
     }
-
     int64_t nowSysTime = SystemTime::GetNowSysTime();
     if (isFromMsg && CheckAndRescheduleTimeout(sp, nowSysTime)) {
         return;
     }
-
     HandleTimeoutReceiver(sp, nowSysTime);
     ScheduleOrderedCommonEvent();
 }
@@ -794,12 +770,10 @@ bool CommonEventControlManager::CheckAndRescheduleTimeout(
     return false;
 }
 
-void CommonEventControlManager::HandleTimeoutReceiver(std::shared_ptr<OrderedEventRecord> &sp)
+void CommonEventControlManager::HandleTimeoutReceiver(std::shared_ptr<OrderedEventRecord> &sp, int64_t nowSysTime)
 {
-    int64_t nowSysTime = SystemTime::GetNowSysTime();
     std::lock_guard<ffrt::mutex> recordLock(sp->recordMutex_);
     sp->receiverTime = nowSysTime;
-
     if (sp->nextReceiver > 0) {
         std::shared_ptr<EventSubscriberRecord> subscriberRecord = sp->receivers[sp->nextReceiver - 1];
         EVENT_LOGW(LOG_TAG_ORDERED, "Timeout: When %{public}s process %{public}s",
@@ -807,7 +781,6 @@ void CommonEventControlManager::HandleTimeoutReceiver(std::shared_ptr<OrderedEve
         SendOrderedEventProcTimeoutHiSysEvent(subscriberRecord, sp->commonEventData->GetWant().GetAction());
         sp->deliveryState[sp->nextReceiver - 1] = OrderedEventRecord::TIMEOUT;
     }
-
     int32_t code = sp->commonEventData->GetCode();
     const std::string &strRef = sp->commonEventData->GetData();
     bool abort = sp->resultAbort;
@@ -822,14 +795,11 @@ bool CommonEventControlManager::FinishReceiver(std::shared_ptr<OrderedEventRecor
     const std::string &receiverData, const bool &abortEvent)
 {
     EVENT_LOGD(LOG_TAG_ORDERED, "enter");
-
     if (recordPtr == nullptr) {
         EVENT_LOGE(LOG_TAG_ORDERED, "recordPtr is null");
         return false;
     }
-
     EVENT_LOGD(LOG_TAG_ORDERED, "enter recordPtr->state=%{public}d", recordPtr->state.load());
-
     int8_t state = recordPtr->state.load();
     {
         std::lock_guard<ffrt::mutex> lock(recordPtr->recordMutex_);
@@ -839,7 +809,6 @@ bool CommonEventControlManager::FinishReceiver(std::shared_ptr<OrderedEventRecor
         recordPtr->commonEventData->SetData(receiverData);
         recordPtr->resultAbort = abortEvent;
     }
-
     return state == OrderedEventRecord::RECEIVED;
 }
 

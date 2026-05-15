@@ -27,6 +27,7 @@
 #include "common_event_listener.h"
 #include "common_event_subscriber.h"
 #include "mock_bundle_manager.h"
+#include "system_time.h"
 
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
@@ -851,7 +852,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     eventRecord->receivers.emplace_back(std::make_shared<EventSubscriberRecord>());
 
-    commonEventControlManager->HandleTimeoutReceiver(eventRecord);
+    int64_t nowSysTime = SystemTime::GetNowSysTime();
+    commonEventControlManager->HandleTimeoutReceiver(eventRecord, nowSysTime);
 
     EXPECT_EQ(eventRecord->state.load(), OrderedEventRecord::IDLE);
     EXPECT_EQ(eventRecord->curReceiver, nullptr);
@@ -904,7 +906,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     subscriberRecord->commonEventListener = nullptr;
     eventRecord->receivers.emplace_back(subscriberRecord);
 
-    sptr<IEventReceive> receiver = nullptr;
+    OHOS::sptr<IEventReceive> receiver = nullptr;
     bool result = commonEventControlManager->PrepareOrderedNotify(eventRecord, 0, receiver);
     EXPECT_FALSE(result);
 }
@@ -937,7 +939,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
     eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
 
-    bool result = commonEventControlManager->HandleOrderedNotifyResult(eventRecord, 0, ERR_OK);
+    bool result = commonEventControlManager->HandleOrderedNotifyResult(eventRecord, 0, OHOS::ERR_OK);
     EXPECT_TRUE(result);
     EXPECT_EQ(eventRecord->state.load(), OrderedEventRecord::RECEIVED);
 }

@@ -19,6 +19,7 @@
 #include "common_event_permission_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "history_event_record.h"
+#include "ievent_receive.h"
 #include "ordered_event_record.h"
 #include "ffrt.h"
 
@@ -148,7 +149,7 @@ private:
 
     bool HandleFinalSubscriber(std::shared_ptr<OrderedEventRecord> &sp);
 
-    void HandleTimeoutReceiver(std::shared_ptr<OrderedEventRecord> &sp);
+    void HandleTimeoutReceiver(std::shared_ptr<OrderedEventRecord> &sp, int64_t nowSysTime);
 
     bool CheckAndRescheduleTimeout(std::shared_ptr<OrderedEventRecord> &sp, int64_t nowSysTime);
 
