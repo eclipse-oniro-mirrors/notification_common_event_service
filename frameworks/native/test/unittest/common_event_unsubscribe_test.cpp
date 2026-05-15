@@ -166,16 +166,102 @@ HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_001, TestSize.Level0)
  * Feature: CommonEvent
  * Function: UnSubscribeCommonEvent
  * SubFunction: NA
- * FunctionPoints: normal
+ * FunctionPoints: Verify listenerToStop assignment and Stop() call outside lock
  * EnvConditions: system running normally
- * CaseDescription: Verify UnSubscribeCommonEvent function return value with eventListener not exist.
+ * CaseDescription: Test the new logic: listenerToStop is assigned and Stop() is called outside the lock
  */
-HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_002, TestSize.Level0)
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_014, TestSize.Level0)
 {
     CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
     CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
     std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
-    EXPECT_EQ(ERR_OK, CommonEvent::GetInstance()->UnSubscribeCommonEvent(subscriber));
+    
+    std::shared_ptr<CommonEvent> commonEvent = CommonEvent::GetInstance();
+    
+    sptr<CommonEventListener> mockListener = new CommonEventListener(subscriber);
+    commonEvent->eventListeners_[subscriber] = mockListener;
+    
+    size_t initialSize = commonEvent->eventListeners_.size();
+    
+    int32_t result = commonEvent->UnSubscribeCommonEvent(subscriber);
+    
+    EXPECT_EQ(ERR_OK, result);
+    EXPECT_EQ(initialSize - 1, commonEvent->eventListeners_.size());
+    EXPECT_TRUE(commonEvent->eventListeners_.find(subscriber) == commonEvent->eventListeners_.end());
+}
+
+/*
+ * Feature: CommonEvent
+ * Function: UnSubscribeCommonEventSync
+ * SubFunction: NA
+ * FunctionPoints: Verify listenerToStop assignment and Stop() call outside lock (Sync version)
+ * EnvConditions: system running normally
+ * CaseDescription: Test the logic for Sync version: listenerToStop is assigned and Stop() is called outside the lock
+ */
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_015, TestSize.Level0)
+{
+    CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("event");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    
+    std::shared_ptr<CommonEvent> commonEvent = CommonEvent::GetInstance();
+    
+    sptr<CommonEventListener> mockListener = new CommonEventListener(subscriber);
+    commonEvent->eventListeners_[subscriber] = mockListener;
+    
+    size_t initialSize = commonEvent->eventListeners_.size();
+    
+    int32_t result = commonEvent->UnSubscribeCommonEventSync(subscriber);
+    
+    EXPECT_EQ(ERR_OK, result);
+    EXPECT_EQ(initialSize - 1, commonEvent->eventListeners_.size());
+    EXPECT_TRUE(commonEvent->eventListeners_.find(subscriber) == commonEvent->eventListeners_.end());
+}
+
+/*
+ * Feature: CommonEvent
+ * Function: UnSubscribeCommonEvent
+ * SubFunction: NA
+ * FunctionPoints: Verify subscription not exist case
+ * EnvConditions: system running normally
+ * CaseDescription: Verify that UnSubscribeCommonEvent returns ERR_OK when listener doesn't exist in eventListeners_
+ */
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_016, TestSize.Level0)
+{
+    CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("unique_event_016");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    
+    std::shared_ptr<CommonEvent> commonEvent = CommonEvent::GetInstance();
+    
+    commonEvent->eventListeners_.erase(subscriber);
+    
+    int32_t result = commonEvent->UnSubscribeCommonEvent(subscriber);
+    
+    EXPECT_EQ(ERR_OK, result);
+}
+
+/*
+ * Feature: CommonEvent
+ * Function: UnSubscribeCommonEventSync
+ * SubFunction: NA
+ * FunctionPoints: Verify subscription not exist case (Sync version)
+ * EnvConditions: system running normally
+ * CaseDescription: Verify that UnSubscribeCommonEventSync returns ERR_OK when listener doesn't exist
+ */
+HWTEST_F(CommonEventUnSubscribeTest, UnSubscribe_017, TestSize.Level0)
+{
+    CommonEventUnSubscribeTest::SetMatchingSkillsWithEvent("unique_event_017");
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills_);
+    std::shared_ptr<DreivedSubscriber> subscriber = std::make_shared<DreivedSubscriber>(subscribeInfo);
+    
+    std::shared_ptr<CommonEvent> commonEvent = CommonEvent::GetInstance();
+    
+    commonEvent->eventListeners_.erase(subscriber);
+    
+    int32_t result = commonEvent->UnSubscribeCommonEventSync(subscriber);
+    
+    EXPECT_EQ(ERR_OK, result);
 }
 
 /*
