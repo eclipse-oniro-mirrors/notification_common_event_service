@@ -16,8 +16,10 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_ORDERED_EVENT_RECORD_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_ORDERED_EVENT_RECORD_H
 
+#include <atomic>
 #include "common_event_record.h"
 #include "common_event_subscriber_manager.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -36,7 +38,7 @@ struct OrderedEventRecord : public CommonEventRecord {
     };
 
     bool resultAbort;
-    int8_t state;
+    std::atomic<int8_t> state;
     size_t nextReceiver;
     int32_t enqueueClockTime;
     int64_t dispatchTime;
@@ -46,6 +48,7 @@ struct OrderedEventRecord : public CommonEventRecord {
     sptr<IRemoteObject> curReceiver;
     std::vector<uint8_t> deliveryState;
     std::vector<std::shared_ptr<EventSubscriberRecord>> receivers;
+    ffrt::mutex recordMutex_;
 
     OrderedEventRecord()
         : resultAbort(false),

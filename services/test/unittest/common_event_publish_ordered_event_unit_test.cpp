@@ -113,7 +113,19 @@ void CommonEventPublishOrderedEventUnitTest::TearDownTestCase(void)
 }
 
 void CommonEventPublishOrderedEventUnitTest::SetUp(void)
-{}
+{
+    if (commonEventControlManager != nullptr) {
+        if (commonEventControlManager->orderedQueue_ != nullptr) {
+            commonEventControlManager->CancelTimeout();
+        }
+        {
+            std::lock_guard<ffrt::mutex> lock(commonEventControlManager->orderedMutex_);
+            commonEventControlManager->orderedEventQueue_.clear();
+        }
+        commonEventControlManager->scheduled_ = false;
+        commonEventControlManager->pendingTimeoutMessage_ = false;
+    }
+}
 
 void CommonEventPublishOrderedEventUnitTest::TearDown(void)
 {}
@@ -340,7 +352,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->commonEventData = commonEventData;
     eventRecord->publishInfo = publishInfo;
     eventRecord->resultTo = nullptr;
-    eventRecord->state = OrderedEventRecord::IDLE;
+    eventRecord->state.store(OrderedEventRecord::IDLE);
     eventRecord->nextReceiver = 0;
 
     bool result = commonEventControlManager->EnqueueOrderedRecord(eventRecord);
@@ -389,7 +401,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->commonEventData = commonEventData;
     eventRecord->publishInfo = publishInfo;
     eventRecord->resultTo = nullptr;
-    eventRecord->state = OrderedEventRecord::RECEIVED;
+    eventRecord->state.store(OrderedEventRecord::RECEIVED);
     eventRecord->nextReceiver = 0;
 
     std::string receiverData = "receiverData";
@@ -413,7 +425,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->commonEventData = commonEventData;
     eventRecord->publishInfo = publishInfo;
     eventRecord->resultTo = nullptr;
-    eventRecord->state = OrderedEventRecord::IDLE;
+    eventRecord->state.store(OrderedEventRecord::IDLE);
     eventRecord->nextReceiver = 0;
 
     std::string receiverData = "receiverData";
@@ -451,15 +463,16 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1900, Function | MediumTest | Level0)
 {
-    commonEventControlManager->orderedEventQueue_.clear();
     commonEventControlManager->CurrentOrderedEventTimeout(true);
 
     bool result = false;
-    if (commonEventControlManager->orderedEventQueue_.size() == 0) {
-        result = true;
+    {
+        std::lock_guard<ffrt::mutex> lock(commonEventControlManager->orderedMutex_);
+        if (commonEventControlManager->orderedEventQueue_.size() == 0) {
+            result = true;
+        }
     }
     EXPECT_TRUE(result);
-    commonEventControlManager->orderedEventQueue_.clear();
 }
 
 /*
@@ -469,29 +482,28 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2000, Function | MediumTest | Level0)
 {
-    // make common event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
 
-    // make ordered event record
     std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
     eventRecord->commonEventData = commonEventData;
     eventRecord->publishInfo = publishInfo;
     eventRecord->resultTo = nullptr;
-    eventRecord->state = OrderedEventRecord::IDLE;
+    eventRecord->state.store(OrderedEventRecord::IDLE);
     eventRecord->nextReceiver = 0;
 
-    // enqueue ordered record
     commonEventControlManager->scheduled_ = true;
     commonEventControlManager->EnqueueOrderedRecord(eventRecord);
     commonEventControlManager->CurrentOrderedEventTimeout(true);
 
     bool result = false;
-    if (commonEventControlManager->orderedEventQueue_.size() > 0) {
-        result = true;
+    {
+        std::lock_guard<ffrt::mutex> lock(commonEventControlManager->orderedMutex_);
+        if (commonEventControlManager->orderedEventQueue_.size() > 0) {
+            result = true;
+        }
     }
     EXPECT_TRUE(result);
-    commonEventControlManager->orderedEventQueue_.clear();
 }
 
 /*
@@ -501,7 +513,6 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2100, Function | MediumTest | Level0)
 {
-    // make event record
     std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
 
@@ -511,7 +522,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->commonEventData = commonEventData;
     eventRecord->publishInfo = publishInfo;
     eventRecord->resultTo = nullptr;
-    eventRecord->state = OrderedEventRecord::IDLE;
+    eventRecord->state.store(OrderedEventRecord::IDLE);
     eventRecord->nextReceiver = 1;
     eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     eventRecord->receivers.emplace_back(subscriberRecord);
@@ -522,12 +533,15 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     commonEventControlManager->CurrentOrderedEventTimeout(true);
 
     bool result = false;
-    if (commonEventControlManager->orderedEventQueue_.front()->nextReceiver > 0) {
-        GTEST_LOG_(INFO) << std::to_string(commonEventControlManager->orderedEventQueue_.front()->nextReceiver);
-        result = true;
+    {
+        std::lock_guard<ffrt::mutex> lock(commonEventControlManager->orderedMutex_);
+        if (commonEventControlManager->orderedEventQueue_.front()->nextReceiver > 0) {
+            GTEST_LOG_(INFO) << std::to_string(
+                commonEventControlManager->orderedEventQueue_.front()->nextReceiver);
+            result = true;
+        }
     }
     EXPECT_TRUE(result);
-    commonEventControlManager->orderedEventQueue_.clear();
 }
 
 /*
@@ -781,4 +795,149 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
 
     mtx.unlock();
     GTEST_LOG_(INFO) << "Testcase finished";
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_2800
+ * @tc.name: test GetFrontOrderedRecord
+ * @tc.desc: Verify GetFrontOrderedRecord returns nullptr when queue is empty
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2800, Function | MediumTest | Level0)
+{
+    auto result = commonEventControlManager->GetFrontOrderedRecord();
+    EXPECT_EQ(result, nullptr);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_2900
+ * @tc.name: test GetFrontOrderedRecord
+ * @tc.desc: Verify GetFrontOrderedRecord returns record when queue is not empty
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_2900, Function | MediumTest | Level0)
+{
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->state.store(OrderedEventRecord::IDLE);
+    commonEventControlManager->EnqueueOrderedRecord(eventRecord);
+
+    auto result = commonEventControlManager->GetFrontOrderedRecord();
+    EXPECT_NE(result, nullptr);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3000
+ * @tc.name: test HandleFinalSubscriber
+ * @tc.desc: Verify HandleFinalSubscriber returns true when resultTo is nullptr
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3000, Function | MediumTest | Level0)
+{
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->resultTo = nullptr;
+
+    bool result = commonEventControlManager->HandleFinalSubscriber(eventRecord);
+    EXPECT_TRUE(result);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3100
+ * @tc.name: test HandleTimeoutReceiver
+ * @tc.desc: Verify HandleTimeoutReceiver handles record with nextReceiver > 0
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3100, Function | MediumTest | Level0)
+{
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->commonEventData = commonEventData;
+    eventRecord->nextReceiver = 1;
+    eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    eventRecord->receivers.emplace_back(std::make_shared<EventSubscriberRecord>());
+
+    commonEventControlManager->HandleTimeoutReceiver(eventRecord);
+
+    EXPECT_EQ(eventRecord->state.load(), OrderedEventRecord::IDLE);
+    EXPECT_EQ(eventRecord->curReceiver, nullptr);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3200
+ * @tc.name: test PrepareNextReceiverRecord
+ * @tc.desc: Verify PrepareNextReceiverRecord increments nextReceiver
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3200, Function | MediumTest | Level0)
+{
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->nextReceiver = 0;
+
+    size_t recIdx = commonEventControlManager->PrepareNextReceiverRecord(eventRecord);
+    EXPECT_EQ(recIdx, 0);
+    EXPECT_EQ(eventRecord->nextReceiver, 1);
+    EXPECT_GT(eventRecord->receiverTime, 0);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3300
+ * @tc.name: test NotifyFrozenSubscriber
+ * @tc.desc: Verify NotifyFrozenSubscriber sets SKIPPED state
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3300, Function | MediumTest | Level0)
+{
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->isFreeze = true;
+    eventRecord->receivers.emplace_back(subscriberRecord);
+
+    bool result = commonEventControlManager->NotifyFrozenSubscriber(eventRecord, 0);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(eventRecord->deliveryState[0], OrderedEventRecord::SKIPPED);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3400
+ * @tc.name: test PrepareOrderedNotify
+ * @tc.desc: Verify PrepareOrderedNotify fails with invalid receiver
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3400, Function | MediumTest | Level0)
+{
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    auto subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->commonEventListener = nullptr;
+    eventRecord->receivers.emplace_back(subscriberRecord);
+
+    sptr<IEventReceive> receiver = nullptr;
+    bool result = commonEventControlManager->PrepareOrderedNotify(eventRecord, 0, receiver);
+    EXPECT_FALSE(result);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3500
+ * @tc.name: test HandleOrderedNotifyResult
+ * @tc.desc: Verify HandleOrderedNotifyResult returns false when result is error
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3500, Function | MediumTest | Level0)
+{
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->commonEventData = commonEventData;
+    eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    eventRecord->receivers.emplace_back(std::make_shared<EventSubscriberRecord>());
+
+    bool result = commonEventControlManager->HandleOrderedNotifyResult(eventRecord, 0, -1);
+    EXPECT_FALSE(result);
+    EXPECT_EQ(eventRecord->state.load(), OrderedEventRecord::SKIPPED);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3600
+ * @tc.name: test HandleOrderedNotifyResult
+ * @tc.desc: Verify HandleOrderedNotifyResult returns true when result is OK
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3600, Function | MediumTest | Level0)
+{
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+
+    bool result = commonEventControlManager->HandleOrderedNotifyResult(eventRecord, 0, ERR_OK);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(eventRecord->state.load(), OrderedEventRecord::RECEIVED);
 }
