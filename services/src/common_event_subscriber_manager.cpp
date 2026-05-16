@@ -892,6 +892,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
 std::unordered_map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEvents()
 {
     EVENT_LOGD(LOG_TAG_FREEZED, "enter");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return frozenEvents_;
 }
 
@@ -974,6 +975,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
 std::unordered_map<pid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFrozenEventsMap()
 {
     EVENT_LOGD(LOG_TAG_FREEZED, "enter");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return frozenEventsMap_;
 }
 
