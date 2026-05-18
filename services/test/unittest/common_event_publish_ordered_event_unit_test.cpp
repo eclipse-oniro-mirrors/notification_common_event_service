@@ -459,7 +459,6 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         result = true;
     }
     EXPECT_TRUE(result);
-    commonEventControlManager->orderedEventQueue_.clear();
 }
 
 /*
@@ -491,7 +490,6 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         result = true;
     }
     EXPECT_TRUE(result);
-    commonEventControlManager->orderedEventQueue_.clear();
 }
 
 /*
@@ -527,7 +525,6 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
         result = true;
     }
     EXPECT_TRUE(result);
-    commonEventControlManager->orderedEventQueue_.clear();
 }
 
 /*
