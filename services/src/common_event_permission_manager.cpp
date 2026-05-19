@@ -183,6 +183,30 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_CHANGE,
         {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
     },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_HANDSFREE_AG_CONNECT_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CONNECT_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_AVRCP_CONNECT_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_CODEC_VALUE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_A2DPSOURCE_PLAY_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_SCO_CONNECT_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_ACL_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
+    {CommonEventSupport::COMMON_EVENT_BLUETOOTH_REMOTEDEVICE_PAIR_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.ACCESS_BLUETOOTH"}}
+    },
 };
 
 static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
