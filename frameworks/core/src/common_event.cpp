@@ -202,10 +202,17 @@ int32_t CommonEvent::SubscribeOrUpdate(const std::shared_ptr<CommonEventSubscrib
         }
         if (funcResult != ERR_OK) {
             EVENT_LOGD(LOG_TAG_CES, "subscribe common event failed, remove event listener");
-            std::lock_guard<std::mutex> lock(eventListenersMutex_);
-            auto eventListener = eventListeners_.find(subscriber);
-            if (eventListener != eventListeners_.end()) {
-                eventListeners_.erase(eventListener);
+            sptr<CommonEventListener> listenerToStop = nullptr;
+            {
+                std::lock_guard<std::mutex> lock(eventListenersMutex_);
+                auto eventListener = eventListeners_.find(subscriber);
+                if (eventListener != eventListeners_.end()) {
+                    listenerToStop = eventListener->second;
+                    eventListeners_.erase(eventListener);
+                }
+            }
+            if (listenerToStop != nullptr) {
+                listenerToStop->Stop();
             }
         }
         return funcResult;
@@ -282,28 +289,34 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     if (!proxy) {
         return ERR_NOTIFICATION_CESM_ERROR;
     }
-    std::lock_guard<std::mutex> lock(eventListenersMutex_);
-    auto eventListener = eventListeners_.find(subscriber);
+    sptr<CommonEventListener> listenerToStop = nullptr;
     int32_t funcResult = -1;
-    if (eventListener != eventListeners_.end()) {
-        EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
-        if (eventListener->second->AsObject() == nullptr) {
-            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    {
+        std::lock_guard<std::mutex> lock(eventListenersMutex_);
+        auto eventListener = eventListeners_.find(subscriber);
+        if (eventListener != eventListeners_.end()) {
+            EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu",
+                eventListeners_.size());
+            if (eventListener->second->AsObject() == nullptr) {
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+            }
+            auto res = proxy->UnsubscribeCommonEvent(eventListener->second->AsObject(), funcResult);
+            if (res != ERR_OK) {
+                funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+            }
+            if (funcResult == ERR_OK) {
+                listenerToStop = eventListener->second;
+                eventListeners_.erase(eventListener);
+            } else {
+                return ERR_NOTIFICATION_SEND_ERROR;
+            }
+        } else {
+            EVENT_LOGW(LOG_TAG_CES, "No subscription");
         }
-        auto res = proxy->UnsubscribeCommonEvent(eventListener->second->AsObject(), funcResult);
-        if (res != ERR_OK) {
-            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        if (funcResult == ERR_OK) {
-            eventListener->second->Stop();
-            eventListeners_.erase(eventListener);
-            return ERR_OK;
-        }
-        return ERR_NOTIFICATION_SEND_ERROR;
-    } else {
-        EVENT_LOGW(LOG_TAG_CES, "No subscription");
     }
-
+    if (listenerToStop != nullptr) {
+        listenerToStop->Stop();
+    }
     return ERR_OK;
 }
 
@@ -321,26 +334,33 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
     if (!proxy) {
         return ERR_NOTIFICATION_CESM_ERROR;
     }
-    std::lock_guard<std::mutex> lock(eventListenersMutex_);
-    auto eventListener = eventListeners_.find(subscriber);
+    sptr<CommonEventListener> listenerToStop = nullptr;
     int32_t funcResult = -1;
-    if (eventListener != eventListeners_.end()) {
-        EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu", eventListeners_.size());
-        if (eventListener->second->AsObject() == nullptr) {
-            return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    {
+        std::lock_guard<std::mutex> lock(eventListenersMutex_);
+        auto eventListener = eventListeners_.find(subscriber);
+        if (eventListener != eventListeners_.end()) {
+            EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu",
+                eventListeners_.size());
+            if (eventListener->second->AsObject() == nullptr) {
+                return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+            }
+            auto res = proxy->UnsubscribeCommonEventSync(eventListener->second->AsObject(), funcResult);
+            if (res != ERR_OK) {
+                funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+            }
+            if (funcResult == ERR_OK) {
+                listenerToStop = eventListener->second;
+                eventListeners_.erase(eventListener);
+            } else {
+                return ERR_NOTIFICATION_SEND_ERROR;
+            }
+        } else {
+            EVENT_LOGW(LOG_TAG_CES, "No subscription");
         }
-        auto res = proxy->UnsubscribeCommonEventSync(eventListener->second->AsObject(), funcResult);
-        if (res != ERR_OK) {
-            funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-        }
-        if (funcResult == ERR_OK) {
-            eventListener->second->Stop();
-            eventListeners_.erase(eventListener);
-            return ERR_OK;
-        }
-        return ERR_NOTIFICATION_SEND_ERROR;
-    } else {
-        EVENT_LOGW(LOG_TAG_CES, "No subscription");
+    }
+    if (listenerToStop != nullptr) {
+        listenerToStop->Stop();
     }
     return ERR_OK;
 }

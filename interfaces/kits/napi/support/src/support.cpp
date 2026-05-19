@@ -364,6 +364,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_UPDATE");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_CHANGE,
+        "COMMON_EVENT_BLUETOOTH_HOST_SCAN_MODE_CHANGE");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_BLUETOOTH_HOST_DISCOVERY_STARTED,
         "COMMON_EVENT_BLUETOOTH_HOST_DISCOVERY_STARTED");
     SetNamedPropertyByStr(env,
