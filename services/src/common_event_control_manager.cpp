@@ -639,6 +639,9 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::ProcessOrderedEve
             if (!HandleFinalSubscriber(sp)) {
                 return nullptr;
             }
+            EVENT_LOGI(LOG_TAG_ORDERED, "Pid %{public}d publish %{public}s to %{public}d end(%{public}zu,"
+                "%{public}zu)", sp->eventRecordInfo.pid, sp->commonEventData->GetWant().GetAction().c_str(),
+                sp->userId, numReceivers, sp->nextReceiver);
             CancelTimeout();
             orderedEventQueue_.erase(orderedEventQueue_.begin());
             sp = nullptr;
