@@ -19,6 +19,7 @@
 #include "common_event_permission_manager.h"
 #include "common_event_subscriber_manager.h"
 #include "history_event_record.h"
+#include "ievent_receive.h"
 #include "ordered_event_record.h"
 #include "ffrt.h"
 
@@ -137,14 +138,47 @@ private:
 
     bool NotifyOrderedEvent(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index);
 
-    void SetTime(size_t recIdx, std::shared_ptr<OrderedEventRecord> &sp, bool timeoutMessage);
-
     bool SetTimeout();
 
     bool CancelTimeout();
 
     bool FinishReceiver(std::shared_ptr<OrderedEventRecord> recordPtr, const int32_t &code,
         const std::string &receiverData, const bool &abortEvent);
+
+    std::shared_ptr<OrderedEventRecord> GetFrontOrderedRecord();
+
+    bool HandleFinalSubscriber(std::shared_ptr<OrderedEventRecord> &sp);
+
+    void HandleTimeoutReceiver(std::shared_ptr<OrderedEventRecord> &sp, int64_t nowSysTime);
+
+    bool CheckAndRescheduleTimeout(std::shared_ptr<OrderedEventRecord> &sp, int64_t nowSysTime);
+
+    std::shared_ptr<OrderedEventRecord> ProcessOrderedEventQueueLocked();
+
+    bool CheckTimeoutForceReceive(std::shared_ptr<OrderedEventRecord> &sp);
+
+    size_t PrepareNextReceiverRecord(std::shared_ptr<OrderedEventRecord> &sp);
+
+    bool NotifySingleUnorderedSubscriber(std::shared_ptr<OrderedEventRecord> &eventRecord,
+        std::shared_ptr<EventSubscriberRecord> &vec, size_t index, int32_t &succCnt, int32_t &failCnt,
+        int32_t &freezeCnt, std::string &freezedPidsLogger);
+
+    void HandleFrozenUnorderedSubscriber(std::shared_ptr<OrderedEventRecord> &eventRecord,
+        std::shared_ptr<EventSubscriberRecord> &vec, size_t index, int32_t &freezeCnt,
+        std::string &freezedPidsLogger);
+
+    void LogUnorderedEventResult(std::shared_ptr<OrderedEventRecord> &eventRecord,
+        int32_t succCnt, int32_t failCnt, int32_t freezeCnt, const std::string &freezedPidsLogger);
+
+    bool NotifyFrozenSubscriber(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index);
+
+    bool PrepareOrderedNotify(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index,
+        sptr<IEventReceive> &receiver);
+
+    bool HandleOrderedNotifyResult(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index,
+        int32_t result);
+
+    void LogOrderedNotifySuccess(std::shared_ptr<OrderedEventRecord> &eventRecordPtr, size_t index);
 
     bool NotifyFreezeEvents(const EventSubscriberRecord &subscriberRecord, const CommonEventRecord &eventRecord);
 
