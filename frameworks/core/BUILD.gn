@@ -81,6 +81,7 @@ ohos_source_set("common_event_proxy") {
     cfi_cross_dso = true
     debug = false
   }
+  branch_protector_ret = "pac_ret"
   public_configs = [ ":common_event_config" ]
   output_values = get_target_outputs(":common_event_interface")
   sources = filter_include(output_values, [ "*_proxy.cpp" ])
@@ -109,6 +110,7 @@ ohos_source_set("common_event_stub") {
     cfi_cross_dso = true
     debug = false
   }
+  branch_protector_ret = "pac_ret"
   public_configs = [ ":common_event_config" ]
   output_values = get_target_outputs(":common_event_interface")
   sources = filter_include(output_values, [ "*_stub.cpp" ])
@@ -145,6 +147,7 @@ ohos_source_set("event_receive_proxy") {
     cfi_cross_dso = true
     debug = false
   }
+  branch_protector_ret = "pac_ret"
   public_configs = [ ":event_receive_config" ]
   output_values = get_target_outputs(":event_receive_interface")
   sources = filter_include(output_values, [ "*_proxy.cpp" ])
@@ -170,6 +173,7 @@ ohos_source_set("event_receive_stub") {
     cfi_cross_dso = true
     debug = false
   }
+  branch_protector_ret = "pac_ret"
   public_configs = [ ":event_receive_config" ]
   output_values = get_target_outputs(":event_receive_interface")
   sources = filter_include(output_values, [ "*_stub.cpp" ])
