@@ -261,10 +261,6 @@ ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
     auto callingUid = IPCSkeleton::GetCallingUid();
     auto callingPid = IPCSkeleton::GetCallingPid();
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
-    std::string bundleName = "";
-    if (!AccessTokenHelper::VerifyNativeToken(callerToken)) {
-        bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
-    }
     std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
     int64_t startTime = SystemTime::GetNowSysTime();
     std::function<void()> subscribeCommonEventFunc = [wp,
@@ -274,13 +270,16 @@ ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
         callingPid,
         callingUid,
         callerToken,
-        bundleName,
         instanceKey,
         startTime] () {
         std::shared_ptr<InnerCommonEventManager> innerCommonEventManager = wp.lock();
         if (innerCommonEventManager == nullptr) {
             EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager not exist");
             return;
+        }
+        std::string bundleName = "";
+        if (!AccessTokenHelper::VerifyNativeToken(callerToken)) {
+            bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
         }
         bool ret = innerCommonEventManager->SubscribeCommonEvent(subscribeInfo,
             commonEventListener,
