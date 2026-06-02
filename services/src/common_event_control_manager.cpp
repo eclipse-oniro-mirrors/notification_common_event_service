@@ -601,12 +601,16 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
         scheduled_ = false;
     }
     std::shared_ptr<OrderedEventRecord> sp = nullptr;
+    std::vector<std::shared_ptr<OrderedEventRecord>> removedRecords;
     {
         std::lock_guard<ffrt::mutex> lock(orderedMutex_);
-        sp = ProcessOrderedEventQueueLocked();
-        if (sp == nullptr) {
-            return;
-        }
+        sp = ProcessOrderedEventQueueLocked(removedRecords);
+    }
+    for (auto &removed : removedRecords) {
+        HandleFinalSubscriber(removed);
+    }
+    if (sp == nullptr) {
+        return;
     }
     size_t recIdx = PrepareNextReceiverRecord(sp);
     if (!pendingTimeoutMessage_) {
@@ -619,9 +623,11 @@ void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
     }
 }
 
-std::shared_ptr<OrderedEventRecord> CommonEventControlManager::ProcessOrderedEventQueueLocked()
+std::shared_ptr<OrderedEventRecord> CommonEventControlManager::ProcessOrderedEventQueueLocked(
+    std::vector<std::shared_ptr<OrderedEventRecord>> &removedRecords)
 {
     std::shared_ptr<OrderedEventRecord> sp = nullptr;
+    removedRecords.clear();
     do {
         if (orderedEventQueue_.empty()) {
             EVENT_LOGD(LOG_TAG_ORDERED, "orderedEventQueue_ is empty");
@@ -636,14 +642,12 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::ProcessOrderedEve
         bool shouldRemove = (sp->receivers.empty()) || (sp->nextReceiver >= numReceivers) ||
             sp->resultAbort || forceReceive;
         if (shouldRemove) {
-            if (!HandleFinalSubscriber(sp)) {
-                return nullptr;
-            }
             EVENT_LOGI(LOG_TAG_ORDERED, "Pid %{public}d publish %{public}s to %{public}d end(%{public}zu,"
                 "%{public}zu)", sp->eventRecordInfo.pid, sp->commonEventData->GetWant().GetAction().c_str(),
                 sp->userId, numReceivers, sp->nextReceiver);
             CancelTimeout();
             orderedEventQueue_.erase(orderedEventQueue_.begin());
+            removedRecords.emplace_back(sp);
             sp = nullptr;
         }
     } while (sp == nullptr);
@@ -659,7 +663,9 @@ bool CommonEventControlManager::CheckTimeoutForceReceive(std::shared_ptr<Ordered
     if (sp->dispatchTime > 0) {
         if ((numReceivers > 0) && (nowSysTime > static_cast<uint64_t>(sp->dispatchTime) +
             (DOUBLE * TIMEOUT * numReceivers))) {
-            CurrentOrderedEventTimeout(false);
+            // Do not call CurrentOrderedEventTimeout here to avoid recursive locking
+            // on orderedMutex_, since ffrt::mutex is non-recursive.
+            HandleTimeoutReceiver(sp, static_cast<int64_t>(nowSysTime));
             forceReceive = true;
             sp->state.store(OrderedEventRecord::IDLE);
         }
