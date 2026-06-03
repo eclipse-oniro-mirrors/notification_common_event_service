@@ -153,7 +153,8 @@ private:
 
     bool CheckAndRescheduleTimeout(std::shared_ptr<OrderedEventRecord> &sp, int64_t nowSysTime);
 
-    std::shared_ptr<OrderedEventRecord> ProcessOrderedEventQueueLocked();
+    std::shared_ptr<OrderedEventRecord> ProcessOrderedEventQueueLocked(
+        std::vector<std::shared_ptr<OrderedEventRecord>> &removedRecords);
 
     bool CheckTimeoutForceReceive(std::shared_ptr<OrderedEventRecord> &sp);
 
