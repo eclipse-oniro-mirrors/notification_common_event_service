@@ -92,6 +92,7 @@ ohos_unittest("common_event_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
