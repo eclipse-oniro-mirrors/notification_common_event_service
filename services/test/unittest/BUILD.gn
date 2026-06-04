@@ -58,6 +58,7 @@ ohos_unittest("common_event_publish_system_event_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
@@ -157,6 +158,7 @@ ohos_unittest("common_event_freeze_unit_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
@@ -329,6 +331,7 @@ ohos_unittest("common_event_sticky_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt"
   ]
 }
 
@@ -364,6 +367,7 @@ ohos_unittest("common_event_subscribe_unit_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
@@ -396,6 +400,7 @@ ohos_unittest("common_event_unsubscribe_unit_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt"
   ]
 }
 
@@ -428,6 +433,7 @@ ohos_unittest("common_event_publish_ordered_event_unit_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
@@ -460,6 +466,7 @@ ohos_unittest("common_event_publish_permission_event_unit_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt"
   ]
 }
 
@@ -476,6 +483,7 @@ ohos_unittest("common_event_publish_manager_event_unit_test") {
     "c_utils:utils",
     "googletest:gtest_main",
     "hilog:libhilog",
+    "ffrt:libffrt"
   ]
 }
 
@@ -547,6 +555,7 @@ ohos_unittest("common_event_manager_service_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt"
   ]
 }
 
@@ -587,6 +596,7 @@ ohos_unittest("common_event_manager_service_ability_test") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
+    "ffrt:libffrt"
   ]
 }
 
@@ -623,6 +633,7 @@ ohos_unittest("bundle_manager_helper_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
@@ -745,6 +756,7 @@ ohos_unittest("common_event_control_manager_branch_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
@@ -815,6 +827,7 @@ ohos_unittest("common_event_subscriber_manager_test") {
     "hisysevent:libhisysevent",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt"
   ]
 }
 
@@ -847,6 +860,7 @@ ohos_unittest("inner_common_event_manager_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "ffrt:libffrt",
   ]
 }
 
@@ -884,6 +898,7 @@ ohos_unittest("ability_manager_helper_test") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
+    "ffrt:libffrt",
   ]
 }
 
