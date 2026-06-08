@@ -1418,6 +1418,47 @@ const std::string CommonEventSupport::COMMON_EVENT_QUICK_FIX_REVOKE_RESULT = "us
 const std::string CommonEventSupport::COMMON_EVENT_RADIO_STATE_CHANGE = "usual.event.RADIO_STATE_CHANGE";
 
 /**
+ * Indicates an OS account sub-profile is created.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_CREATED =
+    "usual.event.OS_ACCOUNT_SUB_PROFILE_CREATED";
+
+/**
+ * Indicates an OS account sub-profile is deleted.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_DELETED =
+    "usual.event.OS_ACCOUNT_SUB_PROFILE_DELETED";
+
+/**
+ * Indicates an OS account sub-profile is switching.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHING =
+    "usual.event.OS_ACCOUNT_SUB_PROFILE_SWITCHING";
+
+/**
+ * Indicates an OS account sub-profile is switched.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHED =
+    "usual.event.OS_ACCOUNT_SUB_PROFILE_SWITCHED";
+
+/**
+ * Indicates a distributed account is bound.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_BOUND = "usual.event.DISTRIBUTED_ACCOUNT_BOUND";
+
+/**
+ * Indicates a distributed account is unbound.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_UNBOUND =
+    "usual.event.DISTRIBUTED_ACCOUNT_UNBOUND";
+
+/**
  * Indicates the action of a common event about a login of a distributed account.
  * This is a protected common event that can only be sent by system.
  */
@@ -2974,6 +3015,42 @@ void CommonEventSupport::Init()
      * To subscribe to this protected common event that can only be sent by system.
      */
     commonEventSupport_.emplace_back(COMMON_EVENT_RADIO_STATE_CHANGE);
+
+    /**
+     * Indicates an OS account sub-profile is created.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_CREATED);
+
+    /**
+     * Indicates an OS account sub-profile is deleted.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_DELETED);
+
+    /**
+     * Indicates an OS account sub-profile is switching.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHING);
+
+    /**
+     * Indicates an OS account sub-profile is switched.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHED);
+
+    /**
+     * Indicates a distributed account is bound.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_DISTRIBUTED_ACCOUNT_BOUND);
+
+    /**
+     * Indicates a distributed account is unbound.
+     * This is a protected common event that can only be sent by system.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_DISTRIBUTED_ACCOUNT_UNBOUND);
 
     /**
     * Indicates the action of a common event about a login of a distributed account.
