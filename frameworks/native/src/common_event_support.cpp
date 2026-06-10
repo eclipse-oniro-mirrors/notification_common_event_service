@@ -1140,6 +1140,14 @@ const std::string CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL = "usual.eve
 const std::string CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE = "usual.event.data.DISK_UNMOUNTABLE";
 
 /**
+ * Indicates the action of a common event that the state of a system data disk volume has changed.
+ * To subscribe to this common event, your application must have the ohos.permission.STORAGE_MANAGER permission.
+ * This common event can be published only by system applications.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_DISK_VOLUME_STATE_CHANGE =
+    "usual.event.data.DISK_VOLUME_STATE_CHANGE";
+
+/**
  * Indicates the action of a common event that an external storage device was ejected.
  * To subscribe to this common event, your application must have the ohos.permission.WRITE_USER_STORAGE or
  * ohos.permission.STORAGE_MANAGER permission.
@@ -2713,6 +2721,13 @@ void CommonEventSupport::Init()
      * This common event can be published only by system applications.
      */
     commonEventSupport_.emplace_back(COMMON_EVENT_DISK_UNMOUNTABLE);
+
+    /**
+     * Indicates the action of a common event that the state of a system data disk volume has changed.
+     * To subscribe to this common event, your application must have the ohos.permission.STORAGE_MANAGER permission.
+     * This common event can be published only by system applications.
+     */
+    commonEventSupport_.emplace_back(COMMON_EVENT_DISK_VOLUME_STATE_CHANGE);
 
     /**
      * Indicates the action of a common event that an external storage device was ejected.

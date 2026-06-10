@@ -482,6 +482,7 @@ namespace commonEventManager {
         COMMON_EVENT_DISK_MOUNTED = 'usual.event.data.DISK_MOUNTED',
         COMMON_EVENT_DISK_BAD_REMOVAL = 'usual.event.data.DISK_BAD_REMOVAL',
         COMMON_EVENT_DISK_UNMOUNTABLE = 'usual.event.data.DISK_UNMOUNTABLE',
+        COMMON_EVENT_DISK_VOLUME_STATE_CHANGE = 'usual.event.data.DISK_VOLUME_STATE_CHANGE',
         COMMON_EVENT_DISK_EJECT = 'usual.event.data.DISK_EJECT',
         COMMON_EVENT_VOLUME_REMOVED = 'usual.event.data.VOLUME_REMOVED',
         COMMON_EVENT_VOLUME_UNMOUNTED = 'usual.event.data.VOLUME_UNMOUNTED',

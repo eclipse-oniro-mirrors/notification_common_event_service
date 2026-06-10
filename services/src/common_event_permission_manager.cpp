@@ -114,6 +114,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE,
         {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
+    {CommonEventSupport::COMMON_EVENT_DISK_VOLUME_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
+    },
     {CommonEventSupport::COMMON_EVENT_DISK_EJECT,
         {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },

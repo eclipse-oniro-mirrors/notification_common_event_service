@@ -1010,6 +1010,13 @@ public:
     static const std::string COMMON_EVENT_DISK_UNMOUNTABLE;
 
     /**
+     * Indicates the action of a common event that the state of a system data disk volume has changed.
+     * To subscribe to this common event, your application must have the ohos.permission.STORAGE_MANAGER permission.
+     * This common event can be published only by system applications.
+     */
+    static const std::string COMMON_EVENT_DISK_VOLUME_STATE_CHANGE;
+
+    /**
      * Indicates the action of a common event that an external storage device was ejected.
      * To subscribe to this common event, your application must have the ohos.permission.STORAGE_MANAGER permission.
      * This common event can be published only by system applications.
