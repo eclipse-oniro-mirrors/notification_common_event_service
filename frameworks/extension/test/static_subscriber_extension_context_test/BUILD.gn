@@ -25,7 +25,10 @@ ohos_unittest("static_subscriber_extension_context_test") {
 
   configs = []
 
-  deps = [ "${ces_extension_path}:static_subscriber_extension" ]
+  deps = [ 
+    "${ces_extension_path}:static_subscriber_extension",
+    "${ces_extension_path}:cesfwk_innerkits"
+  ]
 
   external_deps = [
     "ability_base:want",
