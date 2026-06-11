@@ -30,7 +30,7 @@ ohos_unittest("static_subscriber_extension_test") {
 
   deps = [
     "${ces_extension_path}:static_subscriber_extension",
-    "${ces_extension_path}:cesfwk_innerkits"
+    "${ces_native_path}:cesfwk_innerkits"
   ]
 
   external_deps = [
