@@ -33,7 +33,7 @@ ohos_unittest("static_subscriber_stub_imp_test") {
   deps = [
     "${ces_extension_path}:static_subscriber_extension",
     "${ces_extension_path}:static_subscriber_ipc",
-    "${ces_extension_path}:cesfwk_innerkits"
+    "${ces_native_path}:cesfwk_innerkits"
   ]
 
   external_deps = [
