@@ -512,6 +512,9 @@ napi_value IsStickyCommonEvent(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = GetSubscriber(env, thisVar);
     if (asyncCallbackInfo->subscriber == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "subscriber is nullptr");
+        if (callback != nullptr) {
+            napi_delete_reference(env, callback);
+        }
         delete asyncCallbackInfo;
         return NapiGetNull(env);
     }

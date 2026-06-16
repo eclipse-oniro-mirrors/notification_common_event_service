@@ -483,14 +483,14 @@ napi_value CreateSubscriberSync(napi_env env, napi_callback_info info)
     napi_get_reference_value(env, subscribeInfo, &subscribeInfoRefValue);
     napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &result);
 
+    if (subscribeInfo != nullptr) {
+        napi_delete_reference(env, subscribeInfo);
+    }
+
     if (result == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "create subscriber instance failed");
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         return NapiGetNull(env);
-    }
-
-    if (subscribeInfo != nullptr) {
-        napi_delete_reference(env, subscribeInfo);
     }
 
     return result;
