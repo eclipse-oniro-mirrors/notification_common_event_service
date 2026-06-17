@@ -19,8 +19,10 @@
 #undef private
 #undef protected
 
+#include "common_event_constant.h"
 #include "subscribecommonevent_fuzzer.h"
 #include "common_event_manager.h"
+#include "event_log_wrapper.h"
 #include "fuzz_common_base.h"
 #include <fuzzer/FuzzedDataProvider.h>
 
@@ -35,7 +37,9 @@ public:
     {}
 
     void OnReceiveEvent(const CommonEventData &data) override
-    {}
+    {
+        EVENT_LOGI(LOG_TAG_CES, "OnReceiveEvent data code: %{public}d", data.GetCode());
+    }
 };
 }  // namespace EventFwk
 
