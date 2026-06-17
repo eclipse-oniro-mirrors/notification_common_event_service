@@ -15,11 +15,13 @@
 #include "subscribecommonevent_fuzzer.h"
 
 #define private public
+#include "common_event_constant.h"
 #include "common_event_data.h"
 #include "common_event_listener.h"
 #include "common_event_manager_service.h"
 #include "common_event_subscriber.h"
 #include "common_utils.h"
+#include "event_log_wrapper.h"
 #include "refbase.h"
 #include "fuzz_common_base.h"
 
@@ -38,7 +40,9 @@ public:
     {}
 
     virtual void OnReceiveEvent(const CommonEventData &data)
-    {}
+    {
+        EVENT_LOGI(LOG_TAG_CES, "OnReceiveEvent data code: %{public}d", data.GetCode());
+    }
 };
 
 bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
