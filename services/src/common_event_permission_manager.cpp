@@ -244,6 +244,8 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHED,
     CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_BOUND,
     CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_UNBOUND,
+    CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_ADDED,
+    CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_REMOVED,
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {

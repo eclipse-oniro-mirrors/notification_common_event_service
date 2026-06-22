@@ -1759,6 +1759,20 @@ const std::string CommonEventSupport::COMMON_EVENT_VOLUME_ENCRYPTED = "usual.eve
 const std::string CommonEventSupport::COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET =
     "usual.event.VOLUME_ENCRYPTION_POLICY_SET";
 
+/**
+ * Indicates that the sandbox application has been installed on the device.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_ADDED =
+    "usual.event.SANDBOX_BUNDLE_ADDED";
+
+/**
+ * Indicates that the sandbox application has been uninstalled on the device.
+ * This is a protected common event that can only be sent by system.
+ */
+const std::string CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_REMOVED =
+    "usual.event.SANDBOX_BUNDLE_REMOVED";
+
 CommonEventSupport::CommonEventSupport()
 {
     Init();
@@ -3336,6 +3350,18 @@ void CommonEventSupport::Init()
     * This is a protected common event that can only be sent by system.
     */
     commonEventSupport_.emplace_back(COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET);
+
+    /**
+    * Indicates that the sandbox application has been installed on the device.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(COMMON_EVENT_SANDBOX_BUNDLE_ADDED);
+
+    /**
+    * Indicates that the sandbox application has been uninstalled on the device.
+    * This is a protected common event that can only be sent by system.
+    */
+    commonEventSupport_.emplace_back(COMMON_EVENT_SANDBOX_BUNDLE_REMOVED);
     return;
 }
 

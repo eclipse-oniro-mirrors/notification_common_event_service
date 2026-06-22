@@ -818,6 +818,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET,
         "COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_ADDED,
+        "COMMON_EVENT_SANDBOX_BUNDLE_ADDED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_REMOVED,
+        "COMMON_EVENT_SANDBOX_BUNDLE_REMOVED");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 

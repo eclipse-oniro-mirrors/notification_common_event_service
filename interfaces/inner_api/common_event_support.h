@@ -1586,6 +1586,18 @@ public:
     */
     static const std::string COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET;
 
+    /**
+    * Indicates that the sandbox application has been installed on the device.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SANDBOX_BUNDLE_ADDED;
+
+    /**
+    * Indicates that the sandbox application has been uninstalled on the device.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SANDBOX_BUNDLE_REMOVED;
+
 public:
     CommonEventSupport();
 
