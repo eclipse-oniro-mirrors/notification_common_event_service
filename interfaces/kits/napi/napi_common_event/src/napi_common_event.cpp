@@ -416,15 +416,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
             EVENT_LOGD(LOG_TAG_CES_NAPI, "CreateSubscriber napi_create_async_work end");
             AsyncCallbackInfoCreate *asyncCallbackInfo = static_cast<AsyncCallbackInfoCreate *>(data);
             if (asyncCallbackInfo) {
-                napi_value constructor = GetSubscriberConstructor(env);
-                napi_value subscribeInfoRefValue = nullptr;
-                napi_get_reference_value(env, asyncCallbackInfo->subscribeInfo, &subscribeInfoRefValue);
-                napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &asyncCallbackInfo->result);
-
-                if (asyncCallbackInfo->result == nullptr) {
-                    EVENT_LOGE(LOG_TAG_CES_NAPI, "create subscriber instance failed");
-                    asyncCallbackInfo->info.errorCode = ERR_CES_FAILED;
-                }
+                CreateSubscriberInstance(env, GetSubscriberConstructor(env), asyncCallbackInfo);
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, asyncCallbackInfo->result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
