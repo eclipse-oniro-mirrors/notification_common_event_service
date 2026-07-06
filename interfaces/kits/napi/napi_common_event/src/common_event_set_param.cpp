@@ -475,6 +475,43 @@ void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info,
     }
 }
 
+void CreateSubscriberInstance(napi_env env, napi_value constructor, AsyncCallbackInfoCreate *asyncCallbackInfo)
+{
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "CreateSubscriberInstance excute");
+    if (asyncCallbackInfo == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "asyncCallbackInfo is null");
+        return;
+    }
+    napi_value subscribeInfoRefValue = nullptr;
+    napi_get_reference_value(env, asyncCallbackInfo->subscribeInfo, &subscribeInfoRefValue);
+    if (constructor != nullptr) {
+        napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &asyncCallbackInfo->result);
+    }
+
+    bool isExceptionPending = false;
+    napi_is_exception_pending(env, &isExceptionPending);
+    if (isExceptionPending) {
+        napi_value exception = nullptr;
+        napi_get_and_clear_last_exception(env, &exception);
+        int32_t errCode = ERR_CES_FAILED;
+        if (exception != nullptr) {
+            napi_value codeVal = nullptr;
+            napi_get_named_property(env, exception, "code", &codeVal);
+            napi_valuetype codeType = napi_undefined;
+            napi_typeof(env, codeVal, &codeType);
+            if (codeType == napi_number) {
+                napi_get_value_int32(env, codeVal, &errCode);
+            }
+        }
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "create subscriber instance failed, errCode: %{public}d", errCode);
+        asyncCallbackInfo->info.errorCode = errCode;
+        asyncCallbackInfo->result = NapiGetNull(env);
+    } else if (asyncCallbackInfo->result == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "create subscriber instance failed");
+        asyncCallbackInfo->info.errorCode = ERR_CES_FAILED;
+    }
+}
+
 bool ParseSetStaticSubscriberStateParam(napi_env env, const napi_callback_info info, std::vector<std::string> &events,
     bool &fromBundle, napi_value &lastParam)
 {

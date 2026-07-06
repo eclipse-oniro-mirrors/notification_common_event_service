@@ -627,6 +627,30 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_RADIO_STATE_CHANGE");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_CREATED,
+        "COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_CREATED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_DELETED,
+        "COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_DELETED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHING,
+        "COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHING");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHED,
+        "COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_BOUND,
+        "COMMON_EVENT_DISTRIBUTED_ACCOUNT_BOUND");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_UNBOUND,
+        "COMMON_EVENT_DISTRIBUTED_ACCOUNT_UNBOUND");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN,
         "COMMON_EVENT_DISTRIBUTED_ACCOUNT_LOGIN");
     SetNamedPropertyByStr(env,
@@ -797,6 +821,14 @@ napi_value SupportInit(napi_env env, napi_value exports)
         obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET,
         "COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_ADDED,
+        "COMMON_EVENT_SANDBOX_BUNDLE_ADDED");
+    SetNamedPropertyByStr(env,
+        obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_REMOVED,
+        "COMMON_EVENT_SANDBOX_BUNDLE_REMOVED");
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("Support", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 

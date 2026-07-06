@@ -48,7 +48,7 @@ static uint32_t publishExecute(ani_env* env, ani_string eventId)
     commonEventData.SetWant(want);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
     EVENT_LOGD(LOG_TAG_CES_ANI, "publishExecute result: %{public}d.", errorCode);
-    AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.publish", errorCode == ERR_OK);
+    AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.publish", errorCode == ERR_OK);
     return errorCode;
 }
 
@@ -67,7 +67,7 @@ static uint32_t publishWithOptionsExecute(ani_env* env, ani_string eventId, ani_
     commonEventData.SetWant(want);
     auto errorCode = CommonEventManager::NewPublishCommonEvent(commonEventData, commonEventPublishInfo);
     EVENT_LOGD(LOG_TAG_CES_ANI, "publishWithOptionsExecute result: %{public}d.", errorCode);
-    AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.publish", errorCode == ERR_OK);
+    AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.publish", errorCode == ERR_OK);
     return errorCode;
 }
 
@@ -153,7 +153,7 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     auto subscriberInstance = GetSubscriber(env, subscribeRef);
     if (subscriberInstance == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "subscriberInstance is null.");
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return ANI_INVALID_ARGS;
     }
 
@@ -161,7 +161,7 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     auto ret = env->GlobalReference_Create(callback, &resultRef);
     if (ret != ANI_OK || resultRef == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GlobalReference_Create error. result: %{public}d.", ret);
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return ANI_INVALID_ARGS;
     }
     subscriberInstance->SetCallback(static_cast<ani_object>(resultRef));
@@ -169,7 +169,7 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     ret = env->GetVM(&etsVm);
     if (ret != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GetVM error. result: %{public}d.", ret);
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return ANI_INVALID_ARGS;
     }
     subscriberInstance->SetVm(etsVm);
@@ -179,7 +179,7 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
         std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
         if (!relation->aniSubscriber_ && !relation->napiSubscriber_) {
             result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
-            AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribe", result == ERR_OK);
+            AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribe", result == ERR_OK);
             if (result == ERR_OK) {
                 relation->aniSubscriber_ = subscriberInstance;
                 std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
@@ -188,11 +188,11 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
             return result;
         }
         EVENT_LOGW(LOG_TAG_CES_ANI, "transfered already subscribe");
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return result;
     }
     result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
-    AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribe", result == ERR_OK);
+    AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribe", result == ERR_OK);
     if (result == ERR_OK) {
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
@@ -206,14 +206,14 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
     auto subscriberInstance = GetSubscriber(env, subscribeRef);
     if (subscriberInstance == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "subscriberInstance is null.");
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return ANI_INVALID_ARGS;
     }
     ani_ref resultRef = nullptr;
     auto ret = env->GlobalReference_Create(callback, &resultRef);
     if (ret != ANI_OK || resultRef == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GlobalReference_Create error. result: %{public}d.", ret);
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return ANI_INVALID_ARGS;
     }
     subscriberInstance->SetCallback(static_cast<ani_object>(resultRef));
@@ -222,7 +222,7 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
     ret = env->GetVM(&etsVm);
     if (ret != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GetVM error. result: %{public}d.", ret);
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return ANI_INVALID_ARGS;
     }
     subscriberInstance->SetVm(etsVm);
@@ -232,7 +232,7 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
         std::lock_guard<ffrt::mutex> lock(relation->relationMutex_);
         if (!relation->aniSubscriber_ && !relation->napiSubscriber_) {
             result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
-            AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", result == ERR_OK);
+            AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", result == ERR_OK);
             if (result == ERR_OK) {
                 relation->aniSubscriber_ = subscriberInstance;
                 std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
@@ -241,11 +241,11 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
             return result;
         }
         EVENT_LOGW(LOG_TAG_CES_ANI, "transfered already subscribe");
-        AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", false);
+        AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return result;
     }
     result = CommonEventManager::NewSubscribeCommonEvent(subscriberInstance);
-    AniCommonEventUtils::HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", result == ERR_OK);
+    AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", result == ERR_OK);
     if (result == ERR_OK) {
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();

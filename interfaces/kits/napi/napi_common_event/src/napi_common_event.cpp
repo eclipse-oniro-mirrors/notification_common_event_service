@@ -416,15 +416,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
             EVENT_LOGD(LOG_TAG_CES_NAPI, "CreateSubscriber napi_create_async_work end");
             AsyncCallbackInfoCreate *asyncCallbackInfo = static_cast<AsyncCallbackInfoCreate *>(data);
             if (asyncCallbackInfo) {
-                napi_value constructor = GetSubscriberConstructor(env);
-                napi_value subscribeInfoRefValue = nullptr;
-                napi_get_reference_value(env, asyncCallbackInfo->subscribeInfo, &subscribeInfoRefValue);
-                napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &asyncCallbackInfo->result);
-
-                if (asyncCallbackInfo->result == nullptr) {
-                    EVENT_LOGE(LOG_TAG_CES_NAPI, "create subscriber instance failed");
-                    asyncCallbackInfo->info.errorCode = ERR_CES_FAILED;
-                }
+                CreateSubscriberInstance(env, GetSubscriberConstructor(env), asyncCallbackInfo);
                 ReturnCallbackPromise(env, asyncCallbackInfo->info, asyncCallbackInfo->result);
                 if (asyncCallbackInfo->info.callback != nullptr) {
                     napi_delete_reference(env, asyncCallbackInfo->info.callback);
@@ -483,14 +475,14 @@ napi_value CreateSubscriberSync(napi_env env, napi_callback_info info)
     napi_get_reference_value(env, subscribeInfo, &subscribeInfoRefValue);
     napi_new_instance(env, constructor, 1, &subscribeInfoRefValue, &result);
 
+    if (subscribeInfo != nullptr) {
+        napi_delete_reference(env, subscribeInfo);
+    }
+
     if (result == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "create subscriber instance failed");
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         return NapiGetNull(env);
-    }
-
-    if (subscribeInfo != nullptr) {
-        napi_delete_reference(env, subscribeInfo);
     }
 
     return result;
@@ -568,13 +560,13 @@ void AsyncCompleteCallbackSubscribeToEvent(napi_env env, napi_status status, voi
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
         SetPromise(env, asyncCallbackInfo->deferred, asyncCallbackInfo->errorCode, NapiGetNull(env));
-        HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", true);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", true);
     } else {
         asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
         SetPromise(env, asyncCallbackInfo->deferred, asyncCallbackInfo->errorCode, NapiGetNull(env));
         delete asyncCallbackInfo;
         asyncCallbackInfo = nullptr;
-        HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", false);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
     }
 }
 
@@ -587,7 +579,7 @@ void AsyncCompleteCallbackSubscribe(napi_env env, napi_status status, void *data
         EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfo is 0");
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
-        HistogramBoolReport("BaseServicesKit.APICall.subscribe", true);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribe", true);
     } else {
         SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
 
@@ -597,7 +589,7 @@ void AsyncCompleteCallbackSubscribe(napi_env env, napi_status status, void *data
 
         delete asyncCallbackInfo;
         asyncCallbackInfo = nullptr;
-        HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
     }
 }
 
@@ -611,7 +603,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
     if (argc < SUBSCRIBE_MAX_PARA) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "Wrong number of arguments");
-        HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return NapiGetNull(env);
     }
 
@@ -623,7 +615,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             napi_delete_reference(env, callback);
         }
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
-        HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return NapiGetNull(env);
     }
 
@@ -634,7 +626,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
-        HistogramBoolReport("BaseServicesKit.APICall.subscribe", false);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return NapiGetNull(env);
     }
 
@@ -673,7 +665,7 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
             napi_delete_reference(env, callback);
         }
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
-        HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", false);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return NapiGetNull(env);
     }
 
@@ -684,7 +676,7 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
-        HistogramBoolReport("BaseServicesKit.APICall.subscribeToEvent", false);
+        HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return NapiGetNull(env);
     }
 
@@ -715,7 +707,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
     if (argc < PUBLISH_MAX_PARA) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "Wrong number of arguments.");
-        HistogramBoolReport("BaseServicesKit.APICall.publish", false);
+        HistogramBoolReport("BasicServicesKit.APICall.publish", false);
         return NapiGetNull(env);
     }
 
@@ -728,7 +720,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
             napi_delete_reference(env, callback);
         }
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
-        HistogramBoolReport("BaseServicesKit.APICall.publish", false);
+        HistogramBoolReport("BasicServicesKit.APICall.publish", false);
         return NapiGetNull(env);
     }
 
@@ -739,7 +731,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
         if (callback != nullptr) {
             napi_delete_reference(env, callback);
         }
-        HistogramBoolReport("BaseServicesKit.APICall.publish", false);
+        HistogramBoolReport("BasicServicesKit.APICall.publish", false);
         return NapiGetNull(env);
     }
     asyncCallbackInfo->callback = callback;
@@ -765,10 +757,10 @@ napi_value Publish(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo) {
                 asyncCallbackInfo->errorCode = CommonEventManager::NewPublishCommonEvent(
                     asyncCallbackInfo->commonEventData, asyncCallbackInfo->commonEventPublishInfo);
-                HistogramBoolReport("BaseServicesKit.APICall.publish", asyncCallbackInfo->errorCode == NO_ERROR);
+                HistogramBoolReport("BasicServicesKit.APICall.publish", asyncCallbackInfo->errorCode == NO_ERROR);
                 return;
             }
-            HistogramBoolReport("BaseServicesKit.APICall.publish", false);
+            HistogramBoolReport("BasicServicesKit.APICall.publish", false);
         },
         [](napi_env env, napi_status status, void *data) {
             EVENT_LOGD(LOG_TAG_CES_NAPI, "NapiPublish work complete.");

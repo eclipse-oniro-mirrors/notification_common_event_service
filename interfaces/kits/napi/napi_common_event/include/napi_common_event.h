@@ -301,6 +301,8 @@ void SetPromise(const napi_env &env, const napi_deferred &deferred, const int32_
 
 void ReturnCallbackPromise(const napi_env &env, const CallbackPromiseInfo &info, const napi_value &result);
 
+void CreateSubscriberInstance(napi_env env, napi_value constructor, AsyncCallbackInfoCreate *asyncCallbackInfo);
+
 void PaddingAsyncCallbackInfoCreateSubscriber(const napi_env &env,
     AsyncCallbackInfoCreate *&asynccallbackinfo, const napi_ref &callback, napi_value &promise);
 

@@ -1278,6 +1278,42 @@ public:
     static const std::string COMMON_EVENT_RADIO_STATE_CHANGE;
 
     /**
+     * Indicates an OS account sub-profile is created.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_CREATED;
+
+    /**
+     * Indicates an OS account sub-profile is deleted.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_DELETED;
+
+    /**
+     * Indicates an OS account sub-profile is switching.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHING;
+
+    /**
+     * Indicates an OS account sub-profile is switched.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_OS_ACCOUNT_SUB_PROFILE_SWITCHED;
+
+    /**
+     * Indicates a distributed account is bound.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_DISTRIBUTED_ACCOUNT_BOUND;
+
+    /**
+     * Indicates a distributed account is unbound.
+     * This is a protected common event that can only be sent by system.
+     */
+    static const std::string COMMON_EVENT_DISTRIBUTED_ACCOUNT_UNBOUND;
+
+    /**
     * Indicates the action of a common event about a login of a distributed account.
     * This is a protected common event that can only be sent by system.
     */
@@ -1556,6 +1592,18 @@ public:
     * This is a protected common event that can only be sent by system.
     */
     static const std::string COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET;
+
+    /**
+    * Indicates that the sandbox application has been installed on the device.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SANDBOX_BUNDLE_ADDED;
+
+    /**
+    * Indicates that the sandbox application has been uninstalled on the device.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_SANDBOX_BUNDLE_REMOVED;
 
 public:
     CommonEventSupport();

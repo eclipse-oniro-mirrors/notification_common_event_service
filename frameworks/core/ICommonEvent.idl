@@ -18,7 +18,8 @@ sequenceable CommonEventSubscribeInfo..OHOS.EventFwk.CommonEventSubscribeInfo;
 sequenceable CommonEventPublishInfo..OHOS.EventFwk.CommonEventPublishInfo;
 sequenceable OHOS.IRemoteObject;
 interface OHOS.EventFwk.ICommonEvent {
-    int PublishCommonEvent([in] CommonEventData event, [in] CommonEventPublishInfo publishInfo, [in] int userId);
+    [customMsgOption flags=MessageOption::TF_IMAGE] int PublishCommonEvent([in] CommonEventData event,
+        [in] CommonEventPublishInfo publishInfo, [in] int userId);
     int PublishCommonEvent([in] CommonEventData event, [in] CommonEventPublishInfo publishInfo,
         [in] IRemoteObject commonEventListener, [in] int userId);
 
