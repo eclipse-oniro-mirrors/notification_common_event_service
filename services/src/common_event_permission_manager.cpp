@@ -240,6 +240,7 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_CLOUD_DISK_STATE_CHANGED,
     CommonEventSupport::COMMON_EVENT_APP_FIRST_LAUNCH,
     CommonEventSupport::COMMON_EVENT_SCREEN_LOCK_EXITING,
+    CommonEventSupport::COMMON_EVENT_DISK_VOLUME_STATE_CHANGE,
     CommonEventSupport::COMMON_EVENT_USB_CONTROL_DATA
 };
 
