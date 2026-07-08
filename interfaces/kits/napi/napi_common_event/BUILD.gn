@@ -76,6 +76,7 @@ ohos_shared_library("napi_commoneventmanager") {
     "ipc:ipc_single",
     "libuv:uv",
     "napi:ace_napi",
+    "node:node_header_notice"
   ]
 
   defines = []
@@ -119,6 +120,7 @@ ohos_shared_library("commoneventmanager") {
     "hilog:libhilog",
     "ipc:ipc_single",
     "napi:ace_napi",
+    "node:node_header_notice",
   ]
 
   relative_install_dir = "module"
