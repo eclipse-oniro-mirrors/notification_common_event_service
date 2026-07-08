@@ -114,6 +114,7 @@ ohos_shared_library("static_subscriber_extension") {
     "ipc:ipc_core",
     "ipc:ipc_napi",
     "napi:ace_napi",
+    "node:node_header_notice"
   ]
 
   subsystem_name = "notification"
@@ -180,6 +181,7 @@ ohos_shared_library("static_subscriber_extension_ani") {
     "ipc:ipc_core",
     "ipc:ipc_napi",
     "napi:ace_napi",
+    "node:node_header_notice",
     "runtime_core:ani",
     "runtime_core:ani_helpers",
   ]
@@ -228,6 +230,7 @@ ohos_shared_library("static_subscriber_extension_module") {
     "ipc:ipc_core",
     "ipc:ipc_napi",
     "napi:ace_napi",
+    "node:node_header_notice",
   ]
 
   relative_install_dir = "extensionability"
