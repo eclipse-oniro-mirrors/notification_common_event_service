@@ -114,6 +114,9 @@ static const std::unordered_map<std::string, std::pair<PermissionState, std::vec
     {CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE,
         {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
+    {CommonEventSupport::COMMON_EVENT_DISK_VOLUME_STATE_CHANGE,
+        {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
+    },
     {CommonEventSupport::COMMON_EVENT_DISK_EJECT,
         {PermissionState::DEFAULT, {"ohos.permission.STORAGE_MANAGER"}}
     },
@@ -246,6 +249,7 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_DISTRIBUTED_ACCOUNT_UNBOUND,
     CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_ADDED,
     CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_REMOVED,
+    CommonEventSupport::COMMON_EVENT_DISK_VOLUME_STATE_CHANGE,
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {

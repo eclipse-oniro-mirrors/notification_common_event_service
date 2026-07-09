@@ -492,6 +492,9 @@ napi_value SupportInit(napi_env env, napi_value exports)
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL, "COMMON_EVENT_DISK_BAD_REMOVAL");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE, "COMMON_EVENT_DISK_UNMOUNTABLE");
+    SetNamedPropertyByStr(
+        env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_VOLUME_STATE_CHANGE,
+        "COMMON_EVENT_DISK_VOLUME_STATE_CHANGE");
     SetNamedPropertyByStr(env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_DISK_EJECT, "COMMON_EVENT_DISK_EJECT");
     SetNamedPropertyByStr(
         env, obj, EventFwk::CommonEventSupport::COMMON_EVENT_VOLUME_REMOVED, "COMMON_EVENT_VOLUME_REMOVED");
