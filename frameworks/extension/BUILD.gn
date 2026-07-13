@@ -114,7 +114,7 @@ ohos_shared_library("static_subscriber_extension") {
     "ipc:ipc_core",
     "ipc:ipc_napi",
     "napi:ace_napi",
-    "node:node_header_notice"，
+    "node:node_header_notice",
     "libuv:uv"
   ]
 
