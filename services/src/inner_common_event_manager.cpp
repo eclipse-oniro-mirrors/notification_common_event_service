@@ -31,7 +31,10 @@
 #include "parameters.h"
 #include "system_time.h"
 #include "want.h"
+#include <climits>
+#include <cstdlib>
 #include <fstream>
+#include <vector>
 #include "securec.h"
 #ifdef CONFIG_POLICY_ENABLE
 #include "config_policy_utils.h"
@@ -42,6 +45,21 @@ namespace OHOS {
 namespace EventFwk {
 namespace {
 const std::string NOTIFICATION_CES_CHECK_SA_PERMISSION = "notification.ces.check.sa.permission";
+const std::vector<std::string> CONFIG_ALLOWED_PATH_PREFIXES = {
+    "/system/etc/",
+    "/vendor/etc/",
+    "/chipset/etc/"
+};
+
+bool IsValidConfigPath(const std::string &canonicalPath)
+{
+    for (const auto &prefix : CONFIG_ALLOWED_PATH_PREFIXES) {
+        if (canonicalPath.compare(0, prefix.size(), prefix) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
 }  // namespace
 
 static const int32_t PUBLISH_SYS_EVENT_INTERVAL = 10;  // 10s
@@ -87,15 +105,28 @@ constexpr size_t HIDUMP_OPTION_MAX_SIZE = 2;
 
 bool InnerCommonEventManager::GetJsonFromFile(const char *path, nlohmann::json &root)
 {
-    std::ifstream file(path);
+    if (path == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES, "GetJsonFromFile fail as path is null.");
+        return false;
+    }
+    char canonicalPath[PATH_MAX] = {0};
+    if (realpath(path, canonicalPath) == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES, "canonicalize failed. path is %{public}s", path);
+        return false;
+    }
+    if (!IsValidConfigPath(canonicalPath)) {
+        EVENT_LOGE(LOG_TAG_CES, "Invalid path after canonicalize: %{public}s", canonicalPath);
+        return false;
+    }
+    std::ifstream file(canonicalPath);
     if (!file.good()) {
-        EVENT_LOGE(LOG_TAG_CES, "Failed to open file %{public}s.", path);
+        EVENT_LOGE(LOG_TAG_CES, "Failed to open file %{public}s.", canonicalPath);
         return false;
     }
     root = nlohmann::json::parse(file, nullptr, false);
     file.close();
     if (root.is_discarded() || !root.is_structured()) {
-        EVENT_LOGE(LOG_TAG_CES, "Failed to parse json from file %{public}s.", path);
+        EVENT_LOGE(LOG_TAG_CES, "Failed to parse json from file %{public}s.", canonicalPath);
         return false;
     }
     if (root.is_null() || root.empty() || !root.is_object()) {

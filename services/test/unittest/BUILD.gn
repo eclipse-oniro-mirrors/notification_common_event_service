@@ -863,6 +863,7 @@ ohos_unittest("inner_common_event_manager_test") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "ffrt:libffrt",
+    "json:nlohmann_json_static",
   ]
 }
 

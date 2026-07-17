@@ -15,6 +15,12 @@
 
 #include <gtest/gtest.h>
 #include <numeric>
+#include <cstdio>
+#include <errno.h>
+#include <fstream>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <vector>
 #define private public
 #include "common_event.h"
 #include "common_event_manager.h"
@@ -27,6 +33,74 @@ using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AppExecFwk;
+
+namespace {
+const std::string CES_UT_OUTSIDE_DIR = "/data/local/tmp/ces_ut";
+const std::string CES_UT_WHITELIST_DIR = "/system/etc/ces_ut";
+bool g_whitelistWritable = false;
+
+bool CreateFile(const std::string &path, const std::string &content)
+{
+    std::ofstream out(path);
+    if (!out.is_open()) {
+        return false;
+    }
+    out << content;
+    out.close();
+    return true;
+}
+
+void CleanupFiles(const std::vector<std::string> &files)
+{
+    for (const auto &f : files) {
+        std::remove(f.c_str());
+    }
+}
+
+void PrepareWhitelistTestFiles()
+{
+    if (mkdir(CES_UT_WHITELIST_DIR.c_str(), 0755) != 0 && errno != EEXIST) {
+        g_whitelistWritable = false;
+        return;
+    }
+    g_whitelistWritable = true;
+    CreateFile(CES_UT_WHITELIST_DIR + "/invalid.json", "invalid json content");
+    CreateFile(CES_UT_WHITELIST_DIR + "/scalar.json", "42");
+    CreateFile(CES_UT_WHITELIST_DIR + "/null.json", "null");
+    CreateFile(CES_UT_WHITELIST_DIR + "/empty.json", "{}");
+    CreateFile(CES_UT_WHITELIST_DIR + "/array.json", "[1, 2, 3]");
+    CreateFile(CES_UT_WHITELIST_DIR + "/valid.json", "{\"key\":\"value\"}");
+}
+
+void CleanupWhitelistTestFiles()
+{
+    if (!g_whitelistWritable) {
+        return;
+    }
+    std::vector<std::string> files = {
+        CES_UT_WHITELIST_DIR + "/invalid.json",
+        CES_UT_WHITELIST_DIR + "/scalar.json",
+        CES_UT_WHITELIST_DIR + "/null.json",
+        CES_UT_WHITELIST_DIR + "/empty.json",
+        CES_UT_WHITELIST_DIR + "/array.json",
+        CES_UT_WHITELIST_DIR + "/valid.json",
+    };
+    CleanupFiles(files);
+    rmdir(CES_UT_WHITELIST_DIR.c_str());
+}
+
+void PrepareOutsideTestFiles()
+{
+    mkdir(CES_UT_OUTSIDE_DIR.c_str(), 0755);
+    CreateFile(CES_UT_OUTSIDE_DIR + "/valid.json", "{\"key\":\"value\"}");
+}
+
+void CleanupOutsideTestFiles()
+{
+    std::remove((CES_UT_OUTSIDE_DIR + "/valid.json").c_str());
+    rmdir(CES_UT_OUTSIDE_DIR.c_str());
+}
+} // namespace
 
 class InnerCommonEventManagerTest : public testing::Test {
 public:
@@ -54,10 +128,16 @@ public:
 };
 
 void InnerCommonEventManagerTest::SetUpTestCase(void)
-{}
+{
+    PrepareOutsideTestFiles();
+    PrepareWhitelistTestFiles();
+}
 
 void InnerCommonEventManagerTest::TearDownTestCase(void)
-{}
+{
+    CleanupOutsideTestFiles();
+    CleanupWhitelistTestFiles();
+}
 
 void InnerCommonEventManagerTest::SetUp(void)
 {}
@@ -462,4 +542,161 @@ HWTEST_F(InnerCommonEventManagerTest, SetStaticSubscriberStateWithTwoParameters_
     const int32_t ERR_NOTIFICATION_CESM_ERROR = 1500008;
     int32_t result = innerCommonEventManager->SetStaticSubscriberState(events, true);
     EXPECT_EQ(result, ERR_NOTIFICATION_CESM_ERROR);
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00001
+ * @tc.desc: test GetJsonFromFile with nullptr path.
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00001, Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile(nullptr, root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00002
+ * @tc.desc: test GetJsonFromFile with non-existent path (realpath fails).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00002, Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile("/tmp/nonexistent_ces_12345.json", root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00003
+ * @tc.desc: test GetJsonFromFile with path outside whitelist (IsValidConfigPath fails).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00003, Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile(
+        (CES_UT_OUTSIDE_DIR + "/valid.json").c_str(), root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00004
+ * @tc.desc: test GetJsonFromFile with a directory in whitelist (ifstream fails).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00004, Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile("/system/etc/init", root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00005
+ * @tc.desc: test GetJsonFromFile with invalid JSON content (parse discarded).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00005, Function | SmallTest | Level1)
+{
+    if (!g_whitelistWritable) {
+        return;
+    }
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile(
+        (CES_UT_WHITELIST_DIR + "/invalid.json").c_str(), root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00006
+ * @tc.desc: test GetJsonFromFile with scalar JSON (not structured).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00006, Function | SmallTest | Level1)
+{
+    if (!g_whitelistWritable) {
+        return;
+    }
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile(
+        (CES_UT_WHITELIST_DIR + "/scalar.json").c_str(), root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00007
+ * @tc.desc: test GetJsonFromFile with null JSON (is_null).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00007, Function | SmallTest | Level1)
+{
+    if (!g_whitelistWritable) {
+        return;
+    }
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile(
+        (CES_UT_WHITELIST_DIR + "/null.json").c_str(), root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00008
+ * @tc.desc: test GetJsonFromFile with empty object JSON (empty).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00008, Function | SmallTest | Level1)
+{
+    if (!g_whitelistWritable) {
+        return;
+    }
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile(
+        (CES_UT_WHITELIST_DIR + "/empty.json").c_str(), root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00009
+ * @tc.desc: test GetJsonFromFile with array JSON (not object).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00009, Function | SmallTest | Level1)
+{
+    if (!g_whitelistWritable) {
+        return;
+    }
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile(
+        (CES_UT_WHITELIST_DIR + "/array.json").c_str(), root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00010
+ * @tc.desc: test GetJsonFromFile with valid JSON object (success).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00010, Function | SmallTest | Level1)
+{
+    if (!g_whitelistWritable) {
+        return;
+    }
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_TRUE(innerCommonEventManager.GetJsonFromFile(
+        (CES_UT_WHITELIST_DIR + "/valid.json").c_str(), root));
+}
+
+/**
+ * @tc.name: GetJsonFromFile_00011
+ * @tc.desc: test GetJsonFromFile with vendor etc directory (IsValidConfigPath /vendor/etc/ prefix).
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00011, Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    nlohmann::json root;
+    EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile("/vendor/etc/init", root));
 }
