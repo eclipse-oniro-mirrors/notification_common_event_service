@@ -424,17 +424,20 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
         std::string invalidEventsLogger = "";
         std::string key = std::to_string(extensionUserId) + "_" + extensionBundleName;
         for (auto e : commonEventObj[JSON_KEY_EVENTS]) {
+            if (e.is_null() || !e.is_string()) {
+                EVENT_LOGW(LOG_TAG_STATIC, "invalid json obj");
+                continue;
+            }
+            std::string eventName = e.get<std::string>();
             {
                 std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
                 if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
                     invalidEventsLogger.append(key).append(",");
                     continue;
                 }
-                if (e.is_null() || !e.is_string() ||
-                    (std::find(staticSubscribers_[key].events.begin(),
-                               staticSubscribers_[key].events.end(),
-                               e) == staticSubscribers_[key].events.end())) {
-                    invalidEventsLogger.append(e).append(",");
+                if (std::find(staticSubscribers_[key].events.begin(), staticSubscribers_[key].events.end(),
+                    eventName) == staticSubscribers_[key].events.end()) {
+                    invalidEventsLogger.append(eventName).append(",");
                     continue;
                 }
             }
@@ -442,8 +445,8 @@ void StaticSubscriberManager::ParseEvents(const std::string &extensionName, cons
                 .bundleName = extensionBundleName,
                 .userId = extensionUserId,
                 .permission = commonEventObj[JSON_KEY_PERMISSION].get<std::string>()};
-            ParseFilterObject(commonEventObj[JSON_KEY_FILTER], e.get<std::string>(), subscriber);
-            AddToValidSubscribers(e.get<std::string>(), subscriber);
+            ParseFilterObject(commonEventObj[JSON_KEY_FILTER], eventName, subscriber);
+            AddToValidSubscribers(eventName, subscriber);
         }
         if (!invalidEventsLogger.empty()) {
             EVENT_LOGW(LOG_TAG_STATIC, "%{public}s is not match between profile and allowCommonEvent",
