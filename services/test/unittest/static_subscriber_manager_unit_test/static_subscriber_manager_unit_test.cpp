@@ -954,6 +954,227 @@ HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2200, Function | Mediu
 }
 
 /*
+ * @tc.name: ParseEventsTest_2300
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function does not crash when events
+ *           array contains null element and staticSubscribers_ has matching key.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, ParseEventsTest_2300, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string testExtensionName = "StaticSubscriber";
+    std::string testExtensionBundleName = "default";
+    int testExtensionUserId = 100;
+    std::string testProfile =
+        "{"
+        "    \"commonEvents\":["
+        "        {"
+        "            \"events\":[null],"
+        "            \"name\":\"StaticSubscriber\","
+        "            \"permission\":\"\""
+        "        }"
+        "    ]"
+        "}";
+    std::vector<std::string> events;
+    events.push_back("usual.event.TIME_TICK");
+    StaticSubscriber subscribers = { .events = events };
+    std::string keyMock = std::to_string(testExtensionUserId) + "_" + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
+    manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: ParseEventsTest_2400
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function does not crash when events
+ *           array contains number element and staticSubscribers_ has matching key.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2400, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, ParseEventsTest_2400, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string testExtensionName = "StaticSubscriber";
+    std::string testExtensionBundleName = "default";
+    int testExtensionUserId = 100;
+    std::string testProfile =
+        "{"
+        "    \"commonEvents\":["
+        "        {"
+        "            \"events\":[123],"
+        "            \"name\":\"StaticSubscriber\","
+        "            \"permission\":\"\""
+        "        }"
+        "    ]"
+        "}";
+    std::vector<std::string> events;
+    events.push_back("usual.event.TIME_TICK");
+    StaticSubscriber subscribers = { .events = events };
+    std::string keyMock = std::to_string(testExtensionUserId) + "_" + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
+    manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: ParseEventsTest_2500
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function does not crash when events
+ *           array contains boolean element and staticSubscribers_ has matching key.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2500, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, ParseEventsTest_2500, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string testExtensionName = "StaticSubscriber";
+    std::string testExtensionBundleName = "default";
+    int testExtensionUserId = 100;
+    std::string testProfile =
+        "{"
+        "    \"commonEvents\":["
+        "        {"
+        "            \"events\":[true],"
+        "            \"name\":\"StaticSubscriber\","
+        "            \"permission\":\"\""
+        "        }"
+        "    ]"
+        "}";
+    std::vector<std::string> events;
+    events.push_back("usual.event.TIME_TICK");
+    StaticSubscriber subscribers = { .events = events };
+    std::string keyMock = std::to_string(testExtensionUserId) + "_" + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
+    manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: ParseEventsTest_2600
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function handles mixed valid and
+ *           invalid event elements without crash, only adding valid events to validSubscribers_.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2600, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, ParseEventsTest_2600, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string testExtensionName = "StaticSubscriber";
+    std::string testExtensionBundleName = "default";
+    int testExtensionUserId = 100;
+    std::string testProfile =
+        "{"
+        "    \"commonEvents\":["
+        "        {"
+        "            \"events\":[\"usual.event.TIME_TICK\", null, 123, true],"
+        "            \"name\":\"StaticSubscriber\","
+        "            \"permission\":\"\""
+        "        }"
+        "    ]"
+        "}";
+    string expectEventName = "usual.event.TIME_TICK";
+    std::vector<std::string> events;
+    events.push_back(expectEventName);
+    StaticSubscriber subscribers = { .events = events };
+    std::string keyMock = std::to_string(testExtensionUserId) + "_" + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
+    manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    auto it = manager->validSubscribers_.find(expectEventName);
+    ASSERT_NE(manager->validSubscribers_.end(), it);
+    std::vector<StaticSubscriberManager::StaticSubscriberInfo> infos = it->second;
+    ASSERT_EQ(1, infos.size());
+    auto info = infos[0];
+    EXPECT_EQ(testExtensionName, info.name);
+    EXPECT_EQ(testExtensionBundleName, info.bundleName);
+    EXPECT_EQ(testExtensionUserId, info.userId);
+}
+
+/*
+ * @tc.name: ParseEventsTest_2700
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function skips event not in
+ *           staticSubscribers_ allow list without implicit json conversion crash.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2700, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, ParseEventsTest_2700, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string testExtensionName = "StaticSubscriber";
+    std::string testExtensionBundleName = "default";
+    int testExtensionUserId = 100;
+    std::string testProfile =
+        "{"
+        "    \"commonEvents\":["
+        "        {"
+        "            \"events\":[\"usual.event.NOT_IN_ALLOW_LIST\"],"
+        "            \"name\":\"StaticSubscriber\","
+        "            \"permission\":\"\""
+        "        }"
+        "    ]"
+        "}";
+    string expectEventName = "usual.event.TIME_TICK";
+    std::vector<std::string> events;
+    events.push_back(expectEventName);
+    StaticSubscriber subscribers = { .events = events };
+    std::string keyMock = std::to_string(testExtensionUserId) + "_" + testExtensionBundleName;
+    manager->staticSubscribers_.emplace(keyMock, subscribers);
+    manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: ParseEventsTest_2800
+ * @tc.desc: test if StaticSubscriberManager's ParseEvents function does not crash when
+ *           staticSubscribers_ does not have matching key and events contain non-string elements.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, ParseEventsTest_2800, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, ParseEventsTest_2800, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    std::string testExtensionName = "StaticSubscriber";
+    std::string testExtensionBundleName = "default";
+    int testExtensionUserId = 100;
+    std::string testProfile =
+        "{"
+        "    \"commonEvents\":["
+        "        {"
+        "            \"events\":[null, 123, true],"
+        "            \"name\":\"StaticSubscriber\","
+        "            \"permission\":\"\""
+        "        }"
+        "    ]"
+        "}";
+    manager->ParseEvents(testExtensionName, testExtensionBundleName, testExtensionUserId, testProfile);
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
  * @tc.name: AddToValidSubsribersTest_0100
  * @tc.desc: test if StaticSubscriberManager's AddToValidSubsribers function executed as expected in normal case.
  * @tc.type: FUNC
