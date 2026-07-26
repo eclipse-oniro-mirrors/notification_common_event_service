@@ -631,5 +631,272 @@ HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4300, Le
     GTEST_LOG_(INFO) << "CommonEventControlManager_4300 end";
 }
 
+/**
+ * @tc.name: CommonEventControlManager_4400
+ * @tc.desc: test LogUnorderedEventResult with null eventRecord should not crash.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4400, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4400 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> nullRecord = nullptr;
+    int32_t succCnt = 0;
+    int32_t failCnt = 0;
+    int32_t freezeCnt = 0;
+    std::string freezedPidsLogger;
+    manager->LogUnorderedEventResult(nullRecord, succCnt, failCnt, freezeCnt, freezedPidsLogger);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4400 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4500
+ * @tc.desc: test LogUnorderedEventResult with null commonEventData should not crash.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4500, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4500 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->commonEventData = nullptr;
+    int32_t succCnt = 0;
+    int32_t failCnt = 0;
+    int32_t freezeCnt = 0;
+    std::string freezedPidsLogger;
+    manager->LogUnorderedEventResult(record, succCnt, failCnt, freezeCnt, freezedPidsLogger);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4500 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4600
+ * @tc.desc: test FinishReceiver with null commonEventData should return false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4600, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4600 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->commonEventData = nullptr;
+    int32_t code = 0;
+    std::string receiverData = "test";
+    bool abortEvent = false;
+    EXPECT_FALSE(manager->FinishReceiver(record, code, receiverData, abortEvent));
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4600 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4700
+ * @tc.desc: test HandleTimeoutReceiver with null commonEventData should not crash.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4700, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4700 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->commonEventData = nullptr;
+    int64_t nowSysTime = 0;
+    manager->HandleTimeoutReceiver(record, nowSysTime);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4700 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4800
+ * @tc.desc: test HandleFinalSubscriber with non-null resultTo but null commonEventData.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4800, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4800 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->resultTo = sptr<IRemoteObject>(new MockCommonEventStub());
+    record->commonEventData = nullptr;
+    record->publishInfo = nullptr;
+    bool result = manager->HandleFinalSubscriber(record);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4800 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4810
+ * @tc.desc: test HandleOrderedNotifyResult with null eventRecordPtr should return false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4810, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4810 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> nullRecord = nullptr;
+    bool result = manager->HandleOrderedNotifyResult(nullRecord, 0, OHOS::ERR_OK);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4810 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4820
+ * @tc.desc: test HandleOrderedNotifyResult error path with null commonEventData (conditional log skip).
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4820, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4820 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->commonEventData = nullptr;
+    record->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    record->receivers.emplace_back(std::make_shared<EventSubscriberRecord>());
+    bool result = manager->HandleOrderedNotifyResult(record, 0, -1);
+    EXPECT_FALSE(result);
+    EXPECT_EQ(record->state.load(), OrderedEventRecord::SKIPPED);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4820 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4830
+ * @tc.desc: test NotifySingleUnorderedSubscriber with null commonEventData should return false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4830, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4830 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->commonEventData = nullptr;
+    record->publishInfo = nullptr;
+    record->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    std::shared_ptr<EventSubscriberRecord> vec = std::make_shared<EventSubscriberRecord>();
+    vec->isFreeze = false;
+    int32_t succCnt = 0;
+    int32_t failCnt = 0;
+    int32_t freezeCnt = 0;
+    std::string freezedPidsLogger;
+    bool result = manager->NotifySingleUnorderedSubscriber(record, vec, 0, succCnt, failCnt, freezeCnt,
+        freezedPidsLogger);
+    EXPECT_FALSE(result);
+    EXPECT_EQ(1, failCnt);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4830 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4840
+ * @tc.desc: test NotifySingleUnorderedSubscriber with isFreeze=true should call HandleFrozenUnorderedSubscriber.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4840, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4840 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    std::shared_ptr<CommonEventData> data = std::make_shared<CommonEventData>();
+    record->commonEventData = data;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    record->publishInfo = publishInfo;
+    record->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    std::shared_ptr<EventSubscriberRecord> vec = std::make_shared<EventSubscriberRecord>();
+    vec->isFreeze = true;
+    int32_t succCnt = 0;
+    int32_t failCnt = 0;
+    int32_t freezeCnt = 0;
+    std::string freezedPidsLogger;
+    bool result = manager->NotifySingleUnorderedSubscriber(record, vec, 0, succCnt, failCnt, freezeCnt,
+        freezedPidsLogger);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(1, freezeCnt);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4840 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_4900
+ * @tc.desc: test NotifyOrderedEvent with null commonEventData should return false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_4900, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4900 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->commonEventData = nullptr;
+    record->publishInfo = nullptr;
+    record->deliveryState.emplace_back(OrderedEventRecord::PENDING);
+    record->receivers.emplace_back(std::make_shared<EventSubscriberRecord>());
+    bool result = manager->NotifyOrderedEvent(record, 0);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "CommonEventControlManager_4900 end";
+}
+
+#ifdef CEM_SUPPORT_DUMP
+/**
+ * @tc.name: CommonEventControlManager_5000
+ * @tc.desc: test DumpStateByCommonEventRecord with null record should not crash.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_5000, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_5000 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = nullptr;
+    std::string dumpInfo;
+    manager->DumpStateByCommonEventRecord(record, dumpInfo);
+    EXPECT_TRUE(dumpInfo.empty());
+    GTEST_LOG_(INFO) << "CommonEventControlManager_5000 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_5100
+ * @tc.desc: test DumpStateByCommonEventRecord with null publishInfo should not crash.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_5100, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_5100 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    record->publishInfo = nullptr;
+    record->commonEventData = nullptr;
+    std::string dumpInfo;
+    manager->DumpStateByCommonEventRecord(record, dumpInfo);
+    EXPECT_TRUE(dumpInfo.empty());
+    GTEST_LOG_(INFO) << "CommonEventControlManager_5100 end";
+}
+
+/**
+ * @tc.name: CommonEventControlManager_5200
+ * @tc.desc: test DumpStateByCommonEventRecord strftime fallback when recordTime is zero.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventControlManagerBranchTest, CommonEventControlManager_5200, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventControlManager_5200 start";
+    std::shared_ptr<CommonEventControlManager> manager = std::make_shared<CommonEventControlManager>();
+    ASSERT_NE(nullptr, manager);
+    std::shared_ptr<OrderedEventRecord> record = std::make_shared<OrderedEventRecord>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    record->publishInfo = publishInfo;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    record->commonEventData = commonEventData;
+    struct tm zeroTime {0};
+    record->recordTime = zeroTime;
+    std::string dumpInfo;
+    manager->DumpStateByCommonEventRecord(record, dumpInfo);
+    EXPECT_FALSE(dumpInfo.empty());
+    GTEST_LOG_(INFO) << "CommonEventControlManager_5200 end";
+}
+#endif
+
 }
 }

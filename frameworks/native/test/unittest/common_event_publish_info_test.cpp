@@ -14,7 +14,9 @@
  */
 
 #include "gtest/gtest.h"
+#define private public
 #include "common_event_publish_info.h"
+#undef private
 
 using namespace testing;
 using namespace testing::ext;
@@ -109,4 +111,103 @@ HWTEST_F(CommonEventPublishInfoTest, GetFilterSettings_002, TestSize.Level0)
 {
     CommonEventPublishInfo commonEventPublishInfo;
     EXPECT_EQ(commonEventPublishInfo.GetFilterSettings(), 0);
+}
+
+/**
+ * @tc.name  : ReadFromParcel_ShouldTruncateUids_WhenExceedMax
+ * @tc.number: CommonEventPublishInfoTest_003
+ * @tc.desc  : Test ReadFromParcel truncates subscriberUids_ when exceeding SUBSCRIBER_UIDS_MAX_NUM
+ */
+HWTEST_F(CommonEventPublishInfoTest, ReadFromParcel_ShouldTruncateUids_WhenExceedMax, TestSize.Level0)
+{
+    Parcel parcel;
+    CommonEventPublishInfo info;
+    info.SetBundleName("test");
+    info.SetOrdered(false);
+    info.SetSticky(false);
+    info.SetSubscriberPermissions({});
+    info.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    info.SetValidationRule(ValidationRule::OR);
+    std::vector<int32_t> oversizedUids(SUBSCRIBER_UIDS_MAX_NUM + 5, 1);
+    info.SetSubscriberUid(oversizedUids);
+
+    EXPECT_TRUE(info.Marshalling(parcel));
+    sptr<CommonEventPublishInfo> deserialized = CommonEventPublishInfo::Unmarshalling(parcel);
+    ASSERT_NE(nullptr, deserialized);
+    EXPECT_LE(deserialized->GetSubscriberUid().size(), SUBSCRIBER_UIDS_MAX_NUM);
+}
+
+/**
+ * @tc.name  : ReadFromParcel_ShouldResetInvalidSubscriberType
+ * @tc.number: CommonEventPublishInfoTest_004
+ * @tc.desc  : Test ReadFromParcel resets invalid subscriberType_ to ALL_SUBSCRIBER_TYPE
+ */
+HWTEST_F(CommonEventPublishInfoTest, ReadFromParcel_ShouldResetInvalidSubscriberType, TestSize.Level0)
+{
+    Parcel parcel;
+    CommonEventPublishInfo info;
+    info.SetBundleName("test");
+    info.SetOrdered(false);
+    info.SetSticky(false);
+    info.SetSubscriberPermissions({});
+    info.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    info.SetValidationRule(ValidationRule::OR);
+    info.SetSubscriberUid({});
+
+    EXPECT_TRUE(info.Marshalling(parcel));
+    parcel.WriteInt32(999);
+    parcel.RewindRead(0);
+
+    auto deserialized = std::make_shared<CommonEventPublishInfo>();
+    EXPECT_TRUE(deserialized->ReadFromParcel(parcel));
+    EXPECT_EQ(deserialized->GetSubscriberType(),
+        static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+}
+
+/**
+ * @tc.name  : ReadFromParcel_ShouldKeepValidSubscriberType
+ * @tc.number: CommonEventPublishInfoTest_005
+ * @tc.desc  : Test ReadFromParcel keeps valid SYSTEM_SUBSCRIBER_TYPE
+ */
+HWTEST_F(CommonEventPublishInfoTest, ReadFromParcel_ShouldKeepValidSubscriberType, TestSize.Level0)
+{
+    Parcel parcel;
+    CommonEventPublishInfo info;
+    info.SetBundleName("test");
+    info.SetOrdered(false);
+    info.SetSticky(false);
+    info.SetSubscriberPermissions({});
+    info.SetSubscriberType(static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE));
+    info.SetValidationRule(ValidationRule::OR);
+    info.SetSubscriberUid({});
+
+    EXPECT_TRUE(info.Marshalling(parcel));
+    sptr<CommonEventPublishInfo> deserialized = CommonEventPublishInfo::Unmarshalling(parcel);
+    ASSERT_NE(nullptr, deserialized);
+    EXPECT_EQ(deserialized->GetSubscriberType(),
+        static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE));
+}
+
+/**
+ * @tc.name  : ReadFromParcel_ShouldKeepUidsWithinMax
+ * @tc.number: CommonEventPublishInfoTest_006
+ * @tc.desc  : Test ReadFromParcel keeps uids when within SUBSCRIBER_UIDS_MAX_NUM
+ */
+HWTEST_F(CommonEventPublishInfoTest, ReadFromParcel_ShouldKeepUidsWithinMax, TestSize.Level0)
+{
+    Parcel parcel;
+    CommonEventPublishInfo info;
+    info.SetBundleName("test");
+    info.SetOrdered(false);
+    info.SetSticky(false);
+    info.SetSubscriberPermissions({});
+    info.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    info.SetValidationRule(ValidationRule::OR);
+    std::vector<int32_t> uids = {100, 200};
+    info.SetSubscriberUid(uids);
+
+    EXPECT_TRUE(info.Marshalling(parcel));
+    sptr<CommonEventPublishInfo> deserialized = CommonEventPublishInfo::Unmarshalling(parcel);
+    ASSERT_NE(nullptr, deserialized);
+    EXPECT_EQ(deserialized->GetSubscriberUid(), uids);
 }

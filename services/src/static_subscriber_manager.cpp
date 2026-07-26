@@ -101,8 +101,11 @@ bool StaticSubscriberManager::InitValidSubscribers()
 {
     EVENT_LOGD(LOG_TAG_STATIC, "enter");
 
-    if (!validSubscribers_.empty()) {
-        validSubscribers_.clear();
+    {
+        std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
+        if (!validSubscribers_.empty()) {
+            validSubscribers_.clear();
+        }
     }
     if (!InitAllowList()) {
         EVENT_LOGE(LOG_TAG_STATIC, "Failed to init AllowList");
@@ -144,7 +147,7 @@ bool StaticSubscriberManager::InitValidSubscribers()
         hasInitValidSubscribers_ = true;
         return true;
     }
-    std::lock_guard<ffrt::mutex> lock(disableEventsMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
     if (!disableEvents_.empty()) {
         disableEvents_.clear();
     }
@@ -167,7 +170,7 @@ bool StaticSubscriberManager::InitValidSubscribers()
 bool StaticSubscriberManager::IsDisableEvent(const std::string &bundleName, const std::string &event, int32_t userId)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "Called.");
-    std::lock_guard<ffrt::mutex> lock(disableEventsMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
     std::string key = std::to_string(userId) + "_" + bundleName;
     auto bundleIt = disableEvents_.find(key);
     if (bundleIt == disableEvents_.end()) {
@@ -195,6 +198,7 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
     const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
+    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
     auto targetSubscribers = validSubscribers_.find(data.GetWant().GetAction());
     if (targetSubscribers == validSubscribers_.end()) {
         return;
@@ -478,6 +482,7 @@ void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityIn
 void StaticSubscriberManager::AddToValidSubscribers(const std::string &eventName,
     const StaticSubscriberInfo &subscriber)
 {
+    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
     if (validSubscribers_.find(eventName) != validSubscribers_.end()) {
         for (auto sub : validSubscribers_[eventName]) {
             if ((sub.name == subscriber.name) &&
@@ -520,7 +525,7 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
 void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
-    std::lock_guard<ffrt::mutex> lock(disableEventsMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
     for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
         auto subIt = it->second.begin();
         while (subIt != it->second.end()) {
@@ -610,7 +615,7 @@ int32_t StaticSubscriberManager::UpdateDisableEvents(
     const std::string &bundleName, const std::vector<std::string> &events, bool enable, int32_t userId)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "Called.");
-    std::lock_guard<ffrt::mutex> lock(disableEventsMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
     std::string key = std::to_string(userId) + "_" + bundleName;
     auto finder = disableEvents_.find(key);
     if (finder == disableEvents_.end()) {

@@ -138,7 +138,7 @@ private:
     bool hasInitAllowList_ = false;
     bool hasInitValidSubscribers_ = false;
     ffrt::recursive_mutex subscriberMutex_;
-    ffrt::mutex disableEventsMutex_;
+    ffrt::recursive_mutex disableEventsMutex_;
     std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };
 }  // namespace EventFwk

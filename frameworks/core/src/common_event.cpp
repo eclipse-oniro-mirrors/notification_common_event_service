@@ -291,28 +291,40 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
     }
     sptr<CommonEventListener> listenerToStop = nullptr;
     int32_t funcResult = -1;
+    sptr<IRemoteObject> listenerObj = nullptr;
+    bool found = false;
     {
         std::lock_guard<std::mutex> lock(eventListenersMutex_);
         auto eventListener = eventListeners_.find(subscriber);
         if (eventListener != eventListeners_.end()) {
             EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu",
                 eventListeners_.size());
-            if (eventListener->second->AsObject() == nullptr) {
+            if (eventListener->second == nullptr || eventListener->second->AsObject() == nullptr) {
                 return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
-            auto res = proxy->UnsubscribeCommonEvent(eventListener->second->AsObject(), funcResult);
-            if (res != ERR_OK) {
-                funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-            }
-            if (funcResult == ERR_OK) {
-                listenerToStop = eventListener->second;
-                eventListeners_.erase(eventListener);
-            } else {
-                return ERR_NOTIFICATION_SEND_ERROR;
-            }
+            listenerToStop = eventListener->second;
+            listenerObj = eventListener->second->AsObject();
+            found = true;
         } else {
             EVENT_LOGW(LOG_TAG_CES, "No subscription");
         }
+    }
+    if (!found) {
+        return ERR_OK;
+    }
+    auto res = proxy->UnsubscribeCommonEvent(listenerObj, funcResult);
+    if (res != ERR_OK) {
+        funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+    if (funcResult == ERR_OK) {
+        std::lock_guard<std::mutex> lock(eventListenersMutex_);
+        auto it = eventListeners_.find(subscriber);
+        if (it != eventListeners_.end() && it->second != nullptr &&
+            it->second->AsObject() == listenerObj) {
+            eventListeners_.erase(it);
+        }
+    } else {
+        return ERR_NOTIFICATION_SEND_ERROR;
     }
     if (listenerToStop != nullptr) {
         listenerToStop->Stop();
@@ -336,28 +348,40 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
     }
     sptr<CommonEventListener> listenerToStop = nullptr;
     int32_t funcResult = -1;
+    sptr<IRemoteObject> listenerObj = nullptr;
+    bool found = false;
     {
         std::lock_guard<std::mutex> lock(eventListenersMutex_);
         auto eventListener = eventListeners_.find(subscriber);
         if (eventListener != eventListeners_.end()) {
             EVENT_LOGD(LOG_TAG_CES, "before UnsubscribeCommonEvent listeners size is %{public}zu",
                 eventListeners_.size());
-            if (eventListener->second->AsObject() == nullptr) {
+            if (eventListener->second == nullptr || eventListener->second->AsObject() == nullptr) {
                 return ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
             }
-            auto res = proxy->UnsubscribeCommonEventSync(eventListener->second->AsObject(), funcResult);
-            if (res != ERR_OK) {
-                funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
-            }
-            if (funcResult == ERR_OK) {
-                listenerToStop = eventListener->second;
-                eventListeners_.erase(eventListener);
-            } else {
-                return ERR_NOTIFICATION_SEND_ERROR;
-            }
+            listenerToStop = eventListener->second;
+            listenerObj = eventListener->second->AsObject();
+            found = true;
         } else {
             EVENT_LOGW(LOG_TAG_CES, "No subscription");
         }
+    }
+    if (!found) {
+        return ERR_OK;
+    }
+    auto res = proxy->UnsubscribeCommonEventSync(listenerObj, funcResult);
+    if (res != ERR_OK) {
+        funcResult = ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID;
+    }
+    if (funcResult == ERR_OK) {
+        std::lock_guard<std::mutex> lock(eventListenersMutex_);
+        auto it = eventListeners_.find(subscriber);
+        if (it != eventListeners_.end() && it->second != nullptr &&
+            it->second->AsObject() == listenerObj) {
+            eventListeners_.erase(it);
+        }
+    } else {
+        return ERR_NOTIFICATION_SEND_ERROR;
     }
     if (listenerToStop != nullptr) {
         listenerToStop->Stop();

@@ -31,11 +31,11 @@ using namespace arkts::ani_signature;
 
 ani_object AniCommonEventUtils::GetNullObject(ani_env *env)
 {
-    ani_ref nullRef;
+    ani_ref nullRef = nullptr;
     ani_status status = env->GetNull(&nullRef);
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GetNull failed: %{public}d", status);
-        return nullptr;
+        ThrowError(env, ERROR_CODE_INTERNAL_ERROR, ERROR_MSG_INTERNAL_ERROR);
     }
     return static_cast<ani_object>(nullRef);
 }
@@ -502,12 +502,14 @@ void AniCommonEventUtils::CreateBusinessErrorObject(
     aniResult = env->Object_New(cls, ctor, &object);
     if (aniResult != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "Object_New error. result: %{public}d.", aniResult);
+        return;
     }
 
     ani_string string = nullptr;
     ani_status strStatus = env->String_NewUTF8(message.c_str(), message.size(), &string);
     if (strStatus != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 failed: %{public}d", strStatus);
+        return;
     }
     aniResult = env->Object_SetFieldByName_Double(object, "code", ani_double(code));
     aniResult = env->Object_SetFieldByName_Ref(object, "data", string);
@@ -569,26 +571,31 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
         commonEventData.GetWant().GetAction().c_str(), commonEventData.GetWant().GetAction().size(), &string);
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 for event failed: %{public}d", status);
+    } else {
+        CallSetter(env, cls, ani_data, Builder::BuildSetterName("event").c_str(), string);
     }
-    CallSetter(env, cls, ani_data, Builder::BuildSetterName("event").c_str(), string);
 
     // set bundleName [string]
+    string = nullptr;
     status = env->String_NewUTF8(
         commonEventData.GetWant().GetBundle().c_str(), commonEventData.GetWant().GetBundle().size(), &string);
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 for bundleName failed: %{public}d", status);
+    } else {
+        CallSetter(env, cls, ani_data, Builder::BuildSetterName("bundleName").c_str(), string);
     }
-    CallSetter(env, cls, ani_data, Builder::BuildSetterName("bundleName").c_str(), string);
 
     // set data [string]
+    string = nullptr;
     status = env->String_NewUTF8(commonEventData.GetData().c_str(), commonEventData.GetData().size(), &string);
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "String_NewUTF8 for data failed: %{public}d", status);
+    } else {
+        CallSetter(env, cls, ani_data, Builder::BuildSetterName("data").c_str(), string);
     }
-    CallSetter(env, cls, ani_data, Builder::BuildSetterName("data").c_str(), string);
 
     // set code [int]
-    ani_object codeObject;
+    ani_object codeObject = nullptr;
     CreateAniIntObject(env, codeObject, commonEventData.GetCode());
     CallSetter(env, cls, ani_data, Builder::BuildSetterName("code").c_str(), codeObject);
 
@@ -670,7 +677,12 @@ void AniCommonEventUtils::ThrowError(ani_env *env, int32_t errCode, const std::s
         return;
     }
 
-    ani_status status = env->ThrowError(static_cast<ani_error>(CreateError(env, errCode, errorMsg)));
+    ani_object error = CreateError(env, errCode, errorMsg);
+    if (error == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "CreateError failed, errCode: %{public}d", errCode);
+        return;
+    }
+    ani_status status = env->ThrowError(static_cast<ani_error>(error));
     if (status != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "ThrowError failed: %{public}d", status);
     }

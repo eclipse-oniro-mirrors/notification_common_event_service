@@ -60,7 +60,9 @@ bool BundleManagerHelper::GetApiTargetVersionByUid(const uid_t uid, int32_t &api
     if (!GetBundleMgrProxyAsync()) {
         return false;
     }
+    std::string identity = IPCSkeleton::ResetCallingIdentity();
     ErrCode result = sptrBundleMgr_->GetApiTargetVersionByUid(uid, apiTargetVersion);
+    IPCSkeleton::SetCallingIdentity(identity);
     if (result != ERR_OK) {
         EVENT_LOGE(LOG_TAG_CES, "GetApiTargetVersionByUid failed result: %{public}d", result);
         return false;

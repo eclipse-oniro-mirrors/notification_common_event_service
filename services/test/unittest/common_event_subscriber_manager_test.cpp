@@ -1934,6 +1934,7 @@ HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberByMaximumVersion_002, 
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
     uid_t uids = -1;
     subscriberRecord->eventRecordInfo.uid = uids;
+    subscriberRecord->eventRecordInfo.isSubsystem = false;
 
     CommonEventRecord eventRecord;
     int32_t maximumVersion = 999;
@@ -1944,7 +1945,30 @@ HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberByMaximumVersion_002, 
     // Act
     bool result = manager->CheckSubscriberByMaximumVersion(subscriberRecord, eventRecord);
 
-    // Assert
+    // Assert: non-subsystem with version query failure should fail-closed
+    EXPECT_FALSE(result);
+}
+
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberByMaximumVersion_005, Level0)
+{
+    // Arrange: subsystem subscriber with version query failure should bypass version filter
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    uid_t uids = -1;
+    subscriberRecord->eventRecordInfo.uid = uids;
+    subscriberRecord->eventRecordInfo.isSubsystem = true;
+
+    CommonEventRecord eventRecord;
+    int32_t maximumVersion = 999;
+    publishInfo->SetSubscriberMaximumVersion(maximumVersion);
+    eventRecord.publishInfo = publishInfo;
+    SetTargetVersionByUidMock(maximumVersion, false);
+
+    // Act
+    bool result = manager->CheckSubscriberByMaximumVersion(subscriberRecord, eventRecord);
+
+    // Assert: subsystem bypasses version filter on query failure
     EXPECT_TRUE(result);
 }
 
@@ -1997,9 +2021,9 @@ HWTEST_F(CommonEventSubscriberManagerTest, CompactSubscriberDataStructures_0100,
     GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0100 start";
     CommonEventSubscriberManager commonEventSubscriberManager;
 
-    EXPECT_EQ(false, commonEventSubscriberManager.hasCompacted_);
+    EXPECT_EQ(false, commonEventSubscriberManager.hasCompacted_.load());
     commonEventSubscriberManager.CompactSubscriberDataStructures();
-    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_);
+    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_.load());
     EXPECT_EQ(0, commonEventSubscriberManager.subscribers_.size());
 
     GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0100 end";
@@ -2692,6 +2716,203 @@ HWTEST_F(CommonEventSubscriberManagerTest, GetTopSubscriberCounts_0500, Level1)
     EXPECT_TRUE(result.empty());
  
     GTEST_LOG_(INFO) << "GetTopSubscriberCounts_0500 end";
+}
+
+/**
+ * @tc.name: InsertSubscriberRecordLocked_0100
+ * @tc.desc: test InsertSubscriberRecordLocked with empty subscriberCounts_ should not crash.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, InsertSubscriberRecordLocked_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "InsertSubscriberRecordLocked_0100 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::vector<std::string> events = {"test.event"};
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    record->eventRecordInfo.pid = 10000;
+    record->eventRecordInfo.bundleName = "testBundle";
+
+    EXPECT_EQ(true, commonEventSubscriberManager.InsertSubscriberRecordLocked(events, record));
+    GTEST_LOG_(INFO) << "InsertSubscriberRecordLocked_0100 end";
+}
+
+/**
+ * @tc.name: GetSubscriberRecordsByWantLocked_0100
+ * @tc.desc: test GetSubscriberRecordsByWantLocked with null eventSubscribeInfo should skip record.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecordsByWantLocked_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "GetSubscriberRecordsByWantLocked_0100 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    Want want;
+    want.SetAction("test.action");
+    std::shared_ptr<CommonEventData> data = std::make_shared<CommonEventData>();
+    data->SetWant(want);
+    CommonEventRecord eventRecord;
+    eventRecord.commonEventData = data;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+
+    MatchingSkills skills;
+    skills.AddEvent("test.action");
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    SubscribeInfoPtr subscribeInfo = std::make_shared<CommonEventSubscribeInfo>(skills);
+    record->eventSubscribeInfo = subscribeInfo;
+    commonEventSubscriberManager.InsertEventSubscribers({"test.action"}, record);
+
+    std::vector<SubscriberRecordPtr> records;
+    commonEventSubscriberManager.GetSubscriberRecordsByWantLocked(eventRecord, records);
+    EXPECT_EQ(1, records.size());
+
+    SubscriberRecordPtr nullSubInfoRecord = std::make_shared<EventSubscriberRecord>();
+    nullSubInfoRecord->eventSubscribeInfo = nullptr;
+    commonEventSubscriberManager.InsertEventSubscribers({"test.action"}, nullSubInfoRecord);
+
+    records.clear();
+    commonEventSubscriberManager.GetSubscriberRecordsByWantLocked(eventRecord, records);
+    EXPECT_EQ(1, records.size());
+
+    GTEST_LOG_(INFO) << "GetSubscriberRecordsByWantLocked_0100 end";
+}
+
+/**
+ * @tc.name: GetSubscriberRecords_0100
+ * @tc.desc: test GetSubscriberRecords with null commonEventData should return empty.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecords_0100, Level1)
+{
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_0100 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    CommonEventRecord eventRecord;
+    eventRecord.commonEventData = nullptr;
+
+    auto records = commonEventSubscriberManager.GetSubscriberRecords(eventRecord);
+    EXPECT_TRUE(records.empty());
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_0100 end";
+}
+
+/**
+ * @tc.name: CompactSubscriberDataStructures_0500
+ * @tc.desc: test CompactSubscriberDataStructures skips records with null eventSubscribeInfo.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CompactSubscriberDataStructures_0500, Level1)
+{
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0500 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+
+    SubscriberRecordPtr nullSubInfoRecord = std::make_shared<EventSubscriberRecord>();
+    nullSubInfoRecord->eventSubscribeInfo = nullptr;
+    nullSubInfoRecord->commonEventListener = new CommonEventListener(nullptr);
+    commonEventSubscriberManager.subscribers_.emplace_back(nullSubInfoRecord);
+
+    MatchingSkills skills;
+    skills.AddEvent("test.event");
+    SubscriberRecordPtr validRecord = std::make_shared<EventSubscriberRecord>();
+    validRecord->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(skills);
+    validRecord->commonEventListener = new CommonEventListener(nullptr);
+    commonEventSubscriberManager.subscribers_.emplace_back(validRecord);
+
+    commonEventSubscriberManager.CompactSubscriberDataStructures();
+
+    EXPECT_EQ(true, commonEventSubscriberManager.hasCompacted_.load());
+    EXPECT_EQ(1, commonEventSubscriberManager.subscribers_.size());
+
+    GTEST_LOG_(INFO) << "CompactSubscriberDataStructures_0500 end";
+}
+
+/**
+ * @tc.name: GetSubscriberRecords_0200
+ * @tc.desc: test GetSubscriberRecords with hasCompacted_ = true should skip compact.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecords_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_0200 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    commonEventSubscriberManager.hasCompacted_.store(true);
+
+    Want want;
+    want.SetAction("test.action2");
+    std::shared_ptr<CommonEventData> data = std::make_shared<CommonEventData>();
+    data->SetWant(want);
+    CommonEventRecord eventRecord;
+    eventRecord.commonEventData = data;
+
+    auto records = commonEventSubscriberManager.GetSubscriberRecords(eventRecord);
+    EXPECT_TRUE(records.empty());
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_0200 end";
+}
+
+/**
+ * @tc.name: InsertSubscriberRecordLocked_0200
+ * @tc.desc: test InsertSubscriberRecordLocked with empty events should return false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, InsertSubscriberRecordLocked_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "InsertSubscriberRecordLocked_0200 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::vector<std::string> emptyEvents;
+    SubscriberRecordPtr record = std::make_shared<EventSubscriberRecord>();
+    EXPECT_EQ(false, commonEventSubscriberManager.InsertSubscriberRecordLocked(emptyEvents, record));
+    GTEST_LOG_(INFO) << "InsertSubscriberRecordLocked_0200 end";
+}
+
+/**
+ * @tc.name: InsertSubscriberRecordLocked_0300
+ * @tc.desc: test InsertSubscriberRecordLocked with null record should return false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, InsertSubscriberRecordLocked_0300, Level1)
+{
+    GTEST_LOG_(INFO) << "InsertSubscriberRecordLocked_0300 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    std::vector<std::string> events = {"test.event"};
+    SubscriberRecordPtr record = nullptr;
+    EXPECT_EQ(false, commonEventSubscriberManager.InsertSubscriberRecordLocked(events, record));
+    GTEST_LOG_(INFO) << "InsertSubscriberRecordLocked_0300 end";
+}
+
+/**
+ * @tc.name: GetSubscriberRecordsByWantLocked_0200
+ * @tc.desc: test GetSubscriberRecordsByWantLocked with null commonEventData in eventRecord.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecordsByWantLocked_0200, Level1)
+{
+    GTEST_LOG_(INFO) << "GetSubscriberRecordsByWantLocked_0200 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    CommonEventRecord eventRecord;
+    eventRecord.commonEventData = nullptr;
+
+    std::vector<SubscriberRecordPtr> records;
+    commonEventSubscriberManager.GetSubscriberRecordsByWantLocked(eventRecord, records);
+    EXPECT_TRUE(records.empty());
+    GTEST_LOG_(INFO) << "GetSubscriberRecordsByWantLocked_0200 end";
+}
+
+/**
+ * @tc.name: CheckSubscriberByMaximumVersion_006
+ * @tc.desc: test CheckSubscriberByMaximumVersion with DEFAULT_VERSION should return false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, CheckSubscriberByMaximumVersion_006, Level0)
+{
+    GTEST_LOG_(INFO) << "CheckSubscriberByMaximumVersion_006 start";
+    std::shared_ptr<CommonEventSubscriberManager> manager = std::make_shared<CommonEventSubscriberManager>();
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+
+    CommonEventRecord eventRecord;
+    publishInfo->SetSubscriberMaximumVersion(DEFAULT_VERSION);
+    eventRecord.publishInfo = publishInfo;
+
+    bool result = manager->CheckSubscriberByMaximumVersion(subscriberRecord, eventRecord);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "CheckSubscriberByMaximumVersion_006 end";
 }
 }
 }

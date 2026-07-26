@@ -248,8 +248,16 @@ bool CommonEventPublishInfo::ReadFromParcel(Parcel &parcel)
         EVENT_LOGE(LOG_TAG_CES, "ReadFromParcel read subscriberUids error");
         return false;
     }
+    if (subscriberUids_.size() > SUBSCRIBER_UIDS_MAX_NUM) {
+        subscriberUids_.resize(SUBSCRIBER_UIDS_MAX_NUM);
+    }
     // read subscriberType
-    subscriberType_ = parcel.ReadInt32();
+    int32_t type = parcel.ReadInt32();
+    if (!isSubscriberType(type)) {
+        subscriberType_ = static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE);
+    } else {
+        subscriberType_ = type;
+    }
     int32_t rule = parcel.ReadInt32();
     if (rule < static_cast<int32_t>(ValidationRule::AND) ||
         rule > static_cast<int32_t>(ValidationRule::OR)) {

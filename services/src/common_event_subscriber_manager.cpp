@@ -134,8 +134,12 @@ std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager
 {
     EVENT_LOGD(LOG_TAG_SUBSCRIBER, "enter");
     
+    if (eventRecord.commonEventData == nullptr) {
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "commonEventData is null");
+        return {};
+    }
     std::string action = eventRecord.commonEventData->GetWant().GetAction();
-    if (!hasCompacted_ && action == CommonEventSupport::COMMON_EVENT_SCREEN_OFF) {
+    if (!hasCompacted_.load() && action == CommonEventSupport::COMMON_EVENT_SCREEN_OFF) {
         CompactSubscriberDataStructures();
     }
     
@@ -294,13 +298,22 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
 
     if (CheckSubscriberCountReachedMaxinum()) {
         std::vector<std::pair<pid_t, uint32_t>> vtSubscriberCounts = GetTopSubscriberCounts(1);
-        pid_t killedPid = (*vtSubscriberCounts.begin()).first;
+        if (vtSubscriberCounts.empty()) {
+            EVENT_LOGE(LOG_TAG_SUBSCRIBER, "no subscriber counts to kill");
+            return false;
+        }
+        pid_t killedPid = vtSubscriberCounts.begin()->first;
         if (pid == killedPid) {
             return false;
         }
         std::map<pid_t, SubscriberRecordPtr> topRecordsMap = GetTopSubscriberRecordsMap(vtSubscriberCounts);
         ReportTopSubscribersInfoHiSysEvent(topRecordsMap, killedPid);
 
+        std::string killedProcessName;
+        auto killedRecordIt = topRecordsMap.find(killedPid);
+        if (killedRecordIt != topRecordsMap.end() && killedRecordIt->second != nullptr) {
+            killedProcessName = killedRecordIt->second->eventRecordInfo.bundleName;
+        }
         AAFwk::ExitReason reason = { AAFwk::REASON_RESOURCE_CONTROL, "Kill Reason: CES Register exceed limit"};
         AAFwk::AbilityManagerClient::GetInstance()->RecordProcessExitReason(killedPid, reason);
         int killResult = kill(killedPid, SIGNAL_KILL);
@@ -308,9 +321,9 @@ __attribute__((no_sanitize("cfi"))) bool CommonEventSubscriberManager::InsertSub
             killResult < 0 ? "failed" : "successfully");
         int result = HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::FRAMEWORK, "PROCESS_KILL",
             HiviewDFX::HiSysEvent::EventType::FAULT, "PID", killedPid, "PROCESS_NAME",
-            record->eventRecordInfo.bundleName, "MSG", CES_REGISTER_EXCEED_LIMIT, "REASON", CES_REGISTER_EXCEED_LIMIT);
+            killedProcessName, "MSG", CES_REGISTER_EXCEED_LIMIT, "REASON", CES_REGISTER_EXCEED_LIMIT);
         EVENT_LOGW(LOG_TAG_SUBSCRIBER, "hisysevent write result=%{public}d,send[FRAMEWORK,PROCESS_KILL],pid=%{public}d"
-            ",processName=%{public}s,msg=%{public}s", result, killedPid, record->eventRecordInfo.bundleName.c_str(),
+            ",processName=%{public}s,msg=%{public}s", result, killedPid, killedProcessName.c_str(),
             CES_REGISTER_EXCEED_LIMIT);
     }
 
@@ -484,7 +497,10 @@ bool CommonEventSubscriberManager::CheckSubscriberByMaximumVersion(const Subscri
     if (!DelayedSingleton<BundleManagerHelper>::GetInstance()->GetApiTargetVersionByUid(
         subscriberUid, subscriberVersion)) {
         EVENT_LOGE(LOG_TAG_SUBSCRIBER, "GetApiTargetVersionByUid failed.");
-        return true;
+        if (subscriberRecord->eventRecordInfo.isSubsystem) {
+            return true;
+        }
+        return false;
     }
     if (subscriberVersion % 1000 > maximumVersion) {
         return false;
@@ -510,12 +526,12 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
 
     for (auto it = (recordsItem->second).begin(); it != (recordsItem->second).end(); it++) {
         SubscriberRecordPtr subscriberRecord = *it;
-        auto subscriberUid = subscriberRecord->eventRecordInfo.uid;
-        auto subscriberUserId = subscriberRecord->eventSubscribeInfo->GetUserId();
-        auto subscriberBundleName = subscriberRecord->eventRecordInfo.bundleName;
         if (subscriberRecord->eventSubscribeInfo == nullptr) {
             continue;
         }
+        auto subscriberUid = subscriberRecord->eventRecordInfo.uid;
+        auto subscriberUserId = subscriberRecord->eventSubscribeInfo->GetUserId();
+        auto subscriberBundleName = subscriberRecord->eventRecordInfo.bundleName;
         if (!subscriberRecord->eventSubscribeInfo->GetMatchingSkills().Match(eventRecord.commonEventData->GetWant())) {
             continue;
         }
@@ -1182,6 +1198,9 @@ void CommonEventSubscriberManager::CompactSubscriberDataStructures()
             newRecord->eventSubscribeInfo = std::make_shared<CommonEventSubscribeInfo>(
                 *(subscriber->eventSubscribeInfo));
         }
+        if (newRecord->eventSubscribeInfo == nullptr) {
+            continue;
+        }
         compactedSubscribers.push_back(newRecord);
         pid_t pid = newRecord->eventRecordInfo.pid;
         compactedSubscriberCounts[pid]++;
@@ -1193,7 +1212,7 @@ void CommonEventSubscriberManager::CompactSubscriberDataStructures()
     subscribers_.swap(compactedSubscribers);
     eventSubscribers_.swap(compactedEventSubscribers);
     subscriberCounts_.swap(compactedSubscriberCounts);
-    hasCompacted_ = true;
+    hasCompacted_.store(true);
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
     EVENT_LOGI(LOG_TAG_SUBSCRIBER, "Memory fragmentation optimization completed. Copied subscriber count: %{public}zu,"
