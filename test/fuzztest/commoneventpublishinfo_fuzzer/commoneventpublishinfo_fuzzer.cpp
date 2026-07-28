@@ -15,6 +15,7 @@
 
 #include "commoneventpublishinfo_fuzzer.h"
 #include "fuzz_common_base.h"
+#include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
 
 #define private public
@@ -53,7 +54,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     commonEventPublishInfo.GetValidationRule();
     commonEventPublishInfo.GetFilterSettings();
     commonEventPublishInfo.Marshalling(parcel);
-    commonEventPublishInfo.Unmarshalling(parcel);
+    sptr<EventFwk::CommonEventPublishInfo> unmarshalled = commonEventPublishInfo.Unmarshalling(parcel);
     return true;
 }
 }

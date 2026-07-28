@@ -39,7 +39,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
 
     Parcel p;
     commonEventData.Marshalling(p);
-    commonEventData.Unmarshalling(p);
+    sptr<EventFwk::CommonEventData> unmarshalled = commonEventData.Unmarshalling(p);
     EventFwk::CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> permissions;
     permissions.emplace_back(stringData);

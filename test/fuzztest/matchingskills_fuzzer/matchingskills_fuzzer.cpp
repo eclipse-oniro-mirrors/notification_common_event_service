@@ -15,6 +15,7 @@
 
 #include "matchingskills_fuzzer.h"
 #include "fuzz_common_base.h"
+#include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
 #define private public
 #define protected public
@@ -60,7 +61,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     matchingSkills.GetEvent(index);
     matchingSkills.GetScheme(index);
     matchingSkills.ReadFromParcel(parcel);
-    matchingSkills.Unmarshalling(parcel);
+    sptr<EventFwk::MatchingSkills> unmarshalled = matchingSkills.Unmarshalling(parcel);
     matchingSkills.AddEntity(stringData);
     matchingSkills.AddEvent(stringData);
     matchingSkills.CountEvent();
