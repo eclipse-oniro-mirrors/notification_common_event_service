@@ -38,6 +38,10 @@ ani_method gSubscriberCtor;
 
 static uint32_t publishExecute(ani_env* env, ani_string eventId)
 {
+    if (eventId == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "publishExecute eventId is null.");
+        return ANI_INVALID_ARGS;
+    }
     std::string eventIdStr;
     AniCommonEventUtils::GetStdString(env, eventId, eventIdStr);
     EVENT_LOGD(LOG_TAG_CES_ANI, "publishExecute eventIdStr: %{public}s.", eventIdStr.c_str());
@@ -170,6 +174,11 @@ static uint32_t subscribeExecute(ani_env* env, ani_ref subscribeRef, ani_object 
     if (ret != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GetVM error. result: %{public}d.", ret);
         AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
+        ani_status delStatus = env->GlobalReference_Delete(resultRef);
+        if (delStatus != ANI_OK) {
+            EVENT_LOGE(LOG_TAG_CES_ANI, "GlobalReference_Delete failed: %{public}d", delStatus);
+        }
+        subscriberInstance->SetCallback(nullptr);
         return ANI_INVALID_ARGS;
     }
     subscriberInstance->SetVm(etsVm);
@@ -223,6 +232,11 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
     if (ret != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "GetVM error. result: %{public}d.", ret);
         AniCommonEventUtils::HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
+        ani_status delStatus = env->GlobalReference_Delete(resultRef);
+        if (delStatus != ANI_OK) {
+            EVENT_LOGE(LOG_TAG_CES_ANI, "GlobalReference_Delete failed: %{public}d", delStatus);
+        }
+        subscriberInstance->SetCallback(nullptr);
         return ANI_INVALID_ARGS;
     }
     subscriberInstance->SetVm(etsVm);
@@ -237,6 +251,12 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
                 relation->aniSubscriber_ = subscriberInstance;
                 std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
                 subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
+            } else {
+                ani_status delStatus = env->GlobalReference_Delete(resultRef);
+                if (delStatus != ANI_OK) {
+                    EVENT_LOGE(LOG_TAG_CES_ANI, "GlobalReference_Delete failed: %{public}d", delStatus);
+                }
+                subscriberInstance->SetCallback(nullptr);
             }
             return result;
         }
@@ -249,6 +269,12 @@ static uint32_t subscribeToEventExecute(ani_env* env, ani_ref subscribeRef, ani_
     if (result == ERR_OK) {
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[subscriberInstance] = subscriberInstance->GoAsyncCommonEvent();
+    } else {
+        ani_status delStatus = env->GlobalReference_Delete(resultRef);
+        if (delStatus != ANI_OK) {
+            EVENT_LOGE(LOG_TAG_CES_ANI, "GlobalReference_Delete failed: %{public}d", delStatus);
+        }
+        subscriberInstance->SetCallback(nullptr);
     }
     return result;
 }
@@ -264,12 +290,12 @@ int32_t UnsubscribeAndRemoveInstance(ani_env* env, const std::shared_ptr<Subscri
     auto item = subscriberInstances.find(subscriber);
     if (item != subscriberInstances.end()) {
         ani_ref callbackRef = static_cast<ani_ref>(item->first->GetCallback());
+        item->first->SetCallback(nullptr);
         if (callbackRef != nullptr) {
             ani_status status = env->GlobalReference_Delete(callbackRef);
             if (status != ANI_OK) {
                 EVENT_LOGE(LOG_TAG_CES_ANI, "GlobalReference_Delete failed: %{public}d", status);
             }
-            item->first->SetCallback(nullptr);
         }
         subscriberInstances.erase(item);
     }
@@ -430,6 +456,7 @@ void SubscriberInstance::OnReceiveEvent(const CommonEventData& data)
         EVENT_LOGE(LOG_TAG_CES_ANI, "GetNull error. result: %{public}d.", aniResult);
     }
 
+    std::lock_guard<ffrt::recursive_mutex> lockCb(callbackMutex_);
     auto fnObject = reinterpret_cast<ani_fn_object>(static_cast<ani_ref>(callback_));
     if (fnObject == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "fnObject is null.");
@@ -465,13 +492,13 @@ ani_vm* SubscriberInstance::GetVm()
 
 void SubscriberInstance::SetCallback(const ani_object& callback)
 {
-    std::lock_guard<ffrt::mutex> lockRef(callbackMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lockRef(callbackMutex_);
     callback_ = callback;
 }
 
 ani_object SubscriberInstance::GetCallback()
 {
-    std::lock_guard<ffrt::mutex> lockRef(callbackMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lockRef(callbackMutex_);
     return callback_;
 }
 
@@ -545,6 +572,10 @@ static ani_ref transferToStaticSubscriber(ani_env *env, [[maybe_unused]] ani_cla
         return undefinedRef;
     }
     auto napiSubscriber = wrapper->GetSubscriber();
+    if (napiSubscriber == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "napiSubscriber is null");
+        return undefinedRef;
+    }
     auto aniWrapper = new (std::nothrow) SubscriberInstanceWrapper(napiSubscriber->GetSubscribeInfo());
     if (aniWrapper == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_ANI, "null aniWrapper");
@@ -560,6 +591,7 @@ static ani_ref transferToStaticSubscriber(ani_env *env, [[maybe_unused]] ani_cla
     auto asyncCommonEventResult = EventManagerFwkNapi::GetAsyncCommonEventResult(napiSubscriber);
     auto relation = GetTransferRelation(nullptr, napiSubscriber);
     if (relation != nullptr) {
+        std::lock_guard<ffrt::mutex> lockRel(relation->relationMutex_);
         relation->aniSubscribers_.push_back(aniWrapper->GetSubscriber());
         if (asyncCommonEventResult != nullptr || napiSubscriber->GetCallbackRef() != nullptr) {
             std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
@@ -599,15 +631,21 @@ static int32_t unsubscribeCallback(const std::shared_ptr<EventManagerFwkNapi::Su
         ani_env* etsEnv;
         ani_status aniResult = ANI_OK;
         ani_options aniArgs {0, nullptr};
-        aniResult = relation->aniSubscriber_->GetVm()->AttachCurrentThread(&aniArgs, ANI_VERSION_1, &etsEnv);
+        ani_vm* vm = relation->aniSubscriber_->GetVm();
+        if (vm == nullptr) {
+            EVENT_LOGE(LOG_TAG_CES_ANI, "GetVm returns null");
+            return ERR_INVALID_OPERATION;
+        }
+        aniResult = vm->AttachCurrentThread(&aniArgs, ANI_VERSION_1, &etsEnv);
         if (aniResult != ANI_OK) {
             EVENT_LOGE(LOG_TAG_CES_ANI, "GetEnv error. result: %{public}d.", aniResult);
-            return aniResult;
-        }
-        result = UnsubscribeAndRemoveInstance(etsEnv, relation->aniSubscriber_);
-        ani_status status = relation->aniSubscriber_->GetVm()->DetachCurrentThread();
-        if (status != ANI_OK) {
-            EVENT_LOGE(LOG_TAG_CES_ANI, "DetachCurrentThread failed: %{public}d", status);
+            result = aniResult;
+        } else {
+            result = UnsubscribeAndRemoveInstance(etsEnv, relation->aniSubscriber_);
+            ani_status status = vm->DetachCurrentThread();
+            if (status != ANI_OK) {
+                EVENT_LOGE(LOG_TAG_CES_ANI, "DetachCurrentThread failed: %{public}d", status);
+            }
         }
         relation->aniSubscriber_ = nullptr;
     }
@@ -658,15 +696,22 @@ static int32_t gcCallback(const std::shared_ptr<EventManagerFwkNapi::SubscriberI
                 ani_env* etsEnv;
                 ani_status aniResult = ANI_OK;
                 ani_options aniArgs {0, nullptr};
-                aniResult = relation->aniSubscriber_->GetVm()->AttachCurrentThread(&aniArgs, ANI_VERSION_1, &etsEnv);
-                if (aniResult != ANI_OK) {
-                    EVENT_LOGE(LOG_TAG_CES_ANI, "GetEnv error. result: %{public}d.", aniResult);
-                    return aniResult;
-                }
-                result = UnsubscribeAndRemoveInstance(etsEnv, relation->aniSubscriber_);
-                ani_status status = relation->aniSubscriber_->GetVm()->DetachCurrentThread();
-                if (status != ANI_OK) {
-                    EVENT_LOGE(LOG_TAG_CES_ANI, "DetachCurrentThread failed: %{public}d", status);
+                ani_vm* vm = relation->aniSubscriber_->GetVm();
+                if (vm == nullptr) {
+                    EVENT_LOGE(LOG_TAG_CES_ANI, "GetVm returns null");
+                    result = ERR_INVALID_OPERATION;
+                } else {
+                    aniResult = vm->AttachCurrentThread(&aniArgs, ANI_VERSION_1, &etsEnv);
+                    if (aniResult != ANI_OK) {
+                        EVENT_LOGE(LOG_TAG_CES_ANI, "GetEnv error. result: %{public}d.", aniResult);
+                        result = aniResult;
+                    } else {
+                        result = UnsubscribeAndRemoveInstance(etsEnv, relation->aniSubscriber_);
+                        ani_status status = vm->DetachCurrentThread();
+                        if (status != ANI_OK) {
+                            EVENT_LOGE(LOG_TAG_CES_ANI, "DetachCurrentThread failed: %{public}d", status);
+                        }
+                    }
                 }
                 relation->aniSubscriber_ = nullptr;
             }
@@ -727,11 +772,16 @@ static ani_ref transferToDynamicSubscriber(ani_env *env, [[maybe_unused]] ani_cl
     arkts_napi_scope_close_n(jsEnv, 1, &napiSubscriberValue, &result);
 
     auto napiSubscriber = EventManagerFwkNapi::GetSubscriber(jsEnv, napiSubscriberValue);
+    if (napiSubscriber == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "napiSubscriber is null");
+        return undefinedRef;
+    }
     SetNapiSubscriberCallback(napiSubscriber);
     auto asyncResult = GetAsyncCommonEventResult(aniSubscriber);
 
     auto relation = GetTransferRelation(aniSubscriber, nullptr);
     if (relation != nullptr) {
+        std::lock_guard<ffrt::mutex> lockRel(relation->relationMutex_);
         relation->napiSubscribers_.push_back(napiSubscriber);
         if (asyncResult != nullptr || aniSubscriber->GetCallback() != nullptr) {
             EventManagerFwkNapi::SetAsyncCommonEventResultWithLocked(napiSubscriber, asyncResult);

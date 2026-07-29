@@ -16,6 +16,7 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H
 
+#include <atomic>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -187,6 +188,20 @@ public:
     * @return Returns all frozen events.
     */
     std::unordered_map<pid_t, FrozenRecords> GetAllFrozenEventsMap();
+
+    /**
+     * Removes the frozen events.
+     *
+     * @param uid Indicates the uid of the application.
+     */
+    void RemoveFrozenEvents(const uid_t &uid);
+
+    /**
+     * Removes the frozen events map.
+     *
+     * @param pid Indicates the pid of the application.
+     */
+    void RemoveFrozenEventsMapByPid(const pid_t &pid);
 #ifdef CEM_SUPPORT_DUMP
     /**
      * Dumps detailed information for specific subscriber record info.
@@ -244,11 +259,7 @@ private:
 
     void RemoveFrozenEventsBySubscriber(const SubscriberRecordPtr &subscriberRecord);
 
-    void RemoveFrozenEvents(const uid_t &uid);
-
     void RemoveFrozenEventsMapBySubscriber(const SubscriberRecordPtr &subscriberRecord);
-
-    void RemoveFrozenEventsMapByPid(const pid_t &pid);
 
     void SendSubscriberExceedMaximumHiSysEvent(int32_t userId, const std::string &eventName, uint32_t subscriberNum);
 
@@ -288,7 +299,7 @@ private:
     const time_t FREEZE_EVENT_TIMEOUT = 30;
     std::unordered_map<pid_t, uint32_t> subscriberCounts_;
     std::unordered_map<pid_t, FrozenRecords> frozenEventsMap_;
-    bool hasCompacted_ = false;
+    std::atomic<bool> hasCompacted_ = false;
 };
 }  // namespace EventFwk
 }  // namespace OHOS

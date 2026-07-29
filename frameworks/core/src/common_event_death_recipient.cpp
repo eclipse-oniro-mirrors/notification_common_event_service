@@ -45,28 +45,25 @@ CommonEventDeathRecipient::~CommonEventDeathRecipient()
 
 void CommonEventDeathRecipient::SubscribeSAManager()
 {
+    std::lock_guard<ffrt::mutex> lock(listenerMutex_);
     if (statusChangeListener_ == nullptr) {
-        std::lock_guard<ffrt::mutex> lock(listenerMutex_);
-        if (statusChangeListener_ == nullptr) {
-            auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-            if (samgrProxy == nullptr) {
-                EVENT_LOGE(LOG_TAG_CES, "GetSystemAbilityManager failed");
-                return;
-            }
-            
-            sptr<SystemAbilityStatusChangeListener> listener =
-                new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
-            if (listener == nullptr) {
-                EVENT_LOGE(LOG_TAG_CES, "new SystemAbilityStatusChangeListener failed");
-                return;
-            }
-            int32_t ret = samgrProxy->SubscribeSystemAbilityInImage(COMMON_EVENT_SERVICE_ID, listener);
-            if (ret != ERR_OK) {
-                EVENT_LOGE(LOG_TAG_CES, "SubscribeSystemAbility to sa manager failed");
-                return;
-            }
-            statusChangeListener_ = listener;
+        auto samgrProxy = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+        if (samgrProxy == nullptr) {
+            EVENT_LOGE(LOG_TAG_CES, "GetSystemAbilityManager failed");
+            return;
         }
+        sptr<SystemAbilityStatusChangeListener> listener =
+            new (std::nothrow) CommonEventDeathRecipient::SystemAbilityStatusChangeListener();
+        if (listener == nullptr) {
+            EVENT_LOGE(LOG_TAG_CES, "new SystemAbilityStatusChangeListener failed");
+            return;
+        }
+        int32_t ret = samgrProxy->SubscribeSystemAbilityInImage(COMMON_EVENT_SERVICE_ID, listener);
+        if (ret != ERR_OK) {
+            EVENT_LOGE(LOG_TAG_CES, "SubscribeSystemAbility to sa manager failed");
+            return;
+        }
+        statusChangeListener_ = listener;
     }
 }
 

@@ -45,7 +45,7 @@ public:
 
 private:
     ffrt::mutex envMutex_;
-    ffrt::mutex callbackMutex_;
+    ffrt::recursive_mutex callbackMutex_;
     ffrt::mutex isToEventMutex_;
     ani_env* env_ = nullptr;
     ani_object callback_ = nullptr;

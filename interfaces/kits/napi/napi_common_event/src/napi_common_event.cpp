@@ -408,7 +408,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     napi_create_string_latin1(env, "CreateSubscriber", NAPI_AUTO_LENGTH, &resourceName);
 
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) { EVENT_LOGD(LOG_TAG_CES_NAPI, "CreateSubscriber napi_create_async_work start"); },
@@ -432,6 +432,18 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->subscribeInfo != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->subscribeInfo);
+        }
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        HistogramBoolReport("BasicServicesKit.APICall.createSubscriber", false);
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -553,7 +565,15 @@ void AsyncExecuteCallbackSubscribe(napi_env env, void *data)
 void AsyncCompleteCallbackSubscribeToEvent(napi_env env, napi_status status, void *data)
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "Subscribe napi_create_async_work end");
+    if (data == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Invalid async callback data");
+        return;
+    }
     AsyncCallbackInfoSubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoSubscribe *>(data);
+    if (asyncCallbackInfo == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Invalid asyncCallbackInfo");
+        return;
+    }
     napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
     if (asyncCallbackInfo->errorCode == NO_ERROR) {
         EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfo is 0");
@@ -573,7 +593,15 @@ void AsyncCompleteCallbackSubscribeToEvent(napi_env env, napi_status status, voi
 void AsyncCompleteCallbackSubscribe(napi_env env, napi_status status, void *data)
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "Subscribe napi_create_async_work end");
+    if (data == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Invalid async callback data");
+        return;
+    }
     AsyncCallbackInfoSubscribe *asyncCallbackInfo = static_cast<AsyncCallbackInfoSubscribe *>(data);
+    if (asyncCallbackInfo == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Invalid asyncCallbackInfo");
+        return;
+    }
     napi_delete_async_work(env, asyncCallbackInfo->asyncWork);
     if (asyncCallbackInfo->errorCode == NO_ERROR) {
         EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfo is 0");
@@ -583,7 +611,9 @@ void AsyncCompleteCallbackSubscribe(napi_env env, napi_status status, void *data
     } else {
         SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
 
-        if (asyncCallbackInfo->callback != nullptr) {
+        if (asyncCallbackInfo->subscriber != nullptr) {
+            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
+        } else if (asyncCallbackInfo->callback != nullptr) {
             napi_delete_reference(env, asyncCallbackInfo->callback);
         }
 
@@ -641,8 +671,19 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     asyncCallbackInfo->subscriber = subscriber;
     asyncCallbackInfo->callback = callback;
     // Calling asynchronous functions
-    napi_create_async_work(env, nullptr, resourceName, AsyncExecuteCallbackSubscribe,
+    napi_status status = napi_create_async_work(env, nullptr, resourceName, AsyncExecuteCallbackSubscribe,
         AsyncCompleteCallbackSubscribe, (void *)asyncCallbackInfo, &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->subscriber != nullptr) {
+            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
+        } else if (asyncCallbackInfo->callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->callback);
+        }
+        delete asyncCallbackInfo;
+        HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
+        return NapiGetNull(env);
+    }
     napi_add_env_cleanup_hook(env, ClearEnvCallback, subscriber.get());
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
     return NapiGetNull(env);
@@ -685,6 +726,7 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
     napi_create_string_latin1(env, "Subscribe", NAPI_AUTO_LENGTH, &resourceName);
     napi_create_threadsafe_function(env, argv[1], nullptr, resourceName, 0, 1, callback,
         ThreadFinished, nullptr, ThreadSafeCallback, &tsfn);
+    subscriber->SetEnv(env);
     subscriber->SetCallbackRef(callback);
     subscriber->SetThreadSafeFunction(tsfn);
     subscriber->SetIsNewVersion(true);
@@ -692,8 +734,17 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
     napi_value promise = nullptr;
     napi_create_promise(env, &asyncCallbackInfo->deferred, &promise);
     // Calling asynchronous functions
-    napi_create_async_work(env, nullptr, resourceName, AsyncExecuteCallbackSubscribe,
+    napi_status status = napi_create_async_work(env, nullptr, resourceName, AsyncExecuteCallbackSubscribe,
         AsyncCompleteCallbackSubscribeToEvent, (void *)asyncCallbackInfo, &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->subscriber != nullptr) {
+            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
+        }
+        delete asyncCallbackInfo;
+        HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
+        return NapiGetNull(env);
+    }
     napi_add_env_cleanup_hook(env, ClearEnvCallback, subscriber.get());
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
     return promise;
@@ -748,7 +799,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
     napi_create_string_latin1(env, "Publish", NAPI_AUTO_LENGTH, &resourceName);
 
     // Calling Asynchronous functions
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -779,6 +830,15 @@ napi_value Publish(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->callback);
+        }
+        delete asyncCallbackInfo;
+        HistogramBoolReport("BasicServicesKit.APICall.publish", false);
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
