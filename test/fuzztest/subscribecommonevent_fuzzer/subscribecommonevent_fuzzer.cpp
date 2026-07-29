@@ -24,6 +24,7 @@
 #include "common_event_manager.h"
 #include "event_log_wrapper.h"
 #include "fuzz_common_base.h"
+#include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
@@ -59,7 +60,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     int32_t priority = fdp->ConsumeIntegral<int32_t>();
     subscribeInfo.ReadFromParcel(parcel);
-    subscribeInfo.Unmarshalling(parcel);
+    sptr<EventFwk::CommonEventSubscribeInfo> unmarshalled = subscribeInfo.Unmarshalling(parcel);
     subscribeInfo.SetPriority(priority);
     subscribeInfo.SetPermission(stringData);
     subscribeInfo.SetDeviceId(stringData);
@@ -98,7 +99,7 @@ bool DoSomethingInterestingWithSubscribe(FuzzedDataProvider *fdp)
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     int32_t priority = fdp->ConsumeIntegral<int32_t>();
     subscribeInfo.ReadFromParcel(parcel);
-    subscribeInfo.Unmarshalling(parcel);
+    sptr<EventFwk::CommonEventSubscribeInfo> unmarshalled = subscribeInfo.Unmarshalling(parcel);
     subscribeInfo.SetPriority(priority);
     subscribeInfo.SetPermission(stringData);
     subscribeInfo.SetDeviceId(stringData);

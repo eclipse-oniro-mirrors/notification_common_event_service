@@ -17,6 +17,7 @@
 #include "common_event_manager_service.h"
 #include "commoneventstub_fuzzer.h"
 #include "fuzz_common_base.h"
+#include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
@@ -38,7 +39,7 @@ bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
     commonEventData.GetData();
     Parcel p;
     commonEventData.Marshalling(p);
-    commonEventData.Unmarshalling(p);
+    sptr<EventFwk::CommonEventData> unmarshalled = commonEventData.Unmarshalling(p);
     // make commonEventPublishInfo info
     EventFwk::CommonEventPublishInfo commonEventPublishInfo;
     std::vector<std::string> permissions;
