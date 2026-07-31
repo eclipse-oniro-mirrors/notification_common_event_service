@@ -56,6 +56,7 @@
         "ram": "3000KB",
         "deps": {
             "components": [
+                "bounds_checking_function",
                 "bundle_framework",
                 "hicollie",
                 "hisysevent",
