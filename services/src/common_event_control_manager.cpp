@@ -277,10 +277,17 @@ void CommonEventControlManager::LogUnorderedEventResult(std::shared_ptr<OrderedE
     }
     std::string event = eventRecord->commonEventData->GetWant().GetAction();
     if (CanLogUnorderedEvent(event)) {
-        EVENT_LOGI(LOG_TAG_UNORDERED, "Pid %{public}d publish %{public}s to %{public}d end"
-            "(%{public}zu,%{public}d,%{public}d,%{public}d)%{public}s",
-            eventRecord->eventRecordInfo.pid, event.c_str(), eventRecord->userId,
-            eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPidsLogger.c_str());
+        if (eventRecord->receivers.size() == 0 || freezeCnt > 0) {
+            EVENT_LOGI(LOG_TAG_UNORDERED, "Pid %{public}d publish %{public}s to %{public}d end"
+                "(%{public}zu,%{public}d,%{public}d,%{public}d)%{public}s",
+                eventRecord->eventRecordInfo.pid, event.c_str(), eventRecord->userId,
+                eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPidsLogger.c_str());
+        } else {
+            EVENT_LOGD(LOG_TAG_UNORDERED, "Pid %{public}d publish %{public}s to %{public}d end"
+                "(%{public}zu,%{public}d,%{public}d,%{public}d)%{public}s",
+                eventRecord->eventRecordInfo.pid, event.c_str(), eventRecord->userId,
+                eventRecord->receivers.size(), succCnt, failCnt, freezeCnt, freezedPidsLogger.c_str());
+        }
     }
 }
 
