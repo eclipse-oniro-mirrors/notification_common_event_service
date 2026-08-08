@@ -46,6 +46,7 @@ ohos_shared_library("cesfwk_innerkits") {
     debug = false
   }
   branch_protector_ret = "pac_ret"
+  branch_protector_frt = "bti"
 
   sources = [
     "${ces_native_path}/src/async_common_event_result.cpp",

@@ -79,6 +79,7 @@ ohos_shared_library("static_subscriber_extension") {
     debug = false
   }
   branch_protector_ret = "pac_ret"
+  branch_protector_frt = "bti"
 
   include_dirs = []
 
@@ -208,6 +209,7 @@ ohos_shared_library("static_subscriber_extension_module") {
     debug = false
   }
   branch_protector_ret = "pac_ret"
+  branch_protector_frt = "bti"
 
   include_dirs = [ "${ces_core_path}/include" ]
 
