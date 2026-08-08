@@ -48,6 +48,7 @@ ohos_shared_library("napi_commoneventmanager") {
     debug = false
   }
   branch_protector_ret = "pac_ret"
+  branch_protector_frt = "bti"
 
   include_dirs = [
     "${interfaces_path}/kits/napi/napi_common_event/include",
@@ -100,6 +101,7 @@ ohos_shared_library("commoneventmanager") {
     debug = false
   }
   branch_protector_ret = "pac_ret"
+  branch_protector_frt = "bti"
 
   sources = [
     "src/init.cpp",

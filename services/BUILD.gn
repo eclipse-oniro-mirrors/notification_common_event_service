@@ -81,6 +81,7 @@ ohos_shared_library("cesfwk_services") {
     debug = false
   }
   branch_protector_ret = "pac_ret"
+  branch_protector_frt = "bti"
 
   shlib_type = "sa"
 
