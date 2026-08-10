@@ -16,10 +16,13 @@
 #include "commonevent_fuzzer.h"
 #include "common_event.h"
 #include "common_event_constant.h"
+#include "common_event_listener.h"
 #include "common_event_subscriber.h"
 #include "event_log_wrapper.h"
 #include "fuzz_common_base.h"
+#include "refbase.h"
 #include <fuzzer/FuzzedDataProvider.h>
+#include <set>
 
 namespace OHOS {
 namespace EventFwk {
@@ -37,58 +40,102 @@ public:
     }
 };
 }  // namespace EventFwk
-bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
-{
-    int32_t code = fdp->ConsumeIntegral<int32_t>();
-    std::string stringData = fdp->ConsumeRandomLengthString();
-    std::vector<std::string> state;
-    state.emplace_back(stringData);
-    EventFwk::CommonEvent commonEvent;
-    // test PublishCommonEvent function
-    AAFwk::Want want;
-    EventFwk::CommonEventData commonEventData(want);
-    commonEventData.SetCode(code);
-    commonEventData.SetData(stringData);
-    // make commonEventPublishInfo info
-    EventFwk::CommonEventPublishInfo commonEventPublishInfo;
-    std::vector<std::string> permissions;
-    permissions.emplace_back(stringData);
-    commonEventPublishInfo.SetSubscriberPermissions(permissions);
-    commonEventPublishInfo.IsSticky();
-    commonEventPublishInfo.GetSubscriberPermissions();
-    commonEventPublishInfo.SetOrdered(fdp->ConsumeBool());
-    commonEventPublishInfo.SetBundleName(stringData);
-    commonEventPublishInfo.GetBundleName();
-    // make CommonEventSubscriber info
-    EventFwk::MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(stringData);
 
-    EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscribeInfo.SetDeviceId(stringData);
-    std::shared_ptr<EventFwk::TestSubscriber> subscriber =
-        std::make_shared<EventFwk::TestSubscriber>(subscribeInfo);
-    subscriber->SetCode(code);
-    subscriber->GetCode();
-    subscriber->SetData(stringData);
-    subscriber->GetData();
-    subscriber->SetCodeAndData(code, stringData);
-    subscriber->AbortCommonEvent();
-    subscriber->ClearAbortCommonEvent();
-    subscriber->GetAbortCommonEvent();
-    subscriber->GoAsyncCommonEvent();
-    subscriber->GetSubscribeInfo();
-    subscriber->IsOrderedCommonEvent();
-    subscriber->IsStickyCommonEvent();
-    commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber);
+struct FuzzCommonEventContext {
+    EventFwk::CommonEvent commonEvent;
+    EventFwk::CommonEventData commonEventData;
+    EventFwk::CommonEventPublishInfo commonEventPublishInfo;
+    std::shared_ptr<EventFwk::TestSubscriber> subscriber;
+    std::string stringData;
+    int32_t code;
+    std::vector<std::string> state;
+};
+
+void TestPublishCommonEvent(FuzzCommonEventContext &ctx)
+{
+    ctx.commonEvent.PublishCommonEvent(ctx.commonEventData, ctx.commonEventPublishInfo, ctx.subscriber);
     // test PublishCommonEvent and four paramter
-    commonEvent.PublishCommonEvent(commonEventData, commonEventPublishInfo, subscriber, code, code);
-    commonEvent.PublishCommonEventAsUser(commonEventData, commonEventPublishInfo, nullptr, code);
-    commonEvent.PublishCommonEventAsUser(commonEventData, commonEventPublishInfo, nullptr, code, code, code);
+    ctx.commonEvent.PublishCommonEvent(
+        ctx.commonEventData, ctx.commonEventPublishInfo, ctx.subscriber, ctx.code, ctx.code);
+    ctx.commonEvent.PublishCommonEventAsUser(ctx.commonEventData, ctx.commonEventPublishInfo, nullptr, ctx.code);
+    ctx.commonEvent.PublishCommonEventAsUser(
+        ctx.commonEventData, ctx.commonEventPublishInfo, nullptr, ctx.code, ctx.code, ctx.code);
+}
+
+void TestSubscribeCommonEvent(FuzzCommonEventContext &ctx)
+{
+    ctx.commonEvent.SubscribeCommonEvent(ctx.subscriber);
+    ctx.commonEvent.Subscribe(ctx.subscriber);
+    EventFwk::CommonEventData stickyCommonEventData;
+    ctx.commonEvent.GetStickyCommonEvent(ctx.stringData, stickyCommonEventData);
+    ctx.commonEvent.RemoveStickyCommonEvent(ctx.stringData);
+    ctx.commonEvent.UnSubscribeCommonEvent(ctx.subscriber);
+    ctx.commonEvent.UnSubscribeCommonEventSync(ctx.subscriber);
+    ctx.commonEvent.Reconnect();
+    ctx.commonEvent.Resubscribe();
+}
+
+void TestFreezeAndReceiverCommonEvent(FuzzedDataProvider *fdp, FuzzCommonEventContext &ctx)
+{
+    ctx.commonEvent.Freeze(fdp->ConsumeIntegral<uint32_t>());
+    ctx.commonEvent.Unfreeze(fdp->ConsumeIntegral<uint32_t>());
+    ctx.commonEvent.UnfreezeAll();
+    ctx.commonEvent.SetStaticSubscriberState(fdp->ConsumeBool());
+    ctx.commonEvent.SetStaticSubscriberState(ctx.state, fdp->ConsumeBool());
+    std::set<int> pidList;
+    pidList.insert(fdp->ConsumeIntegral<int>());
+    ctx.commonEvent.SetFreezeStatus(pidList, fdp->ConsumeBool());
+    sptr<IRemoteObject> receiverProxy = new (std::nothrow) EventFwk::CommonEventListener(ctx.subscriber);
+    ctx.commonEvent.FinishReceiver(receiverProxy, ctx.code, ctx.stringData, fdp->ConsumeBool());
 #ifdef CEM_SUPPORT_DUMP
     uint8_t dumpType = fdp->ConsumeIntegral<uint8_t>();
-    // test DumpState function
-    commonEvent.DumpState(dumpType, stringData, code, state);
+    ctx.commonEvent.DumpState(dumpType, ctx.stringData, ctx.code, ctx.state);
 #endif
+}
+
+bool DoSomethingInterestingWithMyAPI(FuzzedDataProvider *fdp)
+{
+    FuzzCommonEventContext ctx;
+    ctx.code = fdp->ConsumeIntegral<int32_t>();
+    ctx.stringData = fdp->ConsumeRandomLengthString();
+    ctx.state.emplace_back(ctx.stringData);
+    // test GetInstance function
+    EventFwk::CommonEvent::GetInstance();
+    // make commonEventData
+    AAFwk::Want want;
+    ctx.commonEventData = EventFwk::CommonEventData(want);
+    ctx.commonEventData.SetCode(ctx.code);
+    ctx.commonEventData.SetData(ctx.stringData);
+    // make commonEventPublishInfo info
+    std::vector<std::string> permissions;
+    permissions.emplace_back(ctx.stringData);
+    ctx.commonEventPublishInfo.SetSubscriberPermissions(permissions);
+    ctx.commonEventPublishInfo.IsSticky();
+    ctx.commonEventPublishInfo.GetSubscriberPermissions();
+    ctx.commonEventPublishInfo.SetOrdered(fdp->ConsumeBool());
+    ctx.commonEventPublishInfo.SetBundleName(ctx.stringData);
+    ctx.commonEventPublishInfo.GetBundleName();
+    // make CommonEventSubscriber info
+    EventFwk::MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(ctx.stringData);
+    EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetDeviceId(ctx.stringData);
+    ctx.subscriber = std::make_shared<EventFwk::TestSubscriber>(subscribeInfo);
+    ctx.subscriber->SetCode(ctx.code);
+    ctx.subscriber->GetCode();
+    ctx.subscriber->SetData(ctx.stringData);
+    ctx.subscriber->GetData();
+    ctx.subscriber->SetCodeAndData(ctx.code, ctx.stringData);
+    ctx.subscriber->AbortCommonEvent();
+    ctx.subscriber->ClearAbortCommonEvent();
+    ctx.subscriber->GetAbortCommonEvent();
+    ctx.subscriber->GoAsyncCommonEvent();
+    ctx.subscriber->GetSubscribeInfo();
+    ctx.subscriber->IsOrderedCommonEvent();
+    ctx.subscriber->IsStickyCommonEvent();
+    TestPublishCommonEvent(ctx);
+    TestSubscribeCommonEvent(ctx);
+    TestFreezeAndReceiverCommonEvent(fdp, ctx);
     return true;
 }
 }
