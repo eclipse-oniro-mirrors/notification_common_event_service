@@ -62,7 +62,6 @@ ohos_shared_library("cj_common_event_manager_ffi") {
       "ipc:ipc_single",
       "napi:cj_bind_ffi",
       "napi:cj_bind_native",
-      "bounds_checking_function:libsec_shared",
     ]
 
     sources = [
