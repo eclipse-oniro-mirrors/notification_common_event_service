@@ -39,6 +39,8 @@ public:
         connectionKey_ = connectionKey;
     }
 
+    ~StaticSubscriberConnection();
+
     /**
      * OnAbilityConnectDone, Ability Manager Service notify caller ability the result of connect.
      *
