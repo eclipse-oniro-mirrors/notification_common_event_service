@@ -22,11 +22,8 @@
 namespace OHOS::CommonEventManager {
     using CommonEventSubscribeInfo = OHOS::EventFwk::CommonEventSubscribeInfo;
     class CommonEventSubscribeInfoImpl : public OHOS::FFI::FFIData {
+        DECL_TYPE(CommonEventSubscribeInfoImpl, OHOS::FFI::FFIData)
     public:
-        OHOS::FFI::RuntimeType *GetRuntimeType() override
-        {
-            return GetClassType();
-        }
         explicit CommonEventSubscribeInfoImpl(std::shared_ptr<CommonEventSubscribeInfo> info): info_(info){};
         void SetPriority(int32_t &priority);
         int32_t GetPriority();
@@ -42,14 +39,6 @@ namespace OHOS::CommonEventManager {
         std::shared_ptr<CommonEventSubscribeInfo> GetInfoPtr();
 
     private:
-        friend class OHOS::FFI::RuntimeType;
-        friend class OHOS::FFI::TypeBase;
-        static OHOS::FFI::RuntimeType *GetClassType()
-        {
-            static OHOS::FFI::RuntimeType runtimeType =
-                OHOS::FFI::RuntimeType::Create<OHOS::FFI::FFIData>("CommonEventSubscribeInfoImpl");
-            return &runtimeType;
-        }
         std::shared_ptr<CommonEventSubscribeInfo> info_;
     };
 } // namespace OHOS::CommonEventManager
