@@ -21,6 +21,14 @@
 
 namespace OHOS {
 namespace EventFwk {
+StaticSubscriberConnection::~StaticSubscriberConnection()
+{
+    auto queue = std::move(staticNotifyQueue_);
+    if (queue) {
+        ffrt::submit([queue]() {});
+    }
+}
+
 void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
