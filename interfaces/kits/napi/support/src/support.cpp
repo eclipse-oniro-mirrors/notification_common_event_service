@@ -823,6 +823,10 @@ napi_value SupportInit(napi_env env, napi_value exports)
         "COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET");
     SetNamedPropertyByStr(env,
         obj,
+        EventFwk::CommonEventSupport::COMMON_EVENT_DATA_VOLUME_STATUS_REPORT,
+        "COMMON_EVENT_DATA_VOLUME_STATUS_REPORT");
+    SetNamedPropertyByStr(env,
+        obj,
         EventFwk::CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_ADDED,
         "COMMON_EVENT_SANDBOX_BUNDLE_ADDED");
     SetNamedPropertyByStr(env,

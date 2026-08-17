@@ -1594,6 +1594,12 @@ public:
     static const std::string COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET;
 
     /**
+    * Indicates that the data volume status has been reported.
+    * This is a protected common event that can only be sent by system.
+    */
+    static const std::string COMMON_EVENT_DATA_VOLUME_STATUS_REPORT;
+
+    /**
     * Indicates that the sandbox application has been installed on the device.
     * This is a protected common event that can only be sent by system.
     */
