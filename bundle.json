@@ -57,6 +57,7 @@
         "deps": {
             "components": [
                 "bundle_framework",
+                "bounds_checking_function",
                 "hicollie",
                 "hisysevent",
                 "hitrace",
