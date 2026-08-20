@@ -470,12 +470,6 @@ static const char* const COMMON_EVENT_VOLUME_ENCRYPTED = "usual.event.VOLUME_ENC
  */
 static const char* const COMMON_EVENT_VOLUME_ENCRYPTION_POLICY_SET = "usual.event.VOLUME_ENCRYPTION_POLICY_SET";
 
-/**
- * Indicates that the data volume status has been reported.
- * This is a protected common event that can only be sent by system.
- */
-static const char* const COMMON_EVENT_DATA_VOLUME_STATUS_REPORT = "usual.event.DATA_VOLUME_STATUS_REPORT";
-
 #ifdef __cplusplus
 }
 #endif
