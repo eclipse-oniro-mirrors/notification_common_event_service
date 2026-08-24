@@ -2267,6 +2267,101 @@ HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0500, 
 }
 
 /*
+ * @tc.name: AddSubscriberWithBundleNameTest_0600
+ * @tc.desc: test if StaticSubscriberManager's AddSubscriberWithBundleName function executed as expected
+ *           when bundle is not in staticSubscribers_ but applicationInfo has allowCommonEvent.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0600, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0600, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    // mock that query extension info with one extension which has allowCommonEvent
+    MockQueryExtensionInfos(true, MOCK_CASE_5);
+    MockGetResConfigFile(true, 1);
+    MockGetOsAccountLocalIdFromUid(true);
+    std::string testBundleName = "com.ohos.systemui";
+    int32_t testUserId = 100;
+    manager->AddSubscriberWithBundleName(testBundleName, testUserId);
+    // expect allowCommonEvent inserted into staticSubscribers_ by applicationInfo
+    std::string key = std::to_string(testUserId) + "_" + testBundleName;
+    auto finder = manager->staticSubscribers_.find(key);
+    ASSERT_NE(manager->staticSubscribers_.end(), finder);
+    EXPECT_EQ(1, finder->second.events.size());
+    EXPECT_EQ("usual.event.TIME_TICK", finder->second.events[0]);
+    // expect valid subscribers map is not empty
+    EXPECT_EQ(1, manager->validSubscribers_.size());
+    auto validSubscribers = manager->validSubscribers_["usual.event.TIME_TICK"];
+    EXPECT_EQ(1, validSubscribers.size());
+}
+
+/*
+ * @tc.name: AddSubscriberWithBundleNameTest_0700
+ * @tc.desc: test if StaticSubscriberManager's AddSubscriberWithBundleName function executed as expected
+ *           when GetOsAccountLocalIdFromUid failed with allowCommonEvent not empty.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0700, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0700, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    // mock that query extension info with one extension which has allowCommonEvent
+    MockQueryExtensionInfos(true, MOCK_CASE_5);
+    MockGetResConfigFile(true, 1);
+    // mock that GetOsAccountLocalIdFromUid failed
+    MockGetOsAccountLocalIdFromUid(false);
+    std::string testBundleName = "com.ohos.systemui";
+    int32_t testUserId = 100;
+    manager->AddSubscriberWithBundleName(testBundleName, testUserId);
+    // expect allowCommonEvent still inserted into staticSubscribers_
+    std::string key = std::to_string(testUserId) + "_" + testBundleName;
+    auto finder = manager->staticSubscribers_.find(key);
+    ASSERT_NE(manager->staticSubscribers_.end(), finder);
+    EXPECT_EQ(1, finder->second.events.size());
+    // expect AddSubscriber skipped parsing profile since GetOsAccountLocalIdFromUid failed
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
+ * @tc.name: AddSubscriberWithBundleNameTest_0800
+ * @tc.desc: test if StaticSubscriberManager's AddSubscriberWithBundleName function executed as expected
+ *           when extension userId is not match with the given userId.
+ * @tc.type: FUNC
+ * @tc.require: #I5RLKK
+ *
+ */
+HWTEST_F(StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0800, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO)
+        << "StaticSubscriberManagerUnitTest, AddSubscriberWithBundleNameTest_0800, TestSize.Level1";
+    std::shared_ptr<StaticSubscriberManager> manager = std::make_shared<StaticSubscriberManager>();
+    ASSERT_NE(nullptr, manager);
+    // mock that query extension info with one extension which has allowCommonEvent
+    MockQueryExtensionInfos(true, MOCK_CASE_5);
+    MockGetResConfigFile(true, 1);
+    // mock that GetOsAccountLocalIdFromUid success but return different userId (88)
+    MockGetOsAccountLocalIdFromUid(true, MOCK_CASE_2);
+    std::string testBundleName = "com.ohos.systemui";
+    int32_t testUserId = 100;
+    manager->AddSubscriberWithBundleName(testBundleName, testUserId);
+    // expect allowCommonEvent still inserted into staticSubscribers_ with the given userId
+    std::string key = std::to_string(testUserId) + "_" + testBundleName;
+    auto finder = manager->staticSubscribers_.find(key);
+    ASSERT_NE(manager->staticSubscribers_.end(), finder);
+    EXPECT_EQ(1, finder->second.events.size());
+    // expect AddSubscriber parsed profile with derived userId (88), no valid subscriber generated
+    EXPECT_EQ(0, manager->validSubscribers_.size());
+}
+
+/*
  * @tc.name: VerifySubscriberPermissionTest_0100
  * @tc.desc: test if StaticSubscriberManager's VerifySubscriberPermission function executed as expected
  *           in normal case.

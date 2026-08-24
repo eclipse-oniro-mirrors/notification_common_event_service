@@ -512,12 +512,21 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
     }
 
     for (auto extension : extensions) {
-        if ((extension.bundleName == bundleName)) {
-            std::string key = std::to_string(userId) + "_" + extension.bundleName;
-            std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
-            if (staticSubscribers_.find(key) != staticSubscribers_.end()) {
-                AddSubscriber(extension);
-            }
+        if (extension.bundleName != bundleName) {
+            continue;
+        }
+        std::string key = std::to_string(userId) + "_" + extension.bundleName;
+        std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
+        if (staticSubscribers_.find(key) != staticSubscribers_.end()) {
+            AddSubscriber(extension);
+            continue;
+        }
+        if (!extension.applicationInfo.allowCommonEvent.empty()) {
+            StaticSubscriber subscriber = { .events = extension.applicationInfo.allowCommonEvent};
+            staticSubscribers_.insert(std::make_pair(key, subscriber));
+            AddSubscriber(extension);
+            EVENT_LOGI(LOG_TAG_STATIC, "allowCommonEvent inserted, bundle=%{public}s userId=%{public}d",
+                extension.bundleName.c_str(), userId);
         }
     }
 }

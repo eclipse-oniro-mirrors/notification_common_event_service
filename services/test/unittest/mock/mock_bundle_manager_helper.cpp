@@ -118,6 +118,16 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             g_mockExtensionInfos.emplace_back(info1);
             break;
         }
+        case 5: { // case for extension with allowCommonEvent
+            ExtensionAbilityInfo info0;
+            info0.bundleName = "com.ohos.systemui";
+            info0.name = "StaticSubscriber";
+            info0.permissions.emplace_back("permission0");
+            info0.applicationInfo.uid = MOCK_UID;
+            info0.applicationInfo.allowCommonEvent.emplace_back("usual.event.TIME_TICK");
+            g_mockExtensionInfos.emplace_back(info0);
+            break;
+        }
         default:
             break;
     }
