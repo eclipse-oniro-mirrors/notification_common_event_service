@@ -1,0 +1,42 @@
+/*
+ * Copyright (C) 2026 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+1.0 {
+  global:
+    extern "C++" {
+      guard?variable?for?OHOS::EventFwk::StaticSubscriberProxy::delegator_;
+      OHOS::EventFwk::IStaticSubscriber::LABEL;
+      OHOS::EventFwk::StaticSubscriberStub::OnRemoteRequest*;
+      OHOS::EventFwk::StaticSubscriberProxy::delegator_;
+      OHOS::EventFwk::StaticSubscriberProxy::OnReceiveEvent*;
+      construction?vtable?for?OHOS::IRemoteStub*;
+      construction?vtable?for?OHOS::IPCObjectStub-in-OHOS::EventFwk::StaticSubscriberStub;
+      construction?vtable?for?OHOS::IRemoteObject-in-OHOS::EventFwk::StaticSubscriberStub;
+      construction?vtable?for?OHOS::EventFwk::IStaticSubscriber-in-OHOS::EventFwk::StaticSubscriberStub;
+      construction?vtable?for?OHOS::IRemoteBroker-in-OHOS::EventFwk::StaticSubscriberStub;
+      construction?vtable?for?OHOS::Parcelable-in-OHOS::EventFwk::StaticSubscriberStub;
+      construction?vtable?for?OHOS::EventFwk::IStaticSubscriber-in-OHOS::EventFwk::StaticSubscriberProxy;
+      construction?vtable?for?OHOS::IRemoteProxy*;
+      construction?vtable?for?OHOS::IRemoteBroker-in-OHOS::EventFwk::StaticSubscriberProxy;
+      VTT?for?OHOS::EventFwk::StaticSubscriberStub;
+      VTT?for?OHOS::EventFwk::StaticSubscriberProxy;
+      vtable?for?OHOS::EventFwk::StaticSubscriberStub;
+      vtable?for?OHOS::EventFwk::StaticSubscriberProxy;
+    };
+    _fini;
+    _init;
+  local:
+    *;
+};

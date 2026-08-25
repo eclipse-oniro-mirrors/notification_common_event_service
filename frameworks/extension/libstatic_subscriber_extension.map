@@ -1,0 +1,46 @@
+/*
+ * Copyright (C) 2026 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+1.0 {
+  global:
+    extern "C++" {
+      OHOS::EventFwk::StaticSubscriberStubImpl::OnReceiveEvent*;
+      OHOS::EventFwk::StaticSubscriberExtension*;
+      OHOS::EventFwk::JsStaticSubscriberExtension*;
+      OHOS::EventFwk::StaticSubscriberExtensionContext*;
+      OHOS::EventFwk::JsStaticSubscriberExtensionContext*;
+      OHOS::EventFwk::AttachStaticSubscriberExtensionContext*;
+      OHOS::EventFwk::CreateJsStaticSubscriberExtensionContext*;
+      OHOS::EventFwk::StaticSubscriberExtensionContext::VerifyCallingPermission*;
+      construction?vtable?for?OHOS::EventFwk::StaticSubscriberStub-in-OHOS::EventFwk::StaticSubscriberStubImpl;
+      construction?vtable?for?OHOS::IRemoteStub*;
+      construction?vtable?for?OHOS::IPCObjectStub-in-OHOS::EventFwk::StaticSubscriberStubImpl;
+      construction?vtable?for?OHOS::IRemoteObject-in-OHOS::EventFwk::StaticSubscriberStubImpl;
+      construction?vtable?for?OHOS::EventFwk::IStaticSubscriber-in-OHOS::EventFwk::StaticSubscriberStubImpl;
+      construction?vtable?for?OHOS::IRemoteBroker-in-OHOS::EventFwk::StaticSubscriberStubImpl;
+      construction?vtable?for?OHOS::Parcelable-in-OHOS::EventFwk::StaticSubscriberStubImpl;
+      VTT?for?OHOS::EventFwk::StaticSubscriberStubImpl;
+      vtable?for?OHOS::EventFwk::StaticSubscriberStubImpl;
+      vtable?for?OHOS::EventFwk::StaticSubscriberExtension;
+      vtable?for?OHOS::EventFwk::JsStaticSubscriberExtension;
+      vtable?for?OHOS::EventFwk::StaticSubscriberExtensionContext;
+      non-virtual?thunk?to?OHOS::EventFwk::StaticSubscriberStubImpl*;
+      OHOS::AbilityRuntime::ExtensionBase*;
+    };
+    _fini;
+    _init;
+  local:
+    *;
+};
