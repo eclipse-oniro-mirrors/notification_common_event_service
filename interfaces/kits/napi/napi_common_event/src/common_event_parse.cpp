@@ -57,13 +57,34 @@ static const int32_t PUBLISH_MAX_PARA_AS_USER = 3;
 static const int32_t ARGS_DATA_TWO = 2;
 static const uint32_t NAPI_REF_INITIAL_REF_COUNT = 1;
 
+namespace {
+bool IsExceptionPending(napi_env env)
+{
+    bool isExceptionPending = false;
+    napi_status status = napi_is_exception_pending(env, &isExceptionPending);
+    if (status != napi_ok) {
+        EVENT_LOGW(LOG_TAG_CES_NAPI, "napi_is_exception_pending failed: %{public}d, assume not pending", status);
+        return false;
+    }
+    return isExceptionPending;
+}
+} // namespace
+
 void NapiThrow(napi_env env, int32_t errCode)
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "enter");
 
+    // Keep the first exception thrown by inner parameter parsing: it carries the actual failure
+    // reason, and a second napi_throw would overwrite it on runtimes without pending-exception
+    // protection.
+    if (IsExceptionPending(env)) {
+        EVENT_LOGW(LOG_TAG_CES_NAPI, "An exception is already pending, keep it. errCode: %{public}d", errCode);
+        return;
+    }
+
     napi_value code = nullptr;
     napi_create_int32(env, errCode, &code);
-    
+
     auto iter = ErrorCodeToMsg.find(errCode);
     std::string errMsg = iter != ErrorCodeToMsg.end() ? iter->second : "";
     napi_value message = nullptr;
@@ -79,9 +100,14 @@ void NapiThrow(napi_env env, int32_t errCode, std::string &msg)
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "enter");
 
+    if (IsExceptionPending(env)) {
+        EVENT_LOGW(LOG_TAG_CES_NAPI, "An exception is already pending, keep it. errCode: %{public}d", errCode);
+        return;
+    }
+
     napi_value code = nullptr;
     napi_create_int32(env, errCode, &code);
-    
+
     auto iter = ErrorCodeToMsg.find(errCode);
     std::string errMsg = iter != ErrorCodeToMsg.end() ? iter->second : "";
     napi_value message = nullptr;
