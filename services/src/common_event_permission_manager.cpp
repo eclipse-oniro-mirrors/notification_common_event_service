@@ -250,6 +250,7 @@ static const std::unordered_set<std::string> SYSTEM_API_COMMON_EVENTS {
     CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_ADDED,
     CommonEventSupport::COMMON_EVENT_SANDBOX_BUNDLE_REMOVED,
     CommonEventSupport::COMMON_EVENT_DISK_VOLUME_STATE_CHANGE,
+    CommonEventSupport::COMMON_EVENT_DATA_VOLUME_STATUS_REPORT,
 };
 
 static const std::vector<std::string> SENSITIVE_COMMON_EVENTS {
