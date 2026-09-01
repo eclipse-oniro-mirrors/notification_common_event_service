@@ -70,26 +70,28 @@ void AniCommonEventUtils::CallSetter(
     return;
 }
 
-void AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, ani_int value)
+bool AniCommonEventUtils::CreateAniIntObject(ani_env* env, ani_object &object, ani_int value)
 {
+    object = nullptr;
     ani_status aniResult = ANI_ERROR;
     ani_class clsInt = nullptr;
     ani_method ctor;
     aniResult = env->FindClass("std.core.Int", &clsInt);
     if (aniResult != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject FindClass error. result: %{public}d.", aniResult);
-        return;
+        return false;
     }
     aniResult = env->Class_FindMethod(clsInt, "<ctor>", "i:", &ctor);
     if (aniResult != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject Class_FindMethod error. result: %{public}d.", aniResult);
-        return;
+        return false;
     }
     aniResult = env->Object_New(clsInt, ctor, &object, value);
     if (aniResult != ANI_OK) {
         EVENT_LOGE(LOG_TAG_CES, "CreateAniIntObject Object_New error. result: %{public}d.", aniResult);
-        return;
+        return false;
     }
+    return true;
 }
 
 void AniCommonEventUtils::ConvertCommonEventDataToEts(
@@ -120,9 +122,10 @@ void AniCommonEventUtils::ConvertCommonEventDataToEts(
     CallSetter(env, cls, ani_data, Builder::BuildSetterName("data").c_str(), string);
 
     // set code [number]
-    ani_object codeObject;
-    CreateAniIntObject(env, codeObject, commonEventData.GetCode());
-    CallSetter(env, cls, ani_data, Builder::BuildSetterName("code").c_str(), codeObject);
+    ani_object codeObject = nullptr;
+    if (CreateAniIntObject(env, codeObject, commonEventData.GetCode())) {
+        CallSetter(env, cls, ani_data, Builder::BuildSetterName("code").c_str(), codeObject);
+    }
 
     // set parameters [Record]
     ani_ref wantParamRef = WrapWantParams(env, commonEventData.GetWant().GetParams());
