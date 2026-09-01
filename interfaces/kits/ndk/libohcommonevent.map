@@ -1,0 +1,84 @@
+/*
+ * Copyright (C) 2026 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+1.0 {
+  global:
+    OH_CommonEvent_AbortCommonEvent;
+    OH_CommonEvent_ClearAbortCommonEvent;
+    OH_CommonEvent_CreateParameters;
+    OH_CommonEvent_CreatePublishInfo;
+    OH_CommonEvent_CreateSubscribeInfo;
+    OH_CommonEvent_CreateSubscriber;
+    OH_CommonEvent_DestroyParameters;
+    OH_CommonEvent_DestroyPublishInfo;
+    OH_CommonEvent_DestroySubscribeInfo;
+    OH_CommonEvent_DestroySubscriber;
+    OH_CommonEvent_FinishCommonEvent;
+    OH_CommonEvent_GetAbortCommonEvent;
+    OH_CommonEvent_GetBoolArrayFromParameters;
+    OH_CommonEvent_GetBoolFromParameters;
+    OH_CommonEvent_GetBundleNameFromRcvData;
+    OH_CommonEvent_GetCharArrayFromParameters;
+    OH_CommonEvent_GetCharFromParameters;
+    OH_CommonEvent_GetCodeFromRcvData;
+    OH_CommonEvent_GetCodeFromSubscriber;
+    OH_CommonEvent_GetDataFromSubscriber;
+    OH_CommonEvent_GetDataStrFromRcvData;
+    OH_CommonEvent_GetDoubleArrayFromParameters;
+    OH_CommonEvent_GetDoubleFromParameters;
+    OH_CommonEvent_GetEventFromRcvData;
+    OH_CommonEvent_GetIntArrayFromParameters;
+    OH_CommonEvent_GetIntFromParameters;
+    OH_CommonEvent_GetLongArrayFromParameters;
+    OH_CommonEvent_GetLongFromParameters;
+    OH_CommonEvent_GetParametersFromRcvData;
+    OH_CommonEvent_HasKeyInParameters;
+    OH_CommonEvent_IsOrderedCommonEvent;
+    OH_CommonEvent_Publish;
+    OH_CommonEvent_PublishWithInfo;
+    OH_CommonEvent_SetBoolArrayToParameters;
+    OH_CommonEvent_SetBoolToParameters;
+    OH_CommonEvent_SetCharArrayToParameters;
+    OH_CommonEvent_SetCharToParameters;
+    OH_CommonEvent_SetCodeToSubscriber;
+    OH_CommonEvent_SetDataToSubscriber;
+    OH_CommonEvent_SetDoubleArrayToParameters;
+    OH_CommonEvent_SetDoubleToParameters;
+    OH_CommonEvent_SetIntArrayToParameters;
+    OH_CommonEvent_SetIntToParameters;
+    OH_CommonEvent_SetLongArrayToParameters;
+    OH_CommonEvent_SetLongToParameters;
+    OH_CommonEvent_SetPublishInfoBundleName;
+    OH_CommonEvent_SetPublishInfoCode;
+    OH_CommonEvent_SetPublishInfoData;
+    OH_CommonEvent_SetPublishInfoParameters;
+    OH_CommonEvent_SetPublishInfoPermissions;
+    OH_CommonEvent_SetPublisherBundleName;
+    OH_CommonEvent_SetPublisherPermission;
+    OH_CommonEvent_Subscribe;
+    OH_CommonEvent_UnSubscribe;
+    extern "C++" {
+      SubscriberManager::*;
+      SubscriberObservers::*;
+      OHOS::EventFwk::GetStringFromParams*;
+      vtable?for?SubscriberObserver;
+      OHOS::EventFwk::GetDataFromParams*;
+      OHOS::EventFwk::GetDataArrayFromParams*;
+    };
+    _fini;
+    _init;
+  local:
+    *;
+};

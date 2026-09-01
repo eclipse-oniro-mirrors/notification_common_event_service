@@ -1,0 +1,53 @@
+/*
+ * Copyright (C) 2026 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+1.0 {
+  global:
+    ANI_Constructor;
+    extern "C++" {
+      OHOS::EventManagerFwkAni::GetSubscriber*;
+      OHOS::EventManagerFwkAni::gSubscriberCls;
+      OHOS::EventManagerFwkAni::gSubscriberCtor;
+      OHOS::EventManagerFwkAni::SubscriberInstance*;
+      OHOS::EventManagerFwkAni::AniCommonEventUtils*;
+      OHOS::EventManagerFwkAni::CreateSubscriberRef*;
+      OHOS::EventManagerFwkAni::GetTransferRelation*;
+      OHOS::EventManagerFwkAni::GetSubscriberByWrapper*;
+      OHOS::EventManagerFwkAni::GetAsyncCommonEventResult*;
+      OHOS::EventManagerFwkAni::SetNapiSubscriberCallback*;
+      OHOS::EventManagerFwkAni::SubscriberInstanceWrapper*;
+      OHOS::EventManagerFwkAni::UnsubscribeAndRemoveInstance*;
+      OHOS::EventManagerFwkAni::init*;
+      "typeinfo for std::__h::bad_weak_ptr";
+      "typeinfo for std::logic_error";
+      "typeinfo for std::length_error";
+      "typeinfo for std::bad_array_new_length";
+      "typeinfo for std::bad_alloc";
+      "typeinfo for std::exception";
+      "typeinfo name for std::__h::bad_weak_ptr";
+      "typeinfo name for std::logic_error";
+      "typeinfo name for std::length_error";
+      "typeinfo name for std::bad_array_new_length";
+      "typeinfo name for std::bad_alloc";
+      "typeinfo name for std::exception";
+      vtable?for?OHOS::EventManagerFwkAni::SubscriberInstance;
+      OHOS::EventManagerFwkAni::AniCommonEventUtils::CallSetter*;
+      "OHOS::histogram::GetHistogramPlugin()::instance";
+    };
+    _fini;
+    _init;
+  local:
+    *;
+};

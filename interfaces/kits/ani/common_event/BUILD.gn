@@ -46,6 +46,7 @@ ohos_shared_library("ani_commoneventmanager") {
     debug = false
   }
   branch_protector_ret = "pac_ret"
+  version_script = "libani_commoneventmanager.map"
 
   include_dirs = [
     "${interfaces_path}/kits/ani/common_event/include",

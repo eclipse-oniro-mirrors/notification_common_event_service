@@ -46,6 +46,8 @@ ohos_shared_library("ohcommonevent") {
   }
   branch_protector_ret = "pac_ret"
 
+  version_script = "libohcommonevent.map"
+
   configs = [ ":cesfwk_ndk_config" ]
 
   public_configs = [ ":cesfwk_ndk_public_config" ]

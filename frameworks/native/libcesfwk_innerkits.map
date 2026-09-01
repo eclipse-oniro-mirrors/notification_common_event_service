@@ -1,0 +1,50 @@
+/*
+ * Copyright (C) 2026 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+1.0 {
+  global:
+    extern "C++" {
+      OHOS::EventFwk::MatchingSkills*;
+      OHOS::EventFwk::CommonEventData*;
+      OHOS::EventFwk::CommonEventManager*;
+      OHOS::EventFwk::CommonEventSupport*;
+      OHOS::EventFwk::CommonEventSubscriber*;
+      OHOS::EventFwk::AsyncCommonEventResult*;
+      OHOS::EventFwk::CommonEventPublishInfo*;
+      OHOS::EventFwk::CommonEventSubscribeInfo*;
+      construction?vtable?for?OHOS::Parcelable-in-OHOS::EventFwk::MatchingSkills;
+      construction?vtable?for?OHOS::Parcelable-in-OHOS::EventFwk::CommonEventData;
+      construction?vtable?for?OHOS::Parcelable-in-OHOS::EventFwk::CommonEventPublishInfo;
+      construction?vtable?for?OHOS::Parcelable-in-OHOS::EventFwk::CommonEventSubscribeInfo;
+      VTT?for?OHOS::EventFwk::MatchingSkills;
+      VTT?for?OHOS::EventFwk::CommonEventData;
+      VTT?for?OHOS::EventFwk::CommonEventPublishInfo;
+      VTT?for?OHOS::EventFwk::CommonEventSubscribeInfo;
+      vtable?for?OHOS::EventFwk::MatchingSkills;
+      vtable?for?OHOS::EventFwk::CommonEventData;
+      vtable?for?OHOS::EventFwk::CommonEventSupport;
+      vtable?for?OHOS::EventFwk::CommonEventSubscriber;
+      vtable?for?OHOS::EventFwk::CommonEventPublishInfo;
+      vtable?for?OHOS::EventFwk::CommonEventSubscribeInfo;
+      virtual?thunk?to?OHOS::EventFwk::MatchingSkills*;
+      virtual?thunk?to?OHOS::EventFwk::CommonEventData*;
+      virtual?thunk?to?OHOS::EventFwk::CommonEventPublishInfo*;
+      virtual?thunk?to?OHOS::EventFwk::CommonEventSubscribeInfo*;
+    };
+    _fini;
+    _init;
+  local:
+    *;
+};
