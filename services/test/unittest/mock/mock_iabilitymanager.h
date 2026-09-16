@@ -153,7 +153,7 @@ public:
     MOCK_METHOD(int, StartUserTest, (const Want &want, const sptr<IRemoteObject> &observer), (override));
     MOCK_METHOD(int, FinishUserTest, (const std::string &msg, const int64_t &resultCode, const std::string &bundleName),
         (override));
-    MOCK_METHOD(int, GetTopAbility, (sptr<IRemoteObject> & token), (override));
+    MOCK_METHOD(int, GetTopAbility, (sptr<IRemoteObject> & token, int32_t userId), (override));
     MOCK_METHOD(int, DelegatorDoAbilityForeground, (const sptr<IRemoteObject> &token), (override));
     MOCK_METHOD(int, DelegatorDoAbilityBackground, (const sptr<IRemoteObject> &token), (override));
     MOCK_METHOD(int, DoAbilityForeground, (const sptr<IRemoteObject> &token, uint32_t flag), (override));
