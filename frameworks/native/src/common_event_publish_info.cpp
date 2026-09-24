@@ -218,6 +218,8 @@ bool CommonEventPublishInfo::isSubscriberType(int32_t subscriberType)
             return true;
         case static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE):
             return true;
+        case static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE):
+            return true;
         default:
             return false;
     }

@@ -33,6 +33,7 @@
 #include "parameter.h"
 #include "subscriber_death_recipient.h"
 #include "bundle_manager_helper.h"
+#include "os_account_manager_helper.h"
 #ifdef WATCH_CUSTOMIZED_SCREEN_EVENT_TO_OTHER_APP
 #include <dlfcn.h>
 #endif
@@ -478,9 +479,40 @@ bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
     return false;
 }
  
-bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedType(
-    const int32_t &specifiedSubscriberType, const bool &isSystemApp)
+bool IsUserAppSubscriberType(const CommonEventPublishInfo &publishInfo)
 {
+    return publishInfo.GetSubscriberType() == static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE);
+}
+
+bool IsUserAppSubscriberTypeEvent(const std::shared_ptr<CommonEventPublishInfo> &publishInfo)
+{
+    return publishInfo != nullptr && IsUserAppSubscriberType(*publishInfo);
+}
+
+bool IsSubscriberSystemSide(const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
+{
+    if (subscriberRecord == nullptr) {
+        return true;
+    }
+    if (subscriberRecord->eventRecordInfo.isSubsystem) {
+        return true;
+    }
+    int32_t hostUserId = UNDEFINED_USER;
+    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(
+        static_cast<int32_t>(subscriberRecord->eventRecordInfo.uid), hostUserId) != ERR_OK) {
+        EVENT_LOGD(LOG_TAG_SUBSCRIBER, "Get host user id from uid %{public}d failed",
+            static_cast<int32_t>(subscriberRecord->eventRecordInfo.uid));
+        return true;
+    }
+    return OsAccountManagerHelper::IsInSystemUserSpace(hostUserId);
+}
+
+bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedType(
+    const int32_t &specifiedSubscriberType, const bool &isSystemApp, const SubscriberRecordPtr &subscriberRecord)
+{
+    if (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE)) {
+        return !IsSubscriberSystemSide(subscriberRecord);
+    }
     return specifiedSubscriberType == static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE) ||
         (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE) && isSystemApp);
 }
@@ -536,6 +568,10 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
             continue;
         }
         if (!CheckSubscriberByUserId(subscriberUserId, isSystemApp, eventRecord.userId)) {
+            continue;
+        }
+        if (IsUserAppSubscriberTypeEvent(eventRecord.publishInfo) && IsSubscriberSystemSide(subscriberRecord)) {
+            EVENT_LOGD(LOG_TAG_SUBSCRIBER, "Subscriber is system side, skip for USER_APP subscriber type event");
             continue;
         }
         if (!CheckSubscriberPermission(subscriberRecord, eventRecord)) {
@@ -609,7 +645,7 @@ bool CommonEventSubscriberManager::CheckSubscriberWhetherMatched(
     auto isSubscriberSystemApp = subscriberRecord->eventRecordInfo.isSystemApp ||
         subscriberRecord->eventRecordInfo.isSubsystem;
     if (specifiedSubscriberType != UNINITIALIZATED_SUBSCRIBER_TYPE &&
-        CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp)) {
+        CheckSubscriberBySpecifiedType(specifiedSubscriberType, isSubscriberSystemApp, subscriberRecord)) {
         checkResult |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
     }
 

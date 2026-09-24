@@ -25,6 +25,7 @@
 #include "bundle_manager_helper.h"
 #include "ces_inner_error_code.h"
 #include "common_event_constant.h"
+#include "common_event_subscriber_manager.h"
 #include "common_event_support.h"
 #include "double_wrapper.h"
 #include "event_log_wrapper.h"
@@ -194,6 +195,59 @@ void StaticSubscriberManager::PublishCommonEventConnecAbility(const CommonEventD
     DelayedSingleton<AbilityManagerHelper>::GetInstance()->ConnectAbility(want, data, service, userId);
 }
 
+bool StaticSubscriberManager::IsStaticSubscriberEligible(const StaticSubscriberInfo &subscriber,
+    const CommonEventPublishInfo &publishInfo, const int32_t &userId, const std::string &bundleName,
+    const std::string &eventName)
+{
+    if (IsDisableEvent(subscriber.bundleName, eventName, subscriber.userId)) {
+        EVENT_LOGW(LOG_TAG_STATIC, "subscriber %{public}s is disable.", subscriber.bundleName.c_str());
+        SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, eventName);
+        return false;
+    }
+    if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
+        EVENT_LOGD(LOG_TAG_STATIC, "subscriber %{public}s userId is invalid, subscriber.userId = %{public}d",
+            subscriber.bundleName.c_str(), subscriber.userId);
+        SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, eventName);
+        return false;
+    }
+    if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
+        && (subscriber.userId != userId)) {
+        EVENT_LOGD(LOG_TAG_STATIC, "subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
+            "userId = %{public}d", subscriber.bundleName.c_str(), subscriber.userId, userId);
+        SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, eventName);
+        return false;
+    }
+    if (IsUserAppSubscriberType(publishInfo) && OsAccountManagerHelper::IsInSystemUserSpace(subscriber.userId)) {
+        EVENT_LOGD(LOG_TAG_STATIC, "subscriber %{public}s is installed in system user space %{public}d,"
+            "skip for USER_APP subscriber type event", subscriber.bundleName.c_str(), subscriber.userId);
+        SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, eventName);
+        return false;
+    }
+    return true;
+}
+
+bool StaticSubscriberManager::IsStaticSubscriberMatched(const StaticSubscriberInfo &subscriber,
+    const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
+    const CommonEventData &data, const int32_t &userId, const std::string &bundleName)
+{
+    if (!CheckSubscriberWhetherMatched(subscriber, publishInfo)) {
+        SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+        return false;
+    }
+    if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
+        EVENT_LOGD(LOG_TAG_STATIC, "publisher does not have required permission %{public}s",
+            subscriber.permission.c_str());
+        SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+        return false;
+    }
+    if (!IsFilterParameters(subscriber, data)) {
+        EVENT_LOGD(LOG_TAG_STATIC, "subscriber filter parameters is not match, subscriber.bundleName = %{public}s",
+            subscriber.bundleName.c_str());
+        return false;
+    }
+    return true;
+}
+
 void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &data,
     const CommonEventPublishInfo &publishInfo, const Security::AccessToken::AccessTokenID &callerToken,
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
@@ -205,37 +259,10 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
     }
     std::vector<StaticSubscriberInfo> bootStartHaps {};
     for (auto subscriber : targetSubscribers->second) {
-        if (IsDisableEvent(subscriber.bundleName, targetSubscribers->first, subscriber.userId)) {
-            EVENT_LOGW(LOG_TAG_STATIC, "subscriber %{public}s is disable.", subscriber.bundleName.c_str());
-            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
+        if (!IsStaticSubscriberEligible(subscriber, publishInfo, userId, bundleName, data.GetWant().GetAction())) {
             continue;
         }
-        if (subscriber.userId < SUBSCRIBE_USER_SYSTEM_BEGIN) {
-            EVENT_LOGD(LOG_TAG_STATIC, "subscriber %{public}s userId is invalid, subscriber.userId = %{public}d",
-                subscriber.bundleName.c_str(), subscriber.userId);
-            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-            continue;
-        }
-        if ((subscriber.userId > SUBSCRIBE_USER_SYSTEM_END) && (userId != ALL_USER)
-            && (subscriber.userId != userId)) {
-            EVENT_LOGD(LOG_TAG_STATIC, "subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
-                "userId = %{public}d", subscriber.bundleName.c_str(), subscriber.userId, userId);
-            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-            continue;
-        }
-        if (!CheckSubscriberWhetherMatched(subscriber, publishInfo)) {
-            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-            continue;
-        }
-        if (!VerifyPublisherPermission(callerToken, subscriber.permission)) {
-            EVENT_LOGD(LOG_TAG_STATIC, "publisher does not have required permission %{public}s",
-                subscriber.permission.c_str());
-            SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, data.GetWant().GetAction());
-            continue;
-        }
-        if (!IsFilterParameters(subscriber, data)) {
-            EVENT_LOGD(LOG_TAG_STATIC, "subscriber filter parameters is not match, subscriber.bundleName = %{public}s",
-                subscriber.bundleName.c_str());
+        if (!IsStaticSubscriberMatched(subscriber, publishInfo, callerToken, data, userId, bundleName)) {
             continue;
         }
 #ifdef WATCH_EVENT_BOOT_COMPLETED_DELAY
@@ -299,8 +326,13 @@ bool StaticSubscriberManager::CheckSubscriberWhetherMatched(
     }
     auto isSystemApp = DelayedSingleton<BundleManagerHelper>::GetInstance()->
         CheckIsSystemAppByBundleName(subscriber.bundleName, subscriber.userId);
-    bool isTypeMatched = specifiedSubscriberType == static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE) ||
-        (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE) && isSystemApp);
+    bool isTypeMatched = false;
+    if (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE)) {
+        isTypeMatched = !OsAccountManagerHelper::IsInSystemUserSpace(subscriber.userId);
+    } else {
+        isTypeMatched = specifiedSubscriberType == static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE) ||
+            (specifiedSubscriberType == static_cast<int32_t>(SubscriberType::SYSTEM_SUBSCRIBER_TYPE) && isSystemApp);
+    }
     if (specifiedSubscriberType != UNINITIALIZATED_SUBSCRIBER_TYPE && isTypeMatched) {
         checkResult |= SUBSCRIBER_FILTER_SUBSCRIBER_TYPE_INDEX;
     }

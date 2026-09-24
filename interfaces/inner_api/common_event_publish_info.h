@@ -23,7 +23,8 @@ namespace EventFwk {
 
 enum SubscriberType {
     ALL_SUBSCRIBER_TYPE,
-    SYSTEM_SUBSCRIBER_TYPE
+    SYSTEM_SUBSCRIBER_TYPE,
+    USER_APP_SUBSCRIBER_TYPE
 };
 
 enum class ValidationRule {
@@ -123,8 +124,13 @@ public:
     /**
      * Sets type of subscriber.
      *
-     * @param subscriberType Indicates the type of subscriber, which can be ALL_SUBSCRIBER_TYPE = 0
-     * or SYSTEM_SUBSCRIBER_TYPE = 1. default is ALL_SUBSCRIBER_TYPE when param is out of range.
+     * @param subscriberType Indicates the type of subscriber, which can be ALL_SUBSCRIBER_TYPE = 0,
+     * SYSTEM_SUBSCRIBER_TYPE = 1 or USER_APP_SUBSCRIBER_TYPE = 2. default is ALL_SUBSCRIBER_TYPE
+     * when param is out of range. When USER_APP_SUBSCRIBER_TYPE is set, the common event is
+     * delivered only to subscribers hosted in a normal user space: subscribers of subsystem
+     * (native token) and subscribers hosted in system user space [0, 99] are excluded, while
+     * other subscribers are delivered by existing matching conditions as usual. Only subsystems
+     * (native token) or system applications are allowed to publish with USER_APP_SUBSCRIBER_TYPE.
      */
     void SetSubscriberType(const int32_t &subscriberType);
  

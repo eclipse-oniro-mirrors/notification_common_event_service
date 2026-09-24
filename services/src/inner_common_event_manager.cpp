@@ -607,6 +607,11 @@ bool InnerCommonEventManager::PublishStickyEvent(
                 commonEventRecord->publishInfo->GetBundleName().c_str());
             continue;
         }
+        if (IsUserAppSubscriberTypeEvent(commonEventRecord->publishInfo) &&
+            IsSubscriberSystemSide(subscriberRecord)) {
+            EVENT_LOGD(LOG_TAG_STICKY, "Subscriber is system side, skip sticky replay for USER_APP subscriber type");
+            continue;
+        }
 
         commonEventRecord->publishInfo->SetOrdered(false);
         if (!controlPtr_) {

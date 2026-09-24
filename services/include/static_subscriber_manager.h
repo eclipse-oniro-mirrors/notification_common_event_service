@@ -113,6 +113,11 @@ private:
     void PublishCommonEventInner(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
         const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId,
         const sptr<IRemoteObject> &service, const std::string &bundleName);
+    bool IsStaticSubscriberEligible(const StaticSubscriberInfo &subscriber, const CommonEventPublishInfo &publishInfo,
+        const int32_t &userId, const std::string &bundleName, const std::string &eventName);
+    bool IsStaticSubscriberMatched(const StaticSubscriberInfo &subscriber, const CommonEventPublishInfo &publishInfo,
+        const Security::AccessToken::AccessTokenID &callerToken, const CommonEventData &data, const int32_t &userId,
+        const std::string &bundleName);
     void SendStaticSubscriberStartHiSysEvent(int32_t userId, const std::string &publisherName,
         const std::string &subscriberName, const std::string &eventName);
     void ParseFilterObject(

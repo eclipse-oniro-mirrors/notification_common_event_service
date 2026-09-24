@@ -29,9 +29,18 @@ public:
     virtual ~OsAccountManagerHelper() {}
 
     /**
-    * @brief check is system account
-    */
+     * @brief check is system account
+     */
     static bool IsSystemAccount(int32_t userId);
+
+    /**
+     * Checks whether the user id is in system user space,
+     * i.e. [SUBSCRIBE_USER_SYSTEM_BEGIN, SUBSCRIBE_USER_SYSTEM_END].
+     *
+     * @param userId Indicates the user id.
+     * @return Returns true if the user id is in system user space.
+     */
+    static bool IsInSystemUserSpace(const int32_t userId);
 
     /**
      * Queries active operating system account IDs.
