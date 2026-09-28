@@ -14,6 +14,7 @@
  */
 
 #include "subscriber_death_recipient.h"
+#include "common_event_manager_service.h"
 #include "common_event_subscriber_manager.h"
 #include "event_log_wrapper.h"
 
@@ -32,6 +33,13 @@ void SubscriberDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
     if (!object) {
         EVENT_LOGE(LOG_TAG_SUBSCRIBER, "object is null");
         return;
+    }
+
+    auto controlManager = CommonEventManagerService::GetInstance()->GetControlManager();
+    if (controlManager) {
+        controlManager->FinishMatchingOrderedReceiver(object);
+    } else {
+        EVENT_LOGE(LOG_TAG_SUBSCRIBER, "CommonEventControlManager ptr is nullptr");
     }
 
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveSubscriber(object);

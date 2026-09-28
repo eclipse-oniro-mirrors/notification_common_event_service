@@ -422,6 +422,18 @@ std::shared_ptr<OrderedEventRecord> CommonEventControlManager::GetMatchingOrdere
     return nullptr;
 }
 
+void CommonEventControlManager::FinishMatchingOrderedReceiver(const sptr<IRemoteObject> &proxy)
+{
+    EVENT_LOGD(LOG_TAG_CES, "enter");
+    std::shared_ptr<OrderedEventRecord> sp = GetMatchingOrderedReceiver(proxy);
+    if (sp) {
+        EVENT_LOGD(LOG_TAG_CES, "Unsubscribe the subscriber who is waiting to receive finish feedback");
+        int32_t code = sp->commonEventData->GetCode();
+        std::string data = sp->commonEventData->GetData();
+        FinishReceiverAction(sp, code, data, sp->resultAbort);
+    }
+}
+
 bool CommonEventControlManager::GetOrderedEventHandler()
 {
     if (!orderedQueue_) {

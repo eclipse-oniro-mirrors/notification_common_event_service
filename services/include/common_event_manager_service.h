@@ -187,6 +187,13 @@ public:
 #endif
     ErrCode Init();
 
+    /**
+     * Gets the common event control manager.
+     *
+     * @return Returns the common event control manager.
+     */
+    std::shared_ptr<CommonEventControlManager> GetControlManager() const;
+
 private:
     bool IsReady() const;
 

@@ -100,6 +100,15 @@ bool CommonEventManagerService::IsReady() const
     return true;
 }
 
+std::shared_ptr<CommonEventControlManager> CommonEventManagerService::GetControlManager() const
+{
+    if (!innerCommonEventManager_) {
+        EVENT_LOGE(LOG_TAG_CES, "innerCommonEventManager is null");
+        return nullptr;
+    }
+    return innerCommonEventManager_->GetControlManager();
+}
+
 ErrCode CommonEventManagerService::PublishCommonEvent(
     const CommonEventData& event, const CommonEventPublishInfo& publishinfo, int32_t userId, int32_t& funcResult)
 {
