@@ -209,6 +209,7 @@ ohos_unittest("static_subscriber_manager_unit_test") {
     "static_subscriber_manager_unit_test/mock_access_token_helper.cpp",
     "static_subscriber_manager_unit_test/mock_os_account_manager_helper.cpp",
     "static_subscriber_manager_unit_test/static_subscriber_manager_unit_test.cpp",
+    "static_subscriber_manager_unit_test/static_subscriber_manager_user_app_unit_test.cpp",
   ]
 
   if (build_variant == "root") {
@@ -798,6 +799,7 @@ ohos_unittest("common_event_subscriber_manager_test") {
 
   sources = [
     "common_event_subscriber_manager_test.cpp",
+    "common_event_subscriber_manager_user_app_test.cpp",
     "mock/mock_access_token_kit.cpp",
     "mock/mock_common_event_permission_manager.cpp",
     "mock/mock_bundle_manager_helper.cpp",

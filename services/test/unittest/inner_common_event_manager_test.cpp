@@ -26,6 +26,7 @@
 #include "common_event_manager.h"
 #include "common_event_stub.h"
 #include "common_event_subscriber_manager.h"
+#include "common_event_sticky_manager.h"
 #include "inner_common_event_manager.h"
 #undef private
 
@@ -699,4 +700,100 @@ HWTEST_F(InnerCommonEventManagerTest, GetJsonFromFile_00011, Function | SmallTes
     InnerCommonEventManager innerCommonEventManager;
     nlohmann::json root;
     EXPECT_FALSE(innerCommonEventManager.GetJsonFromFile("/vendor/etc/init", root));
+}
+
+/**
+ * @tc.name: PublishStickyEvent_UserAppTypeSkipSystemSideSubscriber
+ * @tc.desc: test sticky replay skips subsystem subscriber for USER_APP type sticky event.
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, PublishStickyEvent_UserAppTypeSkipSystemSideSubscriber, Function | SmallTest |
+    Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    innerCommonEventManager.controlPtr_ = nullptr;
+    auto stickyManager = DelayedSingleton<CommonEventStickyManager>::GetInstance();
+    const std::string event = "test.event.sticky.userapp.subsystem";
+    std::shared_ptr<CommonEventRecord> record = std::make_shared<CommonEventRecord>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+    record->publishInfo = publishInfo;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction(event);
+    commonEventData->SetWant(want);
+    record->commonEventData = commonEventData;
+    stickyManager->commonEventRecords_[event] = record;
+
+    MatchingSkills skills;
+    skills.AddEvent(event);
+    std::shared_ptr<CommonEventSubscribeInfo> sp = std::make_shared<CommonEventSubscribeInfo>(skills);
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->eventRecordInfo.isSubsystem = true;
+    subscriberRecord->eventRecordInfo.uid = 5523;
+
+    EXPECT_TRUE(innerCommonEventManager.PublishStickyEvent(sp, subscriberRecord));
+}
+
+/**
+ * @tc.name: PublishStickyEvent_UserAppTypeReachDeliveryForUserSpaceSubscriber
+ * @tc.desc: test sticky replay reaches delivery for user space subscriber of USER_APP type sticky event.
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, PublishStickyEvent_UserAppTypeReachDeliveryForUserSpaceSubscriber,
+    Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    innerCommonEventManager.controlPtr_ = nullptr;
+    auto stickyManager = DelayedSingleton<CommonEventStickyManager>::GetInstance();
+    const std::string event = "test.event.sticky.userapp.userspace";
+    std::shared_ptr<CommonEventRecord> record = std::make_shared<CommonEventRecord>();
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    publishInfo->SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+    record->publishInfo = publishInfo;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction(event);
+    commonEventData->SetWant(want);
+    record->commonEventData = commonEventData;
+    stickyManager->commonEventRecords_[event] = record;
+
+    MatchingSkills skills;
+    skills.AddEvent(event);
+    std::shared_ptr<CommonEventSubscribeInfo> sp = std::make_shared<CommonEventSubscribeInfo>(skills);
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->eventRecordInfo.uid = 20010001;
+
+    EXPECT_FALSE(innerCommonEventManager.PublishStickyEvent(sp, subscriberRecord));
+}
+
+/**
+ * @tc.name: PublishStickyEvent_WithoutUserAppTypeReachDeliveryForSystemSideSubscriber
+ * @tc.desc: test sticky replay keeps existing behavior for sticky event without USER_APP type.
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, PublishStickyEvent_WithoutUserAppTypeReachDeliveryForSystemSideSubscriber,
+    Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    innerCommonEventManager.controlPtr_ = nullptr;
+    auto stickyManager = DelayedSingleton<CommonEventStickyManager>::GetInstance();
+    const std::string event = "test.event.sticky.notype";
+    std::shared_ptr<CommonEventRecord> record = std::make_shared<CommonEventRecord>();
+    record->publishInfo = std::make_shared<CommonEventPublishInfo>();
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>();
+    OHOS::AAFwk::Want want;
+    want.SetAction(event);
+    commonEventData->SetWant(want);
+    record->commonEventData = commonEventData;
+    stickyManager->commonEventRecords_[event] = record;
+
+    MatchingSkills skills;
+    skills.AddEvent(event);
+    std::shared_ptr<CommonEventSubscribeInfo> sp = std::make_shared<CommonEventSubscribeInfo>(skills);
+    std::shared_ptr<EventSubscriberRecord> subscriberRecord = std::make_shared<EventSubscriberRecord>();
+    subscriberRecord->eventRecordInfo.isSubsystem = true;
+    subscriberRecord->eventRecordInfo.uid = 5523;
+
+    EXPECT_FALSE(innerCommonEventManager.PublishStickyEvent(sp, subscriberRecord));
 }

@@ -246,7 +246,8 @@ private:
     bool CheckWhetherIsAppIndexSubscribed(const SubscriberRecordPtr &subscriberRecord,
         const CommonEventRecord &eventRecord);
  
-    bool CheckSubscriberBySpecifiedType(const int32_t &specifiedSubscriberType, const bool &isSystemApp);
+    bool CheckSubscriberBySpecifiedType(const int32_t &specifiedSubscriberType, const bool &isSystemApp,
+        const SubscriberRecordPtr &subscriberRecord);
 
     bool CheckSubscriberByMaximumVersion(const SubscriberRecordPtr &subscriberRecord,
         const CommonEventRecord &eventRecord);
@@ -301,6 +302,31 @@ private:
     std::unordered_map<pid_t, FrozenRecords> frozenEventsMap_;
     std::atomic<bool> hasCompacted_ = false;
 };
+
+/**
+ * Checks whether the publish info declares USER_APP_SUBSCRIBER_TYPE.
+ *
+ * @param publishInfo Indicates the publish info.
+ * @return Returns true if the subscriber type is USER_APP_SUBSCRIBER_TYPE.
+ */
+bool IsUserAppSubscriberType(const CommonEventPublishInfo &publishInfo);
+
+/**
+ * Checks whether the publish info is valid and declares USER_APP_SUBSCRIBER_TYPE.
+ *
+ * @param publishInfo Indicates the publish info.
+ * @return Returns true if publishInfo is not null and its subscriber type is USER_APP_SUBSCRIBER_TYPE.
+ */
+bool IsUserAppSubscriberTypeEvent(const std::shared_ptr<CommonEventPublishInfo> &publishInfo);
+
+/**
+ * Checks whether the subscriber is hosted on system side, i.e. a subsystem (native token)
+ * or a subscriber whose host user is in system user space [0, 99].
+ *
+ * @param subscriberRecord Indicates the subscriber record.
+ * @return Returns true if the subscriber is hosted on system side.
+ */
+bool IsSubscriberSystemSide(const std::shared_ptr<EventSubscriberRecord> &subscriberRecord);
 }  // namespace EventFwk
 }  // namespace OHOS
 #endif  // FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_COMMON_EVENT_SUBSCRIBER_MANAGER_H

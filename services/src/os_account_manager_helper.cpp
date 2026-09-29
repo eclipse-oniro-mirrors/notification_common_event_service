@@ -14,6 +14,7 @@
  */
 
 #include "os_account_manager_helper.h"
+#include "common_event_constant.h"
 #include "event_log_wrapper.h"
 
 #ifdef HAS_OS_ACCOUNT_PART
@@ -63,6 +64,11 @@ bool OsAccountManagerHelper::CheckUserExists(const int32_t &userId)
 bool OsAccountManagerHelper::IsSystemAccount(int32_t userId)
 {
     return userId >= AccountSA::Constants::START_USER_ID && userId <= AccountSA::Constants::MAX_USER_ID;
+}
+
+bool OsAccountManagerHelper::IsInSystemUserSpace(const int32_t userId)
+{
+    return userId >= SUBSCRIBE_USER_SYSTEM_BEGIN && userId <= SUBSCRIBE_USER_SYSTEM_END;
 }
 
 ErrCode OsAccountManagerHelper::GetCurrentActiveUserId(int32_t &id)

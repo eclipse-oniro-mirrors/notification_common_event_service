@@ -578,5 +578,28 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Le
     EXPECT_EQ(ret, result);
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0204 end";
 }
+
+/**
+ * @tc.name: CommonEventManagerServiceBranch_0303
+ * @tc.desc: 1.test PublishCommonEvent with USER_APP subscriber type from non-system caller.
+ *           2.no caller identity verification for USER_APP type (removed per review), publish proceeds.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0303, Level0)
+{
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0303 start";
+    sptr<CommonEventManagerService> comm = new (std::nothrow) CommonEventManagerService();
+    ASSERT_NE(nullptr, comm);
+    comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
+    comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
+    CommonEventData event;
+    CommonEventPublishInfo publishinfo;
+    publishinfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+    MockDlpType(DlpType::DLP_COMMON);
+    MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
+    int32_t result = comm->PublishCommonEventDetailed(event, publishinfo, nullptr, 1, 20010001, 0, UNDEFINED_USER);
+    EXPECT_EQ(ERR_OK, result);
+    GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0303 end";
+}
 }
 }

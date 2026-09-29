@@ -211,3 +211,40 @@ HWTEST_F(CommonEventPublishInfoTest, ReadFromParcel_ShouldKeepUidsWithinMax, Tes
     ASSERT_NE(nullptr, deserialized);
     EXPECT_EQ(deserialized->GetSubscriberUid(), uids);
 }
+
+/**
+ * @tc.name  : SetSubscriberType_ShouldAcceptUserAppType
+ * @tc.number: CommonEventPublishInfoTest_007
+ * @tc.desc  : Test SetSubscriberType accepts USER_APP_SUBSCRIBER_TYPE and isSubscriberType whitelist covers it
+ */
+HWTEST_F(CommonEventPublishInfoTest, SetSubscriberType_ShouldAcceptUserAppType, TestSize.Level0)
+{
+    CommonEventPublishInfo info;
+    info.SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+    EXPECT_EQ(info.GetSubscriberType(), static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+    EXPECT_TRUE(info.isSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE)));
+}
+
+/**
+ * @tc.name  : ReadFromParcel_ShouldKeepUserAppSubscriberType
+ * @tc.number: CommonEventPublishInfoTest_008
+ * @tc.desc  : Test Marshalling/Unmarshalling roundtrip keeps USER_APP_SUBSCRIBER_TYPE
+ */
+HWTEST_F(CommonEventPublishInfoTest, ReadFromParcel_ShouldKeepUserAppSubscriberType, TestSize.Level0)
+{
+    Parcel parcel;
+    CommonEventPublishInfo info;
+    info.SetBundleName("test");
+    info.SetOrdered(false);
+    info.SetSticky(false);
+    info.SetSubscriberPermissions({});
+    info.SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+    info.SetValidationRule(ValidationRule::AND);
+    info.SetSubscriberUid({});
+
+    EXPECT_TRUE(info.Marshalling(parcel));
+    sptr<CommonEventPublishInfo> deserialized = CommonEventPublishInfo::Unmarshalling(parcel);
+    ASSERT_NE(nullptr, deserialized);
+    EXPECT_EQ(deserialized->GetSubscriberType(),
+        static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+}

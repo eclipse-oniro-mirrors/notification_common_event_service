@@ -14,6 +14,7 @@
  */
 
 #include "os_account_manager_helper.h"
+#include "common_event_constant.h"
 
 namespace {
 int32_t g_mockId = 100; // default id when there is no os_account part
@@ -76,6 +77,11 @@ ErrCode OsAccountManagerHelper::GetOsAccountLocalIdFromUid(const int32_t uid, in
 {
     id = g_mockIdForGetOsAccountLocalIdFromUid;
     return g_mockGetOsAccountLocalIdFromUidRet ? ERR_OK : ERR_INVALID_OPERATION;
+}
+
+bool OsAccountManagerHelper::IsInSystemUserSpace(const int32_t userId)
+{
+    return userId >= SUBSCRIBE_USER_SYSTEM_BEGIN && userId <= SUBSCRIBE_USER_SYSTEM_END;
 }
 }  // namespace EventFwk
 }  // namespace OHOS
