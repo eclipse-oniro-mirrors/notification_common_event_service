@@ -388,13 +388,7 @@ bool InnerCommonEventManager::UnsubscribeCommonEvent(const sptr<IRemoteObject> &
         return false;
     }
 
-    std::shared_ptr<OrderedEventRecord> sp = controlPtr_->GetMatchingOrderedReceiver(commonEventListener);
-    if (sp) {
-        EVENT_LOGD(LOG_TAG_CES, "Unsubscribe the subscriber who is waiting to receive finish feedback");
-        int32_t code = sp->commonEventData->GetCode();
-        std::string data = sp->commonEventData->GetData();
-        controlPtr_->FinishReceiverAction(sp, code, data, sp->resultAbort);
-    }
+    controlPtr_->FinishMatchingOrderedReceiver(commonEventListener);
     DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveSubscriber(commonEventListener);
     return true;
 }

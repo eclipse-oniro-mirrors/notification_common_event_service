@@ -114,6 +114,16 @@ public:
         const sptr<IRemoteObject> &proxy, const int32_t &code, const std::string &receiverData, const bool &abortEvent);
 
     /**
+     * Gets the common event control manager.
+     *
+     * @return Returns the common event control manager.
+     */
+    std::shared_ptr<CommonEventControlManager> GetControlManager() const
+    {
+        return controlPtr_;
+    }
+
+    /**
      * Freezes application.
      *
      * @param uid Indicates the uid of application.

@@ -60,6 +60,14 @@ public:
     std::shared_ptr<OrderedEventRecord> GetMatchingOrderedReceiver(const sptr<IRemoteObject> &proxy);
 
     /**
+     * Finishes the ordered receiver whose proxy matches, so the ordered event
+     * can continue when the receiver is unsubscribed or dies.
+     *
+     * @param proxy Indicates the current ordered receiver.
+     */
+    void FinishMatchingOrderedReceiver(const sptr<IRemoteObject> &proxy);
+
+    /**
      * Finishes the action of the current receiver.
      *
      * @param recordPtr Indicates the ordered event record.
