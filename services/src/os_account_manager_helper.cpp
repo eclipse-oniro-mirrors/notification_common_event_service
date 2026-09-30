@@ -31,7 +31,7 @@ const int32_t UID_TRANSFORM_DIVISOR = 200000;
 }
 #endif // HAS_OS_ACCOUNT_PART
 
-ErrCode OsAccountManagerHelper::QueryActiveOsAccountIds(std::vector<int32_t>& ids)
+ErrCode __attribute__((weak)) OsAccountManagerHelper::QueryActiveOsAccountIds(std::vector<int32_t>& ids)
 {
 #ifndef HAS_OS_ACCOUNT_PART
     ids.emplace_back(DEFAULT_OS_ACCOUNT_ID);
@@ -41,7 +41,7 @@ ErrCode OsAccountManagerHelper::QueryActiveOsAccountIds(std::vector<int32_t>& id
 #endif // HAS_OS_ACCOUNT_PART
 }
 
-ErrCode OsAccountManagerHelper::GetOsAccountLocalIdFromUid(const int32_t uid, int32_t &id)
+ErrCode __attribute__((weak)) OsAccountManagerHelper::GetOsAccountLocalIdFromUid(const int32_t uid, int32_t &id)
 {
 #ifndef HAS_OS_ACCOUNT_PART
     id = uid / UID_TRANSFORM_DIVISOR;
@@ -66,7 +66,7 @@ bool OsAccountManagerHelper::IsSystemAccount(int32_t userId)
     return userId >= AccountSA::Constants::START_USER_ID && userId <= AccountSA::Constants::MAX_USER_ID;
 }
 
-bool OsAccountManagerHelper::IsInSystemUserSpace(const int32_t userId)
+bool __attribute__((weak)) OsAccountManagerHelper::IsInSystemUserSpace(const int32_t userId)
 {
     return userId >= SUBSCRIBE_USER_SYSTEM_BEGIN && userId <= SUBSCRIBE_USER_SYSTEM_END;
 }

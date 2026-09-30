@@ -66,7 +66,7 @@ bool __attribute__((weak)) AccessTokenHelper::IsDlpHap(const AccessTokenID &call
     return false;
 }
 
-AccessTokenID AccessTokenHelper::GetHapTokenID(int userID,
+AccessTokenID __attribute__((weak)) AccessTokenHelper::GetHapTokenID(int userID,
     const std::string& bundleName, int instIndex)
 {
     return AccessTokenKit::GetHapTokenID(userID, bundleName, instIndex);
