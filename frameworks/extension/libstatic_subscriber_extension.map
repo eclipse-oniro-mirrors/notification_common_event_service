@@ -37,7 +37,6 @@
       vtable?for?OHOS::EventFwk::JsStaticSubscriberExtension;
       vtable?for?OHOS::EventFwk::StaticSubscriberExtensionContext;
       non-virtual?thunk?to?OHOS::EventFwk::StaticSubscriberStubImpl*;
-      OHOS::AbilityRuntime::ExtensionBase*;
     };
     _fini;
     _init;

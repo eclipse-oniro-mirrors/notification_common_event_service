@@ -23,7 +23,6 @@
       "OHOS::Singleton<OHOS::EventFwk::StaticSubscriberExtensionModuleLoader>::instance_";
       vtable?for?OHOS::EventFwk::StaticSubscriberExtensionModuleLoader;
       non-virtual?thunk?to?OHOS::EventFwk::StaticSubscriberExtensionModuleLoader::*;
-      OHOS::AbilityRuntime::ExtensionBase*;
     };
     _fini;
     _init;

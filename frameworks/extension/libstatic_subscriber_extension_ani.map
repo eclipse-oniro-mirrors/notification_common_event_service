@@ -13,36 +13,19 @@
  * limitations under the License.
  */
 
+# C++ extension classes (StaticSubscriberExtension / StaticSubscriberExtensionContext /
+# StaticSubscriberStubImpl) are implemented in libstatic_subscriber_extension.z.so, a direct
+# DT_NEEDED dependency which exports their vtables / VTT / construction vtables / thunks;
+# std typeinfo symbols are provided by libc++.so. This library only references them as
+# undefined symbols that resolve through that dependency chain, and contains no dynamic_cast
+# or other RTTI usage, so none of them need to be exported here. Keeping a single definition
+# avoids cross-DSO vtable/RTTI divergence.
 1.0 {
   global:
     ANI_Constructor;
     OHOS_STS_StaticSubscriberExtension_Creation;
     extern "C++" {
-      construction?vtable?for?OHOS::EventFwk::StaticSubscriberStub-in-OHOS::EventFwk::StaticSubscriberStubImpl;
-      construction?vtable?for?OHOS::IRemoteStub*;
-      construction?vtable?for?OHOS::IPCObjectStub-in-OHOS::EventFwk::StaticSubscriberStubImpl;
-      construction?vtable?for?OHOS::IRemoteObject-in-OHOS::EventFwk::StaticSubscriberStubImpl;
-      construction?vtable?for?OHOS::EventFwk::IStaticSubscriber-in-OHOS::EventFwk::StaticSubscriberStubImpl;
-      construction?vtable?for?OHOS::IRemoteBroker-in-OHOS::EventFwk::StaticSubscriberStubImpl;
-      construction?vtable?for?OHOS::Parcelable-in-OHOS::EventFwk::StaticSubscriberStubImpl;
-      "typeinfo for std::__h::bad_weak_ptr";
-      "typeinfo for std::logic_error";
-      "typeinfo for std::length_error";
-      "typeinfo for std::bad_array_new_length";
-      "typeinfo for std::bad_alloc";
-      "typeinfo for std::exception";
-      "typeinfo name for std::__h::bad_weak_ptr";
-      "typeinfo name for std::logic_error";
-      "typeinfo name for std::length_error";
-      "typeinfo name for std::bad_array_new_length";
-      "typeinfo name for std::bad_alloc";
-      "typeinfo name for std::exception";
-      VTT?for?OHOS::EventFwk::StaticSubscriberStubImpl;
       vtable?for?OHOS::EventManagerFwkAni::StsStaticSubscriberExtension;
-      vtable?for?OHOS::EventFwk::StaticSubscriberStubImpl;
-      vtable?for?OHOS::EventFwk::StaticSubscriberExtension;
-      vtable?for?OHOS::EventFwk::StaticSubscriberExtensionContext;
-      non-virtual?thunk?to?OHOS::EventFwk::StaticSubscriberStubImpl::OnReceiveEvent*;
     };
   local:
     *;
