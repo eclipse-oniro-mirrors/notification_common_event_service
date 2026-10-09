@@ -25,7 +25,6 @@
 #include "bundle_manager_helper.h"
 #include "ces_inner_error_code.h"
 #include "common_event_constant.h"
-#include "common_event_subscriber_manager.h"
 #include "common_event_support.h"
 #include "double_wrapper.h"
 #include "event_log_wrapper.h"
@@ -196,8 +195,7 @@ void StaticSubscriberManager::PublishCommonEventConnecAbility(const CommonEventD
 }
 
 bool StaticSubscriberManager::IsStaticSubscriberEligible(const StaticSubscriberInfo &subscriber,
-    const CommonEventPublishInfo &publishInfo, const int32_t &userId, const std::string &bundleName,
-    const std::string &eventName)
+    const int32_t &userId, const std::string &bundleName, const std::string &eventName)
 {
     if (IsDisableEvent(subscriber.bundleName, eventName, subscriber.userId)) {
         EVENT_LOGW(LOG_TAG_STATIC, "subscriber %{public}s is disable.", subscriber.bundleName.c_str());
@@ -214,12 +212,6 @@ bool StaticSubscriberManager::IsStaticSubscriberEligible(const StaticSubscriberI
         && (subscriber.userId != userId)) {
         EVENT_LOGD(LOG_TAG_STATIC, "subscriber %{public}s userId is not match, subscriber.userId = %{public}d,"
             "userId = %{public}d", subscriber.bundleName.c_str(), subscriber.userId, userId);
-        SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, eventName);
-        return false;
-    }
-    if (IsUserAppSubscriberType(publishInfo) && OsAccountManagerHelper::IsInSystemUserSpace(subscriber.userId)) {
-        EVENT_LOGD(LOG_TAG_STATIC, "subscriber %{public}s is installed in system user space %{public}d,"
-            "skip for USER_APP subscriber type event", subscriber.bundleName.c_str(), subscriber.userId);
         SendStaticEventProcErrHiSysEvent(userId, bundleName, subscriber.bundleName, eventName);
         return false;
     }
@@ -259,7 +251,7 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
     }
     std::vector<StaticSubscriberInfo> bootStartHaps {};
     for (auto subscriber : targetSubscribers->second) {
-        if (!IsStaticSubscriberEligible(subscriber, publishInfo, userId, bundleName, data.GetWant().GetAction())) {
+        if (!IsStaticSubscriberEligible(subscriber, userId, bundleName, data.GetWant().GetAction())) {
             continue;
         }
         if (!IsStaticSubscriberMatched(subscriber, publishInfo, callerToken, data, userId, bundleName)) {
