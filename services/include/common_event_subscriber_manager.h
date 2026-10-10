@@ -304,14 +304,6 @@ private:
 };
 
 /**
- * Checks whether the publish info declares USER_APP_SUBSCRIBER_TYPE.
- *
- * @param publishInfo Indicates the publish info.
- * @return Returns true if the subscriber type is USER_APP_SUBSCRIBER_TYPE.
- */
-bool IsUserAppSubscriberType(const CommonEventPublishInfo &publishInfo);
-
-/**
  * Checks whether the publish info is valid and declares USER_APP_SUBSCRIBER_TYPE.
  *
  * @param publishInfo Indicates the publish info.

@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 #define private public  // NOLINT
 #include "common_event_constant.h"
+#include "common_event_permission_manager.h"
 #include "common_event_publish_info.h"
 #include "common_event_subscriber_manager.h"
 #include "os_account_manager_helper.h"
@@ -27,6 +28,13 @@
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::EventFwk;
+
+namespace OHOS {
+namespace EventFwk {
+extern void MockGetEventPermission(bool mockRet, PermissionState mockState = PermissionState::AND,
+    int32_t permissionSize = 1);
+}
+}
 
 class CommonEventSubscriberManagerUserAppTest : public testing::Test {
 public:
@@ -277,7 +285,7 @@ HWTEST_F(CommonEventSubscriberManagerUserAppTest, GetSubscriberRecordsByWantLock
 
 /**
  * @tc.name: GetSubscriberRecordsByWantLocked_UserAppOrRule
- * @tc.desc: test system side subscriber cannot bypass USER_APP exclusion via OR rule with permissions.
+ * @tc.desc: test USER_APP type bit combines with ValidationRule OR/AND like other filter bits.
  * @tc.type: FUNC
  */
 HWTEST_F(CommonEventSubscriberManagerUserAppTest, GetSubscriberRecordsByWantLocked_UserAppOrRule, Level0)
@@ -290,6 +298,7 @@ HWTEST_F(CommonEventSubscriberManagerUserAppTest, GetSubscriberRecordsByWantLock
     subs.push_back(CreateUserAppMatrixRecord(event, 100, UID_USER_100_NORMAL, false, "app.user100.normal"));
     manager.eventSubscribers_.emplace(event, subs);
     MockIsVerfyPermisson(true);
+    MockGetEventPermission(false);
 
     CommonEventRecord eventRecord;
     std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
@@ -308,14 +317,31 @@ HWTEST_F(CommonEventSubscriberManagerUserAppTest, GetSubscriberRecordsByWantLock
     commonEventData->SetWant(want);
     eventRecord.commonEventData = commonEventData;
 
-    // subsystem holds the required permission, but hard precondition still excludes it
-    MockIsVerfyPermisson(true);
+    // OR rule: subsystem holding the permission is delivered via the permission bit
     std::vector<SubscriberRecordPtr> records;
+    manager.GetSubscriberRecordsByWantLocked(eventRecord, records);
+    EXPECT_EQ(records.size(), 2);
+    EXPECT_TRUE(ContainsBundle(records, "app.user100.normal"));
+    EXPECT_TRUE(ContainsBundle(records, "subsystem.native"));
+
+    // OR rule: subsystem without the permission has no satisfied bit and is excluded
+    MockIsVerfyPermisson(false);
+    records.clear();
+    manager.GetSubscriberRecordsByWantLocked(eventRecord, records);
+    EXPECT_EQ(records.size(), 1);
+    EXPECT_TRUE(ContainsBundle(records, "app.user100.normal"));
+    EXPECT_FALSE(ContainsBundle(records, "subsystem.native"));
+
+    // AND rule: subsystem holding the permission still misses the type bit and is excluded
+    publishInfo->SetValidationRule(ValidationRule::AND);
+    MockIsVerfyPermisson(true);
+    records.clear();
     manager.GetSubscriberRecordsByWantLocked(eventRecord, records);
     EXPECT_EQ(records.size(), 1);
     EXPECT_TRUE(ContainsBundle(records, "app.user100.normal"));
     EXPECT_FALSE(ContainsBundle(records, "subsystem.native"));
     MockIsVerfyPermisson(false);
+    MockGetEventPermission(true);
     GTEST_LOG_(INFO) << "GetSubscriberRecordsByWantLocked_UserAppOrRule end";
 }
 

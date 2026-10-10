@@ -479,14 +479,10 @@ bool CommonEventSubscriberManager::CheckSubscriberBySpecifiedUids(
     return false;
 }
  
-bool IsUserAppSubscriberType(const CommonEventPublishInfo &publishInfo)
-{
-    return publishInfo.GetSubscriberType() == static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE);
-}
-
 bool IsUserAppSubscriberTypeEvent(const std::shared_ptr<CommonEventPublishInfo> &publishInfo)
 {
-    return publishInfo != nullptr && IsUserAppSubscriberType(*publishInfo);
+    return publishInfo != nullptr &&
+        publishInfo->GetSubscriberType() == static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE);
 }
 
 bool IsSubscriberSystemSide(const std::shared_ptr<EventSubscriberRecord> &subscriberRecord)
@@ -568,10 +564,6 @@ void CommonEventSubscriberManager::GetSubscriberRecordsByWantLocked(const Common
             continue;
         }
         if (!CheckSubscriberByUserId(subscriberUserId, isSystemApp, eventRecord.userId)) {
-            continue;
-        }
-        if (IsUserAppSubscriberTypeEvent(eventRecord.publishInfo) && IsSubscriberSystemSide(subscriberRecord)) {
-            EVENT_LOGD(LOG_TAG_SUBSCRIBER, "Subscriber is system side, skip for USER_APP subscriber type event");
             continue;
         }
         if (!CheckSubscriberPermission(subscriberRecord, eventRecord)) {
