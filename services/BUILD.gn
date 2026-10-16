@@ -85,6 +85,8 @@ ohos_shared_library("cesfwk_services") {
 
   shlib_type = "sa"
 
+  version_script = "libcesfwk_services.map"
+
   cflags_cc = []
   defines = []
   sources = cesfwk_services_sources

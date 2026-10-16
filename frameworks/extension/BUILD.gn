@@ -154,9 +154,6 @@ ohos_shared_library("static_subscriber_extension_ani") {
     "${ces_extension_path}/src/ani/ani_event_errors_utils.cpp",
     "${ces_extension_path}/src/ani/ani_static_subscriber_extension.cpp",
     "${ces_extension_path}/src/ani/ani_static_subscriber_extension_context.cpp",
-    "${ces_extension_path}/src/static_subscriber_extension.cpp",
-    "${ces_extension_path}/src/static_subscriber_extension_context.cpp",
-    "${ces_extension_path}/src/static_subscriber_stub_impl.cpp",
   ]
 
   configs = []

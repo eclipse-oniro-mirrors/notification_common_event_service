@@ -1,0 +1,35 @@
+# Copyright (c) 2026 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License")*;
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Same as build/templates/cxx/singleton.versionscript except that
+# *delegator_E is not exported: OHOS::EventFwk::StaticSubscriberProxy::delegator_
+# is already exported by libstatic_subscriber_ipc.z.so, exporting it here again
+# would duplicate the symbol. This is safe:
+# 1. delegator_ is a weak per-DSO BrokerDelegator member (vague linkage): this library
+#    keeps its own local copy and binds it internally, no dynamic reference crosses the
+#    DSO boundary, and the broker registry it registers into (OHOS::BrokerRegistration)
+#    is a global singleton in libipc_single.z.so;
+# 2. libstatic_subscriber_ipc.z.so is a direct DT_NEEDED dependency of this library, so
+#    it is always loaded first and its delegator_ export is present in every process
+#    that loads this library.
+1.0 {
+  global:
+    _init;
+    _fini;
+
+    *instance_E;
+    *mutex_E;
+
+  local:
+    *;
+};
