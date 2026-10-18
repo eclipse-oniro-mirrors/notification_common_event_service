@@ -134,7 +134,11 @@ ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberW
 static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
     CommonEventSubscribeInfo subscribeInfo;
-    AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
+    if (!AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo)) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "ConvertCommonEventSubscribeInfo failed, invalid subscribe info.");
+        AniCommonEventUtils::ThrowError(env, ERROR_CODE_PARAM_INVALID, ERROR_MSG_PARAM_INVALID);
+        return nullptr;
+    }
     subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {
@@ -961,7 +965,7 @@ static uint32_t setCodeAndData(ani_env *env, ani_object object, ani_int code, an
         return returncode;
     }
     std::string stdData;
-    int32_t intCode = static_cast<ani_boolean>(code);
+    int32_t intCode = static_cast<int32_t>(code);
     AniCommonEventUtils::GetStdString(env, data, stdData);
     bool returnBoolean = subscriberRes->SetCodeAndData(intCode, stdData);
     if (!returnBoolean) {

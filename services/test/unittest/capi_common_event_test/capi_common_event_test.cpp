@@ -800,3 +800,119 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2100, Function | MediumTest | 
     const char* data = OH_CommonEvent_GetDataFromSubscriber(nullptr);
     ASSERT_EQ(data, nullptr);
 }
+
+/*
+ * @tc.name: CapiCommonEventTest_2200
+ * @tc.desc: Test destroy a subscribed subscriber, which should unsubscribe automatically.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2200, Function | MediumTest | Level0)
+{
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+
+    auto subscriber = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceive);
+    ASSERT_NE(subscriber, nullptr);
+
+    int32_t ret = OH_CommonEvent_Subscribe(subscriber);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
+
+    auto observer = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber));
+    ASSERT_NE(observer, nullptr);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        ASSERT_TRUE(SubscriberManager::resultCache_.find(observer) != SubscriberManager::resultCache_.end());
+    }
+
+    // Destroy the subscriber without explicit unsubscribe: the subscription should be
+    // removed automatically (auto unsubscribe before destroy).
+    OH_CommonEvent_DestroySubscriber(subscriber);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        ASSERT_TRUE(SubscriberManager::resultCache_.find(observer) == SubscriberManager::resultCache_.end());
+    }
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_2300
+ * @tc.desc: Test destroy subscriber with nullptr, which should be ignored and not affect
+ *           existing subscriptions.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2300, Function | MediumTest | Level0)
+{
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+
+    auto subscriber = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceive);
+    ASSERT_NE(subscriber, nullptr);
+
+    int32_t ret = OH_CommonEvent_Subscribe(subscriber);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
+
+    auto observer = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber));
+    ASSERT_NE(observer, nullptr);
+
+    // Destroy with nullptr should return early without crash and keep the existing subscription.
+    OH_CommonEvent_DestroySubscriber(nullptr);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        EXPECT_TRUE(SubscriberManager::resultCache_.find(observer) != SubscriberManager::resultCache_.end());
+    }
+
+    ret = OH_CommonEvent_UnSubscribe(subscriber);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
+    OH_CommonEvent_DestroySubscriber(subscriber);
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_2400
+ * @tc.desc: Test destroy a subscriber which is never subscribed, which should not trigger
+ *           auto unsubscribe and not affect other subscriptions.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2400, Function | MediumTest | Level0)
+{
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+
+    auto subscribed = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceive);
+    ASSERT_NE(subscribed, nullptr);
+    auto notSubscribed = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceive);
+    ASSERT_NE(notSubscribed, nullptr);
+
+    int32_t ret = OH_CommonEvent_Subscribe(subscribed);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
+
+    auto subscribedObserver = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscribed));
+    ASSERT_NE(subscribedObserver, nullptr);
+    auto notSubscribedObserver = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(notSubscribed));
+    ASSERT_NE(notSubscribedObserver, nullptr);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        ASSERT_TRUE(SubscriberManager::resultCache_.find(notSubscribedObserver) ==
+            SubscriberManager::resultCache_.end());
+    }
+
+    // Destroy a never-subscribed subscriber: the auto unsubscribe path is skipped,
+    // and the other subscription must stay unchanged.
+    OH_CommonEvent_DestroySubscriber(notSubscribed);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        EXPECT_TRUE(SubscriberManager::resultCache_.find(subscribedObserver) !=
+            SubscriberManager::resultCache_.end());
+    }
+
+    // Explicit unsubscribe then destroy: isSubscribed is false, destroy is a plain delete.
+    ret = OH_CommonEvent_UnSubscribe(subscribed);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        EXPECT_TRUE(SubscriberManager::resultCache_.find(subscribedObserver) ==
+            SubscriberManager::resultCache_.end());
+    }
+    OH_CommonEvent_DestroySubscriber(subscribed);
+}

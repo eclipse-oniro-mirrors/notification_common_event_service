@@ -300,16 +300,60 @@ void AniCommonEventUtils::ConvertCommonEventPublishData(ani_env* env, ani_object
     }
 }
 
-void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
+bool AniCommonEventUtils::ConvertEventsToMatchingSkills(
+    ani_env* env, ani_object infoObject, MatchingSkills& matchingSkills)
+{
+    ani_ref eventsRef = nullptr;
+    ani_boolean isEventsUndefined = true;
+    ani_status status = env->Object_GetPropertyByName_Ref(infoObject, "events", &eventsRef);
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "get events failed, status: %{public}d", status);
+        return false;
+    }
+    status = env->Reference_IsUndefined(eventsRef, &isEventsUndefined);
+    if (status != ANI_OK || isEventsUndefined) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "events is required in CommonEventSubscribeInfo");
+        return false;
+    }
+    ani_array eventsArray = static_cast<ani_array>(eventsRef);
+    ani_size eventsLength = 0;
+    status = env->Array_GetLength(eventsArray, &eventsLength);
+    if (status != ANI_OK) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "events is not an array, status: %{public}d", status);
+        return false;
+    }
+    if (eventsLength == 0) {
+        EVENT_LOGE(LOG_TAG_CES_ANI, "events must be a non-empty array");
+        return false;
+    }
+    for (ani_size i = 0; i < eventsLength; i++) {
+        ani_ref eventEntryRef = nullptr;
+        status = env->Array_Get(eventsArray, i, &eventEntryRef);
+        if (status != ANI_OK) {
+            EVENT_LOGE(LOG_TAG_CES_ANI, "Array_Get events failed, status: %{public}d", status);
+            return false;
+        }
+        ani_size entrySize = 0;
+        status = env->String_GetUTF8Size(static_cast<ani_string>(eventEntryRef), &entrySize);
+        if (status != ANI_OK) {
+            EVENT_LOGE(LOG_TAG_CES_ANI, "events[%{public}u] is not a string, status: %{public}d",
+                static_cast<uint32_t>(i), status);
+            return false;
+        }
+        std::string eventStr;
+        GetStdString(env, static_cast<ani_string>(eventEntryRef), eventStr);
+        matchingSkills.AddEvent(eventStr);
+    }
+    return true;
+}
+
+bool AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
     ani_env* env, ani_object infoObject, CommonEventSubscribeInfo& subscribeInfo)
 {
-    // Get the events.
-    std::vector<std::string> eventsStr;
-    GetStringArrayOrUndefined(env, infoObject, "events", eventsStr);
-
+    // Get the events: required, must be a non-empty array of string.
     MatchingSkills matchingSkills;
-    for (const auto &event : eventsStr) {
-        matchingSkills.AddEvent(event);
+    if (!ConvertEventsToMatchingSkills(env, infoObject, matchingSkills)) {
+        return false;
     }
     CommonEventSubscribeInfo commonEventSubscribeInfo(matchingSkills);
 
@@ -343,6 +387,7 @@ void AniCommonEventUtils::ConvertCommonEventSubscribeInfo(
     }
 
     subscribeInfo = commonEventSubscribeInfo;
+    return true;
 }
 
 void AniCommonEventUtils::GetCommonEventSubscribeInfoToEts(

@@ -2847,6 +2847,38 @@ HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecords_0200, Level1)
 }
 
 /**
+ * @tc.name: GetSubscriberRecords_0300
+ * @tc.desc: test GetSubscriberRecords with bundleName in publishInfo but no matched subscriber,
+ *           which should return empty and cover the unmatched bundleName branch.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventSubscriberManagerTest, GetSubscriberRecords_0300, Level1)
+{
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_0300 start";
+    CommonEventSubscriberManager commonEventSubscriberManager;
+    commonEventSubscriberManager.hasCompacted_.store(true);
+
+    Want want;
+    want.SetAction("test.action3");
+    std::shared_ptr<CommonEventData> data = std::make_shared<CommonEventData>();
+    data->SetWant(want);
+    CommonEventRecord eventRecord;
+    eventRecord.commonEventData = data;
+    std::shared_ptr<CommonEventPublishInfo> publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord.publishInfo = publishInfo;
+
+    // bundleName is empty: the unmatched bundleName branch is not taken.
+    auto records = commonEventSubscriberManager.GetSubscriberRecords(eventRecord);
+    EXPECT_TRUE(records.empty());
+
+    // bundleName is set while no subscriber matches: the unmatched bundleName branch is taken.
+    publishInfo->SetBundleName("testBundleName");
+    records = commonEventSubscriberManager.GetSubscriberRecords(eventRecord);
+    EXPECT_TRUE(records.empty());
+    GTEST_LOG_(INFO) << "GetSubscriberRecords_0300 end";
+}
+
+/**
  * @tc.name: InsertSubscriberRecordLocked_0200
  * @tc.desc: test InsertSubscriberRecordLocked with empty events should return false.
  * @tc.type: FUNC

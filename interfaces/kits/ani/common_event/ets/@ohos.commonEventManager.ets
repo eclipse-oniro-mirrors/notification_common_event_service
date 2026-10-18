@@ -22,7 +22,49 @@ import{ CommonEventSubscriber } from 'commonEvent.commonEventSubscriber';
 
 const TAG: string = 'commonEventManager';
 const ERROR_PARAM_INVALID = 401;
-const errorParamInvalid: BusinessError<string> = {code: ERROR_PARAM_INVALID, data: "Invalid parameter"};
+
+function getErrorMessage(code: int): string {
+    switch (code) {
+        case 201:
+            return 'Permission verification failed, usually the result returned by VerifyAccessToken.';
+        case 202:
+            return "The application isn't system application.";
+        case 401:
+            return 'Parameter error.';
+        case 801:
+            return 'Capability not supported.';
+        case 1500001:
+            return 'The action field in the want parameter is null.';
+        case 1500002:
+            return 'A sandbox application cannot send common events.';
+        case 1500003:
+            return 'The common event sending frequency too high.';
+        case 1500004:
+            return 'A third-party application cannot send system common events.';
+        case 1500005:
+            return 'The subscriber is not found.';
+        case 1500006:
+            return 'Invalid userId.';
+        case 1500007:
+            return 'Failed to send the message.';
+        case 1500008:
+            return 'Failed to read the data.';
+        case 1500009:
+            return 'System error.';
+        case 1500010:
+            return 'The count of subscriber exceed system specification.';
+        default:
+            return 'Business error.';
+    }
+}
+
+function buildBusinessError(code: int): BusinessError {
+    let err: BusinessError = { code: code, data: undefined, message: getErrorMessage(code) };
+    return err;
+}
+
+const errorParamInvalid: BusinessError<string> =
+    { code: ERROR_PARAM_INVALID, data: "Invalid parameter", message: getErrorMessage(ERROR_PARAM_INVALID) };
 
 type ResolveCallback<T> = (data: T) => void;
 type RejectCallback = (err: Error) => void;
@@ -53,7 +95,7 @@ namespace commonEventManager {
             if (resultCode == 0) {
                 callback(null, undefined);
             } else {
-                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let r: BusinessError = buildBusinessError(resultCode.toInt());
                 callback(r, undefined);
             }
         }, (error: Error): void => {
@@ -72,7 +114,7 @@ namespace commonEventManager {
             if (resultCode == 0) {
                 callback(null, undefined);
             } else {
-                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let r: BusinessError = buildBusinessError(resultCode.toInt());
                 callback(r, undefined);
             }
         }, (error: Error): void => {
@@ -89,7 +131,7 @@ namespace commonEventManager {
             if (resultCode == 0) {
                 callback(null, undefined);
             } else {
-                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let r: BusinessError = buildBusinessError(resultCode.toInt());
                 callback(r, undefined);
             }
         }, (error: Error): void => {
@@ -107,7 +149,7 @@ namespace commonEventManager {
             if (resultCode == 0) {
                 callback(null, undefined);
             } else {
-                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let r: BusinessError = buildBusinessError(resultCode.toInt());
                 callback(r, undefined);
             }
         }, (error: Error): void => {
@@ -122,6 +164,11 @@ namespace commonEventManager {
         hilog.info(0x0000, TAG, 'createSubscriber callback call.');
         let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
         task.then((data: Any)=>{
+            if (data == null || data == undefined) {
+                hilog.error(0x0000, TAG, 'createSubscriber returns null.');
+                callback(buildBusinessError(ERROR_PARAM_INVALID), undefined);
+                return;
+            }
             callback(null, data as CommonEventSubscriber);
         }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
@@ -136,6 +183,11 @@ namespace commonEventManager {
             reject: (error: Error) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
             p1.then((data :Any)=>{
+                if (data == null || data == undefined) {
+                    hilog.error(0x0000, TAG, 'createSubscriber Promise returns null.');
+                    reject(buildBusinessError(ERROR_PARAM_INVALID));
+                    return;
+                }
                 resolve(data as CommonEventSubscriber);
             }, (err: Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');
@@ -156,7 +208,7 @@ namespace commonEventManager {
             let resultCode: Int  = e as Int;
             hilog.info(0x0000, TAG, 'subscribe result:%{public}d.', resultCode.toInt());
             if (resultCode != 0) {
-                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let r: BusinessError = buildBusinessError(resultCode.toInt());
                 callback(r, undefined);
             }
         }, (error: Error): void => {
@@ -174,7 +226,7 @@ namespace commonEventManager {
                 let resultCode: Int  = e as Int;
                 hilog.info(0x0000, TAG, 'subscribeToEvent result: %{public}d.', resultCode.toInt());
                 if (resultCode != 0) {
-                    let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    let r: BusinessError = buildBusinessError(resultCode.toInt());
                     reject(r);
                 } else {
                     resolve(undefined);
@@ -197,7 +249,7 @@ namespace commonEventManager {
                 if (resultCode == 0) {
                     callback(null, undefined);
                 } else {
-                    let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    let r: BusinessError = buildBusinessError(resultCode.toInt());
                     callback(r, undefined);
                 }
             }
@@ -220,7 +272,7 @@ namespace commonEventManager {
             if (resultCode == 0) {
                 callback(null, undefined);
             } else {
-                let r: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let r: BusinessError = buildBusinessError(resultCode.toInt());
                 callback(r, undefined);
             }
         }, (error: Error): void => {
@@ -240,7 +292,7 @@ namespace commonEventManager {
                 if (resultCode == 0) {
                     resolve(undefined);
                 } else {
-                    let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    let err: BusinessError = buildBusinessError(resultCode.toInt());
                     reject(err);
                 }
             }, (error: Error): void => {
@@ -257,7 +309,7 @@ namespace commonEventManager {
             if (resultCode == 0) {
                 callback(null, undefined);
             } else {
-                let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let err: BusinessError = buildBusinessError(resultCode.toInt());
                 callback(err, undefined);
             }
         }, (error: Error): void => {
@@ -274,7 +326,7 @@ namespace commonEventManager {
             if (resultCode == 0) {
                 resolve(undefined);
             } else {
-                let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                let err: BusinessError = buildBusinessError(resultCode.toInt());
                 reject(err);
             }
         }, (error: Error): void => {
@@ -292,7 +344,7 @@ namespace commonEventManager {
                 if (resultCode == 0) {
                     resolve(undefined);
                 } else {
-                    let err: BusinessError = { code: resultCode.toInt(), data: undefined };
+                    let err: BusinessError = buildBusinessError(resultCode.toInt());
                     reject(err);
                 }
             }, (error: Error): void => {

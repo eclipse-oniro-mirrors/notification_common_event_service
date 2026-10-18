@@ -148,6 +148,12 @@ std::vector<std::shared_ptr<EventSubscriberRecord>> CommonEventSubscriberManager
 
     GetSubscriberRecordsByWantLocked(eventRecord, records);
 
+    if (records.empty() && eventRecord.publishInfo != nullptr &&
+        !eventRecord.publishInfo->GetBundleName().empty()) {
+        EVENT_LOGI(LOG_TAG_SUBSCRIBER, "bundleName not find matched subscriber, bundleName: %{public}s, "
+            "action: %{public}s", eventRecord.publishInfo->GetBundleName().c_str(), action.c_str());
+    }
+
     return records;
 }
 
