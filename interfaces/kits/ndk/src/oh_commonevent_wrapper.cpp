@@ -22,6 +22,7 @@
 #include <cstdlib>
 #include <memory>
 #include <new>
+#include <unistd.h>
 
 using namespace OHOS::EventFwk;
 
@@ -114,11 +115,32 @@ CommonEvent_Subscriber* SubscriberManager::CreateSubscriber(const CommonEvent_Su
 
 void SubscriberManager::DestroySubscriber(CommonEvent_Subscriber* subscriber)
 {
-    if (subscriber != nullptr) {
-        auto subscriberPtr = reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber);
-        delete subscriberPtr;
-        subscriberPtr = nullptr;
+    if (subscriber == nullptr) {
+        return;
     }
+    auto subscriberPtr = reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber);
+    if (subscriberPtr == nullptr) {
+        return;
+    }
+    auto observer = *subscriberPtr;
+    if (observer != nullptr) {
+        bool isSubscribed = false;
+        {
+            std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
+            isSubscribed = resultCache_.find(observer) != resultCache_.end();
+        }
+        if (isSubscribed) {
+            EVENT_LOGW(LOG_TAG_CES_CAPI, "DestroySubscriber on a subscribed subscriber, unsubscribe automatically "
+                "before destroy, pid: %{public}d", getpid());
+            CommonEvent_ErrCode ret = UnSubscribe(subscriber);
+            if (ret != COMMONEVENT_ERR_OK) {
+                EVENT_LOGE(LOG_TAG_CES_CAPI, "auto unsubscribe before destroy failed, ret: %{public}d",
+                    static_cast<int32_t>(ret));
+            }
+        }
+    }
+    delete subscriberPtr;
+    subscriberPtr = nullptr;
 }
 
 CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* subscriber)

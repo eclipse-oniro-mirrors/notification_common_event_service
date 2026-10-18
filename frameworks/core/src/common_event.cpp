@@ -222,6 +222,7 @@ int32_t CommonEvent::SubscribeOrUpdate(const std::shared_ptr<CommonEventSubscrib
                 commonEventListener, UNDEFINED_INSTANCE_KEY, funcResult);
             return res != ERR_OK ? ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID : ERR_OK;
         }
+        EVENT_LOGW(LOG_TAG_CES, "The subscriber already subscribed, duplicate subscribe is ignored");
         return ERR_OK;
     } else if (subscribeState == SUBSCRIBE_EXCEED_LIMIT) {
         return ERR_NOTIFICATION_CES_SUBSCRIBE_EXCEED_LIMIT;
@@ -306,7 +307,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEvent(
             listenerObj = eventListener->second->AsObject();
             found = true;
         } else {
-            EVENT_LOGW(LOG_TAG_CES, "No subscription");
+            EVENT_LOGW(LOG_TAG_CES, "The subscriber not subscribed, unsubscribe is ignored");
         }
     }
     if (!found) {
@@ -363,7 +364,7 @@ __attribute__((no_sanitize("cfi"))) int32_t CommonEvent::UnSubscribeCommonEventS
             listenerObj = eventListener->second->AsObject();
             found = true;
         } else {
-            EVENT_LOGW(LOG_TAG_CES, "No subscription");
+            EVENT_LOGW(LOG_TAG_CES, "The subscriber not subscribed, unsubscribe is ignored");
         }
     }
     if (!found) {

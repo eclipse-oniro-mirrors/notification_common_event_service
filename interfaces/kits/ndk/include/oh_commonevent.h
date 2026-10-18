@@ -95,6 +95,12 @@ typedef struct CommonEvent_SubscribeInfo CommonEvent_SubscribeInfo;
 /**
  * @brief the subscriber of common event
  *
+ * A subscriber handle is created by {@link OH_CommonEvent_CreateSubscriber} and
+ * remains valid until it is destroyed by {@link OH_CommonEvent_DestroySubscriber}.
+ * Each handle must be destroyed exactly once. After being destroyed, the handle
+ * becomes invalid: passing it to any OH_CommonEvent interface, or destroying it
+ * again, leads to undefined behavior.
+ *
  * @since 12
  */
 typedef void CommonEvent_Subscriber;
@@ -173,6 +179,9 @@ void OH_CommonEvent_DestroySubscribeInfo(CommonEvent_SubscribeInfo* info);
 /**
  * @brief Create a subscriber.
  *
+ * The returned handle remains valid until it is destroyed by
+ * {@link OH_CommonEvent_DestroySubscriber}, and must be destroyed exactly once.
+ *
  * @param info Indicates the created subscribe Info.
  * @param callback Indicates the received common event callback.
  * @return Returns the CommonEvent_Subscriber, if allocate memory failed, returns null.
@@ -182,7 +191,19 @@ CommonEvent_Subscriber* OH_CommonEvent_CreateSubscriber(const CommonEvent_Subscr
     CommonEvent_ReceiveCallback callback);
 
 /**
- * @brief Destory the subscriber.
+ * @brief Destroy the subscriber.
+ *
+ * After this call, the subscriber handle becomes invalid:
+ * 1. Do not destroy the same subscriber more than once, otherwise undefined
+ * behavior (double free) occurs.
+ * 2. Do not pass the subscriber to any other OH_CommonEvent interface after it
+ * has been destroyed, otherwise undefined behavior (use after free) occurs.
+ *
+ * If the subscriber has been subscribed, it is automatically unsubscribed
+ * before being destroyed, so the subscription will not remain active. Note
+ * that a warning log containing "unsubscribe" and the process id is printed
+ * in this case, because destroying a subscribed subscriber usually indicates
+ * a missing {@link OH_CommonEvent_UnSubscribe} call.
  *
  * @param subscriber Indicates the created subscriber.
  * @since 12
@@ -636,7 +657,9 @@ CommonEvent_ErrCode OH_CommonEvent_SetDoubleArrayToParameters(CommonEvent_Parame
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high,
  *                 add since api 20.
- *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
+ *         Returns {@link COMMONEVENT_ERR_NOT_SYSTEM_SERVICE} if a third-party application publishes a system
+ *                 common event.
+ *         Returns {@link COMMONEVENT_ERR_SENDING_REQUEST_FAILED } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18
  */
@@ -652,7 +675,9 @@ CommonEvent_ErrCode OH_CommonEvent_Publish(const char* event);
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high,
  *                  add since api 20.
- *         Returns {@link COMMONEVENT_ERR_FAIL_SEND_REQUEST } if IPC request failed to send.
+ *         Returns {@link COMMONEVENT_ERR_NOT_SYSTEM_SERVICE} if a third-party application publishes a system
+ *                  common event.
+ *         Returns {@link COMMONEVENT_ERR_SENDING_REQUEST_FAILED } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18
  */
