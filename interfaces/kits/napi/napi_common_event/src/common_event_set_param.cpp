@@ -186,6 +186,9 @@ napi_value SetCode(napi_env env, napi_callback_info info)
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->SetCode(asyncCallbackInfo->code) ?
                         NO_ERROR : ERR_CES_FAILED;
+                } else {
+                    ReportInvalidAsyncResult("setCode",
+                        "the setting does not take effect and no error is reported");
                 }
             }
         },
@@ -272,6 +275,9 @@ napi_value SetData(napi_env env, napi_callback_info info)
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->SetData(asyncCallbackInfo->data) ?
                         NO_ERROR : ERR_CES_FAILED;
+                } else {
+                    ReportInvalidAsyncResult("setData",
+                        "the setting does not take effect and no error is reported");
                 }
             }
         },
@@ -359,6 +365,9 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->SetCodeAndData(
                         asyncCallbackInfo->code, asyncCallbackInfo->data) ? NO_ERROR : ERR_CES_FAILED;
+                } else {
+                    ReportInvalidAsyncResult("setCodeAndData",
+                        "the setting does not take effect and no error is reported");
                 }
             }
         },

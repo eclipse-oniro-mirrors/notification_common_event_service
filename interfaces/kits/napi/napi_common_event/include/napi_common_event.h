@@ -359,6 +359,8 @@ void PaddingAsyncCallbackInfoGetCode(const napi_env &env, const size_t &argc,
 
 std::shared_ptr<AsyncCommonEventResult> GetAsyncResult(const SubscriberInstance *objectInfo);
 
+void ReportInvalidAsyncResult(const char *methodName, const char *behavior);
+
 napi_value GetCode(napi_env env, napi_callback_info info);
 
 napi_value ParseParametersBySetCode(

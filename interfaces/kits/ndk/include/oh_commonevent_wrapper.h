@@ -17,6 +17,7 @@
 #define OH_COMMON_EVENT_WRAPPER_C_H
 
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -80,12 +81,20 @@ public:
     CommonEvent_ErrCode UnSubscribe(const CommonEvent_Subscriber* subscriber);
     void SetAsyncResult(SubscriberObserver* subscriber);
     ResultCacheItem* GetAsyncResult(const SubscriberObserver* subscriber);
+    bool GetLiveSubscriber(const CommonEvent_Subscriber* subscriber, const char* apiName,
+        std::shared_ptr<SubscriberObserver> &observer);
+    void RegisterLiveReceiveParams(const void* parameters);
+    void ReleaseLiveReceiveParams(CArrParameters* parameters);
+    bool IsLiveReceiveParams(const void* parameters);
     static std::shared_ptr<SubscriberManager> GetInstance();
 private:
     static ffrt::mutex instanceMutex_;
     static ffrt::mutex resultCacheMutex_;
     static std::shared_ptr<SubscriberManager> instance_;
     static std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> resultCache_;
+    static std::map<const SubscriberObserver*, std::shared_ptr<SubscriberObserver>> liveSubscribers_;
+    static ffrt::mutex liveReceiveParamsMutex_;
+    static std::set<const void*> liveReceiveParams_;
 };
 
 #endif

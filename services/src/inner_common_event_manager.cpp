@@ -451,6 +451,11 @@ void InnerCommonEventManager::FinishReceiver(
     std::shared_ptr<OrderedEventRecord> sp = controlPtr_->GetMatchingOrderedReceiver(proxy);
     if (sp) {
         controlPtr_->FinishReceiverAction(sp, code, receiverData, abortEvent);
+    } else {
+        EVENT_LOGW(LOG_TAG_CES,
+            "FinishReceiver is ignored: no active ordered receiver matches this caller (the ordered common "
+            "event has already been finished or timed out), while the finish request has already returned "
+            "success to the caller");
     }
 
     return;

@@ -57,10 +57,11 @@ void SubscriberObserver::OnReceiveEvent(const CommonEventData &data)
         return;
     }
     cData->parameters->wantParams = want.GetParams();
+    SubscriberManager::GetInstance()->RegisterLiveReceiveParams(cData->parameters);
     if (callback_ != nullptr) {
         (*callback_)(cData);
     }
-    delete cData->parameters;
+    SubscriberManager::GetInstance()->ReleaseLiveReceiveParams(cData->parameters);
     cData->parameters = nullptr;
     delete cData;
     cData = nullptr;
@@ -75,6 +76,9 @@ ffrt::mutex SubscriberManager::instanceMutex_;
 ffrt::mutex SubscriberManager::resultCacheMutex_;
 std::shared_ptr<SubscriberManager> SubscriberManager::instance_;
 std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> SubscriberManager::resultCache_;
+std::map<const SubscriberObserver*, std::shared_ptr<SubscriberObserver>> SubscriberManager::liveSubscribers_;
+ffrt::mutex SubscriberManager::liveReceiveParamsMutex_;
+std::set<const void*> SubscriberManager::liveReceiveParams_;
 
 std::shared_ptr<SubscriberManager> SubscriberManager::GetInstance()
 {
@@ -110,7 +114,11 @@ CommonEvent_Subscriber* SubscriberManager::CreateSubscriber(const CommonEvent_Su
 
     auto observer = std::make_shared<SubscriberObserver>(commonEventSubscribeInfo);
     observer->SetCallback(callback);
-    return new (std::nothrow) std::shared_ptr<SubscriberObserver>(observer);
+    {
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
+        liveSubscribers_.emplace(observer.get(), observer);
+    }
+    return reinterpret_cast<CommonEvent_Subscriber*>(observer.get());
 }
 
 void SubscriberManager::DestroySubscriber(CommonEvent_Subscriber* subscriber)
@@ -118,29 +126,32 @@ void SubscriberManager::DestroySubscriber(CommonEvent_Subscriber* subscriber)
     if (subscriber == nullptr) {
         return;
     }
-    auto subscriberPtr = reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber);
-    if (subscriberPtr == nullptr) {
-        return;
-    }
-    auto observer = *subscriberPtr;
-    if (observer != nullptr) {
-        bool isSubscribed = false;
-        {
-            std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
-            isSubscribed = resultCache_.find(observer) != resultCache_.end();
+    auto observerPtr = reinterpret_cast<SubscriberObserver*>(subscriber);
+    std::shared_ptr<SubscriberObserver> observer;
+    bool isSubscribed = false;
+    {
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
+        auto iter = liveSubscribers_.find(observerPtr);
+        if (iter == liveSubscribers_.end()) {
+            EVENT_LOGE(LOG_TAG_CES_CAPI,
+                "DestroySubscriber: double destroy or already destroyed subscriber handle detected, "
+                "ignore, pid: %{public}d", getpid());
+            return;
         }
-        if (isSubscribed) {
-            EVENT_LOGW(LOG_TAG_CES_CAPI, "DestroySubscriber on a subscribed subscriber, unsubscribe automatically "
-                "before destroy, pid: %{public}d", getpid());
-            CommonEvent_ErrCode ret = UnSubscribe(subscriber);
-            if (ret != COMMONEVENT_ERR_OK) {
-                EVENT_LOGE(LOG_TAG_CES_CAPI, "auto unsubscribe before destroy failed, ret: %{public}d",
-                    static_cast<int32_t>(ret));
-            }
-        }
+        observer = iter->second;
+        liveSubscribers_.erase(iter);
+        isSubscribed = observer != nullptr && resultCache_.find(observer) != resultCache_.end();
     }
-    delete subscriberPtr;
-    subscriberPtr = nullptr;
+    if (isSubscribed) {
+        EVENT_LOGW(LOG_TAG_CES_CAPI, "DestroySubscriber on a subscribed subscriber, unsubscribe automatically "
+            "before destroy, pid: %{public}d", getpid());
+        int32_t ret = CommonEventManager::NewUnSubscribeCommonEvent(observer);
+        if (ret != OHOS::ERR_OK) {
+            EVENT_LOGE(LOG_TAG_CES_CAPI, "auto unsubscribe before destroy failed, ret: %{public}d", ret);
+        }
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
+        resultCache_.erase(observer);
+    }
 }
 
 CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* subscriber)
@@ -149,7 +160,10 @@ CommonEvent_ErrCode SubscriberManager::Subscribe(const CommonEvent_Subscriber* s
         EVENT_LOGE(LOG_TAG_CES_CAPI, "subscriber is null");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!GetLiveSubscriber(subscriber, "OH_CommonEvent_Subscribe", observer)) {
+        return COMMONEVENT_ERR_INVALID_PARAMETER;
+    }
     int32_t ret = CommonEventManager::NewSubscribeCommonEvent(observer);
     if (ret == OHOS::Notification::ERR_NOTIFICATION_CES_COMMON_SYSTEMCAP_NOT_SUPPORT) {
         return COMMONEVENT_ERR_SUBSCRIBER_NUM_EXCEEDED;
@@ -170,7 +184,10 @@ CommonEvent_ErrCode SubscriberManager::UnSubscribe(const CommonEvent_Subscriber*
         EVENT_LOGE(LOG_TAG_CES_CAPI, "subscriber is null");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!GetLiveSubscriber(subscriber, "OH_CommonEvent_UnSubscribe", observer)) {
+        return COMMONEVENT_ERR_INVALID_PARAMETER;
+    }
     int32_t ret = CommonEventManager::NewUnSubscribeCommonEvent(observer);
     {
         std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
@@ -212,4 +229,58 @@ ResultCacheItem* SubscriberManager::GetAsyncResult(const SubscriberObserver* sub
     }
     EVENT_LOGW(LOG_TAG_CES_CAPI, "subscriber not found");
     return nullptr;
+}
+
+bool SubscriberManager::GetLiveSubscriber(const CommonEvent_Subscriber* subscriber, const char* apiName,
+    std::shared_ptr<SubscriberObserver> &observer)
+{
+    auto observerPtr = reinterpret_cast<const SubscriberObserver*>(subscriber);
+    {
+        std::lock_guard<ffrt::mutex> lock(resultCacheMutex_);
+        auto iter = liveSubscribers_.find(observerPtr);
+        if (iter != liveSubscribers_.end()) {
+            observer = iter->second;
+            return true;
+        }
+    }
+    EVENT_LOGE(LOG_TAG_CES_CAPI,
+        "%{public}s: the subscriber handle has been destroyed or is invalid, ignore the call", apiName);
+    return false;
+}
+
+void SubscriberManager::RegisterLiveReceiveParams(const void* parameters)
+{
+    if (parameters == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lock(liveReceiveParamsMutex_);
+    liveReceiveParams_.insert(parameters);
+}
+
+void SubscriberManager::ReleaseLiveReceiveParams(CArrParameters* parameters)
+{
+    if (parameters == nullptr) {
+        return;
+    }
+    // Erase from the registry and destroy the object in one critical section: a concurrent
+    // IsLiveReceiveParams that misses the entry can never overlap a half-released object,
+    // and the pointer value is never used after the delete.
+    std::lock_guard<ffrt::mutex> lock(liveReceiveParamsMutex_);
+    liveReceiveParams_.erase(parameters);
+    for (void* ptr : parameters->allocatedPointers) {
+        if (ptr != nullptr) {
+            free(ptr);
+        }
+    }
+    parameters->allocatedPointers.clear();
+    delete parameters;
+}
+
+bool SubscriberManager::IsLiveReceiveParams(const void* parameters)
+{
+    if (parameters == nullptr) {
+        return false;
+    }
+    std::lock_guard<ffrt::mutex> lock(liveReceiveParamsMutex_);
+    return liveReceiveParams_.find(parameters) != liveReceiveParams_.end();
 }
