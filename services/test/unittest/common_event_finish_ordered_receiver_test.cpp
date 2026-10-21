@@ -367,5 +367,38 @@ HWTEST_F(CommonEventFinishOrderedReceiverTest, CommonEventFinishOrderedReceiver_
     subscriberDeathRecipient.OnRemoteDied(remote);
     GTEST_LOG_(INFO) << "CommonEventFinishOrderedReceiver_1100 end";
 }
+
+/**
+ * @tc.name: CommonEventFinishOrderedReceiver_1200
+ * @tc.desc: test InnerCommonEventManager FinishReceiver with no matching ordered receiver
+ *           (already finished or timed out) is safely ignored without crash or queue change.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CommonEventFinishOrderedReceiverTest, CommonEventFinishOrderedReceiver_1200, Level1)
+{
+    GTEST_LOG_(INFO) << "CommonEventFinishOrderedReceiver_1200 start";
+    InnerCommonEventManager innerCommonEventManager;
+    ASSERT_NE(nullptr, innerCommonEventManager.controlPtr_);
+    sptr<MockRemoteObject> proxy = new (std::nothrow) MockRemoteObject();
+    ASSERT_NE(nullptr, proxy);
+
+    // No ordered receiver matches this proxy: the finish request must be ignored safely,
+    // the ordered queue stays empty and unchanged.
+    EXPECT_EQ(nullptr, innerCommonEventManager.controlPtr_->GetMatchingOrderedReceiver(proxy));
+    innerCommonEventManager.FinishReceiver(proxy, 1, "finishData", false);
+    EXPECT_TRUE(innerCommonEventManager.controlPtr_->orderedEventQueue_.empty());
+
+    // A queued record of another receiver must not be affected by the ignored finish.
+    sptr<IRemoteObject> otherProxy = new (std::nothrow) MockRemoteObject();
+    ASSERT_NE(nullptr, otherProxy);
+    std::shared_ptr<OrderedEventRecord> otherRecord = MakeOrderedRecord(otherProxy,
+        OrderedEventRecord::RECEIVING);
+    innerCommonEventManager.controlPtr_->orderedEventQueue_.emplace_back(otherRecord);
+    innerCommonEventManager.FinishReceiver(proxy, 1, "finishData", false);
+    EXPECT_EQ(1, static_cast<int>(innerCommonEventManager.controlPtr_->orderedEventQueue_.size()));
+    EXPECT_EQ(otherProxy, otherRecord->curReceiver);
+    EXPECT_EQ(OrderedEventRecord::RECEIVING, otherRecord->state.load());
+    GTEST_LOG_(INFO) << "CommonEventFinishOrderedReceiver_1200 end";
+}
 }  // namespace EventFwk
 }  // namespace OHOS

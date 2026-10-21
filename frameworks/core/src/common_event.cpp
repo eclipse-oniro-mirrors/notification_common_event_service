@@ -426,6 +426,7 @@ bool CommonEvent::FinishReceiver(
     bool funcResult = false;
     auto res = cesProxy->FinishReceiver(proxy, code, data, abortEvent, funcResult);
     if (res != ERR_OK) {
+        EVENT_LOGW(LOG_TAG_CES, "FinishReceiver request failed, err: %{public}d, returns false", res);
         return false;
     }
     return funcResult;

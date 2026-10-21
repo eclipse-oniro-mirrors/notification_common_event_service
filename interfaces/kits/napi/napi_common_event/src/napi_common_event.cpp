@@ -517,6 +517,14 @@ std::shared_ptr<AsyncCommonEventResult> GetAsyncResult(const SubscriberInstance 
     return nullptr;
 }
 
+void ReportInvalidAsyncResult(const char *methodName, const char *behavior)
+{
+    EVENT_LOGW(LOG_TAG_CES_NAPI,
+        "%{public}s is called when the subscriber is not processing an ordered common event (in an unordered "
+        "common event callback, after unsubscribe, or outside the receive callback), %{public}s",
+        methodName, behavior);
+}
+
 std::shared_ptr<SubscriberInstance> GetSubscriber(const napi_env &env, const napi_value &value)
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "GetSubscriber excute");
@@ -1286,7 +1294,7 @@ napi_value GetCodeSync(napi_env env, napi_callback_info info)
         EVENT_LOGD(LOG_TAG_CES_NAPI, "get asyncResult success");
         code = asyncResult->GetCode();
     } else {
-        EVENT_LOGD(LOG_TAG_CES_NAPI, "get asyncResult failed");
+        ReportInvalidAsyncResult("getCodeSync", "returns the default value 0");
         code = 0;
     }
     napi_value res = nullptr;
@@ -1315,7 +1323,7 @@ napi_value SetCodeSync(napi_env env, napi_callback_info info)
     if (asyncResult) {
         asyncResult->SetCode(code);
     } else {
-        EVENT_LOGE(LOG_TAG_CES_NAPI, "asyncResult is nullptr");
+        ReportInvalidAsyncResult("setCodeSync", "the setting does not take effect and no error is reported");
     }
 
     return NapiGetNull(env);
@@ -1340,6 +1348,7 @@ napi_value GetDataSync(napi_env env, napi_callback_info info)
     if (asyncResult) {
         data = asyncResult->GetData();
     } else {
+        ReportInvalidAsyncResult("getDataSync", "returns the default value (empty string)");
         data = std::string();
     }
     napi_value res = nullptr;
@@ -1375,6 +1384,8 @@ napi_value SetDataSync(napi_env env, napi_callback_info info)
     std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
     if (asyncResult) {
         asyncResult->SetData(data);
+    } else {
+        ReportInvalidAsyncResult("setDataSync", "the setting does not take effect and no error is reported");
     }
 
     return NapiGetNull(env);
@@ -1413,6 +1424,8 @@ napi_value SetCodeAndDataSync(napi_env env, napi_callback_info info)
     std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
     if (asyncResult) {
         asyncResult->SetCodeAndData(code, data);
+    } else {
+        ReportInvalidAsyncResult("setCodeAndDataSync", "the setting does not take effect and no error is reported");
     }
     return NapiGetNull(env);
 }
@@ -1433,6 +1446,8 @@ napi_value AbortCommonEventSync(napi_env env, napi_callback_info info)
     std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
     if (asyncResult) {
         asyncResult->AbortCommonEvent();
+    } else {
+        ReportInvalidAsyncResult("abortCommonEventSync", "the operation does not take effect and no error is reported");
     }
 
     return NapiGetNull(env);
@@ -1455,6 +1470,9 @@ napi_value ClearAbortCommonEventSync(napi_env env, napi_callback_info info)
     std::shared_ptr<AsyncCommonEventResult> asyncResult = GetAsyncResult(subscriber.get());
     if (asyncResult) {
         asyncResult->ClearAbortCommonEvent();
+    } else {
+        ReportInvalidAsyncResult("clearAbortCommonEventSync",
+            "the operation does not take effect and no error is reported");
     }
 
     return NapiGetNull(env);
@@ -1480,6 +1498,7 @@ napi_value GetAbortCommonEventSync(napi_env env, napi_callback_info info)
     if (asyncResult) {
         abortEvent = asyncResult->GetAbortCommonEvent();
     } else {
+        ReportInvalidAsyncResult("getAbortCommonEventSync", "returns the default value false");
         abortEvent = false;
     }
 
@@ -1841,7 +1860,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
                     EVENT_LOGD(LOG_TAG_CES_NAPI, "get code success");
                     asyncCallbackInfo->code = asyncResult->GetCode();
                 } else {
-                    EVENT_LOGD(LOG_TAG_CES_NAPI, "get code failed");
+                    ReportInvalidAsyncResult("getCode", "returns the default value 0");
                     asyncCallbackInfo->code = 0;
                 }
             }
@@ -1931,6 +1950,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
                 if (asyncResult) {
                     asyncCallbackInfo->data = asyncResult->GetData();
                 } else {
+                    ReportInvalidAsyncResult("getData", "returns the default value (empty string)");
                     asyncCallbackInfo->data = std::string();
                 }
             }
@@ -2018,6 +2038,9 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
                     asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->AbortCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
+                } else {
+                    ReportInvalidAsyncResult("abortCommonEvent",
+                        "the operation does not take effect and no error is reported");
                 }
             }
         },
@@ -2103,6 +2126,9 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode =
                         asyncResult->ClearAbortCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
+                } else {
+                    ReportInvalidAsyncResult("clearAbortCommonEvent",
+                        "the operation does not take effect and no error is reported");
                 }
             }
         },
@@ -2188,6 +2214,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
                 if (asyncResult) {
                     asyncCallbackInfo->abortEvent = asyncResult->GetAbortCommonEvent();
                 } else {
+                    ReportInvalidAsyncResult("getAbortCommonEvent", "returns the default value false");
                     asyncCallbackInfo->abortEvent = false;
                 }
             }
@@ -2276,6 +2303,9 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
                     asyncCallbackInfo->subscriber.get());
                 if (asyncResult) {
                     asyncCallbackInfo->info.errorCode = asyncResult->FinishCommonEvent() ? NO_ERROR : ERR_CES_FAILED;
+                } else {
+                    ReportInvalidAsyncResult("finishCommonEvent",
+                        "the operation does not take effect and no error is reported");
                 }
             }
         },

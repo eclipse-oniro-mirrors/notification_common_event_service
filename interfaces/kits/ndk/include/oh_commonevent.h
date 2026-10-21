@@ -129,7 +129,9 @@ typedef void CommonEvent_Parameters;
 /**
  * @brief Common event callback.
  *
- * @param data common event callback data.
+ * @param data common event callback data. The data and all pointers obtained from it are valid
+ *             only during the callback execution and are released by the framework after the
+ *             callback returns; copy any data that must be kept beyond the callback.
  * @since 12
  */
 typedef void (*CommonEvent_ReceiveCallback)(const CommonEvent_RcvData *data);
@@ -376,7 +378,12 @@ CommonEvent_Parameters* OH_CommonEvent_CreateParameters();
 /**
  * @brief Destroy the common event publish information.
  *
- * @param param Indicates the publish information.
+ * @param param Indicates the publish information created by OH_CommonEvent_CreateParameters.
+ *              Must not be an object obtained from CommonEvent_RcvData receive data: such an
+ *              object is owned by the framework and released after the receive callback returns.
+ *              A destroy request on it during the receive callback is detected and ignored with
+ *              an error log; after the callback returns the object is already freed, and using
+ *              the saved pointer (including calling this function) is undefined behavior.
  * @since 18
  */
 void OH_CommonEvent_DestroyParameters(CommonEvent_Parameters* param);
@@ -420,7 +427,11 @@ CommonEvent_ErrCode OH_CommonEvent_SetIntToParameters(CommonEvent_Parameters* pa
  *
  * @param para Indicates the parameters data.
  * @param key Indicates the key.
- * @param array Indicates the int array.
+ * @param array Indicates the int array. The array memory is allocated internally: for parameters
+ *              created by OH_CommonEvent_CreateParameters it is released together by
+ *              OH_CommonEvent_DestroyParameters; for parameters from CommonEvent_RcvData receive
+ *              data it is released by the framework after the receive callback returns. Do not
+ *              free it manually, and copy the data if it must be kept beyond the callback.
  * @return Returns the length of the array.
  * @since 12
  */
@@ -471,7 +482,11 @@ CommonEvent_ErrCode OH_CommonEvent_SetLongToParameters(CommonEvent_Parameters* p
  *
  * @param para Indicates the parameters data.
  * @param key Indicates the key.
- * @param array Indicates the long array.
+ * @param array Indicates the long array. The array memory is allocated internally: for parameters
+ *              created by OH_CommonEvent_CreateParameters it is released together by
+ *              OH_CommonEvent_DestroyParameters; for parameters from CommonEvent_RcvData receive
+ *              data it is released by the framework after the receive callback returns. Do not
+ *              free it manually, and copy the data if it must be kept beyond the callback.
  * @return Returns the length of the array.
  * @since 12
  */
@@ -522,7 +537,11 @@ CommonEvent_ErrCode OH_CommonEvent_SetBoolToParameters(CommonEvent_Parameters* p
  *
  * @param para Indicates the parameters data.
  * @param key Indicates the key.
- * @param array Indicates the bool array.
+ * @param array Indicates the bool array. The array memory is allocated internally: for parameters
+ *              created by OH_CommonEvent_CreateParameters it is released together by
+ *              OH_CommonEvent_DestroyParameters; for parameters from CommonEvent_RcvData receive
+ *              data it is released by the framework after the receive callback returns. Do not
+ *              free it manually, and copy the data if it must be kept beyond the callback.
  * @return Returns the length of the array.
  * @since 12
  */
@@ -573,7 +592,11 @@ CommonEvent_ErrCode OH_CommonEvent_SetCharToParameters(CommonEvent_Parameters* p
  *
  * @param para Indicates the parameters data.
  * @param key Indicates the key.
- * @param array Indicates the char array.
+ * @param array Indicates the char array. The array memory is allocated internally: for parameters
+ *              created by OH_CommonEvent_CreateParameters it is released together by
+ *              OH_CommonEvent_DestroyParameters; for parameters from CommonEvent_RcvData receive
+ *              data it is released by the framework after the receive callback returns. Do not
+ *              free it manually, and copy the data if it must be kept beyond the callback.
  * @return Returns the length of the array.
  * @since 12
  */
@@ -625,7 +648,11 @@ CommonEvent_ErrCode OH_CommonEvent_SetDoubleToParameters(CommonEvent_Parameters*
  *
  * @param para Indicates the parameters data.
  * @param key Indicates the key.
- * @param array Indicates the double array.
+ * @param array Indicates the double array. The array memory is allocated internally: for parameters
+ *              created by OH_CommonEvent_CreateParameters it is released together by
+ *              OH_CommonEvent_DestroyParameters; for parameters from CommonEvent_RcvData receive
+ *              data it is released by the framework after the receive callback returns. Do not
+ *              free it manually, and copy the data if it must be kept beyond the callback.
  * @return Returns the length of the array, default is 0.
  * @since 12
  */
@@ -657,8 +684,6 @@ CommonEvent_ErrCode OH_CommonEvent_SetDoubleArrayToParameters(CommonEvent_Parame
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high,
  *                 add since api 20.
- *         Returns {@link COMMONEVENT_ERR_NOT_SYSTEM_SERVICE} if a third-party application publishes a system
- *                 common event.
  *         Returns {@link COMMONEVENT_ERR_SENDING_REQUEST_FAILED } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18
@@ -675,8 +700,6 @@ CommonEvent_ErrCode OH_CommonEvent_Publish(const char* event);
  *         Returns {@link COMMONEVENT_ERR_INVALID_PARAMETER} if a parameter error occurs.
  *         Returns {@link COMMONEVENT_ERR_SENDING_LIMIT_EXCEEDED} if the common event sending frequency too high,
  *                  add since api 20.
- *         Returns {@link COMMONEVENT_ERR_NOT_SYSTEM_SERVICE} if a third-party application publishes a system
- *                  common event.
  *         Returns {@link COMMONEVENT_ERR_SENDING_REQUEST_FAILED } if IPC request failed to send.
  *         Returns {@link COMMONEVENT_ERR_INIT_UNDONE } if ces not init done.
  * @since 18

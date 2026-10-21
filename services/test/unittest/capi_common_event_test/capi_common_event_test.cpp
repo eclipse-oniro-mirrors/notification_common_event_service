@@ -14,6 +14,7 @@
  */
 
 #include <chrono>
+#include <cstring>
 #include <gtest/gtest.h>
 #include <thread>
 
@@ -104,6 +105,52 @@ static void OnReceiveWithoutData(const CommonEvent_RcvData* data)
     ASSERT_EQ(code, 0);
     const char* retData = OH_CommonEvent_GetDataStrFromRcvData(data);
     ASSERT_STREQ(retData, "");
+}
+
+static CommonEvent_Parameters* g_savedParameters = nullptr;
+static int32_t g_savedArrayLen = 0;
+static int g_savedFirstValue = 0;
+static bool g_savedParamsRegistered = false;
+static bool g_paramsRegisteredAfterReject = false;
+
+static void OnReceiveSaveArray(const CommonEvent_RcvData* data)
+{
+    const CommonEvent_Parameters* parameters = OH_CommonEvent_GetParametersFromRcvData(data);
+    g_savedParameters = const_cast<CommonEvent_Parameters*>(parameters);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::liveReceiveParamsMutex_);
+        g_savedParamsRegistered = SubscriberManager::liveReceiveParams_.find(parameters) !=
+            SubscriberManager::liveReceiveParams_.end();
+    }
+    int* array = nullptr;
+    g_savedArrayLen = OH_CommonEvent_GetIntArrayFromParameters(parameters, INT_ARRAY_KEY, &array);
+    if (g_savedArrayLen > 0 && array != nullptr) {
+        g_savedFirstValue = array[0];
+    }
+}
+
+static void OnReceiveDestroyParameters(const CommonEvent_RcvData* data)
+{
+    const CommonEvent_Parameters* parameters = OH_CommonEvent_GetParametersFromRcvData(data);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::liveReceiveParamsMutex_);
+        g_savedParamsRegistered = SubscriberManager::liveReceiveParams_.find(parameters) !=
+            SubscriberManager::liveReceiveParams_.end();
+    }
+    int* array = nullptr;
+    int32_t len = OH_CommonEvent_GetIntArrayFromParameters(parameters, INT_ARRAY_KEY, &array);
+    if (len > 0 && array != nullptr) {
+        g_savedFirstValue = array[0];
+    }
+    OH_CommonEvent_DestroyParameters(const_cast<CommonEvent_Parameters*>(parameters));
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::liveReceiveParamsMutex_);
+        g_paramsRegisteredAfterReject = SubscriberManager::liveReceiveParams_.find(parameters) !=
+            SubscriberManager::liveReceiveParams_.end();
+    }
+    int* arrayAfterDestroy = nullptr;
+    g_savedArrayLen = OH_CommonEvent_GetIntArrayFromParameters(parameters, INT_ARRAY_KEY,
+        &arrayAfterDestroy);
 }
 
 /*
@@ -818,7 +865,14 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2200, Function | MediumTest | 
     int32_t ret = OH_CommonEvent_Subscribe(subscriber);
     ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
 
-    auto observer = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        auto observerIter = SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(subscriber));
+        ASSERT_TRUE(observerIter != SubscriberManager::liveSubscribers_.end());
+        observer = observerIter->second;
+    }
     ASSERT_NE(observer, nullptr);
     {
         std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
@@ -852,7 +906,14 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2300, Function | MediumTest | 
     int32_t ret = OH_CommonEvent_Subscribe(subscriber);
     ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
 
-    auto observer = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        auto observerIter = SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(subscriber));
+        ASSERT_TRUE(observerIter != SubscriberManager::liveSubscribers_.end());
+        observer = observerIter->second;
+    }
     ASSERT_NE(observer, nullptr);
 
     // Destroy with nullptr should return early without crash and keep the existing subscription.
@@ -887,9 +948,20 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2400, Function | MediumTest | 
     int32_t ret = OH_CommonEvent_Subscribe(subscribed);
     ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
 
-    auto subscribedObserver = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(subscribed));
+    std::shared_ptr<SubscriberObserver> subscribedObserver;
+    std::shared_ptr<SubscriberObserver> notSubscribedObserver;
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        auto subscribedIter = SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(subscribed));
+        ASSERT_TRUE(subscribedIter != SubscriberManager::liveSubscribers_.end());
+        subscribedObserver = subscribedIter->second;
+        auto notSubscribedIter = SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(notSubscribed));
+        ASSERT_TRUE(notSubscribedIter != SubscriberManager::liveSubscribers_.end());
+        notSubscribedObserver = notSubscribedIter->second;
+    }
     ASSERT_NE(subscribedObserver, nullptr);
-    auto notSubscribedObserver = *(reinterpret_cast<std::shared_ptr<SubscriberObserver>*>(notSubscribed));
     ASSERT_NE(notSubscribedObserver, nullptr);
     {
         std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
@@ -915,4 +987,238 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2400, Function | MediumTest | 
             SubscriberManager::resultCache_.end());
     }
     OH_CommonEvent_DestroySubscriber(subscribed);
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_2500
+ * @tc.desc: Test double destroy of a subscriber handle. The second destroy must be detected,
+ *           logged and ignored without crash or double free.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2500, Function | MediumTest | Level0)
+{
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+
+    auto subscriber = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceive);
+    ASSERT_NE(subscriber, nullptr);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        EXPECT_TRUE(SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(subscriber)) !=
+            SubscriberManager::liveSubscribers_.end());
+    }
+
+    // First destroy: valid, removes the handle from the registry.
+    OH_CommonEvent_DestroySubscriber(subscriber);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        EXPECT_TRUE(SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(subscriber)) ==
+            SubscriberManager::liveSubscribers_.end());
+    }
+
+    // Second destroy on the same handle: must be detected and ignored, no crash, no double free.
+    OH_CommonEvent_DestroySubscriber(subscriber);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        EXPECT_TRUE(SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(subscriber)) ==
+            SubscriberManager::liveSubscribers_.end());
+    }
+
+    OH_CommonEvent_DestroySubscribeInfo(subscribeInfo);
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_2600
+ * @tc.desc: Test calling subscriber APIs with an already destroyed handle. Every API must
+ *           return its existing failure value without crash or undefined behavior.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2600, Function | MediumTest | Level0)
+{
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+
+    auto subscriber = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceive);
+    ASSERT_NE(subscriber, nullptr);
+    OH_CommonEvent_DestroySubscriber(subscriber);
+
+    // Use-after-destroy on every subscriber API: each returns the same failure value as
+    // its nullptr branch and is safely ignored.
+    EXPECT_EQ(OH_CommonEvent_Subscribe(subscriber), COMMONEVENT_ERR_INVALID_PARAMETER);
+    EXPECT_EQ(OH_CommonEvent_UnSubscribe(subscriber), COMMONEVENT_ERR_INVALID_PARAMETER);
+    EXPECT_EQ(OH_CommonEvent_IsOrderedCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_FinishCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_GetAbortCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_AbortCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_ClearAbortCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_GetCodeFromSubscriber(subscriber), 0);
+    EXPECT_EQ(OH_CommonEvent_SetCodeToSubscriber(subscriber, TEST_CODE), false);
+    EXPECT_EQ(OH_CommonEvent_GetDataFromSubscriber(subscriber), nullptr);
+    EXPECT_EQ(OH_CommonEvent_SetDataToSubscriber(subscriber, TEST_DATA, std::strlen(TEST_DATA)), false);
+
+    OH_CommonEvent_DestroySubscribeInfo(subscribeInfo);
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_2700
+ * @tc.desc: Test receive-path parameters ownership. The object is registered while the receive
+ *           callback is running, arrays obtained inside the callback are released by the
+ *           framework after the callback returns, and the registration is removed afterwards.
+ *           The saved pointer must not be used after the callback returns (contract-level
+ *           undefined behavior), so no late call on it is performed here.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2700, Function | MediumTest | Level0)
+{
+    g_savedParameters = nullptr;
+    g_savedArrayLen = 0;
+    g_savedFirstValue = 0;
+    g_savedParamsRegistered = false;
+
+    auto publishInfo = OH_CommonEvent_CreatePublishInfo(false);
+    ASSERT_NE(publishInfo, nullptr);
+    auto param = OH_CommonEvent_CreateParameters();
+    ASSERT_NE(param, nullptr);
+    ASSERT_EQ(OH_CommonEvent_SetIntArrayToParameters(param, INT_ARRAY_KEY, INT_ARRAY_VALUE,
+        TEST_VALUE_NUM), COMMONEVENT_ERR_OK);
+    ASSERT_EQ(OH_CommonEvent_SetPublishInfoParameters(publishInfo, param), COMMONEVENT_ERR_OK);
+
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+    auto subscriber = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceiveSaveArray);
+    ASSERT_NE(subscriber, nullptr);
+    ASSERT_EQ(OH_CommonEvent_Subscribe(subscriber), COMMONEVENT_ERR_OK);
+    ASSERT_EQ(OH_CommonEvent_PublishWithInfo(EVENT, publishInfo), COMMONEVENT_ERR_OK);
+
+    std::this_thread::sleep_for(std::chrono::seconds(SLEEP_TIME));
+
+    ASSERT_NE(g_savedParameters, nullptr);
+    ASSERT_EQ(g_savedArrayLen, TEST_VALUE_NUM);
+    ASSERT_EQ(g_savedFirstValue, INT_ARRAY_VALUE[0]);
+
+    // During the callback the receive-path object was live and registered in the framework.
+    ASSERT_TRUE(g_savedParamsRegistered);
+    // After the callback returned the framework released the arrays and the object itself and
+    // removed the registration: the saved pointer is no longer usable by contract.
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::liveReceiveParamsMutex_);
+        EXPECT_TRUE(SubscriberManager::liveReceiveParams_.find(g_savedParameters) ==
+            SubscriberManager::liveReceiveParams_.end());
+        EXPECT_TRUE(SubscriberManager::liveReceiveParams_.empty());
+    }
+
+    ASSERT_EQ(OH_CommonEvent_UnSubscribe(subscriber), COMMONEVENT_ERR_OK);
+    OH_CommonEvent_DestroySubscriber(subscriber);
+    OH_CommonEvent_DestroyParameters(param);
+    OH_CommonEvent_DestroyPublishInfo(publishInfo);
+    OH_CommonEvent_DestroySubscribeInfo(subscribeInfo);
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_2800
+ * @tc.desc: Test destroying the live receive-path parameters inside the callback. The request
+ *           must be rejected by the value-based live check (without reading the object), the
+ *           object must stay usable, and the framework release after the callback must not
+ *           double free.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2800, Function | MediumTest | Level0)
+{
+    g_savedParameters = nullptr;
+    g_savedArrayLen = 0;
+    g_savedFirstValue = 0;
+    g_savedParamsRegistered = false;
+    g_paramsRegisteredAfterReject = false;
+
+    auto publishInfo = OH_CommonEvent_CreatePublishInfo(false);
+    ASSERT_NE(publishInfo, nullptr);
+    auto param = OH_CommonEvent_CreateParameters();
+    ASSERT_NE(param, nullptr);
+    ASSERT_EQ(OH_CommonEvent_SetIntArrayToParameters(param, INT_ARRAY_KEY, INT_ARRAY_VALUE,
+        TEST_VALUE_NUM), COMMONEVENT_ERR_OK);
+    ASSERT_EQ(OH_CommonEvent_SetPublishInfoParameters(publishInfo, param), COMMONEVENT_ERR_OK);
+
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+    auto subscriber = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceiveDestroyParameters);
+    ASSERT_NE(subscriber, nullptr);
+    ASSERT_EQ(OH_CommonEvent_Subscribe(subscriber), COMMONEVENT_ERR_OK);
+    ASSERT_EQ(OH_CommonEvent_PublishWithInfo(EVENT, publishInfo), COMMONEVENT_ERR_OK);
+
+    std::this_thread::sleep_for(std::chrono::seconds(SLEEP_TIME));
+
+    // The callback ran with the object registered; the destroy request was rejected by the
+    // registry check and the object stayed registered and usable until the framework released it.
+    ASSERT_TRUE(g_savedParamsRegistered);
+    ASSERT_TRUE(g_paramsRegisteredAfterReject);
+    ASSERT_EQ(g_savedFirstValue, INT_ARRAY_VALUE[0]);
+    ASSERT_EQ(g_savedArrayLen, TEST_VALUE_NUM);
+
+    ASSERT_EQ(OH_CommonEvent_UnSubscribe(subscriber), COMMONEVENT_ERR_OK);
+    OH_CommonEvent_DestroySubscriber(subscriber);
+    OH_CommonEvent_DestroyParameters(param);
+    OH_CommonEvent_DestroyPublishInfo(publishInfo);
+    OH_CommonEvent_DestroySubscribeInfo(subscribeInfo);
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_2900
+ * @tc.desc: Test subscriber APIs on a live, subscribed handle which is not processing an
+ *           ordered common event. Every API must return its existing failure value and the
+ *           subscription must stay unchanged.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2900, Function | MediumTest | Level0)
+{
+    const char* events[] = { EVENT, EVENT2 };
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+
+    auto subscriber = OH_CommonEvent_CreateSubscriber(subscribeInfo, OnReceive);
+    ASSERT_NE(subscriber, nullptr);
+    ASSERT_EQ(OH_CommonEvent_Subscribe(subscriber), COMMONEVENT_ERR_OK);
+
+    std::shared_ptr<SubscriberObserver> observer;
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        auto observerIter = SubscriberManager::liveSubscribers_.find(
+            reinterpret_cast<const SubscriberObserver*>(subscriber));
+        ASSERT_TRUE(observerIter != SubscriberManager::liveSubscribers_.end());
+        observer = observerIter->second;
+    }
+    ASSERT_NE(observer, nullptr);
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        auto item = SubscriberManager::resultCache_.find(observer);
+        ASSERT_TRUE(item != SubscriberManager::resultCache_.end());
+        EXPECT_EQ(item->second.result, nullptr);
+    }
+
+    // Subscribed but no ordered common event has been received: the result APIs return
+    // their failure values without affecting the subscription.
+    EXPECT_EQ(OH_CommonEvent_IsOrderedCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_FinishCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_GetAbortCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_AbortCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_ClearAbortCommonEvent(subscriber), false);
+    EXPECT_EQ(OH_CommonEvent_SetCodeToSubscriber(subscriber, TEST_CODE), false);
+    EXPECT_EQ(OH_CommonEvent_GetCodeFromSubscriber(subscriber), 0);
+    EXPECT_EQ(OH_CommonEvent_GetDataFromSubscriber(subscriber), nullptr);
+    EXPECT_EQ(OH_CommonEvent_SetDataToSubscriber(subscriber, TEST_DATA, std::strlen(TEST_DATA)), false);
+
+    {
+        std::lock_guard<ffrt::mutex> lock(SubscriberManager::resultCacheMutex_);
+        EXPECT_TRUE(SubscriberManager::resultCache_.find(observer) != SubscriberManager::resultCache_.end());
+    }
+
+    ASSERT_EQ(OH_CommonEvent_UnSubscribe(subscriber), COMMONEVENT_ERR_OK);
+    OH_CommonEvent_DestroySubscriber(subscriber);
+    OH_CommonEvent_DestroySubscribeInfo(subscribeInfo);
 }

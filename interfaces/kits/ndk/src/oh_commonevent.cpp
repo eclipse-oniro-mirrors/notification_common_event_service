@@ -225,18 +225,25 @@ CommonEvent_Parameters* OH_CommonEvent_CreateParameters()
 
 void OH_CommonEvent_DestroyParameters(CommonEvent_Parameters* param)
 {
-    auto parameters = reinterpret_cast<CArrParameters*>(param);
-    if (parameters != nullptr) {
-        for (void* ptr : parameters->allocatedPointers) {
-            if (ptr == nullptr) {
-                continue;
-            }
-            free(ptr);
-        }
-        parameters->allocatedPointers.clear();
-        delete parameters;
-        parameters = nullptr;
+    if (param == nullptr) {
+        return;
     }
+    if (SubscriberManager::GetInstance()->IsLiveReceiveParams(param)) {
+        EVENT_LOGE(LOG_TAG_CES_CAPI,
+            "DestroyParameters: the parameters object is from CommonEvent_RcvData receive data, it is "
+            "owned by the framework and released after the receive callback returns, request ignored");
+        return;
+    }
+    auto parameters = reinterpret_cast<CArrParameters*>(param);
+    for (void* ptr : parameters->allocatedPointers) {
+        if (ptr == nullptr) {
+            continue;
+        }
+        free(ptr);
+    }
+    parameters->allocatedPointers.clear();
+    delete parameters;
+    parameters = nullptr;
 }
 
 bool OH_CommonEvent_HasKeyInParameters(const CommonEvent_Parameters* para, const char* key)
@@ -620,7 +627,11 @@ bool OH_CommonEvent_IsOrderedCommonEvent(const CommonEvent_Subscriber* subscribe
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_IsOrderedCommonEvent",
+        observer)) {
+        return false;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
     return (item == nullptr || item->result == nullptr) ? observer->IsOrderedCommonEvent()
                                                         : item->result->IsOrderedCommonEvent();
@@ -632,9 +643,19 @@ bool OH_CommonEvent_FinishCommonEvent(CommonEvent_Subscriber* subscriber)
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_FinishCommonEvent",
+        observer)) {
+        return false;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
-    return (item == nullptr || item->result == nullptr) ? false : item->result->FinishCommonEvent();
+    if (item == nullptr || item->result == nullptr) {
+        EVENT_LOGW(LOG_TAG_CES_CAPI,
+            "OH_CommonEvent_FinishCommonEvent returns false: the subscriber is not processing an ordered "
+            "common event (not subscribed, or no ordered common event has been received)");
+        return false;
+    }
+    return item->result->FinishCommonEvent();
 }
 
 bool OH_CommonEvent_GetAbortCommonEvent(const CommonEvent_Subscriber* subscriber)
@@ -643,7 +664,11 @@ bool OH_CommonEvent_GetAbortCommonEvent(const CommonEvent_Subscriber* subscriber
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_GetAbortCommonEvent",
+        observer)) {
+        return false;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
     return (item == nullptr || item->result == nullptr) ? false : item->result->GetAbortCommonEvent();
 }
@@ -654,9 +679,19 @@ bool OH_CommonEvent_AbortCommonEvent(CommonEvent_Subscriber* subscriber)
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_AbortCommonEvent",
+        observer)) {
+        return false;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
-    return (item == nullptr || item->result == nullptr) ? false : item->result->AbortCommonEvent();
+    if (item == nullptr || item->result == nullptr) {
+        EVENT_LOGW(LOG_TAG_CES_CAPI,
+            "OH_CommonEvent_AbortCommonEvent returns false: the subscriber is not processing an ordered "
+            "common event (not subscribed, or no ordered common event has been received)");
+        return false;
+    }
+    return item->result->AbortCommonEvent();
 }
 
 bool OH_CommonEvent_ClearAbortCommonEvent(CommonEvent_Subscriber* subscriber)
@@ -665,9 +700,19 @@ bool OH_CommonEvent_ClearAbortCommonEvent(CommonEvent_Subscriber* subscriber)
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_ClearAbortCommonEvent",
+        observer)) {
+        return false;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
-    return (item == nullptr || item->result == nullptr) ? false : item->result->ClearAbortCommonEvent();
+    if (item == nullptr || item->result == nullptr) {
+        EVENT_LOGW(LOG_TAG_CES_CAPI,
+            "OH_CommonEvent_ClearAbortCommonEvent returns false: the subscriber is not processing an ordered "
+            "common event (not subscribed, or no ordered common event has been received)");
+        return false;
+    }
+    return item->result->ClearAbortCommonEvent();
 }
 
 int32_t OH_CommonEvent_GetCodeFromSubscriber(const CommonEvent_Subscriber* subscriber)
@@ -676,7 +721,11 @@ int32_t OH_CommonEvent_GetCodeFromSubscriber(const CommonEvent_Subscriber* subsc
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return 0;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_GetCodeFromSubscriber",
+        observer)) {
+        return 0;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
     return (item == nullptr || item->result == nullptr) ? 0 : item->result->GetCode();
 }
@@ -687,9 +736,19 @@ bool OH_CommonEvent_SetCodeToSubscriber(CommonEvent_Subscriber* subscriber, int3
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return false;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_SetCodeToSubscriber",
+        observer)) {
+        return false;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
-    return (item == nullptr || item->result == nullptr) ? false : item->result->SetCode(code);
+    if (item == nullptr || item->result == nullptr) {
+        EVENT_LOGW(LOG_TAG_CES_CAPI,
+            "OH_CommonEvent_SetCodeToSubscriber returns false: the subscriber is not processing an ordered "
+            "common event (not subscribed, or no ordered common event has been received)");
+        return false;
+    }
+    return item->result->SetCode(code);
 }
 
 const char* OH_CommonEvent_GetDataFromSubscriber(const CommonEvent_Subscriber* subscriber)
@@ -698,7 +757,11 @@ const char* OH_CommonEvent_GetDataFromSubscriber(const CommonEvent_Subscriber* s
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber");
         return nullptr;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_GetDataFromSubscriber",
+        observer)) {
+        return nullptr;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
     if (item == nullptr || item->result == nullptr) {
         return nullptr;
@@ -713,9 +776,16 @@ bool OH_CommonEvent_SetDataToSubscriber(CommonEvent_Subscriber* subscriber, cons
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid subscriber or data");
         return false;
     }
-    auto observer = *(reinterpret_cast<const std::shared_ptr<SubscriberObserver>*>(subscriber));
+    std::shared_ptr<SubscriberObserver> observer;
+    if (!SubscriberManager::GetInstance()->GetLiveSubscriber(subscriber, "OH_CommonEvent_SetDataToSubscriber",
+        observer)) {
+        return false;
+    }
     auto item = SubscriberManager::GetInstance()->GetAsyncResult(observer.get());
     if (item == nullptr || item->result == nullptr) {
+        EVENT_LOGW(LOG_TAG_CES_CAPI,
+            "OH_CommonEvent_SetDataToSubscriber returns false: the subscriber is not processing an ordered "
+            "common event (not subscribed, or no ordered common event has been received)");
         return false;
     }
     const std::string strData(data, std::min(std::strlen(data), length));
