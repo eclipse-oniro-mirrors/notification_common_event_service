@@ -241,6 +241,15 @@ bool InnerCommonEventManager::IsPublishAllowed(const std::string &event, int32_t
     return true;
 }
 
+bool InnerCommonEventManager::IsUserAppTypePublishAllowed(const CommonEventPublishInfo &publishInfo,
+    const EventComeFrom &comeFrom)
+{
+    if (publishInfo.GetSubscriberType() != static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE)) {
+        return true;
+    }
+    return comeFrom.isSubsystem || comeFrom.isSystemApp;
+}
+
 bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId, const std::string &bundleName,
@@ -281,7 +290,15 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
             return false;
         }
     }
-    
+
+    if (!IsUserAppTypePublishAllowed(publishInfo, comeFrom)) {
+        EVENT_LOGE(LOG_TAG_CES,
+            "No permission to publish USER_APP subscriber type event from %{public}s(pid = %{public}d, uid = %{public}d)"
+            ", userId = %{public}d", bundleName.c_str(), pid, uid, userId);
+        SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
+        return false;
+    }
+
     EVENT_LOGD(LOG_TAG_CES, "pid=%{public}d publish %{public}s to %{public}d", pid,
         data.GetWant().GetAction().c_str(), user);
 

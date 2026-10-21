@@ -203,6 +203,15 @@ private:
     void getCcmPublishControl();
     bool IsPublishAllowed(const std::string &event, int32_t uid);
 
+    /**
+     * Checks whether the publisher is allowed to publish with USER_APP subscriber type.
+     *
+     * @param publishInfo Indicates the publish info of the common event.
+     * @param comeFrom Indicates the publisher identity resolved from the caller.
+     * @return Returns true if allowed; false otherwise.
+     */
+    bool IsUserAppTypePublishAllowed(const CommonEventPublishInfo &publishInfo, const EventComeFrom &comeFrom);
+
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;
     std::shared_ptr<StaticSubscriberManager> staticSubscriberManager_;

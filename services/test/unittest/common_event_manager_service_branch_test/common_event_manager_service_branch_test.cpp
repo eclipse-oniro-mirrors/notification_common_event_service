@@ -582,7 +582,8 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0204, Le
 /**
  * @tc.name: CommonEventManagerServiceBranch_0303
  * @tc.desc: 1.test PublishCommonEvent with USER_APP subscriber type from non-system caller.
- *           2.no caller identity verification for USER_APP type (removed per review), publish proceeds.
+ *           2.USER_APP type publish from non-system caller is rejected by the server-side gate in
+ *             InnerCommonEventManager; the entry returns ERR_OK and the rejection happens in the task.
  * @tc.type: FUNC
  */
 HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0303, Level0)
@@ -593,12 +594,21 @@ HWTEST_F(CommonEventManagerServiceTest, CommonEventManagerServiceBranch_0303, Le
     comm->innerCommonEventManager_ = std::make_shared<InnerCommonEventManager>();
     comm->commonEventSrvQueue_ = std::make_shared<ffrt::queue>("CesSrvMain");
     CommonEventData event;
+    OHOS::AAFwk::Want want;
+    want.SetAction("test.event.publish.userapp.branchgate");
+    event.SetWant(want);
     CommonEventPublishInfo publishinfo;
     publishinfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
     MockDlpType(DlpType::DLP_COMMON);
     MockGetTokenTypeFlag(ATokenTypeEnum::TOKEN_HAP);
-    int32_t result = comm->PublishCommonEventDetailed(event, publishinfo, nullptr, 1, 20010001, 0, UNDEFINED_USER);
+    // entry accepts the publish task, USER_APP gate rejects it in the CesSrvMain task
+    int32_t result = comm->PublishCommonEventDetailed(event, publishinfo, nullptr, 1, 20998765, 0, UNDEFINED_USER);
     EXPECT_EQ(ERR_OK, result);
+    // the gate rejects synchronously inside the inner manager for non-system caller
+    struct tm recordTime = {0};
+    bool ret = comm->innerCommonEventManager_->PublishCommonEvent(event, publishinfo, nullptr, recordTime, 1,
+        20998765, 0, UNDEFINED_USER, "", nullptr);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "CommonEventManagerServiceBranch_0303 end";
 }
 }
