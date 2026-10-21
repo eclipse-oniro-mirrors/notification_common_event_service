@@ -63,10 +63,10 @@ public:
         return returnCode_;
     }
 
-    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
+    ErrCode OnReceiveEvent(const CommonEventData& data) override
     {
         GTEST_LOG_(INFO) << "MockRegisterService::OnReceiveEvent called.";
-        return 0;
+        return ERR_OK;
     }
 
     int32_t returnCode_ = ERR_NONE;

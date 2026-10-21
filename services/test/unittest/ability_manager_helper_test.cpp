@@ -58,7 +58,7 @@ public:
     explicit MockStaticSubscriber() {}
     ~MockStaticSubscriber() = default;
 
-    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
+    ErrCode OnReceiveEvent(const CommonEventData& data) override
     {
         return ERR_OK;
     }
