@@ -250,6 +250,30 @@ bool InnerCommonEventManager::IsUserAppTypePublishAllowed(const CommonEventPubli
     return comeFrom.isSubsystem || comeFrom.isSystemApp;
 }
 
+bool InnerCommonEventManager::CheckPublishPermission(const bool &isSystemEvent,
+    const CommonEventPublishInfo &publishInfo, const EventComeFrom &comeFrom, const std::string &bundleName,
+    const pid_t &pid, const uid_t &uid, const int32_t &userId, const int32_t &user, const std::string &action)
+{
+    if (isSystemEvent) {
+        EVENT_LOGD(LOG_TAG_CES, "System common event");
+        if (!comeFrom.isSystemApp && !comeFrom.isSubsystem) {
+            EVENT_LOGE(LOG_TAG_CES,
+                "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
+                ", userId = %{public}d", bundleName.c_str(), pid, uid, userId);
+            SendPublishHiSysEvent(user, bundleName, pid, uid, action, false);
+            return false;
+        }
+    }
+
+    if (!IsUserAppTypePublishAllowed(publishInfo, comeFrom)) {
+        EVENT_LOGE(LOG_TAG_CES, "No permission to publish USER_APP subscriber type event from %{public}s"
+            "(pid = %{public}d, uid = %{public}d), userId = %{public}d", bundleName.c_str(), pid, uid, userId);
+        SendPublishHiSysEvent(user, bundleName, pid, uid, action, false);
+        return false;
+    }
+    return true;
+}
+
 bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
     const sptr<IRemoteObject> &commonEventListener, const struct tm &recordTime, const pid_t &pid, const uid_t &uid,
     const Security::AccessToken::AccessTokenID &callerToken, const int32_t &userId, const std::string &bundleName,
@@ -280,22 +304,7 @@ bool InnerCommonEventManager::PublishCommonEvent(const CommonEventData &data, co
         return false;
     }
 
-    if (isSystemEvent) {
-        EVENT_LOGD(LOG_TAG_CES, "System common event");
-        if (!comeFrom.isSystemApp && !comeFrom.isSubsystem) {
-            EVENT_LOGE(LOG_TAG_CES,
-                "No permission to send a system common event from %{public}s(pid = %{public}d, uid = %{public}d)"
-                ", userId = %{public}d", bundleName.c_str(), pid, uid, userId);
-            SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
-            return false;
-        }
-    }
-
-    if (!IsUserAppTypePublishAllowed(publishInfo, comeFrom)) {
-        EVENT_LOGE(LOG_TAG_CES,
-            "No permission to publish USER_APP subscriber type event from %{public}s(pid = %{public}d, uid = %{public}d)"
-            ", userId = %{public}d", bundleName.c_str(), pid, uid, userId);
-        SendPublishHiSysEvent(user, bundleName, pid, uid, data.GetWant().GetAction(), false);
+    if (!CheckPublishPermission(isSystemEvent, publishInfo, comeFrom, bundleName, pid, uid, userId, user, action)) {
         return false;
     }
 

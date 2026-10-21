@@ -212,6 +212,25 @@ private:
      */
     bool IsUserAppTypePublishAllowed(const CommonEventPublishInfo &publishInfo, const EventComeFrom &comeFrom);
 
+    /**
+     * Checks whether the publisher has permission to publish the common event, covering
+     * system common event and USER_APP subscriber type restrictions.
+     *
+     * @param isSystemEvent Indicates whether the common event is a system common event.
+     * @param publishInfo Indicates the publish info of the common event.
+     * @param comeFrom Indicates the publisher identity resolved from the caller.
+     * @param bundleName Indicates the name of the publisher bundle.
+     * @param pid Indicates the pid of the publisher.
+     * @param uid Indicates the uid of the publisher.
+     * @param userId Indicates the user ID carried by the publish request.
+     * @param user Indicates the user ID resolved for delivery.
+     * @param action Indicates the action of the common event.
+     * @return Returns true if allowed; false otherwise.
+     */
+    bool CheckPublishPermission(const bool &isSystemEvent, const CommonEventPublishInfo &publishInfo,
+        const EventComeFrom &comeFrom, const std::string &bundleName, const pid_t &pid, const uid_t &uid,
+        const int32_t &userId, const int32_t &user, const std::string &action);
+
 private:
     std::shared_ptr<CommonEventControlManager> controlPtr_;
     std::shared_ptr<StaticSubscriberManager> staticSubscriberManager_;
