@@ -797,3 +797,57 @@ HWTEST_F(InnerCommonEventManagerTest, PublishStickyEvent_WithoutUserAppTypeReach
 
     EXPECT_FALSE(innerCommonEventManager.PublishStickyEvent(sp, subscriberRecord));
 }
+
+/**
+ * @tc.name: PublishCommonEvent_UserAppTypeRejectedForNonSystemPublisher
+ * @tc.desc: test publishing USER_APP subscriber type event is rejected for non-system publisher.
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, PublishCommonEvent_UserAppTypeRejectedForNonSystemPublisher, Function |
+    SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+    CommonEventData commonEventData;
+    OHOS::AAFwk::Want want;
+    want.SetAction("test.event.publish.userapp.nonsystem");
+    commonEventData.SetWant(want);
+    CommonEventPublishInfo publishInfo;
+    publishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+    struct tm recordTime = {0};
+    bool ret = innerCommonEventManager.PublishCommonEvent(commonEventData, publishInfo, nullptr, recordTime, 1,
+        20998765, 0, UNDEFINED_USER, "", nullptr);
+    EXPECT_FALSE(ret);
+}
+
+/**
+ * @tc.name: IsUserAppTypePublishAllowed_CheckPermission
+ * @tc.desc: test USER_APP subscriber type publish permission: only subsystem or system application is allowed.
+ * @tc.type: FUNC
+ */
+HWTEST_F(InnerCommonEventManagerTest, IsUserAppTypePublishAllowed_CheckPermission, Function | SmallTest | Level1)
+{
+    InnerCommonEventManager innerCommonEventManager;
+
+    CommonEventPublishInfo userAppPublishInfo;
+    userAppPublishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::USER_APP_SUBSCRIBER_TYPE));
+
+    EventComeFrom subsystem;
+    subsystem.isSubsystem = true;
+    EXPECT_TRUE(innerCommonEventManager.IsUserAppTypePublishAllowed(userAppPublishInfo, subsystem));
+
+    EventComeFrom systemApp;
+    systemApp.isSystemApp = true;
+    EXPECT_TRUE(innerCommonEventManager.IsUserAppTypePublishAllowed(userAppPublishInfo, systemApp));
+
+    EventComeFrom cemShell;
+    cemShell.isCemShell = true;
+    EXPECT_FALSE(innerCommonEventManager.IsUserAppTypePublishAllowed(userAppPublishInfo, cemShell));
+
+    EventComeFrom normalApp;
+    EXPECT_FALSE(innerCommonEventManager.IsUserAppTypePublishAllowed(userAppPublishInfo, normalApp));
+
+    CommonEventPublishInfo otherTypePublishInfo;
+    otherTypePublishInfo.SetSubscriberType(static_cast<int32_t>(SubscriberType::ALL_SUBSCRIBER_TYPE));
+    EXPECT_TRUE(innerCommonEventManager.IsUserAppTypePublishAllowed(otherTypePublishInfo, normalApp));
+    EXPECT_TRUE(innerCommonEventManager.IsUserAppTypePublishAllowed(CommonEventPublishInfo(), normalApp));
+}
