@@ -15,5 +15,5 @@
 
 sequenceable CommonEventData..OHOS.EventFwk.CommonEventData;
 interface OHOS.EventFwk.IStaticSubscriber {
-    int OnReceiveEvent([in] CommonEventData inData);
+    [oneway] void OnReceiveEvent([in] CommonEventData inData);
 }

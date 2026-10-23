@@ -63,8 +63,9 @@ void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)
             EVENT_LOGE(LOG_TAG_STATIC, "Proxy is died, skip Notify");
             return;
         }
-        int32_t funcResult = -1;
-        ErrCode ec = sThis->proxy_->OnReceiveEvent(event, funcResult);
+        // Oneway IPC: the proxy returns as soon as the transaction is queued (it does not wait for a
+        // reply), so an unresponsive subscriber can no longer block this notify task nor CES.
+        ErrCode ec = sThis->proxy_->OnReceiveEvent(event);
         EVENT_LOGI(LOG_TAG_STATIC, "Notify %{public}s to %{public}s end, code %{public}d",
             event.GetWant().GetAction().c_str(), sThis->connectionKey_.c_str(), ec);
         AbilityManagerHelper::GetInstance()->DisconnectServiceAbilityDelay(sThis, event.GetWant().GetAction());

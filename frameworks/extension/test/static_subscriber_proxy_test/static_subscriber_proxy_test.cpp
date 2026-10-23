@@ -59,16 +59,19 @@ public:
     int SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override
     {
         GTEST_LOG_(INFO) << "MockRegisterService::SendRequest called. return value " << returnCode_;
-        reply.WriteInt32(ERR_NONE);
+        sendRequestCount_++;
+        lastFlags_ = option.GetFlags();
         return returnCode_;
     }
 
-    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
+    ErrCode OnReceiveEvent(const CommonEventData& data) override
     {
-        return 0;
+        return ERR_OK;
     }
 
     int32_t returnCode_ = ERR_NONE;
+    int32_t sendRequestCount_ = 0;
+    int32_t lastFlags_ = MessageOption::TF_SYNC;
 };
 
 class MockStaticSubscriberStub : public StaticSubscriberStub {
@@ -79,15 +82,17 @@ public:
     int SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override
     {
         GTEST_LOG_(INFO) << "MockRegisterService::SendRequest called. return value " << returnCode_;
+        sendRequestCount_++;
         return returnCode_;
     }
 
-    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override
+    ErrCode OnReceiveEvent(const CommonEventData& data) override
     {
-        return 0;
+        return ERR_OK;
     }
 
     int32_t returnCode_ = 1;
+    int32_t sendRequestCount_ = 0;
 };
 
 /**
@@ -103,9 +108,10 @@ HWTEST_F(StaticSubscriberProxyTest, StaticSubscriberProxy_OnReceiveEvent_001, Te
     EXPECT_TRUE(testProxy != nullptr);
     EXPECT_TRUE(testProxy->remoteObject_ != nullptr);
     const CommonEventData data;
-    int32_t funcResult = -1;
-    EXPECT_EQ(testProxy->OnReceiveEvent(data, funcResult), ERR_OK);
-    EXPECT_EQ(funcResult, ERR_OK);
+    EXPECT_EQ(testProxy->OnReceiveEvent(data), ERR_OK);
+    // The event callback must be a oneway transaction so the caller never waits for the subscriber.
+    EXPECT_EQ(object->sendRequestCount_, 1);
+    EXPECT_NE((object->lastFlags_ & MessageOption::TF_ASYNC), 0);
     GTEST_LOG_(INFO) << "StaticSubscriberProxy_OnReceiveEvent_001 end.";
 }
 
@@ -122,9 +128,9 @@ HWTEST_F(StaticSubscriberProxyTest, StaticSubscriberProxy_OnReceiveEvent_002, Te
     EXPECT_TRUE(testProxy != nullptr);
     EXPECT_TRUE(testProxy->remoteObject_ != nullptr);
     const CommonEventData data;
-    int32_t funcResult = -1;
-    EXPECT_EQ(testProxy->OnReceiveEvent(data, funcResult), ERR_TRANSACTION_FAILED);
-    EXPECT_EQ(funcResult, SESSION_UNOPEN_ERR);
+    // A failed send must not block or try to read a reply: the callback is oneway.
+    EXPECT_EQ(testProxy->OnReceiveEvent(data), ERR_TRANSACTION_FAILED);
+    EXPECT_EQ(object->sendRequestCount_, 1);
     GTEST_LOG_(INFO) << "StaticSubscriberProxy_OnReceiveEvent_002 end.";
 }
 } // namespace EventFwk

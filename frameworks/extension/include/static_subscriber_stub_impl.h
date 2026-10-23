@@ -29,7 +29,7 @@ public:
 
     virtual ~StaticSubscriberStubImpl() = default;
 
-    ErrCode OnReceiveEvent(const CommonEventData& data, int32_t& funcResult) override;
+    ErrCode OnReceiveEvent(const CommonEventData& data) override;
 
 private:
     std::weak_ptr<StaticSubscriberExtension> extension_;

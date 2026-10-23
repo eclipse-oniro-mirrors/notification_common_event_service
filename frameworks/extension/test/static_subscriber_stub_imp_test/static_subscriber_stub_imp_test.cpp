@@ -67,9 +67,7 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
     sptr<StaticSubscriberStubImpl> object = new (std::nothrow) StaticSubscriberStubImpl(extension);
     EXPECT_TRUE(object != nullptr);
     const CommonEventData data;
-    int32_t funcResult = -1;
-    EXPECT_EQ(object->OnReceiveEvent(data, funcResult), ERR_OK);
-    EXPECT_EQ(funcResult, 0);
+    EXPECT_EQ(object->OnReceiveEvent(data), ERR_OK);
     GTEST_LOG_(INFO) << "StaticSubscriberStubImpl_OnReceiveEvent_001 end.";
 }
 
@@ -85,9 +83,7 @@ HWTEST_F(StaticSubscriberStubImplTest, StaticSubscriberStubImpl_OnReceiveEvent_0
     sptr<StaticSubscriberStubImpl> object = new (std::nothrow) StaticSubscriberStubImpl(extension);
     EXPECT_TRUE(object != nullptr);
     const CommonEventData data;
-    int32_t funcResult = -1;
-    EXPECT_EQ(object->OnReceiveEvent(data, funcResult), ERR_INVALID_DATA);
-    EXPECT_EQ(funcResult, SESSION_UNOPEN_ERR);
+    EXPECT_EQ(object->OnReceiveEvent(data), ERR_INVALID_DATA);
     GTEST_LOG_(INFO) << "StaticSubscriberStubImpl_OnReceiveEvent_002 end.";
 }
 } // namespace EventFwk

@@ -19,19 +19,17 @@
 
 namespace OHOS {
 namespace EventFwk {
-ErrCode StaticSubscriberStubImpl::OnReceiveEvent(const CommonEventData& data, int32_t& funcResult)
+ErrCode StaticSubscriberStubImpl::OnReceiveEvent(const CommonEventData& data)
 {
     EVENT_LOGD(LOG_TAG_CES, "OnReceiveEvent begin.");
     auto extension = extension_.lock();
-    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>(data);
-    if (extension != nullptr) {
-        extension->OnReceiveEvent(commonEventData);
-        funcResult = 0;
-        return ERR_OK;
+    if (extension == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES, "OnReceiveEvent end failed.");
+        return ERR_INVALID_DATA;
     }
-    EVENT_LOGE(LOG_TAG_CES, "OnReceiveEvent end failed.");
-    funcResult = -1;
-    return ERR_INVALID_DATA;
+    std::shared_ptr<CommonEventData> commonEventData = std::make_shared<CommonEventData>(data);
+    extension->OnReceiveEvent(commonEventData);
+    return ERR_OK;
 }
 } // namespace EventFwk
 } // namespace OHOS
