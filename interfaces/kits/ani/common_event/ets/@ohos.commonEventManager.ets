@@ -164,11 +164,6 @@ namespace commonEventManager {
         hilog.info(0x0000, TAG, 'createSubscriber callback call.');
         let task = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
         task.then((data: Any)=>{
-            if (data == null || data == undefined) {
-                hilog.error(0x0000, TAG, 'createSubscriber returns null.');
-                callback(buildBusinessError(ERROR_PARAM_INVALID), undefined);
-                return;
-            }
             callback(null, data as CommonEventSubscriber);
         }, (error: Error): void => {
             hilog.error(0x0000, TAG, 'createSubscriber error.');
@@ -183,11 +178,6 @@ namespace commonEventManager {
             reject: (error: Error) => void) => {
             let p1 = taskpool.execute(commonEventManager.createSubscriberExecute, subscribeInfo);
             p1.then((data :Any)=>{
-                if (data == null || data == undefined) {
-                    hilog.error(0x0000, TAG, 'createSubscriber Promise returns null.');
-                    reject(buildBusinessError(ERROR_PARAM_INVALID));
-                    return;
-                }
                 resolve(data as CommonEventSubscriber);
             }, (err: Error): void => {
                 hilog.error(0x0000, TAG, 'createSubscriber Promise error');

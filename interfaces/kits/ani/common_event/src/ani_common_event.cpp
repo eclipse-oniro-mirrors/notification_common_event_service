@@ -134,11 +134,7 @@ ani_ref CreateSubscriberRef(ani_env* env, SubscriberInstanceWrapper *subscriberW
 static ani_ref createSubscriberExecute(ani_env* env, ani_object infoObject)
 {
     CommonEventSubscribeInfo subscribeInfo;
-    if (!AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo)) {
-        EVENT_LOGE(LOG_TAG_CES_ANI, "ConvertCommonEventSubscribeInfo failed, invalid subscribe info.");
-        AniCommonEventUtils::ThrowError(env, ERROR_CODE_PARAM_INVALID, ERROR_MSG_PARAM_INVALID);
-        return nullptr;
-    }
+    AniCommonEventUtils::ConvertCommonEventSubscribeInfo(env, infoObject, subscribeInfo);
     subscribeInfo.SetThreadMode(EventFwk::CommonEventSubscribeInfo::ThreadMode::HANDLER);
     auto wrapper = new (std::nothrow) SubscriberInstanceWrapper(subscribeInfo);
     if (wrapper == nullptr) {

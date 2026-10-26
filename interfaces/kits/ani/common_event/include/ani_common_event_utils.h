@@ -34,9 +34,6 @@ constexpr const char *ERROR_CLASS_NAME = "escompat.Error";
 constexpr int32_t ERROR_CODE_INTERNAL_ERROR = 1500001;
 constexpr const char* ERROR_MSG_INTERNAL_ERROR =
     "Internal error.";
-constexpr int32_t ERROR_CODE_PARAM_INVALID = 401;
-constexpr const char* ERROR_MSG_PARAM_INVALID =
-    "Parameter error. The events must be a non-empty array of string.";
 
 class AniCommonEventUtils {
 public:
@@ -45,9 +42,7 @@ public:
     static void GetStdStringArrayClass(ani_env* env, ani_object arrayObj, std::vector<std::string>& strings);
     static void ConvertCommonEventPublishData(ani_env* env, ani_object optionsObject, EventFwk::Want& want,
         EventFwk::CommonEventData& commonEventData, EventFwk::CommonEventPublishInfo& commonEventPublishInfo);
-    static bool ConvertEventsToMatchingSkills(
-        ani_env* env, ani_object infoObject, EventFwk::MatchingSkills& matchingSkills);
-    static bool ConvertCommonEventSubscribeInfo(
+    static void ConvertCommonEventSubscribeInfo(
         ani_env* env, ani_object infoObject, CommonEventSubscribeInfo& subscribeInfo);
     static void GetCommonEventSubscribeInfoToEts(
         ani_env* env, std::shared_ptr<SubscriberInstance> subscriber, ani_object &infoObject);
