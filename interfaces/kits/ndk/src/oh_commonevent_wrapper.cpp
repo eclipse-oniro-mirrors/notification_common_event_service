@@ -72,9 +72,7 @@ void SubscriberObserver::SetCallback(CommonEvent_ReceiveCallback callback)
     callback_ = callback;
 }
 
-ffrt::mutex SubscriberManager::instanceMutex_;
 ffrt::mutex SubscriberManager::resultCacheMutex_;
-std::shared_ptr<SubscriberManager> SubscriberManager::instance_;
 std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> SubscriberManager::resultCache_;
 std::map<const SubscriberObserver*, std::shared_ptr<SubscriberObserver>> SubscriberManager::liveSubscribers_;
 ffrt::mutex SubscriberManager::liveReceiveParamsMutex_;
@@ -82,13 +80,8 @@ std::set<const void*> SubscriberManager::liveReceiveParams_;
 
 std::shared_ptr<SubscriberManager> SubscriberManager::GetInstance()
 {
-    if (instance_ == nullptr) {
-        std::lock_guard<ffrt::mutex> lock(instanceMutex_);
-        if (instance_ == nullptr) {
-            instance_ = std::make_shared<SubscriberManager>();
-        }
-    }
-    return instance_;
+    static std::shared_ptr<SubscriberManager> instance = std::make_shared<SubscriberManager>();
+    return instance;
 }
 
 CommonEvent_Subscriber* SubscriberManager::CreateSubscriber(const CommonEvent_SubscribeInfo* subscribeInfo,

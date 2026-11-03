@@ -167,6 +167,16 @@ public:
     std::unordered_map<uid_t, FrozenRecords> GetAllFrozenEvents();
 
     /**
+     * Takes all frozen events atomically. The cached frozen events are moved out of the manager in the
+     * same critical section that snapshots them, so that events inserted concurrently are never lost.
+     *
+     * @param frozenEvents Returns the frozen events indexed by uid.
+     * @param frozenEventsMap Returns the frozen events indexed by pid.
+     */
+    void TakeAllFrozenEvents(std::unordered_map<uid_t, FrozenRecords> &frozenEvents,
+        std::unordered_map<pid_t, FrozenRecords> &frozenEventsMap);
+
+    /**
     * Inserts freeze events.
     *
     * @param eventListener Indicates the subscriber object.
@@ -261,6 +271,10 @@ private:
     void RemoveFrozenEventsBySubscriber(const SubscriberRecordPtr &subscriberRecord);
 
     void RemoveFrozenEventsMapBySubscriber(const SubscriberRecordPtr &subscriberRecord);
+
+    void RemoveFrozenEventsLocked(const uid_t &uid);
+
+    void RemoveFrozenEventsMapByPidLocked(const pid_t &pid);
 
     void SendSubscriberExceedMaximumHiSysEvent(int32_t userId, const std::string &eventName, uint32_t subscriberNum);
 

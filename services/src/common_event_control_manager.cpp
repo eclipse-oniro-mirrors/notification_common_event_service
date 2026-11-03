@@ -34,7 +34,7 @@ constexpr int32_t DOUBLE = 2;
 static const int32_t TIME_UNIT_SIZE = 1000;
 
 CommonEventControlManager::CommonEventControlManager()
-    : pendingTimeoutMessage_(false), scheduled_(false)
+    : pendingTimeoutMessage_(false)
 {
     EVENT_LOGD(LOG_TAG_CES, "enter");
 }
@@ -113,19 +113,14 @@ bool CommonEventControlManager::PublishAllFreezeCommonEvents()
         return false;
     }
 
-    std::unordered_map<uid_t, FrozenRecords> frozenEventRecords =
-        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetAllFrozenEvents();
-    for (auto record : frozenEventRecords) {
+    std::unordered_map<uid_t, FrozenRecords> frozenEventRecords;
+    std::unordered_map<pid_t, FrozenRecords> frozenEventRecordsMap;
+    DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->TakeAllFrozenEvents(
+        frozenEventRecords, frozenEventRecordsMap);
+    EVENT_LOGD(LOG_TAG_FREEZED, "take frozen events, uid size = %{public}zu, pid size = %{public}zu",
+        frozenEventRecords.size(), frozenEventRecordsMap.size());
+    for (auto &record : frozenEventRecords) {
         PublishFrozenEventsInner(record.second);
-    }
-    for (auto record : frozenEventRecords) {
-        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveFrozenEvents(record.first);
-    }
-
-    std::unordered_map<pid_t, FrozenRecords> frozenEventRecordsMap =
-        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->GetAllFrozenEventsMap();
-    for (auto record : frozenEventRecordsMap) {
-        DelayedSingleton<CommonEventSubscriberManager>::GetInstance()->RemoveFrozenEventsMapByPid(record.first);
     }
     return true;
 }
@@ -518,11 +513,13 @@ bool CommonEventControlManager::ScheduleOrderedCommonEvent()
 {
     EVENT_LOGD(LOG_TAG_ORDERED, "enter");
 
-    if (scheduled_) {
-        return true;
+    {
+        std::lock_guard<ffrt::mutex> lock(orderedMutex_);
+        if (scheduled_) {
+            return true;
+        }
+        scheduled_ = true;
     }
-
-    scheduled_ = true;
 
     std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
     orderedQueue_->submit([weak]() {
@@ -531,7 +528,7 @@ bool CommonEventControlManager::ScheduleOrderedCommonEvent()
             EVENT_LOGE(LOG_TAG_ORDERED, "CommonEventControlManager is null");
             return;
         }
-        manager->ProcessNextOrderedEvent(true);
+        manager->ProcessNextOrderedEvent();
     });
     return true;
 }
@@ -635,17 +632,15 @@ void CommonEventControlManager::LogOrderedNotifySuccess(
         eventRecordPtr->commonEventData->GetWant().GetAction());
 }
 
-void CommonEventControlManager::ProcessNextOrderedEvent(bool isSendMsg)
+void CommonEventControlManager::ProcessNextOrderedEvent()
 {
     NOTIFICATION_HITRACE(HITRACE_TAG_NOTIFICATION);
     EVENT_LOGD(LOG_TAG_ORDERED, "enter");
-    if (isSendMsg) {
-        scheduled_ = false;
-    }
     std::shared_ptr<OrderedEventRecord> sp = nullptr;
     std::vector<std::shared_ptr<OrderedEventRecord>> removedRecords;
     {
         std::lock_guard<ffrt::mutex> lock(orderedMutex_);
+        scheduled_ = false;
         sp = ProcessOrderedEventQueueLocked(removedRecords);
     }
     for (auto &removed : removedRecords) {
@@ -889,15 +884,7 @@ bool CommonEventControlManager::FinishReceiverAction(std::shared_ptr<OrderedEven
     bool doNext = false;
     doNext = FinishReceiver(recordPtr, code, receiverData, abortEvent);
     if (doNext) {
-        std::weak_ptr<CommonEventControlManager> weak = shared_from_this();
-        orderedQueue_->submit([weak]() {
-            auto manager = weak.lock();
-            if (manager == nullptr) {
-                EVENT_LOGE(LOG_TAG_ORDERED, "CommonEventControlManager is null");
-                return;
-            }
-            manager->ProcessNextOrderedEvent(false);
-        });
+        ScheduleOrderedCommonEvent();
     }
 
     return true;

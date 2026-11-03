@@ -251,8 +251,6 @@ private:
         const sptr<ICommonEvent> &proxy, bool isUpdate);
 
 private:
-    static std::mutex instanceMutex_;
-    static std::shared_ptr<CommonEvent> instance_;
     std::mutex eventListenersMutex_;
     std::map<std::shared_ptr<CommonEventSubscriber>, sptr<CommonEventListener>> eventListeners_;
     const size_t SUBSCRIBER_MAX_SIZE = 200;

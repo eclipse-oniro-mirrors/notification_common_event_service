@@ -16,10 +16,12 @@
 #ifndef FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_STATIC_SUBSCRIBER_MANAGER_H
 #define FOUNDATION_EVENT_CESFWK_SERVICES_INCLUDE_STATIC_SUBSCRIBER_MANAGER_H
 
+#include <atomic>
 #include <map>
 #include <string>
 #include <set>
 #include <vector>
+#include <cstdint>
 
 #include "nlohmann/json.hpp"
 
@@ -108,6 +110,13 @@ private:
     bool IsDisableEvent(const std::string &bundleName, const std::string &event, int32_t userId);
     int32_t UpdateDisableEvents(const std::string &bundleName,
         const std::vector<std::string> &events, bool enable, int32_t userId);
+    // Merges the events of one bundle into disableEvents_. The caller must hold disableEventsMutex_.
+    void MergeDisableEventsLocked(const std::string &key, const std::vector<std::string> &events, bool enable);
+    bool PrepareValidSubscribers();
+    void AddSubscriberIfAllowed(const AppExecFwk::ExtensionAbilityInfo &extension);
+    // Must be called on the CesSrvMain serial queue only.
+    bool LoadDisableEvents();
+    void RetryDisableEventsLoadIfNeeded();
     void PublishCommonEventConnecAbility(const CommonEventData &data, const sptr<IRemoteObject> &service,
         const int32_t &userId, const std::string &bundleName, const std::string &abilityName);
     void PublishCommonEventInner(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,
@@ -140,9 +149,21 @@ private:
     std::map<std::string, StaticSubscriber> staticSubscribers_;
     // key is bundle, value is eventNames
     std::map<std::string, std::vector<std::string>> disableEvents_;
+    // True once disableEvents_ is restored from the kv store. Atomic so the publish path can take
+    // the fast path without touching stateMutex_; the write happens under stateMutex_ and
+    // disableEventsMutex_.
+    std::atomic<bool> disableEventsLoaded_ { false };
+    // Legacy "0" entries that can not be expanded yet because the allowlist is not ready.
+    // Guarded by stateMutex_.
+    std::set<std::string> unexpandedLegacyKeys_;
+    // Timestamp (ms) of the last disable-events load retry. Guarded by stateMutex_.
+    int64_t lastLoadRetryTime_ = 0;
     bool hasInitAllowList_ = false;
     bool hasInitValidSubscribers_ = false;
     ffrt::recursive_mutex subscriberMutex_;
+    // Serializes the init/update/remove transactions. KV access happens under this lock but outside
+    // disableEventsMutex_, so event dispatch never waits for storage.
+    ffrt::recursive_mutex stateMutex_;
     ffrt::recursive_mutex disableEventsMutex_;
     std::shared_ptr<ffrt::queue> ffrt_ = nullptr;
 };

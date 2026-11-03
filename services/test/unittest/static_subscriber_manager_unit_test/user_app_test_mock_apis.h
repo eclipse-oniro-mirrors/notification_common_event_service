@@ -19,5 +19,6 @@
 bool IsConnectAbilityCalled();
 void ResetAbilityManagerHelperState();
 void SetSystemMock(bool mockRet);
+void MockGetApplicationInfosRet(bool mockRet);
 
 #endif  // FOUNDATION_EVENT_CESFWK_STATIC_USER_APP_TEST_MOCK_APIS_H

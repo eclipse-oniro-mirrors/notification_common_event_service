@@ -36,6 +36,7 @@
 #include "static_subscriber_data_manager.h"
 #include "parameters.h"
 #include "string_wrapper.h"
+#include "system_time.h"
 
 namespace OHOS {
 namespace EventFwk {
@@ -53,6 +54,7 @@ constexpr static const char* JSON_KEY_FILTER_CONDITIONS_DATA = "data";
 constexpr static const char* JSON_KEY_FILTER_CONDITIONS_PARAMETERS = "parameters";
 static int32_t g_bootDelayTime = OHOS::system::GetIntParameter("bootevent.boot.completed.delay", 0);
 constexpr int32_t TIME_UNIT_SIZE = 1000;
+constexpr int64_t LOAD_RETRY_INTERVAL_MS = 5000;
 }
 
 StaticSubscriberManager::StaticSubscriberManager() {}
@@ -100,7 +102,20 @@ bool StaticSubscriberManager::InitAllowList()
 bool StaticSubscriberManager::InitValidSubscribers()
 {
     EVENT_LOGD(LOG_TAG_STATIC, "enter");
+    std::lock_guard<ffrt::recursive_mutex> stateLock(stateMutex_);
 
+    if (!PrepareValidSubscribers()) {
+        return false;
+    }
+    if (!LoadDisableEvents()) {
+        EVENT_LOGE(LOG_TAG_STATIC, "load disable events failed");
+    }
+    hasInitValidSubscribers_ = true;
+    return true;
+}
+
+bool StaticSubscriberManager::PrepareValidSubscribers()
+{
     {
         std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
         if (!validSubscribers_.empty()) {
@@ -111,9 +126,6 @@ bool StaticSubscriberManager::InitValidSubscribers()
         EVENT_LOGE(LOG_TAG_STATIC, "Failed to init AllowList");
         return false;
     }
-    std::set<std::string> bundleList;
-    DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->
-        QueryStaticSubscriberStateData(disableEvents_, bundleList);
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensions;
     // get all static subscriber type extensions
@@ -122,49 +134,97 @@ bool StaticSubscriberManager::InitValidSubscribers()
         return false;
     }
     // filter legal extensions and add them to valid map
-    for (auto extension : extensions) {
-        int32_t userId = ALL_USER;
-        if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()
-            ->GetOsAccountLocalIdFromUid(extension.applicationInfo.uid, userId) != ERR_OK) {
-            EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", extension.applicationInfo.uid);
-            continue;
+    for (auto &extension : extensions) {
+        AddSubscriberIfAllowed(extension);
+    }
+    return true;
+}
+
+void StaticSubscriberManager::AddSubscriberIfAllowed(const AppExecFwk::ExtensionAbilityInfo &extension)
+{
+    int32_t userId = ALL_USER;
+    if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()
+        ->GetOsAccountLocalIdFromUid(extension.applicationInfo.uid, userId) != ERR_OK) {
+        EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", extension.applicationInfo.uid);
+        return;
+    }
+    std::string key = std::to_string(userId) + "_" + extension.bundleName;
+    {
+        std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
+        if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
+            EVENT_LOGI(LOG_TAG_STATIC, "StaticExtension exists, but allowCommonEvent not found, bundle=%{public}s "
+                "userId=%{public}d", extension.bundleName.c_str(), userId);
+            return;
         }
-        std::string key = std::to_string(userId) + "_" + extension.bundleName;
-        {
-            std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
-            if (staticSubscribers_.find(key) == staticSubscribers_.end()) {
-                EVENT_LOGI(LOG_TAG_STATIC, "StaticExtension exists, but allowCommonEvent not found, bundle=%{public}s "
-                    "userId=%{public}d", extension.bundleName.c_str(), userId);
-                continue;
-            }
-        }
-        EVENT_LOGI(LOG_TAG_STATIC, "StaticExtension exists, bundle=%{public}s userId=%{public}d",
-            extension.bundleName.c_str(), userId);
-        AddSubscriber(extension);
+    }
+    EVENT_LOGI(LOG_TAG_STATIC, "StaticExtension exists, bundle=%{public}s userId=%{public}d",
+        extension.bundleName.c_str(), userId);
+    AddSubscriber(extension);
+}
+
+// Only the init/update/remove transactions call this, each of them holds stateMutex_.
+bool StaticSubscriberManager::LoadDisableEvents()
+{
+    unexpandedLegacyKeys_.clear();
+    std::map<std::string, std::vector<std::string>> queriedEvents;
+    std::set<std::string> bundleList;
+    int32_t queryRet = DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->
+        QueryStaticSubscriberStateData(queriedEvents, bundleList);
+    if (queryRet != ERR_OK) {
+        EVENT_LOGE(LOG_TAG_STATIC, "QueryStaticSubscriberStateData failed, ret = %{public}d", queryRet);
+        return false;
     }
 
-    if (bundleList.empty()) {
-        hasInitValidSubscribers_ = true;
-        return true;
-    }
-    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
-    if (!disableEvents_.empty()) {
-        disableEvents_.clear();
-    }
-    for (auto bundleKey : bundleList) {
+    // Legacy entries (value "0") are expanded with the events of the matching static subscriber.
+    std::map<std::string, std::vector<std::string>> normalizedEvents;
+    for (auto &bundleKey : bundleList) {
         std::lock_guard<ffrt::recursive_mutex> lock(subscriberMutex_);
         auto finder = staticSubscribers_.find(bundleKey);
         if (finder != staticSubscribers_.end()) {
-            std::vector<std::string> events;
-            for (auto &event : finder->second.events) {
-                events.emplace_back(event);
-            }
-            disableEvents_.emplace(bundleKey, events);
+            normalizedEvents.emplace(bundleKey, finder->second.events);
+        } else if (!hasInitAllowList_) {
+            // The allowlist is not ready yet, so the legacy entry can not be resolved to events.
+            unexpandedLegacyKeys_.insert(bundleKey);
         }
     }
-    DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->UpdateStaticSubscriberState(disableEvents_);
-    hasInitValidSubscribers_ = true;
+
+    std::map<std::string, std::vector<std::string>> snapshot;
+    {
+        std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
+        for (auto &record : normalizedEvents) {
+            queriedEvents.emplace(record.first, record.second);
+        }
+        disableEvents_ = std::move(queriedEvents);
+        disableEventsLoaded_ = true;
+        snapshot = disableEvents_;
+    }
+
+    // Persist the expansion once, so the legacy entries are migrated to the current format.
+    if (!bundleList.empty()) {
+        DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->UpdateStaticSubscriberState(snapshot);
+    }
     return true;
+}
+
+// Must be called on the CesSrvMain serial queue (the PublishCommonEvent path).
+void StaticSubscriberManager::RetryDisableEventsLoadIfNeeded()
+{
+    // Fast path: keep stateMutex_ off the publish hot path once the state is loaded.
+    if (disableEventsLoaded_.load(std::memory_order_acquire)) {
+        return;
+    }
+    std::lock_guard<ffrt::recursive_mutex> stateLock(stateMutex_);
+    if (disableEventsLoaded_.load(std::memory_order_relaxed)) {
+        return;
+    }
+    int64_t now = SystemTime::GetNowSysTime();
+    if (now - lastLoadRetryTime_ < LOAD_RETRY_INTERVAL_MS) {
+        return;
+    }
+    lastLoadRetryTime_ = now;
+    if (!LoadDisableEvents()) {
+        EVENT_LOGW_LIMIT(LOG_TAG_STATIC, "retry load disable events failed");
+    }
 }
 
 bool StaticSubscriberManager::IsDisableEvent(const std::string &bundleName, const std::string &event, int32_t userId)
@@ -245,6 +305,11 @@ void StaticSubscriberManager::PublishCommonEventInner(const CommonEventData &dat
     const int32_t &userId, const sptr<IRemoteObject> &service, const std::string &bundleName)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
+    if (!disableEventsLoaded_) {
+        // The persisted disable state is unknown yet, do not pull up subscribers that the user disabled.
+        EVENT_LOGW_LIMIT(LOG_TAG_STATIC, "disable state is not loaded, skip static dispatch");
+        return;
+    }
     auto targetSubscribers = validSubscribers_.find(data.GetWant().GetAction());
     if (targetSubscribers == validSubscribers_.end()) {
         return;
@@ -367,6 +432,8 @@ void StaticSubscriberManager::PublishCommonEvent(const CommonEventData &data,
         EVENT_LOGE(LOG_TAG_STATIC, "Failed to init subscribers");
         return;
     }
+
+    RetryDisableEventsLoadIfNeeded();
 
     UpdateSubscriber(data);
 
@@ -558,32 +625,38 @@ void StaticSubscriberManager::AddSubscriberWithBundleName(const std::string &bun
 void StaticSubscriberManager::RemoveSubscriberWithBundleName(const std::string &bundleName, const int32_t &userId)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "enter, bundleName = %{public}s, userId = %{public}d", bundleName.c_str(), userId);
-    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
-    for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
-        auto subIt = it->second.begin();
-        while (subIt != it->second.end()) {
-            if ((subIt->bundleName == bundleName) && (subIt->userId == userId)) {
-                EVENT_LOGD(LOG_TAG_STATIC, "remove subscriber,event=%{public}s,bundlename=%{public}s,"
-                    "userId=%{public}d", it->first.c_str(), bundleName.c_str(), userId);
-                subIt = it->second.erase(subIt);
+    std::lock_guard<ffrt::recursive_mutex> stateLock(stateMutex_);
+    if (!disableEventsLoaded_ && !LoadDisableEvents()) {
+        EVENT_LOGW(LOG_TAG_STATIC, "load disable events failed, skip memory update.");
+    }
+    std::string key = std::to_string(userId) + "_" + bundleName;
+    {
+        std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
+        for (auto it = validSubscribers_.begin(); it != validSubscribers_.end();) {
+            auto subIt = it->second.begin();
+            while (subIt != it->second.end()) {
+                if ((subIt->bundleName == bundleName) && (subIt->userId == userId)) {
+                    EVENT_LOGD(LOG_TAG_STATIC, "remove subscriber,event=%{public}s,bundlename=%{public}s,"
+                        "userId=%{public}d", it->first.c_str(), bundleName.c_str(), userId);
+                    subIt = it->second.erase(subIt);
+                } else {
+                    subIt++;
+                }
+            }
+            if (it->second.empty()) {
+                validSubscribers_.erase(it++);
             } else {
-                subIt++;
+                it++;
             }
         }
-        if (it->second.empty()) {
-            validSubscribers_.erase(it++);
-        } else {
-            it++;
-        }
-    }
 
-    std::string key = std::to_string(userId) + "_" + bundleName;
-    auto bundleIt = disableEvents_.find(key);
-    if (bundleIt == disableEvents_.end()) {
-        EVENT_LOGD(LOG_TAG_STATIC, "Bundle name is not existed.");
-        return;
+        auto bundleIt = disableEvents_.find(key);
+        if (bundleIt == disableEvents_.end()) {
+            EVENT_LOGD(LOG_TAG_STATIC, "Bundle name is not existed.");
+            return;
+        }
+        disableEvents_.erase(bundleIt);
     }
-    disableEvents_.erase(bundleIt);
     auto result =
         DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->DeleteDisableEventElementByBundleName(key);
     if (result != ERR_OK) {
@@ -648,45 +721,55 @@ int32_t StaticSubscriberManager::UpdateDisableEvents(
     const std::string &bundleName, const std::vector<std::string> &events, bool enable, int32_t userId)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "Called.");
-    std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
+    std::lock_guard<ffrt::recursive_mutex> stateLock(stateMutex_);
+    if (!disableEventsLoaded_ && !LoadDisableEvents()) {
+        EVENT_LOGE(LOG_TAG_STATIC, "disable events not loaded, skip update");
+        return ERR_NO_INIT;
+    }
     std::string key = std::to_string(userId) + "_" + bundleName;
+    if (enable && unexpandedLegacyKeys_.count(key) != 0) {
+        // The legacy entry is invisible until the allowlist is initialized, report the real state.
+        EVENT_LOGE(LOG_TAG_STATIC, "legacy disable entry of %{public}s is not expanded yet", bundleName.c_str());
+        return ERR_NO_INIT;
+    }
+    std::map<std::string, std::vector<std::string>> snapshot;
+    {
+        std::lock_guard<ffrt::recursive_mutex> lock(disableEventsMutex_);
+        MergeDisableEventsLocked(key, events, enable);
+        snapshot = disableEvents_;
+    }
+    return DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->UpdateStaticSubscriberState(snapshot);
+}
+
+// The caller must hold disableEventsMutex_.
+void StaticSubscriberManager::MergeDisableEventsLocked(
+    const std::string &key, const std::vector<std::string> &events, bool enable)
+{
     auto finder = disableEvents_.find(key);
     if (finder == disableEvents_.end()) {
         if (!enable) {
             disableEvents_.emplace(key, events);
         }
-        return DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->
-            UpdateStaticSubscriberState(disableEvents_);
+        return;
     }
-
+    auto &currentEvents = finder->second;
     for (auto &event : events) {
-        auto &currentEvents = finder->second;
         auto iter = std::find(currentEvents.begin(), currentEvents.end(), event);
-        if (enable) {
-            if (iter == currentEvents.end()) {
-                continue;
-            }
-            if (iter != currentEvents.end()) {
-                currentEvents.erase(iter);
-            }
-        } else {
-            if (iter == currentEvents.end()) {
-                currentEvents.emplace_back(event);
-            }
+        if (enable && iter != currentEvents.end()) {
+            currentEvents.erase(iter);
+        } else if (!enable && iter == currentEvents.end()) {
+            currentEvents.emplace_back(event);
         }
     }
-
-    if (finder->second.empty()) {
+    if (currentEvents.empty()) {
         disableEvents_.erase(finder);
     }
-
-    return DelayedSingleton<StaticSubscriberDataManager>::GetInstance()->UpdateStaticSubscriberState(disableEvents_);
 }
 
 int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "Called.");
-    int32_t callingUid = IPCSkeleton::GetCallingUid();
+    int32_t callingUid = static_cast<int32_t>(IPCSkeleton::GetCallingUid());
     int32_t userId = ALL_USER;
     auto ret = DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(callingUid, userId);
     if (ret != ERR_OK) {
@@ -713,7 +796,7 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
 int32_t StaticSubscriberManager::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "Called.");
-    int32_t callingUid = IPCSkeleton::GetCallingUid();
+    int32_t callingUid = static_cast<int32_t>(IPCSkeleton::GetCallingUid());
     int32_t userId = ALL_USER;
     auto ret = DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(callingUid, userId);
     if (ret != ERR_OK) {

@@ -36,20 +36,12 @@ const int32_t MAX_RETRY_TIME = 30;
 const int32_t SLEEP_TIME = 1000;
 }
 
-std::mutex CommonEvent::instanceMutex_;
-std::shared_ptr<CommonEvent> CommonEvent::instance_;
-
 using namespace OHOS::Notification;
 
 std::shared_ptr<CommonEvent> CommonEvent::GetInstance()
 {
-    if (instance_ == nullptr) {
-        std::lock_guard<std::mutex> lock(instanceMutex_);
-        if (instance_ == nullptr) {
-            instance_ = std::make_shared<CommonEvent>();
-        }
-    }
-    return instance_;
+    static std::shared_ptr<CommonEvent> instance = std::make_shared<CommonEvent>();
+    return instance;
 }
 
 bool CommonEvent::PublishCommonEvent(const CommonEventData &data, const CommonEventPublishInfo &publishInfo,

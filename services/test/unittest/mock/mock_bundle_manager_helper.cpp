@@ -23,6 +23,7 @@ std::vector<ExtensionAbilityInfo> g_mockExtensionInfos;
 bool g_mockGetResConfigFileRet = true;
 std::vector<std::string> g_mockProfileInfos;
 std::vector<AppExecFwk::ApplicationInfo> g_mockAppInfos;
+bool g_mockAppInfosRet = true;
 bool g_mockIsClearBundleManagerHelperCalled = false;
 bool g_mockBundleName = false;
 int32_t g_mockUid = -1;
@@ -35,6 +36,11 @@ bool g_mockResult = true;
 bool IsClearBundleManagerHelperCalled()
 {
     return g_mockIsClearBundleManagerHelperCalled;
+}
+
+void MockGetApplicationInfosRet(bool mockRet)
+{
+    g_mockAppInfosRet = mockRet;
 }
 
 void SetBundleNameMock()
@@ -314,6 +320,9 @@ void BundleManagerHelper::ClearBundleManagerHelper()
 bool BundleManagerHelper::GetApplicationInfos(const AppExecFwk::ApplicationFlag &flag,
     std::vector<AppExecFwk::ApplicationInfo> &appInfos)
 {
+    if (!g_mockAppInfosRet) {
+        return false;
+    }
     appInfos = g_mockAppInfos;
     g_mockAppInfos.clear();
     return true;
