@@ -15,6 +15,11 @@
 
 #include <gtest/gtest.h>
 
+#include <atomic>
+#include <chrono>
+#include <thread>
+#include <vector>
+
 // redefine private and protected since testcase need to invoke and test private function
 #define private public
 #define protected public
@@ -43,6 +48,16 @@ std::mutex mtx;
 static OHOS::sptr<OHOS::IRemoteObject> bundleObject = nullptr;
 InnerCommonEventManager innerCommonEventManager;
 std::shared_ptr<EventHandler> handler_;
+
+// scheduled_ is guarded by orderedMutex_, tests must not write it without the lock.
+void SetOrderedScheduledFlag(const std::shared_ptr<CommonEventControlManager> &manager, bool scheduled)
+{
+    if (manager == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lock(manager->orderedMutex_);
+    manager->scheduled_ = scheduled;
+}
 }  // namespace
 
 class CommonEventPublishOrderedEventUnitTest : public testing::Test {
@@ -122,8 +137,8 @@ void CommonEventPublishOrderedEventUnitTest::SetUp(void)
         {
             std::lock_guard<ffrt::mutex> lock(commonEventControlManager->orderedMutex_);
             commonEventControlManager->orderedEventQueue_.clear();
+            commonEventControlManager->scheduled_ = false;
         }
-        commonEventControlManager->scheduled_ = false;
         commonEventControlManager->pendingTimeoutMessage_ = false;
     }
 }
@@ -367,7 +382,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1300, Function | MediumTest | Level0)
 {
-    commonEventControlManager->scheduled_ = true;
+    SetOrderedScheduledFlag(commonEventControlManager, true);
     bool result = commonEventControlManager->ScheduleOrderedCommonEvent();
     EXPECT_TRUE(result);
 }
@@ -379,7 +394,8 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
  */
 HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_1400, Function | MediumTest | Level0)
 {
-    commonEventControlManager->scheduled_ = false;
+    commonEventControlManager->GetOrderedEventHandler();
+    SetOrderedScheduledFlag(commonEventControlManager, false);
 
     bool result = commonEventControlManager->ScheduleOrderedCommonEvent();
     EXPECT_TRUE(result);
@@ -493,7 +509,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->state.store(OrderedEventRecord::IDLE);
     eventRecord->nextReceiver = 0;
 
-    commonEventControlManager->scheduled_ = true;
+    SetOrderedScheduledFlag(commonEventControlManager, true);
     commonEventControlManager->EnqueueOrderedRecord(eventRecord);
     commonEventControlManager->CurrentOrderedEventTimeout(true);
 
@@ -528,7 +544,7 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     eventRecord->deliveryState.emplace_back(OrderedEventRecord::PENDING);
     eventRecord->receivers.emplace_back(subscriberRecord);
 
-    commonEventControlManager->scheduled_ = true;
+    SetOrderedScheduledFlag(commonEventControlManager, true);
     bool ret = commonEventControlManager->EnqueueOrderedRecord(eventRecord);
     EXPECT_TRUE(ret);
     commonEventControlManager->CurrentOrderedEventTimeout(true);
@@ -942,4 +958,116 @@ HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTe
     bool result = commonEventControlManager->HandleOrderedNotifyResult(eventRecord, 0, OHOS::ERR_OK);
     EXPECT_TRUE(result);
     EXPECT_EQ(eventRecord->state.load(), OrderedEventRecord::RECEIVED);
+}
+
+namespace {
+constexpr int32_t CONCURRENT_THREAD_NUM = 4;
+constexpr int32_t WAIT_ROUNDS = 300;
+constexpr int32_t WAIT_INTERVAL_MS = 10;
+
+bool WaitForOrderedQueueDrained(const std::shared_ptr<CommonEventControlManager> &manager)
+{
+    if (manager == nullptr) {
+        return false;
+    }
+    for (int32_t i = 0; i < WAIT_ROUNDS; i++) {
+        {
+            std::lock_guard<ffrt::mutex> lock(manager->orderedMutex_);
+            if (manager->orderedEventQueue_.empty()) {
+                return true;
+            }
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_INTERVAL_MS));
+    }
+    return false;
+}
+}  // namespace
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3700
+ * @tc.name: test ScheduleOrderedCommonEvent under concurrency
+ * @tc.desc: Verify concurrent scheduling keeps a single in-flight task and converges to not scheduled.
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3700, Function | MediumTest | Level0)
+{
+    commonEventControlManager->GetOrderedEventHandler();
+    std::atomic<bool> stop { false };
+    std::vector<std::thread> threads;
+    for (int32_t i = 0; i < CONCURRENT_THREAD_NUM; i++) {
+        threads.emplace_back([&stop]() {
+            while (!stop.load()) {
+                commonEventControlManager->ScheduleOrderedCommonEvent();
+            }
+        });
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    stop.store(true);
+    for (auto &thread : threads) {
+        thread.join();
+    }
+    bool drained = false;
+    for (int32_t i = 0; i < WAIT_ROUNDS && !drained; i++) {
+        {
+            std::lock_guard<ffrt::mutex> lock(commonEventControlManager->orderedMutex_);
+            drained = !commonEventControlManager->scheduled_;
+        }
+        if (!drained) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_INTERVAL_MS));
+        }
+    }
+    EXPECT_TRUE(drained);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3800
+ * @tc.name: test enqueue is not lost while scheduling concurrently
+ * @tc.desc: Verify no record stays in the ordered queue when ScheduleOrderedCommonEvent is hammered
+ *           from several threads, which is the lost wakeup scenario of scheduled_.
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3800, Function | MediumTest | Level0)
+{
+    constexpr int32_t recordNum = 50;
+    commonEventControlManager->GetOrderedEventHandler();
+    std::atomic<bool> stop { false };
+    std::vector<std::thread> threads;
+    for (int32_t i = 0; i < CONCURRENT_THREAD_NUM; i++) {
+        threads.emplace_back([&stop]() {
+            while (!stop.load()) {
+                commonEventControlManager->ScheduleOrderedCommonEvent();
+            }
+        });
+    }
+    for (int32_t i = 0; i < recordNum; i++) {
+        std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+        eventRecord->commonEventData = std::make_shared<CommonEventData>();
+        eventRecord->publishInfo = std::make_shared<CommonEventPublishInfo>();
+        eventRecord->resultTo = nullptr;
+        eventRecord->state.store(OrderedEventRecord::IDLE);
+        eventRecord->nextReceiver = 0;
+        commonEventControlManager->EnqueueOrderedRecord(eventRecord);
+        commonEventControlManager->ScheduleOrderedCommonEvent();
+    }
+    bool drained = WaitForOrderedQueueDrained(commonEventControlManager);
+    stop.store(true);
+    for (auto &thread : threads) {
+        thread.join();
+    }
+    EXPECT_TRUE(drained);
+}
+
+/*
+ * @tc.number: CommonEventPublishOrderedUnitTest_3900
+ * @tc.name: test FinishReceiverAction when the record is not waiting for a finish
+ * @tc.desc: Verify FinishReceiverAction returns true and does not schedule a new task when doNext is false.
+ */
+HWTEST_F(CommonEventPublishOrderedEventUnitTest, CommonEventPublishOrderedUnitTest_3900, Function | MediumTest | Level0)
+{
+    std::shared_ptr<OrderedEventRecord> eventRecord = std::make_shared<OrderedEventRecord>();
+    eventRecord->commonEventData = std::make_shared<CommonEventData>();
+    eventRecord->publishInfo = std::make_shared<CommonEventPublishInfo>();
+    eventRecord->state.store(OrderedEventRecord::IDLE);
+
+    bool result = commonEventControlManager->FinishReceiverAction(eventRecord, 0, "receiverData", false);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(OrderedEventRecord::IDLE, eventRecord->state.load());
 }

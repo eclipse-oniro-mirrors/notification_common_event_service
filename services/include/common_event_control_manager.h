@@ -88,10 +88,8 @@ public:
 
     /**
      * Processes the next ordered event.
-     *
-     * @param isSendMsg Indicates whether triggered by message.
      */
-    void ProcessNextOrderedEvent(bool isSendMsg);
+    void ProcessNextOrderedEvent();
 
     /**
      * Publishes freeze common event.
@@ -229,7 +227,8 @@ private:
     std::vector<std::shared_ptr<OrderedEventRecord>> orderedEventQueue_;
     std::vector<std::shared_ptr<OrderedEventRecord>> unorderedEventQueue_;
     bool pendingTimeoutMessage_;
-    bool scheduled_;
+    // Guarded by orderedMutex_, true while a ProcessNextOrderedEvent task is in flight.
+    bool scheduled_ = false;
     const int64_t TIMEOUT = 10000;  // How long we allow a receiver to run before giving up on it. Unit: ms
     ffrt::mutex orderedMutex_;
     ffrt::mutex unorderedMutex_;

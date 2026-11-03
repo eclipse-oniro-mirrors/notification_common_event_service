@@ -88,9 +88,7 @@ public:
     bool IsLiveReceiveParams(const void* parameters);
     static std::shared_ptr<SubscriberManager> GetInstance();
 private:
-    static ffrt::mutex instanceMutex_;
     static ffrt::mutex resultCacheMutex_;
-    static std::shared_ptr<SubscriberManager> instance_;
     static std::map<std::shared_ptr<SubscriberObserver>, ResultCacheItem> resultCache_;
     static std::map<const SubscriberObserver*, std::shared_ptr<SubscriberObserver>> liveSubscribers_;
     static ffrt::mutex liveReceiveParamsMutex_;

@@ -934,7 +934,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
         frozenEvents = infoItem->second;
     }
 
-    RemoveFrozenEvents(uid);
+    RemoveFrozenEventsLocked(uid);
 
     return frozenEvents;
 }
@@ -946,9 +946,25 @@ std::unordered_map<uid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFro
     return frozenEvents_;
 }
 
+void CommonEventSubscriberManager::TakeAllFrozenEvents(
+    std::unordered_map<uid_t, FrozenRecords> &frozenEvents,
+    std::unordered_map<pid_t, FrozenRecords> &frozenEventsMap)
+{
+    EVENT_LOGD(LOG_TAG_FREEZED, "enter");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    frozenEvents.swap(frozenEvents_);
+    frozenEventsMap.swap(frozenEventsMap_);
+}
+
 void CommonEventSubscriberManager::RemoveFrozenEvents(const uid_t &uid)
 {
     EVENT_LOGD(LOG_TAG_FREEZED, "enter");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    RemoveFrozenEventsLocked(uid);
+}
+
+void CommonEventSubscriberManager::RemoveFrozenEventsLocked(const uid_t &uid)
+{
     auto infoItem = frozenEvents_.find(uid);
     if (infoItem != frozenEvents_.end()) {
         frozenEvents_.erase(uid);
@@ -1017,7 +1033,7 @@ std::map<EventSubscriberRecord, std::vector<EventRecordPtr>> CommonEventSubscrib
         frozenEvents = infoItem->second;
     }
 
-    RemoveFrozenEventsMapByPid(pid);
+    RemoveFrozenEventsMapByPidLocked(pid);
 
     return frozenEvents;
 }
@@ -1032,6 +1048,12 @@ std::unordered_map<pid_t, FrozenRecords> CommonEventSubscriberManager::GetAllFro
 void CommonEventSubscriberManager::RemoveFrozenEventsMapByPid(const pid_t &pid)
 {
     EVENT_LOGD(LOG_TAG_FREEZED, "enter");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    RemoveFrozenEventsMapByPidLocked(pid);
+}
+
+void CommonEventSubscriberManager::RemoveFrozenEventsMapByPidLocked(const pid_t &pid)
+{
     auto infoItem = frozenEventsMap_.find(pid);
     if (infoItem != frozenEventsMap_.end()) {
         frozenEventsMap_.erase(pid);
