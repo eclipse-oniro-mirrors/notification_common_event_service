@@ -86,6 +86,8 @@ HWTEST_F(StaticSubscriberManagerUserAppUnitTest,
 HWTEST_F(StaticSubscriberManagerUserAppUnitTest, ATC_PublishInner_UserAppTypeSkipSystemUserSpaceSubscriber, Level0)
 {
     auto manager = std::make_shared<StaticSubscriberManager>();
+    // The disable state is a precondition of PublishCommonEventInner.
+    manager->disableEventsLoaded_ = true;
     const std::string event = "test.event.static.userapp.user0";
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.bundleName = "staticBundleUser0";
@@ -113,6 +115,8 @@ HWTEST_F(StaticSubscriberManagerUserAppUnitTest, ATC_PublishInner_UserAppTypeSki
 HWTEST_F(StaticSubscriberManagerUserAppUnitTest, ATC_PublishInner_UserAppTypeDeliverTargetUserSubscriber, Level0)
 {
     auto manager = std::make_shared<StaticSubscriberManager>();
+    // The disable state is a precondition of PublishCommonEventInner.
+    manager->disableEventsLoaded_ = true;
     const std::string event = "test.event.static.userapp.user100";
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.bundleName = "staticBundleUser100";
@@ -141,6 +145,8 @@ HWTEST_F(StaticSubscriberManagerUserAppUnitTest, ATC_PublishInner_UserAppTypeDel
 HWTEST_F(StaticSubscriberManagerUserAppUnitTest, ATC_PublishInner_UserAppTypeSkipOtherUserSubscriber, Level0)
 {
     auto manager = std::make_shared<StaticSubscriberManager>();
+    // The disable state is a precondition of PublishCommonEventInner.
+    manager->disableEventsLoaded_ = true;
     const std::string event = "test.event.static.userapp.user101";
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.bundleName = "staticBundleUser101";
@@ -168,6 +174,8 @@ HWTEST_F(StaticSubscriberManagerUserAppUnitTest, ATC_PublishInner_UserAppTypeSki
 HWTEST_F(StaticSubscriberManagerUserAppUnitTest, ATC_PublishInner_UserAppTypeNegativeUserId, Level0)
 {
     auto manager = std::make_shared<StaticSubscriberManager>();
+    // The disable state is a precondition of PublishCommonEventInner.
+    manager->disableEventsLoaded_ = true;
     const std::string event = "test.event.static.userapp.negative";
     StaticSubscriberManager::StaticSubscriberInfo subscriber;
     subscriber.bundleName = "staticBundleNegative";

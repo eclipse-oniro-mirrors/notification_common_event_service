@@ -50,13 +50,35 @@ class StaticSubscriberInitValidUnitTest : public testing::Test {
 public:
     static void SetUpTestCase(void) {}
     static void TearDownTestCase(void) {}
-    void SetUp() {}
-    void TearDown() {}
+    void SetUp() override;
+    void TearDown() override {}
 };
 
 std::string BuildBundleKey(const std::string &bundleName)
 {
     return std::to_string(TEST_USER_ID) + "_" + bundleName;
+}
+
+// The kv store is persisted on the device and shared with other unit test suites, so every test
+// starts from an empty store instead of depending on leftovers from a previous run.
+void ResetKvStore()
+{
+    auto dataManager = std::make_shared<StaticSubscriberDataManager>();
+    if (dataManager == nullptr || !dataManager->CheckKvStore() || dataManager->kvStorePtr_ == nullptr) {
+        return;
+    }
+    std::vector<DistributedKv::Entry> entries;
+    if (dataManager->kvStorePtr_->GetEntries(nullptr, entries) != DistributedKv::Status::SUCCESS) {
+        return;
+    }
+    for (auto &entry : entries) {
+        dataManager->kvStorePtr_->Delete(entry.key);
+    }
+}
+
+void StaticSubscriberInitValidUnitTest::SetUp()
+{
+    ResetKvStore();
 }
 
 bool PutKvEntry(StaticSubscriberDataManager &dataManager, const std::string &key, const std::string &value)
