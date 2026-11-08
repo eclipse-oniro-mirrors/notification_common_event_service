@@ -79,7 +79,7 @@ ohos_systemtest("common_event_command_publish_system_test") {
 
   external_deps = [
     "ability_base:want",
-    "access_token:libnativetoken",
+    "access_token:libnativetoken_shared",
     "access_token:libtoken_setproc",
     "bundle_framework:appexecfwk_core",
     "cJSON:cjson_static",
