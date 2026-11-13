@@ -236,6 +236,8 @@ public:
     void OnReceiveEvent(const CommonEventData &data) override;
 
     void SetEnv(const napi_env &env);
+    void RegisterEnvCleanupHook();
+    void RemoveEnvCleanupHook();
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
     void ReleaseThreadSafeFunction();
@@ -257,6 +259,7 @@ public:
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
+    bool envCleanupHookRegistered_ = false;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
     bool isNewVersion_ = false;

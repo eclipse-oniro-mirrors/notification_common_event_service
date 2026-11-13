@@ -185,6 +185,7 @@ unsigned long long SubscriberInstance::GetID()
 void SubscriberInstance::SetEnv(const napi_env &env)
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "Enter");
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
     env_ = env;
 }
 
@@ -195,10 +196,41 @@ napi_env SubscriberInstance::GetEnv()
     return env_;
 }
 
+void SubscriberInstance::RegisterEnvCleanupHook()
+{
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
+    if (envCleanupHookRegistered_ || env_ == nullptr) {
+        return;
+    }
+
+    napi_status status = napi_add_env_cleanup_hook(env_, ClearEnvCallback, this);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to add env cleanup hook, status=%{public}d", status);
+        return;
+    }
+    envCleanupHookRegistered_ = true;
+}
+
+void SubscriberInstance::RemoveEnvCleanupHook()
+{
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
+    if (!envCleanupHookRegistered_ || env_ == nullptr) {
+        return;
+    }
+
+    napi_status status = napi_remove_env_cleanup_hook(env_, ClearEnvCallback, this);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Failed to remove env cleanup hook, status=%{public}d", status);
+        return;
+    }
+    envCleanupHookRegistered_ = false;
+}
+
 void SubscriberInstance::ClearEnv()
 {
     EVENT_LOGD(LOG_TAG_CES_NAPI, "Env expired, clear SubscriberInstance env");
     std::lock_guard<ffrt::mutex> lock(envMutex_);
+    envCleanupHookRegistered_ = false;
     env_ = nullptr;
     tsfn_ = nullptr;
 }
@@ -1169,7 +1201,7 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
             asyncCallbackInfoSubscribe = nullptr;
         }
         subscriber->SetCallbackRef(nullptr);
-        napi_remove_env_cleanup_hook(subscriber->GetEnv(), ClearEnvCallback, subscriber.get());
+        subscriber->RemoveEnvCleanupHook();
         subscriberInstances.erase(subscribe);
     }
 }
@@ -1473,7 +1505,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
-    napi_add_env_cleanup_hook(env, ClearEnvCallback, subscriber.get());
+    subscriber->RegisterEnvCleanupHook();
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
     return NapiGetNull(env);
 }
