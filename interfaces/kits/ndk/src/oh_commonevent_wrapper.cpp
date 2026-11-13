@@ -80,7 +80,8 @@ std::set<const void*> SubscriberManager::liveReceiveParams_;
 
 std::shared_ptr<SubscriberManager> SubscriberManager::GetInstance()
 {
-    static std::shared_ptr<SubscriberManager> instance = std::make_shared<SubscriberManager>();
+    static __attribute__((no_destroy)) std::shared_ptr<SubscriberManager> instance =
+        std::make_shared<SubscriberManager>();
     return instance;
 }
 

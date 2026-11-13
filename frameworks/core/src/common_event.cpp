@@ -40,7 +40,8 @@ using namespace OHOS::Notification;
 
 std::shared_ptr<CommonEvent> CommonEvent::GetInstance()
 {
-    static std::shared_ptr<CommonEvent> instance = std::make_shared<CommonEvent>();
+    static __attribute__((no_destroy)) std::shared_ptr<CommonEvent> instance =
+        std::make_shared<CommonEvent>();
     return instance;
 }
 
