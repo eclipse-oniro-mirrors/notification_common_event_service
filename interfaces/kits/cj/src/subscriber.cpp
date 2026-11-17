@@ -27,7 +27,7 @@ namespace OHOS::CommonEventManager {
     {
         id_ = ++subscriberID_;
         LOGI("constructor SubscriberImpl");
-        valid_ = std::make_shared<bool>(false);
+        valid_ = std::make_shared<std::atomic<bool>>(false);
         infoId_ = infoId;
     }
 
@@ -36,13 +36,13 @@ namespace OHOS::CommonEventManager {
     {
         id_ = ++subscriberID_;
         LOGI("constructor SubscriberImpl");
-        valid_ = std::make_shared<bool>(false);
+        valid_ = std::make_shared<std::atomic<bool>>(false);
     }
 
     SubscriberImpl::~SubscriberImpl()
     {
         LOGI("destructor SubscriberImpl[%{public}llu]", id_.load());
-        *valid_ = false;
+        valid_->store(false);
     }
 
     static void FreeCCommonEventData(CCommonEventData &cData)
@@ -69,7 +69,7 @@ namespace OHOS::CommonEventManager {
     void SubscriberImpl::OnReceiveEvent(const CommonEventData &data)
     {
         LOGI("Receive event.")
-        if (valid_ == nullptr || *(valid_) == false) {
+        if (valid_ == nullptr || !valid_->load()) {
             LOGE("OnReceiveEvent commonEventDataWorkerData or ref is invalid which may be freed before");
             return;
         }
@@ -84,7 +84,17 @@ namespace OHOS::CommonEventManager {
             LOGE("Failed to excute callback: out of memory.");
             return;
         }
-        callback_(cData);
+        std::function<void(CCommonEventData)> callback;
+        {
+            std::lock_guard<ffrt::mutex> lock(callbackMutex_);
+            callback = callback_;
+        }
+        if (!callback) {
+            LOGE("OnReceiveEvent callback is invalid which may be unsubscribed before");
+            FreeCCommonEventData(cData);
+            return;
+        }
+        callback(cData);
         FreeCCommonEventData(cData);
     }
 
@@ -110,8 +120,13 @@ namespace OHOS::CommonEventManager {
 
     void SubscriberImpl::SetCallback(const std::function<void(CCommonEventData)> &callback)
     {
-        callback_ = callback;
-        *valid_ = true;
+        std::function<void(CCommonEventData)> oldCallback;
+        {
+            std::lock_guard<ffrt::mutex> lock(callbackMutex_);
+            oldCallback.swap(callback_);
+            callback_ = callback;
+            valid_->store(callback != nullptr);
+        }
     }
 
     sptr<SubscriberManager> SubscriberManager::Create(std::shared_ptr<CommonEventSubscribeInfo> info)

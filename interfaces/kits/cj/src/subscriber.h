@@ -22,6 +22,12 @@
 #include "common_event_subscribe_info.h"
 #include "common_event_subscriber.h"
 
+#include <atomic>
+#include <functional>
+#include <memory>
+
+#include "ffrt.h"
+
 namespace OHOS::CommonEventManager {
     using CommonEventSubscribeInfo = OHOS::EventFwk::CommonEventSubscribeInfo;
     using CommonEventSubscriber = OHOS::EventFwk::CommonEventSubscriber;
@@ -47,7 +53,8 @@ namespace OHOS::CommonEventManager {
 
     private:
         std::function<void(CCommonEventData)> callback_;
-        std::shared_ptr<bool> valid_;
+        ffrt::mutex callbackMutex_;
+        std::shared_ptr<std::atomic<bool>> valid_;
         std::atomic_ullong id_;
         static std::atomic_ullong subscriberID_;
         int64_t infoId_ = -1;
