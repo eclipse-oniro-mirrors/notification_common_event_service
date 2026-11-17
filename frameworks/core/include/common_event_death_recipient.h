@@ -41,10 +41,18 @@ private:
         void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
     private:
         /**
-         * Execute the pending reconnection on the internal queue.
+         * @brief Post a reconnection task to the internal queue.
          *
          * It never runs on the IPC thread which handles the status change notification, otherwise the next
          * async transaction of the same binder node would be delayed until the retry finishes.
+         */
+        void SubmitReconnectTask();
+
+        /**
+         * @brief Execute one round of the pending reconnection on the internal queue.
+         *
+         * If the service restarts again while this round is running, the task is rescheduled instead of
+         * finishing, so that the newer restart notification is never dropped.
          */
         void DoReconnect();
 

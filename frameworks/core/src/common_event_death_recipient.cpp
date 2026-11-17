@@ -92,6 +92,11 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
     // IPC, and the binder driver only releases the next async transaction of this node after the current
     // one is finished (that is, after this callback returns). A long retry here would therefore delay
     // OnRemoveSystemAbility for up to MAX_RETRY_TIME * SLEEP_TIME milliseconds.
+    SubmitReconnectTask();
+}
+
+void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SubmitReconnectTask()
+{
     if (queue_ == nullptr) {
         EVENT_LOGE(LOG_TAG_CES, "Reconnect queue is null");
         std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -111,45 +116,47 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAb
 
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::DoReconnect()
 {
-    for (;;) {
-        uint64_t attemptedRequestCount = 0;
-        uint64_t attemptedGeneration = 0;
-        {
-            std::lock_guard<ffrt::mutex> lock(mutex_);
-            if (!isSAOffline_) {
-                reconnecting_ = false;
-                return;
-            }
-            attemptedRequestCount = reconnectRequestCount_;
-            attemptedGeneration = offlineGeneration_;
-        }
-
-        EVENT_LOGI(LOG_TAG_CES, "CES restarted, try to reconnect");
-        bool reconnected = CommonEvent::GetInstance()->Reconnect();
-
-        bool restartPending = false;
-        {
-            std::lock_guard<ffrt::mutex> lock(mutex_);
-            // A newer restart notification, or a new offline event, means that the proxy just obtained may
-            // already be stale, so the reconnection has to be retried instead of being treated as done.
-            restartPending = isSAOffline_ && (reconnectRequestCount_ != attemptedRequestCount ||
-                offlineGeneration_ != attemptedGeneration);
-            if (!restartPending) {
-                reconnecting_ = false;
-                if (!reconnected) {
-                    EVENT_LOGE(LOG_TAG_CES, "Reconnect CES failed, wait for next restart");
-                    return;
-                }
-                isSAOffline_ = false;
-            }
-        }
-        if (!restartPending) {
-            EVENT_LOGI(LOG_TAG_CES, "Reconnect CES success, resubscribe events");
-            CommonEvent::GetInstance()->Resubscribe();
+    uint64_t attemptedRequestCount = 0;
+    uint64_t attemptedGeneration = 0;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        if (!isSAOffline_) {
+            reconnecting_ = false;
             return;
         }
-        EVENT_LOGW(LOG_TAG_CES, "CES restarted again during reconnection, retry");
+        attemptedRequestCount = reconnectRequestCount_;
+        attemptedGeneration = offlineGeneration_;
     }
+
+    EVENT_LOGI(LOG_TAG_CES, "CES restarted, try to reconnect");
+    bool reconnected = CommonEvent::GetInstance()->Reconnect();
+
+    bool restartPending = false;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        // A newer restart notification, or a new offline event, means that the proxy just obtained may
+        // already be stale, so the reconnection has to be retried instead of being treated as done.
+        restartPending = isSAOffline_ && (reconnectRequestCount_ != attemptedRequestCount ||
+            offlineGeneration_ != attemptedGeneration);
+        if (!restartPending) {
+            reconnecting_ = false;
+            if (!reconnected) {
+                EVENT_LOGE(LOG_TAG_CES, "Reconnect CES failed, wait for next restart");
+                return;
+            }
+            isSAOffline_ = false;
+        }
+    }
+    if (!restartPending) {
+        EVENT_LOGI(LOG_TAG_CES, "Reconnect CES success, resubscribe events");
+        CommonEvent::GetInstance()->Resubscribe();
+        return;
+    }
+
+    // The service went offline again during the reconnection. Keep reconnecting_ true and reschedule
+    // the task, so that restart notifications arriving in the meantime are consumed by the next round.
+    EVENT_LOGW(LOG_TAG_CES, "CES restarted again during reconnection, reschedule");
+    SubmitReconnectTask();
 }
 
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(
