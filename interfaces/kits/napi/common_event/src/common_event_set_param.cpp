@@ -127,7 +127,7 @@ napi_value SetCode(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "setCode", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -159,6 +159,14 @@ napi_value SetCode(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -215,7 +223,7 @@ napi_value SetData(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "setData", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -248,6 +256,14 @@ napi_value SetData(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -305,7 +321,7 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "setCodeAndData", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -337,6 +353,14 @@ napi_value SetCodeAndData(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 

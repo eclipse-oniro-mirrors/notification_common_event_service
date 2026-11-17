@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#include <chrono>
+
 #include <gtest/gtest.h>
 
 #include "ces_inner_error_code.h"
@@ -539,6 +541,63 @@ HWTEST_F(CommonEventTest, CommonEventSubscriber_0102, Function | MediumTest | Le
     commonEventDeathRecipient->statusChangeListener_->OnAddSystemAbility(0, "");
     bool result = CommonEventTest::IsStickyCommonEvent();
     EXPECT_EQ(false, result);
+}
+
+/*
+ * @tc.number: CommonEventSubscriber_0103
+ * @tc.name: verify OnAddSystemAbility when the service is online
+ * @tc.desc: OnAddSystemAbility should not schedule any reconnection when the service is not offline
+ */
+HWTEST_F(CommonEventTest, CommonEventSubscriber_0103, Function | SmallTest | Level0)
+{
+    auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+    commonEventDeathRecipient->SubscribeSAManager();
+    auto listener = static_cast<CommonEventDeathRecipient::SystemAbilityStatusChangeListener *>(
+        commonEventDeathRecipient->statusChangeListener_.GetRefPtr());
+    ASSERT_NE(listener, nullptr);
+    uint64_t requestCountBefore = 0;
+    {
+        std::lock_guard<ffrt::mutex> lock(listener->mutex_);
+        listener->isSAOffline_ = false;
+        listener->reconnecting_ = false;
+        requestCountBefore = listener->reconnectRequestCount_;
+    }
+
+    listener->OnAddSystemAbility(0, "");
+
+    {
+        std::lock_guard<ffrt::mutex> lock(listener->mutex_);
+        EXPECT_FALSE(listener->reconnecting_);
+        EXPECT_EQ(listener->reconnectRequestCount_, requestCountBefore);
+    }
+}
+
+/*
+ * @tc.number: CommonEventSubscriber_0104
+ * @tc.name: verify OnAddSystemAbility does not block the IPC callback
+ * @tc.desc: The reconnection which may retry for a long time must be executed asynchronously
+ */
+HWTEST_F(CommonEventTest, CommonEventSubscriber_0104, Function | MediumTest | Level0)
+{
+    auto commonEventDeathRecipient = OHOS::DelayedSingleton<CommonEventDeathRecipient>::GetInstance();
+    commonEventDeathRecipient->SubscribeSAManager();
+    auto listener = static_cast<CommonEventDeathRecipient::SystemAbilityStatusChangeListener *>(
+        commonEventDeathRecipient->statusChangeListener_.GetRefPtr());
+    ASSERT_NE(listener, nullptr);
+    {
+        std::lock_guard<ffrt::mutex> lock(listener->mutex_);
+        listener->reconnecting_ = false;
+    }
+    listener->OnRemoveSystemAbility(0, "");
+
+    auto begin = std::chrono::steady_clock::now();
+    listener->OnAddSystemAbility(0, "");
+    auto costMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - begin).count();
+
+    // The reconnection retries up to 30 times with a 1 second interval, so a synchronous implementation
+    // would cost tens of seconds here.
+    EXPECT_LT(costMs, 1000);
 }
 
 /*
