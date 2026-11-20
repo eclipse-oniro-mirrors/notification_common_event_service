@@ -17,6 +17,7 @@
 #define FOUNDATION_EVENT_CESFWK_INNERKITS_INCLUDE_COMMON_EVENT_DEATH_RECIPIENT_H
 
 #include "ffrt.h"
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <singleton.h>
@@ -39,7 +40,26 @@ private:
         void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
         void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
     private:
+        /**
+         * @brief Post a reconnection task to the internal queue.
+         *
+         * It never runs on the IPC thread which handles the status change notification, otherwise the next
+         * async transaction of the same binder node would be delayed until the retry finishes.
+         */
+        void SubmitReconnectTask();
+
+        /**
+         * @brief Execute one round of the pending reconnection on the internal queue.
+         *
+         * If the service restarts again while this round is running, the task is rescheduled instead of
+         * finishing, so that the newer restart notification is never dropped.
+         */
+        void DoReconnect();
+
         bool isSAOffline_ = false;
+        bool reconnecting_ = false;
+        uint64_t offlineGeneration_ = 0;
+        uint64_t reconnectRequestCount_ = 0;
         ffrt::mutex mutex_;
         std::shared_ptr<ffrt::queue> queue_ = nullptr;
     };

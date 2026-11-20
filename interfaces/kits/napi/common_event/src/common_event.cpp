@@ -115,10 +115,12 @@ void ThreadSafeCallback(napi_env env, napi_value jsCallback, void* context, void
         commonEventDataWorkerData = nullptr;
         return;
     }
-    napi_handle_scope scope;
-    napi_open_handle_scope(env, &scope);
-    if (scope == nullptr) {
-        EVENT_LOGE(LOG_TAG_CES_NAPI, "Scope is null");
+    napi_handle_scope scope = nullptr;
+    napi_status openScopeStatus = napi_open_handle_scope(env, &scope);
+    if (openScopeStatus != napi_ok || scope == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "Open handle scope failed, status=%{public}d", openScopeStatus);
+        delete commonEventDataWorkerData;
+        commonEventDataWorkerData = nullptr;
         return;
     }
 
@@ -358,7 +360,7 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "getSubscribeInfo", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -391,6 +393,14 @@ napi_value GetSubscribeInfo(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -463,7 +473,7 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "isOrderedCommonEvent", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -502,6 +512,14 @@ napi_value IsOrderedCommonEvent(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -660,7 +678,7 @@ napi_value GetCode(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "getCode", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -696,6 +714,14 @@ napi_value GetCode(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -751,7 +777,7 @@ napi_value GetData(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "getData", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -787,6 +813,14 @@ napi_value GetData(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -841,7 +875,7 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "abort", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -872,6 +906,14 @@ napi_value AbortCommonEvent(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -927,7 +969,7 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "clearAbort", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -958,6 +1000,14 @@ napi_value ClearAbortCommonEvent(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -1013,7 +1063,7 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "getAbort", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -1049,6 +1099,14 @@ napi_value GetAbortCommonEvent(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -1104,7 +1162,7 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
     napi_value resourceName = nullptr;
     napi_create_string_latin1(env, "finish", NAPI_AUTO_LENGTH, &resourceName);
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -1135,6 +1193,14 @@ napi_value FinishCommonEvent(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -1293,7 +1359,7 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
     napi_create_string_latin1(env, "Publish", NAPI_AUTO_LENGTH, &resourceName);
 
     // Calling Asynchronous functions
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -1324,6 +1390,14 @@ napi_value PublishAsUser(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -1371,7 +1445,7 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
     napi_create_string_latin1(env, "CreateSubscriber", NAPI_AUTO_LENGTH, &resourceName);
 
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -1408,6 +1482,17 @@ napi_value CreateSubscriber(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->subscribeInfo != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->subscribeInfo);
+        }
+        if (asyncCallbackInfo->info.callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->info.callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 
@@ -1466,7 +1551,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     asyncCallbackInfo->callback = callback;
 
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -1505,6 +1590,14 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->subscriber != nullptr) {
+            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
     subscriber->RegisterEnvCleanupHook();
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
     return NapiGetNull(env);
@@ -1564,7 +1657,7 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
     napi_create_string_latin1(env, "Unsubscribe", NAPI_AUTO_LENGTH, &resourceName);
 
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -1598,6 +1691,14 @@ napi_value Unsubscribe(napi_env env, napi_callback_info info)
         },
         (void *)asynccallback,
         &asynccallback->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asynccallback->callback != nullptr) {
+            napi_delete_reference(env, asynccallback->callback);
+        }
+        delete asynccallback;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asynccallback->asyncWork, napi_qos_user_initiated));
     return NapiGetNull(env);
@@ -1651,7 +1752,7 @@ napi_value Publish(napi_env env, napi_callback_info info)
     napi_create_string_latin1(env, "Publish", NAPI_AUTO_LENGTH, &resourceName);
 
     // Asynchronous function call
-    napi_create_async_work(env,
+    napi_status status = napi_create_async_work(env,
         nullptr,
         resourceName,
         [](napi_env env, void *data) {
@@ -1681,6 +1782,14 @@ napi_value Publish(napi_env env, napi_callback_info info)
         },
         (void *)asyncCallbackInfo,
         &asyncCallbackInfo->asyncWork);
+    if (status != napi_ok) {
+        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+        if (asyncCallbackInfo->callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->callback);
+        }
+        delete asyncCallbackInfo;
+        return NapiGetNull(env);
+    }
 
     NAPI_CALL(env, napi_queue_async_work_with_qos(env, asyncCallbackInfo->asyncWork, napi_qos_user_initiated));
 

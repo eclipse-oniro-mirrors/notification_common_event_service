@@ -88,6 +88,67 @@ HWTEST_F(StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0100, Func
 }
 
 /*
+ * @tc.name: OnAbilityConnectDoneTest_0200
+ * @tc.desc: Test OnAbilityConnectDone keeps the cached events when the proxy is invalid, so that iterating
+ *           the event cache is never invalidated by a re-cache of the current event.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0200, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO) << "OnAbilityConnectDoneTest_0200 start!";
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> conn = new (std::nothrow) StaticSubscriberConnection(data, "");
+    ASSERT_NE(nullptr, conn);
+    // The constructor caches one event, cache more events to make the container reallocate on push_back.
+    for (int32_t i = 0; i < 8; i++) {
+        conn->events_.push_back(data);
+    }
+    size_t cachedSize = conn->events_.size();
+    ASSERT_GT(cachedSize, 1U);
+
+    AppExecFwk::ElementName element;
+    sptr<IRemoteObject> nullSubscriber = nullptr;
+    conn->OnAbilityConnectDone(element, nullSubscriber, 0);
+    sleep(1);
+    EXPECT_EQ(conn->events_.size(), cachedSize);
+    EXPECT_FALSE(g_mockOnReceiveEventRet);
+    g_mockOnReceiveEventRet = false;
+    GTEST_LOG_(INFO) << "OnAbilityConnectDoneTest_0200 end!";
+}
+
+/*
+ * @tc.name: OnAbilityConnectDoneTest_0300
+ * @tc.desc: Test OnAbilityConnectDone delivers all cached events and clears the cache when the proxy is valid.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StaticSubscriberConnectionUnitTest, OnAbilityConnectDoneTest_0300, Function | MediumTest | Level1)
+{
+    GTEST_LOG_(INFO) << "OnAbilityConnectDoneTest_0300 start!";
+    CommonEventData data;
+    sptr<StaticSubscriberConnection> conn = new (std::nothrow) StaticSubscriberConnection(data, "");
+    ASSERT_NE(nullptr, conn);
+    for (int32_t i = 0; i < 8; i++) {
+        conn->events_.push_back(data);
+    }
+    ASSERT_GT(conn->events_.size(), 1U);
+
+    AppExecFwk::ElementName element;
+    sptr<IRemoteObject> mockSubscriber = new MockStaticSubscriber();
+    conn->OnAbilityConnectDone(element, mockSubscriber, 0);
+    // The notify tasks are dispatched asynchronously, wait for them instead of a fixed delay.
+    for (int32_t i = 0; i < 30; i++) {
+        if (g_mockOnReceiveEventRet) {
+            break;
+        }
+        usleep(100 * 1000);  // 100ms
+    }
+    EXPECT_TRUE(conn->events_.empty());
+    EXPECT_TRUE(g_mockOnReceiveEventRet);
+    g_mockOnReceiveEventRet = false;
+    GTEST_LOG_(INFO) << "OnAbilityConnectDoneTest_0300 end!";
+}
+
+/*
  * @tc.name: NotifyEvent_0100
  * @tc.desc: Test that NotifyEvent can correctly cache event and action.
  * @tc.type: FUNC

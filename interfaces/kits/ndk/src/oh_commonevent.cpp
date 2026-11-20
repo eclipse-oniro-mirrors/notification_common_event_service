@@ -43,8 +43,8 @@ using namespace OHOS::EventFwk;
 
 CommonEvent_SubscribeInfo* OH_CommonEvent_CreateSubscribeInfo(const char* events[], int32_t eventsNum)
 {
-    if (eventsNum == 0) {
-        EVENT_LOGE(LOG_TAG_CES_CAPI, "Events is empty");
+    if (events == nullptr || eventsNum == 0) {
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Events is null or empty");
         return nullptr;
     }
     CommonEvent_SubscribeInfo* subscribeInfo = new (std::nothrow) CommonEvent_SubscribeInfo();
@@ -166,6 +166,10 @@ CommonEvent_ErrCode OH_CommonEvent_SetPublishInfoPermissions(
 {
     if (info == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid info");
+        return COMMONEVENT_ERR_INVALID_PARAMETER;
+    }
+    if (permissions == nullptr && num > 0) {
+        EVENT_LOGE(LOG_TAG_CES_CAPI, "Invalid permissions");
         return COMMONEVENT_ERR_INVALID_PARAMETER;
     }
 

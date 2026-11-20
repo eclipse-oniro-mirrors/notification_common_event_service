@@ -32,14 +32,23 @@ StaticSubscriberConnection::~StaticSubscriberConnection()
 void StaticSubscriberConnection::OnAbilityConnectDone(
     const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
-    std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
-    InitProxy(remoteObject);
-    std::string bundleName = element.GetURI();
-    EVENT_LOGI(LOG_TAG_STATIC, "called, %{public}s", bundleName.c_str());
-    for (auto &event : events_) {
+    std::vector<CommonEventData> pendingEvents;
+    {
+        std::lock_guard<ffrt::recursive_mutex> lock(mutex_);
+        InitProxy(remoteObject);
+        std::string bundleName = element.GetURI();
+        EVENT_LOGI(LOG_TAG_STATIC, "called, %{public}s", bundleName.c_str());
+        if (proxy_ == nullptr) {
+            // The proxy is unavailable, keep the cached events so that they can be delivered by the next
+            // connection attempt. Calling NotifyEvent here would push_back into events_ while iterating it.
+            EVENT_LOGW(LOG_TAG_STATIC, "Proxy is invalid, keep %{public}zu cached events", events_.size());
+            return;
+        }
+        pendingEvents.swap(events_);
+    }
+    for (auto &event : pendingEvents) {
         NotifyEvent(event);
     }
-    events_.clear();
 }
 
 void StaticSubscriberConnection::NotifyEvent(const CommonEventData &event)

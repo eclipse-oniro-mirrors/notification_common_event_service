@@ -75,18 +75,88 @@ CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SystemAbilityStatu
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnAddSystemAbility(
     int32_t systemAbilityId, const std::string& deviceId)
 {
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (!isSAOffline_) {
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        if (!isSAOffline_) {
+            return;
+        }
+        // Record the restart notification so that an in-flight reconnection task retries instead of
+        // dropping it.
+        reconnectRequestCount_++;
+        if (reconnecting_) {
+            return;
+        }
+        reconnecting_ = true;
+    }
+    // The reconnection must not run in this callback. samgr notifies the status change through a oneway
+    // IPC, and the binder driver only releases the next async transaction of this node after the current
+    // one is finished (that is, after this callback returns). A long retry here would therefore delay
+    // OnRemoveSystemAbility for up to MAX_RETRY_TIME * SLEEP_TIME milliseconds.
+    SubmitReconnectTask();
+}
+
+void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::SubmitReconnectTask()
+{
+    if (queue_ == nullptr) {
+        EVENT_LOGE(LOG_TAG_CES, "Reconnect queue is null");
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        reconnecting_ = false;
         return;
     }
-    EVENT_LOGI(LOG_TAG_CES, "CES restarted, try to reconnect");
-    if (CommonEvent::GetInstance()->Reconnect()) {
-        auto resubscrebeFund = [] () {
-            CommonEvent::GetInstance()->Resubscribe();
-        };
-        queue_->submit(resubscrebeFund);
-        isSAOffline_ = false;
+    wptr<SystemAbilityStatusChangeListener> wThis = this;
+    queue_->submit([wThis] () {
+        sptr<SystemAbilityStatusChangeListener> self = wThis.promote();
+        if (self == nullptr) {
+            EVENT_LOGW(LOG_TAG_CES, "Listener has been released, skip reconnect");
+            return;
+        }
+        self->DoReconnect();
+    });
+}
+
+void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::DoReconnect()
+{
+    uint64_t attemptedRequestCount = 0;
+    uint64_t attemptedGeneration = 0;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        if (!isSAOffline_) {
+            reconnecting_ = false;
+            return;
+        }
+        attemptedRequestCount = reconnectRequestCount_;
+        attemptedGeneration = offlineGeneration_;
     }
+
+    EVENT_LOGI(LOG_TAG_CES, "CES restarted, try to reconnect");
+    bool reconnected = CommonEvent::GetInstance()->Reconnect();
+
+    bool restartPending = false;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        // A newer restart notification, or a new offline event, means that the proxy just obtained may
+        // already be stale, so the reconnection has to be retried instead of being treated as done.
+        restartPending = isSAOffline_ && (reconnectRequestCount_ != attemptedRequestCount ||
+            offlineGeneration_ != attemptedGeneration);
+        if (!restartPending) {
+            reconnecting_ = false;
+            if (!reconnected) {
+                EVENT_LOGE(LOG_TAG_CES, "Reconnect CES failed, wait for next restart");
+                return;
+            }
+            isSAOffline_ = false;
+        }
+    }
+    if (!restartPending) {
+        EVENT_LOGI(LOG_TAG_CES, "Reconnect CES success, resubscribe events");
+        CommonEvent::GetInstance()->Resubscribe();
+        return;
+    }
+
+    // The service went offline again during the reconnection. Keep reconnecting_ true and reschedule
+    // the task, so that restart notifications arriving in the meantime are consumed by the next round.
+    EVENT_LOGW(LOG_TAG_CES, "CES restarted again during reconnection, reschedule");
+    SubmitReconnectTask();
 }
 
 void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSystemAbility(
@@ -95,6 +165,7 @@ void CommonEventDeathRecipient::SystemAbilityStatusChangeListener::OnRemoveSyste
     EVENT_LOGW(LOG_TAG_CES, "CES died");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     isSAOffline_ = true;
+    offlineGeneration_++;
 }
 }  // namespace EventFwk
 }  // namespace OHOS

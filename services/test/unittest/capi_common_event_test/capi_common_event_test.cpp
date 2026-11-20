@@ -1222,3 +1222,48 @@ HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_2900, Function | MediumTest | 
     OH_CommonEvent_DestroySubscriber(subscriber);
     OH_CommonEvent_DestroySubscribeInfo(subscribeInfo);
 }
+
+/*
+ * @tc.name: CapiCommonEventTest_3000
+ * @tc.desc: Test create subscribeInfo with an invalid events array.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_3000, Function | MediumTest | Level0)
+{
+    auto subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(nullptr, TEST_NUM);
+    ASSERT_EQ(subscribeInfo, nullptr);
+
+    const char* events[] = { EVENT, EVENT2 };
+    subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, 0);
+    ASSERT_EQ(subscribeInfo, nullptr);
+
+    subscribeInfo = OH_CommonEvent_CreateSubscribeInfo(events, TEST_NUM);
+    ASSERT_NE(subscribeInfo, nullptr);
+    OH_CommonEvent_DestroySubscribeInfo(subscribeInfo);
+}
+
+/*
+ * @tc.name: CapiCommonEventTest_3100
+ * @tc.desc: Test set publishInfo permissions with a null permissions array.
+ * @tc.type: FUNC
+ */
+HWTEST_F(CapiCommonEventTest, CapiCommonEventTest_3100, Function | MediumTest | Level0)
+{
+    auto publishInfo = OH_CommonEvent_CreatePublishInfo(false);
+    ASSERT_NE(publishInfo, nullptr);
+
+    int32_t ret = OH_CommonEvent_SetPublishInfoPermissions(publishInfo, nullptr, TEST_NUM);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_INVALID_PARAMETER);
+    ASSERT_TRUE(publishInfo->subscriberPermissions.empty());
+
+    const char* permissions[] = { PUBLISHER_PERMISSION, PUBLISHER_PERMISSION2 };
+    ret = OH_CommonEvent_SetPublishInfoPermissions(publishInfo, permissions, TEST_NUM);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
+    ASSERT_FALSE(publishInfo->subscriberPermissions.empty());
+
+    ret = OH_CommonEvent_SetPublishInfoPermissions(publishInfo, nullptr, 0);
+    ASSERT_EQ(ret, COMMONEVENT_ERR_OK);
+    ASSERT_TRUE(publishInfo->subscriberPermissions.empty());
+
+    OH_CommonEvent_DestroyPublishInfo(publishInfo);
+}
