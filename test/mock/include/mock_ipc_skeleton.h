@@ -38,6 +38,8 @@ public:
 
     static pid_t GetCallingUid();
 
+    static pid_t GetCallingAppUid();
+
     static std::string GetLocalDeviceID();
 
     static std::string GetCallingDeviceID();
