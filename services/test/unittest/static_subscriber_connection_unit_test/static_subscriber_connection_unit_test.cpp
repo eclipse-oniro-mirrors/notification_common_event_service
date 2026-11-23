@@ -21,6 +21,7 @@
 #undef private
 #undef protected
 #include "static_subscriber_stub.h"
+#include "ability_manager_helper.h"
 
 using namespace testing::ext;
 using namespace OHOS;
@@ -44,7 +45,10 @@ public:
 
 void StaticSubscriberConnectionUnitTest::SetUpTestCase() {}
 
-void StaticSubscriberConnectionUnitTest::TearDownTestCase() {}
+void StaticSubscriberConnectionUnitTest::TearDownTestCase()
+{
+    DelayedSingleton<AbilityManagerHelper>::DestroyInstance();
+}
 
 void StaticSubscriberConnectionUnitTest::SetUp() {}
 
