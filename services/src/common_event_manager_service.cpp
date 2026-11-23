@@ -138,7 +138,7 @@ ErrCode CommonEventManagerService::PublishCommonEvent(const CommonEventData& eve
     }
 
     funcResult = PublishCommonEventDetailed(event, publishinfo, commonEventListener, IPCSkeleton::GetCallingPid(),
-        IPCSkeleton::GetCallingUid(), IPCSkeleton::GetCallingTokenID(), userId);
+        IPCSkeleton::GetCallingAppUid(), IPCSkeleton::GetCallingTokenID(), userId);
     return ERR_OK;
 }
 
@@ -161,7 +161,7 @@ ErrCode CommonEventManagerService::PublishCommonEvent(const CommonEventData& eve
         return ERR_OK;
     }
 
-    auto callingUid = IPCSkeleton::GetCallingUid();
+    auto callingUid = IPCSkeleton::GetCallingAppUid();
     if (callingUid != FOUNDATION_UID) {
         EVENT_LOGE(LOG_TAG_CES, "Only foundation can publish common event as proxy uid = %{public}d.", callingUid);
         funcResult = false;
@@ -267,7 +267,7 @@ ErrCode CommonEventManagerService::SubscribeCommonEvent(const CommonEventSubscri
         return ERR_OK;
     }
 
-    auto callingUid = IPCSkeleton::GetCallingUid();
+    auto callingUid = IPCSkeleton::GetCallingAppUid();
     auto callingPid = IPCSkeleton::GetCallingPid();
     Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
     std::weak_ptr<InnerCommonEventManager> wp = innerCommonEventManager_;
@@ -394,7 +394,7 @@ ErrCode CommonEventManagerService::GetStickyCommonEvent(const std::string& event
         funcResult = ERR_NOTIFICATION_CES_COMMON_NOT_SYSTEM_APP;
         return ERR_OK;
     }
-    auto callingUid = IPCSkeleton::GetCallingUid();
+    auto callingUid = IPCSkeleton::GetCallingAppUid();
     std::string bundleName = DelayedSingleton<BundleManagerHelper>::GetInstance()->GetBundleName(callingUid);
     const std::string permission = "ohos.permission.COMMONEVENT_STICKY";
     bool ret = AccessTokenHelper::VerifyAccessToken(callerToken, permission);
@@ -605,7 +605,7 @@ ErrCode CommonEventManagerService::RemoveStickyCommonEvent(const std::string& ev
         funcResult = ERR_NOTIFICATION_CES_COMMON_PERMISSION_DENIED;
         return ERR_OK;
     }
-    funcResult = innerCommonEventManager_->RemoveStickyCommonEvent(event, IPCSkeleton::GetCallingUid());
+    funcResult = innerCommonEventManager_->RemoveStickyCommonEvent(event, IPCSkeleton::GetCallingAppUid());
     return ERR_OK;
 }
 

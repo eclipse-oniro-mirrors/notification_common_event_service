@@ -77,8 +77,8 @@ bool StaticSubscriberManager::InitAllowList()
         std::string bundleName = appInfo.bundleName;
         int32_t userId = ALL_USER;
         if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()
-            ->GetOsAccountLocalIdFromUid(appInfo.uid, userId) != ERR_OK) {
-            EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", appInfo.uid);
+            ->GetOsAccountLocalIdFromUid(appInfo.appUid, userId) != ERR_OK) {
+            EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", appInfo.appUid);
             continue;
         }
         std::string key = std::to_string(userId) + "_" + bundleName;
@@ -144,8 +144,8 @@ void StaticSubscriberManager::AddSubscriberIfAllowed(const AppExecFwk::Extension
 {
     int32_t userId = ALL_USER;
     if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()
-        ->GetOsAccountLocalIdFromUid(extension.applicationInfo.uid, userId) != ERR_OK) {
-        EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", extension.applicationInfo.uid);
+        ->GetOsAccountLocalIdFromUid(extension.applicationInfo.appUid, userId) != ERR_OK) {
+        EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", extension.applicationInfo.appUid);
         return;
     }
     std::string key = std::to_string(userId) + "_" + extension.bundleName;
@@ -562,8 +562,8 @@ void StaticSubscriberManager::AddSubscriber(const AppExecFwk::ExtensionAbilityIn
     for (auto profile : profileInfos) {
         int32_t userId = ALL_USER;
         if (DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(
-            extension.applicationInfo.uid, userId) != ERR_OK) {
-            EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", extension.applicationInfo.uid);
+            extension.applicationInfo.appUid, userId) != ERR_OK) {
+            EVENT_LOGE(LOG_TAG_STATIC, "Get userId failed, uid = %{public}d", extension.applicationInfo.appUid);
             return;
         }
         ParseEvents(extension.name, extension.bundleName, userId, profile);
@@ -769,7 +769,7 @@ void StaticSubscriberManager::MergeDisableEventsLocked(
 int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "Called.");
-    int32_t callingUid = static_cast<int32_t>(IPCSkeleton::GetCallingUid());
+    int32_t callingUid = static_cast<int32_t>(IPCSkeleton::GetCallingAppUid());
     int32_t userId = ALL_USER;
     auto ret = DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(callingUid, userId);
     if (ret != ERR_OK) {
@@ -796,7 +796,7 @@ int32_t StaticSubscriberManager::SetStaticSubscriberState(bool enable)
 int32_t StaticSubscriberManager::SetStaticSubscriberState(const std::vector<std::string> &events, bool enable)
 {
     EVENT_LOGD(LOG_TAG_STATIC, "Called.");
-    int32_t callingUid = static_cast<int32_t>(IPCSkeleton::GetCallingUid());
+    int32_t callingUid = static_cast<int32_t>(IPCSkeleton::GetCallingAppUid());
     int32_t userId = ALL_USER;
     auto ret = DelayedSingleton<OsAccountManagerHelper>::GetInstance()->GetOsAccountLocalIdFromUid(callingUid, userId);
     if (ret != ERR_OK) {

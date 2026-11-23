@@ -87,6 +87,7 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             info0.name = "StaticSubscriber";
             info0.permissions.emplace_back("permission0");
             info0.applicationInfo.uid = MOCK_UID;
+            info0.applicationInfo.appUid = MOCK_UID;
             g_mockExtensionInfos.emplace_back(info0);
             break;
         }
@@ -95,6 +96,7 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             info0.bundleName = "com.ohos.systemui1";
             info0.name = "StaticSubscriber";
             info0.applicationInfo.uid = MOCK_UID;
+            info0.applicationInfo.appUid = MOCK_UID;
             g_mockExtensionInfos.emplace_back(info0);
             break;
         }
@@ -103,11 +105,13 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             info0.bundleName = "com.ohos.systemui";
             info0.name = "StaticSubscriber";
             info0.applicationInfo.uid = MOCK_UID;
+            info0.applicationInfo.appUid = MOCK_UID;
             g_mockExtensionInfos.emplace_back(info0);
             ExtensionAbilityInfo info1;
             info1.bundleName = "com.ohos.systemui1";
             info1.name = "StaticSubscriber";
             info1.applicationInfo.uid = MOCK_UID;
+            info1.applicationInfo.appUid = MOCK_UID;
             g_mockExtensionInfos.emplace_back(info1);
             break;
         }
@@ -116,11 +120,13 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             info0.bundleName = "com.ohos.systemui";
             info0.name = "StaticSubscriber";
             info0.applicationInfo.uid = MOCK_UID;
+            info0.applicationInfo.appUid = MOCK_UID;
             g_mockExtensionInfos.emplace_back(info0);
             ExtensionAbilityInfo info1;
             info1.bundleName = "com.ohos.systemui";
             info1.name = "StaticSubscriber1";
             info1.applicationInfo.uid = MOCK_UID;
+            info1.applicationInfo.appUid = MOCK_UID;
             g_mockExtensionInfos.emplace_back(info1);
             break;
         }
@@ -130,6 +136,7 @@ void MockQueryExtensionInfos(bool mockRet, uint8_t mockCase)
             info0.name = "StaticSubscriber";
             info0.permissions.emplace_back("permission0");
             info0.applicationInfo.uid = MOCK_UID;
+            info0.applicationInfo.appUid = MOCK_UID;
             info0.applicationInfo.allowCommonEvent.emplace_back("usual.event.TIME_TICK");
             g_mockExtensionInfos.emplace_back(info0);
             break;
@@ -253,6 +260,7 @@ void MockGetApplicationInfos(uint8_t mockCase)
             ApplicationInfo appInfo0;
             appInfo0.bundleName = "com.ohos.systemui";
             appInfo0.uid = MOCK_UID;
+            appInfo0.appUid = MOCK_UID;
             g_mockAppInfos.emplace_back(appInfo0);
             break;
         }
