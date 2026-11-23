@@ -255,7 +255,9 @@ void CommonEventFreezeTest::SetUpTestCase(void)
 }
 
 void CommonEventFreezeTest::TearDownTestCase(void)
-{}
+{
+    innerCommonEventManager_ = nullptr;
+}
 
 void CommonEventFreezeTest::SetUp(void)
 {
