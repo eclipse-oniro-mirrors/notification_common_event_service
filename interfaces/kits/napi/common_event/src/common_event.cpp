@@ -249,16 +249,19 @@ void SubscriberInstance::HandoverCallbackRef(napi_ref &callback)
         return;
     }
     std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    if (ownedRef_ != nullptr && ownedRef_ != callback) {
-        // The ref of the subscription replaced by this attempt
-        napi_delete_reference(env_, ownedRef_);
-    }
     if (ref_ == callback) {
+        // This attempt is the latest one, it replaces the subscription owned so far
+        if (ownedRef_ != nullptr && ownedRef_ != callback) {
+            napi_delete_reference(env_, ownedRef_);
+        }
         ownedRef_ = callback;
     } else {
-        // The subscription was removed while this attempt was in flight, the ref is not used any more
+        // A newer subscribe attempt has taken over the view, or the subscription was removed while this attempt was
+        // in flight. The ref is not used for delivery any more, and the ref owned by this subscriber is kept because
+        // it may belong to the newer attempt.
         EVENT_LOGW(LOG_TAG_CES_NAPI,
-            "Subscribe[%{public}llu] finished after unsubscribe, release callback ref", id_.load());
+            "Subscribe[%{public}llu] is no longer the latest one or was unsubscribed, release its callback ref",
+            id_.load());
         napi_delete_reference(env_, callback);
     }
     callback = nullptr;
