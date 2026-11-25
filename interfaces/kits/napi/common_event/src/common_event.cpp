@@ -240,10 +240,55 @@ void SubscriberInstance::ClearEnv()
 void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
     std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    if (ref == nullptr) {
-        napi_delete_reference(env_, ref_);
-    }
     ref_ = ref;
+}
+
+void SubscriberInstance::HandoverCallbackRef(napi_ref &callback)
+{
+    if (callback == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
+    if (ownedRef_ != nullptr && ownedRef_ != callback) {
+        // The ref of the subscription replaced by this attempt
+        napi_delete_reference(env_, ownedRef_);
+    }
+    if (ref_ == callback) {
+        ownedRef_ = callback;
+    } else {
+        // The subscription was removed while this attempt was in flight, the ref is not used any more
+        EVENT_LOGW(LOG_TAG_CES_NAPI,
+            "Subscribe[%{public}llu] finished after unsubscribe, release callback ref", id_.load());
+        napi_delete_reference(env_, callback);
+    }
+    callback = nullptr;
+}
+
+void SubscriberInstance::WithdrawCallbackRef(napi_ref &callback)
+{
+    if (callback == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
+    if (ref_ == callback) {
+        ref_ = nullptr;
+    }
+    napi_delete_reference(env_, callback);
+    callback = nullptr;
+}
+
+void SubscriberInstance::ReleaseCallbackRef()
+{
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
+    if (ref_ != nullptr && ref_ != ownedRef_) {
+        // The ref belongs to a subscribe attempt still in flight, which releases it by itself
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "Callback ref belongs to an in-flight subscribe, only unlink it");
+    }
+    if (ownedRef_ != nullptr) {
+        napi_delete_reference(env_, ownedRef_);
+        ownedRef_ = nullptr;
+    }
+    ref_ = nullptr;
 }
 
 napi_ref SubscriberInstance::GetCallbackRef()
@@ -1266,7 +1311,7 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
             delete asyncCallbackInfoSubscribe;
             asyncCallbackInfoSubscribe = nullptr;
         }
-        subscriber->SetCallbackRef(nullptr);
+        subscriber->ReleaseCallbackRef();
         subscriber->RemoveEnvCleanupHook();
         subscriberInstances.erase(subscribe);
     }
@@ -1575,12 +1620,17 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
             if (asyncCallbackInfo->errorCode == NO_ERROR) {
                 std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
                 subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
+                asyncCallbackInfo->subscriber->HandoverCallbackRef(asyncCallbackInfo->callback);
             } else {
                 SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
 
                 if (asyncCallbackInfo->callback != nullptr) {
                     EVENT_LOGD(LOG_TAG_CES_NAPI, "Delete subscribe callback reference.");
-                    napi_delete_reference(env, asyncCallbackInfo->callback);
+                    if (asyncCallbackInfo->subscriber != nullptr) {
+                        asyncCallbackInfo->subscriber->WithdrawCallbackRef(asyncCallbackInfo->callback);
+                    } else {
+                        napi_delete_reference(env, asyncCallbackInfo->callback);
+                    }
                 }
 
                 delete asyncCallbackInfo;
@@ -1593,7 +1643,9 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     if (status != napi_ok) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
         if (asyncCallbackInfo->subscriber != nullptr) {
-            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
+            asyncCallbackInfo->subscriber->WithdrawCallbackRef(asyncCallbackInfo->callback);
+        } else if (asyncCallbackInfo->callback != nullptr) {
+            napi_delete_reference(env, asyncCallbackInfo->callback);
         }
         delete asyncCallbackInfo;
         return NapiGetNull(env);

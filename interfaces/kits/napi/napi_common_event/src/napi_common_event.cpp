@@ -80,6 +80,30 @@ static void ClearEnvCallback(void *data)
     subscriber->ClearEnv();
 }
 
+static void ReleaseTsfn(napi_env env, napi_threadsafe_function tsfn)
+{
+    if (env == nullptr || tsfn == nullptr) {
+        return;
+    }
+    EVENT_LOGD(LOG_TAG_CES_NAPI, "Release threadsafe function");
+    napi_release_threadsafe_function(tsfn, napi_tsfn_release);
+}
+
+// Called when a subscribe attempt failed. Releases the callback ref and the threadsafe function owned by the attempt,
+// and unlinks them from the view of the subscriber if they are still installed there.
+static void WithdrawSubscribeHandles(AsyncCallbackInfoSubscribe *asyncCallbackInfo, napi_env env)
+{
+    if (asyncCallbackInfo->subscriber != nullptr) {
+        asyncCallbackInfo->subscriber->WithdrawCallbackRef(asyncCallbackInfo->callback);
+        asyncCallbackInfo->subscriber->WithdrawThreadSafeFunction(asyncCallbackInfo->tsfn);
+        return;
+    }
+    if (asyncCallbackInfo->callback != nullptr) {
+        napi_delete_reference(env, asyncCallbackInfo->callback);
+    }
+    ReleaseTsfn(env, asyncCallbackInfo->tsfn);
+}
+
 SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info)
 {
     auto objectInfo = new (std::nothrow) SubscriberInstance(info);
@@ -285,10 +309,55 @@ void SubscriberInstance::ClearEnv()
 void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
 {
     std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    if (ref == nullptr) {
-        napi_delete_reference(env_, ref_);
-    }
     ref_ = ref;
+}
+
+void SubscriberInstance::HandoverCallbackRef(napi_ref &callback)
+{
+    if (callback == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
+    if (ownedRef_ != nullptr && ownedRef_ != callback) {
+        // The ref of the subscription replaced by this attempt
+        napi_delete_reference(env_, ownedRef_);
+    }
+    if (ref_ == callback) {
+        ownedRef_ = callback;
+    } else {
+        // The subscription was removed while this attempt was in flight, the ref is not used any more
+        EVENT_LOGW(LOG_TAG_CES_NAPI,
+            "Subscribe[%{public}llu] finished after unsubscribe, release callback ref", id_.load());
+        napi_delete_reference(env_, callback);
+    }
+    callback = nullptr;
+}
+
+void SubscriberInstance::WithdrawCallbackRef(napi_ref &callback)
+{
+    if (callback == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
+    if (ref_ == callback) {
+        ref_ = nullptr;
+    }
+    napi_delete_reference(env_, callback);
+    callback = nullptr;
+}
+
+void SubscriberInstance::ReleaseCallbackRef()
+{
+    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
+    if (ref_ != nullptr && ref_ != ownedRef_) {
+        // The ref belongs to a subscribe attempt still in flight, which releases it by itself
+        EVENT_LOGD(LOG_TAG_CES_NAPI, "Callback ref belongs to an in-flight subscribe, only unlink it");
+    }
+    if (ownedRef_ != nullptr) {
+        napi_delete_reference(env_, ownedRef_);
+        ownedRef_ = nullptr;
+    }
+    ref_ = nullptr;
 }
 
 napi_ref SubscriberInstance::GetCallbackRef()
@@ -339,17 +408,50 @@ AniSubscriberCallback SubscriberInstance::GetAniSubscribeCallback()
 
 void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
 {
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
     tsfn_ = tsfn;
+}
+
+void SubscriberInstance::HandoverThreadSafeFunction(napi_threadsafe_function &tsfn)
+{
+    if (tsfn == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
+    if (ownedTsfn_ != nullptr && ownedTsfn_ != tsfn) {
+        // The threadsafe function of the subscription replaced by this attempt
+        ReleaseTsfn(env_, ownedTsfn_);
+        ownedTsfn_ = nullptr;
+    }
+    if (tsfn_ == tsfn) {
+        ownedTsfn_ = tsfn;
+    } else {
+        // The subscription was removed while this attempt was in flight
+        ReleaseTsfn(env_, tsfn);
+    }
+    tsfn = nullptr;
+}
+
+void SubscriberInstance::WithdrawThreadSafeFunction(napi_threadsafe_function &tsfn)
+{
+    if (tsfn == nullptr) {
+        return;
+    }
+    std::lock_guard<ffrt::mutex> lock(envMutex_);
+    if (tsfn_ == tsfn) {
+        tsfn_ = nullptr;
+    }
+    ReleaseTsfn(env_, tsfn);
+    tsfn = nullptr;
 }
 
 void SubscriberInstance::ReleaseThreadSafeFunction()
 {
     std::lock_guard<ffrt::mutex> lock(envMutex_);
-    if (env_ != nullptr && tsfn_ != nullptr) {
-        EVENT_LOGD(LOG_TAG_CES_NAPI, "Release threadsafe function");
-        napi_release_threadsafe_function(tsfn_, napi_tsfn_release);
-        tsfn_ = nullptr;
-    }
+    // tsfn_ may belong to a subscribe attempt still in flight, which releases it by itself
+    ReleaseTsfn(env_, ownedTsfn_);
+    ownedTsfn_ = nullptr;
+    tsfn_ = nullptr;
 }
 
 void SubscriberInstance::SetIsNewVersion(bool isNewVersion)
@@ -621,10 +723,12 @@ void AsyncCompleteCallbackSubscribeToEvent(napi_env env, napi_status status, voi
         EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfo is 0");
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
+        asyncCallbackInfo->subscriber->HandoverCallbackRef(asyncCallbackInfo->callback);
+        asyncCallbackInfo->subscriber->HandoverThreadSafeFunction(asyncCallbackInfo->tsfn);
         SetPromise(env, asyncCallbackInfo->deferred, asyncCallbackInfo->errorCode, NapiGetNull(env));
         HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", true);
     } else {
-        asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
+        WithdrawSubscribeHandles(asyncCallbackInfo, env);
         SetPromise(env, asyncCallbackInfo->deferred, asyncCallbackInfo->errorCode, NapiGetNull(env));
         delete asyncCallbackInfo;
         asyncCallbackInfo = nullptr;
@@ -649,15 +753,13 @@ void AsyncCompleteCallbackSubscribe(napi_env env, napi_status status, void *data
         EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfo is 0");
         std::lock_guard<ffrt::mutex> lock(subscriberInsMutex);
         subscriberInstances[asyncCallbackInfo->subscriber].asyncCallbackInfo.emplace_back(asyncCallbackInfo);
+        asyncCallbackInfo->subscriber->HandoverCallbackRef(asyncCallbackInfo->callback);
+        asyncCallbackInfo->subscriber->HandoverThreadSafeFunction(asyncCallbackInfo->tsfn);
         HistogramBoolReport("BasicServicesKit.APICall.subscribe", true);
     } else {
         SetCallback(env, asyncCallbackInfo->callback, asyncCallbackInfo->errorCode, NapiGetNull(env));
 
-        if (asyncCallbackInfo->subscriber != nullptr) {
-            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
-        } else if (asyncCallbackInfo->callback != nullptr) {
-            napi_delete_reference(env, asyncCallbackInfo->callback);
-        }
+        WithdrawSubscribeHandles(asyncCallbackInfo, env);
 
         delete asyncCallbackInfo;
         asyncCallbackInfo = nullptr;
@@ -712,16 +814,13 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     subscriber->SetThreadSafeFunction(tsfn);
     asyncCallbackInfo->subscriber = subscriber;
     asyncCallbackInfo->callback = callback;
+    asyncCallbackInfo->tsfn = tsfn;
     // Calling asynchronous functions
     napi_status status = napi_create_async_work(env, nullptr, resourceName, AsyncExecuteCallbackSubscribe,
         AsyncCompleteCallbackSubscribe, (void *)asyncCallbackInfo, &asyncCallbackInfo->asyncWork);
     if (status != napi_ok) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
-        if (asyncCallbackInfo->subscriber != nullptr) {
-            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
-        } else if (asyncCallbackInfo->callback != nullptr) {
-            napi_delete_reference(env, asyncCallbackInfo->callback);
-        }
+        WithdrawSubscribeHandles(asyncCallbackInfo, env);
         delete asyncCallbackInfo;
         HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return NapiGetNull(env);
@@ -773,6 +872,8 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
     subscriber->SetThreadSafeFunction(tsfn);
     subscriber->SetIsNewVersion(true);
     asyncCallbackInfo->subscriber = subscriber;
+    asyncCallbackInfo->callback = callback;
+    asyncCallbackInfo->tsfn = tsfn;
     napi_value promise = nullptr;
     napi_create_promise(env, &asyncCallbackInfo->deferred, &promise);
     // Calling asynchronous functions
@@ -780,9 +881,7 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
         AsyncCompleteCallbackSubscribeToEvent, (void *)asyncCallbackInfo, &asyncCallbackInfo->asyncWork);
     if (status != napi_ok) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
-        if (asyncCallbackInfo->subscriber != nullptr) {
-            asyncCallbackInfo->subscriber->SetCallbackRef(nullptr);
-        }
+        WithdrawSubscribeHandles(asyncCallbackInfo, env);
         delete asyncCallbackInfo;
         HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return NapiGetNull(env);
@@ -1011,7 +1110,7 @@ void NapiDeleteSubscribe(const napi_env &env, std::shared_ptr<SubscriberInstance
             asyncCallbackInfoSubscribe = nullptr;
             EVENT_LOGD(LOG_TAG_CES_NAPI, "asyncCallbackInfoSubscribe is null");
         }
-        subscriber->SetCallbackRef(nullptr);
+        subscriber->ReleaseCallbackRef();
         subscriber->ReleaseThreadSafeFunction();
         subscriber->RemoveEnvCleanupHook();
         subscriberInstances.erase(subscribe);
