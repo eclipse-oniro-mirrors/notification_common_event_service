@@ -211,16 +211,8 @@ public:
     void RegisterEnvCleanupHook();
     void RemoveEnvCleanupHook();
     void ClearEnv();
-    // ref_ is only the view used to deliver events. While a subscribe attempt is in flight it belongs to the attempt,
-    // and the subscriber takes the ownership only when the attempt succeeds.
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
-    // Called when a subscribe attempt succeeded. The handle is reset to nullptr.
-    void HandoverCallbackRef(napi_ref &callback);
-    // Called when a subscribe attempt failed. The handle owned by the attempt is released and reset to nullptr.
-    void WithdrawCallbackRef(napi_ref &callback);
-    // Called when the subscription is removed. Only the ref owned by this subscriber is released.
-    void ReleaseCallbackRef();
     napi_env GetEnv();
     napi_ref GetCallbackRef();
     unsigned long long GetID();
@@ -228,7 +220,6 @@ public:
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
-    napi_ref ownedRef_ = nullptr;
     bool envCleanupHookRegistered_ = false;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
