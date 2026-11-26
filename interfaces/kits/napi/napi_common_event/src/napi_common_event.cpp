@@ -80,28 +80,35 @@ static void ClearEnvCallback(void *data)
     subscriber->ClearEnv();
 }
 
-static void ReleaseTsfn(napi_env env, napi_threadsafe_function tsfn)
+static void DeleteCallbackRef(napi_env env, const napi_ref &callback)
 {
-    if (env == nullptr || tsfn == nullptr) {
-        return;
+    if (callback != nullptr) {
+        napi_delete_reference(env, callback);
     }
-    EVENT_LOGD(LOG_TAG_CES_NAPI, "Release threadsafe function");
-    napi_release_threadsafe_function(tsfn, napi_tsfn_release);
 }
 
 // Called when a subscribe attempt failed. Releases the callback ref and the threadsafe function owned by the attempt,
 // and unlinks them from the view of the subscriber if they are still installed there.
 static void WithdrawSubscribeHandles(AsyncCallbackInfoSubscribe *asyncCallbackInfo, napi_env env)
 {
-    if (asyncCallbackInfo->subscriber != nullptr) {
-        asyncCallbackInfo->subscriber->WithdrawCallbackRef(asyncCallbackInfo->callback);
-        asyncCallbackInfo->subscriber->WithdrawThreadSafeFunction(asyncCallbackInfo->tsfn);
+    if (asyncCallbackInfo->subscriber == nullptr) {
+        // Not expected, the subscriber is always set before the async work is created
+        DeleteCallbackRef(env, asyncCallbackInfo->callback);
+        if (asyncCallbackInfo->tsfn != nullptr) {
+            napi_release_threadsafe_function(asyncCallbackInfo->tsfn, napi_tsfn_release);
+        }
         return;
     }
-    if (asyncCallbackInfo->callback != nullptr) {
-        napi_delete_reference(env, asyncCallbackInfo->callback);
-    }
-    ReleaseTsfn(env, asyncCallbackInfo->tsfn);
+    asyncCallbackInfo->subscriber->WithdrawCallbackRef(asyncCallbackInfo->callback);
+    asyncCallbackInfo->subscriber->WithdrawThreadSafeFunction(asyncCallbackInfo->tsfn);
+}
+
+// Called when the async work of a subscribe attempt could not be created: the attempt releases its own handles.
+static void OnSubscribeWorkCreateFailed(AsyncCallbackInfoSubscribe *asyncCallbackInfo, napi_env env, napi_status status)
+{
+    EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
+    WithdrawSubscribeHandles(asyncCallbackInfo, env);
+    delete asyncCallbackInfo;
 }
 
 SubscriberInstanceWrapper::SubscriberInstanceWrapper(const CommonEventSubscribeInfo &info)
@@ -306,69 +313,6 @@ void SubscriberInstance::ClearEnv()
     tsfn_ = nullptr;
 }
 
-void SubscriberInstance::SetCallbackRef(const napi_ref &ref)
-{
-    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    ref_ = ref;
-}
-
-void SubscriberInstance::HandoverCallbackRef(napi_ref &callback)
-{
-    if (callback == nullptr) {
-        return;
-    }
-    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    if (ref_ == callback) {
-        // This attempt is the latest one, it replaces the subscription owned so far
-        if (ownedRef_ != nullptr && ownedRef_ != callback) {
-            napi_delete_reference(env_, ownedRef_);
-        }
-        ownedRef_ = callback;
-    } else {
-        // A newer subscribe attempt has taken over the view, or the subscription was removed while this attempt was
-        // in flight. The ref is not used for delivery any more, and the ref owned by this subscriber is kept because
-        // it may belong to the newer attempt.
-        EVENT_LOGW(LOG_TAG_CES_NAPI,
-            "Subscribe[%{public}llu] is no longer the latest one or was unsubscribed, release its callback ref",
-            id_.load());
-        napi_delete_reference(env_, callback);
-    }
-    callback = nullptr;
-}
-
-void SubscriberInstance::WithdrawCallbackRef(napi_ref &callback)
-{
-    if (callback == nullptr) {
-        return;
-    }
-    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    if (ref_ == callback) {
-        ref_ = nullptr;
-    }
-    napi_delete_reference(env_, callback);
-    callback = nullptr;
-}
-
-void SubscriberInstance::ReleaseCallbackRef()
-{
-    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    if (ref_ != nullptr && ref_ != ownedRef_) {
-        // The ref belongs to a subscribe attempt still in flight, which releases it by itself
-        EVENT_LOGD(LOG_TAG_CES_NAPI, "Callback ref belongs to an in-flight subscribe, only unlink it");
-    }
-    if (ownedRef_ != nullptr) {
-        napi_delete_reference(env_, ownedRef_);
-        ownedRef_ = nullptr;
-    }
-    ref_ = nullptr;
-}
-
-napi_ref SubscriberInstance::GetCallbackRef()
-{
-    std::lock_guard<ffrt::mutex> lockRef(refMutex_);
-    return ref_;
-}
-
 void SubscriberInstance::SetAniAsyncResultCloneCallback(AniAsyncResultCloneCallback callback)
 {
     asyncResultCloneCallback_ = callback;
@@ -407,53 +351,6 @@ void SubscriberInstance::SetAniSubscribeCallback(AniSubscriberCallback callback)
 AniSubscriberCallback SubscriberInstance::GetAniSubscribeCallback()
 {
     return subscribeCallback_;
-}
-
-void SubscriberInstance::SetThreadSafeFunction(const napi_threadsafe_function &tsfn)
-{
-    std::lock_guard<ffrt::mutex> lock(envMutex_);
-    tsfn_ = tsfn;
-}
-
-void SubscriberInstance::HandoverThreadSafeFunction(napi_threadsafe_function &tsfn)
-{
-    if (tsfn == nullptr) {
-        return;
-    }
-    std::lock_guard<ffrt::mutex> lock(envMutex_);
-    if (tsfn_ == tsfn) {
-        // This attempt is the latest one, it replaces the threadsafe function owned so far
-        if (ownedTsfn_ != nullptr && ownedTsfn_ != tsfn) {
-            ReleaseTsfn(env_, ownedTsfn_);
-        }
-        ownedTsfn_ = tsfn;
-    } else {
-        // Same as HandoverCallbackRef: the threadsafe function owned by this subscriber may belong to a newer attempt
-        ReleaseTsfn(env_, tsfn);
-    }
-    tsfn = nullptr;
-}
-
-void SubscriberInstance::WithdrawThreadSafeFunction(napi_threadsafe_function &tsfn)
-{
-    if (tsfn == nullptr) {
-        return;
-    }
-    std::lock_guard<ffrt::mutex> lock(envMutex_);
-    if (tsfn_ == tsfn) {
-        tsfn_ = nullptr;
-    }
-    ReleaseTsfn(env_, tsfn);
-    tsfn = nullptr;
-}
-
-void SubscriberInstance::ReleaseThreadSafeFunction()
-{
-    std::lock_guard<ffrt::mutex> lock(envMutex_);
-    // tsfn_ may belong to a subscribe attempt still in flight, which releases it by itself
-    ReleaseTsfn(env_, ownedTsfn_);
-    ownedTsfn_ = nullptr;
-    tsfn_ = nullptr;
 }
 
 void SubscriberInstance::SetIsNewVersion(bool isNewVersion)
@@ -787,9 +684,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
 
     if (ParseParametersBySubscribe(env, argv, subscriber, callback) == nullptr) {
-        if (callback != nullptr) {
-            napi_delete_reference(env, callback);
-        }
+        DeleteCallbackRef(env, callback);
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return NapiGetNull(env);
@@ -799,9 +694,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoSubscribe {.env = env, .asyncWork = nullptr, .subscriber = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "asyncCallbackInfo is nullptr");
-        if (callback != nullptr) {
-            napi_delete_reference(env, callback);
-        }
+        DeleteCallbackRef(env, callback);
         HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return NapiGetNull(env);
     }
@@ -821,9 +714,7 @@ napi_value Subscribe(napi_env env, napi_callback_info info)
     napi_status status = napi_create_async_work(env, nullptr, resourceName, AsyncExecuteCallbackSubscribe,
         AsyncCompleteCallbackSubscribe, (void *)asyncCallbackInfo, &asyncCallbackInfo->asyncWork);
     if (status != napi_ok) {
-        EVENT_LOGE(LOG_TAG_CES_NAPI, "napi_create_async_work failed, status=%{public}d", status);
-        WithdrawSubscribeHandles(asyncCallbackInfo, env);
-        delete asyncCallbackInfo;
+        OnSubscribeWorkCreateFailed(asyncCallbackInfo, env, status);
         HistogramBoolReport("BasicServicesKit.APICall.subscribe", false);
         return NapiGetNull(env);
     }
@@ -845,9 +736,7 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
 
     if (ParseParametersBySubscribe(env, argv, subscriber, callback) == nullptr) {
-        if (callback != nullptr) {
-            napi_delete_reference(env, callback);
-        }
+        DeleteCallbackRef(env, callback);
         NapiThrow(env, ERR_NOTIFICATION_CES_COMMON_PARAM_INVALID);
         HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return NapiGetNull(env);
@@ -857,9 +746,7 @@ napi_value SubscribeToEvent(napi_env env, napi_callback_info info)
         new (std::nothrow) AsyncCallbackInfoSubscribe {.env = env, .asyncWork = nullptr, .subscriber = nullptr};
     if (asyncCallbackInfo == nullptr) {
         EVENT_LOGE(LOG_TAG_CES_NAPI, "asyncCallbackInfo is nullptr");
-        if (callback != nullptr) {
-            napi_delete_reference(env, callback);
-        }
+        DeleteCallbackRef(env, callback);
         HistogramBoolReport("BasicServicesKit.APICall.subscribeToEvent", false);
         return NapiGetNull(env);
     }

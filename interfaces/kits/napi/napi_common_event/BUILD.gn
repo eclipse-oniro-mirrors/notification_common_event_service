@@ -62,6 +62,7 @@ ohos_shared_library("napi_commoneventmanager") {
     "${interfaces_path}/kits/napi/support/src/support.cpp",
     "src/common_event_parse.cpp",
     "src/common_event_set_param.cpp",
+    "src/common_event_subscriber_callback.cpp",
     "src/napi_common_event.cpp",
   ]
 
