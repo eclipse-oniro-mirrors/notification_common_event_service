@@ -73,10 +73,12 @@ struct CallbackPromiseInfo {
 struct AsyncCallbackInfoSubscribe {
     napi_env env = nullptr;
     napi_async_work asyncWork;
+    // Owned by this subscribe attempt until it finishes, see SubscriberInstance::HandoverCallbackRef.
     napi_ref callback = nullptr;
     napi_deferred deferred = nullptr;
     std::shared_ptr<SubscriberInstance> subscriber = nullptr;
     int32_t errorCode = NO_ERROR;
+    // Owned by this subscribe attempt until it finishes, see SubscriberInstance::HandoverThreadSafeFunction.
     napi_threadsafe_function tsfn = nullptr;
 };
 
@@ -238,8 +240,18 @@ public:
     void SetEnv(const napi_env &env);
     void RegisterEnvCleanupHook();
     void RemoveEnvCleanupHook();
+    // ref_ and tsfn_ are only the view used to deliver events. While a subscribe attempt is in flight they belong to
+    // the attempt, and the subscriber takes the ownership only when the attempt succeeds.
     void SetCallbackRef(const napi_ref &ref);
     void SetThreadSafeFunction(const napi_threadsafe_function &tsfn);
+    // Called when a subscribe attempt succeeded. The handle is reset to nullptr.
+    void HandoverCallbackRef(napi_ref &callback);
+    void HandoverThreadSafeFunction(napi_threadsafe_function &tsfn);
+    // Called when a subscribe attempt failed. The handle owned by the attempt is released and reset to nullptr.
+    void WithdrawCallbackRef(napi_ref &callback);
+    void WithdrawThreadSafeFunction(napi_threadsafe_function &tsfn);
+    // Called when the subscription is removed. Only the handle owned by this subscriber is released.
+    void ReleaseCallbackRef();
     void ReleaseThreadSafeFunction();
     void SetIsNewVersion(bool isNewVersion);
     bool IsNewVersion();
@@ -259,11 +271,13 @@ public:
 private:
     napi_env env_ = nullptr;
     napi_ref ref_ = nullptr;
+    napi_ref ownedRef_ = nullptr;
     bool envCleanupHookRegistered_ = false;
     std::atomic_ullong id_;
     static std::atomic_ullong subscriberID_;
     bool isNewVersion_ = false;
     napi_threadsafe_function tsfn_ = nullptr;
+    napi_threadsafe_function ownedTsfn_ = nullptr;
     ffrt::mutex envMutex_;
     ffrt::mutex refMutex_;
     AniAsyncResultCloneCallback asyncResultCloneCallback_ = nullptr;
